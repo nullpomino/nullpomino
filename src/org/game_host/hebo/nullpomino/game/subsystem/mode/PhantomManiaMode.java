@@ -278,7 +278,7 @@ public class PhantomManiaMode extends DummyMode {
 		engine.tspinEnable = false;
 		engine.b2bEnable = false;
 		engine.comboType = GameEngine.COMBO_TYPE_DOUBLE;
-		engine.framecolor = GameEngine.FRAME_COLOR_YELLOW;
+		engine.framecolor = GameEngine.FRAME_COLOR_CYAN;
 		engine.blockHidden = engine.ruleopt.lockflash;
 		engine.bighalf = true;
 		engine.bigmove = true;
