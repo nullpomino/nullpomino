@@ -1,0 +1,5 @@
+org.game_host.hebo.nullpomino.game.subsystem.randomizer.MemorylessRandomizer
+org.game_host.hebo.nullpomino.game.subsystem.randomizer.BagRandomizer
+org.game_host.hebo.nullpomino.game.subsystem.randomizer.BagRandomizerNoSZO
+org.game_host.hebo.nullpomino.game.subsystem.randomizer.History4RollsRandomizer
+org.game_host.hebo.nullpomino.game.subsystem.randomizer.History6RollsRandomizer
