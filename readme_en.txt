@@ -367,7 +367,7 @@ A: Give up! The SDL library for Java is already abandoned years ago, thus does n
 10. Credits/Thanks
 
 NullpoMino created by:
-	NullNoname !bzEQ7554bc (was known as Nanashi, No name, or noname) pbomqlu910963@gmail.com
+	NullNoname !bzEQ7554bc (also known as pbomqlu910963, was known as Nanashi, No name, or noname) pbomqlu910963@gmail.com
 	Zircean
 	Poochy
 	Wojtek (aka dodd)
@@ -434,7 +434,10 @@ Also thanks to:
 	Hard Drop http://harddrop.com/
 	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
 
-11. Update History (The date and time is in JST)
+11. Project Page at Google code
+http://code.google.com/p/nullpomino/
+
+12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
 
 Version 7.2.0 (2010/06/19)

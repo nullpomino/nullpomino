@@ -320,7 +320,7 @@ java -cp NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.
 
 【製作・謝辞】
 製作：
-　NullNoname ◆bzEQ7554bc (元名無し)
+　NullNoname ◆bzEQ7554bc (別名pbomqlu910963、元名無し) pbomqlu910963@gmail.com
 　Zircean
 　Poochy
 　Wojtek (aka dodd)
@@ -717,3 +717,6 @@ Version 1 (2008/07/27)
 ・PRACTICEモードの設定項目を増やす
 ・AIを強くする
 ・パズルモード
+
+【Google Codeのプロジェクトページ】
+http://code.google.com/p/nullpomino/
