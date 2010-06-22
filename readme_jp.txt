@@ -109,7 +109,7 @@ SCREEN SHOT：スクリーンショットをssフォルダに保存
 CONFIGの中にある「[RULE SELECT]」から使用するルールを変更できます。
 付属のルールエディタを使うと独自のルールを作成できます。
 
-（無名）　　　：初回起動時に設定されているルールです。操作性が悪いので他のルールに切り替えることをおすすめします。
+（無名）　　　　　 ：初回起動時に設定されているルールです。操作性が悪いので他のルールに切り替えることをおすすめします。
 CLASSIC0 　　　　　：壁蹴りもホールドもない古典的なルール(RETRO MANIAモードにおすすめ)
 CLASSIC0-68K 　　　：CLASSIC0に逆回転が付いたルール
 CLASSIC1 　　　　　：NEXTが1個だけ、ホールドなし、ハードドロップなし、壁登り不可のルール
@@ -129,7 +129,10 @@ STANDARD　　　　　 ：初心者から上級者まで扱いやすいルールで、壁登りも可能
 STANDARD-FAST　　　：STANDARDよりも素早い操作が可能
 STANDARD-FAST-B　　：STANDARD-FASTよりも先行回転が暴発しにくい
 STANDARD-FRIENDS　 ：動きがやや遅い・出現位置が他のルールの1マス下
+StandardGiza　　　 ：hebo-MAIさん作のルール・やや速度が抑えられていて対戦では速度ではなく戦略性が求められる
 STANDARD-HARD　　　：STANDARDよりも少し難しい
+STANDARD-HARD128　 ：STANDARD-HARDを少し簡単にしたもの(ブロックが地面に着地したあと128回まで移動・回転可能)
+STANDARD-HOLDNEXT　：holdnextさん作のルール・オレンジ棒が特徴
 STANDARD-J　　　　 ：動きがかなり遅い
 STANDARD-PLUS　　　：STANDARD-FASTをベースに、ライン消去時間を0にしてソフトドロップ速度を上げたルール(Blinkさん作)
 STANDARD-SUPER3　　：回転法則がSTANDARDと同じで壁蹴りが存在しないルール

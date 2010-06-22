@@ -114,36 +114,38 @@ Depending on the game rule, the movement of pieces will be different.
 You can select which rule to use in the CONFIG>RULE SELECT screen.
 You can create your own rule by using Rule Editor.
 
-(Default Rule)  : The default rule. It's not good for most players so I recommend you to select other rule.
-CLASSIC0        : A classic rule that many Japanese players played like a monkey. Best suitable for RETRO MANIA mode.
-CLASSIC0-68K    : CLASSIC0 with reverse rotation.
-CLASSIC1        : Only 1 piece preview, no hold function, no hard drop function, less flexible wallkicks.
-                  If you think standard rules are too easy, this rule might be suitable for you.
-CLASSIC2        : If you want faster play but dislike standard rules, this rule can help you.
-CLASSIC3        : If you dislike standard rules but classic 1-2 is too difficult, this rule is for you.
-                  I and T shaped pieces has more flexible wallkicks.
-CLASSIC-EASY-A  : It is much easier than other classic rules. Block colors are also different.
-CLASSIC-EASY-A2 : Almost same as CLASSIC-EASY-A, but block colors are not different from others.
-CLASSIC-EASY-B  : Soft and hard drop behavior is reversed in this rule.
-CLASSIC-EASY-B2 : Almost same as CLASSIC-EASY-B, but block colors are not different from others.
-CLASSIC-S       : CLASSIC0 with reverse rotation and "Wall Only" wallkick. It can kick wall, but not the already placed blocks.
-DTET            : That game was so good that the evil king had to kill it. This rule is a bit tricky.
-NINTENDO-L      : A classical rule that was bundled with a handheld gadget which was made by king of video game.
-NINTENDO-L-FAST : NINTENDO-L with faster sideways movement.
-NINTENDO-R      : A classical rule that was appeared before or after NINTENDO-L. Best suitable for CLASSIC MARATHON mode.
-NINTENDO-R-FAST : NINTENDO-R with faster sideways movement.
-STANDARD        : Suitable for almost all kinds of players.
-STANDARD-EXP    : Soft and hard drop behavior is reversed in this rule.
-STANDARD-FAST   : Suitable for fast game play.
-STANDARD-FAST-B : Suitable for fast game play. Initial actions (initial rotation/hold) is less detected in this rule.
-STANDARD-FRIENDS: Pieces will spawn one space lower than usual, unless that space is occupied.
-STANDARD-HARD   : Difficult than normal STANDARD rule.
-STANDARD-HARD128: Slightly easier variant of STANDARD-HARD rule. You can move/rotate the piece 128 times.
-STANDARD-J      : This variant has slow movements, nothing more than that.
-STANDARD-PLUS   : A rule created by Blink. STANDARD-FAST with no line clear delay, and faster softdrop.
-STANDARD-SUPER3 : A classical rule with the rotation system of STANDARD rules but no wallkicks.
-STANDARD-ZERO   : This is harddrop.com official rule.
-                  A rule created by Wojtek. STANDARD-PLUS with no IHS and no IRS and 20G softdrop.
+(Default Rule)   : The default rule. It's not good for most players so I recommend you to select other rule.
+CLASSIC0         : A classic rule that many Japanese players played like a monkey. Best suitable for RETRO MANIA mode.
+CLASSIC0-68K     : CLASSIC0 with reverse rotation.
+CLASSIC1         : Only 1 piece preview, no hold function, no hard drop function, less flexible wallkicks.
+                   If you think standard rules are too easy, this rule might be suitable for you.
+CLASSIC2         : If you want faster play but dislike standard rules, this rule can help you.
+CLASSIC3         : If you dislike standard rules but classic 1-2 is too difficult, this rule is for you.
+                   I and T shaped pieces has more flexible wallkicks.
+CLASSIC-EASY-A   : It is much easier than other classic rules. Block colors are also different.
+CLASSIC-EASY-A2  : Almost same as CLASSIC-EASY-A, but block colors are not different from others.
+CLASSIC-EASY-B   : Soft and hard drop behavior is reversed in this rule.
+CLASSIC-EASY-B2  : Almost same as CLASSIC-EASY-B, but block colors are not different from others.
+CLASSIC-S        : CLASSIC0 with reverse rotation and "Wall Only" wallkick. It can kick wall, but not the already placed blocks.
+DTET             : That game was so good that the evil king had to kill it. This rule is a bit tricky.
+NINTENDO-L       : A classical rule that was bundled with a handheld gadget which was made by king of video game.
+NINTENDO-L-FAST  : NINTENDO-L with faster sideways movement.
+NINTENDO-R       : A classical rule that was appeared before or after NINTENDO-L. Best suitable for CLASSIC MARATHON mode.
+NINTENDO-R-FAST  : NINTENDO-R with faster sideways movement.
+STANDARD         : Suitable for almost all kinds of players.
+STANDARD-EXP     : Soft and hard drop behavior is reversed in this rule.
+STANDARD-FAST    : Suitable for fast game play.
+STANDARD-FAST-B  : Suitable for fast game play. Initial actions (initial rotation/hold) is less detected in this rule.
+STANDARD-FRIENDS : Pieces will spawn one space lower than usual, unless that space is occupied.
+StandardGiza     : hebo-MAI's rule. This rule is not too fast; giving you the opportunity to see the opponent's field in VS game.
+STANDARD-HARD    : Difficult than normal STANDARD rule.
+STANDARD-HARD128 : Slightly easier variant of STANDARD-HARD rule. You can move/rotate the piece 128 times.
+STANDARD-HOLDNEXT: A rule created by holdnext. Enjoy the power of orange sticks.
+STANDARD-J       : This variant has slow movements, nothing more than that.
+STANDARD-PLUS    : A rule created by Blink. STANDARD-FAST with no line clear delay, and faster softdrop.
+STANDARD-SUPER3  : A classical rule with the rotation system of STANDARD rules but no wallkicks.
+STANDARD-ZERO    : This is harddrop.com official rule.
+                   A rule created by Wojtek. STANDARD-PLUS with no IHS and no IRS and 20G softdrop.
 
 6. Game mode
 MARATHON
