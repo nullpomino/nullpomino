@@ -63,7 +63,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	public GameManager gameManager = null;
 
 	/** ロビー画面 */
-	protected NetLobbyFrame netLobby = null;
+	public NetLobbyFrame netLobby = null;
 
 	/** FPS表示 */
 	protected boolean showfps = true;
@@ -183,8 +183,14 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		gameManager.shutdown();
-		gameManager = null;
+		if(gameManager != null) {
+			gameManager.shutdown();
+			gameManager = null;
+		}
+		if(netLobby != null) {
+			netLobby.shutdown();
+			netLobby = null;
+		}
 
 		// FPS復帰
 		if(NullpoMinoSlick.useAlternateFPSSleep) {

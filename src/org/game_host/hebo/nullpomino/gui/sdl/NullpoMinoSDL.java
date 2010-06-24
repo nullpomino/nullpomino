@@ -346,8 +346,6 @@ public class NullpoMinoSDL {
 	 */
 	public static void run() throws SDLException {
 		maxFPS = propConfig.getProperty("option.maxfps", 60);
-		int maxfps = maxFPS;
-		long period = (long) (1.0 / maxfps * 1000000000);
 
 		long beforeTime, afterTime, timeDiff, sleepTime;
 		long overSleepTime = 0L;
@@ -432,11 +430,12 @@ public class NullpoMinoSDL {
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
 			// 前回のフレームの休止時間誤差も引いておく
+			long period = (long) (1.0 / maxFPS * 1000000000);
 			sleepTime = (period - timeDiff) - overSleepTime;
 
 			if(sleepTime > 0) {
 				// 休止時間がとれる場合
-				if(maxfps > 0) {
+				if(maxFPS > 0) {
 					try {
 						Thread.sleep(sleepTime / 1000000L);
 					} catch(InterruptedException e) {}

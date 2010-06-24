@@ -316,6 +316,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NullpoMinoSDL.saveConfig();
 
 			NullpoMinoSDL.showfps = showfps;
+			NullpoMinoSDL.maxFPS = maxfps;
 
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		}

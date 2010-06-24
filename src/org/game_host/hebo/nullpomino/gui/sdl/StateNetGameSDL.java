@@ -59,7 +59,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	protected GameManager gameManager;
 
 	/** ロビー画面 */
-	protected NetLobbyFrame netLobby;
+	public NetLobbyFrame netLobby;
 
 	/*
 	 * このステートに入ったときの処理
@@ -154,9 +154,14 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	 */
 	@Override
 	public void leave() throws SDLException {
-		gameManager.shutdown();
-		gameManager = null;
-		netLobby = null;
+		if(gameManager != null) {
+			gameManager.shutdown();
+			gameManager = null;
+		}
+		if(netLobby != null) {
+			netLobby.shutdown();
+			netLobby = null;
+		}
 
 		// FPS復帰
 		NullpoMinoSDL.maxFPS = NullpoMinoSDL.propConfig.getProperty("option.maxfps", 60);

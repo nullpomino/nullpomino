@@ -234,11 +234,21 @@ public class NullpoMinoSlick extends StateBasedGame {
 			appGameContainer.setMinimumLogicUpdateInterval(0);
 			appGameContainer.setMaximumLogicUpdateInterval(0);
 			appGameContainer.setUpdateOnlyWhenVisible(false);
+			appGameContainer.setForceExit(false);
 			appGameContainer.setDisplayMode(640, 480, propConfig.getProperty("option.fullscreen", false));
 			appGameContainer.start();
 		} catch (Throwable e) {
 			log.error("Game initialize failed", e);
 		}
+
+		stopObserverClient();
+
+		if(stateNetGame.netLobby != null) {
+			log.debug("Calling netLobby shutdown routine");
+			stateNetGame.netLobby.shutdown();
+		}
+
+		System.exit(0);
 	}
 
 	/**
