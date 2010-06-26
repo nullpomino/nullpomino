@@ -31,7 +31,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		@Override
 		public int compare(Integer o1, Integer o2) {
 			
-			return factorCompare*(ranks.getRankValue(o2.intValue())-ranks.getRankValue(o1.intValue()));
+			return (factorCompare*(ranks.getRankValue(o2.intValue())-ranks.getRankValue(o1.intValue())));
 		}
 
 	
@@ -51,13 +51,13 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	
 		
 		
-			public SurfaceRank(int surface,int rank){
+			public SurfaceRank(int surface,int rank2){
 				this.surface=surface;
-				this.rank=rank;
+				this.rank=rank2;
 			}
 			public int compareTo(SurfaceRank o) {
 				
-				return factorCompare*(((SurfaceRank) o).getRank()-rank);
+				return (factorCompare*(((SurfaceRank) o).getRank()-rank));
 			}
 			
 		

@@ -32,7 +32,7 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 	private int iteration;
 	private int size;
 	private float lastError;
-	private long lastErrorMax;
+	private int lastErrorMax;
 	 private SwingWorker<Void, String> mySwingWorker;
 	
     class MySwingWorker extends SwingWorker<Void, String> {

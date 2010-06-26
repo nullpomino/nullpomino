@@ -91,7 +91,7 @@ public class Ranks implements Serializable{
 		{{1,1,1},{2},{1,1,1},{2}},     //I3
 		{{1,1},{1,0},{0,1},{1,1}}      //L3
 	};
-
+public static final float DAMPFING_FACTOR=(float) 0.85;
 private int [] ranks;
 
 
@@ -101,9 +101,9 @@ private int stackWidth;
 private int size;
 private Ranks ranksFrom;
 private int maxJump;
-private long error;
-private long maxError;
-public long getMaxError() {
+private int error;
+private int maxError;
+public int getMaxError() {
 	return maxError;
 }
 
@@ -122,13 +122,13 @@ public boolean completionPercentageIncrease(){
 	return (0==(completion % (size/100)) && completion>=(size/100));
 }
 public float getErrorPercentage(){
-	long errorLong= error/completion;
+	float errorLong= error/completion;
 	  long maxErrorPossible=((long)Integer.MAX_VALUE-(long)Integer.MIN_VALUE);
 	   float errorPercentage= ((float)errorLong/(float)maxErrorPossible);
 	   errorPercentage*=100;
 	return errorPercentage;
 }
-public long getError() {
+public  int getError() {
 	return error;
 }
 public int getMaxJump() {
@@ -198,7 +198,7 @@ public void setRank(int [] surface, int []surfaceDecodedWork){
 	ranks[currentSurfaceNum]=getRank(surface,surfaceDecodedWork);
 	synchronized(this){
 		completion++;
-		long errorCurrent=Math.abs(ranks[currentSurfaceNum]-ranksFrom.getRankValue(currentSurfaceNum));
+		int errorCurrent=Math.abs(ranks[currentSurfaceNum]-ranksFrom.getRankValue(currentSurfaceNum));
 	    if (errorCurrent==0)
 	    	errorCurrent=0;
 		if (errorCurrent>maxError)
@@ -246,28 +246,30 @@ private int getRank(int [] surface,int [] surfaceDecodedWork){
 	
 	
 	for (int p=0;p<Piece.PIECE_STANDARD_COUNT;p++){
-		sum+=getRankPiece(surface,surfaceDecodedWork,p);
+		sum+=(getRankPiece(surface,surfaceDecodedWork,p)/Piece.PIECE_STANDARD_COUNT);
 	}
-	return sum/Piece.PIECE_STANDARD_COUNT;
+	int result=0;
+	result=(int) ((1-DAMPFING_FACTOR)*Integer.MAX_VALUE/Piece.PIECE_STANDARD_COUNT+DAMPFING_FACTOR*(sum));
+	if (result<0)
+		result=0;
+	return result;
 }
 private int getRankPiece(int [] surface, int [] surfaceDecodedWork ,int piece){
 	int bestRank=0;
 	for (int r=0;r<PIECES_NUM_ROTATIONS[piece];r++){
 		int rank=getRankPieceRotation(surface,surfaceDecodedWork,piece,r);
-		if (rank>bestRank)
+		if (rank>bestRank){
 			bestRank=rank;
+		}
+		
 	}
 	return bestRank;
 }
 
 
 private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int piece, int rotation){
-	int bestRank=0;
 	
-	
-	
-	
-	
+	int bestRank=0;	
 	
 	for (int x=0;x<(stackWidth-(PIECES_WIDTHS[piece][rotation]-1));x++){
 		boolean fits=true;
