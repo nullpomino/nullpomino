@@ -6,6 +6,7 @@ org.game_host.hebo.nullpomino.game.subsystem.mode.ScoreRaceMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.DigRaceMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.UltraMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.TechnicianMode
+org.game_host.hebo.nullpomino.game.subsystem.mode.SquareMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.ClassicMarathonMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.RetroManiaMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.GradeManiaMode

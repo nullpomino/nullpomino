@@ -255,4 +255,20 @@ public class Block implements Serializable {
 	public boolean isGemBlock() {
 		return (color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE);
 	}
+	
+	/**
+	 * Checks to see if <code>this</code> is a gold square block
+	 * @return <code>true</code> if the block is a gold square block
+	 */
+	public boolean isGoldSquareBlock() {
+		return (color >= BLOCK_COLOR_SQUARE_GOLD_1) && (color <= BLOCK_COLOR_SQUARE_GOLD_9);
+	}
+	
+	/**
+	 * Checks to see if <code>this</code> is a silver square block
+	 * @return <code>true</code> if the block is a silver square block
+	 */
+	public boolean isSilverSquareBlock() {
+		return (color >= BLOCK_COLOR_SQUARE_SILVER_1) && (color <= BLOCK_COLOR_SQUARE_SILVER_9);
+	}
 }

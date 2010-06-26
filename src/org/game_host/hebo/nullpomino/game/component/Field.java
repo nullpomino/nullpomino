@@ -36,6 +36,7 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
  * ゲームフィールド
  */
 public class Field implements Serializable {
+	
 	/** シリアルバージョンID */
 	private static final long serialVersionUID = 7745183278794213487L;
 
@@ -93,7 +94,7 @@ public class Field implements Serializable {
 	 * @param h フィールドの高さ
 	 * @param hh フィールドより上の見えない部分の高さ
 	 */
-	public Field(int w, int h, int hh) {
+	public Field(int w, int h, int hh) {		
 		width = w;
 		height = h;
 		hidden_height = hh;
@@ -1423,11 +1424,11 @@ public class Field implements Serializable {
 		int rows = 0;
 		boolean rowCheck;
 
-		for(int i = getHeight() - 1; i > 0; i--) {
-			holeLoc = -Math.abs(i - (getHeight() / 2)) + (getHeight() / 2) - 1;
+		for(int i = height - 1; i > 0; i--) {
+			holeLoc = -Math.abs(i - (height / 2)) + (height / 2) - 1;
 			if(getBlockEmpty(holeLoc, i) && !getBlockEmpty(holeLoc, i - 1)) {
 				rowCheck = true;
-				for(int j = 0; j < getWidth(); j++) {
+				for(int j = 0; j < width; j++) {
 					if(j != holeLoc && getBlockEmpty(j, i)) {
 						rowCheck = false;
 						break;
@@ -1517,6 +1518,112 @@ public class Field implements Serializable {
 		}
 
 		return gems;
+	}
+	
+	/**
+	 * Checks for 4x4 square formations and converts blocks to square blocks if needed.
+	 */
+	public void checkForSquares() {
+		// Check for gold squares
+		for (int i = (hidden_height * -1); i < (height - 3); i++) {
+			for (int j = 0; j < (width - 3); j++) {
+				Block rootBlk = getBlock(j, i);
+				boolean squareCheck = false;
+				
+				int id = Block.BLOCK_COLOR_NONE;
+				if (!(rootBlk == null || rootBlk.isEmpty())) {
+					id = rootBlk.color;
+				}
+				if (!(rootBlk == null || rootBlk.isEmpty() || rootBlk.isGoldSquareBlock() || rootBlk.isSilverSquareBlock())) {
+					squareCheck = true;
+					for (int k = 0; k < 4; k++) {
+						for (int l = 0; l < 4; l++) {
+							Block blk = getBlock(j+l, i+k);
+							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
+									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) || blk.color != id ||
+									(l == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) ||
+									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) || 
+									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) || 
+									(k == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))){
+								squareCheck = false;
+								break;
+							}
+						}
+						if (!squareCheck) {
+							break;
+						}
+					}
+				}
+				if (squareCheck) {
+					int[] squareX = new int[] {0, 1, 1, 2};
+					int[] squareY = new int[] {0, 3, 3, 6};
+					for (int k = 0; k < 4; k++) {
+						for (int l = 0; l < 4; l++) {
+							Block blk = getBlock(j+l, i+k);
+							blk.color = Block.BLOCK_COLOR_SQUARE_GOLD_1 + squareX[l] + squareY[k];
+						}
+					}
+				}
+			}
+		}
+		// Check for silver squares
+		for (int i = (hidden_height * -1); i < (height - 3); i++) {
+			for (int j = 0; j < (width - 3); j++) {
+				Block rootBlk = getBlock(j, i);
+				boolean squareCheck = false;
+				
+				if (!(rootBlk == null || rootBlk.isEmpty() || rootBlk.isGoldSquareBlock() || rootBlk.isSilverSquareBlock())) {
+					squareCheck = true;
+					for (int k = 0; k < 4; k++) {
+						for (int l = 0; l < 4; l++) {
+							Block blk = getBlock(j+l, i+k);
+							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
+									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) ||
+									(l == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) ||
+									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) || 
+									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) || 
+									(k == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))){
+								squareCheck = false;
+								break;
+							}
+						}
+						if (!squareCheck) {
+							break;
+						}
+					}
+				}
+				if (squareCheck) {
+					int[] squareX = new int[] {0, 1, 1, 2};
+					int[] squareY = new int[] {0, 3, 3, 6};
+					for (int k = 0; k < 4; k++) {
+						for (int l = 0; l < 4; l++) {
+							Block blk = getBlock(j+l, i+k);
+							blk.color = Block.BLOCK_COLOR_SQUARE_SILVER_1 + squareX[l] + squareY[k];
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public int getHowManySquareClears() {
+		int squares = 0;
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			if (getLineFlag(i)) {
+				for(int j = 0; j < width; j++) {
+					Block blk = getBlock(j, i);
+
+					if (blk != null) {
+						if (blk.isGoldSquareBlock()) {
+							squares += 2;
+						} else if (blk.isSilverSquareBlock()) {
+							squares++;
+						}
+					}
+				}
+			}
+		}
+		return squares/4;
 	}
 
 	/**

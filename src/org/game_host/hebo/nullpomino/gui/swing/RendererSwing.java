@@ -413,7 +413,7 @@ public class RendererSwing extends EventReceiver {
 	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
 		if(graphics == null) return;
 
-		if((color <= Block.BLOCK_COLOR_INVALID) || (color >= Block.BLOCK_COLOR_EXT_COUNT)) return;
+		if((color <= Block.BLOCK_COLOR_INVALID)) return;
 		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
 
 		int size = 16;
@@ -778,7 +778,7 @@ public class RendererSwing extends EventReceiver {
 				Block blk = null;
 				if(field != null) blk = field.getBlock(j, i);
 
-				if((field != null) && (blk != null) && (blk.color > Block.BLOCK_COLOR_NONE) && (blk.color < Block.BLOCK_COLOR_EXT_COUNT)) {
+				if((field != null) && (blk != null) && (blk.color > Block.BLOCK_COLOR_NONE)) {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
 								  blk.darkness, blk.alpha, small ? 0.5f : 1.0f);
