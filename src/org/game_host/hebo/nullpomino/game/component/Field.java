@@ -747,7 +747,7 @@ public class Field implements Serializable {
 				for(int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i);
 
-					if(blk != null) {
+					if(blk != null && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 						setBlock(j, i, blk);
@@ -758,7 +758,7 @@ public class Field implements Serializable {
 				for(int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i);
 
-					if(blk != null) {
+					if(blk != null && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 						setBlock(j, i, blk);
