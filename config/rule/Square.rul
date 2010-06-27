@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Sun Jun 27 11:06:05 EDT 2010
+#Sun Jun 27 11:38:01 EDT 2010
 0.ruleopt.strWallkick=org.game_host.hebo.nullpomino.game.subsystem.wallkick.StandardWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -18,7 +18,7 @@
 0.ruleopt.pieceDefaultDirection.6=0
 0.ruleopt.pieceSpawnYBig.7.2=0
 0.ruleopt.pieceSpawnX.0.2=0
-0.ruleopt.pieceDefaultDirection.5=0
+0.ruleopt.pieceDefaultDirection.5=2
 0.ruleopt.pieceSpawnYBig.7.1=0
 0.ruleopt.pieceSpawnX.0.1=0
 0.ruleopt.strRandomizer=org.game_host.hebo.nullpomino.game.subsystem.randomizer.MemorylessRandomizer
@@ -27,7 +27,7 @@
 0.ruleopt.pieceSpawnX.0.0=0
 0.ruleopt.pieceDefaultDirection.3=0
 0.ruleopt.pieceDefaultDirection.2=0
-0.ruleopt.pieceDefaultDirection.1=0
+0.ruleopt.pieceDefaultDirection.1=2
 0.ruleopt.pieceDefaultDirection.0=0
 0.ruleopt.pieceSpawnYBig.3.3=0
 0.ruleopt.pieceSpawnYBig.3.2=0
