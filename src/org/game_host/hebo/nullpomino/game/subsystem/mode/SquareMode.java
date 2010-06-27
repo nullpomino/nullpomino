@@ -87,6 +87,9 @@ public class SquareMode extends DummyMode {
 
 	/** Selected game type */
 	private int gametype;
+	
+	/** Outline type */
+	private int outlinetype;
 
 	/** Version number */
 	private int version;
@@ -118,13 +121,8 @@ public class SquareMode extends DummyMode {
 		lastscore = 0;
 		scgettime = 0;
 		
-		engine.speed.are = 30;
-		engine.speed.areLine = 30;
-		engine.speed.das = 10;
-		engine.speed.lockDelay = 30;
-
-		engine.speed.denominator = 60;
-
+		outlinetype = 0;
+		
 		rankingRank = -1;
 		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
 		rankingTime = new int[RANKING_TYPE][RANKING_MAX];
@@ -154,8 +152,8 @@ public class SquareMode extends DummyMode {
 			engine.speed.gravity = tableGravityValue[gravityindex];
 		} else {
 			engine.speed.gravity = 1;
-			engine.speed.denominator = 60;
 		}
+		engine.speed.denominator = 60;
 	}
 
 	/*
@@ -168,13 +166,13 @@ public class SquareMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 0;
+				if(engine.statc[2] < 0) engine.statc[2] = 1;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 0) engine.statc[2] = 0;
+				if(engine.statc[2] > 1) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -193,6 +191,10 @@ public class SquareMode extends DummyMode {
 					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
 					if(gametype > GAMETYPE_MAX - 1) gametype = 0;
 					break;
+				case 1:
+					outlinetype += change;
+					if(outlinetype < 0) outlinetype = 2;
+					if(outlinetype > 2) outlinetype = 0;
 				}
 			}
 
@@ -233,6 +235,12 @@ public class SquareMode extends DummyMode {
 		
 		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
+		receiver.drawMenuFont(engine, playerID, 0, 2, "OUTLINE", EventReceiver.COLOR_BLUE);
+		String strOutline = "";
+		if(outlinetype == 0) strOutline = "NORMAL";
+		if(outlinetype == 1) strOutline = "CONNECT";
+		if(outlinetype == 2) strOutline = "NONE";
+		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
 	}
 
 	/*
@@ -240,6 +248,16 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
+		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
+		
+		if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
+		if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
+		if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
+		
+		engine.speed.are = 30;
+		engine.speed.areLine = 30;
+		engine.speed.das = 10;
+		engine.speed.lockDelay = 30;
 
 		setSpeed(engine);
 	}
@@ -296,7 +314,7 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		scgettime++;
+		if (scgettime > 0) scgettime--;
 		
 		if (gametype == 1) {
 			int remainTime = ULTRA_MAX_TIME - engine.statistics.time;
@@ -315,9 +333,7 @@ public class SquareMode extends DummyMode {
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				return;
 			}
-		}
-		
-		if (gametype == 2) {
+		} else if (gametype == 2) {
 			int remainScore = SPRINT_MAX_SCORE - engine.statistics.score;
 			if(engine.timerActive == false) remainScore = 0;
 			engine.meterValue = (remainScore * receiver.getMeterMax(engine)) / SPRINT_MAX_SCORE;
@@ -361,7 +377,7 @@ public class SquareMode extends DummyMode {
 			}
 			
 			lastscore = pts;
-			scgettime = 0;
+			scgettime = 120;
 			engine.statistics.scoreFromLineClear += pts;
 			engine.statistics.score += pts;
 			setSpeed(engine);
@@ -425,6 +441,7 @@ public class SquareMode extends DummyMode {
 	 */
 	private void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("square.gametype", 0);
+		outlinetype = prop.getProperty("square.outlinetype", 0);
 		version = prop.getProperty("square.version", 0);
 	}
 
@@ -434,6 +451,7 @@ public class SquareMode extends DummyMode {
 	 */
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("square.gametype", gametype);
+		prop.setProperty("square.outlinetype", outlinetype);
 		prop.setProperty("square.version", version);
 	}
 

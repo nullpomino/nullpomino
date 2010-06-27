@@ -749,6 +749,7 @@ public class Field implements Serializable {
 
 					if(blk != null) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 						setBlock(j, i, blk);
 					}
 				}
@@ -759,6 +760,7 @@ public class Field implements Serializable {
 
 					if(blk != null) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 						setBlock(j, i, blk);
 					}
 				}
@@ -1540,7 +1542,8 @@ public class Field implements Serializable {
 						for (int l = 0; l < 4; l++) {
 							Block blk = getBlock(j+l, i+k);
 							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
-									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) || blk.color != id ||
+									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) || 
+									blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) || blk.color != id ||
 									(l == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) ||
 									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) || 
 									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) || 
@@ -1561,6 +1564,18 @@ public class Field implements Serializable {
 						for (int l = 0; l < 4; l++) {
 							Block blk = getBlock(j+l, i+k);
 							blk.color = Block.BLOCK_COLOR_SQUARE_GOLD_1 + squareX[l] + squareY[k];
+							if (k > 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+							}
+							if (k < 3) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							if (l > 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							}
+							if (l < 3) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
 						}
 					}
 				}
@@ -1579,6 +1594,7 @@ public class Field implements Serializable {
 							Block blk = getBlock(j+l, i+k);
 							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) ||
+									blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) ||
 									(l == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) ||
 									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) || 
 									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) || 
@@ -1599,6 +1615,18 @@ public class Field implements Serializable {
 						for (int l = 0; l < 4; l++) {
 							Block blk = getBlock(j+l, i+k);
 							blk.color = Block.BLOCK_COLOR_SQUARE_SILVER_1 + squareX[l] + squareY[k];
+							if (k > 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+							}
+							if (k < 3) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							if (l > 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							}
+							if (l < 3) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
 						}
 					}
 				}
