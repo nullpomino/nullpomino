@@ -1,2 +1,3 @@
 org.game_host.hebo.nullpomino.game.subsystem.ai.BasicAI
 org.game_host.hebo.nullpomino.game.subsystem.ai.TSpinAI
+net.tetrisconcept.poochy.nullpomino.ai.PoochyBot
