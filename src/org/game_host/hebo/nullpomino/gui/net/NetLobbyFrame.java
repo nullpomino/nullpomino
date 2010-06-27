@@ -1385,6 +1385,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			if(writerChatLog != null) {
 				writerChatLog.println("[" + strTime + "] " + str);
+				writerChatLog.flush();
 			}
 		} catch (Exception e) {}
 	}
@@ -1440,6 +1441,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			if(writerChatLog != null) {
 				writerChatLog.println("[" + strTime + "]" + "<" + username + "> " + str);
+				writerChatLog.flush();
 			}
 		} catch (Exception e) {}
 	}
@@ -2660,6 +2662,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					if(i < rowdata.length - 1) writerChatLog.print(",");
 					else writerChatLog.print("\n");
 				}
+
+				writerChatLog.flush();
 			}
 		}
 		// ゲーム終了

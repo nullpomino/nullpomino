@@ -564,12 +564,28 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	 */
 	private void sendNextAndHold(GameEngine engine) {
 		int holdID = Piece.PIECE_NONE;
-		int direction = Piece.DIRECTION_UP;
+		int holdDirection = Piece.DIRECTION_UP;
+		int holdColor = Block.BLOCK_COLOR_GRAY;
 		if(engine.holdPieceObject != null) {
 			holdID = engine.holdPieceObject.id;
-			direction = engine.holdPieceObject.direction;
+			holdDirection = engine.holdPieceObject.direction;
+			holdColor = engine.ruleopt.pieceColor[engine.holdPieceObject.id];
 		}
-		String msg = "game\tnext\t" + engine.nextPieceCount + "\t" + holdID + "\t" + engine.holdDisable + "\t" + direction + "\n";
+
+		String msg = "game\tnext\t" + engine.ruleopt.nextDisplay + "\t" + engine.holdDisable + "\t";
+
+		for(int i = -1; i < engine.ruleopt.nextDisplay; i++) {
+			if(i < 0) {
+				msg += holdID + ";" + holdDirection + ";" + holdColor;
+			} else {
+				Piece nextObj = engine.getNextObject(engine.nextPieceCount + i);
+				msg += nextObj.id + ";" + nextObj.direction + ";" + engine.ruleopt.pieceColor[nextObj.id];
+			}
+
+			if(i < engine.ruleopt.nextDisplay - 1) msg += "\t";
+		}
+
+		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -842,7 +858,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				netLobby.netPlayerClient.send("game\tpiece\t" + prevPieceID + "\t" + prevPieceX + "\t" + prevPieceY + "\t" + prevPieceDir + "\t" +
 						0 + "\t" + engine.getSkin() + "\n");
 
-				if((numNowPlayers == 2) && (numMaxPlayers == 2) && (rulelockFlag)) sendNextAndHold(engine);
+				if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
 			}
 			else if((engine.nowPieceObject.id != prevPieceID) || (engine.nowPieceX != prevPieceX) ||
 					(engine.nowPieceY != prevPieceY) || (engine.nowPieceObject.direction != prevPieceDir))
@@ -857,7 +873,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				netLobby.netPlayerClient.send("game\tpiece\t" + prevPieceID + "\t" + x + "\t" + y + "\t" + prevPieceDir + "\t" +
 								engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[prevPieceID] + "\t" + engine.getSkin() + "\n");
 
-				if((numNowPlayers == 2) && (numMaxPlayers == 2) && (rulelockFlag)) sendNextAndHold(engine);
+				if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
 			}
 		}
 
@@ -1098,6 +1114,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	public boolean onARE(GameEngine engine, int playerID) {
 		if((engine.statc[0] == 0) && (engine.ending == 0) && (playerID == 0) && (playerSeatNumber >= 0)) {
 			sendField(engine);
+			if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
 		}
 		return false;
 	}
@@ -1427,6 +1444,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			engine.resetFieldVisible();
 
 			sendField(engine);
+			if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
 			netLobby.netPlayerClient.send("dead\t" + lastAttackerUID + "\n");
 
 			engine.stat = GameEngine.STAT_CUSTOM;
@@ -1897,6 +1915,9 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			if(currentRoomInfo != null)
 				currentRoomInfo.playing = true;
 
+			if((playerSeatNumber != -1) && (!rulelockFlag) && (netLobby.ruleOpt != null))
+				owner.engine[0].ruleopt.copy(netLobby.ruleOpt);	// Restore rules
+
 			updatePlayerExist();
 			updatePlayerNames();
 
@@ -2087,6 +2108,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					owner.engine[playerID].nowPieceX = pieceX;
 					owner.engine[playerID].nowPieceY = pieceY;
 					//owner.engine[playerID].nowPieceBottomY = pieceBottomY;
+					owner.engine[playerID].nowPieceObject.updateConnectData();
 					owner.engine[playerID].nowPieceBottomY =
 						owner.engine[playerID].nowPieceObject.getBottom(pieceX, pieceY, owner.engine[playerID].field);
 
@@ -2137,19 +2159,40 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 			// NEXTとHOLD
 			if(message[3].equals("next")) {
-				owner.engine[playerID].nextPieceCount = Integer.parseInt(message[4]);
-				int holdID = Integer.parseInt(message[5]);
-				owner.engine[playerID].holdDisable = Boolean.parseBoolean(message[6]);
-				int direction = Integer.parseInt(message[7]);
+				int maxNext = Integer.parseInt(message[4]);
+				owner.engine[playerID].ruleopt.nextDisplay = maxNext;
+				owner.engine[playerID].holdDisable = Boolean.parseBoolean(message[5]);
 
-				if(holdID == Piece.PIECE_NONE) {
-					owner.engine[playerID].holdPieceObject = null;
-				} else {
-					owner.engine[playerID].holdPieceObject = new Piece(holdID);
-					owner.engine[playerID].holdPieceObject.setColor(owner.engine[playerID].ruleopt.pieceColor[holdID]);
-					owner.engine[playerID].holdPieceObject.setSkin(owner.engine[playerID].getSkin());
-					owner.engine[playerID].holdPieceObject.direction = direction;
+				for(int i = 0; i < maxNext + 1; i++) {
+					if(i + 6 < message.length) {
+						String[] strPieceData = message[i + 6].split(";");
+						int pieceID = Integer.parseInt(strPieceData[0]);
+						int pieceDirection = Integer.parseInt(strPieceData[1]);
+						int pieceColor = Integer.parseInt(strPieceData[2]);
+
+						if(i == 0) {
+							if(pieceID == Piece.PIECE_NONE) {
+								owner.engine[playerID].holdPieceObject = null;
+							} else {
+								owner.engine[playerID].holdPieceObject = new Piece(pieceID);
+								owner.engine[playerID].holdPieceObject.direction = pieceDirection;
+								owner.engine[playerID].holdPieceObject.setColor(pieceColor);
+								owner.engine[playerID].holdPieceObject.setSkin(playerSkin[playerID]);
+							}
+						} else {
+							if((owner.engine[playerID].nextPieceArrayObject == null) || (owner.engine[playerID].nextPieceArrayObject.length < maxNext)) {
+								owner.engine[playerID].nextPieceArrayObject = new Piece[maxNext];
+							}
+							owner.engine[playerID].nextPieceArrayObject[i - 1] = new Piece(pieceID);
+							owner.engine[playerID].nextPieceArrayObject[i - 1].direction = pieceDirection;
+							owner.engine[playerID].nextPieceArrayObject[i - 1].setColor(pieceColor);
+							owner.engine[playerID].nextPieceArrayObject[i - 1].setSkin(playerSkin[playerID]);
+						}
+					}
 				}
+
+				owner.engine[playerID].isNextVisible = true;
+				owner.engine[playerID].isHoldVisible = true;
 			}
 			// HurryUp
 			if(message[3].equals("hurryup")) {
