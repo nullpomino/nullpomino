@@ -30,12 +30,10 @@ package org.game_host.hebo.nullpomino.gui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -51,6 +49,8 @@ import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.play.GameManager;
 import org.game_host.hebo.nullpomino.gui.net.UpdateChecker;
 import org.game_host.hebo.nullpomino.gui.net.UpdateCheckerListener;
+
+import com.centerkey.utils.BareBonesBrowserLaunch;
 
 /**
  * 更新チェック設定画面
@@ -183,7 +183,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnOpenDownloadURL.addActionListener(this);
 		btnOpenDownloadURL.setActionCommand("OpenDownloadURL");
 		btnOpenDownloadURL.setEnabled(false);
-		btnOpenDownloadURL.setVisible(Desktop.isDesktopSupported());
+		//btnOpenDownloadURL.setVisible(Desktop.isDesktopSupported());
 		pUpdateInfo.add(btnOpenDownloadURL);
 
 		// 設定パネル
@@ -280,15 +280,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		}
 		// ブラウザでダウンロード
 		else if(e.getActionCommand() == "OpenDownloadURL") {
-			try {
-				if(Desktop.isDesktopSupported()) {
-					String strURL = txtfldDownloadURL.getText();
-					log.info("Now opening " + strURL);
-					Desktop.getDesktop().browse(new URI(strURL));
-				}
-			} catch (Throwable e2) {
-				log.error("Failed to open web browser", e2);
-			}
+			BareBonesBrowserLaunch.openURL(txtfldDownloadURL.getText());
 		}
 		// 保存
 		else if(e.getActionCommand() == "Save") {
