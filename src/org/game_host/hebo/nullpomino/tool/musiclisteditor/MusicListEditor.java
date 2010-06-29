@@ -73,8 +73,11 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	/** Swing版の設定保存用プロパティファイル */
 	private CustomProperties propConfig;
 
+	/** Default language file */
+	private CustomProperties propLangDefault;
+
 	/** UI翻訳用プロパティファイル */
-	private CustomProperties propUI;
+	private CustomProperties propLang;
 
 	/** 音楽リストが含まれるプロパティファイル */
 	private CustomProperties propMusic;
@@ -113,22 +116,21 @@ public class MusicListEditor extends JFrame implements ActionListener {
 		} catch(IOException e) {}
 
 		// 言語ファイル読み込み
-		propUI = new CustomProperties();
+		propLangDefault = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/musiclisteditor_default.properties");
+			propLangDefault.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.error("Couldn't load default UI language file", e);
+		}
+
+		propLang = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/musiclisteditor_" + Locale.getDefault().getCountry() + ".properties");
-			propUI.load(in);
+			propLang.load(in);
 			in.close();
-		} catch(IOException e) {
-			log.debug("Language file not found, try to use default language", e);
-
-			try {
-				FileInputStream in = new FileInputStream("config/lang/musiclisteditor_default.properties");
-				propUI.load(in);
-				in.close();
-			} catch(IOException e2) {
-				log.error("Couldn't load default UI language file", e2);
-			}
-		}
+		} catch(IOException e) {}
 
 		// 音楽リスト読み込み
 		loadMusicList();
@@ -247,7 +249,11 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
 	 */
 	private String getUIText(String str) {
-		return propUI.getProperty(str, str);
+		String result = propLang.getProperty(str);
+		if(result == null) {
+			result = propLangDefault.getProperty(str, str);
+		}
+		return result;
 	}
 
 	/**

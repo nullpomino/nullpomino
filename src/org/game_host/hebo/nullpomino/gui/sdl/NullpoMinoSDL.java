@@ -102,6 +102,9 @@ public class NullpoMinoSDL {
 	/** オブザーバー機能用プロパティファイル */
 	public static CustomProperties propObserver;
 
+	/** Default language file */
+	public static CustomProperties propLangDefault;
+
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
@@ -211,22 +214,21 @@ public class NullpoMinoSDL {
 		} catch(IOException e) {}
 
 		// 言語ファイル読み込み
+		propLangDefault = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/sdl_default.properties");
+			propLangDefault.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.error("Failed to load default UI language file", e);
+		}
+
 		propLang = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/sdl_" + Locale.getDefault().getCountry() + ".properties");
 			propLang.load(in);
 			in.close();
-		} catch(IOException e) {
-			log.debug("Language file not found, try to use default language", e);
-
-			try {
-				FileInputStream in = new FileInputStream("config/lang/sdl_default.properties");
-				propLang.load(in);
-				in.close();
-			} catch(IOException e2) {
-				log.error("Failed to load default UI language file", e2);
-			}
-		}
+		} catch(IOException e) {}
 
 		// モード読み込み
 		modeManager = new ModeManager();
@@ -570,7 +572,11 @@ public class NullpoMinoSDL {
 	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
 	 */
 	public static String getUIText(String str) {
-		return propLang.getProperty(str, str);
+		String result = propLang.getProperty(str);
+		if(result == null) {
+			result = propLangDefault.getProperty(str, str);
+		}
+		return result;
 	}
 
 	/**

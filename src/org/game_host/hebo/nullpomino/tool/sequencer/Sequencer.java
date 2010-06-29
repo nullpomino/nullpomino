@@ -82,8 +82,11 @@ public class Sequencer extends JFrame implements ActionListener {
 	/** Config File */
 	public CustomProperties propConfig;
 
+	/** Default language file */
+	public CustomProperties propLangDefault;
+
 	/** UI Language File */
-	public CustomProperties propUI;
+	public CustomProperties propLang;
 
 	//----------------------------------------------------------------------
 	/** Rand-seed textfield */
@@ -133,22 +136,21 @@ public class Sequencer extends JFrame implements ActionListener {
 		} catch(IOException e) {}
 
 		// Load UI Language file
-		propUI = new CustomProperties();
+		propLangDefault = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/sequencer_default.properties");
+			propLangDefault.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.error("Couldn't load default UI language file", e);
+		}
+
+		propLang = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/sequencer_" + Locale.getDefault().getCountry() + ".properties");
-			propUI.load(in);
+			propLang.load(in);
 			in.close();
-		} catch(IOException e) {
-			log.debug("Language file not found, try to use default language", e);
-
-			try {
-				FileInputStream in = new FileInputStream("config/lang/sequencer_default.properties");
-				propUI.load(in);
-				in.close();
-			} catch(IOException e2) {
-				log.error("Couldn't load default UI language file", e2);
-			}
-		}
+		} catch(IOException e) {}
 
 		// Set Look&Feel
 		if(propConfig.getProperty("option.usenativelookandfeel", true) == true) {
@@ -358,7 +360,11 @@ public class Sequencer extends JFrame implements ActionListener {
 	 * @return Translated text (If translated text is NOT available, it will return str itself)
 	 */
 	public String getUIText(String str) {
-		return propUI.getProperty(str, str);
+		String result = propLang.getProperty(str);
+		if(result == null) {
+			result = propLangDefault.getProperty(str, str);
+		}
+		return result;
 	}
 
 	/**

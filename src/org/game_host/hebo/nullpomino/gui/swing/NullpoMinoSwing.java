@@ -127,6 +127,9 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** オブザーバー機能用プロパティファイル */
 	public static CustomProperties propObserver;
 
+	/** Default language file */
+	public static CustomProperties propLangDefault;
+
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
@@ -197,22 +200,21 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		}
 
 		// 言語ファイル読み込み
+		propLangDefault = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/swing_default.properties");
+			propLangDefault.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.error("Couldn't load default UI language file", e);
+		}
+
 		propLang = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/swing_" + Locale.getDefault().getCountry() + ".properties");
 			propLang.load(in);
 			in.close();
-		} catch(IOException e) {
-			log.debug("Language file not found, try to use default language", e);
-
-			try {
-				FileInputStream in = new FileInputStream("config/lang/swing_default.properties");
-				propLang.load(in);
-				in.close();
-			} catch(IOException e2) {
-				log.error("Couldn't load default UI language file", e2);
-			}
-		}
+		} catch(IOException e) {}
 
 		// キーボード設定読み込み
 		GameKeySwing.initGlobalGameKeySwing();
@@ -250,7 +252,11 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
 	 */
 	public static String getUIText(String str) {
-		return propLang.getProperty(str, str);
+		String result = propLang.getProperty(str);
+		if(result == null) {
+			result = propLangDefault.getProperty(str, str);
+		}
+		return result;
 	}
 
 	/**

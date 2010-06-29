@@ -153,8 +153,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** オブザーバー機能用プロパティファイル */
 	protected CustomProperties propObserver;
 
+	/** Default language file */
+	protected CustomProperties propLangDefault;
+
 	/** UI翻訳用プロパティファイル */
-	protected CustomProperties propUI;
+	protected CustomProperties propLang;
 
 	/** 現在の画面カードの番号 */
 	protected int currentScreenCardNumber;
@@ -402,20 +405,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		} catch(IOException e) {}
 
 		// 言語ファイル読み込み
-		propUI = new CustomProperties();
+		propLangDefault = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/netlobby_default.properties");
+			propLangDefault.load(in);
+			in.close();
+		} catch (Exception e) {
+			log.error("Couldn't load default UI language file", e);
+		}
+
+		propLang = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/netlobby_" + Locale.getDefault().getCountry() + ".properties");
-			propUI.load(in);
+			propLang.load(in);
 			in.close();
-		} catch(IOException e) {
-			try {
-				FileInputStream in = new FileInputStream("config/lang/netlobby_default.properties");
-				propUI.load(in);
-				in.close();
-			} catch(IOException e2) {
-				log.error("Couldn't load default UI language file", e2);
-			}
-		}
+		} catch(IOException e) {}
 
 		// Look&Feel設定
 		if(propSwingConfig.getProperty("option.usenativelookandfeel", true) == true) {
@@ -1278,7 +1282,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
 	 */
 	public String getUIText(String str) {
-		return propUI.getProperty(str, str);
+		String result = propLang.getProperty(str);
+		if(result == null) {
+			result = propLangDefault.getProperty(str, str);
+		}
+		return result;
 	}
 
 	/**
@@ -1347,7 +1355,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * @return 変換された文字列
 	 */
 	public String convTripCode(String s) {
-		if(propUI.getProperty("TripSeparator_EnableConvert", false) == false) return s;
+		if(propLang.getProperty("TripSeparator_EnableConvert", false) == false) return s;
 		String strName = s;
 		strName = strName.replace(getUIText("TripSeparator_True"), getUIText("TripSeparator_False"));
 		strName = strName.replace("!", getUIText("TripSeparator_True"));
