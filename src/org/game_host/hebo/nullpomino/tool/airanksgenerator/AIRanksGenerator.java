@@ -15,6 +15,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 
 
@@ -26,7 +28,9 @@ private JFormattedTextField inputFileField;
 private JLabel outputFileLabel;
 private JFormattedTextField outputFileField;
 private JLabel numIterationsLabel;
-private JFormattedTextField numIterationsField;
+//private JFormattedTextField numIterationsField;
+private SpinnerNumberModel spinModel;
+private JSpinner numIterationsSpinner;
 private JButton goButton;
 private JButton viewBestsButton;
 private JButton viewWorstsButton;
@@ -55,9 +59,10 @@ private void initUI(){
 	outputFileField.setColumns(20);
 	
 	numIterationsLabel=new JLabel("Number of iterations");
-	numIterationsField=new JFormattedTextField();
-	numIterationsField.setColumns(20);
-	
+	/*numIterationsField=new JFormattedTextField();
+	numIterationsField.setColumns(20);*/
+	spinModel=new SpinnerNumberModel(1,1,Integer.MAX_VALUE,1);
+	numIterationsSpinner=new JSpinner(spinModel);
 	goButton= new JButton("Go!");
 	goButton.setActionCommand("go");
 	goButton.addActionListener(this);
@@ -83,7 +88,8 @@ private void initUI(){
 
 	fieldPane.add(inputFileField);
 	fieldPane.add(outputFileField);
-	fieldPane.add(numIterationsField);
+	//fieldPane.add(numIterationsField);
+	fieldPane.add(numIterationsSpinner);
 	//fieldPane.add(goButton);
 	JPanel pane=new JPanel(new BorderLayout());
 	pane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -100,7 +106,7 @@ private void initUI(){
 public void actionPerformed(ActionEvent e) {
 	if ("go".equals(e.getActionCommand())) {
 		
-	      new RanksIterator(this,inputFileField.getText(),outputFileField.getText(),Math.max(1,Integer.parseInt(numIterationsField.getText())));
+	      new RanksIterator(this,inputFileField.getText(),outputFileField.getText(),(Integer) numIterationsSpinner.getValue());
     
 	}
 	else{
