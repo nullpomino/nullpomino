@@ -254,6 +254,10 @@ public class SquareMode extends DummyMode {
 		if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 		if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 		
+		engine.tspinEnable = true;
+		engine.useAllSpinBonus = true;
+		engine.tspinAllowKick = true;
+		
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
 		engine.speed.das = 10;
@@ -381,6 +385,12 @@ public class SquareMode extends DummyMode {
 			engine.statistics.scoreFromLineClear += pts;
 			engine.statistics.score += pts;
 			setSpeed(engine);
+			
+			/*
+			if (engine.tspin) {
+				engine.field.doAvalanche();
+			}
+			*/
 		}
 	}
 	

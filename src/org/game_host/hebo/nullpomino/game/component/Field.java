@@ -1527,20 +1527,34 @@ public class Field implements Serializable {
 	 */
 	public void checkForSquares() {
 		// Check for gold squares
-		for (int i = (hidden_height * -1); i < (height - 3); i++) {
+		for (int i = (hidden_height * -1); i < (getHeightWithoutHurryupFloor() - 3); i++) {
 			for (int j = 0; j < (width - 3); j++) {
+				// rootBlk is the upper-left square
 				Block rootBlk = getBlock(j, i);
 				boolean squareCheck = false;
 				
+				/* 
+				 * id is the color of the top-left square: if it is a monosquare, every block in the
+				 * 4x4 area will have this color.
+				 */
 				int id = Block.BLOCK_COLOR_NONE;
 				if (!(rootBlk == null || rootBlk.isEmpty())) {
 					id = rootBlk.color;
 				}
+				
+				// This can't be a square if rootBlk doesn't exist or is part of another square.
 				if (!(rootBlk == null || rootBlk.isEmpty() || rootBlk.isGoldSquareBlock() || rootBlk.isSilverSquareBlock())) {
+					// A square is innocent until proven guilty.
 					squareCheck = true;
 					for (int k = 0; k < 4; k++) {
 						for (int l = 0; l < 4; l++) {
+							// blk is the current block
 							Block blk = getBlock(j+l, i+k);
+							/*
+							 * Reasons why the entire area would not be a monosquare: this block does not exist,
+							 * it is part of another square, it has been broken by line clears, is a garbage
+							 * block, is not the same color as id, or has connections outside the area.
+							 */
 							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) || 
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) || blk.color != id ||
@@ -1557,6 +1571,7 @@ public class Field implements Serializable {
 						}
 					}
 				}
+				// We found a square! Set all the blocks equal to gold blocks.
 				if (squareCheck) {
 					int[] squareX = new int[] {0, 1, 1, 2};
 					int[] squareY = new int[] {0, 3, 3, 6};
@@ -1564,6 +1579,7 @@ public class Field implements Serializable {
 						for (int l = 0; l < 4; l++) {
 							Block blk = getBlock(j+l, i+k);
 							blk.color = Block.BLOCK_COLOR_SQUARE_GOLD_1 + squareX[l] + squareY[k];
+							// For stylistic concerns, we attach all blocks in the square together.
 							if (k > 0) {
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
 							}
@@ -1582,16 +1598,18 @@ public class Field implements Serializable {
 			}
 		}
 		// Check for silver squares
-		for (int i = (hidden_height * -1); i < (height - 3); i++) {
+		for (int i = (hidden_height * -1); i < (getHeightWithoutHurryupFloor() - 3); i++) {
 			for (int j = 0; j < (width - 3); j++) {
 				Block rootBlk = getBlock(j, i);
 				boolean squareCheck = false;
-				
+				// We don't have to check colors because this loop checks for multisquares.
 				if (!(rootBlk == null || rootBlk.isEmpty() || rootBlk.isGoldSquareBlock() || rootBlk.isSilverSquareBlock())) {
+					// A square is innocent until proven guilty
 					squareCheck = true;
 					for (int k = 0; k < 4; k++) {
 						for (int l = 0; l < 4; l++) {
 							Block blk = getBlock(j+l, i+k);
+							// See above, but without the color checking.
 							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) ||
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) ||
@@ -1608,6 +1626,7 @@ public class Field implements Serializable {
 						}
 					}
 				}
+				// We found a square! Set all the blocks equal to silver blocks.
 				if (squareCheck) {
 					int[] squareX = new int[] {0, 1, 1, 2};
 					int[] squareY = new int[] {0, 3, 3, 6};
@@ -1634,14 +1653,20 @@ public class Field implements Serializable {
 		}
 	}
 	
+	/**
+	 * Checks the lines that are currently being cleared to see how many strips of squares are present in them.
+	 * @return +1 for every 1x4 strip of silver, +2 for every strip of gold
+	 */
 	public int getHowManySquareClears() {
 		int squares = 0;
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			// Check the lines we are clearing.
 			if (getLineFlag(i)) {
 				for(int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i);
-
-					if (blk != null) {
+					
+					// Silver blocks are worth 1, gold are worth 2, but not if they are garbage (avalanche)
+					if (blk != null && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE)) {
 						if (blk.isGoldSquareBlock()) {
 							squares += 2;
 						} else if (blk.isSilverSquareBlock()) {
@@ -1651,7 +1676,51 @@ public class Field implements Serializable {
 				}
 			}
 		}
+		// We have to divide the amount by 4 because it's based on 1x4 strips, not single blocks.
 		return squares/4;
+	}
+	
+	/**
+	 * Converts all pieces below the cleared lines to single blocks and breaks all of their connections.
+	 * Then, causes them to fall down under their own gravity as in cascade.
+	 * Currently, it is rather buggy...
+	 */
+	public void doAvalanche() {
+		// This sets the highest line that will be affected by the avalanche. 
+		int topLine = hidden_height * -1;
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			if (getLineFlag(i)) {
+				topLine = i + 1;
+			}
+		}
+		
+		for (int i = (getHeightWithoutHurryupFloor() - 1); i >= topLine; i--) {
+			// There can be lines cleared underneath, in case of a spin hurdle or such.
+			if (!getLineFlag(i)) {
+				for (int j = 0; j < width; j++) {
+					Block blk = getBlock(j, i);
+					
+					// Change each affected block to broken and garbage, and break connections.
+					blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+					blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+					// Force all blocks down if there is room
+					int newY = i;
+					Block downBlock;
+					do {
+						newY--;
+						downBlock = getBlock(j, newY); 
+					} while (downBlock == null || downBlock.isEmpty());
+					if (newY != i) {
+						setBlock(j, newY, blk);
+						setBlock(j, i, new Block());
+					}
+				}
+			}
+		}
 	}
 
 	/**
