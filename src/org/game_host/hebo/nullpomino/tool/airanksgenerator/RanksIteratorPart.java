@@ -43,6 +43,13 @@ private int [] surfaceDecodedWork;
 		   synchronized(this){
 			 mySwingWorker.iterate();
 		  }
+		   if (Thread.interrupted()){
+			   
+			   ranks=null;
+				break;
+			
+			  
+		   }
 		
 	    }
 

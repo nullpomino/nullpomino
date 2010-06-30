@@ -33,12 +33,13 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 	private int size;
 	private float lastError;
 	private int lastErrorMax;
-	 private SwingWorker<Void, String> mySwingWorker;
+	
+	 private MySwingWorker mySwingWorker;
 	
     class MySwingWorker extends SwingWorker<Void, String> {
     
     private int totalParts;
-
+    private boolean cancelled;
     private RanksIteratorPart [] ranksIteratorPart;
    
         public MySwingWorker( int totalParts) {
@@ -46,7 +47,7 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         	this.totalParts=totalParts;
         
             setProgress(0);
-            
+            cancelled=false;
            
         }
         @Override
@@ -69,6 +70,10 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 					e.printStackTrace();
 				}
         	}
+        	if (cancelled=true){
+        		ranks=ranks.getRanksFrom();
+        		return null;
+        	}
         	lastError=ranks.getErrorPercentage();
         	lastErrorMax=ranks.getMaxError();
         	if (n!=numIterations-1){
@@ -86,16 +91,17 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         	
         	
         	
-        	
+        	int totalCompletion=100*iteration+ranks.getCompletionPercentage();
         	if (ranks.completionPercentageIncrease()){
         	
-        	  this.setProgress(ranks.getCompletionPercentage());
+        	  this.setProgress(totalCompletion/numIterations);
         	}
         }
  
 
         @Override
         protected void done() {
+        	System.out.println("done !");
             try {
                 
                 FileOutputStream fos=null;
@@ -110,14 +116,14 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
                 e.printStackTrace();
             }
             setProgress(100);
-        	ranksFrom=null;
-        	ranks=null;
+        	
             
        
         	//new RanksResult(parent,ranks,100,false);
          
         }
-        public void cancel(){
+        public void cancelTask(){
+        	cancelled=true;
         	for (int i=0;i<totalParts;i++){
         		 ranksIteratorPart[i].interrupt();
         	}
@@ -171,12 +177,17 @@ public void propertyChange(PropertyChangeEvent evt) {
      
            
            String message =
-               String.format("It.:%d(%d%%) - Error : %d/%d", iteration,ranks.getCompletionPercentage(),ranks.getMaxError(),lastErrorMax);
+               String.format("Iteration:%d(%d%%)/%d- total :%d%%", iteration+1,ranks.getCompletionPercentage(),numIterations,progress);
           setNote(message);
+          if (progress==100){
+        	 
+        	  ranks=null;
+              ranksFrom=null;
+          }
 	 } 
            
    if (isCanceled()) {
-                   this.mySwingWorker.cancel(true);
+                   this.mySwingWorker.cancelTask();
                    
                
               

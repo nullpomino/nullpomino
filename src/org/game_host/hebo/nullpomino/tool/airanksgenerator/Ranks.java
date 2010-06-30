@@ -111,15 +111,16 @@ public int getMaxError() {
 private int completion;
 private int base;
 private int surfaceWidth;
+
 public int getCompletionPercentage(){
 	long completionPercentage;
-	completionPercentage= ((long)completion) *100;
+	completionPercentage= ((long)completion+1) *100;
 	completionPercentage/=size;
 	return (int)completionPercentage;
 	
 }
 public boolean completionPercentageIncrease(){
-	return (0==(completion % (size/100)) && completion>=(size/100));
+	return (0==(completion % (size/100)) && completion!=0);
 }
 public float getErrorPercentage(){
 	float errorLong= error/completion;

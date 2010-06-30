@@ -28,7 +28,7 @@ private JFormattedTextField inputFileField;
 private JLabel outputFileLabel;
 private JFormattedTextField outputFileField;
 private JLabel numIterationsLabel;
-//private JFormattedTextField numIterationsField;
+
 private SpinnerNumberModel spinModel;
 private JSpinner numIterationsSpinner;
 private JButton goButton;
@@ -53,28 +53,32 @@ private void initUI(){
 	inputFileLabel=new JLabel("Input File");
 	inputFileField=new JFormattedTextField();
 	inputFileField.setColumns(20);
+	inputFileField.setToolTipText("File that will be loaded to iterate upon - leave blank if it is the first time you use the generator");
 	
 	outputFileLabel=new JLabel("Output File");
-	outputFileField=new JFormattedTextField();
+	outputFileField=new JFormattedTextField("ranks.bin");
 	outputFileField.setColumns(20);
+	outputFileField.setToolTipText("File that will be saved after iterations are done");
 	
 	numIterationsLabel=new JLabel("Number of iterations");
-	/*numIterationsField=new JFormattedTextField();
-	numIterationsField.setColumns(20);*/
 	spinModel=new SpinnerNumberModel(1,1,Integer.MAX_VALUE,1);
 	numIterationsSpinner=new JSpinner(spinModel);
+	numIterationsSpinner.setToolTipText("Number of iterations to run over the ranks in input file");
+	
 	goButton= new JButton("Go!");
 	goButton.setActionCommand("go");
 	goButton.addActionListener(this);
+	goButton.setToolTipText("Launch the iterations");
 	
 	viewBestsButton= new JButton("View Bests");
 	viewBestsButton.setActionCommand("bests");
 	viewBestsButton.addActionListener(this);
+	viewBestsButton.setToolTipText("View the highest ranked surfaces in the ranks in input file");
 	
 	viewWorstsButton= new JButton("View Worsts");
 	viewWorstsButton.setActionCommand("worsts");
 	viewWorstsButton.addActionListener(this);
-	
+	viewBestsButton.setToolTipText("View the lowest ranked surfaces in the ranks in input file");
 	
 	
 	
