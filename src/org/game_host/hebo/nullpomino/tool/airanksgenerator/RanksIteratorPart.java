@@ -1,12 +1,9 @@
 package org.game_host.hebo.nullpomino.tool.airanksgenerator;
 
-import javax.swing.SwingWorker;
-
-import org.game_host.hebo.nullpomino.game.component.Piece;
 import org.game_host.hebo.nullpomino.tool.airanksgenerator.RanksIterator.MySwingWorker;
 
 public class RanksIteratorPart extends Thread {
-	
+
 private MySwingWorker mySwingWorker;
 private Ranks ranks;
 private int i;
@@ -20,8 +17,8 @@ private int [] surfaceDecodedWork;
 
 	public RanksIteratorPart(MySwingWorker mySwingWorker, Ranks ranks, int i,
 			int totalParts) {
-		
-	
+
+
       this.mySwingWorker=mySwingWorker;
       this.ranks=ranks;
       this.i=i;
@@ -32,25 +29,26 @@ private int [] surfaceDecodedWork;
 		surface=new int [ranks.getStackWidth()-1];
 		ranks.decode(sMin,surface);
 		 surfaceDecodedWork=new int [ranks.getStackWidth()-1];
-		
+
 	}
-	
+
+	@Override
 	public void run(){
-		
+
 		for (int s=sMin;s<sMax;s++){
 			ranks.iterateSurface(surface,surfaceDecodedWork);
-			
+
 		   synchronized(this){
 			 mySwingWorker.iterate();
 		  }
 		   if (Thread.interrupted()){
-			   
+
 			   ranks=null;
 				break;
-			
-			  
+
+
 		   }
-		
+
 	    }
 
    }

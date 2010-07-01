@@ -1289,10 +1289,12 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				if(garbage[playerID] >= GARBAGE_DENOMINATOR*4) fontColor = EventReceiver.COLOR_RED;
 
 				if(!engine.minidisplay) {
-					strTempGarbage = String.format(Locale.ROOT, "%5.2f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
+					//strTempGarbage = String.format(Locale.ROOT, "%5.2f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
+					strTempGarbage = String.format(Locale.US, "%5.2f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
 					receiver.drawDirectFont(engine, playerID, x + 96, y + 372, strTempGarbage, fontColor, 1.0f);
 				} else {
-					strTempGarbage = String.format(Locale.ROOT, "%4.1f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
+					//strTempGarbage = String.format(Locale.ROOT, "%4.1f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
+					strTempGarbage = String.format(Locale.US, "%4.1f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
 					receiver.drawDirectFont(engine, playerID, x + 64, y + 168, strTempGarbage, fontColor, 0.5f);
 				}
 			}

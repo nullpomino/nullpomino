@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.component.Controller;
 import org.game_host.hebo.nullpomino.game.component.Field;
 import org.game_host.hebo.nullpomino.game.component.Piece;
-import org.game_host.hebo.nullpomino.game.component.WallkickResult;
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.game.play.GameManager;
 import org.game_host.hebo.nullpomino.tool.airanksgenerator.Ranks;
@@ -46,60 +45,60 @@ public class RanksAI extends DummyAI implements Runnable {
 
 	static Logger log = Logger.getLogger(RanksAI.class);
 
-	
+
 	public boolean bestHold;
 
-	
+
 	public int bestX;
 
 	public int bestY;
 
-	
+
 	public int bestRt;
 
-	
+
 	public int bestXSub;
 
-	
+
 	public int bestYSub;
 
-	
+
 	public int bestRtSub;
 
 
 	public int bestPts;
 
-	
+
 	public boolean forceHold;
 
-	
+
 	public int delay;
 
-	
+
 	public GameEngine gEngine;
 
-	
+
 	public GameManager gManager;
 
-	
+
 	public boolean thinkRequest;
 
-	
+
 	public boolean thinking;
 
-	
+
 	public int thinkDelay;
 
-	
+
 	public int thinkCurrentPieceNo;
 
-	
+
 	public int thinkLastPieceNo;
 
-	
+
 	public volatile boolean threadRunning;
 
-	
+
 	public Thread thread;
 
 	private Ranks ranks;
@@ -129,7 +128,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		String inputFile="ranks.bin";
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
-		if (inputFile.trim().isEmpty())
+		if (inputFile.trim().length() == 0)
 			ranks=new Ranks(4,9);
 		else {
 			  try {
@@ -137,7 +136,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				   in = new ObjectInputStream(fis);
 				   ranks = (Ranks)in.readObject();
 				   in.close();
-				   
+
 			} catch (FileNotFoundException e) {
 				ranks=new Ranks(4,9);
 			} catch (IOException e) {
@@ -161,7 +160,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		}
 	}
 
-	
+
 	@Override
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
@@ -172,23 +171,23 @@ public class RanksAI extends DummyAI implements Runnable {
 		}
 	}
 
-	
+
 	@Override
 	public void onFirst(GameEngine engine, int playerID) {
 	}
 
-	
+
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 	}
 
-	
+
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) && (delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 		    (!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{
-			int input = 0;	
+			int input = 0;
 			Piece pieceNow = engine.nowPieceObject;
 			int nowX = engine.nowPieceX;
 			int nowY = engine.nowPieceY;
@@ -197,10 +196,10 @@ public class RanksAI extends DummyAI implements Runnable {
 			boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
 
 			if((bestHold || forceHold) && engine.isHoldOK()) {
-				
+
 				input |= Controller.BUTTON_BIT_D;
 			} else {
-				
+
 				if(rt != bestRt) {
 					int lrot = engine.getRotateDirection(-1);
 					int rrot = engine.getRotateDirection(1);
@@ -218,22 +217,22 @@ public class RanksAI extends DummyAI implements Runnable {
 					}
 				}
 
-				
+
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
 
 				if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt) ) {
-					
+
 					thinkRequest = true;
 					} else {
-					
+
 					if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
-						
+
 						if(bestRtSub != -1) {
 							bestRt = bestRtSub;
 							bestRtSub = -1;
 						}
-						
+
 						if(bestX != bestXSub) {
 							bestX = bestXSub;
 							bestY = bestYSub;
@@ -241,15 +240,15 @@ public class RanksAI extends DummyAI implements Runnable {
 					}
 
 					if(nowX > bestX) {
-						
+
 						if(!ctrl.isPress(Controller.BUTTON_LEFT) || (engine.aiMoveDelay >= 0))
 							input |= Controller.BUTTON_BIT_LEFT;
 					} else if(nowX < bestX) {
-						
+
 						if(!ctrl.isPress(Controller.BUTTON_RIGHT) || (engine.aiMoveDelay >= 0))
 							input |= Controller.BUTTON_BIT_RIGHT;
 					} else if((nowX == bestX) && (rt == bestRt)) {
-						
+
 						if((bestRtSub == -1) && (bestX == bestXSub)) {
 							if(engine.ruleopt.harddropEnable && !ctrl.isPress(Controller.BUTTON_UP))
 								input |= Controller.BUTTON_BIT_UP;
@@ -274,9 +273,9 @@ public class RanksAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 
-	 * @param engine 
-	 * @param playerID 
+	 * Think the best position
+	 * @param engine GameEngine
+	 * @param playerID Player ID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
 		bestHold = false;
@@ -305,7 +304,7 @@ public class RanksAI extends DummyAI implements Runnable {
 			  bestRt = 1;
 				bestX =  pieceNow.getMostMovableRight(nowX, 2, bestRt, engine.field);;
 				bestY = pieceNow.getBottom(bestX, nowY, bestRt, fld);;
-				
+
 				bestXSub = bestX;
 				bestYSub = bestY;
 				bestRtSub = -1;
@@ -315,7 +314,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		for(int depth = 0; depth < getMaxThinkDepth(); depth++) {
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
 				nowY=2;
-			
+
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, engine.field);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, engine.field)-1;
 
@@ -324,7 +323,7 @@ public class RanksAI extends DummyAI implements Runnable {
 					int y = pieceNow.getBottom(x, nowY, rt, fld);
 
 					//if(!pieceNow.checkCollision(x, y, rt, fld)) {
-						
+
 						int pts = thinkMain(engine, x, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, depth);
 
 						if(pts >= bestPts) {
@@ -338,17 +337,17 @@ public class RanksAI extends DummyAI implements Runnable {
 							bestPts = pts;
 						}
 
-						
-						
 
-							
-					
+
+
+
+
 				}
-				
+
 
 			}
 		  }
-			
+
 		}
 
 		thinkLastPieceNo++;
@@ -357,27 +356,27 @@ public class RanksAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * �?考ルー�?ン
+	 * �?考ルー�?ン
 	 * @param engine GameEngine
 	 * @param x X座標
 	 * @param y Y座標
-	 * @param rt 方�?�
-	 * @param rtOld 回転�?�?�方�?�（-1：�?��?�）
-	 * @param fld フィールド（�?�ん�?��?�弄�?��?�も�?題�?��?�）
+	 * @param rt 方�?�
+	 * @param rtOld 回転�?�?�方�?�（-1：�?��?�）
+	 * @param fld フィールド（�?�ん�?��?�弄�?��?�も�?題�?��?�）
 	 * @param piece ピース
 	 * @param nextpiece NEXTピース
-	 * @param holdpiece HOLDピース(null�?�場�?��?�り)
-	 * @param depth 妥�?�レベル（0�?�らgetMaxThinkDepth()-1�?��?�）
+	 * @param holdpiece HOLDピース(null�?�場�?��?�り)
+	 * @param depth 妥�?�レベル（0�?�らgetMaxThinkDepth()-1�?��?�）
 	 * @return 評価得点
 	 */
 	public int thinkMain(GameEngine engine, int x, int y, int rt, int rtOld, Field fld, Piece piece, Piece nextpiece, Piece holdpiece, int depth) {
-		
+
 		int pts = 0;
 		int beforeHoles=fld.getHowManyHoles();
 		if(!piece.placeToField(x, y, rt, fld)) {
 			return 0;
 		}
-		if (fld.getHowManyHoles()-beforeHoles>0) 
+		if (fld.getHowManyHoles()-beforeHoles>0)
 			return 0;
          int heights[]=new int [fld.getWidth()-1];
          for (int i=0;i<fld.getWidth()-1;i++){
@@ -393,22 +392,22 @@ public class RanksAI extends DummyAI implements Runnable {
         		 diff=-maxJump;
         	 surface[i]=diff;
          }
-		
+
 		pts=ranks.getRankValue(ranks.encode(surface));
 		System.out.println("depth = "+depth+"piece= " +piece.id+" posx = "+x+" rotation = "+rt+" points = "+pts);
 		return pts;
 	}
 
 	/**
-	 * 最大妥�?�レベルを�?�得
-	 * @return 最大妥�?�レベル
+	 * 最大妥�?�レベルを�?�得
+	 * @return 最大妥�?�レベル
 	 */
 	public int getMaxThinkDepth() {
 		return 1;
 	}
 
 	/*
-	 * スレッド�?�処�?�
+	 * スレッド�?�処�?�
 	 */
 	public void run() {
 		log.info("RanksAI: Thread start");

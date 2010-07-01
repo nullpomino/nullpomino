@@ -1,7 +1,6 @@
 package org.game_host.hebo.nullpomino.tool.airanksgenerator;
 
 import java.awt.BorderLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -17,30 +16,30 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ProgressMonitor;
-import javax.swing.SwingWorker;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 
 
 public class RanksResult extends JDialog implements ActionListener, PropertyChangeListener{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	class SurfaceComparator implements Comparator<Integer>{
 
-		@Override
 		public int compare(Integer o1, Integer o2) {
-			
+
 			return (factorCompare*(ranks.getRankValue(o2.intValue())-ranks.getRankValue(o1.intValue())));
 		}
 
-	
-		
+
+
 	}
 	class SurfaceRank implements Comparable<SurfaceRank>{
 	       private int surface;
 	       private int rank;
-	      
+
 	       public int getSurface() {
 			return surface;
 		}
@@ -48,20 +47,20 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 			return rank;
 		}
 
-	
-		
-		
+
+
+
 			public SurfaceRank(int surface,int rank2){
 				this.surface=surface;
 				this.rank=rank2;
 			}
 			public int compareTo(SurfaceRank o) {
-				
-				return (factorCompare*(((SurfaceRank) o).getRank()-rank));
+
+				return (factorCompare*((o).getRank()-rank));
 			}
-			
-		
-			
+
+
+
 		}
 	private SurfaceComponent surfaceComponent;
 	private SurfaceComponent surfaceComponentMirrored;
@@ -70,16 +69,16 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	private JButton buttonNext;
 	private JButton buttonPrevious;
 	private ProgressMonitor progressMonitor;
-	
+
 	private int currentSurface;
 	private int currentSurfaceMirrored;
 	private int indexSurface;
 	private int bestNRanks;
 	private int maxJump;
 	private int stackWidth;
-	
+
 	private int factorCompare;
-	
+
 	private Ranks ranks;
 	private Task task;
 
@@ -88,80 +87,80 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	 class Task extends SwingWorker<Void, Void> {
 	        @Override
 	        public Void doInBackground() {
-	         
+
 	            int progress = 0;
 	            setProgress(0);
 	            ArrayList<SurfaceRank> surfaceRankBestsList=new ArrayList<SurfaceRank>(bestNRanks+1);
 	            for (int i=0;i<bestNRanks;i++){
 	            	int rank=ranks.getRankValue(i);
 	            	   surfaceRankBestsList.add(new SurfaceRank(i,rank));
-	            	
+
 	            }
 	               int iMin=surfaceRankBestsList.indexOf(Collections.min(surfaceRankBestsList));
 	               int iMax=surfaceRankBestsList.indexOf(Collections.max(surfaceRankBestsList));
-	              
+
 	               for (int i=0;i<ranks.getSize();i++){
 	            	   int rank=ranks.getRankValue(i);
-	            	   
+
 	            	   SurfaceRank surfaceRank=new SurfaceRank(i,rank);
-	            	   
-	            		   
-	            	
+
+
+
 	            		   if (surfaceRank.compareTo(surfaceRankBestsList.get(iMax))<0){
 	            			   surfaceRankBestsList.add(new SurfaceRank(i,rank));
 	            		       surfaceRankBestsList.remove(iMax);
 	            		       if (surfaceRank.compareTo(surfaceRankBestsList.get(iMin))<0)
 	            			      iMin=surfaceRankBestsList.size()-1;
-	            		   
+
 	            	           iMax=surfaceRankBestsList.indexOf(Collections.max(surfaceRankBestsList));
 	            		   }
-	            	   
-	            		   
-	            	
-	            	   
+
+
+
+
 	            	   if (0==(i % (ranks.getSize()/100)) && i>=ranks.getSize()/100){
-		               		
+
 	        	        	  progress++;
 	        	        	  setProgress(progress);
-	        	        	
+
 	        		   }
-	            	   
+
 	               }
 	               Collections.sort(surfaceRankBestsList);
-	               
+
 	               surfaceRanksBests=new SurfaceRank[bestNRanks];
 	               surfaceRanksBestsMirrored=new SurfaceRank[bestNRanks];
-	              
+
 	               for (int i=0;i<bestNRanks;i++){
 	            	   surfaceRanksBests[i]=surfaceRankBestsList.get(i);
 	            	   int mirroredSurface=getMirroredSurface(surfaceRankBestsList.get(i).getSurface());
 	                   surfaceRanksBestsMirrored[i]=new SurfaceRank(mirroredSurface,ranks.getRankValue(mirroredSurface));
 	               }
 	               ranks=null;
-	              
-	            
-	            
+
+
+
 	            return null;
 	        }
 
 	        @Override
 	        public void done() {
-	         
+
 	        	setTitle("Results");
         		initUI();
         		pack();
         		setVisible(true);
         		ranks=null;
-	           
+
 	        }
 	    }
 
 	public RanksResult(JFrame parent,Ranks ranks,int bestNRanks,boolean ascendant){
-		
+
 		super(parent,true);
 		this.bestNRanks=bestNRanks;
 		this.ranks=ranks;
-		
+
 		this.factorCompare=ascendant?-1:1;
 		this.maxJump=ranks.getMaxJump();
 		this.stackWidth=ranks.getStackWidth();
@@ -171,14 +170,14 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
         task.addPropertyChangeListener(this);
         task.execute();
 
-		
+
 	}
-	
+
   private int getMirroredSurface(int surface){
-	   
+
 		int surfaceWork=surface;
 		int surfaceMirrored=0;
-		
+
 		int factorD=(int ) Math.pow(2*maxJump+1,stackWidth-2);
 		for (int i=0;i<stackWidth-1;i++){
 			int val=surfaceWork % (2*maxJump+1);
@@ -187,22 +186,22 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 			factorD/=9;
 		}
 		return surfaceMirrored;
-	  
+
   }
-	
+
 	private void initUI(){
-		
+
 		indexSurface=0;
 		currentSurface=surfaceRanksBests[indexSurface].getSurface();
-	
-		
+
+
 		surfaceComponent=new SurfaceComponent (maxJump,stackWidth,currentSurface);
 		labelScore=new JLabel("Score : "+surfaceRanksBests[indexSurface].getRank());
-		
+
 		currentSurfaceMirrored=surfaceRanksBestsMirrored[indexSurface].getSurface();
-		surfaceComponentMirrored=new SurfaceComponent(maxJump,stackWidth,currentSurfaceMirrored);	 
+		surfaceComponentMirrored=new SurfaceComponent(maxJump,stackWidth,currentSurfaceMirrored);
 	    labelScoreMirrored=new JLabel("Score : "+surfaceRanksBestsMirrored[indexSurface].getRank());
-	    
+
 		buttonNext=new JButton("Next");
 		buttonNext.setActionCommand("next");
 		buttonNext.addActionListener( this);
@@ -210,9 +209,9 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		buttonPrevious.setActionCommand("previous ");
 		buttonPrevious.setEnabled(false);
 		buttonPrevious.addActionListener( this);
-		
-		
-		
+
+
+
 		JPanel pane=new JPanel(new BorderLayout());
 		JPanel surfacePane=new JPanel(new BorderLayout());
 		surfacePane.add(surfaceComponent,BorderLayout.CENTER);
@@ -224,22 +223,21 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		highPane.add(surfacePane);
 		highPane.add(surfacePaneMirrored);
 		JPanel buttonsPane=new JPanel();
-		
-		
+
+
 		buttonsPane.add(buttonPrevious);
 		buttonsPane.add(buttonNext);
 		pane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		pane.add(highPane,BorderLayout.CENTER);
 		pane.add(buttonsPane,BorderLayout.SOUTH);
 		getContentPane().add(pane);
-		
+
 		//getContentPane().add(surfaceComponent);
-		
+
 	}
-	
 
 
-	@Override
+
 	public void actionPerformed(ActionEvent e) {
 		if ("next".equals(e.getActionCommand())) {
 			if (indexSurface<bestNRanks-1){
@@ -247,47 +245,46 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	          currentSurface=surfaceRanksBests[indexSurface].getSurface();
 	          surfaceComponent.setSurface(currentSurface);
 	          labelScore.setText("Score : "+ surfaceRanksBests[indexSurface].getRank());
-	          
+
 	          currentSurfaceMirrored=surfaceRanksBestsMirrored[indexSurface].getSurface();
-	  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);	 
+	  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);
 	  	    labelScoreMirrored.setText("Score : "+surfaceRanksBestsMirrored[indexSurface].getRank());
-	          
+
 	          if (indexSurface>0){
 	        	  buttonPrevious.setEnabled(true);
-	          }	          
+	          }
 	          if (indexSurface==bestNRanks-1){
 	        	  buttonNext.setEnabled(false);
 	          }
-	          
+
 			}
-			
+
 	    } else {
 	    	if (indexSurface>0){
 		           indexSurface--;
 		          currentSurface=surfaceRanksBests[indexSurface].getSurface();
 		          surfaceComponent.setSurface(currentSurface);
 		          labelScore.setText("Score : "+ surfaceRanksBests[indexSurface].getRank());
-		          
+
 		          currentSurfaceMirrored=getMirroredSurface(currentSurface);
-		  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);	 
+		  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);
 		  	    labelScoreMirrored.setText("Score : "+surfaceRanksBestsMirrored[indexSurface].getRank());;
-		          
+
 		          if (indexSurface<bestNRanks-1){
 		        	  buttonNext.setEnabled(true);
 		          }
 		          if (indexSurface==0){
 		        	  buttonPrevious.setEnabled(false);
 		          }
-		          
+
 				}
 	    }
 
-		
+
 	}
 
 
 
-	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if ("progress" == evt.getPropertyName() ) {
 	            int progress = (Integer) evt.getNewValue();
@@ -295,17 +292,17 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	            String message =
 	                String.format("Completed %d%%.\n", progress);
 	            progressMonitor.setNote(message);
-		 } 
-	            
+		 }
+
 	    if (progressMonitor.isCanceled()) {
 	                    task.cancel(true);
-	                    
-	                
-	               
-	    }
-	        
 
-		
+
+
+	    }
+
+
+
 	}
-	
+
 }

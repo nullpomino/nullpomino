@@ -35,32 +35,25 @@ import org.game_host.hebo.nullpomino.game.play.GameEngine;
  * DummyAI - Base class for AI players
  */
 public class DummyAI implements AIPlayer {
-	@Override
 	public String getName() {
 		return "DummyAI";
 	}
 
-	@Override
 	public void init(GameEngine engine, int playerID) {
 	}
 
-	@Override
 	public void newPiece(GameEngine engine, int playerID) {
 	}
 
-	@Override
 	public void onFirst(GameEngine engine, int playerID) {
 	}
 
-	@Override
 	public void onLast(GameEngine engine, int playerID) {
 	}
 
-	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 	}
 
-	@Override
 	public void shutdown(GameEngine engine, int playerID) {
 	}
 }
