@@ -102,12 +102,91 @@ public class RanksAI extends DummyAI implements Runnable {
 	public Thread thread;
 
 	private Ranks ranks;
+
+	public class Score implements Comparable{
+		public boolean fourLinesCleared;
+		public int rankStacking;
+		public int rankCliffs;
+		public int rankSkim;
+		public int rankHoles;
+		public int coveredBlocks;
+		public int numberOfCliffs;
+		public Score(){
+			numberOfCliffs=0;
+			fourLinesCleared=false;
+			rankStacking=0;
+			rankCliffs=0;
+			rankSkim=0;
+			rankHoles=0;
+			coveredBlocks=Integer.MAX_VALUE;
+			numberOfCliffs=0;
+		}
+		public String toString(){
+			return "four lines cleared :"+fourLinesCleared+"Number of cliffs"+numberOfCliffs+" Rank Stacking "+rankStacking+" Rank Skim "+rankSkim+" Rank Cliffs "+rankCliffs+"Rank Holes"+rankHoles+"Covered Blocks"+coveredBlocks;
+			
+		}
+		public int compareTo(Object o) {
+			Score otherScore=(Score) o;
+			
+			
+			if (this.fourLinesCleared != otherScore.fourLinesCleared){
+				if (this.fourLinesCleared && !otherScore.fourLinesCleared){
+					if (this.numberOfCliffs==0)
+					   return 1;
+				}
+				else {
+					if (otherScore.numberOfCliffs==0)
+					   return -1;
+				}
+			}
+			
+				if (this.rankStacking != otherScore.rankStacking){
+					return this.rankStacking>otherScore.rankStacking?1:-1;
+				}
+				else {
+					if (this.rankSkim != otherScore.rankSkim){
+						return this.rankSkim>otherScore.rankSkim?1:-1;
+					}
+					else {
+						if (this.numberOfCliffs!=otherScore.numberOfCliffs){
+						  return this.numberOfCliffs<otherScore.numberOfCliffs?-1:1;
+						}
+						else{
+							if (this.rankCliffs != otherScore.rankCliffs){
+								return this.rankCliffs>otherScore.rankCliffs?1:-1;
+							}
+							else {
+								if (this.coveredBlocks!=otherScore.coveredBlocks){
+									System.out.println("comparing "+this.coveredBlocks+" with "+otherScore.coveredBlocks);
+									return this.coveredBlocks<otherScore.coveredBlocks?1:-1;
+								}
+								else{
+									if (this.rankHoles==otherScore.rankHoles)
+										return 0;
+									else {
+										return this.rankHoles>otherScore.rankHoles?1:-1;
+									}
+								}
+						
+							}
+						}
+					}
+				
+				}
+		 	}
+		
+		}
+		
+
+		
+	
+	
 	@Override
 	public String getName() {
 		return "RANKS";
 	}
 
-
+ 
 	@Override
 	public void init(GameEngine engine, int playerID) {
 		delay = 0;
@@ -125,6 +204,7 @@ public class RanksAI extends DummyAI implements Runnable {
 			thinkCurrentPieceNo = 0;
 			thinkLastPieceNo = 0;
 		}
+		if (ranks==null){
 		String inputFile="ranks.bin";
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
@@ -146,6 +226,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
 		}
 	}
 
@@ -287,7 +368,8 @@ public class RanksAI extends DummyAI implements Runnable {
 		bestRtSub = -1;
 		bestPts = 0;
 		forceHold = false;
-
+	    Score bestScore=new Score();
+	    Score score;
 		Piece pieceNow = engine.nowPieceObject;
 		int nowX = engine.nowPieceX;
 		int nowY = engine.nowPieceY;
@@ -295,10 +377,15 @@ public class RanksAI extends DummyAI implements Runnable {
 		boolean holdEmpty = false;
 		Piece pieceHold = engine.holdPieceObject;
 		Piece pieceNext = engine.getNextObject(engine.nextPieceCount);
+		int numPreviews=1;
 		if(pieceHold == null) {
 			holdEmpty = true;
 		}
 		Field fld = new Field(engine.field);
+<<<<<<< .mine
+	
+		
+=======
 		  if ((pieceNow.id==Piece.PIECE_I) && (engine.field.getHeight()-engine.field.getHighestBlockY()>6)&&(engine.field.getHeight()-engine.field.getHighestBlockY(9)==0)){
 			  bestHold = false;
 			  bestRt = 1;
@@ -312,11 +399,12 @@ public class RanksAI extends DummyAI implements Runnable {
 		  }
 		 else{
 		for(int depth = 0; depth < getMaxThinkDepth(); depth++) {
+>>>>>>> .r32
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
 				nowY=2;
 
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, engine.field);
-				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, engine.field)-1;
+				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, engine.field);
 
 				for(int x = minX; x <= maxX; x++) {
 					fld.copy(engine.field);
@@ -324,9 +412,10 @@ public class RanksAI extends DummyAI implements Runnable {
 
 					//if(!pieceNow.checkCollision(x, y, rt, fld)) {
 
-						int pts = thinkMain(engine, x, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, depth);
+						score = thinkMain(engine, x, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, maxX,numPreviews);
 
-						if(pts >= bestPts) {
+						if(score.compareTo(bestScore)>0) {
+							System.out.println("new best piece id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
 							bestHold = false;
 							bestX = x;
 							bestY = y;
@@ -334,7 +423,7 @@ public class RanksAI extends DummyAI implements Runnable {
 							bestXSub = x;
 							bestYSub = y;
 							bestRtSub = -1;
-							bestPts = pts;
+							bestScore=score;
 						}
 
 
@@ -344,11 +433,15 @@ public class RanksAI extends DummyAI implements Runnable {
 
 				}
 
+<<<<<<< .mine
+			
+=======
 
 			}
+>>>>>>> .r32
 		  }
 
-		}
+		
 
 		thinkLastPieceNo++;
 
@@ -369,33 +462,152 @@ public class RanksAI extends DummyAI implements Runnable {
 	 * @param depth 妥�?�レベル（0�?�らgetMaxThinkDepth()-1�?��?�）
 	 * @return 評価得点
 	 */
-	public int thinkMain(GameEngine engine, int x, int y, int rt, int rtOld, Field fld, Piece piece, Piece nextpiece, Piece holdpiece, int depth) {
+	public Score thinkMain(GameEngine engine, int x, int y, int rt, int rtOld, Field fld, Piece piece, Piece nextpiece, Piece holdpiece, int maxX,int numPreviews) {
+		Score score=new Score();
+		boolean blocksCovered=false;
+		boolean cliffCreated=false;
+		boolean skimming=false;
 
 		int pts = 0;
-		int beforeHoles=fld.getHowManyHoles();
+		int beforeHoles=fld.getHowManyBlocksCovered();
+		
+		
+		
 		if(!piece.placeToField(x, y, rt, fld)) {
-			return 0;
+			
+			return score;
+		
 		}
+<<<<<<< .mine
+		int lines=fld.checkLine();
+		fld.clearLine();
+		 if (numPreviews>0){
+			Score bestScore=new Score();
+		    Score scoreCurrent;
+			Piece pieceNow = engine.getNextObject(engine.nextPieceCount+numPreviews-1);
+			int nowX = engine.getSpawnPosX(fld,pieceNow);
+			int nowY = engine.nowPieceY;
+			boolean holdOK = engine.isHoldOK();
+			boolean holdEmpty = false;
+			Piece pieceHold = engine.holdPieceObject;
+			Piece pieceNext = engine.getNextObject(engine.nextPieceCount+numPreviews);
+			
+			if(pieceHold == null) {
+				holdEmpty = true;
+			}
+			Field fldcopy = new Field(fld);
+		
+			
+				for(int rot = 0; rot < Piece.DIRECTION_COUNT; rot++) {
+					nowY=2;
+				
+					int minX = pieceNow.getMostMovableLeft(nowX, nowY, rot, fld);
+					int maxX2 = pieceNow.getMostMovableRight(nowX, nowY, rot, fld);
+
+					for(int x2 = minX; x2 <= maxX2; x2++) {
+						fldcopy.copy(fld);
+						int y2 = pieceNow.getBottom(x2, nowY, rot, fldcopy);
+
+						//if(!pieceNow.checkCollision(x, y, rt, fld)) {
+							
+							scoreCurrent = thinkMain(engine, x2, y2, rot, -1, fldcopy, pieceNow, pieceNext, pieceHold, maxX2,numPreviews-1);
+
+							if(scoreCurrent.compareTo(bestScore)>0) {
+								System.out.println("new best piece(sub) id="+pieceNow.id+" posX="+x2+" rt="+rot);
+								bestScore=scoreCurrent;
+							}
+
+			
+					}
+			
+			  }
+				if (maxX==x) {
+					if ((fld.getHeight()-fld.getHighestBlockY())<=8){
+					   if (bestScore.rankStacking>0){
+						   bestScore.rankSkim=bestScore.rankStacking;
+						   bestScore.rankStacking=0;
+					   }
+					   
+					}
+					
+					 
+				}
+				if (lines==4){
+					bestScore.fourLinesCleared=true;
+				    bestScore.numberOfCliffs=0;
+				}
+				 
+				return bestScore;
+		}
+		else{
+			if (lines==4){
+				score.fourLinesCleared=true;
+			    
+			}
+		if (lines>=1 && lines<=3){
+			if ((fld.getHeight()-fld.getHighestBlockY())<=8)
+			  skimming=true;
+		}
+		if (maxX==x) {
+			if ((fld.getHeight()-fld.getHighestBlockY())<=8)
+			  skimming=true;
+		}
+		score.coveredBlocks=fld.getHowManyBlocksCovered();
+		//System.out.println("covered blocks : "+score.coveredBlocks);
+		if (score.coveredBlocks>0) 
+			blocksCovered=true;
+		
+=======
 		if (fld.getHowManyHoles()-beforeHoles>0)
 			return 0;
+>>>>>>> .r32
          int heights[]=new int [fld.getWidth()-1];
          for (int i=0;i<fld.getWidth()-1;i++){
         	 heights[i]=fld.getHeight()-fld.getHighestBlockY(i);
          }
          int surface[]=new int [fld.getWidth()-2];
          int maxJump=ranks.getMaxJump();
+         int numberOfCliffs=0;
          for (int i=0;i<fld.getWidth()-2;i++){
         	 int diff=heights[i+1]-heights[i];
-        	 if (diff>maxJump)
-        		 diff=maxJump;
-        	 if (diff<-maxJump)
+        	 if (diff>maxJump){
+        		 numberOfCliffs++;
+        			 cliffCreated=true;
+        		  diff=maxJump;
+        	 }
+        	 if (diff<-maxJump){
+        		 numberOfCliffs++;
+        			 cliffCreated=true;
         		 diff=-maxJump;
+        	 }
         	 surface[i]=diff;
          }
 
+		 score.numberOfCliffs=numberOfCliffs;
 		pts=ranks.getRankValue(ranks.encode(surface));
-		System.out.println("depth = "+depth+"piece= " +piece.id+" posx = "+x+" rotation = "+rt+" points = "+pts);
-		return pts;
+        if (!blocksCovered && !cliffCreated && !skimming){
+		score.rankStacking=pts;
+		
+		}
+        else {
+        	if (skimming && !blocksCovered && !cliffCreated){
+        		score.rankSkim=pts;
+        		
+        	}
+        	else {
+        		if(!blocksCovered && cliffCreated){
+        			score.rankCliffs=pts;
+        		}
+        		else {
+        			if (blocksCovered){
+        				score.rankHoles=pts;
+        			}
+        		}
+        	}
+        }
+		//System.out.println("numpreviews"+ numPreviews+" piece= " +piece.id+" posx = "+x+" rotation = "+rt+" points = "+pts+" blocks covered"+score.coveredBlocks);
+		return score;
+		}
 	}
 
 	/**

@@ -999,6 +999,27 @@ public class Field implements Serializable {
 		return result;
 	}
 
+	
+	public int getHowManyBlocksCovered() {
+		int blocksCovered = 0;
+		
+
+		for(int j = 0; j < width; j++) {
+		
+            int highestBlockY=getHighestBlockY(j);
+			for(int i = highestBlockY; i < getHeightWithoutHurryupFloor(); i++) {
+				if(getLineFlag(i) == false) {
+					
+					if( getBlockEmpty(j, i)) {
+					blocksCovered++;
+					}
+					
+				}
+			}
+		}
+
+		return blocksCovered;
+	}
 	/**
 	 * T-Spinで消えるライン数を返す
 	 * @param x X座標
