@@ -10,18 +10,6 @@ import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.game.play.GameManager;
 import org.game_host.hebo.nullpomino.game.subsystem.ai.DummyAI;
 
-/*
- * [NullNoname's changelog]
- * PoochyBot v1.21+n2 (2010/06/19)
- * -Moved to different package (net.tetrisconcept.poochy.nullpomino.ai)
- * -Extends DummyAI so no code change is needed even if AIPlayer interface adds something new
- * -No other logic changes
- * PoochyBot v1.21+n1 (2010/06/15)
- * -Some Javadoc are added to prevent compiler warnings
- * -Some whitespace cleanups
- * -No actual code changes
- */
-
 /**
  * PoochyBot AI
  * @author Poochy.EXE
@@ -86,39 +74,44 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public Thread thread;
 
 	/** Number of frames for which piece has been stuck */
-	private int stuckDelay;
+	protected int stuckDelay;
 
 	/** Status of last frame */
-	private int lastInput, lastX, lastY, lastRt;
+	protected int lastInput, lastX, lastY, lastRt;
 	/** Number of consecutive frames with same piece status */
-	private int sameStatusTime;
+	protected int sameStatusTime;
 	/** DAS charge status. -1 = left, 0 = none, 1 = right */
-	private int setDAS;
+	protected int setDAS;
 	/** Last input if done in ARE */
-	private int inputARE;
+	protected int inputARE;
 	/** 最大妥協レベル */
-	public static final int MAX_THINK_DEPTH = 2;
+	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
-	private static final boolean DEBUG_ALL = false;
+	protected static final boolean DEBUG_ALL = true;
 	/** Wait extra frames at low speeds? */
-	private static final boolean DELAY_DROP_ON = false;
+	protected static final boolean DELAY_DROP_ON = false;
 	/** # of extra frames to wait */
-	private static final int DROP_DELAY = 2;
+	protected static final int DROP_DELAY = 2;
 	/** Number of frames waited */
-	private int dropDelay;
+	protected int dropDelay;
+	/** Did the thinking thread finish successfully? */
+	protected boolean thinkComplete;
+	/** Did the thinking thread find a possible position? */
+	protected boolean thinkSuccess;
+	/** Was the game in ARE as of the last frame? */
+	protected boolean inARE;
+	
 
 	/*
 	 * AI's name
 	 */
-	@Override
 	public String getName() {
-		return "PoochyBot V1.21";
+		return "PoochyBot V1.22";
 	}
 
 	/*
 	 * 初期化処理
 	 */
-	@Override
 	public void init(GameEngine engine, int playerID) {
 		delay = 0;
 		gEngine = engine;
@@ -136,6 +129,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 		lastRt = -1;
 		sameStatusTime = 0;
 		dropDelay = 0;
+		thinkComplete = false;
+		thinkSuccess = false;
+		inARE = false;
 
 		if( ((thread == null) || !thread.isAlive()) && (engine.aiUseThread) ) {
 			thread = new Thread(this, "AI_" + playerID);
@@ -150,7 +146,6 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/*
 	 * 終了処理
 	 */
-	@Override
 	public void shutdown(GameEngine engine, int playerID) {
 		if((thread != null) && (thread.isAlive())) {
 			thread.interrupt();
@@ -162,11 +157,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/*
 	 * 新しいピース出現時の処理
 	 */
-	@Override
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else {
+		} else if (!thinking && !thinkComplete) {
 			thinkRequest = true;
 			thinkCurrentPieceNo++;
 		}
@@ -175,16 +169,24 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/*
 	 * 各フレームの最初の処理
 	 */
-	@Override
 	public void onFirst(GameEngine engine, int playerID) {
 		inputARE = 0;
+		boolean newInARE = engine.stat == GameEngine.STAT_ARE ||
+			engine.stat == GameEngine.STAT_READY;
+		if ((newInARE && !inARE) || (!thinking && !thinkSuccess))
+		{
+			debugOut("Begin pre-think of next piece.");
+			inARE = newInARE;
+			thinkComplete = false;
+			thinkRequest = true;
+		}
+		else if (inARE && !newInARE)
+			inARE = false;
 		if((engine.stat == GameEngine.STAT_ARE || engine.stat == GameEngine.STAT_READY)
 				&& delay >= engine.aiMoveDelay) {
 			int input = 0;
-			Piece nextPiece;
-			if (!bestHold)
-				nextPiece = engine.getNextObject(engine.nextPieceCount);
-			else
+			Piece nextPiece = engine.getNextObject(engine.nextPieceCount);
+			if (bestHold && thinkComplete)
 			{
 				input |= Controller.BUTTON_BIT_D;
 				if (engine.holdPieceObject == null)
@@ -194,6 +196,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (nextPiece == null)
 				return;
+			nextPiece = checkOffset(nextPiece, engine);
 			input |= calcIRS(nextPiece, engine);
 			if (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))
 			{
@@ -220,14 +223,12 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/*
 	 * 各フレームの最後の処理
 	 */
-	@Override
 	public void onLast(GameEngine engine, int playerID) {
 	}
 
 	/*
 	 * ボタン入力状態を設定
 	 */
-	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
 			(delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
@@ -235,7 +236,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		{
 			inputARE = 0;
 			int input = 0;	// Button input data
-			Piece pieceNow = engine.nowPieceObject;
+			Piece pieceNow = checkOffset(engine.nowPieceObject, engine);
 			int nowX = engine.nowPieceX;
 			int nowY = engine.nowPieceY;
 			int rt = pieceNow.direction;
@@ -280,12 +281,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 					&& !fld.getBlockEmpty(pieceNow.getMaximumBlockX()+nowX-1, pieceNow.getMaximumBlockY()+nowY)))
 			{
 				thinkRequest = true;
+				thinkComplete = false;
 				debugOut("Needs rethink - L or J piece is stuck!");
 			}
 			if (nowType == Piece.PIECE_O && ((bestX < nowX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))
 					|| (bestX < nowX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))))
 			{
 				thinkRequest = true;
+				thinkComplete = false;
 				debugOut("Needs rethink - O piece is stuck!");
 			}
 			if (pieceTouchGround && rt == bestRt &&
@@ -297,6 +300,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			if (stuckDelay > 4)
 			{
 				thinkRequest = true;
+				thinkComplete = false;
 				debugOut("Needs rethink - piece is stuck!");
 			}
 			if (nowX == lastX && nowY == lastY && rt == lastRt && lastInput != 0)
@@ -305,12 +309,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if (sameStatusTime > 4)
 				{
 					thinkRequest = true;
+					thinkComplete = false;
 					debugOut("Needs rethink - piece is stuck, last inputs had no effect!");
 				}
 			}
 			if (engine.nowPieceRotateCount >= 8)
 			{
 				thinkRequest = true;
+				thinkComplete = false;
 				debugOut("Needs rethink - piece is stuck, too many rotations!");
 			}
 			else
@@ -323,7 +329,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if (holdPiece != null)
 					input |= calcIRS(holdPiece, engine);
 			} else {
-				debugOut("bestX = " + bestX + ", nowX = " + nowX + ", bestRt = " + bestRt + ", rt = " + rt);
+				debugOut("bestX = " + bestX + ", nowX = " + nowX +
+						", bestY = " + bestY + ", nowY = " + nowY +
+						", bestRt = " + bestRt + ", rt = " + rt +
+						", bestXSub = " + bestXSub + ", bestYSub = " + bestYSub + ", bestRtSub = " + bestRtSub);
 				printPieceAndDirection(nowType, rt);
 				// Rotation
 				//Rotate iff near destination or stuck
@@ -335,15 +344,19 @@ public class PoochyBot extends DummyAI implements Runnable {
 				//Special movements for I piece
 				if (nowType == Piece.PIECE_I)
 				{
+					int hypRtDir = 1;
+					boolean rotateI = false;
+					if ((rt+3)%4 == bestRt)
+						hypRtDir = -1;
 					if (nowX < bestX)
 					{
 						moveDir = 1;
 						if (pieceNow.checkCollision(nowX+1, nowY, fld))
 						{
 							if((rt&1) == 0 && (canFloorKick || !pieceNow.checkCollision(nowX, nowY, (rt+1)%4, fld)))
-								rotateDir = -1;
+								rotateI = true;
 							else if ((rt&1) == 1 && canFloorKick)
-								rotateDir = -1;
+								rotateI = true;
 							else if (engine.isHoldOK() && !ctrl.isPress(Controller.BUTTON_D))
 							{
 								debugOut("Stuck I piece - use hold");
@@ -361,10 +374,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 						if (pieceNow.checkCollision(nowX-1, nowY, fld))
 						{
 							if((rt&1) == 0 && (canFloorKick || !pieceNow.checkCollision(nowX, nowY, (rt+1)%4, fld)))
-								rotateDir = -1;
+								rotateI = true;
 							else if ((rt&1) == 1 && !pieceNow.checkCollision(nowX-1, nowY, (rt+1)%4, fld) &&
 									canFloorKick)
-								rotateDir = -1;
+								rotateI = true;
 							else if (engine.isHoldOK() && !ctrl.isPress(Controller.BUTTON_D))
 							{
 								debugOut("Stuck I piece - use hold");
@@ -381,8 +394,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 						if (best180)
 							bestRt = (bestRt+2)%4;
 						else
-							rotateDir = -1;
+							rotateI = true;
 					}
+					if (rotateI)
+						rotateDir = hypRtDir;
 				}
 				else if((rt != bestRt && ((xDiff <= 1) ||
 						(bestX == 0 && nowX == 2 && nowType == Piece.PIECE_I) ||
@@ -449,8 +464,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 					// 到達不能なので再度思考する
 					//thinkBestPosition(engine, playerID);
 					thinkRequest = true;
+					thinkComplete = false;
 					//thinkCurrentPieceNo++;
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
+					debugOut("Needs rethink - cannot reach desired position");
 				} else {
 					// 到達できる場合
 					if((nowX == bestX) && (pieceTouchGround)) {
@@ -600,9 +617,36 @@ public class PoochyBot extends DummyAI implements Runnable {
 						input |= Controller.BUTTON_BIT_D;
 				}
 			}
-			if(moveDir == -1 && (!ctrl.isPress(Controller.BUTTON_LEFT) || setDAS == -1))
+			//Catch bug where it fails to rotate J piece
+			if (moveDir == 0 && rotateDir == 0 & drop == 0)
+			{
+				if ((rt+1)%4 == bestRt)
+					rotateDir = 1;
+				else if ((rt+3)%4 == bestRt)
+					rotateDir = -1;
+				else if ((rt+2)%4 == bestRt)
+				{
+					if(engine.ruleopt.rotateButtonAllowDouble)
+						rotateDir = 2;
+					else if (rt == 3)
+						rotateDir = -1;
+					else
+						rotateDir = -1;
+				}
+				else if (bestX < nowX)
+					moveDir = -1;
+				else if (bestX > nowX)
+					moveDir = 1;
+				else
+					debugOut("Movement error: Nothing to do!");
+			}
+			if (rotateDir == 0 && Math.abs(rt - bestRt) == 2)
+				rotateDir = 1;
+			//Convert parameters to input
+			boolean useDAS = engine.dasCount >= engine.getDAS() && moveDir == setDAS;
+			if(moveDir == -1 && (!ctrl.isPress(Controller.BUTTON_LEFT) || useDAS))
 				input |= Controller.BUTTON_BIT_LEFT;
-			else if(moveDir == 1 && (!ctrl.isPress(Controller.BUTTON_RIGHT) || setDAS == 1))
+			else if(moveDir == 1 && (!ctrl.isPress(Controller.BUTTON_RIGHT) || useDAS))
 				input |= Controller.BUTTON_BIT_RIGHT;
 			if(drop == 1 && !ctrl.isPress(Controller.BUTTON_UP))
 			{
@@ -620,7 +664,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (rotateDir != 0)
 			{
-				if((Math.abs(rt - bestRt) == 2) && (engine.ruleopt.rotateButtonAllowDouble) &&
+				if(engine.ruleopt.rotateButtonAllowDouble &&
 						rotateDir == 2 && !ctrl.isPress(Controller.BUTTON_E))
 					input |= Controller.BUTTON_BIT_E;
 				else if(engine.ruleopt.rotateButtonAllowReverse &&
@@ -640,6 +684,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (sync)
 			{
+				debugOut("Attempting to perform synchro move.");
 				int bitsLR = Controller.BUTTON_BIT_LEFT | Controller.BUTTON_BIT_RIGHT;
 				int bitsAB = Controller.BUTTON_BIT_A | Controller.BUTTON_BIT_B;
 				if ((input & bitsLR) == 0 || (input & bitsAB) == 0)
@@ -650,12 +695,16 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (setDAS != moveDir)
 				setDAS = 0;
-
+			
 			lastInput = input;
 			lastX = nowX;
 			lastY = nowY;
 			lastRt = rt;
 
+
+			debugOut ("Input = " + input + ", moveDir = " + moveDir  + ", rotateDir = " + rotateDir +
+					 ", sync = " + sync  + ", drop = " + drop  + ", setDAS = " + setDAS);
+			
 			delay = 0;
 			ctrl.setButtonBit(input);
 		}
@@ -664,11 +713,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 			delay++;
 			ctrl.setButtonBit(inputARE);
 		}
-
-
 	}
 
-	private void printPieceAndDirection(int pieceType, int rt)
+	protected void printPieceAndDirection(int pieceType, int rt)
 	{
 		String result = "Piece ";
 		switch (pieceType)
@@ -699,6 +746,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 	public int calcIRS(Piece piece, GameEngine engine)
 	{
+		piece = checkOffset(piece, engine);
 		int nextType = piece.id;
 		Field fld = engine.field;
 		int spawnX = engine.getSpawnPosX(fld, piece);
@@ -756,7 +804,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * @param playerID プレイヤーID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
-		debugOut("thinkBestPosition called.");
+		debugOut("thinkBestPosition called, inARE = " + inARE + ", piece: ");
 		bestHold = false;
 		bestX = 0;
 		bestY = 0;
@@ -765,17 +813,52 @@ public class PoochyBot extends DummyAI implements Runnable {
 		bestYSub = 0;
 		bestRtSub = -1;
 		bestPts = 0;
+		thinkSuccess = false;
 
+		Field fld;
+		if (engine.stat == GameEngine.STAT_READY)
+			fld = new Field(engine.fieldWidth, engine.fieldHeight,
+					engine.fieldHiddenHeight, engine.ruleopt.fieldCeiling);
+		else
+			fld = new Field(engine.field);
 		Piece pieceNow = engine.nowPieceObject;
-		int nowX = engine.nowPieceX;
-		int nowY = engine.nowPieceY;
-		int nowRt = pieceNow.direction;
-		boolean holdOK = engine.isHoldOK();
 		Piece pieceHold = engine.holdPieceObject;
-		if(pieceHold == null)
-			pieceHold = engine.getNextObject(engine.nextPieceCount);
-		Field fld = new Field(engine.field);
-
+		/*
+		Piece pieceNow = null;
+		if (engine.nowPieceObject != null)
+			pieceNow = new Piece(engine.nowPieceObject);
+		Piece pieceHold = null;
+		if (engine.holdPieceObject != null)
+			pieceHold = new Piece(engine.holdPieceObject);
+		*/
+		int nowX, nowY, nowRt;
+		if (inARE || pieceNow == null)
+		{
+			pieceNow = engine.getNextObjectCopy(engine.nextPieceCount);
+			nowX = engine.getSpawnPosX(fld, pieceNow);
+			nowY = engine.getSpawnPosY(pieceNow);
+			nowRt = engine.ruleopt.pieceDefaultDirection[pieceNow.id];
+			if(pieceHold == null)
+				pieceHold = engine.getNextObjectCopy(engine.nextPieceCount+1);
+		}
+		else {
+			nowX = engine.nowPieceX;
+			nowY = engine.nowPieceY;
+			nowRt = pieceNow.direction;
+			if (pieceHold == null)
+				pieceHold = engine.getNextObjectCopy(engine.nextPieceCount);
+		}
+		pieceNow = checkOffset(pieceNow, engine);
+		pieceHold = checkOffset(pieceHold, engine);
+		/*
+		if (!pieceNow.offsetApplied)
+		pieceNow.applyOffsetArray(engine.ruleopt.pieceOffsetX[pieceNow.id],
+				engine.ruleopt.pieceOffsetY[pieceNow.id]);
+		if (!pieceHold.offsetApplied)
+		pieceHold.applyOffsetArray(engine.ruleopt.pieceOffsetX[pieceHold.id],
+				engine.ruleopt.pieceOffsetY[pieceHold.id]);
+		*/
+		boolean holdOK = engine.isHoldOK();
 
 		boolean canFloorKick = engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick
 			|| engine.ruleopt.rotateMaxUpwardWallkick < 0;
@@ -789,6 +872,13 @@ public class PoochyBot extends DummyAI implements Runnable {
 			canFloorKickT = false;
 
 		for(int depth = 0; depth < MAX_THINK_DEPTH; depth++) {
+			/*
+			int dirCount = Piece.DIRECTION_COUNT;
+			if (pieceNow.id == Piece.PIECE_I || pieceNow.id == Piece.PIECE_S || pieceNow.id == Piece.PIECE_Z)
+				dirCount = 2;
+			else if (pieceNow.id == Piece.PIECE_O)
+				dirCount = 1;
+			*/
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
 				int tempY = nowY;
 				if (canFloorKickI && (rt&1) == 1)
@@ -804,7 +894,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if (engine.stat == GameEngine.STAT_ARE)
 				{
 					int spawnX = engine.getSpawnPosX(fld, pieceNow);
-					int spawnY = engine.getSpawnPosX(fld, pieceNow);
+					int spawnY = engine.getSpawnPosY(pieceNow);
 					spawnOK = !pieceNow.checkCollision(spawnX, spawnY, fld);
 				}
 				for(int x = minX; x <= maxX && spawnOK; x++) {
@@ -832,6 +922,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 									", bestYSub = " + y +
 									", bestRtSub = " + -1 +
 									", bestPts = " + pts);
+							thinkSuccess = true;
 						}
 						//Check regardless
 						//if((depth > 0) || (bestPts <= 10) || (pieceNow.id == Piece.PIECE_T)) {
@@ -857,6 +948,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 										", bestYSub = " + y +
 										", bestRtSub = " + -1 +
 										", bestPts = " + pts);
+								thinkSuccess = true;
 							}
 						}
 
@@ -882,6 +974,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 										", bestYSub = " + y +
 										", bestRtSub = " + -1 +
 										", bestPts = " + pts);
+								thinkSuccess = true;
 							}
 						}
 
@@ -925,6 +1018,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 										", bestYSub = " + newY +
 										", bestRtSub = " + rot +
 										", bestPts = " + pts);
+								thinkSuccess = true;
 							}
 						}
 
@@ -968,6 +1062,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 										", bestYSub = " + newY +
 										", bestRtSub = " + rot +
 										", bestPts = " + pts);
+								thinkSuccess = true;
 							}
 						}
 
@@ -1011,6 +1106,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 										", bestYSub = " + newY +
 										", bestRtSub = " + rot +
 										", bestPts = " + pts);
+								thinkSuccess = true;
 							}
 						}
 						//}
@@ -1018,7 +1114,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				}
 
 				// Hold piece
-				if((holdOK == true) && (pieceHold != null) && (depth == 0)) {
+				if((holdOK == true) && (pieceHold != null)) {
 					int spawnX = engine.getSpawnPosX(engine.field, pieceHold);
 					int spawnY = engine.getSpawnPosY(pieceHold);
 					int minHoldX = Math.max(mostMovableX(spawnX, spawnY, -1, engine, engine.field, pieceHold, rt),
@@ -1026,47 +1122,235 @@ public class PoochyBot extends DummyAI implements Runnable {
 					int maxHoldX = Math.min(mostMovableX(spawnX, spawnY, 1, engine, engine.field, pieceHold, rt),
 							pieceHold.getMostMovableRight(spawnX, spawnY, rt, engine.field));
 
+					//Bonus for holding an I piece, penalty for holding an S or Z.
+					int holdType = pieceHold.id;
+					int holdPts = 0;
+					if (holdType == Piece.PIECE_I)
+						holdPts -= 30;
+					else if (holdType == Piece.PIECE_S || holdType == Piece.PIECE_Z)
+						holdPts += 30;
+					else if (holdType == Piece.PIECE_O)
+						holdPts += 10;
+					int nowType = pieceNow.id;
+					if (nowType == Piece.PIECE_I)
+						holdPts += 30;
+					else if (nowType == Piece.PIECE_S || nowType == Piece.PIECE_Z)
+						holdPts -= 30;
+					else if (holdType == Piece.PIECE_O)
+						holdPts -= 10;
+					
 					for(int x = minHoldX; x <= maxHoldX; x++)
 					{
 						fld.copy(engine.field);
 						int y = pieceHold.getBottom(x, spawnY, rt, fld);
 
-						if(!pieceHold.checkCollision(x, y, rt, fld) &&
-								!pieceHold.checkCollision(spawnX, spawnY, rt, fld)) {
+						if(!pieceHold.checkCollision(x, y, rt, fld)) {
+							// そのまま
 							int pts = thinkMain(x, y, rt, -1, fld, pieceHold, depth);
-
-							//Bonus for holding an I piece, penalty for holding an S or Z.
-							int holdType = pieceHold.id;
 							if (pts > Integer.MIN_VALUE+30)
-							{
-								if (holdType == Piece.PIECE_I)
-									pts -= 30;
-								else if (holdType == Piece.PIECE_S || holdType == Piece.PIECE_Z)
-									pts += 30;
-								else if (holdType == Piece.PIECE_O)
-									pts += 10;
-								int nowType = pieceNow.id;
-								if (nowType == Piece.PIECE_I)
-									pts += 30;
-								else if (nowType == Piece.PIECE_S || nowType == Piece.PIECE_Z)
-									pts -= 30;
-								else if (holdType == Piece.PIECE_O)
-									pts -= 10;
-							}
-
-							if(pts > bestPts) {
+								pts += holdPts;
+							if(pts >= bestPts) {
 								bestHold = true;
 								bestX = x;
 								bestY = y;
 								bestRt = rt;
+								bestXSub = x;
+								bestYSub = y;
 								bestRtSub = -1;
 								bestPts = pts;
 								debugOut("New best position found (Case 7): bestHold = true" +
 										", bestX = " + x +
 										", bestY = " + y +
 										", bestRt = " + rt +
+										", bestXSub = " + x +
+										", bestYSub = " + y +
 										", bestRtSub = " + -1 +
 										", bestPts = " + pts);
+							}
+							//Check regardless
+							//if((depth > 0) || (bestPts <= 10) || (pieceHold.id == Piece.PIECE_T)) {
+							// Left shift
+							fld.copy(engine.field);
+							if(!pieceHold.checkCollision(x - 1, y, rt, fld) && pieceHold.checkCollision(x - 1, y - 1, rt, fld)) {
+								pts = thinkMain(x - 1, y, rt, -1, fld, pieceHold, depth);
+								if (pts > Integer.MIN_VALUE+30)
+									pts += holdPts;
+								if(pts > bestPts) {
+									bestHold = true;
+									bestX = x;
+									bestY = y;
+									bestRt = rt;
+									bestXSub = x - 1;
+									bestYSub = y;
+									bestRtSub = -1;
+									bestPts = pts;
+									debugOut("New best position found (Case 8): bestHold = true" +
+											", bestX = " + x +
+											", bestY = " + y +
+											", bestRt = " + rt +
+											", bestXSub = " + (x-1) +
+											", bestYSub = " + y +
+											", bestRtSub = " + -1 +
+											", bestPts = " + pts);
+								}
+							}
+	
+							// Right shift
+							fld.copy(engine.field);
+							if(!pieceHold.checkCollision(x + 1, y, rt, fld) && pieceHold.checkCollision(x + 1, y - 1, rt, fld)) {
+								pts = thinkMain(x + 1, y, rt, -1, fld, pieceHold, depth);
+								if (pts > Integer.MIN_VALUE+30)
+									pts += holdPts;
+								if(pts > bestPts) {
+									bestHold = true;
+									bestX = x;
+									bestY = y;
+									bestRt = rt;
+									bestXSub = x + 1;
+									bestYSub = y;
+									bestRtSub = -1;
+									bestPts = pts;
+									debugOut("New best position found (Case 9): bestHold = true" +
+											", bestX = " + x +
+											", bestY = " + y +
+											", bestRt = " + rt +
+											", bestXSub = " + (x+1) +
+											", bestYSub = " + y +
+											", bestRtSub = " + -1 +
+											", bestPts = " + pts);
+								}
+							}
+	
+							// Left rotation
+							if(!engine.ruleopt.rotateButtonDefaultRight || engine.ruleopt.rotateButtonAllowReverse) {
+								int rot = pieceHold.getRotateDirection(-1, rt);
+								int newX = x;
+								int newY = y;
+								fld.copy(engine.field);
+								pts = Integer.MIN_VALUE;
+	
+								if(!pieceHold.checkCollision(x, y, rot, fld)) {
+									pts = thinkMain(x, y, rot, rt, fld, pieceHold, depth);
+								} else if((engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
+									boolean allowUpward = (engine.ruleopt.rotateMaxUpwardWallkick < 0) ||
+														  (engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick);
+									WallkickResult kick = engine.wallkick.executeWallkick(x, y, -1, rt, rot,
+														  allowUpward, pieceHold, fld, null);
+	
+									if(kick != null) {
+										newX = x + kick.offsetX;
+										newY = y + kick.offsetY;
+										pts = thinkMain(newX, newY, rot, rt, fld, pieceHold, depth);
+									}
+								}
+								if (pts > Integer.MIN_VALUE+30)
+									pts += holdPts;
+								if(pts > bestPts) {
+									bestHold = true;
+									bestX = x;
+									bestY = y;
+									bestRt = rt;
+									bestXSub = newX;
+									bestYSub = newY;
+									bestRtSub = rot;
+									bestPts = pts;
+									debugOut("New best position found (Case 10): bestHold = true" +
+											", bestX = " + x +
+											", bestY = " + y +
+											", bestRt = " + rt +
+											", bestXSub = " + newX +
+											", bestYSub = " + newY +
+											", bestRtSub = " + rot +
+											", bestPts = " + pts);
+								}
+							}
+	
+							// Right rotation
+							if(engine.ruleopt.rotateButtonDefaultRight || engine.ruleopt.rotateButtonAllowReverse) {
+								int rot = pieceHold.getRotateDirection(1, rt);
+								int newX = x;
+								int newY = y;
+								fld.copy(engine.field);
+								pts = Integer.MIN_VALUE;
+	
+								if(!pieceHold.checkCollision(x, y, rot, fld)) {
+									pts = thinkMain(x, y, rot, rt, fld, pieceHold, depth);
+								} else if((engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
+									boolean allowUpward = (engine.ruleopt.rotateMaxUpwardWallkick < 0) ||
+														  (engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick);
+									WallkickResult kick = engine.wallkick.executeWallkick(x, y, 1, rt, rot,
+														  allowUpward, pieceHold, fld, null);
+	
+									if(kick != null) {
+										newX = x + kick.offsetX;
+										newY = y + kick.offsetY;
+										pts = thinkMain(newX, newY, rot, rt, fld, pieceHold, depth);
+									}
+								}
+								if (pts > Integer.MIN_VALUE+30)
+									pts += holdPts;
+								if(pts > bestPts) {
+									bestHold = true;
+									bestX = x;
+									bestY = y;
+									bestRt = rt;
+									bestXSub = newX;
+									bestYSub = newY;
+									bestRtSub = rot;
+									bestPts = pts;
+									debugOut("New best position found (Case 11): bestHold = true" +
+											", bestX = " + x +
+											", bestY = " + y +
+											", bestRt = " + rt +
+											", bestXSub = " + newX +
+											", bestYSub = " + newY +
+											", bestRtSub = " + rot +
+											", bestPts = " + pts);
+								}
+							}
+	
+							// 180-degree rotation
+							if(engine.ruleopt.rotateButtonAllowDouble) {
+								int rot = pieceHold.getRotateDirection(2, rt);
+								int newX = x;
+								int newY = y;
+								fld.copy(engine.field);
+								pts = Integer.MIN_VALUE;
+	
+								if(!pieceHold.checkCollision(x, y, rot, fld)) {
+									pts = thinkMain(x, y, rot, rt, fld, pieceHold, depth);
+								} else if((engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
+									boolean allowUpward = (engine.ruleopt.rotateMaxUpwardWallkick < 0) ||
+														  (engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick);
+									WallkickResult kick = engine.wallkick.executeWallkick(x, y, 2, rt, rot,
+														  allowUpward, pieceHold, fld, null);
+	
+									if(kick != null) {
+										newX = x + kick.offsetX;
+										newY = y + kick.offsetY;
+										pts = thinkMain(newX, newY, rot, rt, fld, pieceHold, depth);
+									}
+								}
+								if (pts > Integer.MIN_VALUE+30)
+									pts += holdPts;
+								if(pts > bestPts) {
+									bestHold = true;
+									bestX = x;
+									bestY = y;
+									bestRt = rt;
+									bestXSub = newX;
+									bestYSub = newY;
+									bestRtSub = rot;
+									bestPts = pts;
+									debugOut("New best position found (Case 12): bestHold = true" +
+											", bestX = " + x +
+											", bestY = " + y +
+											", bestRt = " + rt +
+											", bestXSub = " + newX +
+											", bestYSub = " + newY +
+											", bestRtSub = " + rot +
+											", bestPts = " + pts);
+								}
 							}
 						}
 					}
@@ -1101,7 +1385,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		// 他のブロックに隣接していると加点
 		if(piece.checkCollision(x - 1, y, fld)) pts += 1;
 		if(piece.checkCollision(x + 1, y, fld)) pts += 1;
-		if(piece.checkCollision(x, y - 1, fld)) pts += 100;
+		if(piece.checkCollision(x, y - 1, fld)) pts += 1000;
 
 		int width = fld.getWidth();
 		int height = fld.getHeight();
@@ -1353,6 +1637,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if(depth == 0) return Integer.MIN_VALUE;
 			} else if(holeAfter < holeBefore) {
 				// 穴を減らすと加点
+				pts += 10000;
 				if(!danger)
 					pts += (holeBefore - holeAfter) * 200;
 				else
@@ -1514,7 +1799,17 @@ public class PoochyBot extends DummyAI implements Runnable {
 		return pts;
 	}
 	//private static final int[][] HI_PENALTY = {{6, 2}, {7, 6}, {6, 2}, {1, 0}};
-
+	public Piece checkOffset(Piece p, GameEngine engine)
+	{
+		if (!p.offsetApplied)
+		{
+			Piece result = new Piece(p);
+			result.applyOffsetArray(engine.ruleopt.pieceOffsetX[p.id], engine.ruleopt.pieceOffsetY[p.id]);
+			return result;
+		}
+		else
+			return p;
+	}
 	/**
 	 * @deprecated
 	 * Workaround for the bug in Field.getHighestBlockY(int).
@@ -1646,15 +1941,6 @@ public class PoochyBot extends DummyAI implements Runnable {
 			testY = piece.getBottom(testX, testY, testRt, fld);
 		}
 	}
-	public int getHoldPieceType ()
-	{
-		Piece holdPiece = gEngine.holdPieceObject;
-		if (holdPiece != null)
-			return holdPiece.id;
-		else
-			return -1;
-	}
-
 	public int getHighestBlockY(int x, Field fld, int max)
 	{
 		int y = fld.getHiddenHeight() * -1;
@@ -1663,7 +1949,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		} while(fld.getBlockEmpty(x, y) && y < max);
 		return y;
 	}
-	private void debugOut(String str)
+	protected void debugOut(String str)
 	{
 		if (DEBUG_ALL)
 			log.debug(str);
@@ -1681,6 +1967,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 				thinking = true;
 				try {
 					thinkBestPosition(gEngine, gEngine.playerID);
+					thinkComplete = true;
+					log.debug("PoochyBot: thinkBestPosition completed successfully");
 				} catch (Throwable e) {
 					log.debug("PoochyBot: thinkBestPosition Failed", e);
 				}

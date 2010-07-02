@@ -6,9 +6,9 @@ PoochyBot.java contains all the source code for PoochyBot. It should go in the
 other AIs included with NullpoMino.
 
 Release Notes:
-v1.22b (2 July 2010)
-* Created a version that will pre-think the next piece during ARE.
-  This is still in beta, so the original is still included.
+v1.22 (2 July 2010)
+* Added pre-think in ARE.
+* Fixed the bug where it wouldn't consider twists with the hold piece.
 
 v1.21 (10 June 2010) - First public release
 * PoochyBot has only been tested on fairly high-end hardware. It may (and
