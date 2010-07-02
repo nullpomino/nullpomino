@@ -10,10 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
-<<<<<<< .mine
-
-=======
->>>>>>> .r32
 import javax.swing.ProgressMonitor;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -86,12 +82,7 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         	}
 
         	}
-<<<<<<< .mine
-        	 System.out.println("background done");
-        	
-=======
 
->>>>>>> .r32
             return null;
         }
 

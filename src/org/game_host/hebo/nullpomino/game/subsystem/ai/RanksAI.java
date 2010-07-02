@@ -382,24 +382,7 @@ public class RanksAI extends DummyAI implements Runnable {
 			holdEmpty = true;
 		}
 		Field fld = new Field(engine.field);
-<<<<<<< .mine
-	
-		
-=======
-		  if ((pieceNow.id==Piece.PIECE_I) && (engine.field.getHeight()-engine.field.getHighestBlockY()>6)&&(engine.field.getHeight()-engine.field.getHighestBlockY(9)==0)){
-			  bestHold = false;
-			  bestRt = 1;
-				bestX =  pieceNow.getMostMovableRight(nowX, 2, bestRt, engine.field);;
-				bestY = pieceNow.getBottom(bestX, nowY, bestRt, fld);;
 
-				bestXSub = bestX;
-				bestYSub = bestY;
-				bestRtSub = -1;
-				bestPts = Integer.MAX_VALUE;
-		  }
-		 else{
-		for(int depth = 0; depth < getMaxThinkDepth(); depth++) {
->>>>>>> .r32
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
 				nowY=2;
 
@@ -433,12 +416,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 				}
 
-<<<<<<< .mine
-			
-=======
 
-			}
->>>>>>> .r32
 		  }
 
 		
@@ -478,7 +456,7 @@ public class RanksAI extends DummyAI implements Runnable {
 			return score;
 		
 		}
-<<<<<<< .mine
+
 		int lines=fld.checkLine();
 		fld.clearLine();
 		 if (numPreviews>0){
@@ -557,10 +535,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		if (score.coveredBlocks>0) 
 			blocksCovered=true;
 		
-=======
-		if (fld.getHowManyHoles()-beforeHoles>0)
-			return 0;
->>>>>>> .r32
+
          int heights[]=new int [fld.getWidth()-1];
          for (int i=0;i<fld.getWidth()-1;i++){
         	 heights[i]=fld.getHeight()-fld.getHighestBlockY(i);
