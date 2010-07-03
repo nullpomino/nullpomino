@@ -119,23 +119,31 @@ public class RanksAI extends DummyAI implements Runnable {
 			rankSkim=0;
 			rankHoles=0;
 			coveredBlocks=Integer.MAX_VALUE;
-			numberOfCliffs=0;
+			numberOfCliffs=Integer.MAX_VALUE;
 		}
 		public String toString(){
-			return "four lines cleared :"+fourLinesCleared+"Number of cliffs"+numberOfCliffs+" Rank Stacking "+rankStacking+" Rank Skim "+rankSkim+" Rank Cliffs "+rankCliffs+"Rank Holes"+rankHoles+"Covered Blocks"+coveredBlocks;
+			return "four lines cleared : "+fourLinesCleared+" Number of cliffs: "+numberOfCliffs+" Rank Stacking : "+rankStacking+" Rank Skim :"+rankSkim+" Rank Cliffs :"+rankCliffs+" Rank Holes :"+rankHoles+" Covered Blocks :"+coveredBlocks;
 			
 		}
 		public int compareTo(Object o) {
 			Score otherScore=(Score) o;
 			
-			
+			/*if (this.coveredBlocks!=otherScore.coveredBlocks){
+				//System.out.println("comparing "+this.coveredBlocks+" with "+otherScore.coveredBlocks);
+				return this.coveredBlocks<otherScore.coveredBlocks?1:-1;
+			}
+			else{*/
+				/*if (this.numberOfCliffs!=otherScore.numberOfCliffs){
+					  return this.numberOfCliffs<otherScore.numberOfCliffs?-1:1;
+					}
+				else{*/
 			if (this.fourLinesCleared != otherScore.fourLinesCleared){
 				if (this.fourLinesCleared && !otherScore.fourLinesCleared){
-					if (this.numberOfCliffs==0)
+					
 					   return 1;
 				}
 				else {
-					if (otherScore.numberOfCliffs==0)
+					
 					   return -1;
 				}
 			}
@@ -148,19 +156,13 @@ public class RanksAI extends DummyAI implements Runnable {
 						return this.rankSkim>otherScore.rankSkim?1:-1;
 					}
 					else {
-						if (this.numberOfCliffs!=otherScore.numberOfCliffs){
-						  return this.numberOfCliffs<otherScore.numberOfCliffs?-1:1;
-						}
-						else{
+						
+						
 							if (this.rankCliffs != otherScore.rankCliffs){
 								return this.rankCliffs>otherScore.rankCliffs?1:-1;
 							}
 							else {
-								if (this.coveredBlocks!=otherScore.coveredBlocks){
-									System.out.println("comparing "+this.coveredBlocks+" with "+otherScore.coveredBlocks);
-									return this.coveredBlocks<otherScore.coveredBlocks?1:-1;
-								}
-								else{
+								
 									if (this.rankHoles==otherScore.rankHoles)
 										return 0;
 									else {
@@ -172,8 +174,8 @@ public class RanksAI extends DummyAI implements Runnable {
 						}
 					}
 				
-				}
-		 	}
+				//}
+		 	//}
 		
 		}
 		
@@ -396,9 +398,9 @@ public class RanksAI extends DummyAI implements Runnable {
 					//if(!pieceNow.checkCollision(x, y, rt, fld)) {
 
 						score = thinkMain(engine, x, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, maxX,numPreviews);
-
+						log.debug("MAIN  id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
 						if(score.compareTo(bestScore)>0) {
-							System.out.println("new best piece id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
+							log.debug("MAIN new best piece !");
 							bestHold = false;
 							bestX = x;
 							bestY = y;
@@ -489,10 +491,11 @@ public class RanksAI extends DummyAI implements Runnable {
 						//if(!pieceNow.checkCollision(x, y, rt, fld)) {
 							
 							scoreCurrent = thinkMain(engine, x2, y2, rot, -1, fldcopy, pieceNow, pieceNext, pieceHold, maxX2,numPreviews-1);
-
+							log.debug("SUB id="+pieceNow.id+" posX="+x2+" rt="+rot+" score "+scoreCurrent);
+							
 							if(scoreCurrent.compareTo(bestScore)>0) {
-								System.out.println("new best piece(sub) id="+pieceNow.id+" posX="+x2+" rt="+rot);
-								bestScore=scoreCurrent;
+								log.debug("SUB new best piece !");
+									bestScore=scoreCurrent;
 							}
 
 			
