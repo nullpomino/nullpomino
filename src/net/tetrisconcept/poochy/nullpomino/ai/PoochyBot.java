@@ -87,7 +87,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** 最大妥協レベル */
 	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
-	protected static final boolean DEBUG_ALL = true;
+	protected static final boolean DEBUG_ALL = false;
 	/** Wait extra frames at low speeds? */
 	protected static final boolean DELAY_DROP_ON = false;
 	/** # of extra frames to wait */
