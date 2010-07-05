@@ -1,11 +1,24 @@
-PoochyBot v1.21         ポチボット v1.21
-10 June 2010            2010年6月10日
+PoochyBot			ポチボット
+10 June 2010			2010年6月10日
 
 PoochyBot.java contains all the source code for PoochyBot. It should go in the
 /src/org/game_host/hebo/nullpomino/game/subsystem/ai/ directory like all the
 other AIs included with NullpoMino.
 
 Release Notes:
+v1.23 (5 July 2010)
+* Heuristic changed to ignore "lid" blocks covering holes; turns out that part
+  was doing more harm than good.
+* Comment out a section of code in setControl that should be impossible to
+  reach. (It was put there as a kludge workaround to a bug in between v1.21
+  and v1.22, and it's no longer needed.)
+* Fix a thread-safety race condition bug which could make it use hold when the
+  best position doesn't use hold, which could occur if thinkBestPosition isn't
+  finished before the piece spawns.
+* Set DEBUG_ALL back to false. Oops. If you ran PoochyBot v1.22, you may want
+  to check your log directory for any ridiculously large log files it may have
+  generated in there.
+
 v1.22 (2 July 2010)
 * Added pre-think in ARE.
 * Fixed the bug where it wouldn't consider twists with the hold piece.

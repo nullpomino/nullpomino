@@ -106,7 +106,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * AI's name
 	 */
 	public String getName() {
-		return "PoochyBot V1.22";
+		return "PoochyBot V1.23";
 	}
 
 	/*
@@ -321,7 +321,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			else
 				sameStatusTime = 0;
-			if((bestHold == true) && engine.isHoldOK()) {
+			if((bestHold == true) && thinkComplete && engine.isHoldOK()) {
 				// Hold
 				input |= Controller.BUTTON_BIT_D;
 
@@ -617,6 +617,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 						input |= Controller.BUTTON_BIT_D;
 				}
 			}
+			/*
 			//Catch bug where it fails to rotate J piece
 			if (moveDir == 0 && rotateDir == 0 & drop == 0)
 			{
@@ -642,6 +643,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (rotateDir == 0 && Math.abs(rt - bestRt) == 2)
 				rotateDir = 1;
+			*/
 			//Convert parameters to input
 			boolean useDAS = engine.dasCount >= engine.getDAS() && moveDir == setDAS;
 			if(moveDir == -1 && (!ctrl.isPress(Controller.BUTTON_LEFT) || useDAS))
@@ -1395,7 +1397,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 		// 穴の数とI型が必要な谷の数（設置前）
 		int holeBefore = fld.getHowManyHoles();
-		int lidBefore = fld.getHowManyLidAbobeHoles();
+		//int lidBefore = fld.getHowManyLidAbobeHoles();
 
 		//Check number of holes in rightmost column
 		int testY = fld.getHiddenHeight();
@@ -1580,7 +1582,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 		if( (lines < 4) && (!allclear) ) {
 			// 穴の数とI型が必要な谷の数（設置後）
-			int lidAfter = fld.getHowManyLidAbobeHoles();
+			//int lidAfter = fld.getHowManyLidAbobeHoles();
 
 			//Find valleys that need an I, J, or L.
 			int needIValleyAfter = 0, needJValleyAfter = 0, needLValleyAfter = 0;
@@ -1644,10 +1646,12 @@ public class PoochyBot extends DummyAI implements Runnable {
 					pts += (holeBefore - holeAfter) * 400;
 			}
 
+			/*
 			if(lidAfter < lidBefore) {
 				// 穴の上に乗っているブロックを減らすと加点
 				pts += (lidAfter - lidBefore) * 500;
 			}
+			*/
 
 			if((tspin) && (lines >= 1)) {
 				// T-Spin Bonus - retained from Basic AI, but should never actually trigger
