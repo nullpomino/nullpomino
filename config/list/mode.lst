@@ -24,3 +24,4 @@ org.game_host.hebo.nullpomino.game.subsystem.mode.GemManiaMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.VSBattleMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.ToolVSMapEditMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.NetVSBattleMode
+net.tetrisconcept.poochy.nullpomino.game.subsystem.mode.BravoManiaMode
