@@ -332,6 +332,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** マップセットID(ルーム作成画面) */
 	protected JSpinner spinnerCreateRoomMapSetID;
+	
+	/** Rate of change of garbage holes */
+	protected JSpinner spinnerCreateRoomGarbagePercent;
 
 	/** マップ有効(ルーム作成画面) */
 	protected JCheckBox chkboxCreateRoomUseMap;
@@ -350,6 +353,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** 3人以上生きている場合に攻撃力を減らす(ルーム作成画面) */
 	protected JCheckBox chkboxCreateRoomReduceLineSend;
+	
+	/** Set garbage type */
+	protected JCheckBox chkboxCreateRoomGarbageChangePerAttack;
 
 	/** 断片的邪魔ブロックシステムを使う(ルーム作成画面) */
 	protected JCheckBox chkboxCreateRoomUseFractionalGarbage;
@@ -1073,6 +1079,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomMapSetID.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomMapSetID.setToolTipText(getUIText("CreateRoom_MapSetID_Tip"));
 		subpanelMapSetID.add(spinnerCreateRoomMapSetID, BorderLayout.EAST);
+		
+		// ** Garbage change rate panel
+		JPanel subpanelGarbagePercent = new JPanel(new BorderLayout());
+		containerpanelCreateRoom.add(subpanelGarbagePercent);
+		
+		// ** Label for garbage change rate
+		JLabel labelGarbagePercent = new JLabel(getUIText("CreateRoom_GarbagePercent"));
+		subpanelGarbagePercent.add(labelGarbagePercent, BorderLayout.WEST);
+		
+		// ** Spinner for garbage change rate
+		int defaultGarbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 100);
+		spinnerCreateRoomGarbagePercent = new JSpinner(new SpinnerNumberModel(defaultGarbagePercent, 0, 100, 10));
+		spinnerCreateRoomGarbagePercent.setPreferredSize(new Dimension(200, 20));
+		spinnerCreateRoomGarbagePercent.setToolTipText(getUIText("CreateRoom_GarbagePercent_Tip"));
+		subpanelGarbagePercent.add(spinnerCreateRoomGarbagePercent, BorderLayout.EAST);
 
 		// ** マップ有効
 		chkboxCreateRoomUseMap = new JCheckBox(getUIText("CreateRoom_UseMap"));
@@ -1108,6 +1129,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", false));
 		chkboxCreateRoomReduceLineSend.setToolTipText(getUIText("CreateRoom_ReduceLineSend_Tip"));
 		containerpanelCreateRoom.add(chkboxCreateRoomReduceLineSend);
+		
+		// ** Set garbage type
+		chkboxCreateRoomGarbageChangePerAttack = new JCheckBox(getUIText("CreateRoom_GarbageChangePerAttack"));
+		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('C');
+		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
+		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
+		containerpanelCreateRoom.add(chkboxCreateRoomGarbageChangePerAttack);
 
 		// ** 断片的邪魔ブロックシステムを使う
 		chkboxCreateRoomUseFractionalGarbage = new JCheckBox(getUIText("CreateRoom_UseFractionalGarbage"));
@@ -1613,11 +1641,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.das = propConfig.getProperty("createroom.defaultDAS", 14);
 				r.hurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 90);
 				r.hurryupInterval = propConfig.getProperty("createroom.defaultHurryupInterval", 5);
+				r.garbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 100);
 				r.ruleLock = propConfig.getProperty("createroom.defaultRuleLock", false);
 				r.tspinEnableType = propConfig.getProperty("createroom.defaultTSpinEnableType", 1);
 				r.b2b = propConfig.getProperty("createroom.defaultB2B", true);
 				r.combo = propConfig.getProperty("createroom.defaultCombo", true);
 				r.reduceLineSend = propConfig.getProperty("createroom.defaultReduceLineSend", false);
+				r.garbageChangePerAttack = propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true);
 				r.useFractionalGarbage = propConfig.getProperty("createroom.defaultUseFractionalGarbage", false);
 				r.autoStartTNET2 = propConfig.getProperty("createroom.defaultAutoStartTNET2", false);
 				r.disableTimerAfterSomeoneCancelled = propConfig.getProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", false);
@@ -1639,12 +1669,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			spinnerCreateRoomDAS.setValue(r.das);
 			spinnerCreateRoomHurryupSeconds.setValue(r.hurryupSeconds);
 			spinnerCreateRoomHurryupInterval.setValue(r.hurryupInterval);
+			spinnerCreateRoomGarbagePercent.setValue(r.garbagePercent);
 			chkboxCreateRoomUseMap.setSelected(r.useMap);
 			chkboxCreateRoomRuleLock.setSelected(r.ruleLock);
 			comboboxCreateRoomTSpinEnableType.setSelectedIndex(r.tspinEnableType);
 			chkboxCreateRoomB2B.setSelected(r.b2b);
 			chkboxCreateRoomCombo.setSelected(r.combo);
 			chkboxCreateRoomReduceLineSend.setSelected(r.reduceLineSend);
+			chkboxCreateRoomGarbageChangePerAttack.setSelected(r.garbageChangePerAttack);
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
 			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
@@ -1888,6 +1920,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultLineDelay", backupRoomInfo.lineDelay);
 			propConfig.setProperty("createroom.defaultLockDelay", backupRoomInfo.lockDelay);
 			propConfig.setProperty("createroom.defaultDAS", backupRoomInfo.das);
+			propConfig.setProperty("createroom.defaultGarbagePercent", backupRoomInfo.garbagePercent);
 			propConfig.setProperty("createroom.defaultHurryupSeconds", backupRoomInfo.hurryupSeconds);
 			propConfig.setProperty("createroom.defaultHurryupInterval", backupRoomInfo.hurryupInterval);
 			propConfig.setProperty("createroom.defaultRuleLock", backupRoomInfo.ruleLock);
@@ -1895,6 +1928,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultB2B", backupRoomInfo.b2b);
 			propConfig.setProperty("createroom.defaultCombo", backupRoomInfo.combo);
 			propConfig.setProperty("createroom.defaultReduceLineSend", backupRoomInfo.reduceLineSend);
+			propConfig.setProperty("createroom.defaultGarbageChangePerAttack", backupRoomInfo.garbageChangePerAttack);
 			propConfig.setProperty("createroom.defaultUseFractionalGarbage", backupRoomInfo.useFractionalGarbage);
 			propConfig.setProperty("createroom.defaultAutoStartTNET2", backupRoomInfo.autoStartTNET2);
 			propConfig.setProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", backupRoomInfo.disableTimerAfterSomeoneCancelled);
@@ -2242,6 +2276,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				boolean disableTimerAfterSomeoneCancelled = chkboxCreateRoomDisableTimerAfterSomeoneCancelled.isSelected();
 				boolean useMap = chkboxCreateRoomUseMap.isSelected();
 				boolean useFractionalGarbage = chkboxCreateRoomUseFractionalGarbage.isSelected();
+				boolean garbageChangePerAttack = chkboxCreateRoomGarbageChangePerAttack.isSelected();
+				Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
 
 				if(backupRoomInfo == null) backupRoomInfo = new NetRoomInfo();
 				backupRoomInfo.strName = roomName;
@@ -2265,6 +2301,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				backupRoomInfo.disableTimerAfterSomeoneCancelled = disableTimerAfterSomeoneCancelled;
 				backupRoomInfo.useMap = useMap;
 				backupRoomInfo.useFractionalGarbage = useFractionalGarbage;
+				backupRoomInfo.garbageChangePerAttack = garbageChangePerAttack;
+				backupRoomInfo.garbagePercent = integerGarbagePercent;
 
 				String msg;
 				msg = "roomcreate\t" + roomName + "\t" + integerMaxPlayers + "\t" + integerAutoStartSeconds + "\t";
@@ -2272,7 +2310,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg += integerLineDelay + "\t" + integerLockDelay + "\t" + integerDAS + "\t" + rulelock + "\t";
 				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
-				msg += useMap + "\t" + useFractionalGarbage + "\n";
+				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\n";
 
 				txtpaneRoomChatLog.setText("");
 				setRoomButtonsEnabled(false);

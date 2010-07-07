@@ -778,11 +778,13 @@ public class NetServer {
 		// ルーム作成
 		if(message[0].equals("roomcreate")) {
 			/*
-				String msg = "roomcreate\t" + roomName + "\t" + integerMaxPlayers + "\t" + integerAutoStartSeconds + "\t";
+				String msg;
+				msg = "roomcreate\t" + roomName + "\t" + integerMaxPlayers + "\t" + integerAutoStartSeconds + "\t";
 				msg += integerGravity + "\t" + integerDenominator + "\t" + integerARE + "\t" + integerARELine + "\t";
 				msg += integerLineDelay + "\t" + integerLockDelay + "\t" + integerDAS + "\t" + rulelock + "\t";
-				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + hurryupSeconds + "\t + hurryupInterval + "\t";
-				msg += autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t" + useMap + "\t" + useFractionalGarbage + "\n";
+				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
+				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
+				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\n";
 			 */
 			if(pInfo != null) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
@@ -819,6 +821,8 @@ public class NetServer {
 				roomInfo.disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(message[19]);
 				roomInfo.useMap = Boolean.parseBoolean(message[20]);
 				roomInfo.useFractionalGarbage = Boolean.parseBoolean(message[21]);
+				roomInfo.garbageChangePerAttack = Boolean.parseBoolean(message[22]);
+				roomInfo.garbagePercent = Integer.parseInt(message[23]);
 
 				roomInfo.roomID = roomCount;
 

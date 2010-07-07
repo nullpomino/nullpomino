@@ -118,8 +118,10 @@ public class NetRoomInfo implements Serializable {
 	/** 3人以上生きている場合に攻撃力を減らす */
 	public boolean reduceLineSend = false;
 
+	/** Rate of change of garbage holes */
 	public int garbagePercent = 100;
 	
+	/** Hole change style (false=line true=attack)*/
 	public boolean garbageChangePerAttack = true;
 	
 	/** Hurryup開始までの秒数(-1でHurryupなし) */
@@ -236,6 +238,8 @@ public class NetRoomInfo implements Serializable {
 		mapReceived = n.mapReceived;
 		mapPrevious = n.mapPrevious;
 		useFractionalGarbage = n.useFractionalGarbage;
+		garbageChangePerAttack = n.garbageChangePerAttack;
+		garbagePercent = n.garbagePercent;
 
 		mapList.clear();
 		mapList.addAll(n.mapList);
@@ -281,6 +285,8 @@ public class NetRoomInfo implements Serializable {
 		disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(rdata[24]);
 		useMap = Boolean.parseBoolean(rdata[25]);
 		useFractionalGarbage = Boolean.parseBoolean(rdata[26]);
+		garbageChangePerAttack = Boolean.parseBoolean(rdata[27]);
+		garbagePercent = Integer.parseInt(rdata[28]);
 	}
 
 	/**
@@ -293,10 +299,10 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(プレイヤーリスト除く)
-	 * @return Stringの配列(String[27])
+	 * @return Stringの配列(String[29])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[27];
+		String[] rdata = new String[29];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -324,6 +330,8 @@ public class NetRoomInfo implements Serializable {
 		rdata[24] = Boolean.toString(disableTimerAfterSomeoneCancelled);
 		rdata[25] = Boolean.toString(useMap);
 		rdata[26] = Boolean.toString(useFractionalGarbage);
+		rdata[27] = Boolean.toString(garbageChangePerAttack);
+		rdata[28] = Integer.toString(garbagePercent);
 		return rdata;
 	}
 
