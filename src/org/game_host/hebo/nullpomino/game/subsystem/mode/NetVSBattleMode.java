@@ -178,6 +178,12 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** 新しい断片的邪魔ブロックシステムを使う */
 	private boolean useFractionalGarbage;
 
+	private int garbagePercent;
+
+	private boolean garbageChangePerAttack;
+
+	private int lastHole = -1;
+	
 	/** Hurryup開始までの秒数(-1でHurryupなし) */
 	private int hurryupSeconds;
 
@@ -460,6 +466,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		numMaxPlayers = 0;
 		autoStartActive = false;
 		autoStartTimer = 0;
+		garbagePercent = 100;
+		garbageChangePerAttack = true;
 		isReady = new boolean[MAX_PLAYERS];
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
@@ -1060,30 +1068,80 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			engine.playSE("garbage");
 
 			int smallGarbageCount = 0;	// 10pts未満の邪魔ブロック数の合計数(後でまとめてせり上げる)
-
+			int hole = lastHole;
+			int newHole;
+			if(hole == -1) {
+				hole = engine.random.nextInt(engine.field.getWidth());
+			}
+			
 			while(!garbageEntries.isEmpty()) {
 				GarbageEntry garbageEntry = garbageEntries.poll();
 				smallGarbageCount += garbageEntry.lines % GARBAGE_DENOMINATOR;
 
 				if(garbageEntry.lines / GARBAGE_DENOMINATOR > 0) {
-					int hole = engine.random.nextInt(engine.field.getWidth());
 					int seatFrom = allPlayerSeatNumbers[garbageEntry.playerID];
 					int garbageColor = (seatFrom < 0) ? Block.BLOCK_COLOR_GRAY : PLAYER_COLOR_BLOCK[seatFrom];
 					lastAttackerUID = garbageEntry.uid;
-					engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-													  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
-													  garbageEntry.lines / GARBAGE_DENOMINATOR);
+					if(garbageChangePerAttack == true){
+						if(engine.random.nextInt(100) < garbagePercent) {
+							hole = engine.random.nextInt(engine.field.getWidth());
+						}
+						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
+								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
+								  garbageEntry.lines / GARBAGE_DENOMINATOR);
+					} else {
+						while(garbageEntry.lines > 0) {
+							if(engine.random.nextInt(100) < garbagePercent) {
+								newHole = engine.random.nextInt(engine.field.getWidth() - 1);
+								if(newHole >= hole) {
+									newHole++;
+								}
+								hole = newHole;
+							}
+
+							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
+									Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE, 1);
+							garbageEntry.lines--;
+						}
+					}
 				}
 			}
 
 			if(smallGarbageCount > 0) {
 				// 10pts以上の部分をすべてせり上げる
+
+				//int hole = engine.random.nextInt(engine.field.getWidth());
+				//engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
+				//		  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
+				//		  smallGarbageCount / GARBAGE_DENOMINATOR);
+
 				if(smallGarbageCount / GARBAGE_DENOMINATOR > 0) {
 					lastAttackerUID = -1;
-					int hole = engine.random.nextInt(engine.field.getWidth());
-					engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
-													  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
-													  smallGarbageCount / GARBAGE_DENOMINATOR);
+					int smallGarbageLines = smallGarbageCount / GARBAGE_DENOMINATOR;
+					
+					if(garbageChangePerAttack == true){
+						if(engine.random.nextInt(100) < garbagePercent) {
+							hole = engine.random.nextInt(engine.field.getWidth());
+						}
+						engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
+								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
+								  smallGarbageCount / GARBAGE_DENOMINATOR);
+					} else {
+						while(smallGarbageLines > 0) {
+							if(engine.random.nextInt(100) < garbagePercent) {
+								newHole = engine.random.nextInt(engine.field.getWidth() - 1);
+								if(newHole >= hole) {
+									newHole++;
+								}
+								hole = newHole;
+							}
+
+							engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
+									  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE, 1);
+							smallGarbageLines--;
+						}
+					}
+
 				}
 				// 10pts未満は次回繰越
 				if(smallGarbageCount % GARBAGE_DENOMINATOR > 0) {
@@ -1091,6 +1149,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					garbageEntries.add(smallGarbageEntry);
 				}
 			}
+			
+			lastHole = hole;
 		}
 
 		// HURRY UP!
@@ -2225,6 +2285,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			hurryupSeconds = roomInfo.hurryupSeconds;
 			hurryupInterval = roomInfo.hurryupInterval;
 			useFractionalGarbage = roomInfo.useFractionalGarbage;
+			garbagePercent = roomInfo.garbagePercent;
+			garbageChangePerAttack = roomInfo.garbageChangePerAttack;
 
 			for(int i = 0; i < getPlayers(); i++) {
 				owner.engine[i].speed.gravity = roomInfo.gravity;
@@ -2295,6 +2357,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		hurryupSeconds = -1;
 		hurryupInterval = 5;
 		useFractionalGarbage = false;
+		garbagePercent = 100;
+		garbageChangePerAttack = true;
 		mapList.clear();
 
 		for(int i = 0; i < getPlayers(); i++) {

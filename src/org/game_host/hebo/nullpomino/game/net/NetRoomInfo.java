@@ -118,6 +118,10 @@ public class NetRoomInfo implements Serializable {
 	/** 3人以上生きている場合に攻撃力を減らす */
 	public boolean reduceLineSend = false;
 
+	public int garbagePercent = 100;
+	
+	public boolean garbageChangePerAttack = true;
+	
 	/** Hurryup開始までの秒数(-1でHurryupなし) */
 	public int hurryupSeconds = -1;
 
