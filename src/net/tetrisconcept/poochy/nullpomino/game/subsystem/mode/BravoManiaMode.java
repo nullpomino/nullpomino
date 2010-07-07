@@ -1,7 +1,7 @@
 package net.tetrisconcept.poochy.nullpomino.game.subsystem.mode;
 
 //import org.game_host.hebo.nullpomino.game.component.Block;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.component.Controller;
 import org.game_host.hebo.nullpomino.game.component.Field;
 import org.game_host.hebo.nullpomino.game.component.Piece;
@@ -17,9 +17,6 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
  * @author Poochy.EXE
  */
 public class BravoManiaMode extends DummyMode {
-	/** ログ */
-	static Logger log = Logger.getLogger(BravoManiaMode.class);
-	
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0};
 
@@ -739,14 +736,11 @@ public class BravoManiaMode extends DummyMode {
 	
 	public boolean checkBravoAlert(Field field, int nextID, int holdID)
 	{
-		log.debug("checkBravoAlert called.");
 		int height = field.getHeight() - field.getHighestBlockY();
 		if ((height & 1) == 1 || height == 0)
 			return false;
 		String str = field.toString();
-		log.debug("Untruncated field: " + str);
 		str = str.substring(str.length()-(15*height));
-		log.debug("Truncated field: " + str);
 		String fld = "";
 		String temp = "";
 		for (int y = 0; y < height; y++)
@@ -762,7 +756,7 @@ public class BravoManiaMode extends DummyMode {
 			if (!temp.equals("1111111111"))
 				fld = fld + temp;
 		}
-		log.debug("Boolean field: " + fld);
+		
 		String[] patternsNext = null;
 		if (nextID == Piece.PIECE_I)
 			patternsNext = BRAVO_PATTERNS_I;
@@ -774,16 +768,10 @@ public class BravoManiaMode extends DummyMode {
 			patternsNext = BRAVO_PATTERNS_T;
 		else if (nextID == Piece.PIECE_J)
 			patternsNext = BRAVO_PATTERNS_J;
-		log.debug("nextID = " + nextID);
-		if (patternsNext != null)
-		log.debug("patternsNext = " + patternsNext.toString());
 		if (patternsNext != null)
 			for (int x = 0; x < patternsNext.length; x++)
-			{
-				log.debug("Check pattern: " + patternsNext[x]);
 				if (fld.equals(patternsNext[x]))
 					return true;
-			}
 		
 		if (holdID == nextID)
 			return false;
@@ -799,16 +787,10 @@ public class BravoManiaMode extends DummyMode {
 			patternsHold = BRAVO_PATTERNS_T;
 		else if (holdID == Piece.PIECE_J)
 			patternsHold = BRAVO_PATTERNS_J;
-		log.debug("holdID = " + holdID);
-		if (patternsHold != null)
-		log.debug("patternsHold = " + patternsHold.toString());
 		if (patternsHold != null)
 			for (int x = 0; x < patternsHold.length; x++)
-			{
-				log.debug("Check pattern: " + patternsHold[x]);
 				if (fld.equals(patternsHold[x]))
 					return true;
-			}
 		
 		return false;
 	}
