@@ -1090,7 +1090,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
 								  garbageEntry.lines / GARBAGE_DENOMINATOR);
 					} else {
-						while(garbageEntry.lines > 0) {
+						for(int i = garbageEntry.lines / GARBAGE_DENOMINATOR; i > 0; i--) {
 							if(engine.random.nextInt(100) < garbagePercent) {
 								newHole = engine.random.nextInt(engine.field.getWidth() - 1);
 								if(newHole >= hole) {
@@ -1101,7 +1101,6 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
 									Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE, 1);
-							garbageEntry.lines--;
 						}
 					}
 				}
@@ -1117,7 +1116,6 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 				if(smallGarbageCount / GARBAGE_DENOMINATOR > 0) {
 					lastAttackerUID = -1;
-					int smallGarbageLines = smallGarbageCount / GARBAGE_DENOMINATOR;
 					
 					if(garbageChangePerAttack == true){
 						if(engine.random.nextInt(100) < garbagePercent) {
@@ -1127,7 +1125,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
 								  smallGarbageCount / GARBAGE_DENOMINATOR);
 					} else {
-						while(smallGarbageLines > 0) {
+						for(int i = smallGarbageCount / GARBAGE_DENOMINATOR; i > 0; i--) {
 							if(engine.random.nextInt(100) < garbagePercent) {
 								newHole = engine.random.nextInt(engine.field.getWidth() - 1);
 								if(newHole >= hole) {
@@ -1138,7 +1136,6 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 							engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
 									  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE, 1);
-							smallGarbageLines--;
 						}
 					}
 
