@@ -2379,7 +2379,7 @@ public class GameEngine {
 			ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_B) ||
 			ctrl.isPush(Controller.BUTTON_C) || (ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
 		
-		if( (ruleopt.lineCancel) && (statc[0] < statc[1]) && cancel ) {
+		if( (ruleopt.lineCancel) && (statc[0] < getLineDelay()) && cancel ) {
 			statc[0] = getLineDelay();
 		}
 
