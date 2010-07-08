@@ -301,18 +301,24 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** ライン消去前にブロックが光るフレームを入れる */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
+	
+	/** ARE cancel */
+	private JCheckBox chkboxARECancel;
 
 	//----------------------------------------------------------------------
 	/* ライン消去設定パネル */
-
-	/** 落下アニメ */
-	private JCheckBox chkboxLineFallAnim;
 
 	/** 最低ライン消去時間 */
 	private JTextField txtfldLineDelayMin;
 
 	/** 最高ライン消去時間 */
 	private JTextField txtfldLineDelayMax;
+	
+	/** 落下アニメ */
+	private JCheckBox chkboxLineFallAnim;
+	
+	/** Line delay cancel */
+	private JCheckBox chkboxLineCancel;
 
 	//----------------------------------------------------------------------
 	/* 移動設定パネル */
@@ -936,6 +942,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// ライン消去前にブロックが光るフレームを入れる
 		chkboxARELockFlashBeforeLineClear = new JCheckBox(getUIText("ARE_LockFlashBeforeLineClear"));
 		panelARE.add(chkboxARELockFlashBeforeLineClear);
+		
+		// ARE cancel
+		chkboxARECancel = new JCheckBox(getUIText("ARE_Cancel"));
+		panelARE.add(chkboxARECancel);
 
 		// ライン消去タブ --------------------------------------------------
 		JPanel panelLine = new JPanel();
@@ -957,6 +967,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// 落下アニメ
 		chkboxLineFallAnim = new JCheckBox(getUIText("Line_FallAnim"));
 		panelLine.add(chkboxLineFallAnim);
+		
+		// Line delay cancel
+		chkboxLineCancel = new JCheckBox(getUIText("Line_Cancel"));
+		panelLine.add(chkboxLineCancel);
 
 		// 移動タブ --------------------------------------------------
 		JPanel panelMove = new JPanel();
@@ -1391,10 +1405,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELockFlash.setText(String.valueOf(r.lockflash));
 		chkboxARELockFlashOnlyFrame.setSelected(r.lockflashOnlyFrame);
 		chkboxARELockFlashBeforeLineClear.setSelected(r.lockflashBeforeLineClear);
+		chkboxARECancel.setSelected(r.areCancel);
 
-		chkboxLineFallAnim.setSelected(r.lineFallAnim);
 		txtfldLineDelayMin.setText(String.valueOf(r.minLineDelay));
 		txtfldLineDelayMax.setText(String.valueOf(r.maxLineDelay));
+		chkboxLineFallAnim.setSelected(r.lineFallAnim);
+		chkboxLineCancel.setSelected(r.lineCancel);
 
 		txtfldMoveDASMin.setText(String.valueOf(r.minDAS));
 		txtfldMoveDASMax.setText(String.valueOf(r.maxDAS));
@@ -1495,10 +1511,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.lockflash = getIntTextField(txtfldARELockFlash);
 		r.lockflashOnlyFrame = chkboxARELockFlashOnlyFrame.isSelected();
 		r.lockflashBeforeLineClear = chkboxARELockFlashBeforeLineClear.isSelected();
+		r.areCancel = chkboxARECancel.isSelected();
 
-		r.lineFallAnim = chkboxLineFallAnim.isSelected();
 		r.minLineDelay = getIntTextField(txtfldLineDelayMin);
 		r.maxLineDelay = getIntTextField(txtfldLineDelayMax);
+		r.lineFallAnim = chkboxLineFallAnim.isSelected();
+		r.lineCancel = chkboxLineCancel.isSelected();
 
 		r.minDAS = getIntTextField(txtfldMoveDASMin);
 		r.maxDAS = getIntTextField(txtfldMoveDASMax);

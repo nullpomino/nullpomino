@@ -2372,6 +2372,16 @@ public class GameEngine {
 		// ラインを1段落とす
 		if((getLineDelay() >= (lineClearing - 1)) && (statc[0] >= getLineDelay() - (lineClearing - 1)) && (ruleopt.lineFallAnim))
 			field.downFloatingBlocksSingleLine();
+		
+		// Line delay cancel check
+		boolean cancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
+			ctrl.isPush(Controller.BUTTON_LEFT) || ctrl.isPush(Controller.BUTTON_RIGHT) ||
+			ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_B) ||
+			ctrl.isPush(Controller.BUTTON_C) || (ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		
+		if( (ruleopt.lineCancel) && (statc[0] < statc[1]) && cancel ) {
+			statc[0] = getLineDelay();
+		}
 
 		// 次のステータス
 		if(statc[0] >= getLineDelay()) {
@@ -2427,6 +2437,16 @@ public class GameEngine {
 		statc[0]++;
 
 		checkDropContinuousUse();
+		
+		// ARE cancel check
+		boolean cancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
+			ctrl.isPush(Controller.BUTTON_LEFT) || ctrl.isPush(Controller.BUTTON_RIGHT) ||
+			ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_B) ||
+			ctrl.isPush(Controller.BUTTON_C) || (ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		
+		if( (ruleopt.areCancel) && (statc[0] < statc[1]) && cancel ) {
+			statc[0] = statc[1];
+		}
 
 		// 横溜め
 		if( (ruleopt.dasInARE) && ((statc[0] < statc[1] - 1) || (ruleopt.dasInARELastFrame)) )
