@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Thu Jul 08 02:42:38 EDT 2010
+#Thu Jul 08 19:00:08 EDT 2010
 0.ruleopt.strWallkick=org.game_host.hebo.nullpomino.game.subsystem.wallkick.DTETWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -31,7 +31,7 @@
 0.ruleopt.pieceDefaultDirection.0=0
 0.ruleopt.pieceSpawnYBig.3.3=0
 0.ruleopt.pieceSpawnYBig.3.2=0
-0.ruleopt.dasInARELastFrame=false
+0.ruleopt.dasInARELastFrame=true
 0.ruleopt.pieceSpawnYBig.3.1=0
 0.ruleopt.pieceSpawnYBig.3.0=0
 0.ruleopt.pieceSpawnXBig.10.3=0
@@ -102,7 +102,7 @@
 0.ruleopt.pieceSpawnY.10.2=0
 0.ruleopt.pieceSpawnY.10.1=0
 0.ruleopt.pieceSpawnY.10.0=0
-0.ruleopt.dasInLineClear=false
+0.ruleopt.dasInLineClear=true
 0.ruleopt.pieceSpawnX.7.3=0
 0.ruleopt.pieceSpawnX.7.2=0
 0.ruleopt.pieceSpawnX.7.1=0
@@ -140,7 +140,7 @@
 0.ruleopt.pieceOffsetY.1.2=0
 0.ruleopt.pieceOffsetY.1.1=0
 0.ruleopt.pieceOffsetY.1.0=1
-0.ruleopt.dasInEndingStart=false
+0.ruleopt.dasInEndingStart=true
 0.ruleopt.ghost=false
 0.ruleopt.pieceOffsetX.9.3=0
 0.ruleopt.pieceSpawnX.10.3=0
@@ -313,7 +313,7 @@
 0.ruleopt.pieceOffsetY.7.0=0
 0.ruleopt.minLockDelay=-1
 0.ruleopt.pieceOffsetY.3.3=0
-0.ruleopt.dasInReady=false
+0.ruleopt.dasInReady=true
 0.ruleopt.pieceOffsetY.3.2=0
 0.ruleopt.pieceOffsetY.3.1=0
 0.ruleopt.pieceOffsetY.3.0=1
@@ -350,7 +350,7 @@
 0.ruleopt.pieceSpawnY.0.2=0
 0.ruleopt.pieceSpawnY.0.1=0
 0.ruleopt.pieceSpawnY.0.0=0
-0.ruleopt.moveFirstFrame=false
+0.ruleopt.moveFirstFrame=true
 0.ruleopt.pieceOffsetY.10.3=0
 0.ruleopt.pieceOffsetY.10.2=0
 0.ruleopt.pieceOffsetY.10.1=0

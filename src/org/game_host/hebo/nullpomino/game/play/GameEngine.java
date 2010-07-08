@@ -363,6 +363,15 @@ public class GameEngine {
 
 	/** ヘボHIDDEN 進行度制限値 */
 	public int heboHiddenYLimit;
+	
+	/** Set when ARE or line delay is canceled */
+	public boolean delayCancel;
+	
+	/** Piece must move left after canceled delay */
+	public boolean delayCancelMoveLeft;
+	
+	/** Piece must move right after canceled delay */
+	public boolean delayCancelMoveRight;
 
 	/** 骨ブロック */
 	public boolean bone;
@@ -649,6 +658,10 @@ public class GameEngine {
 		heboHiddenTimerMax = 0;
 		heboHiddenYNow = 0;
 		heboHiddenYLimit = 0;
+		
+		delayCancel = false;
+		delayCancelMoveLeft = false;
+		delayCancelMoveRight = false;
 
 		bone = false;
 
@@ -1922,6 +1935,18 @@ public class GameEngine {
 			boolean onGroundBeforeMove = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field);
 
 			move = moveDirection;
+			
+			if (statc[0] == 0 && delayCancel) {
+				if (delayCancelMoveLeft) move = -1;
+				if (delayCancelMoveRight) move = 1;
+				dasCount = 0;
+				// delayCancel = false;
+				delayCancelMoveLeft = false;
+				delayCancelMoveRight = false;
+			} else if (statc[0] == 1 && delayCancel && (dasCount < getDAS())) {
+				move = 0;
+				delayCancel = false;
+			}
 
 			if(move != 0) sidemoveflag = true;
 
@@ -1933,6 +1958,7 @@ public class GameEngine {
 
 					if(nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false) {
 						nowPieceX += move;
+						log.debug("Successful movement: move="+move);
 
 						if((ruleopt.lockresetMove == true) && (isMoveCountExceed() == false)) {
 							lockDelayNow = 0;
@@ -2374,12 +2400,15 @@ public class GameEngine {
 			field.downFloatingBlocksSingleLine();
 		
 		// Line delay cancel check
-		boolean cancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
-			ctrl.isPush(Controller.BUTTON_LEFT) || ctrl.isPush(Controller.BUTTON_RIGHT) ||
-			ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_B) ||
-			ctrl.isPush(Controller.BUTTON_C) || (ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
+		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
 		
-		if( (ruleopt.lineCancel) && (statc[0] < getLineDelay()) && cancel ) {
+		delayCancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
+			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) || 
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			(ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		
+		if( (ruleopt.lineCancel) && (statc[0] < getLineDelay()) && delayCancel ) {
 			statc[0] = getLineDelay();
 		}
 
@@ -2439,12 +2468,15 @@ public class GameEngine {
 		checkDropContinuousUse();
 		
 		// ARE cancel check
-		boolean cancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
-			ctrl.isPush(Controller.BUTTON_LEFT) || ctrl.isPush(Controller.BUTTON_RIGHT) ||
-			ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_B) ||
-			ctrl.isPush(Controller.BUTTON_C) || (ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
+		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
 		
-		if( (ruleopt.areCancel) && (statc[0] < statc[1]) && cancel ) {
+		delayCancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
+			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) || 
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			(ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		
+		if( (ruleopt.areCancel) && (statc[0] < statc[1]) && delayCancel ) {
 			statc[0] = statc[1];
 		}
 
