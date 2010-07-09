@@ -171,7 +171,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 			if(name == null) break;
 			if(name.length() == 0) break;
 
-			aiArrayList.add(name);
+			if(!name.startsWith("#"))
+				aiArrayList.add(name);
 		}
 
 		String[] aiStringList = new String[aiArrayList.size()];

@@ -223,17 +223,19 @@ public class ModeManager {
 			if(name == null) return;
 			if(name.length() == 0) return;
 
-			Class<GameMode> modeClass;
-			GameMode modeObject;
+			if(!name.startsWith("#")) {
+				Class<GameMode> modeClass;
+				GameMode modeObject;
 
-			try {
-				modeClass = (Class<GameMode>) Class.forName(name);
-				modeObject = modeClass.newInstance();
-				modelist.add(modeObject);
-			} catch(ClassNotFoundException e) {
-				log.warn("Mode class " + name + " not found", e);
-			} catch(Exception e) {
-				log.warn("Mode class " + name + " load failed", e);
+				try {
+					modeClass = (Class<GameMode>) Class.forName(name);
+					modeObject = modeClass.newInstance();
+					modelist.add(modeObject);
+				} catch(ClassNotFoundException e) {
+					log.warn("Mode class " + name + " not found", e);
+				} catch(Exception e) {
+					log.warn("Mode class " + name + " load failed", e);
+				}
 			}
 		}
 	}

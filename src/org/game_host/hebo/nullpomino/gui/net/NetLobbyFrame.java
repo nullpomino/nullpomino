@@ -332,7 +332,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** マップセットID(ルーム作成画面) */
 	protected JSpinner spinnerCreateRoomMapSetID;
-	
+
 	/** Rate of change of garbage holes */
 	protected JSpinner spinnerCreateRoomGarbagePercent;
 
@@ -353,7 +353,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** 3人以上生きている場合に攻撃力を減らす(ルーム作成画面) */
 	protected JCheckBox chkboxCreateRoomReduceLineSend;
-	
+
 	/** Set garbage type */
 	protected JCheckBox chkboxCreateRoomGarbageChangePerAttack;
 
@@ -1079,15 +1079,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomMapSetID.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomMapSetID.setToolTipText(getUIText("CreateRoom_MapSetID_Tip"));
 		subpanelMapSetID.add(spinnerCreateRoomMapSetID, BorderLayout.EAST);
-		
+
 		// ** Garbage change rate panel
 		JPanel subpanelGarbagePercent = new JPanel(new BorderLayout());
 		containerpanelCreateRoom.add(subpanelGarbagePercent);
-		
+
 		// ** Label for garbage change rate
 		JLabel labelGarbagePercent = new JLabel(getUIText("CreateRoom_GarbagePercent"));
 		subpanelGarbagePercent.add(labelGarbagePercent, BorderLayout.WEST);
-		
+
 		// ** Spinner for garbage change rate
 		int defaultGarbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 100);
 		spinnerCreateRoomGarbagePercent = new JSpinner(new SpinnerNumberModel(defaultGarbagePercent, 0, 100, 10));
@@ -1129,10 +1129,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", false));
 		chkboxCreateRoomReduceLineSend.setToolTipText(getUIText("CreateRoom_ReduceLineSend_Tip"));
 		containerpanelCreateRoom.add(chkboxCreateRoomReduceLineSend);
-		
+
 		// ** Set garbage type
 		chkboxCreateRoomGarbageChangePerAttack = new JCheckBox(getUIText("CreateRoom_GarbageChangePerAttack"));
-		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('C');
+		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('G');
 		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
 		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
 		containerpanelCreateRoom.add(chkboxCreateRoomGarbageChangePerAttack);

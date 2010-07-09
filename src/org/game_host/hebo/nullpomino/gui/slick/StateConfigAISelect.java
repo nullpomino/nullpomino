@@ -141,7 +141,8 @@ public class StateConfigAISelect extends BasicGameState {
 			if(name == null) break;
 			if(name.length() == 0) break;
 
-			aiArrayList.add(name);
+			if(!name.startsWith("#"))
+				aiArrayList.add(name);
 		}
 
 		String[] aiStringList = new String[aiArrayList.size()];
