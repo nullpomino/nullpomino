@@ -120,6 +120,12 @@ public class Block implements Serializable {
 	/** 消える予定のブロック */
 	public static final int BLOCK_ATTRIBUTE_ERASE = 2048;
 
+	/** Temporary mark for block linking check algorithm */
+	public static final int BLOCK_ATTRIBUTE_TEMP_MARK = 4096;
+
+	/** "Block has falled" flag for cascade gravity */
+	public static final int BLOCK_ATTRIBUTE_CASCADE_FALL = 8192;
+
 	/** ブロックの色 */
 	public int color;
 
@@ -255,7 +261,7 @@ public class Block implements Serializable {
 	public boolean isGemBlock() {
 		return (color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE);
 	}
-	
+
 	/**
 	 * Checks to see if <code>this</code> is a gold square block
 	 * @return <code>true</code> if the block is a gold square block
@@ -263,12 +269,20 @@ public class Block implements Serializable {
 	public boolean isGoldSquareBlock() {
 		return (color >= BLOCK_COLOR_SQUARE_GOLD_1) && (color <= BLOCK_COLOR_SQUARE_GOLD_9);
 	}
-	
+
 	/**
 	 * Checks to see if <code>this</code> is a silver square block
 	 * @return <code>true</code> if the block is a silver square block
 	 */
 	public boolean isSilverSquareBlock() {
 		return (color >= BLOCK_COLOR_SQUARE_SILVER_1) && (color <= BLOCK_COLOR_SQUARE_SILVER_9);
+	}
+
+	/**
+	 * Checks to see if <code>this</code> is a normal block (gray to purple)
+	 * @return <code>true</code> if the block is a normal block
+	 */
+	public boolean isNormalBlock() {
+		return (color >= BLOCK_COLOR_GRAY) && (color <= BLOCK_COLOR_PURPLE);
 	}
 }

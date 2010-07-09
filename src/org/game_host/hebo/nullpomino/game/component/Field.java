@@ -36,7 +36,7 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
  * ゲームフィールド
  */
 public class Field implements Serializable {
-	
+
 	/** シリアルバージョンID */
 	private static final long serialVersionUID = 7745183278794213487L;
 
@@ -94,7 +94,7 @@ public class Field implements Serializable {
 	 * @param h フィールドの高さ
 	 * @param hh フィールドより上の見えない部分の高さ
 	 */
-	public Field(int w, int h, int hh) {		
+	public Field(int w, int h, int hh) {
 		width = w;
 		height = h;
 		hidden_height = hh;
@@ -749,8 +749,7 @@ public class Field implements Serializable {
 
 					if(blk != null && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-						setBlock(j, i, blk);
+						setBlockLinkBroken(j, i);
 					}
 				}
 			}
@@ -760,8 +759,7 @@ public class Field implements Serializable {
 
 					if(blk != null && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-						setBlock(j, i, blk);
+						setBlockLinkBroken(j, i);
 					}
 				}
 			}
@@ -999,21 +997,21 @@ public class Field implements Serializable {
 		return result;
 	}
 
-	
+
 	public int getHowManyBlocksCovered() {
 		int blocksCovered = 0;
-		
+
 
 		for(int j = 0; j < width; j++) {
-		
+
             int highestBlockY=getHighestBlockY(j);
 			for(int i = highestBlockY; i < getHeightWithoutHurryupFloor(); i++) {
 				if(getLineFlag(i) == false) {
-					
+
 					if( getBlockEmpty(j, i)) {
 					blocksCovered++;
 					}
-					
+
 				}
 			}
 		}
@@ -1542,7 +1540,7 @@ public class Field implements Serializable {
 
 		return gems;
 	}
-	
+
 	/**
 	 * Checks for 4x4 square formations and converts blocks to square blocks if needed.
 	 */
@@ -1553,8 +1551,8 @@ public class Field implements Serializable {
 				// rootBlk is the upper-left square
 				Block rootBlk = getBlock(j, i);
 				boolean squareCheck = false;
-				
-				/* 
+
+				/*
 				 * id is the color of the top-left square: if it is a monosquare, every block in the
 				 * 4x4 area will have this color.
 				 */
@@ -1562,7 +1560,7 @@ public class Field implements Serializable {
 				if (!(rootBlk == null || rootBlk.isEmpty())) {
 					id = rootBlk.color;
 				}
-				
+
 				// This can't be a square if rootBlk doesn't exist or is part of another square.
 				if (!(rootBlk == null || rootBlk.isEmpty() || rootBlk.isGoldSquareBlock() || rootBlk.isSilverSquareBlock())) {
 					// A square is innocent until proven guilty.
@@ -1577,11 +1575,11 @@ public class Field implements Serializable {
 							 * block, is not the same color as id, or has connections outside the area.
 							 */
 							if (blk == null || blk.isEmpty() || blk.isGoldSquareBlock() || blk.isSilverSquareBlock() ||
-									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) || 
+									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) ||
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) || blk.color != id ||
 									(l == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) ||
-									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) || 
-									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) || 
+									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) ||
+									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) ||
 									(k == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))){
 								squareCheck = false;
 								break;
@@ -1635,8 +1633,8 @@ public class Field implements Serializable {
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) ||
 									blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) ||
 									(l == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) ||
-									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) || 
-									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) || 
+									(l == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) ||
+									(k == 0 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) ||
 									(k == 3 && blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))){
 								squareCheck = false;
 								break;
@@ -1673,7 +1671,7 @@ public class Field implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks the lines that are currently being cleared to see how many strips of squares are present in them.
 	 * @return +1 for every 1x4 strip of silver, +2 for every strip of gold
@@ -1685,7 +1683,7 @@ public class Field implements Serializable {
 			if (getLineFlag(i)) {
 				for(int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i);
-					
+
 					// Silver blocks are worth 1, gold are worth 2, but not if they are garbage (avalanche)
 					if (blk != null && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE)) {
 						if (blk.isGoldSquareBlock()) {
@@ -1700,27 +1698,27 @@ public class Field implements Serializable {
 		// We have to divide the amount by 4 because it's based on 1x4 strips, not single blocks.
 		return squares/4;
 	}
-	
+
 	/**
 	 * Converts all pieces below the cleared lines to single blocks and breaks all of their connections.
 	 * Then, causes them to fall down under their own gravity as in cascade.
 	 * Currently, it is rather buggy...
 	 */
 	public void doAvalanche() {
-		// This sets the highest line that will be affected by the avalanche. 
+		// This sets the highest line that will be affected by the avalanche.
 		int topLine = hidden_height * -1;
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			if (getLineFlag(i)) {
 				topLine = i + 1;
 			}
 		}
-		
+
 		for (int i = (getHeightWithoutHurryupFloor() - 1); i >= topLine; i--) {
 			// There can be lines cleared underneath, in case of a spin hurdle or such.
 			if (!getLineFlag(i)) {
 				for (int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i);
-					
+
 					// Change each affected block to broken and garbage, and break connections.
 					blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
 					blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
@@ -1733,7 +1731,7 @@ public class Field implements Serializable {
 					Block downBlock;
 					do {
 						newY--;
-						downBlock = getBlock(j, newY); 
+						downBlock = getBlock(j, newY);
 					} while (downBlock == null || downBlock.isEmpty());
 					if (newY != i) {
 						setBlock(j, newY, blk);
@@ -1741,6 +1739,127 @@ public class Field implements Serializable {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Main routine for cascade gravity.
+	 * @return <code>true</code> if something falls. <code>false</code> if nothing falls.
+	 */
+	public boolean doCascadeGravity() {
+		boolean result = false;
+
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, false);
+
+		for(int i = (getHeightWithoutHurryupFloor() - 1); i >= (hidden_height * -1); i--) {
+			for(int j = 0; j < width; j++) {
+				Block blk = getBlock(j, i);
+
+				if((blk != null) && !blk.isEmpty()) {
+					boolean fall = true;
+					checkBlockLink(j, i);
+
+					for(int k = (getHeightWithoutHurryupFloor() - 1); k >= (hidden_height * -1); k--) {
+						for(int l = 0; l < width; l++) {
+							Block bTemp = getBlock(l, k);
+
+							if( (bTemp != null) && !bTemp.isEmpty() &&
+								bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) && !bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL) )
+							{
+								Block bBelow = getBlock(l, k + 1);
+
+								if( (getCoordAttribute(l, k + 1) == COORD_WALL) ||
+									((bBelow != null) && !bBelow.isEmpty() && !bBelow.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK)) )
+								{
+									fall = false;
+								}
+							}
+						}
+					}
+
+					if(fall) {
+						result = true;
+						for(int k = (getHeightWithoutHurryupFloor() - 1); k >= (hidden_height * -1); k--) {
+							for(int l = 0; l < width; l++) {
+								Block bTemp = getBlock(l, k);
+								Block bBelow = getBlock(l, k + 1);
+
+								if( (getCoordAttribute(l, k + 1) != COORD_WALL) &&
+								    (bTemp != null) && !bTemp.isEmpty() && (bBelow != null) && bBelow.isEmpty() &&
+								    bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) && !bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL) )
+								{
+									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, true);
+									setBlock(l, k + 1, bTemp);
+									setBlock(l, k, new Block());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, false);
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			setLineFlag(i, false);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Checks the connection of blocks and set "mark" to each block.
+	 * @param x X coord
+	 * @param y Y coord
+	 */
+	public void checkBlockLink(int x, int y) {
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+		checkBlockLinkSub(x, y);
+	}
+
+	/**
+	 * Subroutine for checkBlockLink.
+	 * @param x X coord
+	 * @param y Y coord
+	 */
+	protected void checkBlockLinkSub(int x, int y) {
+		Block blk = getBlock(x, y);
+		if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK)) {
+			blk.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, true);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) checkBlockLinkSub(x, y - 1);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) checkBlockLinkSub(x, y + 1);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) checkBlockLinkSub(x - 1, y);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) checkBlockLinkSub(x + 1, y);
+		}
+	}
+
+	/**
+	 * Checks the connection of blocks and set the "broken" flag to each block.
+	 * It only affects to normal blocks. (ex. not square or gems)
+	 * @param x X coord
+	 * @param y Y coord
+	 */
+	public void setBlockLinkBroken(int x, int y) {
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+		setBlockLinkBrokenSub(x, y);
+	}
+
+	/**
+	 * Subroutine for setBlockLinkBrokenSub.
+	 * @param x X coord
+	 * @param y Y coord
+	 */
+	protected void setBlockLinkBrokenSub(int x, int y) {
+		Block blk = getBlock(x, y);
+		if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) && blk.isNormalBlock()) {
+			blk.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, true);
+			blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) setBlockLinkBrokenSub(x, y - 1);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) setBlockLinkBrokenSub(x, y + 1);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) setBlockLinkBrokenSub(x - 1, y);
+			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) setBlockLinkBrokenSub(x + 1, y);
 		}
 	}
 

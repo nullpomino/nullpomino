@@ -106,6 +106,9 @@ public class GameEngine {
 	public static final int INTERRUPTITEM_NONE = 0,
 							INTERRUPTITEM_MIRROR = 1;
 
+	/** Line gravity types */
+	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1;
+
 	/** カラーアイテム用テーブル */
 	public static final int[] ITEM_COLOR_BRIGHT_TABLE =
 	{
@@ -241,6 +244,12 @@ public class GameEngine {
 	/** 今消えているライン数 */
 	public int lineClearing;
 
+	/** Line gravity type (Native, Cascade, etc) */
+	public int lineGravityType;
+
+	/** Current number of chains */
+	public int chain;
+
 	/** 地面に触れてから経過したフレーム数 */
 	public int lockDelayNow;
 
@@ -363,13 +372,13 @@ public class GameEngine {
 
 	/** ヘボHIDDEN 進行度制限値 */
 	public int heboHiddenYLimit;
-	
+
 	/** Set when ARE or line delay is canceled */
 	public boolean delayCancel;
-	
+
 	/** Piece must move left after canceled delay */
 	public boolean delayCancelMoveLeft;
-	
+
 	/** Piece must move right after canceled delay */
 	public boolean delayCancelMoveRight;
 
@@ -605,6 +614,8 @@ public class GameEngine {
 		holdUsedCount = 0;
 
 		lineClearing = 0;
+		lineGravityType = LINE_GRAVITY_NATIVE;
+		chain = 0;
 
 		lockDelayNow = 0;
 
@@ -658,7 +669,7 @@ public class GameEngine {
 		heboHiddenTimerMax = 0;
 		heboHiddenYNow = 0;
 		heboHiddenYLimit = 0;
-		
+
 		delayCancel = false;
 		delayCancelMoveLeft = false;
 		delayCancelMoveRight = false;
@@ -1935,7 +1946,7 @@ public class GameEngine {
 			boolean onGroundBeforeMove = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field);
 
 			move = moveDirection;
-			
+
 			if (statc[0] == 0 && delayCancel) {
 				if (delayCancelMoveLeft) move = -1;
 				if (delayCancelMoveRight) move = 1;
@@ -2177,9 +2188,11 @@ public class GameEngine {
 				if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceLocked++;
 
 				lineClearing = field.checkLineNoFlag();
+				chain = 0;
 
 				if(lineClearing == 0) {
 					combo = 0;
+
 					if(tspin) {
 						playSE("tspin0");
 
@@ -2354,7 +2367,7 @@ public class GameEngine {
 			}
 
 			// コンボ
-			if(comboType != COMBO_TYPE_DISABLE) {
+			if((comboType != COMBO_TYPE_DISABLE) && (chain == 0)) {
 				if( (comboType == COMBO_TYPE_NORMAL) || ((comboType == COMBO_TYPE_DOUBLE) && (li >= 2)) )
 					combo++;
 
@@ -2396,30 +2409,47 @@ public class GameEngine {
 		}
 
 		// ラインを1段落とす
-		if((getLineDelay() >= (lineClearing - 1)) && (statc[0] >= getLineDelay() - (lineClearing - 1)) && (ruleopt.lineFallAnim))
+		if((lineGravityType == LINE_GRAVITY_NATIVE) &&
+		   (getLineDelay() >= (lineClearing - 1)) && (statc[0] >= getLineDelay() - (lineClearing - 1)) && (ruleopt.lineFallAnim))
+		{
 			field.downFloatingBlocksSingleLine();
-		
+		}
+
 		// Line delay cancel check
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
-		
+
 		delayCancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
-			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) || 
-			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) ||
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
 			(ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
-		
+
 		if( (ruleopt.lineCancel) && (statc[0] < getLineDelay()) && delayCancel ) {
 			statc[0] = getLineDelay();
 		}
 
 		// 次のステータス
 		if(statc[0] >= getLineDelay()) {
+			// Cascade
+			if(lineGravityType == LINE_GRAVITY_CASCADE) {
+				if(field.doCascadeGravity()) {
+					return;
+				} else if(field.checkLineNoFlag() > 0) {
+					tspin = false;
+					tspinmini = false;
+					chain++;
+					if(chain > statistics.maxChain) statistics.maxChain = chain;
+					statc[0] = 0;
+					return;
+				}
+			}
+
 			boolean skip = false;
 			if(owner.mode != null) skip = owner.mode.lineClearEnd(this, playerID);
 			owner.receiver.lineClearEnd(this, playerID);
 
 			if(!skip) {
-				field.downFloatingBlocks();
+				if(lineGravityType == LINE_GRAVITY_NATIVE) field.downFloatingBlocks();
 				playSE("linefall");
 
 				if((stat == STAT_LINECLEAR) || (versionMajor <= 6.3f)) {
@@ -2466,16 +2496,16 @@ public class GameEngine {
 		statc[0]++;
 
 		checkDropContinuousUse();
-		
+
 		// ARE cancel check
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
-		
+
 		delayCancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
-			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) || 
-			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) ||
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
 			(ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
-		
+
 		if( (ruleopt.areCancel) && (statc[0] < statc[1]) && delayCancel ) {
 			statc[0] = statc[1];
 		}

@@ -28,7 +28,9 @@
 */
 package org.game_host.hebo.nullpomino.game.subsystem.mode;
 
+import org.game_host.hebo.nullpomino.game.component.Block;
 import org.game_host.hebo.nullpomino.game.component.Controller;
+import org.game_host.hebo.nullpomino.game.component.Field;
 import org.game_host.hebo.nullpomino.game.event.EventReceiver;
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.game.play.GameManager;
@@ -41,13 +43,13 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
 public class SquareMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
-	public int[] tableGravityChangeScore = 
+
+	public int[] tableGravityChangeScore =
 	{
 		150, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2500, 4000, 5000
 	};
-	
-	public int[] tableGravityValue = 
+
+	public int[] tableGravityValue =
 	{
 		1, 2, 3, 4, 6, 8, 10, 20, 30, 60, 120, 180, 300, -1
 	};
@@ -57,16 +59,16 @@ public class SquareMode extends DummyMode {
 
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 3;
-	
+
 	/** Name of game types */
 	private static final String[] GAMETYPE_NAME = {"MARATHON","ULTRA","SPRINT"};
 
 	/** Number of game types */
 	private static final int GAMETYPE_MAX = 3;
-	
+
 	/** Max time in Ultra */
 	private static final int ULTRA_MAX_TIME = 10800;
-	
+
 	/** Max score in Sprint */
 	private static final int SPRINT_MAX_SCORE = 150;
 
@@ -75,7 +77,7 @@ public class SquareMode extends DummyMode {
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
-	
+
 	/** 現在の落下速度の番号（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
 	private int gravityindex;
 
@@ -87,7 +89,7 @@ public class SquareMode extends DummyMode {
 
 	/** Selected game type */
 	private int gametype;
-	
+
 	/** Outline type */
 	private int outlinetype;
 
@@ -120,9 +122,9 @@ public class SquareMode extends DummyMode {
 		receiver = engine.owner.receiver;
 		lastscore = 0;
 		scgettime = 0;
-		
+
 		outlinetype = 0;
-		
+
 		rankingRank = -1;
 		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
 		rankingTime = new int[RANKING_TYPE][RANKING_MAX];
@@ -147,7 +149,7 @@ public class SquareMode extends DummyMode {
 			int speedlv = engine.statistics.score;
 			if (speedlv < 0) speedlv = 0;
 			if (speedlv > 5000) speedlv = 5000;
-			
+
 			while(speedlv >= tableGravityChangeScore[gravityindex]) gravityindex++;
 			engine.speed.gravity = tableGravityValue[gravityindex];
 		} else {
@@ -185,7 +187,7 @@ public class SquareMode extends DummyMode {
 				engine.playSE("change");
 
 				switch(engine.statc[2]) {
-				
+
 				case 0:
 					gametype += change;
 					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
@@ -232,7 +234,7 @@ public class SquareMode extends DummyMode {
 		if(engine.owner.replayMode == false) {
 			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
 		}
-		
+
 		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
 		receiver.drawMenuFont(engine, playerID, 0, 2, "OUTLINE", EventReceiver.COLOR_BLUE);
@@ -249,21 +251,31 @@ public class SquareMode extends DummyMode {
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		
+
 		if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 		if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 		if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
-		
+
 		engine.tspinEnable = true;
 		engine.useAllSpinBonus = true;
 		engine.tspinAllowKick = true;
-		
+
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
 		engine.speed.das = 10;
 		engine.speed.lockDelay = 30;
 
 		setSpeed(engine);
+	}
+
+	/*
+	 * Piece movement
+	 */
+	@Override
+	public boolean onMove(GameEngine engine, int playerID) {
+		// Disable cascade
+		engine.lineGravityType = GameEngine.LINE_GRAVITY_NATIVE;
+		return false;
 	}
 
 	/*
@@ -282,7 +294,7 @@ public class SquareMode extends DummyMode {
 				} else if (gametype == 2) {
 					receiver.drawScoreFont(engine, playerID, 3, 3, "TIME", EventReceiver.COLOR_BLUE);
 				}
-				
+
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
 					if (gametype == 0) {
@@ -304,7 +316,7 @@ public class SquareMode extends DummyMode {
 				strScore = String.valueOf(engine.statistics.score) + "(+" + String.valueOf(lastscore) + ")";
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 4, strScore);
-			
+
 			receiver.drawScoreFont(engine, playerID, 0, 6, "LINE", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(engine.statistics.lines));
 
@@ -319,7 +331,7 @@ public class SquareMode extends DummyMode {
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		if (scgettime > 0) scgettime--;
-		
+
 		if (gametype == 1) {
 			int remainTime = ULTRA_MAX_TIME - engine.statistics.time;
 			// 時間メーター
@@ -328,7 +340,7 @@ public class SquareMode extends DummyMode {
 			if(remainTime <= 3600) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 1800) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 600) engine.meterColor = GameEngine.METER_COLOR_RED;
-			
+
 			// 時間切れ
 			if(engine.statistics.time >= ULTRA_MAX_TIME) {
 				engine.gameActive = false;
@@ -354,8 +366,34 @@ public class SquareMode extends DummyMode {
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 			}
 		}
-		
-		
+
+
+	}
+
+	/*
+	 * Line clear
+	 */
+	@Override
+	public boolean onLineClear(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 1) {
+			grayoutBrokenBlocks(engine.field);
+		}
+		return false;
+	}
+
+	/**
+	 * Make all broken blocks gray.
+	 * @param field Field
+	 */
+	private void grayoutBrokenBlocks(Field field) {
+		for(int i = (field.getHiddenHeight() * -1); i < field.getHeightWithoutHurryupFloor(); i++) {
+			for(int j = 0; j < field.getWidth(); j++) {
+				Block blk = field.getBlock(j, i);
+				if((blk != null) && !blk.isEmpty() && blk.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN)) {
+					blk.color = Block.BLOCK_COLOR_GRAY;
+				}
+			}
+		}
 	}
 
 	/*
@@ -365,38 +403,79 @@ public class SquareMode extends DummyMode {
 	public void calcScore(GameEngine engine, int playerID, int lines) {
 		// ラインクリアボーナス
 		int pts = lines;
-		
+
 		if (lines > 0) {
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 			}
-			
+
 			if (lines > 3) {
 				pts = 3 + (lines - 3)*2;
 			}
-			
+
 			int squareClears = engine.field.getHowManySquareClears();
 			if (squareClears > 0) {
 				pts += 5*squareClears;
 			}
-			
+
 			lastscore = pts;
 			scgettime = 120;
 			engine.statistics.scoreFromLineClear += pts;
 			engine.statistics.score += pts;
 			setSpeed(engine);
-			
-			/*
+
 			if (engine.tspin) {
-				engine.field.doAvalanche();
+				avalanche(engine, playerID, lines);
 			}
-			*/
 		}
 	}
-	
+
+	/**
+	 * T-Spin avalanche routine.
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @param lines Number of lines cleared
+	 */
+	private void avalanche(GameEngine engine, int playerID, int lines) {
+		Field field = engine.field;
+
+		// This sets the highest line that will be affected by the avalanche.
+		int topLine = field.getHiddenHeight() * -1;
+		if(lines == 1) {
+			for(int i = (field.getHiddenHeight() * -1); i < field.getHeightWithoutHurryupFloor(); i++) {
+				if(field.getLineFlag(i)) {
+					topLine = i + 1;
+				}
+			}
+		}
+
+		for(int i = (field.getHeightWithoutHurryupFloor() - 1); i >= topLine; i--) {
+			// There can be lines cleared underneath, in case of a spin hurdle or such.
+			if(!field.getLineFlag(i)) {
+				for(int j = 0; j < field.getWidth(); j++) {
+					Block blk = field.getBlock(j, i);
+					if((blk != null) && !blk.isEmpty()) {
+						// Change each affected block to broken and garbage, and break connections.
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+						blk.color = Block.BLOCK_COLOR_GRAY;
+					}
+				}
+			}
+		}
+
+		// Set cascade flag
+		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+	}
+
 	/*
 	 * Check for squares when piece locks
 	 */
+	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
 		engine.field.checkForSquares();
 	}
@@ -473,8 +552,8 @@ public class SquareMode extends DummyMode {
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
-				rankingScore[j][i] = prop.getProperty("marathon.ranking." + ruleName + "." + j + ".score." + i, 0);
-				rankingTime[j][i] = prop.getProperty("marathon.ranking." + ruleName + "." + j + ".time." + i, -1);
+				rankingScore[j][i] = prop.getProperty("square.ranking." + ruleName + "." + j + ".score." + i, 0);
+				rankingTime[j][i] = prop.getProperty("square.ranking." + ruleName + "." + j + ".time." + i, -1);
 			}
 		}
 	}
@@ -487,8 +566,8 @@ public class SquareMode extends DummyMode {
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
-				prop.setProperty("marathon.ranking." + ruleName + "." + j + ".score." + i, rankingScore[j][i]);
-				prop.setProperty("marathon.ranking." + ruleName + "." + j + ".time." + i, rankingTime[j][i]);
+				prop.setProperty("square.ranking." + ruleName + "." + j + ".score." + i, rankingScore[j][i]);
+				prop.setProperty("square.ranking." + ruleName + "." + j + ".time." + i, rankingTime[j][i]);
 			}
 		}
 	}

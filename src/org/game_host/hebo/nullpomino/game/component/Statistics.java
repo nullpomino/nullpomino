@@ -147,6 +147,9 @@ public class Statistics implements Serializable {
 	/** TAS detection: slowdown rate */
 	public float gamerate;
 
+	/** Max chain */
+	public int maxChain;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -202,6 +205,7 @@ public class Statistics implements Serializable {
 		ppm = 0f;
 		pps = 0f;
 		gamerate = 0f;
+		maxChain = 0;
 	}
 
 	/**
@@ -244,6 +248,7 @@ public class Statistics implements Serializable {
 		ppm = s.ppm;
 		pps = s.pps;
 		gamerate = s.gamerate;
+		maxChain = s.maxChain;
 	}
 
 	/**
@@ -305,6 +310,7 @@ public class Statistics implements Serializable {
 		p.setProperty(id + ".statistics.ppm", ppm);
 		p.setProperty(id + ".statistics.pps", pps);
 		p.setProperty(id + ".statistics.gamerate", gamerate);
+		p.setProperty(id + ".statistics.maxChain", maxChain);
 
 		// 旧バージョンとの互換用
 		if(id == 0) {
@@ -357,5 +363,6 @@ public class Statistics implements Serializable {
 		ppm = p.getProperty(id + ".statistics.ppm", 0f);
 		pps = p.getProperty(id + ".statistics.pps", 0f);
 		gamerate = p.getProperty(id + ".statistics.gamerate", 0f);
+		maxChain = p.getProperty(id + ".statistics.maxChain", 0);
 	}
 }
