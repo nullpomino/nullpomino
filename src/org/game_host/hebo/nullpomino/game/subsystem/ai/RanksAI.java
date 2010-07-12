@@ -103,7 +103,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 	private Ranks ranks;
 
-	public class Score implements Comparable{
+	public class Score{
 		public boolean fourLinesCleared;
 		public int rankStacking;
 		public int rankCliffs;
@@ -375,17 +375,15 @@ public class RanksAI extends DummyAI implements Runnable {
 		Piece pieceNow = engine.nowPieceObject;
 		int nowX = engine.nowPieceX;
 		int nowY = engine.nowPieceY;
-		boolean holdOK = engine.isHoldOK();
-		boolean holdEmpty = false;
+	
 		Piece pieceHold = engine.holdPieceObject;
 		Piece pieceNext = engine.getNextObject(engine.nextPieceCount);
 		int numPreviews=1;
-		if(pieceHold == null) {
-			holdEmpty = true;
-		}
+	
 		Field fld = new Field(engine.field);
 
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
+				
 				nowY=2;
 
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, engine.field);
@@ -449,7 +447,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		boolean skimming=false;
 
 		int pts = 0;
-		int beforeHoles=fld.getHowManyBlocksCovered();
+		
 		
 		
 		
@@ -479,11 +477,14 @@ public class RanksAI extends DummyAI implements Runnable {
 		
 			
 				for(int rot = 0; rot < Piece.DIRECTION_COUNT; rot++) {
-					nowY=2;
+					int minX=10;
+					int maxX2=0;
+					while(minX>maxX2){
 				
-					int minX = pieceNow.getMostMovableLeft(nowX, nowY, rot, fld);
-					int maxX2 = pieceNow.getMostMovableRight(nowX, nowY, rot, fld);
-
+					minX = pieceNow.getMostMovableLeft(nowX, nowY, rot, fld);
+					maxX2 = pieceNow.getMostMovableRight(nowX, nowY, rot, fld);
+					nowY++;
+					}   
 					for(int x2 = minX; x2 <= maxX2; x2++) {
 						fldcopy.copy(fld);
 						int y2 = pieceNow.getBottom(x2, nowY, rot, fldcopy);
