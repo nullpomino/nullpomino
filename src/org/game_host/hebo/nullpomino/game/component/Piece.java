@@ -430,6 +430,7 @@ public class Piece implements Serializable {
 
 			if (connectBlocks)
 			{
+				block[j].setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
 				// 他の3つのブロックとの繋がりを調べる
 				for(int k = 0; k < getMaxBlock(); k++) {
 					if(k != j) {
@@ -443,6 +444,8 @@ public class Piece implements Serializable {
 					}
 				}
 			}
+			else
+				block[j].setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 		}
 	}
 

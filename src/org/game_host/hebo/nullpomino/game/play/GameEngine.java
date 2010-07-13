@@ -523,8 +523,8 @@ public class GameEngine {
 	/** Size needed for a color-group clear */
 	public int colorClearSize;
 
-	/** If true, color clears will also clear adjacent gray blocks. */
-	public boolean grayColorClear;
+	/** If true, color clears will also clear adjacent garbage blocks. */
+	public boolean garbageColorClear;
 	
 	/** If true, each individual block is a random color. */
 	public boolean randomBlockColor;
@@ -756,7 +756,7 @@ public class GameEngine {
 		
 		clearMode = CLEAR_LINE;
 		colorClearSize = -1;
-		grayColorClear = false;
+		garbageColorClear = false;
 		connectBlocks = true;
 
 		// イベント発生
@@ -2230,7 +2230,7 @@ public class GameEngine {
 				if (clearMode == CLEAR_LINE)
 					lineClearing = field.checkLineNoFlag();
 				else if (clearMode == CLEAR_COLOR)
-					lineClearing = field.checkColor(colorClearSize, false, grayColorClear);
+					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear);
 				chain = 0;
 				
 				if(lineClearing == 0) {
@@ -2357,7 +2357,7 @@ public class GameEngine {
 				lineClearing = field.checkLine();
 			// Set color clear flags
 			else if (clearMode == CLEAR_COLOR)
-				lineClearing = field.checkColor(colorClearSize, true, grayColorClear);
+				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear);
 			
 			// ライン数を決める
 			int li = lineClearing;
@@ -2451,7 +2451,7 @@ public class GameEngine {
 			if (clearMode == CLEAR_LINE)
 				field.clearLine();
 			else if (clearMode == CLEAR_COLOR)
-				field.clearColor(colorClearSize, grayColorClear);
+				field.clearColor(colorClearSize, garbageColorClear);
 		}
 
 		// ラインを1段落とす
@@ -2481,7 +2481,7 @@ public class GameEngine {
 				if(field.doCascadeGravity()) {
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
-						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, grayColorClear) > 0)) {
+						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear) > 0)) {
 					tspin = false;
 					tspinmini = false;
 					chain++;
