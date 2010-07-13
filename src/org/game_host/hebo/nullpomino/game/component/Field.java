@@ -1704,6 +1704,7 @@ public class Field implements Serializable {
 	 * Then, causes them to fall down under their own gravity as in cascade.
 	 * Currently, it is rather buggy...
 	 */
+	@Deprecated
 	public void doAvalanche() {
 		// This sets the highest line that will be affected by the avalanche.
 		int topLine = hidden_height * -1;
@@ -1740,6 +1741,63 @@ public class Field implements Serializable {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Performs all color clears of sufficient size.
+	 */
+	public int clearColor (int size, boolean grayClear)
+	{
+		Field temp = new Field(this);
+		int total = 0;
+
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			for(int j = 0; j < width; j++) {
+				int clear = temp.clearColor(j, i, false, grayClear);
+				if (clear >= size)
+				{
+					total += clear;
+					clearColor(j, i, true, grayClear);
+				}
+			}
+		}
+		return total;
+	}
+	/**
+	 * Clears the block at the given position as well as all adjacent blocks of
+	 * the same color, and any gray blocks adjacent to the group if grayClear is true.
+	 * @return The number of blocks cleared.
+	 */
+	public int clearColor (int x, int y, boolean flag, boolean grayClear)
+	{
+		int blockColor = getBlockColor(x, y);
+		if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
+			return 0;
+		else
+			return clearColor(x, y, blockColor, flag, grayClear);
+	}
+	/**
+	 * Note: This method is private because calling it with a targetColor parameter
+	 *       of BLOCK_COLOR_NONE or BLOCK_COLOR_INVALID may cause an infinite loop
+	 *       and crash the game. This check is handled by the above public method
+	 *       so as to avoid redundant checks.
+	 */
+	private int clearColor (int x, int y, int targetColor, boolean flag, boolean grayClear)
+	{
+		int blockColor = getBlockColor(x, y);
+		if (grayClear && blockColor == Block.BLOCK_COLOR_GRAY)
+		{
+			if (flag)
+				getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+			setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+		}
+		if (blockColor != targetColor)
+			return 0;
+		if (flag)
+			getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+		setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+		return 1 + clearColor(x+1, y, targetColor, flag, grayClear) + clearColor(x-1, y, targetColor, flag, grayClear)
+				 + clearColor(x, y+1, targetColor, flag, grayClear) + clearColor(x, y-1, targetColor, flag, grayClear);
 	}
 
 	/**
@@ -2026,5 +2084,23 @@ public class Field implements Serializable {
 		}
 
 		return str;
+	}
+
+	public int checkColor(int size, boolean flag, boolean grayClear) {
+		Field temp = new Field(this);
+		int total = 0;
+
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			for(int j = 0; j < width; j++) {
+				int clear = temp.clearColor(j, i, false, grayClear);
+				if (clear >= size)
+				{
+					total += clear;
+					if (flag)
+						clearColor(j, i, true, grayClear);
+				}
+			}
+		}
+		return total;
 	}
 }

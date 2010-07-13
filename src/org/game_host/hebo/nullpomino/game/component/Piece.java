@@ -182,6 +182,9 @@ public class Piece implements Serializable {
 
 	/** 相対Y位置のずれ幅 */
 	public int[] dataOffsetY;
+	
+	/** Connect blocks in this piece? */
+	public boolean connectBlocks;
 
 	/**
 	 * ピース名を取得
@@ -227,6 +230,7 @@ public class Piece implements Serializable {
 		this.direction = DIRECTION_UP;
 		this.big = false;
 		this.offsetApplied = false;
+		this.connectBlocks = true;
 
 		int maxBlock = getMaxBlock();
 		dataX = new int[DIRECTION_COUNT][maxBlock];
@@ -248,6 +252,7 @@ public class Piece implements Serializable {
 		direction = p.direction;
 		big = p.big;
 		offsetApplied = p.offsetApplied;
+		connectBlocks = p.connectBlocks;
 
 		int maxBlock = p.getMaxBlock();
 		dataX = new int[DIRECTION_COUNT][maxBlock];
@@ -290,6 +295,18 @@ public class Piece implements Serializable {
 	public void setColor(int color) {
 		for(int i = 0; i < block.length; i++) {
 			block[i].color = color;
+		}
+	}
+
+	/**
+	 * Changes the colors of the blocks individually; allows one piece to have
+	 * blocks of multiple colors
+	 * @param color Array with each cell specifying a color of a block
+	 */
+	public void setColor(int[] color) {
+		int length = Math.min(block.length, color.length);
+		for(int i = 0; i < length; i++) {
+			block[i].color = color[i];
 		}
 	}
 
@@ -411,16 +428,19 @@ public class Piece implements Serializable {
 			block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 			block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
 
-			// 他の3つのブロックとの繋がりを調べる
-			for(int k = 0; k < getMaxBlock(); k++) {
-				if(k != j) {
-					int bx2 = dataX[direction][k];
-					int by2 = dataY[direction][k];
-
-					if((bx == bx2) && (by - 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);		// 上
-					if((bx == bx2) && (by + 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);	// 下
-					if((by == by2) && (bx - 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);	// 左
-					if((by == by2) && (bx + 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);	// 右
+			if (connectBlocks)
+			{
+				// 他の3つのブロックとの繋がりを調べる
+				for(int k = 0; k < getMaxBlock(); k++) {
+					if(k != j) {
+						int bx2 = dataX[direction][k];
+						int by2 = dataY[direction][k];
+	
+						if((bx == bx2) && (by - 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);		// 上
+						if((bx == bx2) && (by + 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);	// 下
+						if((by == by2) && (bx - 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);	// 左
+						if((by == by2) && (bx + 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);	// 右
+					}
 				}
 			}
 		}

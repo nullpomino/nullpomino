@@ -117,6 +117,9 @@ public class GameEngine {
 		 3,  3,  3,  3,  2,  2,  2,  2,  1,  1,
 		 1,  1,  0,  0,  0,  0,  0,  0,  0,  0
 	};
+	
+	/** Clear mode settings */
+	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1;
 
 	/** このゲームエンジンを所有するGameOwnerクラス */
 	public GameManager owner;
@@ -513,6 +516,24 @@ public class GameEngine {
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */
 	public int owDasDelay;
+	
+	/** Clear mode selection */
+	public int clearMode;
+	
+	/** Size needed for a color-group clear */
+	public int colorClearSize;
+
+	/** If true, color clears will also clear adjacent gray blocks. */
+	public boolean grayColorClear;
+	
+	/** If true, each individual block is a random color. */
+	public boolean randomBlockColor;
+	
+	/** If true, block in pieces are connected. */
+	public boolean connectBlocks;
+	
+	/** If true, each individual block is a random color. */
+	public int[] blockColors;
 
 	/**
 	 * コンストラクタ
@@ -732,6 +753,11 @@ public class GameEngine {
 		itemColorCount = 0;
 
 		interruptItemNumber = INTERRUPTITEM_NONE;
+		
+		clearMode = CLEAR_LINE;
+		colorClearSize = -1;
+		grayColorClear = false;
+		connectBlocks = true;
 
 		// イベント発生
 		if(owner.mode != null) {
@@ -1619,6 +1645,17 @@ public class GameEngine {
 					nextPieceArrayObject[i].updateConnectData();
 					nextPieceArrayObject[i].setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 					nextPieceArrayObject[i].setAttribute(Block.BLOCK_ATTRIBUTE_BONE, bone);
+					nextPieceArrayObject[i].connectBlocks = this.connectBlocks;
+				}
+				if (randomBlockColor)
+				{
+					for(int i = 0; i < nextPieceArrayObject.length; i++) {
+						int size = nextPieceArrayObject[i].getMaxBlock();
+						int[] colors = new int[size];
+						for (int j = 0; j < size; j++)
+							colors[j] = blockColors[random.nextInt(blockColors.length)];
+						nextPieceArrayObject[i].setColor(colors);
+					}
 				}
 			}
 
@@ -2172,6 +2209,9 @@ public class GameEngine {
 
 				boolean partialLockOut = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, field);
 				boolean put = nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
+				
+				if (lineGravityType == LINE_GRAVITY_CASCADE && !connectBlocks)
+					while(field.doCascadeGravity()) { continue; }
 
 				// T-Spin判定
 				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
@@ -2187,9 +2227,12 @@ public class GameEngine {
 
 				if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceLocked++;
 
-				lineClearing = field.checkLineNoFlag();
+				if (clearMode == CLEAR_LINE)
+					lineClearing = field.checkLineNoFlag();
+				else if (clearMode == CLEAR_COLOR)
+					lineClearing = field.checkColor(colorClearSize, false, grayColorClear);
 				chain = 0;
-
+				
 				if(lineClearing == 0) {
 					combo = 0;
 
@@ -2310,16 +2353,16 @@ public class GameEngine {
 		// 最初のフレーム
 		if(statc[0] == 0) {
 			// ライン消去フラグを設定
-			lineClearing = field.checkLine();
-
+			if (clearMode == CLEAR_LINE)
+				lineClearing = field.checkLine();
+			// Set color clear flags
+			else if (clearMode == CLEAR_COLOR)
+				lineClearing = field.checkColor(colorClearSize, true, grayColorClear);
+			
 			// ライン数を決める
 			int li = lineClearing;
-			if((big == true) && (bighalf == true)) {
-				if(li == 1)
-					li = 0;
-				else
-					li = li / 2;
-			}
+			if(big && bighalf)
+				li >>= 1;
 			if(li > 4) li = 4;
 
 			if(tspin) {
@@ -2405,7 +2448,10 @@ public class GameEngine {
 			}
 
 			// ブロックを消す
-			field.clearLine();
+			if (clearMode == CLEAR_LINE)
+				field.clearLine();
+			else if (clearMode == CLEAR_COLOR)
+				field.clearColor(colorClearSize, grayColorClear);
 		}
 
 		// ラインを1段落とす
@@ -2434,7 +2480,8 @@ public class GameEngine {
 			if(lineGravityType == LINE_GRAVITY_CASCADE) {
 				if(field.doCascadeGravity()) {
 					return;
-				} else if(field.checkLineNoFlag() > 0) {
+				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
+						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, grayColorClear) > 0)) {
 					tspin = false;
 					tspinmini = false;
 					chain++;
