@@ -1713,50 +1713,6 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Converts all pieces below the cleared lines to single blocks and breaks all of their connections.
-	 * Then, causes them to fall down under their own gravity as in cascade.
-	 * Currently, it is rather buggy...
-	 */
-	@Deprecated
-	public void doAvalanche() {
-		// This sets the highest line that will be affected by the avalanche.
-		int topLine = hidden_height * -1;
-		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
-			if (getLineFlag(i)) {
-				topLine = i + 1;
-			}
-		}
-
-		for (int i = (getHeightWithoutHurryupFloor() - 1); i >= topLine; i--) {
-			// There can be lines cleared underneath, in case of a spin hurdle or such.
-			if (!getLineFlag(i)) {
-				for (int j = 0; j < width; j++) {
-					Block blk = getBlock(j, i);
-
-					// Change each affected block to broken and garbage, and break connections.
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-					// Force all blocks down if there is room
-					int newY = i;
-					Block downBlock;
-					do {
-						newY--;
-						downBlock = getBlock(j, newY);
-					} while (downBlock == null || downBlock.isEmpty());
-					if (newY != i) {
-						setBlock(j, newY, blk);
-						setBlock(j, i, new Block());
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Clear line colors of sufficient size.
 	 * @param size Minimum length of line for a clear
 	 * @param diagonals <code>true</code> to check diagonals, <code>false</code> to check only vertical and horizontal
