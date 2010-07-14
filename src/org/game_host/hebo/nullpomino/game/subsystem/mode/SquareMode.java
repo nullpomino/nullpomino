@@ -464,7 +464,7 @@ public class SquareMode extends DummyMode {
 	 */
 	private void avalanche(GameEngine engine, int playerID, int lines) {
 		Field field = engine.field;
-		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_UNTIGRAVITY, false);
+		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 
 		// This sets the highest line that will be affected by the avalanche.
 		int topLine = field.getHiddenHeight() * -1;
@@ -479,7 +479,7 @@ public class SquareMode extends DummyMode {
 					for(int j = 0; j < field.getWidth(); j++) {
 						Block blk = field.getBlock(j, i);
 						if((blk != null) && !blk.isEmpty()) {
-							blk.setAttribute(Block.BLOCK_ATTRIBUTE_UNTIGRAVITY, true);
+							blk.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, true);
 						}
 					}
 				}

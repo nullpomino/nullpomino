@@ -123,11 +123,11 @@ public class Block implements Serializable {
 	/** Temporary mark for block linking check algorithm */
 	public static final int BLOCK_ATTRIBUTE_TEMP_MARK = 4096;
 
-	/** "Block has falled" flag for cascade gravity */
+	/** "Block has fallen" flag for cascade gravity */
 	public static final int BLOCK_ATTRIBUTE_CASCADE_FALL = 8192;
 
-	/** Unti-gravity flag (The block will not fall by gravity) */
-	public static final int BLOCK_ATTRIBUTE_UNTIGRAVITY = 16384;
+	/** Anti-gravity flag (The block will not fall by gravity) */
+	public static final int BLOCK_ATTRIBUTE_ANTIGRAVITY = 16384;
 
 	/** ブロックの色 */
 	public int color;

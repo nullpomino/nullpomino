@@ -526,7 +526,7 @@ public class BasicAI extends DummyAI implements Runnable {
 
 		// 穴の数とI型が必要な谷の数（設置前）
 		int holeBefore = fld.getHowManyHoles();
-		int lidBefore = fld.getHowManyLidAbobeHoles();
+		int lidBefore = fld.getHowManyLidAboveHoles();
 		int needIValleyBefore = fld.getTotalValleyNeedIPiece();
 		// フィールドの高さ（設置前）
 		int heightBefore = fld.getHighestBlockY();
@@ -583,7 +583,7 @@ public class BasicAI extends DummyAI implements Runnable {
 		if( (lines < 4) && (!allclear) ) {
 			// 穴の数とI型が必要な谷の数（設置後）
 			int holeAfter = fld.getHowManyHoles();
-			int lidAfter = fld.getHowManyLidAbobeHoles();
+			int lidAfter = fld.getHowManyLidAboveHoles();
 			int needIValleyAfter = fld.getTotalValleyNeedIPiece();
 
 			if(holeAfter > holeBefore) {

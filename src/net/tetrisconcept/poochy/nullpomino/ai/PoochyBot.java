@@ -1404,7 +1404,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 		// 穴の数とI型が必要な谷の数（設置前）
 		int holeBefore = fld.getHowManyHoles();
-		//int lidBefore = fld.getHowManyLidAbobeHoles();
+		//int lidBefore = fld.getHowManyLidAboveHoles();
 
 		//Check number of holes in rightmost column
 		int testY = fld.getHiddenHeight();
@@ -1589,7 +1589,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 		if( (lines < 4) && (!allclear) ) {
 			// 穴の数とI型が必要な谷の数（設置後）
-			//int lidAfter = fld.getHowManyLidAbobeHoles();
+			//int lidAfter = fld.getHowManyLidAboveHoles();
 
 			//Find valleys that need an I, J, or L.
 			int needIValleyAfter = 0, needJValleyAfter = 0, needLValleyAfter = 0;

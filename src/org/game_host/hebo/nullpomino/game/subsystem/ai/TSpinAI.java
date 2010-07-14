@@ -52,7 +52,7 @@ public class TSpinAI extends BasicAI {
 
 		// 穴の数とI型が必要な谷の数（設置前）
 		int holeBefore = fld.getHowManyHoles();
-		int lidBefore = fld.getHowManyLidAbobeHoles();
+		int lidBefore = fld.getHowManyLidAboveHoles();
 		int needIValleyBefore = fld.getTotalValleyNeedIPiece();
 		// フィールドの高さ（設置前）
 		int heightBefore = fld.getHighestBlockY();
@@ -114,7 +114,7 @@ public class TSpinAI extends BasicAI {
 		if( (lines < 4) && (!allclear) ) {
 			// 穴の数とI型が必要な谷の数（設置後）
 			int holeAfter = fld.getHowManyHoles();
-			int lidAfter = fld.getHowManyLidAbobeHoles();
+			int lidAfter = fld.getHowManyLidAboveHoles();
 			int needIValleyAfter = fld.getTotalValleyNeedIPiece();
 			// T-Spin穴の数（設置後）
 			int tslotAfter = 0;

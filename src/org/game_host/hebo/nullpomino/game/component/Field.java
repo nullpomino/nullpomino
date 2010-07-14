@@ -1274,7 +1274,7 @@ public class Field implements Serializable {
 	 * 隙間の上に何個ブロックが積み重なっているか調べる
 	 * @return 積み重なっているブロックの数
 	 */
-	public int getHowManyLidAbobeHoles() {
+	public int getHowManyLidAboveHoles() {
 		int blocks = 0;
 
 		for(int j = 0; j < width; j++) {
@@ -2041,7 +2041,7 @@ public class Field implements Serializable {
 			for(int j = 0; j < width; j++) {
 				Block blk = getBlock(j, i);
 
-				if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_UNTIGRAVITY)) {
+				if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY)) {
 					boolean fall = true;
 					checkBlockLink(j, i);
 
