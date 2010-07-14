@@ -123,11 +123,11 @@ public class RanksAI extends DummyAI implements Runnable {
 		}
 		public String toString(){
 			return "four lines cleared : "+fourLinesCleared+" Number of cliffs: "+numberOfCliffs+" Rank Stacking : "+rankStacking+" Rank Skim :"+rankSkim+" Rank Cliffs :"+rankCliffs+" Rank Holes :"+rankHoles+" Covered Blocks :"+coveredBlocks;
-			
+
 		}
 		public int compareTo(Object o) {
 			Score otherScore=(Score) o;
-			
+
 			/*if (this.coveredBlocks!=otherScore.coveredBlocks){
 				//System.out.println("comparing "+this.coveredBlocks+" with "+otherScore.coveredBlocks);
 				return this.coveredBlocks<otherScore.coveredBlocks?1:-1;
@@ -139,15 +139,15 @@ public class RanksAI extends DummyAI implements Runnable {
 				else{*/
 			if (this.fourLinesCleared != otherScore.fourLinesCleared){
 				if (this.fourLinesCleared && !otherScore.fourLinesCleared){
-					
+
 					   return 1;
 				}
 				else {
-					
+
 					   return -1;
 				}
 			}
-			
+
 				if (this.rankStacking != otherScore.rankStacking){
 					return this.rankStacking>otherScore.rankStacking?1:-1;
 				}
@@ -156,39 +156,39 @@ public class RanksAI extends DummyAI implements Runnable {
 						return this.rankSkim>otherScore.rankSkim?1:-1;
 					}
 					else {
-						
-						
+
+
 							if (this.rankCliffs != otherScore.rankCliffs){
 								return this.rankCliffs>otherScore.rankCliffs?1:-1;
 							}
 							else {
-								
+
 									if (this.rankHoles==otherScore.rankHoles)
 										return 0;
 									else {
 										return this.rankHoles>otherScore.rankHoles?1:-1;
 									}
 								}
-						
+
 							}
 						}
 					}
-				
+
 				//}
 		 	//}
-		
-		}
-		
 
-		
-	
-	
+		}
+
+
+
+
+
 	@Override
 	public String getName() {
 		return "RANKS";
 	}
 
- 
+
 	@Override
 	public void init(GameEngine engine, int playerID) {
 		delay = 0;
@@ -375,15 +375,15 @@ public class RanksAI extends DummyAI implements Runnable {
 		Piece pieceNow = engine.nowPieceObject;
 		int nowX = engine.nowPieceX;
 		int nowY = engine.nowPieceY;
-	
+
 		Piece pieceHold = engine.holdPieceObject;
 		Piece pieceNext = engine.getNextObject(engine.nextPieceCount);
 		int numPreviews=1;
-	
+
 		Field fld = new Field(engine.field);
 
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
-				
+
 				nowY=2;
 
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, engine.field);
@@ -419,7 +419,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 		  }
 
-		
+
 
 		thinkLastPieceNo++;
 
@@ -427,18 +427,17 @@ public class RanksAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * �?考ルー�?ン
+	 * Main think routine
 	 * @param engine GameEngine
-	 * @param x X座標
-	 * @param y Y座標
-	 * @param rt 方�?�
-	 * @param rtOld 回転�?�?�方�?�（-1：�?��?�）
-	 * @param fld フィールド（�?�ん�?��?�弄�?��?�も�?題�?��?�）
-	 * @param piece ピース
-	 * @param nextpiece NEXTピース
-	 * @param holdpiece HOLDピース(null�?�場�?��?�り)
-	 * @param depth 妥�?�レベル（0�?�らgetMaxThinkDepth()-1�?��?�）
-	 * @return 評価得点
+	 * @param x X coord
+	 * @param y Y coord
+	 * @param rt Piece direction (after)
+	 * @param rtOld Piece direction (before)
+	 * @param fld Field
+	 * @param piece Current piece object
+	 * @param nextpiece NEXT piece object
+	 * @param holdpiece HOLD piece object (can be null)
+	 * @return Score object for this placement
 	 */
 	public Score thinkMain(GameEngine engine, int x, int y, int rt, int rtOld, Field fld, Piece piece, Piece nextpiece, Piece holdpiece, int maxX,int numPreviews) {
 		Score score=new Score();
@@ -447,14 +446,14 @@ public class RanksAI extends DummyAI implements Runnable {
 		boolean skimming=false;
 
 		int pts = 0;
-		
-		
-		
-		
+
+
+
+
 		if(!piece.placeToField(x, y, rt, fld)) {
-			
+
 			return score;
-		
+
 		}
 
 		int lines=fld.checkLine();
@@ -465,43 +464,43 @@ public class RanksAI extends DummyAI implements Runnable {
 			Piece pieceNow = engine.getNextObject(engine.nextPieceCount+numPreviews-1);
 			int nowX = engine.getSpawnPosX(fld,pieceNow);
 			int nowY = engine.nowPieceY;
-			boolean holdOK = engine.isHoldOK();
-			boolean holdEmpty = false;
+			//boolean holdOK = engine.isHoldOK();
+			//boolean holdEmpty = false;
 			Piece pieceHold = engine.holdPieceObject;
 			Piece pieceNext = engine.getNextObject(engine.nextPieceCount+numPreviews);
-			
-			if(pieceHold == null) {
-				holdEmpty = true;
-			}
+
+			//if(pieceHold == null) {
+			//	holdEmpty = true;
+			//}
 			Field fldcopy = new Field(fld);
-		
-			
+
+
 				for(int rot = 0; rot < Piece.DIRECTION_COUNT; rot++) {
 					int minX=10;
 					int maxX2=0;
 					while(minX>maxX2){
-				
+
 					minX = pieceNow.getMostMovableLeft(nowX, nowY, rot, fld);
 					maxX2 = pieceNow.getMostMovableRight(nowX, nowY, rot, fld);
 					nowY++;
-					}   
+					}
 					for(int x2 = minX; x2 <= maxX2; x2++) {
 						fldcopy.copy(fld);
 						int y2 = pieceNow.getBottom(x2, nowY, rot, fldcopy);
 
 						//if(!pieceNow.checkCollision(x, y, rt, fld)) {
-							
+
 							scoreCurrent = thinkMain(engine, x2, y2, rot, -1, fldcopy, pieceNow, pieceNext, pieceHold, maxX2,numPreviews-1);
 							log.debug("SUB id="+pieceNow.id+" posX="+x2+" rt="+rot+" score "+scoreCurrent);
-							
+
 							if(scoreCurrent.compareTo(bestScore)>0) {
 								log.debug("SUB new best piece !");
 									bestScore=scoreCurrent;
 							}
 
-			
+
 					}
-			
+
 			  }
 				if (maxX==x) {
 					if ((fld.getHeight()-fld.getHighestBlockY())<=8){
@@ -509,22 +508,22 @@ public class RanksAI extends DummyAI implements Runnable {
 						   bestScore.rankSkim=bestScore.rankStacking;
 						   bestScore.rankStacking=0;
 					   }
-					   
+
 					}
-					
-					 
+
+
 				}
 				if (lines==4){
 					bestScore.fourLinesCleared=true;
 				    bestScore.numberOfCliffs=0;
 				}
-				 
+
 				return bestScore;
 		}
 		else{
 			if (lines==4){
 				score.fourLinesCleared=true;
-			    
+
 			}
 		if (lines>=1 && lines<=3){
 			if ((fld.getHeight()-fld.getHighestBlockY())<=8)
@@ -536,9 +535,9 @@ public class RanksAI extends DummyAI implements Runnable {
 		}
 		score.coveredBlocks=fld.getHowManyBlocksCovered();
 		//System.out.println("covered blocks : "+score.coveredBlocks);
-		if (score.coveredBlocks>0) 
+		if (score.coveredBlocks>0)
 			blocksCovered=true;
-		
+
 
          int heights[]=new int [fld.getWidth()-1];
          for (int i=0;i<fld.getWidth()-1;i++){
@@ -566,12 +565,12 @@ public class RanksAI extends DummyAI implements Runnable {
 		pts=ranks.getRankValue(ranks.encode(surface));
         if (!blocksCovered && !cliffCreated && !skimming){
 		score.rankStacking=pts;
-		
+
 		}
         else {
         	if (skimming && !blocksCovered && !cliffCreated){
         		score.rankSkim=pts;
-        		
+
         	}
         	else {
         		if(!blocksCovered && cliffCreated){
@@ -590,15 +589,15 @@ public class RanksAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 最大妥�?�レベルを�?�得
-	 * @return 最大妥�?�レベル
+	 * Get max think level
+	 * @return Max think level (1 in this AI)
 	 */
 	public int getMaxThinkDepth() {
 		return 1;
 	}
 
 	/*
-	 * スレッド�?�処�?�
+	 * Thread routine for this AI
 	 */
 	public void run() {
 		log.info("RanksAI: Thread start");
