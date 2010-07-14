@@ -89,11 +89,11 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** Set to true to print debug information */
 	protected static final boolean DEBUG_ALL = false;
 	/** Wait extra frames at low speeds? */
-	protected static final boolean DELAY_DROP_ON = false;
+	//protected static final boolean DELAY_DROP_ON = false;
 	/** # of extra frames to wait */
-	protected static final int DROP_DELAY = 2;
+	//protected static final int DROP_DELAY = 2;
 	/** Number of frames waited */
-	protected int dropDelay;
+	//protected int dropDelay;
 	/** Did the thinking thread finish successfully? */
 	protected boolean thinkComplete;
 	/** Did the thinking thread find a possible position? */
@@ -128,7 +128,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		lastY = -1;
 		lastRt = -1;
 		sameStatusTime = 0;
-		dropDelay = 0;
+		//dropDelay = 0;
 		thinkComplete = false;
 		thinkSuccess = false;
 		inARE = false;
@@ -250,8 +250,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 			int drop = 0; //1 = up, -1 = down
 			boolean sync = false; //true = delay either rotate or movement for synchro move if needed.
 
-			SpeedParam speed = engine.speed;
-			boolean lowSpeed = speed.gravity < speed.denominator;
+			//SpeedParam speed = engine.speed;
+			//boolean lowSpeed = speed.gravity < speed.denominator;
 			boolean canFloorKick = engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick
 				|| engine.ruleopt.rotateMaxUpwardWallkick < 0;
 
@@ -650,6 +650,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				input |= Controller.BUTTON_BIT_LEFT;
 			else if(moveDir == 1 && (!ctrl.isPress(Controller.BUTTON_RIGHT) || useDAS))
 				input |= Controller.BUTTON_BIT_RIGHT;
+			/*
 			if(drop == 1 && !ctrl.isPress(Controller.BUTTON_UP))
 			{
 				if (DELAY_DROP_ON && lowSpeed && dropDelay < (DROP_DELAY >> 1))
@@ -664,6 +665,12 @@ public class PoochyBot extends DummyAI implements Runnable {
 				else
 					input |= Controller.BUTTON_BIT_DOWN;
 			}
+			*/
+			if(drop == 1 && !ctrl.isPress(Controller.BUTTON_UP))
+				input |= Controller.BUTTON_BIT_UP;
+			else if(drop == -1)
+				input |= Controller.BUTTON_BIT_DOWN;
+			
 			if (rotateDir != 0)
 			{
 				if(engine.ruleopt.rotateButtonAllowDouble &&
@@ -711,7 +718,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			ctrl.setButtonBit(input);
 		}
 		else {
-			dropDelay = 0;
+			//dropDelay = 0;
 			delay++;
 			ctrl.setButtonBit(inputARE);
 		}
