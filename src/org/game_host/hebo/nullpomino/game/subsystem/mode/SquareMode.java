@@ -127,6 +127,7 @@ public class SquareMode extends DummyMode {
 		scgettime = 0;
 
 		outlinetype = 0;
+		tspinEnableType = 2;
 
 		rankingRank = -1;
 		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
@@ -550,6 +551,7 @@ public class SquareMode extends DummyMode {
 	private void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("square.gametype", 0);
 		outlinetype = prop.getProperty("square.outlinetype", 0);
+		tspinEnableType = prop.getProperty("square.tspinEnableType", 2);
 		version = prop.getProperty("square.version", 0);
 	}
 
@@ -560,6 +562,7 @@ public class SquareMode extends DummyMode {
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("square.gametype", gametype);
 		prop.setProperty("square.outlinetype", outlinetype);
+		prop.setProperty("square.tspinEnableType", 2);
 		prop.setProperty("square.version", version);
 	}
 
