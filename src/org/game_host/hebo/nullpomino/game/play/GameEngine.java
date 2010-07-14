@@ -537,6 +537,9 @@ public class GameEngine {
 	
 	/** If true, line color clears can be diagonal. */
 	public boolean lineColorDiagonals;
+	
+	/** If true, gems count as the same color as their respectively-colored normal blocks */
+	public boolean gemSameColor;
 
 	/**
 	 * コンストラクタ
@@ -2234,9 +2237,9 @@ public class GameEngine {
 				if (clearMode == CLEAR_LINE)
 					lineClearing = field.checkLineNoFlag();
 				else if (clearMode == CLEAR_COLOR)
-					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear);
+					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor);
 				else if (clearMode == CLEAR_LINE_COLOR)
-					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals);
+					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor);
 				chain = 0;
 				
 				if(lineClearing == 0) {
@@ -2363,10 +2366,10 @@ public class GameEngine {
 				lineClearing = field.checkLine();
 			// Set color clear flags
 			else if (clearMode == CLEAR_COLOR)
-				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear);
+				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear, gemSameColor);
 			// Set line color clear flags
 			else if (clearMode == CLEAR_LINE_COLOR)
-				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals);
+				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals, gemSameColor);
 			
 			// ライン数を決める
 			int li = lineClearing;
@@ -2460,9 +2463,9 @@ public class GameEngine {
 			if (clearMode == CLEAR_LINE)
 				field.clearLine();
 			else if (clearMode == CLEAR_COLOR)
-				field.clearColor(colorClearSize, garbageColorClear);
+				field.clearColor(colorClearSize, garbageColorClear, gemSameColor);
 			else if (clearMode == CLEAR_LINE_COLOR)
-				field.clearLineColor(colorClearSize, lineColorDiagonals);
+				field.clearLineColor(colorClearSize, lineColorDiagonals, gemSameColor);
 		}
 
 		// ラインを1段落とす
@@ -2492,8 +2495,8 @@ public class GameEngine {
 				if(field.doCascadeGravity()) {
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
-						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear) > 0) ||
-						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals) > 0)) {
+						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor) > 0) ||
+						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0)) {
 					tspin = false;
 					tspinmini = false;
 					chain++;
