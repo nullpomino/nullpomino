@@ -92,6 +92,9 @@ public class SquareMode extends DummyMode {
 
 	/** Outline type */
 	private int outlinetype;
+	
+	/** Type of spins allowed (0=off 1=t-only 2=all) */
+	private int tspinEnableType;
 
 	/** Version number */
 	private int version;
@@ -168,13 +171,13 @@ public class SquareMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 1;
+				if(engine.statc[2] < 0) engine.statc[2] = 2;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 1) engine.statc[2] = 0;
+				if(engine.statc[2] > 2) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -197,6 +200,11 @@ public class SquareMode extends DummyMode {
 					outlinetype += change;
 					if(outlinetype < 0) outlinetype = 2;
 					if(outlinetype > 2) outlinetype = 0;
+				case 2:
+					tspinEnableType += change;
+					if(tspinEnableType < 0) tspinEnableType = 2;
+					if(tspinEnableType > 2) tspinEnableType = 0;
+					break;
 				}
 			}
 
@@ -243,6 +251,12 @@ public class SquareMode extends DummyMode {
 		if(outlinetype == 1) strOutline = "CONNECT";
 		if(outlinetype == 2) strOutline = "NONE";
 		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
+		receiver.drawMenuFont(engine, playerID, 0, 4, "AVALANCHE", EventReceiver.COLOR_BLUE);
+		String strTSpinEnable = "";
+		if(tspinEnableType == 0) strTSpinEnable = "OFF";
+		if(tspinEnableType == 1) strTSpinEnable = "T-ONLY";
+		if(tspinEnableType == 2) strTSpinEnable = "ALL";
+		receiver.drawMenuFont(engine, playerID, 1, 5, strTSpinEnable, (engine.statc[2] == 2));
 	}
 
 	/*
@@ -256,9 +270,14 @@ public class SquareMode extends DummyMode {
 		if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 		if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 
-		engine.tspinEnable = true;
-		engine.useAllSpinBonus = true;
-		engine.tspinAllowKick = true;
+		if(tspinEnableType == 0) {
+			engine.tspinEnable = false;
+		} else if(tspinEnableType == 1) {
+			engine.tspinEnable = true;
+		} else {
+			engine.tspinEnable = true;
+			engine.useAllSpinBonus = true;
+		}
 
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
