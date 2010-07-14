@@ -1742,9 +1742,150 @@ public class Field implements Serializable {
 			}
 		}
 	}
-	
+
+	/**
+	 * Clear line colors of sufficient size.
+	 * @param size Minimum length of line for a clear
+	 * @param diagonals <code>true</code> to check diagonals, <code>false</code> to check only vertical and horizontal
+	 * @return Total number of blocks that would be cleared.
+	 */
+	public int clearLineColor (int size, boolean diagonals)
+	{
+		int total = checkLineColor(size, true, diagonals);
+		if (total > 0)
+			for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++)
+				for(int j = 0; j < width; j++)
+				{
+					Block b = getBlock(j, i);
+					if (b == null)
+						continue;
+					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+						setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
+				}
+		return total;
+	}
+	/**
+	 * Check for line color clears of sufficient size.
+	 * @param size Minimum length of line for a clear
+	 * @param flag <code>true</code> to set BLOCK_ATTRIBUTE_ERASE to true on blocks to be cleared.
+	 * @param diagonals <code>true</code> to check diagonals, <code>false</code> to check only vertical and horizontal
+	 * @return Total number of blocks that would be cleared.
+	 */
+	public int checkLineColor (int size, boolean flag, boolean diagonals)
+	{
+		if (size < 1)
+			return 0;
+		int total = 0;
+		int maxHeight = getHeightWithoutHurryupFloor();
+		int x, y, count, blockColor, lineColor;
+		//Check all vertical lines
+		for(int i = (hidden_height * -1); i < maxHeight+1-size; i++) {
+			for(int j = 0; j < width; j++) {
+				x = j;
+				y = i;
+				count = 0;
+				blockColor = getBlockColor(x, y);
+				if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
+					continue;
+				lineColor = blockColor;
+				while (lineColor == blockColor)
+				{
+					count++;
+					y++;
+					blockColor = getBlockColor(x, y);
+				}
+				if (count < size)
+					continue;
+				total += count;
+				if (!flag)
+					continue;
+				x = j;
+				y = i;
+				blockColor = lineColor;
+				while (lineColor == blockColor)
+				{
+					getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					y++;
+					blockColor = getBlockColor(x, y);
+				}
+			}
+		}
+		//Check all horizontal lines
+		for(int i = (hidden_height * -1); i < maxHeight; i++) {
+			for(int j = 0; j < width+1-size; j++) {
+				x = j;
+				y = i;
+				count = 0;
+				blockColor = getBlockColor(x, y);
+				if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
+					continue;
+				lineColor = blockColor;
+				while (lineColor == blockColor)
+				{
+					x++;
+					blockColor = getBlockColor(x, y);
+					count++;
+				}
+				if (count < size)
+					continue;
+				total += count;
+				if (!flag)
+					continue;
+				x = j;
+				y = i;
+				blockColor = lineColor;
+				while (lineColor == blockColor)
+				{
+					getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					x++;
+					blockColor = getBlockColor(x, y);
+				}
+			}
+		}
+		
+		if (!diagonals)
+			return total;
+		//Check all diagonal lines
+		for(int i = (hidden_height * -1); i < maxHeight+1-size; i++) {
+			for(int j = 0; j < width+1-size; j++) {
+				x = j;
+				y = i;
+				count = 0;
+				blockColor = getBlockColor(x, y);
+				if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
+					continue;
+				lineColor = blockColor;
+				while (lineColor == blockColor)
+				{
+					x++;
+					y++;
+					blockColor = getBlockColor(x, y);
+					count++;
+				}
+				if (count < size)
+					continue;
+				total += count;
+				if (!flag)
+					continue;
+				x = j;
+				y = i;
+				blockColor = lineColor;
+				while (lineColor == blockColor)
+				{
+					getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					x++;
+					y++;
+					blockColor = getBlockColor(x, y);
+				}
+			}
+		}
+		return total;
+	}
 	/**
 	 * Performs all color clears of sufficient size.
+	 * @param size Minimum size of cluster for a clear
+	 * @param garbageClear <code>true</code> to clear garbage blocks adjacent to cleared clusters
+	 * @return Total number of blocks cleared.
 	 */
 	public int clearColor (int size, boolean garbageClear)
 	{
@@ -1766,6 +1907,10 @@ public class Field implements Serializable {
 	/**
 	 * Clears the block at the given position as well as all adjacent blocks of
 	 * the same color, and any garbage blocks adjacent to the group if garbageClear is true.
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param flag <code>true</code> to set BLOCK_ATTRIBUTE_ERASE to true on cleared blocks.
+	 * @param garbageClear <code>true</code> to clear garbage blocks adjacent to cleared clusters
 	 * @return The number of blocks cleared.
 	 */
 	public int clearColor (int x, int y, boolean flag, boolean garbageClear)

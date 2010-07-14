@@ -108,6 +108,9 @@ public class GameEngine {
 
 	/** Line gravity types */
 	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1;
+	
+	/** Clear mode settings */
+	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2;
 
 	/** カラーアイテム用テーブル */
 	public static final int[] ITEM_COLOR_BRIGHT_TABLE =
@@ -117,9 +120,6 @@ public class GameEngine {
 		 3,  3,  3,  3,  2,  2,  2,  2,  1,  1,
 		 1,  1,  0,  0,  0,  0,  0,  0,  0,  0
 	};
-	
-	/** Clear mode settings */
-	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1;
 
 	/** このゲームエンジンを所有するGameOwnerクラス */
 	public GameManager owner;
@@ -534,6 +534,9 @@ public class GameEngine {
 	
 	/** If true, each individual block is a random color. */
 	public int[] blockColors;
+	
+	/** If true, line color clears can be diagonal. */
+	public boolean lineColorDiagonals;
 
 	/**
 	 * コンストラクタ
@@ -758,6 +761,7 @@ public class GameEngine {
 		colorClearSize = -1;
 		garbageColorClear = false;
 		connectBlocks = true;
+		lineColorDiagonals = false;
 
 		// イベント発生
 		if(owner.mode != null) {
@@ -2231,6 +2235,8 @@ public class GameEngine {
 					lineClearing = field.checkLineNoFlag();
 				else if (clearMode == CLEAR_COLOR)
 					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear);
+				else if (clearMode == CLEAR_LINE_COLOR)
+					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals);
 				chain = 0;
 				
 				if(lineClearing == 0) {
@@ -2358,6 +2364,9 @@ public class GameEngine {
 			// Set color clear flags
 			else if (clearMode == CLEAR_COLOR)
 				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear);
+			// Set line color clear flags
+			else if (clearMode == CLEAR_LINE_COLOR)
+				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals);
 			
 			// ライン数を決める
 			int li = lineClearing;
@@ -2452,6 +2461,8 @@ public class GameEngine {
 				field.clearLine();
 			else if (clearMode == CLEAR_COLOR)
 				field.clearColor(colorClearSize, garbageColorClear);
+			else if (clearMode == CLEAR_LINE_COLOR)
+				field.clearLineColor(colorClearSize, lineColorDiagonals);
 		}
 
 		// ラインを1段落とす
@@ -2481,7 +2492,8 @@ public class GameEngine {
 				if(field.doCascadeGravity()) {
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
-						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear) > 0)) {
+						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear) > 0) ||
+						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals) > 0)) {
 					tspin = false;
 					tspinmini = false;
 					chain++;
