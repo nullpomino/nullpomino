@@ -38,7 +38,6 @@ import org.game_host.hebo.nullpomino.game.play.GameManager;
  */
 public class NetObserverClient extends NetBaseClient {
 	/** ログ */
-	@SuppressWarnings("hiding")
 	static final Logger log = Logger.getLogger(NetObserverClient.class);
 
 	/** サーバーバージョン */

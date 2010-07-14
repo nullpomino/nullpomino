@@ -2404,7 +2404,6 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		 * @param g 邪魔ブロック数
 		 * @param p 送信元(ゲーム用プレイヤー番号)
 		 */
-		@SuppressWarnings("unused")
 		public GarbageEntry(int g, int p) {
 			lines = g;
 			playerID = p;
