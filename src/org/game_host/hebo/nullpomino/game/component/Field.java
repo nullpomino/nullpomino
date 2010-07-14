@@ -1752,20 +1752,60 @@ public class Field implements Serializable {
 	 * @param size Minimum length of line for a clear
 	 * @param diagonals <code>true</code> to check diagonals, <code>false</code> to check only vertical and horizontal
 	 * @param gemSame <code>true</code> to check gem blocks
-	 * @return Total number of blocks that would be cleared.
+	 * @return Total number of blocks cleared.
 	 */
 	public int clearLineColor (int size, boolean diagonals, boolean gemSame)
 	{
-		int total = checkLineColor(size, true, diagonals, gemSame);
-		if (total > 0)
+		int total = 0;
+		Block b, bAdj;
+		if (checkLineColor(size, true, diagonals, gemSame) > 0)
 			for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++)
 				for(int j = 0; j < width; j++)
 				{
-					Block b = getBlock(j, i);
+					b = getBlock(j, i);
 					if (b == null)
 						continue;
 					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+					{
+						total++;
+						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+						{
+							bAdj = getBlock(j, i+1);
+							if (bAdj != null)
+							{
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+							}
+						}
+						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
+						{
+							bAdj = getBlock(j, i-1);
+							if (bAdj != null)
+							{
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+							}
+						}
+						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
+						{
+							bAdj = getBlock(j-1, i);
+							if (bAdj != null)
+							{
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+							}
+						}
+						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+						{
+							bAdj = getBlock(j+1, i);
+							if (bAdj != null)
+							{
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+							}
+						}
 						setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
+					}
 				}
 		return total;
 	}
