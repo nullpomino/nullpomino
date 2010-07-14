@@ -881,6 +881,18 @@ public class Field implements Serializable {
 	}
 
 	/**
+	 * Check if specified line is completely empty
+	 * @param y Y coord
+	 * @return <code>true</code> if the specified line is completely empty, <code>false</code> otherwise.
+	 */
+	public boolean isEmptyLine(int y) {
+		for(int x = 0; x < width; x++) {
+			if(getBlockEmpty(x, y) == false) return false;
+		}
+		return true;
+	}
+
+	/**
 	 * T-Spinになる地形だったらtrue
 	 * @param x X座標
 	 * @param y Y座標
@@ -1399,6 +1411,29 @@ public class Field implements Serializable {
 	}
 
 	/**
+	 * Cut the specified line(s) then push down all things above
+	 * @param y Y coord
+	 * @param lines Number of lines to cut
+	 */
+	public void cutLine(int y, int lines) {
+		for(int k = 0; k < lines; k++) {
+			for(int i = y; i > (hidden_height * -1); i--) {
+				for(int j = 0; j < width; j++) {
+					Block blk = getBlock(j, i - 1);
+					if(blk == null) blk = new Block();
+					setBlock(j, i, blk);
+					setLineFlag(i, getLineFlag(i + 1));
+				}
+			}
+
+			for(int j = 0; j < width; j++) {
+				setBlock(j, (hidden_height * -1), new Block());
+				setLineFlag((hidden_height * -1), false);
+			}
+		}
+	}
+
+	/**
 	 * 穴が1箇所だけ開いた邪魔ブロックを一番下に追加
 	 * @param hole 穴の位置（-1なら穴なし）
 	 * @param color 邪魔ブロックの色
@@ -1716,6 +1751,7 @@ public class Field implements Serializable {
 	 * Clear line colors of sufficient size.
 	 * @param size Minimum length of line for a clear
 	 * @param diagonals <code>true</code> to check diagonals, <code>false</code> to check only vertical and horizontal
+	 * @param gemSame <code>true</code> to check gem blocks
 	 * @return Total number of blocks that would be cleared.
 	 */
 	public int clearLineColor (int size, boolean diagonals, boolean gemSame)
@@ -1738,6 +1774,7 @@ public class Field implements Serializable {
 	 * @param size Minimum length of line for a clear
 	 * @param flag <code>true</code> to set BLOCK_ATTRIBUTE_ERASE to true on blocks to be cleared.
 	 * @param diagonals <code>true</code> to check diagonals, <code>false</code> to check only vertical and horizontal
+	 * @param gemSame <code>true</code> to check gem blocks
 	 * @return Total number of blocks that would be cleared.
 	 */
 	public int checkLineColor (int size, boolean flag, boolean diagonals, boolean gemSame)
@@ -1811,7 +1848,7 @@ public class Field implements Serializable {
 				}
 			}
 		}
-		
+
 		if (!diagonals)
 			return total;
 		//Check all diagonal lines
@@ -1883,6 +1920,7 @@ public class Field implements Serializable {
 	 * Performs all color clears of sufficient size.
 	 * @param size Minimum size of cluster for a clear
 	 * @param garbageClear <code>true</code> to clear garbage blocks adjacent to cleared clusters
+	 * @param gemSame <code>true</code> to check gem blocks
 	 * @return Total number of blocks cleared.
 	 */
 	public int clearColor (int size, boolean garbageClear, boolean gemSame)
@@ -1909,6 +1947,7 @@ public class Field implements Serializable {
 	 * @param y y-coordinate
 	 * @param flag <code>true</code> to set BLOCK_ATTRIBUTE_ERASE to true on cleared blocks.
 	 * @param garbageClear <code>true</code> to clear garbage blocks adjacent to cleared clusters
+	 * @param gemSame <code>true</code> to check gem blocks
 	 * @return The number of blocks cleared.
 	 */
 	public int clearColor (int x, int y, boolean flag, boolean garbageClear, boolean gemSame)
@@ -1962,7 +2001,7 @@ public class Field implements Serializable {
 			for(int j = 0; j < width; j++) {
 				Block blk = getBlock(j, i);
 
-				if((blk != null) && !blk.isEmpty()) {
+				if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_UNTIGRAVITY)) {
 					boolean fall = true;
 					checkBlockLink(j, i);
 
@@ -2009,9 +2048,12 @@ public class Field implements Serializable {
 
 		setAllAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
 		setAllAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, false);
+
+		/*
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			setLineFlag(i, false);
 		}
+		*/
 
 		return result;
 	}

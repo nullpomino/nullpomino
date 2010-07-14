@@ -108,7 +108,7 @@ public class GameEngine {
 
 	/** Line gravity types */
 	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1;
-	
+
 	/** Clear mode settings */
 	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2;
 
@@ -252,6 +252,9 @@ public class GameEngine {
 
 	/** Current number of chains */
 	public int chain;
+
+	/** Number of lines cleared for this chains */
+	public int lineGravityTotalLines;
 
 	/** 地面に触れてから経過したフレーム数 */
 	public int lockDelayNow;
@@ -516,28 +519,28 @@ public class GameEngine {
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */
 	public int owDasDelay;
-	
+
 	/** Clear mode selection */
 	public int clearMode;
-	
+
 	/** Size needed for a color-group clear */
 	public int colorClearSize;
 
 	/** If true, color clears will also clear adjacent garbage blocks. */
 	public boolean garbageColorClear;
-	
+
 	/** If true, each individual block is a random color. */
 	public boolean randomBlockColor;
-	
+
 	/** If true, block in pieces are connected. */
 	public boolean connectBlocks;
-	
+
 	/** If true, each individual block is a random color. */
 	public int[] blockColors;
-	
+
 	/** If true, line color clears can be diagonal. */
 	public boolean lineColorDiagonals;
-	
+
 	/** If true, gems count as the same color as their respectively-colored normal blocks */
 	public boolean gemSameColor;
 
@@ -643,6 +646,7 @@ public class GameEngine {
 		lineClearing = 0;
 		lineGravityType = LINE_GRAVITY_NATIVE;
 		chain = 0;
+		lineGravityTotalLines = 0;
 
 		lockDelayNow = 0;
 
@@ -759,7 +763,7 @@ public class GameEngine {
 		itemColorCount = 0;
 
 		interruptItemNumber = INTERRUPTITEM_NONE;
-		
+
 		clearMode = CLEAR_LINE;
 		colorClearSize = -1;
 		garbageColorClear = false;
@@ -2216,7 +2220,7 @@ public class GameEngine {
 
 				boolean partialLockOut = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, field);
 				boolean put = nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
-				
+
 				if (lineGravityType == LINE_GRAVITY_CASCADE && !connectBlocks)
 					while(field.doCascadeGravity()) { continue; }
 
@@ -2241,7 +2245,8 @@ public class GameEngine {
 				else if (clearMode == CLEAR_LINE_COLOR)
 					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor);
 				chain = 0;
-				
+				lineGravityTotalLines = 0;
+
 				if(lineClearing == 0) {
 					combo = 0;
 
@@ -2370,7 +2375,7 @@ public class GameEngine {
 			// Set line color clear flags
 			else if (clearMode == CLEAR_LINE_COLOR)
 				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals, gemSameColor);
-			
+
 			// ライン数を決める
 			int li = lineClearing;
 			if(big && bighalf)
@@ -2436,6 +2441,8 @@ public class GameEngine {
 					if(combo > statistics.maxCombo) statistics.maxCombo = combo;
 				}
 			}
+
+			lineGravityTotalLines += lineClearing;
 
 			if((ending == 0) || (staffrollEnableStatistics)) statistics.lines += li;
 

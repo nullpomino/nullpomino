@@ -92,9 +92,12 @@ public class SquareMode extends DummyMode {
 
 	/** Outline type */
 	private int outlinetype;
-	
+
 	/** Type of spins allowed (0=off 1=t-only 2=all) */
 	private int tspinEnableType;
+
+	/** Use TNT64 avalanche (native+cascade) */
+	private boolean tntAvalanche;
 
 	/** Version number */
 	private int version;
@@ -172,13 +175,13 @@ public class SquareMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 2;
+				if(engine.statc[2] < 0) engine.statc[2] = 3;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 2) engine.statc[2] = 0;
+				if(engine.statc[2] > 3) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -191,7 +194,6 @@ public class SquareMode extends DummyMode {
 				engine.playSE("change");
 
 				switch(engine.statc[2]) {
-
 				case 0:
 					gametype += change;
 					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
@@ -201,10 +203,14 @@ public class SquareMode extends DummyMode {
 					outlinetype += change;
 					if(outlinetype < 0) outlinetype = 2;
 					if(outlinetype > 2) outlinetype = 0;
+					break;
 				case 2:
 					tspinEnableType += change;
 					if(tspinEnableType < 0) tspinEnableType = 2;
 					if(tspinEnableType > 2) tspinEnableType = 0;
+					break;
+				case 3:
+					tntAvalanche = !tntAvalanche;
 					break;
 				}
 			}
@@ -258,6 +264,8 @@ public class SquareMode extends DummyMode {
 		if(tspinEnableType == 1) strTSpinEnable = "T-ONLY";
 		if(tspinEnableType == 2) strTSpinEnable = "ALL";
 		receiver.drawMenuFont(engine, playerID, 1, 5, strTSpinEnable, (engine.statc[2] == 2));
+		receiver.drawMenuFont(engine, playerID, 0, 6, "AVALANCHE", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 7, tntAvalanche ? "TNT" : "WORLDS", (engine.statc[2] == 3));
 	}
 
 	/*
@@ -386,8 +394,6 @@ public class SquareMode extends DummyMode {
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 			}
 		}
-
-
 	}
 
 	/*
@@ -458,13 +464,24 @@ public class SquareMode extends DummyMode {
 	 */
 	private void avalanche(GameEngine engine, int playerID, int lines) {
 		Field field = engine.field;
+		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_UNTIGRAVITY, false);
 
 		// This sets the highest line that will be affected by the avalanche.
 		int topLine = field.getHiddenHeight() * -1;
 		if(lines == 1) {
 			for(int i = (field.getHiddenHeight() * -1); i < field.getHeightWithoutHurryupFloor(); i++) {
 				if(field.getLineFlag(i)) {
+					// Found a line
 					topLine = i + 1;
+					break;
+				} else if(tntAvalanche) {
+					// Set anti-gravity when TNT avalanche is used
+					for(int j = 0; j < field.getWidth(); j++) {
+						Block blk = field.getBlock(j, i);
+						if((blk != null) && !blk.isEmpty()) {
+							blk.setAttribute(Block.BLOCK_ATTRIBUTE_UNTIGRAVITY, true);
+						}
+					}
 				}
 			}
 		}
@@ -490,6 +507,24 @@ public class SquareMode extends DummyMode {
 
 		// Set cascade flag
 		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+	}
+
+	/*
+	 * When the line clear ends
+	 */
+	@Override
+	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		if((engine.lineGravityType == GameEngine.LINE_GRAVITY_CASCADE) && (engine.lineGravityTotalLines > 0) && (tntAvalanche)) {
+			Field field = engine.field;
+			for(int i = field.getHeightWithoutHurryupFloor() - 1; i >= (field.getHiddenHeight() * -1); i--) {
+				if(field.isEmptyLine(i)) {
+					field.cutLine(i, 1);
+					engine.lineGravityTotalLines--;
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/*
@@ -552,6 +587,7 @@ public class SquareMode extends DummyMode {
 		gametype = prop.getProperty("square.gametype", 0);
 		outlinetype = prop.getProperty("square.outlinetype", 0);
 		tspinEnableType = prop.getProperty("square.tspinEnableType", 2);
+		tntAvalanche = prop.getProperty("square.tntAvalanche", false);
 		version = prop.getProperty("square.version", 0);
 	}
 
@@ -563,6 +599,7 @@ public class SquareMode extends DummyMode {
 		prop.setProperty("square.gametype", gametype);
 		prop.setProperty("square.outlinetype", outlinetype);
 		prop.setProperty("square.tspinEnableType", 2);
+		prop.setProperty("square.tntAvalanche", tntAvalanche);
 		prop.setProperty("square.version", version);
 	}
 
