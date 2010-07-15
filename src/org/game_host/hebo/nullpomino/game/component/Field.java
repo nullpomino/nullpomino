@@ -1591,8 +1591,11 @@ public class Field implements Serializable {
 
 	/**
 	 * Checks for 4x4 square formations and converts blocks to square blocks if needed.
+	 * @return Number of square formations (+1 for silver, +2 for gold)
 	 */
-	public void checkForSquares() {
+	public int checkForSquares() {
+		int squares = 0;
+
 		// Check for gold squares
 		for (int i = (hidden_height * -1); i < (getHeightWithoutHurryupFloor() - 3); i++) {
 			for (int j = 0; j < (width - 3); j++) {
@@ -1640,6 +1643,7 @@ public class Field implements Serializable {
 				}
 				// We found a square! Set all the blocks equal to gold blocks.
 				if (squareCheck) {
+					squares += 2;
 					int[] squareX = new int[] {0, 1, 1, 2};
 					int[] squareY = new int[] {0, 3, 3, 6};
 					for (int k = 0; k < 4; k++) {
@@ -1695,6 +1699,7 @@ public class Field implements Serializable {
 				}
 				// We found a square! Set all the blocks equal to silver blocks.
 				if (squareCheck) {
+					squares += 1;
 					int[] squareX = new int[] {0, 1, 1, 2};
 					int[] squareY = new int[] {0, 3, 3, 6};
 					for (int k = 0; k < 4; k++) {
@@ -1718,6 +1723,8 @@ public class Field implements Serializable {
 				}
 			}
 		}
+
+		return squares;
 	}
 
 	/**

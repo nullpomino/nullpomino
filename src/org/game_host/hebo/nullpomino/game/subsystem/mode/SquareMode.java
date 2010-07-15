@@ -78,7 +78,7 @@ public class SquareMode extends DummyMode {
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
 
-	/** 現在の落下速度の番号（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current gravity number (When the point reaches tableGravityChangeScore's value, this variable will increase) */
 	private int gravityindex;
 
 	/** Amount of points you just get from line clears */
@@ -86,6 +86,9 @@ public class SquareMode extends DummyMode {
 
 	/** Elapsed time from last line clear (lastscore is displayed to screen until this reaches to 120) */
 	private int scgettime;
+
+	/** Number of squares created */
+	private int squares;
 
 	/** Selected game type */
 	private int gametype;
@@ -99,20 +102,26 @@ public class SquareMode extends DummyMode {
 	/** Use TNT64 avalanche (native+cascade) */
 	private boolean tntAvalanche;
 
+	/** Grayout broken blocks */
+	private boolean grayoutEnable;
+
 	/** Version number */
 	private int version;
 
-	/** 今回のプレイのランキングでのランク */
+	/** Your place on leaderboard (-1: out of rank) */
 	private int rankingRank;
 
-	/** ランキングのライン数 */
+	/** Score records */
 	private int[][] rankingScore;
 
-	/** ランキングのタイム */
+	/** Time records */
 	private int[][] rankingTime;
 
+	/** Squares records */
+	private int[][] rankingSquares;
+
 	/*
-	 * モード名
+	 * Returns the name of this mode
 	 */
 	@Override
 	public String getName() {
@@ -120,7 +129,7 @@ public class SquareMode extends DummyMode {
 	}
 
 	/*
-	 * 初期化
+	 * This function will be called when the game enters the main game screen.
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
@@ -128,6 +137,7 @@ public class SquareMode extends DummyMode {
 		receiver = engine.owner.receiver;
 		lastscore = 0;
 		scgettime = 0;
+		squares = 0;
 
 		outlinetype = 0;
 		tspinEnableType = 2;
@@ -135,6 +145,7 @@ public class SquareMode extends DummyMode {
 		rankingRank = -1;
 		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
 		rankingTime = new int[RANKING_TYPE][RANKING_MAX];
+		rankingSquares = new int[RANKING_TYPE][RANKING_MAX];
 
 		if(owner.replayMode == false) {
 			loadSetting(owner.modeConfig);
@@ -148,7 +159,7 @@ public class SquareMode extends DummyMode {
 	}
 
 	/**
-	 * 落下速度を設定
+	 * Set the gravity speed
 	 * @param engine GameEngine
 	 */
 	public void setSpeed(GameEngine engine) {
@@ -166,26 +177,26 @@ public class SquareMode extends DummyMode {
 	}
 
 	/*
-	 * 設定画面の処理
+	 * Main routine for game setup screen
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
-		// メニュー
+		// Main menu
 		if(engine.owner.replayMode == false) {
-			// 上
+			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 3;
+				if(engine.statc[2] < 0) engine.statc[2] = 4;
 				engine.playSE("cursor");
 			}
-			// 下
+			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 3) engine.statc[2] = 0;
+				if(engine.statc[2] > 4) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
-			// 設定変更
+			// Change settings (Left/Right)
 			int change = 0;
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
@@ -212,10 +223,13 @@ public class SquareMode extends DummyMode {
 				case 3:
 					tntAvalanche = !tntAvalanche;
 					break;
+				case 4:
+					grayoutEnable = !grayoutEnable;
+					break;
 				}
 			}
 
-			// 決定
+			// A button (confirm)
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
@@ -223,7 +237,7 @@ public class SquareMode extends DummyMode {
 				return false;
 			}
 
-			// キャンセル
+			// B button (cancel)
 			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
@@ -242,7 +256,7 @@ public class SquareMode extends DummyMode {
 	}
 
 	/*
-	 * 設定画面の描画処理
+	 * Renders game setup screen
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
@@ -266,10 +280,12 @@ public class SquareMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 1, 5, strTSpinEnable, (engine.statc[2] == 2));
 		receiver.drawMenuFont(engine, playerID, 0, 6, "AVALANCHE", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 7, tntAvalanche ? "TNT" : "WORLDS", (engine.statc[2] == 3));
+		receiver.drawMenuFont(engine, playerID, 0, 8, "GRAYOUT", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(grayoutEnable), (engine.statc[2] == 4));
 	}
 
 	/*
-	 * Readyのときの初期化処理
+	 * This function will be called before the game actually begins (after Ready&Go screen disappears)
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -307,7 +323,7 @@ public class SquareMode extends DummyMode {
 	}
 
 	/*
-	 * スコア表示
+	 * Renders HUD (leaderboard or game statistics)
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
@@ -316,22 +332,25 @@ public class SquareMode extends DummyMode {
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
 				if (gametype == 0) {
-					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE  TIME", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE SQUARE TIME", EventReceiver.COLOR_BLUE);
 				} else if (gametype == 1) {
-					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE SQUARE", EventReceiver.COLOR_BLUE);
 				} else if (gametype == 2) {
-					receiver.drawScoreFont(engine, playerID, 3, 3, "TIME", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, 3, 3, "TIME     SQUARE", EventReceiver.COLOR_BLUE);
 				}
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
 					if (gametype == 0) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 10, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 9, 4 + i, String.valueOf(rankingSquares[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 16, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
 					} else if (gametype == 1) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 9, 4 + i, String.valueOf(rankingSquares[gametype][i]), (i == rankingRank));
 					} else if (gametype == 2) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 12, 4 + i, String.valueOf(rankingSquares[gametype][i]), (i == rankingRank));
 					}
 				}
 			}
@@ -348,13 +367,28 @@ public class SquareMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 6, "LINE", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(engine.statistics.lines));
 
+			receiver.drawScoreFont(engine, playerID, 0, 9, "SQUARE", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 10, String.valueOf(squares));
+
 			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
+			if(gametype == 1) {
+				// Ultra timer
+				int time = ULTRA_MAX_TIME - engine.statistics.time;
+				if(time < 0) time = 0;
+				int fontcolor = EventReceiver.COLOR_WHITE;
+				if((time < 30 * 60) && (time > 0)) fontcolor = EventReceiver.COLOR_YELLOW;
+				if((time < 20 * 60) && (time > 0)) fontcolor = EventReceiver.COLOR_ORANGE;
+				if((time < 10 * 60) && (time > 0)) fontcolor = EventReceiver.COLOR_RED;
+				receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(time), fontcolor);
+			} else {
+				// Normal timer
+				receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
+			}
 		}
 	}
 
 	/*
-	 * 各フレームの最後の処理
+	 * This function will be called when the game timer updates
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -362,15 +396,25 @@ public class SquareMode extends DummyMode {
 
 		if (gametype == 1) {
 			int remainTime = ULTRA_MAX_TIME - engine.statistics.time;
-			// 時間メーター
+			// Timer meter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / ULTRA_MAX_TIME;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainTime <= 3600) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 1800) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 600) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// 時間切れ
-			if(engine.statistics.time >= ULTRA_MAX_TIME) {
+			// Countdown
+			if((remainTime > 0) && (remainTime <= 10 * 60) && (engine.statistics.time % 60 == 0) && (engine.timerActive == true)) {
+				engine.playSE("countdown");
+			}
+
+			// BGM fadeout
+			if((remainTime <= 5 * 60) && (engine.timerActive == true)) {
+				owner.bgmStatus.fadesw = true;
+			}
+
+			// Time up!
+			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;
 				engine.resetStatc();
@@ -386,7 +430,7 @@ public class SquareMode extends DummyMode {
 			if(remainScore <= 30) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainScore <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ゴール
+			// Goal
 			if((engine.statistics.score >= SPRINT_MAX_SCORE) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;
@@ -402,7 +446,7 @@ public class SquareMode extends DummyMode {
 	@Override
 	public boolean onLineClear(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 1) {
-			grayoutBrokenBlocks(engine.field);
+			if(grayoutEnable) grayoutBrokenBlocks(engine.field);
 		}
 		return false;
 	}
@@ -423,11 +467,12 @@ public class SquareMode extends DummyMode {
 	}
 
 	/*
-	 * スコア計算
+	 * Calculates line-clear score
+	 * (This function will be called even if no lines are cleared)
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
-		// ラインクリアボーナス
+		// Line clear bonus
 		int pts = lines;
 
 		if (lines > 0) {
@@ -499,7 +544,7 @@ public class SquareMode extends DummyMode {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-						blk.color = Block.BLOCK_COLOR_GRAY;
+						if(grayoutEnable) blk.color = Block.BLOCK_COLOR_GRAY;
 					}
 				}
 			}
@@ -532,11 +577,14 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
-		engine.field.checkForSquares();
+		int sq = engine.field.checkForSquares();
+		squares += sq;
+		if(sq == 1) engine.playSE("square_s");
+		else if(sq >= 2) engine.playSE("square_g");
 	}
 
 	/*
-	 * 結果画面の描画
+	 * Results screen
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -550,27 +598,32 @@ public class SquareMode extends DummyMode {
 		String strLines = String.format("%10d", engine.statistics.lines);
 		receiver.drawMenuFont(engine, playerID,  0, 6, strLines);
 
-		receiver.drawMenuFont(engine, playerID,  0, 7, "TIME", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID,  0, 7, "SQUARE", EventReceiver.COLOR_BLUE);
+		String strSquares = String.format("%10d", squares);
+		receiver.drawMenuFont(engine, playerID,  0, 8, strSquares);
+
+		receiver.drawMenuFont(engine, playerID,  0, 9, "TIME", EventReceiver.COLOR_BLUE);
 		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 8, strTime);
+		receiver.drawMenuFont(engine, playerID,  0, 10, strTime);
 
 		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 9, "RANK", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 11, "RANK", EventReceiver.COLOR_BLUE);
 			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 10, strRank);
+			receiver.drawMenuFont(engine, playerID,  0, 12, strRank);
 		}
 	}
 
 	/*
-	 * リプレイ保存時の処理
+	 * This function will be called when the replay data is going to be saved
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		saveSetting(prop);
+		prop.setProperty("square.squares", squares);
 
-		// ランキング更新
+		// Update the ranking
 		if((owner.replayMode == false) && (engine.ai == null)) {
-			updateRanking(engine.statistics.score, engine.statistics.time, gametype);
+			updateRanking(engine.statistics.score, engine.statistics.time, squares, gametype);
 
 			if(rankingRank != -1) {
 				saveRanking(owner.modeConfig, engine.ruleopt.strRuleName);
@@ -580,99 +633,117 @@ public class SquareMode extends DummyMode {
 	}
 
 	/**
-	 * プロパティファイルから設定を読み込み
-	 * @param prop プロパティファイル
+	 * Load the settings from CustomProperties
+	 * @param prop CustomProperties to read
 	 */
 	private void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("square.gametype", 0);
 		outlinetype = prop.getProperty("square.outlinetype", 0);
 		tspinEnableType = prop.getProperty("square.tspinEnableType", 2);
 		tntAvalanche = prop.getProperty("square.tntAvalanche", false);
+		grayoutEnable = prop.getProperty("square.grayoutEnable", true);
 		version = prop.getProperty("square.version", 0);
 	}
 
 	/**
-	 * プロパティファイルに設定を保存
-	 * @param prop プロパティファイル
+	 * Save the settings to CustomProperties
+	 * @param prop CustomProperties to write
 	 */
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("square.gametype", gametype);
 		prop.setProperty("square.outlinetype", outlinetype);
-		prop.setProperty("square.tspinEnableType", 2);
+		prop.setProperty("square.tspinEnableType", tspinEnableType);
 		prop.setProperty("square.tntAvalanche", tntAvalanche);
+		prop.setProperty("square.grayoutEnable", grayoutEnable);
 		prop.setProperty("square.version", version);
 	}
 
 	/**
-	 * プロパティファイルからランキングを読み込み
-	 * @param prop プロパティファイル
-	 * @param ruleName ルール名
+	 * Load the ranking from CustomProperties
+	 * @param prop CustomProperties to read
+	 * @param ruleName Rule name
 	 */
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
 				rankingScore[j][i] = prop.getProperty("square.ranking." + ruleName + "." + j + ".score." + i, 0);
 				rankingTime[j][i] = prop.getProperty("square.ranking." + ruleName + "." + j + ".time." + i, -1);
+				rankingSquares[j][i] = prop.getProperty("square.ranking." + ruleName + "." + j + ".squares." + i, 0);
 			}
 		}
 	}
 
 	/**
-	 * プロパティファイルにランキングを保存
-	 * @param prop プロパティファイル
-	 * @param ruleName ルール名
+	 * Save the ranking to CustomProperties
+	 * @param prop CustomProperties to write
+	 * @param ruleName Rule name
 	 */
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
 				prop.setProperty("square.ranking." + ruleName + "." + j + ".score." + i, rankingScore[j][i]);
 				prop.setProperty("square.ranking." + ruleName + "." + j + ".time." + i, rankingTime[j][i]);
+				prop.setProperty("square.ranking." + ruleName + "." + j + ".squares." + i, rankingSquares[j][i]);
 			}
 		}
 	}
 
 	/**
-	 * ランキングを更新
-	 * @param sc スコア
-	 * @param li ライン
-	 * @param time タイム
+	 * Update the ranking
+	 * @param sc Score
+	 * @param time Time
+	 * @param sq Squares
+	 * @param type GameType
 	 */
-	private void updateRanking(int sc, int time, int type) {
-		rankingRank = checkRanking(sc, time, type);
+	private void updateRanking(int sc, int time, int sq, int type) {
+		rankingRank = checkRanking(sc, time, sq, type);
 
 		if(rankingRank != -1) {
-			// ランキングをずらす
+			// Shift the old records
 			for(int i = RANKING_MAX - 1; i > rankingRank; i--) {
 				rankingScore[type][i] = rankingScore[type][i - 1];
 				rankingTime[type][i] = rankingTime[type][i - 1];
+				rankingSquares[type][i] = rankingSquares[type][i - 1];
 			}
 
-			// 新しいデータを登録
+			// Register new record
 			rankingScore[type][rankingRank] = sc;
 			rankingTime[type][rankingRank] = time;
+			rankingSquares[type][rankingRank] = sq;
 		}
 	}
 
 	/**
-	 * ランキングの順位を取得
-	 * @param sc スコア
-	 * @param time タイム
-	 * @return 順位(ランク外なら-1)
+	 * This function will check the ranking and returns which place you are. (-1: Out of rank)
+	 * @param sc Score
+	 * @param time Time
+	 * @param sq Squares
+	 * @param type GameType
+	 * @return Place (-1: Out of rank)
 	 */
-	private int checkRanking(int sc, int time, int type) {
+	private int checkRanking(int sc, int time, int sq, int type) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			if (gametype == 0) {
+				// Marathon
 				if(sc > rankingScore[type][i]) {
 					return i;
-				} else if((sc == rankingScore[type][i]) && (time < rankingTime[type][i])) {
+				} else if((sc == rankingScore[type][i]) && (sq > rankingSquares[type][i])) {
+					return i;
+				} else if((sc == rankingScore[type][i]) && (sq == rankingSquares[type][i]) && (time < rankingTime[type][i])) {
 					return i;
 				}
 			} else if (gametype == 1) {
+				// Ultra
 				if(sc > rankingScore[type][i]) {
+					return i;
+				} else if((sc == rankingScore[type][i]) && (sq > rankingSquares[type][i])) {
 					return i;
 				}
 			} else if (gametype == 2) {
-				if(time < rankingTime[type][i] || (rankingTime[type][i] < 0)) {
+				// Sprint
+				if((time < rankingTime[type][i]) || (rankingTime[type][i] < 0)) {
+					return i;
+				} else if((time == rankingTime[type][i]) && (sq > rankingSquares[type][i])) {
 					return i;
 				}
 			}
