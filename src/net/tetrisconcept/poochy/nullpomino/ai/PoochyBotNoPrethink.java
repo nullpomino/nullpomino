@@ -29,6 +29,7 @@ public class PoochyBotNoPrethink extends PoochyBot {
 	/*
 	 * 各フレームの最初の処理
 	 */
+	@Override
 	public void onFirst(GameEngine engine, int playerID) {
 		inARE = engine.stat == GameEngine.STAT_ARE || engine.stat == GameEngine.STAT_READY;
 		inputARE = 0;
