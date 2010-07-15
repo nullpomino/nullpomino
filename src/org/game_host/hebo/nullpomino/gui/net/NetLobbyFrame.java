@@ -375,6 +375,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** 観戦ボタン(ルーム作成画面) */
 	protected JButton btnCreateRoomWatch;
 
+	/** Cancel Button (Create room screen) */
+	protected JButton btnCreateRoomCancel;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -1295,8 +1298,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnCreateRoomWatch.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRoomWatch.getMaximumSize().height));
 		subpanelButtons.add(btnCreateRoomWatch);
 
-		// *** キャンセルボタン
-		JButton btnCreateRoomCancel = new JButton(getUIText("CreateRoom_Cancel"));
+		// *** Cancel Button
+		btnCreateRoomCancel = new JButton(getUIText("CreateRoom_Cancel"));
 		btnCreateRoomCancel.addActionListener(this);
 		btnCreateRoomCancel.setActionCommand("CreateRoom_Cancel");
 		btnCreateRoomCancel.setMnemonic('C');
@@ -1341,7 +1344,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			defaultButton = btnServerAddOK;
 			break;
 		case SCREENCARD_CREATEROOM:
-			defaultButton = btnCreateRoomOK;
+			if (btnCreateRoomOK.isVisible())
+				defaultButton = btnCreateRoomOK;
+			else
+				defaultButton = btnCreateRoomCancel;
 			break;
 		}
 		this.getRootPane().setDefaultButton(defaultButton);
