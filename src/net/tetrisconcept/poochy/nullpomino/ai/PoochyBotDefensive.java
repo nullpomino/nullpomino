@@ -96,7 +96,7 @@ public class PoochyBotDefensive extends PoochyBot {
 		if ((depthsBefore[0] - depthsBefore[1])%4 == 2)
 			needJValleyBefore += 2;
 		if ((depthsBefore[width-1] - depthsBefore[width-2])%4 == 2)
-			needJValleyBefore += 2;
+			needLValleyBefore += 2;
 		
 		needJValleyBefore >>= 1;
 		needLValleyBefore >>= 1;
@@ -233,7 +233,7 @@ public class PoochyBotDefensive extends PoochyBot {
 			if ((depthsAfter[0] - depthsAfter[1])%4 == 2)
 				needJValleyAfter += 2;
 			if ((depthsAfter[width-1] - depthsAfter[width-2])%4 == 2)
-				needJValleyAfter += 2;
+				needLValleyAfter += 2;
 
 			needJValleyAfter >>= 1;
 			needLValleyAfter >>= 1;

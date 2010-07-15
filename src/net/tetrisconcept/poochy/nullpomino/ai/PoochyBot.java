@@ -87,7 +87,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** 最大妥協レベル */
 	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
-	protected static final boolean DEBUG_ALL = false;
+	protected static final boolean DEBUG_ALL = true;
 	/** Wait extra frames at low speeds? */
 	//protected static final boolean DELAY_DROP_ON = false;
 	/** # of extra frames to wait */
@@ -100,7 +100,6 @@ public class PoochyBot extends DummyAI implements Runnable {
 	protected boolean thinkSuccess;
 	/** Was the game in ARE as of the last frame? */
 	protected boolean inARE;
-	
 
 	/*
 	 * AI's name
@@ -878,6 +877,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 			canFloorKickT = false;
 		else if (canFloorKickT && !pieceNow.checkCollision(nowX+1, nowY, Piece.DIRECTION_UP, fld))
 			canFloorKickT = false;
+		
+		int move = 1;
+		if (engine.big)
+			move = 2;
 
 		for(int depth = 0; depth < MAX_THINK_DEPTH; depth++) {
 			/*
@@ -905,7 +908,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					int spawnY = engine.getSpawnPosY(pieceNow);
 					spawnOK = !pieceNow.checkCollision(spawnX, spawnY, fld);
 				}
-				for(int x = minX; x <= maxX && spawnOK; x++) {
+				for(int x = minX; x <= maxX && spawnOK; x+=move) {
 					fld.copy(engine.field);
 					int y = pieceNow.getBottom(x, tempY, rt, fld);
 
@@ -936,15 +939,15 @@ public class PoochyBot extends DummyAI implements Runnable {
 						//if((depth > 0) || (bestPts <= 10) || (pieceNow.id == Piece.PIECE_T)) {
 						// Left shift
 						fld.copy(engine.field);
-						if(!pieceNow.checkCollision(x - 1, y, rt, fld) && pieceNow.checkCollision(x - 1, y - 1, rt, fld)) {
-							pts = thinkMain(x - 1, y, rt, -1, fld, pieceNow, depth);
+						if(!pieceNow.checkCollision(x - move, y, rt, fld) && pieceNow.checkCollision(x - move, y - 1, rt, fld)) {
+							pts = thinkMain(x - move, y, rt, -1, fld, pieceNow, depth);
 
 							if(pts > bestPts) {
 								bestHold = false;
 								bestX = x;
 								bestY = y;
 								bestRt = rt;
-								bestXSub = x - 1;
+								bestXSub = x - move;
 								bestYSub = y;
 								bestRtSub = -1;
 								bestPts = pts;
@@ -962,8 +965,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 						// Right shift
 						fld.copy(engine.field);
-						if(!pieceNow.checkCollision(x + 1, y, rt, fld) && pieceNow.checkCollision(x + 1, y - 1, rt, fld)) {
-							pts = thinkMain(x + 1, y, rt, -1, fld, pieceNow, depth);
+						if(!pieceNow.checkCollision(x + move, y, rt, fld) && pieceNow.checkCollision(x + 1, y - move, rt, fld)) {
+							pts = thinkMain(x + move, y, rt, -1, fld, pieceNow, depth);
 
 							if(pts > bestPts) {
 								bestHold = false;
@@ -1147,7 +1150,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					else if (holdType == Piece.PIECE_O)
 						holdPts -= 10;
 					
-					for(int x = minHoldX; x <= maxHoldX; x++)
+					for(int x = minHoldX; x <= maxHoldX; x+=move)
 					{
 						fld.copy(engine.field);
 						int y = pieceHold.getBottom(x, spawnY, rt, fld);
@@ -1179,8 +1182,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 							//if((depth > 0) || (bestPts <= 10) || (pieceHold.id == Piece.PIECE_T)) {
 							// Left shift
 							fld.copy(engine.field);
-							if(!pieceHold.checkCollision(x - 1, y, rt, fld) && pieceHold.checkCollision(x - 1, y - 1, rt, fld)) {
-								pts = thinkMain(x - 1, y, rt, -1, fld, pieceHold, depth);
+							if(!pieceHold.checkCollision(x - move, y, rt, fld) && pieceHold.checkCollision(x - move, y - 1, rt, fld)) {
+								pts = thinkMain(x - move, y, rt, -1, fld, pieceHold, depth);
 								if (pts > Integer.MIN_VALUE+30)
 									pts += holdPts;
 								if(pts > bestPts) {
@@ -1188,7 +1191,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestX = x;
 									bestY = y;
 									bestRt = rt;
-									bestXSub = x - 1;
+									bestXSub = x - move;
 									bestYSub = y;
 									bestRtSub = -1;
 									bestPts = pts;
@@ -1205,8 +1208,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 	
 							// Right shift
 							fld.copy(engine.field);
-							if(!pieceHold.checkCollision(x + 1, y, rt, fld) && pieceHold.checkCollision(x + 1, y - 1, rt, fld)) {
-								pts = thinkMain(x + 1, y, rt, -1, fld, pieceHold, depth);
+							if(!pieceHold.checkCollision(x + move, y, rt, fld) && pieceHold.checkCollision(x + move, y - 1, rt, fld)) {
+								pts = thinkMain(x + move, y, rt, -1, fld, pieceHold, depth);
 								if (pts > Integer.MIN_VALUE+30)
 									pts += holdPts;
 								if(pts > bestPts) {
@@ -1214,7 +1217,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestX = x;
 									bestY = y;
 									bestRt = rt;
-									bestXSub = x + 1;
+									bestXSub = x + move;
 									bestYSub = y;
 									bestRtSub = -1;
 									bestPts = pts;
@@ -1389,6 +1392,11 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 */
 	public int thinkMain(int x, int y, int rt, int rtOld, Field fld, Piece piece, int depth) {
 		int pts = 0;
+		
+		boolean big = piece.big;
+		int move = 1;
+		if (big)
+			move = 2;
 
 		// 他のブロックに隣接していると加点
 		if(piece.checkCollision(x - 1, y, fld)) pts += 1;
@@ -1408,51 +1416,56 @@ public class PoochyBot extends DummyAI implements Runnable {
 		//Check number of holes in rightmost column
 		int testY = fld.getHiddenHeight();
 		int holeBeforeRCol = 0;
-		while (fld.getBlockEmpty(width-1, testY) && testY < height)
-			testY++;
-		while (!fld.getBlockEmpty(width-1, testY) && testY < height)
-			testY++;
-		while (testY < height)
+		if (!big)
 		{
-			if (fld.getBlockEmpty(width-1, testY))
-				holeBeforeRCol++;
-			testY++;
+			while (fld.getBlockEmpty(width-1, testY) && testY < height)
+				testY++;
+			while (!fld.getBlockEmpty(width-1, testY) && testY < height)
+				testY++;
+			while (testY < height)
+			{
+				if (fld.getBlockEmpty(width-1, testY))
+					holeBeforeRCol++;
+				testY++;
+			}
 		}
 		//Fetch depths and find valleys that require an I, J, or L.
 		int[] depthsBefore = getColumnDepths(fld);
 		int deepestY = -1;
 		//int deepestX = -1;
-		int needIValleyBefore = 0, needJValleyBefore = 0, needLValleyBefore = 0;
 		for (int i = 0; i < width-1; i++)
 			if (depthsBefore[i] > deepestY)
 			{
 				deepestY = depthsBefore[i];
 				//deepestX = i;
 			}
-		if (depthsBefore[0] > depthsBefore[1])
-			needIValleyBefore = (depthsBefore[0]-depthsBefore[1])/3;
-		for (int i = 1; i < width-1; i++)
+		int needIValleyBefore = 0, needJValleyBefore = 0, needLValleyBefore = 0;
+		if (depthsBefore[0] > depthsBefore[move])
+			needIValleyBefore = (depthsBefore[0]-depthsBefore[move])/3/move;
+		if (big && (depthsBefore[width-1] > depthsBefore[width-move-1]))
+			needIValleyBefore = (depthsBefore[width-1]-depthsBefore[width-move-1])/3/move;
+		for (int i = move; i < width-move; i+=move)
 		{
-			int left = depthsBefore[i-1], right = depthsBefore[i+1];
+			int left = depthsBefore[i-move], right = depthsBefore[i+move];
 			int lowerSide = Math.max(left, right);
 			int diff = depthsBefore[i] - lowerSide;
 			if (diff >= 3)
-				needIValleyBefore += diff/3;
+				needIValleyBefore += diff/3/move;
 			if (left == right)
 			{
-				if (left == depthsBefore[i]+2)
+				if (left == depthsBefore[i]+(2*move))
 				{
 					needIValleyBefore++;
 					needLValleyBefore--;
 					needJValleyBefore--;
 				}
-				else if (left == depthsBefore[i]+1)
+				else if (left == depthsBefore[i]+move)
 				{
 					needLValleyBefore++;
 					needJValleyBefore++;
 				}
 			}
-			if (diff%4 == 2)
+			if ((diff/move)%4 == 2)
 			{
 				if (left > right)
 					needLValleyBefore+=2;
@@ -1465,8 +1478,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 				}
 			}
 		}
-		if ((depthsBefore[0] - depthsBefore[1])%4 == 2)
+		if (((depthsBefore[0] - depthsBefore[move])/move)%4 == 2)
 			needJValleyBefore += 2;
+		if (big && ((depthsBefore[width-1] - depthsBefore[width-move-1])/move)%4 == 2)
+			needLValleyBefore += 2;
 		/*
 		if ((depthsBefore[width-2] - depthsBefore[width-3])%4 == 2 &&
 				(depthsBefore[width-1] - depthsBefore[width-2]) < 2)
@@ -1491,10 +1506,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 				//debugOut("actualX = " + xMin);
 				int xDepth = depthsBefore[xMin];
 				int sideDepth = -1;
-				if (xMin > 0)
-					sideDepth = depthsBefore[xMin-1];
-				if (xMin < width-1)
-					sideDepth = Math.max(sideDepth, depthsBefore[xMin+1]);
+				if (xMin >= move)
+					sideDepth = depthsBefore[xMin-move];
+				if (xMin < width-move)
+					sideDepth = Math.max(sideDepth, depthsBefore[xMin+move]);
 				valley = xDepth - sideDepth;
 				//debugOut("valley = " + valley);
 			}
@@ -1508,7 +1523,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		}
 
 		// ライン消去
-		int lines = fld.checkLine();
+		int lines = fld.checkLine()/move;
 		if(lines > 0) {
 			fld.clearLine();
 			fld.downFloatingBlocks();
@@ -1524,9 +1539,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 		int[] depthsAfter = getColumnDepths(fld);
 
 		// 危険フラグ
-		boolean danger = (heightBefore <= 8);
+		boolean danger = (heightBefore <= 4*(move+1));
 		//Flag for really dangerously high stacks
-		boolean peril = (heightBefore <= 4);
+		boolean peril = (heightBefore <= 2*(move+1));
 
 		// 下に置くほど加点
 		if((!danger) && (depth == 0))
@@ -1543,9 +1558,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 		*/
 		//Apply score penalty if I piece would overflow canyon,
 		//unless it would also uncover a hole.
-		if (piece.id == Piece.PIECE_I && holeBefore <= holeAfter && xMax == width-1)
+		if (!big && piece.id == Piece.PIECE_I && holeBefore <= holeAfter && xMax == width-1)
 		{
-			int rValleyDepth = depthsAfter[width-2] - depthsAfter[width-1];
+			int rValleyDepth = depthsAfter[width-1-move] - depthsAfter[width-1];
 			if (rValleyDepth > 0)
 				pts -= (rValleyDepth + 1) * rColPenalty;
 		}
@@ -1592,30 +1607,32 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 			//Find valleys that need an I, J, or L.
 			int needIValleyAfter = 0, needJValleyAfter = 0, needLValleyAfter = 0;
-			if (depthsAfter[0] > depthsAfter[1])
-				needIValleyAfter = (depthsAfter[0]-depthsAfter[1])/3;
-			for (int i = 1; i < width-1; i++)
+			if (depthsAfter[0] > depthsAfter[move])
+				needIValleyAfter = (depthsAfter[0]-depthsAfter[move])/3/move;
+			if (big && (depthsAfter[width-1] > depthsAfter[width-move-1]))
+				needIValleyAfter = (depthsAfter[width-1]-depthsAfter[width-move-1])/3/move;
+			for (int i = move; i < width-move; i+=move)
 			{
-				int left = depthsAfter[i-1], right = depthsAfter[i+1];
+				int left = depthsAfter[i-move], right = depthsAfter[i+move];
 				int lowerSide = Math.max(left, right);
 				int diff = depthsAfter[i] - lowerSide;
 				if (diff >= 3)
-					needIValleyAfter += diff/3;
+					needIValleyAfter += diff/3/move;
 				if (left == right)
 				{
-					if (left == depthsAfter[i]+2)
+					if (left == depthsAfter[i]+(2*move))
 					{
 						needIValleyAfter++;
 						needLValleyAfter--;
 						needJValleyAfter--;
 					}
-					else if (left == depthsAfter[i]+1)
+					else if (left == depthsAfter[i]+move)
 					{
 						needLValleyAfter++;
 						needJValleyAfter++;
 					}
 				}
-				if (diff%4 == 2)
+				if ((diff/move)%4 == 2)
 				{
 					if (left > right)
 						needLValleyAfter+=2;
@@ -1628,21 +1645,22 @@ public class PoochyBot extends DummyAI implements Runnable {
 					}
 				}
 			}
-			if ((depthsAfter[0] - depthsAfter[1])%4 == 2)
+			if (((depthsAfter[0] - depthsAfter[move])/move)%4 == 2)
 				needJValleyAfter += 2;
+			if (big && ((depthsAfter[width-1] - depthsAfter[width-move-1])/move)%4 == 2)
+				needLValleyAfter += 2;
 			/*
 			if ((depthsAfter[width-2] - depthsAfter[width-3])%4 == 2 &&
 					(depthsAfter[width-1] - depthsAfter[width-2]) < 2)
 				needLValleyAfter++;
 			*/
-
 			needJValleyAfter >>= 1;
 			needLValleyAfter >>= 1;
 
 			if(holeAfter > holeBefore) {
 				// 新たに穴ができると減点
-				pts -= (holeAfter - holeBefore) * 400;
 				if(depth == 0) return Integer.MIN_VALUE;
+				pts -= (holeAfter - holeBefore) * 400;
 			} else if(holeAfter < holeBefore) {
 				// 穴を減らすと加点
 				pts += 10000;
@@ -1664,22 +1682,25 @@ public class PoochyBot extends DummyAI implements Runnable {
 				pts += 100000 * lines;
 			}
 
-			//Check number of holes in rightmost column
 			testY = fld.getHiddenHeight();
 			int holeAfterRCol = 0;
-			while (fld.getBlockEmpty(width-1, testY) && testY < height)
-				testY++;
-			while (!fld.getBlockEmpty(width-1, testY) && testY < height)
-				testY++;
-			while (testY < height)
+			if (!big)
 			{
-				if (fld.getBlockEmpty(width-1, testY))
-					holeAfterRCol++;
-				testY++;
+				//Check number of holes in rightmost column
+				while (fld.getBlockEmpty(width-1, testY) && testY < height)
+					testY++;
+				while (!fld.getBlockEmpty(width-1, testY) && testY < height)
+					testY++;
+				while (testY < height)
+				{
+					if (fld.getBlockEmpty(width-1, testY))
+						holeAfterRCol++;
+					testY++;
+				}
+				//Apply score penalty if non-I piece would plug up canyon
+				int deltaRColHoles = holeAfterRCol - holeBeforeRCol;
+				pts -= deltaRColHoles * rColPenalty;
 			}
-			//Apply score penalty if non-I piece would plug up canyon
-			int deltaRColHoles = holeAfterRCol - holeBeforeRCol;
-			pts -= deltaRColHoles * rColPenalty;
 
 			//Bonuses and penalties for valleys that need I, J, or L.
 			int needIValleyDiffScore = 0;
@@ -1718,35 +1739,38 @@ public class PoochyBot extends DummyAI implements Runnable {
 					pts += needLJValleyDiffScore * 40;
 			}
 
-			//Bonus for pyramidal stack
-			int mid = width/2-1;
-			int d;
-			for (int i = 0; i < mid-1; i++)
+			if (!big)
 			{
-				d = depthsAfter[i] - depthsAfter[i+1];
+				//Bonus for pyramidal stack
+				int mid = width/2-1;
+				int d;
+				for (int i = 0; i < mid-1; i++)
+				{
+					d = depthsAfter[i] - depthsAfter[i+1];
+					if (d >= 0)
+						pts += 10;
+					else
+						pts += d;
+				}
+				for (int i = mid+2; i < width; i++)
+				{
+					d = depthsAfter[i] - depthsAfter[i-1];
+					if (d >= 0)
+						pts += 10;
+					else
+						pts += d;
+				}
+				d = depthsAfter[mid-1] - depthsAfter[mid];
 				if (d >= 0)
-					pts += 10;
+					pts += 5;
+				else
+					pts += d;
+				d = depthsAfter[mid+1] - depthsAfter[mid];
+				if (d >= 0)
+					pts += 5;
 				else
 					pts += d;
 			}
-			for (int i = mid+2; i < width; i++)
-			{
-				d = depthsAfter[i] - depthsAfter[i-1];
-				if (d >= 0)
-					pts += 10;
-				else
-					pts += d;
-			}
-			d = depthsAfter[mid-1] - depthsAfter[mid];
-			if (d >= 0)
-				pts += 5;
-			else
-				pts += d;
-			d = depthsAfter[mid+1] - depthsAfter[mid];
-			if (d >= 0)
-				pts += 5;
-			else
-				pts += d;
 
 			if(heightBefore < heightAfter) {
 				// 高さを抑えると加点
@@ -1761,7 +1785,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 
 			//Penalty for prematurely filling in canyon
-			if (!danger && holeAfter >= holeBefore)
+			if (!big && !danger && holeAfter >= holeBefore)
 				for (int i = 0; i < width-1; i++)
 					if (depthsAfter[i] > depthsAfter[width-1] &&
 							depthsBefore[i] <= depthsBefore[width-1])
@@ -1770,7 +1794,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 						break;
 					}
 			//Penalty for premature clears
-			if (lines > 0 && lines < 4 && heightAfter > 10 && xMax == width-1)
+			if (!big && lines > 0 && lines < 4 && heightAfter > 10 && xMax == width-1)
 			{
 				int minHi = 0;
 				for (int i = 0; i < width-1; i++)
@@ -1783,18 +1807,31 @@ public class PoochyBot extends DummyAI implements Runnable {
 					pts -= 300000;
 			}
 			//Penalty for dangerous placements
-			if (heightAfter < 2)
+			if (heightAfter < 2*move)
 			{
-				int spawnMinX = width/2 - 2;
-				int spawnMaxX = width/2 + 1;
-				for (int i = spawnMinX; i <= spawnMaxX; i++)
-					if (depthsAfter[i] < 2 && depthsAfter[i] < depthsBefore[i])
-						pts -= 2000000 * (depthsBefore[i] - depthsAfter[i]);
-				if (heightBefore >= 2 && depth == 0)
-					pts -= 2000000 * (heightBefore - heightAfter);
+				if (big)
+				{
+					if (heightAfter < 0 && heightBefore >= 0)
+						return Integer.MIN_VALUE;
+					int spawnMinX = width/2 - 3;
+					int spawnMaxX = width/2 + 2;
+					for (int i = spawnMinX; i <= spawnMaxX; i+=move)
+						if (depthsAfter[i] < 2*move && depthsAfter[i] < depthsBefore[i])
+							pts -= 2000000 * (depthsBefore[i] - depthsAfter[i]);
+				}
+				else
+				{
+					int spawnMinX = width/2 - 2;
+					int spawnMaxX = width/2 + 1;
+					for (int i = spawnMinX; i <= spawnMaxX; i++)
+						if (depthsAfter[i] < 2 && depthsAfter[i] < depthsBefore[i])
+							pts -= 2000000 * (depthsBefore[i] - depthsAfter[i]);
+					if (heightBefore >= 2 && depth == 0)
+						pts -= 2000000 * (heightBefore - heightAfter);
+				}
 			}
 			int r2ColDepth = depthsAfter[width-2];
-			if (danger && r2ColDepth < depthsAfter[width-1])
+			if (!big && danger && r2ColDepth < depthsAfter[width-1])
 			{
 				//Bonus if edge clear is possible
 				int maxLeftDepth = depthsAfter[0];
@@ -1811,14 +1848,11 @@ public class PoochyBot extends DummyAI implements Runnable {
 	//private static final int[][] HI_PENALTY = {{6, 2}, {7, 6}, {6, 2}, {1, 0}};
 	public Piece checkOffset(Piece p, GameEngine engine)
 	{
+		Piece result = new Piece(p);
+		result.big = engine.big;
 		if (!p.offsetApplied)
-		{
-			Piece result = new Piece(p);
 			result.applyOffsetArray(engine.ruleopt.pieceOffsetX[p.id], engine.ruleopt.pieceOffsetY[p.id]);
-			return result;
-		}
-		else
-			return p;
+		return result;
 	}
 	/**
 	 * @deprecated
