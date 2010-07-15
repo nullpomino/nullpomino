@@ -2017,7 +2017,7 @@ public class GameEngine {
 
 					if(nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false) {
 						nowPieceX += move;
-						log.debug("Successful movement: move="+move);
+						//log.debug("Successful movement: move="+move);
 
 						if((ruleopt.lockresetMove == true) && (isMoveCountExceed() == false)) {
 							lockDelayNow = 0;
@@ -2485,11 +2485,11 @@ public class GameEngine {
 		// Line delay cancel check
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
-		
-		boolean moveCancel = ruleopt.lineCancelMove && (ctrl.isPush(Controller.BUTTON_UP) || 
+
+		boolean moveCancel = ruleopt.lineCancelMove && (ctrl.isPush(Controller.BUTTON_UP) ||
 			ctrl.isPush(Controller.BUTTON_DOWN) || delayCancelMoveLeft || delayCancelMoveRight);
 		boolean rotateCancel = ruleopt.lineCancelRotate && (ctrl.isPush(Controller.BUTTON_A) ||
-			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
 			ctrl.isPush(Controller.BUTTON_E));
 		boolean holdCancel = ruleopt.lineCancelHold && ctrl.isPush(Controller.BUTTON_D);
 
@@ -2573,11 +2573,11 @@ public class GameEngine {
 		// ARE cancel check
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
-		
-		boolean moveCancel = ruleopt.areCancelMove && (ctrl.isPush(Controller.BUTTON_UP) || 
+
+		boolean moveCancel = ruleopt.areCancelMove && (ctrl.isPush(Controller.BUTTON_UP) ||
 			ctrl.isPush(Controller.BUTTON_DOWN) || delayCancelMoveLeft || delayCancelMoveRight);
 		boolean rotateCancel = ruleopt.areCancelRotate && (ctrl.isPush(Controller.BUTTON_A) ||
-			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
 			ctrl.isPush(Controller.BUTTON_E));
 		boolean holdCancel = ruleopt.areCancelHold && ctrl.isPush(Controller.BUTTON_D);
 

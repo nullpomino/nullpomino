@@ -91,6 +91,9 @@ public class RendererSlick extends EventReceiver {
 	/** 枠線型ゴーストピース */
 	protected boolean outlineghost;
 
+	/** Piece previews on sides */
+	protected boolean sidenext;
+
 	/**
 	 * ブロックの色IDに応じてSlick用Colorオブジェクトを作成・取得
 	 * @param colorID ブロックの色ID
@@ -126,6 +129,7 @@ public class RendererSlick extends EventReceiver {
 		darknextarea = NullpoMinoSlick.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSlick.propConfig.getProperty("option.nextshadow", false);
 		outlineghost = NullpoMinoSlick.propConfig.getProperty("option.outlineghost", false);
+		sidenext = NullpoMinoSlick.propConfig.getProperty("option.sidenext", false);
 	}
 
 	/*
@@ -932,57 +936,114 @@ public class RendererSlick extends EventReceiver {
 		if(showbg && darknextarea) {
 			Color filter = new Color(Color.black);
 			graphics.setColor(filter);
-			graphics.fillRect(x + 20, y, 135, 48);
 
-			for(int i = 0; i <= 20; i++) {
-				Color filter2 = new Color(Color.black);
-				filter2.a = ((float)i / (float)20);
-				graphics.setColor(filter2);
-				graphics.fillRect(x + i - 1, y, 1, 48);
-			}
-			for(int i = 0; i <= 20; i++) {
-				Color filter2 = new Color(Color.black);
-				filter2.a = ((float)(20 - i) / (float)20);
-				graphics.setColor(filter2);
-				graphics.fillRect(x + i + 155, y, 1, 48);
+			if(sidenext) {
+				int x2 = showmeter ? (x + 176) : (x + 168);
+				int maxNext = engine.isNextVisible ? engine.ruleopt.nextDisplay : 0;
+
+				// HOLD area
+				if(engine.ruleopt.holdEnable && engine.isHoldVisible) {
+					graphics.fillRect(x - 32, y + 48 + 8, 32, 32 - 16);
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x - 32, y + 47 + i, 32, 1);
+					}
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x - 32, y + 80 - i, 32, 1);
+					}
+				}
+
+				// NEXT area
+				if(maxNext > 0) {
+					graphics.fillRect(x2, y + 48 + 8, 32, (32 * maxNext) - 16);
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x2, y + 47 + i, 32, 1);
+					}
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x2, y + 48 + (32 * maxNext) - i, 32, 1);
+					}
+				}
+			} else {
+				graphics.fillRect(x + 20, y, 135, 48);
+
+				for(int i = 0; i <= 20; i++) {
+					Color filter2 = new Color(Color.black);
+					filter2.a = ((float)i / (float)20);
+					graphics.setColor(filter2);
+					graphics.fillRect(x + i - 1, y, 1, 48);
+				}
+				for(int i = 0; i <= 20; i++) {
+					Color filter2 = new Color(Color.black);
+					filter2.a = ((float)(20 - i) / (float)20);
+					graphics.setColor(filter2);
+					graphics.fillRect(x + i + 155, y, 1, 48);
+				}
 			}
 
 			graphics.setColor(Color.white);
 		}
 
 		if(engine.isNextVisible) {
-			// NEXT1
-			if(engine.ruleopt.nextDisplay >= 1) {
-				Piece piece = engine.getNextObject(engine.nextPieceCount);
-				NormalFont.printFont(x + 60, y, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+			if(sidenext) {
+				if(engine.ruleopt.nextDisplay >= 1) {
+					int x2 = showmeter ? (x + 176) : (x + 168);
+					NormalFont.printFont(x2, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
-				if(piece != null) {
-					int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
-					int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
-					drawPiece(x2, y2, piece);
+					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
+						Piece piece = engine.getNextObject(engine.nextPieceCount + i);
+
+						if(piece != null) {
+							int centerX = ( (32 - ((piece.getWidth() + 1) * 8)) / 2 ) - (piece.getMinimumBlockX() * 8);
+							int centerY = ( (32 - ((piece.getHeight() + 1) * 8)) / 2 ) - (piece.getMinimumBlockY() * 8);
+							drawPiece(x2 + centerX, y + 48 + (i * 32) + centerY, piece, 0.5f);
+						}
+					}
 				}
-			}
+			} else {
+				// NEXT1
+				if(engine.ruleopt.nextDisplay >= 1) {
+					Piece piece = engine.getNextObject(engine.nextPieceCount);
+					NormalFont.printFont(x + 60, y, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
-			// NEXT2・3
-			for(int i = 0; i < engine.ruleopt.nextDisplay - 1; i++) {
-				if(i >= 2) break;
-
-				Piece piece = engine.getNextObject(engine.nextPieceCount + i + 1);
-
-				if(piece != null) {
-					drawPiece(x + 124 + (i * 40), y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					if(piece != null) {
+						int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
+						int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
+						drawPiece(x2, y2, piece);
+					}
 				}
-			}
 
-			// NEXT4～
-			for(int i = 0; i < engine.ruleopt.nextDisplay - 3; i++) {
-				Piece piece = engine.getNextObject(engine.nextPieceCount + i + 3);
+				// NEXT2・3
+				for(int i = 0; i < engine.ruleopt.nextDisplay - 1; i++) {
+					if(i >= 2) break;
 
-				if(piece != null) {
-					if(showmeter)
-						drawPiece(x + 177, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
-					else
-						drawPiece(x + 169, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					Piece piece = engine.getNextObject(engine.nextPieceCount + i + 1);
+
+					if(piece != null) {
+						drawPiece(x + 124 + (i * 40), y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					}
+				}
+
+				// NEXT4～
+				for(int i = 0; i < engine.ruleopt.nextDisplay - 3; i++) {
+					Piece piece = engine.getNextObject(engine.nextPieceCount + i + 3);
+
+					if(piece != null) {
+						if(showmeter)
+							drawPiece(x + 177, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+						else
+							drawPiece(x + 169, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					}
 				}
 			}
 		}
@@ -990,20 +1051,22 @@ public class RendererSlick extends EventReceiver {
 		if(engine.isHoldVisible) {
 			// HOLD
 			int holdRemain = engine.ruleopt.holdLimit - engine.holdUsedCount;
+			int x2 = sidenext ? (x - 32) : x;
+			int y2 = sidenext ? (y + 40) : y;
 
 			if( (engine.ruleopt.holdEnable == true) && ((engine.ruleopt.holdLimit < 0) || (holdRemain > 0)) ) {
 				int tempColor = COLOR_GREEN;
 				if(engine.holdDisable == true) tempColor = COLOR_WHITE;
 
 				if(engine.ruleopt.holdLimit < 0) {
-					NormalFont.printFont(x, y, NullpoMinoSlick.getUIText("InGame_Hold"), tempColor, 0.5f);
+					NormalFont.printFont(x2, y2, NullpoMinoSlick.getUIText("InGame_Hold"), tempColor, 0.5f);
 				} else {
 					if(!engine.holdDisable) {
 						if((holdRemain > 0) && (holdRemain <= 10)) tempColor = COLOR_YELLOW;
 						if((holdRemain > 0) && (holdRemain <= 5)) tempColor = COLOR_RED;
 					}
 
-					NormalFont.printFont(x, y, NullpoMinoSlick.getUIText("InGame_Hold") + "\ne " + holdRemain, tempColor, 0.5f);
+					NormalFont.printFont(x2, y2, NullpoMinoSlick.getUIText("InGame_Hold") + "\ne " + holdRemain, tempColor, 0.5f);
 				}
 
 				if(engine.holdPieceObject != null) {
@@ -1011,7 +1074,14 @@ public class RendererSlick extends EventReceiver {
 					if(engine.holdDisable == true) dark = 0.3f;
 					Piece piece = new Piece(engine.holdPieceObject);
 					piece.resetOffsetArray();
-					drawPiece(x, y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f, dark);
+
+					if(sidenext) {
+						int centerX = ( (32 - ((piece.getWidth() + 1) * 8)) / 2 ) - (piece.getMinimumBlockX() * 8);
+						int centerY = ( (32 - ((piece.getHeight() + 1) * 8)) / 2 ) - (piece.getMinimumBlockY() * 8);
+						drawPiece(x2 + centerX, y + 48 + centerY, piece, 0.5f, dark);
+					} else {
+						drawPiece(x2, y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f, dark);
+					}
 				}
 			}
 		}

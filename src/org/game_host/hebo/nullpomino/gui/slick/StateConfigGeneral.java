@@ -118,6 +118,9 @@ public class StateConfigGeneral extends BasicGameState {
 	/** 枠線型ゴーストピース */
 	protected boolean outlineghost;
 
+	/** Side piece preview */
+	protected boolean sidenext;
+
 	/*
 	 * このステートのIDを取得
 	 */
@@ -160,6 +163,7 @@ public class StateConfigGeneral extends BasicGameState {
 		useAlternateFPSSleep = prop.getProperty("option.useAlternateFPSSleep", false);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
+		sidenext = prop.getProperty("option.sidenext", false);
 	}
 
 	/**
@@ -189,6 +193,7 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.useAlternateFPSSleep", useAlternateFPSSleep);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
+		prop.setProperty("option.sidenext", sidenext);
 	}
 
 	/*
@@ -225,6 +230,7 @@ public class StateConfigGeneral extends BasicGameState {
 		NormalFont.printFontGrid(2, 22, "FRAMERATE MODE:" + (useAlternateFPSSleep ? "CUSTOM (SDL&SWING)" : "SLICK DEFAULT"), (cursor == 19));
 		NormalFont.printFontGrid(2, 23, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 20));
 		NormalFont.printFontGrid(2, 24, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 21));
+		NormalFont.printFontGrid(2, 25, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 22));
 
 		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_Fullscreen"));
 		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SE"));
@@ -248,6 +254,7 @@ public class StateConfigGeneral extends BasicGameState {
 		if(cursor == 19) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_UseAlternateFPSSleep"));
 		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_NextShadow"));
 		if(cursor == 21) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_OutlineGhost"));
+		if(cursor == 22) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -275,12 +282,12 @@ public class StateConfigGeneral extends BasicGameState {
 		// カーソル移動
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 21;
+			if(cursor < 0) cursor = 22;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 21) cursor = 0;
+			if(cursor > 22) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -368,6 +375,9 @@ public class StateConfigGeneral extends BasicGameState {
 					break;
 				case 21:
 					outlineghost = !outlineghost;
+					break;
+				case 22:
+					sidenext = !sidenext;
 					break;
 			}
 		}

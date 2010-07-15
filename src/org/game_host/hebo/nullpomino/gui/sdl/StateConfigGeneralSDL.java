@@ -98,6 +98,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** 枠線型ゴーストピース */
 	protected boolean outlineghost;
 
+	/** Side piece preview */
+	protected boolean sidenext;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -130,6 +133,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		showmeter = prop.getProperty("option.showmeter", true);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
+		sidenext = prop.getProperty("option.sidenext", false);
 	}
 
 	/**
@@ -156,6 +160,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		prop.setProperty("option.showmeter", showmeter);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
+		prop.setProperty("option.sidenext", sidenext);
 	}
 
 	/*
@@ -188,6 +193,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 19, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 16));
 		NormalFontSDL.printFontGrid(2, 20, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 17));
 		NormalFontSDL.printFontGrid(2, 21, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 18));
+		NormalFontSDL.printFontGrid(2, 22, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 19));
 
 		if(cursor == 0) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_Fullscreen"));
 		if(cursor == 1) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SE"));
@@ -208,6 +214,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		if(cursor == 16) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_ShowMeter"));
 		if(cursor == 17) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_NextShadow"));
 		if(cursor == 18) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_OutlineGhost"));
+		if(cursor == 19) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SideNext"));
 	}
 
 	/*
@@ -218,12 +225,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// カーソル移動
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 18;
+			if(cursor < 0) cursor = 19;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 18) cursor = 0;
+			if(cursor > 19) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -304,6 +311,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 					break;
 				case 18:
 					outlineghost = !outlineghost;
+					break;
+				case 19:
+					sidenext = !sidenext;
 					break;
 			}
 		}

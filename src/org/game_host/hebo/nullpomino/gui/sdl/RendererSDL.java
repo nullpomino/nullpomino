@@ -93,6 +93,9 @@ public class RendererSDL extends EventReceiver {
 	/** 枠線型ゴーストピース */
 	protected boolean outlineghost;
 
+	/** Piece previews on sides */
+	protected boolean sidenext;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -108,6 +111,7 @@ public class RendererSDL extends EventReceiver {
 		darknextarea = NullpoMinoSDL.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSDL.propConfig.getProperty("option.nextshadow", false);
 		outlineghost = NullpoMinoSDL.propConfig.getProperty("option.outlineghost", false);
+		sidenext = NullpoMinoSDL.propConfig.getProperty("option.sidenext", false);
 	}
 
 	/**
@@ -457,7 +461,7 @@ public class RendererSDL extends EventReceiver {
 
 		if(color <= Block.BLOCK_COLOR_INVALID) return;
 		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
-		
+
 		int size = 16;
 		SDLSurface img = isSpecialBlocks ? ResourceHolderSDL.imgSpBlock : ResourceHolderSDL.imgBlock;
 		if(scale == 0.5f) {
@@ -998,56 +1002,113 @@ public class RendererSDL extends EventReceiver {
 
 		// NEXT欄背景
 		if(showbg && darknextarea) {
-			ResourceHolderSDL.imgBlankBlack.setAlpha(0, 255);
-			ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,135,48), graphics, new SDLRect(x + 20, y, 135, 48));
+			if(sidenext) {
+				int x2 = showmeter ? (x + 176) : (x + 168);
+				int maxNext = engine.isNextVisible ? engine.ruleopt.nextDisplay : 0;
 
-			for(int i = 0; i <= 20; i++) {
-				int alpha = (int)(((float)i / (float)20) * 255);
-				ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
-				ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,1,48), graphics, new SDLRect(x + i - 1, y, 1, 48));
-			}
-			for(int i = 0; i <= 20; i++) {
-				int alpha = (int)(((float)(20 - i) / (float)20) * 255);
-				ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
-				ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,1,48), graphics, new SDLRect(x + i + 155, y, 1, 48));
+				// HOLD area
+				if(engine.ruleopt.holdEnable && engine.isHoldVisible) {
+					ResourceHolderSDL.imgBlankBlack.setAlpha(0, 255);
+					ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,32,32 - 16), graphics, new SDLRect(x - 32, y + 48 + 8, 32, 32 - 16));
+
+					for(int i = 0; i <= 8; i++) {
+						int alpha = (int)(((float)i / (float)8) * 255);
+						ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
+						ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,32,1), graphics, new SDLRect(x - 32, y + 47 + i, 32, 1));
+					}
+					for(int i = 0; i <= 8; i++) {
+						int alpha = (int)(((float)i / (float)8) * 255);
+						ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
+						ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,32,1), graphics, new SDLRect(x - 32, y + 80 - i, 32, 1));
+					}
+				}
+
+				// NEXT area
+				if(maxNext > 0) {
+					ResourceHolderSDL.imgBlankBlack.setAlpha(0, 255);
+					ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,32,(32 * maxNext)-16),graphics,
+							new SDLRect(x2,y + 48 + 8,32,(32 * maxNext) - 16));
+
+					for(int i = 0; i <= 8; i++) {
+						int alpha = (int)(((float)i / (float)8) * 255);
+						ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
+						ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,32,1), graphics, new SDLRect(x2, y + 47 + i, 32, 1));
+					}
+					for(int i = 0; i <= 8; i++) {
+						int alpha = (int)(((float)i / (float)8) * 255);
+						ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
+						ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,32,1), graphics, new SDLRect(x2, y + 48+(32*maxNext)-i, 32, 1));
+					}
+				}
+			} else {
+				ResourceHolderSDL.imgBlankBlack.setAlpha(0, 255);
+				ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,135,48), graphics, new SDLRect(x + 20, y, 135, 48));
+
+				for(int i = 0; i <= 20; i++) {
+					int alpha = (int)(((float)i / (float)20) * 255);
+					ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
+					ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,1,48), graphics, new SDLRect(x + i - 1, y, 1, 48));
+				}
+				for(int i = 0; i <= 20; i++) {
+					int alpha = (int)(((float)(20 - i) / (float)20) * 255);
+					ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alpha);
+					ResourceHolderSDL.imgBlankBlack.blitSurface(new SDLRect(0,0,1,48), graphics, new SDLRect(x + i + 155, y, 1, 48));
+				}
 			}
 
 			ResourceHolderSDL.imgBlankBlack.setAlpha(0, 255);
 		}
 
 		if(engine.isNextVisible) {
-			// NEXT1
-			if(engine.ruleopt.nextDisplay >= 1) {
-				Piece piece = engine.getNextObject(engine.nextPieceCount);
-				NormalFontSDL.printFont(x + 60, y, NullpoMinoSDL.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+			if(sidenext) {
+				if(engine.ruleopt.nextDisplay >= 1) {
+					int x2 = showmeter ? (x + 176) : (x + 168);
+					NormalFontSDL.printFont(x2, y + 40, NullpoMinoSDL.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
-				if(piece != null) {
-					int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
-					int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
-					drawPiece(x2, y2, piece);
+					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
+						Piece piece = engine.getNextObject(engine.nextPieceCount + i);
+
+						if(piece != null) {
+							int centerX = ( (32 - ((piece.getWidth() + 1) * 8)) / 2 ) - (piece.getMinimumBlockX() * 8);
+							int centerY = ( (32 - ((piece.getHeight() + 1) * 8)) / 2 ) - (piece.getMinimumBlockY() * 8);
+							drawPiece(x2 + centerX, y + 48 + (i * 32) + centerY, piece, 0.5f);
+						}
+					}
 				}
-			}
+			} else {
+				// NEXT1
+				if(engine.ruleopt.nextDisplay >= 1) {
+					Piece piece = engine.getNextObject(engine.nextPieceCount);
+					NormalFontSDL.printFont(x + 60, y, NullpoMinoSDL.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
-			// NEXT2・3
-			for(int i = 0; i < engine.ruleopt.nextDisplay - 1; i++) {
-				if(i >= 2) break;
-
-				Piece piece = engine.getNextObject(engine.nextPieceCount + i + 1);
-
-				if(piece != null) {
-					drawPiece(x + 124 + (i * 40), y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					if(piece != null) {
+						int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
+						int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
+						drawPiece(x2, y2, piece);
+					}
 				}
-			}
 
-			// NEXT4～
-			for(int i = 0; i < engine.ruleopt.nextDisplay - 3; i++) {
-				Piece piece = engine.getNextObject(engine.nextPieceCount + i + 3);
+				// NEXT2・3
+				for(int i = 0; i < engine.ruleopt.nextDisplay - 1; i++) {
+					if(i >= 2) break;
 
-				if(piece != null) {
-					if(showmeter)
-						drawPiece(x + 177, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
-					else
-						drawPiece(x + 169, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					Piece piece = engine.getNextObject(engine.nextPieceCount + i + 1);
+
+					if(piece != null) {
+						drawPiece(x + 124 + (i * 40), y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					}
+				}
+
+				// NEXT4～
+				for(int i = 0; i < engine.ruleopt.nextDisplay - 3; i++) {
+					Piece piece = engine.getNextObject(engine.nextPieceCount + i + 3);
+
+					if(piece != null) {
+						if(showmeter)
+							drawPiece(x + 177, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+						else
+							drawPiece(x + 169, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+					}
 				}
 			}
 		}
@@ -1055,20 +1116,22 @@ public class RendererSDL extends EventReceiver {
 		if(engine.isHoldVisible) {
 			// HOLD
 			int holdRemain = engine.ruleopt.holdLimit - engine.holdUsedCount;
+			int x2 = sidenext ? (x - 32) : x;
+			int y2 = sidenext ? (y + 40) : y;
 
 			if( (engine.ruleopt.holdEnable == true) && ((engine.ruleopt.holdLimit < 0) || (holdRemain > 0)) ) {
 				int tempColor = COLOR_GREEN;
 				if(engine.holdDisable == true) tempColor = COLOR_WHITE;
 
 				if(engine.ruleopt.holdLimit < 0) {
-					NormalFontSDL.printFont(x, y, NullpoMinoSDL.getUIText("InGame_Hold"), tempColor, 0.5f);
+					NormalFontSDL.printFont(x2, y2, NullpoMinoSDL.getUIText("InGame_Hold"), tempColor, 0.5f);
 				} else {
 					if(!engine.holdDisable) {
 						if((holdRemain > 0) && (holdRemain <= 10)) tempColor = COLOR_YELLOW;
 						if((holdRemain > 0) && (holdRemain <= 5)) tempColor = COLOR_RED;
 					}
 
-					NormalFontSDL.printFont(x, y, NullpoMinoSDL.getUIText("InGame_Hold") + "\ne " + holdRemain, tempColor, 0.5f);
+					NormalFontSDL.printFont(x2, y2, NullpoMinoSDL.getUIText("InGame_Hold") + "\ne " + holdRemain, tempColor, 0.5f);
 				}
 
 				if(engine.holdPieceObject != null) {
@@ -1076,7 +1139,14 @@ public class RendererSDL extends EventReceiver {
 					if(engine.holdDisable == true) dark = 0.3f;
 					Piece piece = new Piece(engine.holdPieceObject);
 					piece.resetOffsetArray();
-					drawPiece(x, y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f, dark);
+
+					if(sidenext) {
+						int centerX = ( (32 - ((piece.getWidth() + 1) * 8)) / 2 ) - (piece.getMinimumBlockX() * 8);
+						int centerY = ( (32 - ((piece.getHeight() + 1) * 8)) / 2 ) - (piece.getMinimumBlockY() * 8);
+						drawPiece(x2 + centerX, y + 48 + centerY, piece, 0.5f, dark);
+					} else {
+						drawPiece(x2, y + 48 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f, dark);
+					}
 				}
 			}
 		}

@@ -87,6 +87,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** 枠線型ゴーストピース */
 	protected JCheckBox chkboxOutlineGhost;
 
+	/** Side piece preview */
+	protected JCheckBox chkboxSideNext;
+
 	/**
 	 * コンストラクタ
 	 * @param owner 親ウィンドウ
@@ -173,6 +176,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxOutlineGhost.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxOutlineGhost);
 
+		chkboxSideNext = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SideNext"));
+		chkboxSideNext.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(chkboxSideNext);
+
 		// ---------- 画面下のボタン ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -207,6 +214,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxEnableFrameStep.setSelected(NullpoMinoSwing.propConfig.getProperty("option.enableframestep", false));
 		chkboxNextShadow.setSelected(NullpoMinoSwing.propConfig.getProperty("option.nextshadow", false));
 		chkboxOutlineGhost.setSelected(NullpoMinoSwing.propConfig.getProperty("option.outlineghost", false));
+		chkboxSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.sidenext", false));
 	}
 
 	/*
@@ -231,6 +239,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.enableframestep", chkboxEnableFrameStep.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.nextshadow", chkboxNextShadow.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.outlineghost", chkboxOutlineGhost.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.sidenext", chkboxSideNext.isSelected());
 
 			NullpoMinoSwing.saveConfig();
 			ResourceHolderSwing.soundManager.setVolume(sevolume);
