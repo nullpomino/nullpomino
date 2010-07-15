@@ -182,8 +182,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		}
 		else if (inARE && !newInARE)
 			inARE = false;
-		if((engine.stat == GameEngine.STAT_ARE || engine.stat == GameEngine.STAT_READY)
-				&& delay >= engine.aiMoveDelay) {
+		if(inARE && delay >= engine.aiMoveDelay) {
 			int input = 0;
 			Piece nextPiece = engine.getNextObject(engine.nextPieceCount);
 			if (bestHold && thinkComplete)
