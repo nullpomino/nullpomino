@@ -786,7 +786,7 @@ public class NetServer {
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\n";
 			 */
-			if(pInfo != null) {
+			if((pInfo != null) && (pInfo.roomID == -1)) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
 
 				roomInfo.strName = NetUtil.urlDecode(message[1]);
