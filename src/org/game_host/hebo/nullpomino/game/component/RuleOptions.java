@@ -204,8 +204,14 @@ public class RuleOptions implements Serializable {
 	/** ライン消去前にブロックが光るフレームを入れる */
 	public boolean lockflashBeforeLineClear;
 	
-	/** ARE cancel */
-	public boolean areCancel;
+	/** ARE cancel on move */
+	public boolean areCancelMove;
+	
+	/** ARE cancel on rotate*/
+	public boolean areCancelRotate;
+	
+	/** ARE cancel on hold*/
+	public boolean areCancelHold;
 
 	/** 最小/最大ARE（-1:指定なし） */
 	public int minARE, maxARE;
@@ -264,8 +270,14 @@ public class RuleOptions implements Serializable {
 	/** ライン消去後に上のブロックが1段ずつ落ちるアニメーションを表示 */
 	public boolean lineFallAnim;
 	
-	/** Line delay cancel */
-	public boolean lineCancel;
+	/** Line delay cancel on move */
+	public boolean lineCancelMove;
+	
+	/** Line delay cancel on rotate */
+	public boolean lineCancelRotate;
+	
+	/** Line delay cancel on hold */
+	public boolean lineCancelHold;
 
 	/** ブロックの絵柄 */
 	public int skin;
@@ -366,7 +378,9 @@ public class RuleOptions implements Serializable {
 		lockflash = 2;
 		lockflashOnlyFrame = true;
 		lockflashBeforeLineClear = false;
-		areCancel = false;
+		areCancelMove = false;
+		areCancelRotate = false;
+		areCancelHold = false;
 
 		minARE = -1;
 		maxARE = -1;
@@ -396,7 +410,9 @@ public class RuleOptions implements Serializable {
 		moveLeftAndRightUsePreviousInput = false;
 
 		lineFallAnim = true;
-		lineCancel = false;
+		lineCancelMove = false;
+		lineCancelRotate = false;
+		lineCancelHold = false;
 
 		skin = 0;
 		ghost = true;
@@ -480,7 +496,9 @@ public class RuleOptions implements Serializable {
 		lockflash = r.lockflash;
 		lockflashOnlyFrame = r.lockflashOnlyFrame;
 		lockflashBeforeLineClear = r.lockflashBeforeLineClear;
-		areCancel = r.areCancel;
+		areCancelMove = r.areCancelMove;
+		areCancelRotate = r.areCancelRotate;
+		areCancelHold = r.areCancelHold;
 
 		minARE = r.minARE;
 		maxARE = r.maxARE;
@@ -510,7 +528,9 @@ public class RuleOptions implements Serializable {
 		moveLeftAndRightUsePreviousInput = r.moveLeftAndRightUsePreviousInput;
 
 		lineFallAnim = r.lineFallAnim;
-		lineCancel = r.lineCancel;
+		lineCancelMove = r.lineCancelMove;
+		lineCancelRotate = r.lineCancelRotate;
+		lineCancelHold = r.lineCancelHold;
 
 		skin = r.skin;
 		ghost = r.ghost;
@@ -588,7 +608,9 @@ public class RuleOptions implements Serializable {
 		if(lockflash != r.lockflash) return false;
 		if(lockflashOnlyFrame != r.lockflashOnlyFrame) return false;
 		if(lockflashBeforeLineClear != r.lockflashBeforeLineClear) return false;
-		if(areCancel != r.areCancel) return false;
+		if(areCancelMove != r.areCancelMove) return false;
+		if(areCancelRotate != r.areCancelRotate) return false;
+		if(areCancelHold != r.areCancelHold) return false;
 
 		if(minARE != r.minARE) return false;
 		if(maxARE != r.maxARE) return false;
@@ -618,7 +640,9 @@ public class RuleOptions implements Serializable {
 		if(moveLeftAndRightUsePreviousInput != r.moveLeftAndRightUsePreviousInput) return false;
 
 		if((ignoreGraphicsSetting) && (lineFallAnim != r.lineFallAnim)) return false;
-		if(lineCancel != r.lineCancel) return false;
+		if(lineCancelMove != r.lineCancelMove) return false;
+		if(lineCancelRotate != r.lineCancelRotate) return false;
+		if(lineCancelHold != r.lineCancelHold) return false;
 
 		if((ignoreGraphicsSetting) && (skin != r.skin)) return false;
 		if(ghost != r.ghost) return false;
@@ -697,7 +721,9 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.lockflash", lockflash);
 		p.setProperty(id + ".ruleopt.lockflashOnlyFrame", lockflashOnlyFrame);
 		p.setProperty(id + ".ruleopt.lockflashBeforeLineClear", lockflashBeforeLineClear);
-		p.setProperty(id + ".ruleopt.areCancel", areCancel);
+		p.setProperty(id + ".ruleopt.areCancelMove", areCancelMove);
+		p.setProperty(id + ".ruleopt.areCancelRotate", areCancelRotate);
+		p.setProperty(id + ".ruleopt.areCancelHold", areCancelHold);
 
 		p.setProperty(id + ".ruleopt.minARE", minARE);
 		p.setProperty(id + ".ruleopt.maxARE", maxARE);
@@ -727,7 +753,9 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.moveLeftAndRightUsePreviousInput", moveLeftAndRightUsePreviousInput);
 
 		p.setProperty(id + ".ruleopt.lineFallAnim", lineFallAnim);
-		p.setProperty(id + ".ruleopt.lineCancel", lineCancel);
+		p.setProperty(id + ".ruleopt.lineCancelMove", lineCancelMove);
+		p.setProperty(id + ".ruleopt.lineCancelRotate", lineCancelRotate);
+		p.setProperty(id + ".ruleopt.lineCancelHold", lineCancelHold);
 
 		p.setProperty(id + ".ruleopt.skin", skin);
 		p.setProperty(id + ".ruleopt.ghost", ghost);
@@ -804,7 +832,9 @@ public class RuleOptions implements Serializable {
 		lockflash = p.getProperty(id + ".ruleopt.lockflash", lockflash);
 		lockflashOnlyFrame = p.getProperty(id + ".ruleopt.lockflashOnlyFrame", lockflashOnlyFrame);
 		lockflashBeforeLineClear = p.getProperty(id + ".ruleopt.lockflashBeforeLineClear", lockflashBeforeLineClear);
-		areCancel = p.getProperty(id + ".ruleopt.areCancel", areCancel);
+		areCancelMove = p.getProperty(id + ".ruleopt.areCancelMove", areCancelMove);
+		areCancelRotate = p.getProperty(id + ".ruleopt.areCancelRotate", areCancelRotate);
+		areCancelHold = p.getProperty(id + ".ruleopt.areCancelHold", areCancelHold);
 
 		minARE = p.getProperty(id + ".ruleopt.minARE", minARE);
 		maxARE = p.getProperty(id + ".ruleopt.maxARE", maxARE);
@@ -834,7 +864,9 @@ public class RuleOptions implements Serializable {
 		moveLeftAndRightUsePreviousInput = p.getProperty(id + ".ruleopt.moveLeftAndRightUsePreviousInput", moveLeftAndRightUsePreviousInput);
 
 		lineFallAnim = p.getProperty(id + ".ruleopt.lineFallAnim", lineFallAnim);
-		lineCancel = p.getProperty(id + ".ruleopt.lineCancel", lineCancel);
+		lineCancelMove = p.getProperty(id + ".ruleopt.lineCancelMove", lineCancelMove);
+		lineCancelRotate = p.getProperty(id + ".ruleopt.lineCancelRotate", lineCancelRotate);
+		lineCancelHold = p.getProperty(id + ".ruleopt.lineCancelHold", lineCancelHold);
 
 		skin = p.getProperty(id + ".ruleopt.skin", skin);
 		ghost = p.getProperty(id + ".ruleopt.ghost", ghost);

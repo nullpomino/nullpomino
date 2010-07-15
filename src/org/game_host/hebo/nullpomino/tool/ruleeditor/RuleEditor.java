@@ -302,8 +302,14 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** ライン消去前にブロックが光るフレームを入れる */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
 	
-	/** ARE cancel */
-	private JCheckBox chkboxARECancel;
+	/** ARE cancel on move */
+	private JCheckBox chkboxARECancelMove;
+	
+	/** ARE cancel on rotate */
+	private JCheckBox chkboxARECancelRotate;
+	
+	/** ARE cancel on hold */
+	private JCheckBox chkboxARECancelHold;
 
 	//----------------------------------------------------------------------
 	/* ライン消去設定パネル */
@@ -317,8 +323,14 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 落下アニメ */
 	private JCheckBox chkboxLineFallAnim;
 	
-	/** Line delay cancel */
-	private JCheckBox chkboxLineCancel;
+	/** Line delay cancel on move */
+	private JCheckBox chkboxLineCancelMove;
+	
+	/** Line delay cancel on rotate */
+	private JCheckBox chkboxLineCancelRotate;
+	
+	/** Line delay cancel on hold */
+	private JCheckBox chkboxLineCancelHold;
 
 	//----------------------------------------------------------------------
 	/* 移動設定パネル */
@@ -943,9 +955,17 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxARELockFlashBeforeLineClear = new JCheckBox(getUIText("ARE_LockFlashBeforeLineClear"));
 		panelARE.add(chkboxARELockFlashBeforeLineClear);
 		
-		// ARE cancel
-		chkboxARECancel = new JCheckBox(getUIText("ARE_Cancel"));
-		panelARE.add(chkboxARECancel);
+		// ARE cancel on move
+		chkboxARECancelMove = new JCheckBox(getUIText("ARE_CancelMove"));
+		panelARE.add(chkboxARECancelMove);
+		
+		// ARE cancel on move
+		chkboxARECancelRotate = new JCheckBox(getUIText("ARE_CancelRotate"));
+		panelARE.add(chkboxARECancelRotate);
+		
+		// ARE cancel on move
+		chkboxARECancelHold = new JCheckBox(getUIText("ARE_CancelHold"));
+		panelARE.add(chkboxARECancelHold);
 
 		// ライン消去タブ --------------------------------------------------
 		JPanel panelLine = new JPanel();
@@ -968,9 +988,17 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLineFallAnim = new JCheckBox(getUIText("Line_FallAnim"));
 		panelLine.add(chkboxLineFallAnim);
 		
-		// Line delay cancel
-		chkboxLineCancel = new JCheckBox(getUIText("Line_Cancel"));
-		panelLine.add(chkboxLineCancel);
+		// Line delay cancel on move
+		chkboxLineCancelMove = new JCheckBox(getUIText("Line_CancelMove"));
+		panelLine.add(chkboxLineCancelMove);
+		
+		// Line delay cancel on rotate
+		chkboxLineCancelRotate = new JCheckBox(getUIText("Line_CancelRotate"));
+		panelLine.add(chkboxLineCancelRotate);
+		
+		// Line delay cancel on hold
+		chkboxLineCancelHold = new JCheckBox(getUIText("Line_CancelHold"));
+		panelLine.add(chkboxLineCancelHold);
 
 		// 移動タブ --------------------------------------------------
 		JPanel panelMove = new JPanel();
@@ -1405,12 +1433,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELockFlash.setText(String.valueOf(r.lockflash));
 		chkboxARELockFlashOnlyFrame.setSelected(r.lockflashOnlyFrame);
 		chkboxARELockFlashBeforeLineClear.setSelected(r.lockflashBeforeLineClear);
-		chkboxARECancel.setSelected(r.areCancel);
+		chkboxARECancelMove.setSelected(r.areCancelMove);
+		chkboxARECancelRotate.setSelected(r.areCancelRotate);
+		chkboxARECancelHold.setSelected(r.areCancelHold);
 
 		txtfldLineDelayMin.setText(String.valueOf(r.minLineDelay));
 		txtfldLineDelayMax.setText(String.valueOf(r.maxLineDelay));
 		chkboxLineFallAnim.setSelected(r.lineFallAnim);
-		chkboxLineCancel.setSelected(r.lineCancel);
+		chkboxLineCancelMove.setSelected(r.lineCancelMove);
+		chkboxLineCancelRotate.setSelected(r.lineCancelRotate);
+		chkboxLineCancelHold.setSelected(r.lineCancelHold);
 
 		txtfldMoveDASMin.setText(String.valueOf(r.minDAS));
 		txtfldMoveDASMax.setText(String.valueOf(r.maxDAS));
@@ -1511,12 +1543,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.lockflash = getIntTextField(txtfldARELockFlash);
 		r.lockflashOnlyFrame = chkboxARELockFlashOnlyFrame.isSelected();
 		r.lockflashBeforeLineClear = chkboxARELockFlashBeforeLineClear.isSelected();
-		r.areCancel = chkboxARECancel.isSelected();
+		r.areCancelMove = chkboxARECancelMove.isSelected();
+		r.areCancelRotate = chkboxARECancelRotate.isSelected();
+		r.areCancelHold = chkboxARECancelHold.isSelected();
 
 		r.minLineDelay = getIntTextField(txtfldLineDelayMin);
 		r.maxLineDelay = getIntTextField(txtfldLineDelayMax);
 		r.lineFallAnim = chkboxLineFallAnim.isSelected();
-		r.lineCancel = chkboxLineCancel.isSelected();
+		r.lineCancelMove = chkboxLineCancelMove.isSelected();
+		r.lineCancelRotate = chkboxLineCancelRotate.isSelected();
+		r.lineCancelHold = chkboxLineCancelHold.isSelected();
 
 		r.minDAS = getIntTextField(txtfldMoveDASMin);
 		r.maxDAS = getIntTextField(txtfldMoveDASMax);

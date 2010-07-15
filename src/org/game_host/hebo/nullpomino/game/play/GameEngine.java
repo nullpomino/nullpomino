@@ -2485,13 +2485,17 @@ public class GameEngine {
 		// Line delay cancel check
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
+		
+		boolean moveCancel = ruleopt.lineCancelMove && (ctrl.isPush(Controller.BUTTON_UP) || 
+			ctrl.isPush(Controller.BUTTON_DOWN) || delayCancelMoveLeft || delayCancelMoveRight);
+		boolean rotateCancel = ruleopt.lineCancelRotate && (ctrl.isPush(Controller.BUTTON_A) ||
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			ctrl.isPush(Controller.BUTTON_E));
+		boolean holdCancel = ruleopt.lineCancelHold && ctrl.isPush(Controller.BUTTON_D);
 
-		delayCancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
-			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) ||
-			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
-			(ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		delayCancel = moveCancel || rotateCancel || holdCancel;
 
-		if( (ruleopt.lineCancel) && (statc[0] < getLineDelay()) && delayCancel ) {
+		if( (statc[0] < getLineDelay()) && delayCancel ) {
 			statc[0] = getLineDelay();
 		}
 
@@ -2569,13 +2573,17 @@ public class GameEngine {
 		// ARE cancel check
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
+		
+		boolean moveCancel = ruleopt.areCancelMove && (ctrl.isPush(Controller.BUTTON_UP) || 
+			ctrl.isPush(Controller.BUTTON_DOWN) || delayCancelMoveLeft || delayCancelMoveRight);
+		boolean rotateCancel = ruleopt.areCancelRotate && (ctrl.isPush(Controller.BUTTON_A) ||
+			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) || 
+			ctrl.isPush(Controller.BUTTON_E));
+		boolean holdCancel = ruleopt.areCancelHold && ctrl.isPush(Controller.BUTTON_D);
 
-		delayCancel = ctrl.isPush(Controller.BUTTON_UP) || ctrl.isPush(Controller.BUTTON_DOWN) ||
-			delayCancelMoveLeft || delayCancelMoveRight || ctrl.isPush(Controller.BUTTON_A) ||
-			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
-			(ruleopt.holdEnable && ruleopt.holdInitial && ctrl.isPush(Controller.BUTTON_D));
+		delayCancel = moveCancel || rotateCancel || holdCancel;
 
-		if( (ruleopt.areCancel) && (statc[0] < statc[1]) && delayCancel ) {
+		if( (statc[0] < statc[1]) && delayCancel ) {
 			statc[0] = statc[1];
 		}
 
