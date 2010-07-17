@@ -146,7 +146,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	        @Override
 	        public void done() {
 
-	        	setTitle("Results");
+	        	setTitle(AIRanksGenerator.getUIText("Result_Title"));
         		initUI();
         		pack();
         		setVisible(true);
@@ -164,7 +164,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		this.factorCompare=ascendant?-1:1;
 		this.maxJump=ranks.getMaxJump();
 		this.stackWidth=ranks.getStackWidth();
-		progressMonitor=new ProgressMonitor(parent,"Sorting ranks...","",0,100);
+		progressMonitor=new ProgressMonitor(parent,AIRanksGenerator.getUIText("Result_Progress_Message"),"",0,100);
 		progressMonitor.setProgress(0);
 		task = new Task();
         task.addPropertyChangeListener(this);
@@ -196,21 +196,21 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 
 		surfaceComponent=new SurfaceComponent (maxJump,stackWidth,currentSurface);
-		labelScore=new JLabel("Score : "+surfaceRanksBests[indexSurface].getRank());
+		labelScore=new JLabel(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBests[indexSurface].getRank());
 
 		currentSurfaceMirrored=surfaceRanksBestsMirrored[indexSurface].getSurface();
 		surfaceComponentMirrored=new SurfaceComponent(maxJump,stackWidth,currentSurfaceMirrored);
-	    labelScoreMirrored=new JLabel("Score : "+surfaceRanksBestsMirrored[indexSurface].getRank());
+	    labelScoreMirrored=new JLabel(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());
 
-		buttonNext=new JButton("Next");
+		buttonNext=new JButton(AIRanksGenerator.getUIText("Result_Next"));
 		buttonNext.setActionCommand("next");
 		buttonNext.addActionListener( this);
-		buttonPrevious=new JButton("Previous");
+		buttonNext.setMnemonic('N');
+		buttonPrevious=new JButton(AIRanksGenerator.getUIText("Result_Previous"));
 		buttonPrevious.setActionCommand("previous ");
 		buttonPrevious.setEnabled(false);
 		buttonPrevious.addActionListener( this);
-
-
+		buttonPrevious.setMnemonic('P');
 
 		JPanel pane=new JPanel(new BorderLayout());
 		JPanel surfacePane=new JPanel(new BorderLayout());
@@ -244,11 +244,11 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	           indexSurface++;
 	          currentSurface=surfaceRanksBests[indexSurface].getSurface();
 	          surfaceComponent.setSurface(currentSurface);
-	          labelScore.setText("Score : "+ surfaceRanksBests[indexSurface].getRank());
+	          labelScore.setText(AIRanksGenerator.getUIText("Result_Score")+ surfaceRanksBests[indexSurface].getRank());
 
 	          currentSurfaceMirrored=surfaceRanksBestsMirrored[indexSurface].getSurface();
 	  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);
-	  	    labelScoreMirrored.setText("Score : "+surfaceRanksBestsMirrored[indexSurface].getRank());
+	  	    labelScoreMirrored.setText(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());
 
 	          if (indexSurface>0){
 	        	  buttonPrevious.setEnabled(true);
@@ -264,11 +264,11 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		           indexSurface--;
 		          currentSurface=surfaceRanksBests[indexSurface].getSurface();
 		          surfaceComponent.setSurface(currentSurface);
-		          labelScore.setText("Score : "+ surfaceRanksBests[indexSurface].getRank());
+		          labelScore.setText(AIRanksGenerator.getUIText("Result_Score")+ surfaceRanksBests[indexSurface].getRank());
 
 		          currentSurfaceMirrored=getMirroredSurface(currentSurface);
 		  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);
-		  	    labelScoreMirrored.setText("Score : "+surfaceRanksBestsMirrored[indexSurface].getRank());;
+		  	    labelScoreMirrored.setText(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());;
 
 		          if (indexSurface<bestNRanks-1){
 		        	  buttonNext.setEnabled(true);
@@ -290,7 +290,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	            int progress = (Integer) evt.getNewValue();
 	            progressMonitor.setProgress(progress);
 	            String message =
-	                String.format("Completed %d%%.\n", progress);
+	                String.format(AIRanksGenerator.getUIText("Result_Progress_Note"), progress);
 	            progressMonitor.setNote(message);
 		 }
 

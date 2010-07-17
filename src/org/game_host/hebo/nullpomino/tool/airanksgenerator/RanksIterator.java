@@ -25,12 +25,12 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 	private Ranks ranks;
 	private Ranks ranksFrom;
 	private String outputFile;
-	private JFrame parent;
+	//private JFrame parent;
 	private int numIterations;
 	private int iteration;
-	private int size;
-	private float lastError;
-	private int lastErrorMax;
+	//private int size;
+	//private float lastError;
+	//private int lastErrorMax;
 
 	 private MySwingWorker mySwingWorker;
 
@@ -73,8 +73,8 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         		ranks=ranks.getRanksFrom();
         		return null;
         	}
-        	lastError=ranks.getErrorPercentage();
-        	lastErrorMax=ranks.getMaxError();
+        	//lastError=ranks.getErrorPercentage();
+        	//lastErrorMax=ranks.getMaxError();
         	if (n!=numIterations-1){
         	  ranksFrom=ranks.getRanksFrom();
         	  ranksFrom.setRanksFrom(ranks);
@@ -131,7 +131,7 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 
 public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIterations){
 
-	super(parent,"Computing ranks...","",0,100);
+	super(parent,AIRanksGenerator.getUIText("Progress_Message"),"",0,100);
 	this.outputFile=outputFile;
 
 	this.numIterations=numIterations;
@@ -160,7 +160,7 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 	}
 	ranks=new Ranks(ranksFrom);
 
-	size=ranks.getSize();
+	//size=ranks.getSize();
 
 	mySwingWorker =this.new MySwingWorker(4);
 	mySwingWorker.addPropertyChangeListener(this);
@@ -176,7 +176,7 @@ public void propertyChange(PropertyChangeEvent evt) {
 
 
            String message =
-               String.format("Iteration:%d(%d%%)/%d- total :%d%%", iteration+1,ranks.getCompletionPercentage(),numIterations,progress);
+               String.format(AIRanksGenerator.getUIText("Progress_Note"), iteration+1,ranks.getCompletionPercentage(),numIterations,progress);
           setNote(message);
           if (progress==100){
 
@@ -186,7 +186,7 @@ public void propertyChange(PropertyChangeEvent evt) {
 	 }
 
    if (isCanceled()) {
-	               
+
 	                   this.mySwingWorker.cancelTask();
 
 

@@ -6,8 +6,8 @@ public class RanksIteratorPart extends Thread {
 
 private MySwingWorker mySwingWorker;
 private Ranks ranks;
-private int i;
-private int totalParts;
+//private int i;
+//private int totalParts;
 private int sMin;
 private int sMax;
 private int size;
@@ -21,8 +21,8 @@ private int [] surfaceDecodedWork;
 
       this.mySwingWorker=mySwingWorker;
       this.ranks=ranks;
-      this.i=i;
-      this.totalParts=totalParts;
+      //this.i=i;
+      //this.totalParts=totalParts;
      size=ranks.getSize();
 		  sMin=i*size/totalParts;
 		 sMax=(i==totalParts-1)?size:(i+1)*size/totalParts;
