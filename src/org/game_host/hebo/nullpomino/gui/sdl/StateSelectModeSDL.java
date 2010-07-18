@@ -50,8 +50,26 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	public StateSelectModeSDL() {
 		String lastmode = NullpoMinoSDL.propGlobal.getProperty("name.mode", null);
 		modenames = NullpoMinoSDL.modeManager.getModeNames(false);
-		cursor = NullpoMinoSDL.modeManager.getIDbyName(lastmode);
+		cursor = getIDbyName(lastmode);
 		if(cursor < 0) cursor = 0;
+		if(cursor > modenames.length - 1) cursor = 0;
+	}
+
+	/**
+	 * Get mode ID (not including netplay modes)
+	 * @param name Name of mode
+	 * @return ID (-1 if not found)
+	 */
+	protected int getIDbyName(String name) {
+		if((name == null) || (modenames == null)) return -1;
+
+		for(int i = 0; i < modenames.length; i++) {
+			if(name.equals(modenames[i])) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	/*
