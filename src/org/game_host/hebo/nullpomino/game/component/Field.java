@@ -88,6 +88,12 @@ public class Field implements Serializable {
 	/** 天井の有無 */
 	public boolean ceiling;
 
+	/** Number of total blocks above minimum required in color clears */
+	public int colorClearExtraCount;
+	
+	/** Number of different colors in simultaneous color clears */
+	public int colorsCleared;
+	
 	/**
 	 * パラメータ付きコンストラクタ
 	 * @param w フィールドの幅
@@ -100,6 +106,8 @@ public class Field implements Serializable {
 		hidden_height = hh;
 
 		ceiling = false;
+		colorClearExtraCount = 0;
+		colorsCleared = 0;
 		reset();
 	}
 
@@ -113,6 +121,8 @@ public class Field implements Serializable {
 	public Field(int w, int h, int hh, boolean c) {
 		this(w, h, hh);
 		ceiling = c;
+		colorClearExtraCount = 0;
+		colorsCleared = 0;
 	}
 
 	/**
@@ -166,6 +176,9 @@ public class Field implements Serializable {
 		lineflag_hidden = new boolean[hidden_height];
 		hurryupFloorLines = f.hurryupFloorLines;
 
+		colorClearExtraCount = f.colorClearExtraCount;
+		colorsCleared = f.colorsCleared;
+		
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
 				block_field[i][j] = new Block(f.getBlock(i, j));
@@ -1974,7 +1987,6 @@ public class Field implements Serializable {
 	{
 		Field temp = new Field(this);
 		int total = 0;
-
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			for(int j = 0; j < width; j++) {
 				int clear = temp.clearColor(j, i, false, garbageClear, gemSame);
@@ -2327,18 +2339,38 @@ public class Field implements Serializable {
 	public int checkColor(int size, boolean flag, boolean garbageClear, boolean gemSame) {
 		Field temp = new Field(this);
 		int total = 0;
+		boolean[] colorsClearedArray = new boolean[7];
+		if (flag) 
+		{
+			colorClearExtraCount = 0;
+			colorsCleared = 0;
+			for (int i = 0; i < 7; i++)
+				colorsClearedArray[i] = false;
+		}
 
-		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
-			for(int j = 0; j < width; j++) {
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++)
+		{
+			for(int j = 0; j < width; j++)
+			{
 				int clear = temp.clearColor(j, i, false, garbageClear, gemSame);
 				if (clear >= size)
 				{
 					total += clear;
 					if (flag)
+					{
+						int blockColor = getBlockColor(j, i, gemSame);
 						clearColor(j, i, true, garbageClear, gemSame);
+						colorClearExtraCount += clear - size;
+						if (blockColor >= 2 && blockColor <= 8)
+							colorsClearedArray[blockColor-2] = true;
+					}
 				}
 			}
 		}
+		if (flag)
+			for (int i = 0; i < 7; i++)
+				if (colorsClearedArray[i])
+					colorsCleared++;
 		return total;
 	}
 }

@@ -2380,7 +2380,7 @@ public class GameEngine {
 			int li = lineClearing;
 			if(big && bighalf)
 				li >>= 1;
-			if(li > 4) li = 4;
+			//if(li > 4) li = 4;
 
 			if(tspin) {
 				playSE("tspin" + li);
