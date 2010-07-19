@@ -279,6 +279,9 @@ public class GameEngine {
 	/** 横溜め速度カウント */
 	public int dasSpeedCount;
 
+	/** Used to repeat statMove() for instant DAS */
+	public boolean dasRepeat;
+	
 	/** 先行回転 */
 	public int initialRotateDirection;
 
@@ -666,7 +669,8 @@ public class GameEngine {
 
 		dasCount = 0;
 		dasDirection = 0;
-		dasSpeedCount = 0;
+		dasSpeedCount = 1;
+		dasRepeat = false;
 
 		initialRotateDirection = 0;
 		initialRotateLastDirection = 0;
@@ -1485,7 +1489,10 @@ public class GameEngine {
 				statReady();
 				break;
 			case STAT_MOVE:
-				statMove();
+				dasRepeat = true;
+				while(dasRepeat){
+					statMove();
+				}
 				break;
 			case STAT_LOCKFLASH:
 				statLockFlash();
@@ -1732,6 +1739,8 @@ public class GameEngine {
 	 * ブロックピースの移動処理
 	 */
 	public void statMove() {
+		dasRepeat = false;
+
 		// イベント発生
 		if(owner.mode != null) {
 			if(owner.mode.onMove(this, playerID) == true) return;
@@ -1841,7 +1850,8 @@ public class GameEngine {
 				gcount = 0;
 
 			lockDelayNow = 0;
-			dasSpeedCount = 0;
+			dasSpeedCount = 1;
+			dasRepeat = false;
 			extendedMoveCount = 0;
 			extendedRotateCount = 0;
 			softdropFall = 0;
@@ -2030,10 +2040,15 @@ public class GameEngine {
 
 			if( (move != 0) && ((dasCount == 0) || (dasCount >= getDAS())) ) {
 				if( (dasSpeedCount >= getDASDelay()) || (dasCount == 0) ) {
-					if(dasCount > 0) dasSpeedCount = 0;
+					if(dasCount > 0) dasSpeedCount = 1;
 
 					if(nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false) {
 						nowPieceX += move;
+
+						if((getDASDelay() == 0) && (dasCount > 0) && (nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false)) {
+							dasRepeat = true;
+						}
+
 						//log.debug("Successful movement: move="+move);
 
 						if((ruleopt.lockresetMove == true) && (isMoveCountExceed() == false)) {

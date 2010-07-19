@@ -864,8 +864,8 @@ public class Piece implements Serializable {
 	 */
 	public int getMostMovableLeft(int nowX, int nowY, int rt, Field fld) {
 		int x = nowX;
-		while(!checkCollision(x, nowY, rt, fld)) x--;
-		return x + 1;
+		while(!checkCollision(x - 1, nowY, rt, fld)) x--;
+		return x;
 	}
 
 	/**
@@ -878,8 +878,8 @@ public class Piece implements Serializable {
 	 */
 	public int getMostMovableRight(int nowX, int nowY, int rt, Field fld) {
 		int x = nowX;
-		while(!checkCollision(x, nowY, rt, fld)) x++;
-		return x - 1;
+		while(!checkCollision(x + 1, nowY, rt, fld)) x++;
+		return x;
 	}
 
 	/**
