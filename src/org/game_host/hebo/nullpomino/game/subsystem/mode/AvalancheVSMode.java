@@ -151,6 +151,12 @@ public class AvalancheVSMode extends DummyMode {
 	/** Number of colors to use */
 	private int[] numColors;
 
+	/** Minimum chain count needed to send garbage */
+	private int[] rensaShibari;
+
+	/** Denominator for score-to-garbage conversion */
+	private int[] garbageRate;
+
 	/*
 	 * モード名
 	 */
@@ -199,6 +205,8 @@ public class AvalancheVSMode extends DummyMode {
 		score = new int[MAX_PLAYERS];
 		numColors = new int[MAX_PLAYERS];
 		maxAttack = new int[MAX_PLAYERS];
+		rensaShibari = new int[MAX_PLAYERS];
+		garbageRate = new int[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -252,6 +260,8 @@ public class AvalancheVSMode extends DummyMode {
 		presetNumber[playerID] = prop.getProperty("avalanchevs.presetNumber.p" + playerID, 0);
 		maxAttack[playerID] = prop.getProperty("avalanchevs.maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevs.numColors.p" + playerID, 5);
+		rensaShibari[playerID] = prop.getProperty("avalanchevs.rensaShibari.p" + playerID, 1);
+		garbageRate[playerID] = prop.getProperty("avalanchevs.garbageRate.p" + playerID, 120);
 	}
 
 	/**
@@ -271,6 +281,8 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.presetNumber.p" + playerID, presetNumber[playerID]);
 		prop.setProperty("avalanchevs.maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("avalanchevs.numColors.p" + playerID, numColors[playerID]);
+		prop.setProperty("avalanchevs.rensaShibari.p" + playerID, rensaShibari[playerID]);
+		prop.setProperty("avalanchevs.garbageRate.p" + playerID, garbageRate[playerID]);
 	}
 
 	/**
@@ -447,14 +459,16 @@ public class AvalancheVSMode extends DummyMode {
 					if(numColors[playerID] < 3) numColors[playerID] = 5;
 					if(numColors[playerID] > 5) numColors[playerID] = 3;
 					break;
-				/*
 				case 12:
-					enableB2B[playerID] = !enableB2B[playerID];
+					rensaShibari[playerID] += change;
+					if(rensaShibari[playerID] < 1) rensaShibari[playerID] = 20;
+					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
 					break;
 				case 13:
-					enableCombo[playerID] = !enableCombo[playerID];
+					garbageRate[playerID] += change*10;
+					if(garbageRate[playerID] < 10) garbageRate[playerID] = 1000;
+					if(garbageRate[playerID] > 1000) garbageRate[playerID] = 10;
 					break;
-				*/
 				case 14:
 					big[playerID] = !big[playerID];
 					break;
@@ -610,23 +624,19 @@ public class AvalancheVSMode extends DummyMode {
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "COUNTER", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_COUNTER_STRING[garbageCounterMode[playerID]], (engine.statc[2] == 9));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 10));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(numColors[playerID]), (engine.statc[2] == 11));
-				/*
-				receiver.drawMenuFont(engine, playerID, 0,  4, "EZ SPIN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, GeneralUtil.getONorOFF(enableTSpinKick[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "B2B", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, GeneralUtil.getONorOFF(enableB2B[playerID]), (engine.statc[2] == 12));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "COMBO", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, GeneralUtil.getONorOFF(enableCombo[playerID]), (engine.statc[2] == 13));
-				*/
+				receiver.drawMenuFont(engine, playerID, 0,  6, "MIN CHAIN", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(rensaShibari[playerID]), (engine.statc[2] == 12));
+				receiver.drawMenuFont(engine, playerID, 0,  8, "OJAMA RATE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(garbageRate[playerID]), (engine.statc[2] == 13));
 				receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 14));
-				/*
 				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
+				/*
 				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 				                      (engine.statc[2] == 16));
@@ -775,7 +785,7 @@ public class AvalancheVSMode extends DummyMode {
 			else
 				zenKeshi[playerID] = false;
 
-			int chain = engine.chain-1;
+			int chain = engine.chain;
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
@@ -785,12 +795,12 @@ public class AvalancheVSMode extends DummyMode {
 			if (chain == 0)
 				firstExtra = avalanche > engine.colorClearSize;
 			*/
-			if (chain == 1)
+			if (chain == 2)
 				multiplier += 8;
-			else if (chain == 2)
+			else if (chain == 3)
 				multiplier += 16;
-			else if (chain >= 3)
-				multiplier += 32*(chain-2);
+			else if (chain >= 4)
+				multiplier += 32*(chain-3);
 			/*
 			if (firstExtra)
 				multiplier++;
@@ -807,25 +817,28 @@ public class AvalancheVSMode extends DummyMode {
 			int ptsTotal = pts*multiplier;
 			score[playerID] += ptsTotal;
 
-			garbageNew += (ptsTotal+119)/120;
-			garbageSent[playerID] += garbageNew;
-			if (garbageCounterMode[playerID] != GARBAGE_COUNTER_OFF)
+			garbageNew += (ptsTotal+garbageRate[playerID]-1)/garbageRate[playerID];
+			if (chain >= rensaShibari[playerID])
 			{
-				if (garbage[playerID] > 0)
+				garbageSent[playerID] += garbageNew;
+				if (garbageCounterMode[playerID] != GARBAGE_COUNTER_OFF)
 				{
-					int delta = Math.min(garbage[playerID], garbageNew);
-					garbage[playerID] -= delta;
-					garbageNew -= delta;
+					if (garbage[playerID] > 0)
+					{
+						int delta = Math.min(garbage[playerID], garbageNew);
+						garbage[playerID] -= delta;
+						garbageNew -= delta;
+					}
+					if (garbageAdd[playerID] > 0 && garbageNew > 0)
+					{
+						int delta = Math.min(garbageAdd[playerID], garbageNew);
+						garbageAdd[playerID] -= delta;
+						garbageNew -= delta;
+					}
 				}
-				if (garbageAdd[playerID] > 0 && garbageNew > 0)
-				{
-					int delta = Math.min(garbageAdd[playerID], garbageNew);
-					garbageAdd[playerID] -= delta;
-					garbageNew -= delta;
-				}
+				if (garbageNew > 0)
+					garbageAdd[enemyID] += garbageNew;
 			}
-			if (garbageNew > 0)
-				garbageAdd[enemyID] += garbageNew;
 		}
 		if ((!cleared || garbageCounterMode[playerID] != GARBAGE_COUNTER_OFFSET)
 				&& !engine.field.canCascade() && garbage[playerID] > 0)
