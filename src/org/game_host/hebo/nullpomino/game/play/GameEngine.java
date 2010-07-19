@@ -561,6 +561,9 @@ public class GameEngine {
 	/** If true, gems count as the same color as their respectively-colored normal blocks */
 	public boolean gemSameColor;
 
+	/** Delay for each step in cascade animations */
+	public int cascadeDelay;
+
 	/**
 	 * コンストラクタ
 	 * @param owner このゲームエンジンを所有するGameOwnerクラス
@@ -797,6 +800,7 @@ public class GameEngine {
 		connectBlocks = true;
 		lineColorDiagonals = false;
 		blockColors = BLOCK_COLORS_DEFAULT;
+		cascadeDelay = 0;
 
 		// イベント発生
 		if(owner.mode != null) {
@@ -2545,7 +2549,11 @@ public class GameEngine {
 		if(statc[0] >= getLineDelay()) {
 			// Cascade
 			if(lineGravityType == LINE_GRAVITY_CASCADE) {
-				if(field.doCascadeGravity()) {
+				if (statc[6] < getCascadeDelay()) {
+					statc[6]++;
+					return;
+				} else if(field.doCascadeGravity()) {
+					statc[6] = 0;
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
 						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor) > 0) ||
@@ -2555,6 +2563,7 @@ public class GameEngine {
 					chain++;
 					if(chain > statistics.maxChain) statistics.maxChain = chain;
 					statc[0] = 0;
+					statc[6] = 0;
 					return;
 				}
 			}
@@ -2596,6 +2605,10 @@ public class GameEngine {
 		}
 
 		statc[0]++;
+	}
+
+	public int getCascadeDelay() {
+		return cascadeDelay;
 	}
 
 	/**
