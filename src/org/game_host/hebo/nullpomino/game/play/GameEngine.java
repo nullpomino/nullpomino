@@ -2220,10 +2220,7 @@ public class GameEngine {
 
 				boolean partialLockOut = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, field);
 				boolean put = nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
-
-				if (lineGravityType == LINE_GRAVITY_CASCADE && !connectBlocks)
-					while(field.doCascadeGravity()) { continue; }
-
+				
 				// T-Spin判定
 				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
 					if(useAllSpinBonus)
@@ -2277,6 +2274,10 @@ public class GameEngine {
 						// 画面外に置いて死亡
 						stat = STAT_GAMEOVER;
 						if((ending == 2) && (staffrollNoDeath)) stat = STAT_NOTHING;
+					} else if (lineGravityType == LINE_GRAVITY_CASCADE && !connectBlocks) {
+						stat = STAT_LINECLEAR;
+						statc[0] = getLineDelay();
+						statLineClear();
 					} else if( (lineClearing > 0) && ((ruleopt.lockflash <= 0) || (!ruleopt.lockflashBeforeLineClear)) ) {
 						// ライン消去
 						stat = STAT_LINECLEAR;
