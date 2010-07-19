@@ -2387,7 +2387,7 @@ public class Field implements Serializable {
 		int y = -1 * hidden_height;
 		int actualWidth = width;
 		if (big)
-			actualWidth <<= 1;
+			actualWidth >>= 1;
 		int bigMove = big ? 2 : 1;
 		while (drop >= actualWidth)
 		{
@@ -2434,6 +2434,12 @@ public class Field implements Serializable {
 		Block b = getBlock(x, y);
 		if (b == null)
 			return false;
+		if (big)
+		{
+			garbageDropPlace(x+1, y, false);
+			garbageDropPlace(x, y+1, false);
+			garbageDropPlace(x+1, y+1, false);
+		}
 		if (getBlockEmptyF(x, y))
 		{
 			setBlockColor(x, y, Block.BLOCK_COLOR_GRAY);
@@ -2446,12 +2452,6 @@ public class Field implements Serializable {
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
 			return true;
-		}
-		if (big)
-		{
-			garbageDropPlace(x+1, y, false);
-			garbageDropPlace(x, y+1, false);
-			garbageDropPlace(x+1, y+1, false);
 		}
 		return false;
 	}
