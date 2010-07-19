@@ -632,6 +632,15 @@ public class GameEngine {
 			owMinDAS = owner.replayProp.getProperty(playerID + ".tuning.owMinDAS", -1);
 			owMaxDAS = owner.replayProp.getProperty(playerID + ".tuning.owMaxDAS", -1);
 			owDasDelay = owner.replayProp.getProperty(playerID + ".tuning.owDasDelay", -1);
+			
+			// Fixing old replays to accomodate for new DAS notation
+			if (versionMajor < 7.3) {
+				if  (owDasDelay >= 0) {
+					owDasDelay++;
+				} else {
+					owDasDelay = owner.replayProp.getProperty(playerID + ".ruleopt.dasDelay", 0) + 1;
+				}
+			}
 		}
 
 		quitflag = false;
