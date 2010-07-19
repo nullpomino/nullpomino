@@ -157,6 +157,9 @@ public class AvalancheVSMode extends DummyMode {
 	/** Denominator for score-to-garbage conversion */
 	private int[] garbageRate;
 
+	/** Hurryup開始までの秒数(0でHurryupなし) */
+	private int[] hurryupSeconds;
+
 	/*
 	 * モード名
 	 */
@@ -189,6 +192,7 @@ public class AvalancheVSMode extends DummyMode {
 		bgmno = 0;
 		big = new boolean[MAX_PLAYERS];
 		enableSE = new boolean[MAX_PLAYERS];
+		hurryupSeconds = new int[MAX_PLAYERS];
 		useMap = new boolean[MAX_PLAYERS];
 		mapSet = new int[MAX_PLAYERS];
 		mapNumber = new int[MAX_PLAYERS];
@@ -254,6 +258,7 @@ public class AvalancheVSMode extends DummyMode {
 		garbageCounterMode[playerID] = prop.getProperty("avalanchevs.garbageCounterMode", GARBAGE_COUNTER_ON);
 		big[playerID] = prop.getProperty("avalanchevs.big.p" + playerID, false);
 		enableSE[playerID] = prop.getProperty("avalanchevs.enableSE.p" + playerID, true);
+		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 0);
 		useMap[playerID] = prop.getProperty("avalanchevs.useMap.p" + playerID, false);
 		mapSet[playerID] = prop.getProperty("avalanchevs.mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("avalanchevs.mapNumber.p" + playerID, -1);
@@ -275,6 +280,7 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.garbageCounterMode", garbageCounterMode[playerID]);
 		prop.setProperty("avalanchevs.big.p" + playerID, big[playerID]);
 		prop.setProperty("avalanchevs.enableSE.p" + playerID, enableSE[playerID]);
+		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
 		prop.setProperty("avalanchevs.useMap.p" + playerID, useMap[playerID]);
 		prop.setProperty("avalanchevs.mapSet.p" + playerID, mapSet[playerID]);
 		prop.setProperty("avalanchevs.mapNumber.p" + playerID, mapNumber[playerID]);
@@ -475,12 +481,12 @@ public class AvalancheVSMode extends DummyMode {
 				case 15:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				/*
 				case 16:
 					hurryupSeconds[playerID] += change;
-					if(hurryupSeconds[playerID] < -1) hurryupSeconds[playerID] = 300;
-					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = -1;
+					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
+					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
+				/*
 				case 17:
 					hurryupInterval[playerID] += change;
 					if(hurryupInterval[playerID] < 1) hurryupInterval[playerID] = 99;
@@ -636,10 +642,10 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 14));
 				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
-				/*
 				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
+				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 				                      (engine.statc[2] == 16));
+				/*
 				receiver.drawMenuFont(engine, playerID, 0, 16, "INTERVAL", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(hurryupInterval[playerID]), (engine.statc[2] == 17));
 				*/
@@ -816,6 +822,8 @@ public class AvalancheVSMode extends DummyMode {
 			scgettime[playerID] = 120;
 			int ptsTotal = pts*multiplier;
 			score[playerID] += ptsTotal;
+			
+			ptsTotal <<= engine.statistics.time / (hurryupSeconds[playerID] * 60);
 
 			garbageNew += (ptsTotal+garbageRate[playerID]-1)/garbageRate[playerID];
 			if (chain >= rensaShibari[playerID])
