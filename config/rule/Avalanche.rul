@@ -271,7 +271,7 @@
 0.ruleopt.pieceSpawnY.1.0=0
 0.ruleopt.pieceDefaultDirection.10=2
 0.ruleopt.lockresetLimitOver=0
-0.ruleopt.fieldHiddenHeight=1
+0.ruleopt.fieldHiddenHeight=2
 0.ruleopt.pieceSpawnX.9.3=0
 0.ruleopt.pieceSpawnX.9.2=0
 0.ruleopt.pieceSpawnX.9.1=0
@@ -292,13 +292,13 @@
 0.ruleopt.lockflashBeforeLineClear=false
 0.ruleopt.pieceColor.1=3
 0.ruleopt.pieceColor.0=2
-0.ruleopt.pieceSpawnYBig.8.3=0
+0.ruleopt.pieceSpawnYBig.8.3=2
 0.ruleopt.pieceSpawnX.1.3=0
-0.ruleopt.pieceSpawnYBig.8.2=0
+0.ruleopt.pieceSpawnYBig.8.2=2
 0.ruleopt.pieceSpawnX.1.2=0
-0.ruleopt.pieceSpawnYBig.8.1=0
+0.ruleopt.pieceSpawnYBig.8.1=2
 0.ruleopt.pieceSpawnX.1.1=0
-0.ruleopt.pieceSpawnYBig.8.0=0
+0.ruleopt.pieceSpawnYBig.8.0=2
 0.ruleopt.pieceSpawnX.1.0=0
 0.ruleopt.lineFallAnim=false
 0.ruleopt.pieceSpawnYBig.4.3=0

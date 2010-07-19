@@ -65,13 +65,13 @@ public class AvalancheVSMode extends DummyMode {
 	private static final int MAX_PLAYERS = 2;
 	
 	/** Names of garbage counter setting constants */
-	private final int GARBAGE_COUNTER_OFF = 0, GARBAGE_COUNTER_ON = 1, GARBAGE_COUNTER_OFFSET = 2;
+	private final int GARBAGE_COUNTER_OFF = 0, GARBAGE_COUNTER_ON = 1, GARBAGE_COUNTER_FEVER = 2;
 
 	/** 邪魔ブロックタイプの表示名 */
 	//private final String[] GARBAGE_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
 	
 	/** Names of garbage counter settings */
-	private final String[] GARBAGE_COUNTER_STRING = {"OFF", "ON", "OFFSET"};
+	private final String[] GARBAGE_COUNTER_STRING = {"OFF", "ON", "FEVER"};
 
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
@@ -353,16 +353,16 @@ public class AvalancheVSMode extends DummyMode {
 		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
 		engine.clearMode = GameEngine.CLEAR_COLOR;
 		engine.garbageColorClear = true;
-		engine.colorClearSize = 4;
 		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
-		engine.randomBlockColor = true;
 		engine.blockColors = BLOCK_COLORS;
+		engine.randomBlockColor = true;
 		engine.connectBlocks = false;
 
 		garbage[playerID] = 0;
 		garbageSent[playerID] = 0;
+		score[playerID] = 0;
 		scgettime[playerID] = 0;
 
 		if(engine.owner.replayMode == false) {
@@ -676,7 +676,6 @@ public class AvalancheVSMode extends DummyMode {
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			engine.numColors = numColors[playerID];
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
@@ -724,6 +723,8 @@ public class AvalancheVSMode extends DummyMode {
 		engine.big = big[playerID];
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
+		engine.colorClearSize = big[playerID] ? 12 : 4;
+		engine.numColors = numColors[playerID];
 
 		engine.tspinAllowKick = false;
 		engine.tspinEnable = false;
@@ -776,6 +777,8 @@ public class AvalancheVSMode extends DummyMode {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 		
+		if (big[playerID])
+			avalanche >>= 2;
 		// ラインクリアボーナス
 		int pts = avalanche*10;
 		int garbageNew = 0;
@@ -793,6 +796,8 @@ public class AvalancheVSMode extends DummyMode {
 
 			int chain = engine.chain;
 			int multiplier = engine.field.colorClearExtraCount;
+			if (big[playerID])
+				multiplier >>= 2;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
 			/*
@@ -823,7 +828,8 @@ public class AvalancheVSMode extends DummyMode {
 			int ptsTotal = pts*multiplier;
 			score[playerID] += ptsTotal;
 			
-			ptsTotal <<= engine.statistics.time / (hurryupSeconds[playerID] * 60);
+			if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
+				ptsTotal <<= engine.statistics.time / (hurryupSeconds[playerID] * 60);
 
 			garbageNew += (ptsTotal+garbageRate[playerID]-1)/garbageRate[playerID];
 			if (chain >= rensaShibari[playerID])
@@ -848,12 +854,12 @@ public class AvalancheVSMode extends DummyMode {
 					garbageAdd[enemyID] += garbageNew;
 			}
 		}
-		if ((!cleared || garbageCounterMode[playerID] != GARBAGE_COUNTER_OFFSET)
+		if ((!cleared || garbageCounterMode[playerID] != GARBAGE_COUNTER_FEVER)
 				&& !engine.field.canCascade() && garbage[playerID] > 0)
 		{
 			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
 			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop);
+			engine.field.garbageDrop(engine, drop, big[playerID]);
 		}
 	}
 
@@ -865,11 +871,11 @@ public class AvalancheVSMode extends DummyMode {
 			garbage[enemyID] += garbageAdd[enemyID];
 			garbageAdd[enemyID] = 0;
 		}
-		if (garbageCounterMode[playerID] != GARBAGE_COUNTER_OFFSET && garbage[playerID] > 0)
+		if (garbageCounterMode[playerID] != GARBAGE_COUNTER_FEVER && garbage[playerID] > 0)
 		{
 			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
 			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop);
+			engine.field.garbageDrop(engine, drop, big[playerID]);
 			return true;
 		}
 		return false;
@@ -892,7 +898,7 @@ public class AvalancheVSMode extends DummyMode {
 		} else if(garbage[playerID] * blockHeight / width < engine.meterValue) {
 			engine.meterValue--;
 		}
-		if(garbage[playerID] >= 6*width) engine.meterColor = GameEngine.METER_COLOR_RED;
+		if(garbage[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
 		else if(garbage[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		else if(garbage[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else engine.meterColor = GameEngine.METER_COLOR_GREEN;

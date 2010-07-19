@@ -2383,49 +2383,53 @@ public class Field implements Serializable {
 		return total;
 	}
 
-	public void garbageDrop(GameEngine engine, int drop) {
+	public void garbageDrop(GameEngine engine, int drop, boolean big) {
 		int y = -1 * hidden_height;
-		while (drop >= width)
+		int actualWidth = width;
+		if (big)
+			actualWidth <<= 1;
+		int bigMove = big ? 2 : 1;
+		while (drop >= actualWidth)
 		{
-			drop -= width;
-			for (int x = 0; x < width; x++)
-				garbageDropPlace(x, y);
-			y++;
+			drop -= actualWidth;
+			for (int x = 0; x < actualWidth; x+=bigMove)
+				garbageDropPlace(x, y, big);
+			y+=bigMove;
 		}
 		if (drop == 0)
 			return;
-		boolean[] placeBlock = new boolean[width];
+		boolean[] placeBlock = new boolean[actualWidth];
 		int j;
-		if (drop > (width<<1))
+		if (drop > (actualWidth>>1))
 		{
-			for (int x = 0; x < width; x++)
+			for (int x = 0; x < actualWidth; x++)
 				placeBlock[x] = true;
-			for (int i = drop; i > 0; i--)
+			for (int i = actualWidth; i > drop; i--)
 			{
 				do {
-					j = engine.random.nextInt(width);
+					j = engine.random.nextInt(actualWidth);
 				} while (!placeBlock[j]);
 				placeBlock[j] = false;
 			}
 		}
 		else
 		{
-			for (int x = 0; x < width; x++)
+			for (int x = 0; x < actualWidth; x++)
 				placeBlock[x] = false;
-			for (int i = drop; i > 0; i--)
+			for (int i = 0; i < drop; i++)
 			{
 				do {
-					j = engine.random.nextInt(width);
+					j = engine.random.nextInt(actualWidth);
 				} while (placeBlock[j]);
 				placeBlock[j] = true;
 			}
 		}
 
-		for (int x = 0; x < width; x++)
+		for (int x = 0; x < actualWidth; x++)
 			if (placeBlock[x])
-				garbageDropPlace(x, y);
+				garbageDropPlace(x*bigMove, y, big);
 	}
-	private boolean garbageDropPlace (int x, int y)
+	private boolean garbageDropPlace (int x, int y, boolean big)
 	{
 		Block b = getBlock(x, y);
 		if (b == null)
@@ -2442,6 +2446,12 @@ public class Field implements Serializable {
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
 			return true;
+		}
+		if (big)
+		{
+			garbageDropPlace(x+1, y, false);
+			garbageDropPlace(x, y+1, false);
+			garbageDropPlace(x+1, y+1, false);
 		}
 		return false;
 	}
