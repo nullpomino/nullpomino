@@ -379,6 +379,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** 左右同時押ししたときに前のフレームの入力方向を優先する */
 	private JCheckBox chkboxMoveLeftAndRightUsePreviousInput;
+	
+	/** Shift lock*/
+	private JCheckBox chkboxMoveShiftLockEnable;
 
 	//----------------------------------------------------------------------
 	/* 回転パターン補正パネル */
@@ -1065,6 +1068,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// 左右同時押ししたときに前フレームの入力を優先
 		chkboxMoveLeftAndRightUsePreviousInput = new JCheckBox(getUIText("Move_LeftAndRightUsePreviousInput"));
 		panelMove.add(chkboxMoveLeftAndRightUsePreviousInput);
+		
+		// Shift lock
+		chkboxMoveShiftLockEnable = new JCheckBox(getUIText("Move_ShiftLock"));
+		panelMove.add(chkboxMoveShiftLockEnable);
 
 		// 回転パターン補正タブ ------------------------------------------------
 		JPanel panelPieceOffset = new JPanel();
@@ -1462,6 +1469,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveUpAndDown.setSelected(r.moveUpAndDown);
 		chkboxMoveLeftAndRightAllow.setSelected(r.moveLeftAndRightAllow);
 		chkboxMoveLeftAndRightUsePreviousInput.setSelected(r.moveLeftAndRightUsePreviousInput);
+		chkboxMoveShiftLockEnable.setSelected(r.shiftLockEnable);
 
 		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
 			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {
@@ -1572,6 +1580,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.moveUpAndDown = chkboxMoveUpAndDown.isSelected();
 		r.moveLeftAndRightAllow = chkboxMoveLeftAndRightAllow.isSelected();
 		r.moveLeftAndRightUsePreviousInput = chkboxMoveLeftAndRightUsePreviousInput.isSelected();
+		r.shiftLockEnable = chkboxMoveShiftLockEnable.isSelected();
 
 		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
 			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {
