@@ -121,6 +121,17 @@ public class GameEngine {
 		 1,  1,  0,  0,  0,  0,  0,  0,  0,  0
 	};
 
+	/** Default list of block colors to use for random block colors. */
+	public static final int[] BLOCK_COLORS_DEFAULT = {
+		Block.BLOCK_COLOR_RED,
+		Block.BLOCK_COLOR_ORANGE,
+		Block.BLOCK_COLOR_YELLOW,
+		Block.BLOCK_COLOR_GREEN,
+		Block.BLOCK_COLOR_CYAN,
+		Block.BLOCK_COLOR_BLUE,
+		Block.BLOCK_COLOR_PURPLE
+	};;
+
 	/** このゲームエンジンを所有するGameOwnerクラス */
 	public GameManager owner;
 
@@ -535,8 +546,11 @@ public class GameEngine {
 	/** If true, block in pieces are connected. */
 	public boolean connectBlocks;
 
-	/** If true, each individual block is a random color. */
+	/** List of block colors to use for random block colors. */
 	public int[] blockColors;
+
+	/** Number of colors in blockColors to use. */
+	public int numColors;
 
 	/** If true, line color clears can be diagonal. */
 	public boolean lineColorDiagonals;
@@ -769,6 +783,7 @@ public class GameEngine {
 		garbageColorClear = false;
 		connectBlocks = true;
 		lineColorDiagonals = false;
+		blockColors = BLOCK_COLORS_DEFAULT;
 
 		// イベント発生
 		if(owner.mode != null) {
@@ -1660,6 +1675,8 @@ public class GameEngine {
 				}
 				if (randomBlockColor)
 				{
+					if (blockColors.length < numColors || numColors < 1)
+						numColors = blockColors.length;
 					for(int i = 0; i < nextPieceArrayObject.length; i++) {
 						int size = nextPieceArrayObject[i].getMaxBlock();
 						int[] colors = new int[size];

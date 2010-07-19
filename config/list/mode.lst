@@ -25,3 +25,4 @@ org.game_host.hebo.nullpomino.game.subsystem.mode.VSBattleMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.ToolVSMapEditMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.NetVSBattleMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.AvalancheMode
+org.game_host.hebo.nullpomino.game.subsystem.mode.AvalancheVSMode

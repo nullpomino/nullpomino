@@ -30,6 +30,7 @@ package org.game_host.hebo.nullpomino.game.component;
 
 import java.io.Serializable;
 
+import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.util.CustomProperties;
 
 /**
@@ -2014,6 +2015,11 @@ public class Field implements Serializable {
 		int blockColor = getBlockColor(x, y, gemSame);
 		if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
 			return 0;
+		Block b = getBlock(x, y);
+		if (b == null)
+			return 0;
+		if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE))
+			return 0;
 		else
 			return clearColor(x, y, blockColor, flag, garbageClear, gemSame);
 	}
@@ -2372,5 +2378,103 @@ public class Field implements Serializable {
 				if (colorsClearedArray[i])
 					colorsCleared++;
 		return total;
+	}
+
+	public void garbageDrop(GameEngine engine, int drop) {
+		int y = -1 * hidden_height;
+		while (drop >= width)
+		{
+			drop -= width;
+			for (int x = 0; x < width; x++)
+				garbageDropPlace(x, y);
+			y++;
+		}
+		if (drop == 0)
+			return;
+		boolean[] placeBlock = new boolean[width];
+		int j;
+		if (drop > (width<<1))
+		{
+			for (int x = 0; x < width; x++)
+				placeBlock[x] = true;
+			for (int i = drop; i > 0; i--)
+			{
+				do {
+					j = engine.random.nextInt(width);
+				} while (!placeBlock[j]);
+				placeBlock[j] = false;
+			}
+		}
+		else
+		{
+			for (int x = 0; x < width; x++)
+				placeBlock[x] = false;
+			for (int i = drop; i > 0; i--)
+			{
+				do {
+					j = engine.random.nextInt(width);
+				} while (placeBlock[j]);
+				placeBlock[j] = true;
+			}
+		}
+
+		for (int x = 0; x < width; x++)
+			if (placeBlock[x])
+				garbageDropPlace(x, y);
+	}
+	private boolean garbageDropPlace (int x, int y)
+	{
+		Block b = getBlock(x, y);
+		if (b == null)
+			return false;
+		if (getBlockEmptyF(x, y))
+		{
+			setBlockColor(x, y, Block.BLOCK_COLOR_GRAY);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean canCascade() {
+		for(int i = (getHeightWithoutHurryupFloor() - 1); i >= (hidden_height * -1); i--) {
+			for(int j = 0; j < width; j++) {
+				Block blk = getBlock(j, i);
+
+				if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY)) {
+					boolean fall = true;
+					checkBlockLink(j, i);
+
+					for(int k = (getHeightWithoutHurryupFloor() - 1); k >= (hidden_height * -1); k--) {
+						for(int l = 0; l < width; l++) {
+							Block bTemp = getBlock(l, k);
+
+							if( (bTemp != null) && !bTemp.isEmpty() &&
+								bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) && !bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL) )
+							{
+								Block bBelow = getBlock(l, k + 1);
+
+								if( (getCoordAttribute(l, k + 1) == COORD_WALL) ||
+									((bBelow != null) && !bBelow.isEmpty() && !bBelow.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK)) )
+								{
+									fall = false;
+								}
+							}
+						}
+					}
+
+					if(fall)
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 }

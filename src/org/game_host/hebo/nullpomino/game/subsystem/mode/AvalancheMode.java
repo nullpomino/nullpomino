@@ -30,7 +30,6 @@ package org.game_host.hebo.nullpomino.game.subsystem.mode;
 
 import org.game_host.hebo.nullpomino.game.component.Block;
 import org.game_host.hebo.nullpomino.game.component.Controller;
-import org.game_host.hebo.nullpomino.game.component.Field;
 import org.game_host.hebo.nullpomino.game.component.Piece;
 import org.game_host.hebo.nullpomino.game.event.EventReceiver;
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
@@ -127,6 +126,9 @@ public class AvalancheMode extends DummyMode {
 	
 	/** Amount of garbage sent */
 	private int garbageSent, garbageAdd;
+	
+	/** Number of colors to use */
+	private int numColors;
 
 	/*
 	 * モード名
@@ -201,6 +203,12 @@ public class AvalancheMode extends DummyMode {
 		engine.speed.denominator = 256;
 	}
 
+	public boolean onReady(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 0)
+			engine.numColors = numColors;
+		return false;
+	}
+	
 	/*
 	 * 設定画面の処理
 	 */
@@ -211,13 +219,13 @@ public class AvalancheMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 1;
+				if(engine.statc[2] < 0) engine.statc[2] = 2;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 1) engine.statc[2] = 0;
+				if(engine.statc[2] > 2) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -240,6 +248,11 @@ public class AvalancheMode extends DummyMode {
 					outlinetype += change;
 					if(outlinetype < 0) outlinetype = 2;
 					if(outlinetype > 2) outlinetype = 0;
+					break;
+				case 2:
+					numColors += change;
+					if(numColors < 3) numColors = 5;
+					if(numColors > 5) numColors = 3;
 				}
 			}
 
@@ -286,6 +299,8 @@ public class AvalancheMode extends DummyMode {
 		if(outlinetype == 1) strOutline = "CONNECT";
 		if(outlinetype == 2) strOutline = "NONE";
 		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
+		receiver.drawMenuFont(engine, playerID, 0, 4, "COLORS", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(numColors), (engine.statc[2] == 2));
 	}
 
 	/*
@@ -299,14 +314,14 @@ public class AvalancheMode extends DummyMode {
 		if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 		if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 
-		engine.tspinEnable = true;
-		engine.useAllSpinBonus = true;
-		engine.tspinAllowKick = true;
+		engine.tspinEnable = false;
+		engine.useAllSpinBonus = false;
+		engine.tspinAllowKick = false;
 
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
 		engine.speed.das = 10;
-		engine.speed.lockDelay = 30;
+		engine.speed.lockDelay = 60;
 
 		setSpeed(engine);
 	}
@@ -435,7 +450,7 @@ public class AvalancheMode extends DummyMode {
 			else
 				zenKeshi = false;
 
-			int chain = engine.chain;
+			int chain = engine.chain-1;
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
@@ -474,42 +489,15 @@ public class AvalancheMode extends DummyMode {
 		}
 	}
 
-	public void onFirst(GameEngine engine, int playerID) {
-		if (garbageAdd > 0 && engine.stat == GameEngine.STAT_MOVE)
+	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		if (garbageAdd > 0)
 		{
 			garbageSent += garbageAdd;
 			garbageAdd = 0;
 		}
+		return false;
 	}
-
-	/**
-	 * T-Spin avalanche routine.
-	 * @param engine GameEngine
-	 * @param playerID Player ID
-	 * @param lines Number of lines cleared
-	 */
-	private void avalanche(GameEngine engine, int playerID) {
-		Field field = engine.field;
-
-		for(int i = (field.getHeightWithoutHurryupFloor() - 1); i >= field.getHiddenHeight() * -1; i--) {
-			// There can be lines cleared underneath, in case of a spin hurdle or such.
-			if(!field.getLineFlag(i)) {
-				for(int j = 0; j < field.getWidth(); j++) {
-					Block blk = field.getBlock(j, i);
-					if((blk != null) && !blk.isEmpty()) {
-						// Change each affected block to broken and garbage, and break connections.
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
-						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-					}
-				}
-			}
-		}
-	}
-
+	
 	/*
 	 * 結果画面の描画
 	 */
@@ -561,6 +549,7 @@ public class AvalancheMode extends DummyMode {
 	private void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("avalanche.gametype", 0);
 		outlinetype = prop.getProperty("avalanche.outlinetype", 0);
+		numColors = prop.getProperty("avalanche.numcolors", 5);
 		version = prop.getProperty("avalanche.version", 0);
 	}
 
@@ -571,6 +560,7 @@ public class AvalancheMode extends DummyMode {
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("avalanche.gametype", gametype);
 		prop.setProperty("avalanche.outlinetype", outlinetype);
+		prop.setProperty("avalanche.numcolors", numColors);
 		prop.setProperty("avalanche.version", version);
 	}
 
@@ -582,8 +572,10 @@ public class AvalancheMode extends DummyMode {
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
-				rankingScore[j][i] = prop.getProperty("avalanche.ranking." + ruleName + "." + j + ".score." + i, 0);
-				rankingTime[j][i] = prop.getProperty("avalanche.ranking." + ruleName + "." + j + ".time." + i, -1);
+				rankingScore[j][i] = prop.getProperty("avalanche.ranking." + ruleName + "." + numColors +
+						"colors." + j + ".score." + i, 0);
+				rankingTime[j][i] = prop.getProperty("avalanche.ranking." + ruleName + "." + numColors +
+						"colors." + j + ".time." + i, -1);
 			}
 		}
 	}
@@ -596,8 +588,10 @@ public class AvalancheMode extends DummyMode {
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
-				prop.setProperty("avalanche.ranking." + ruleName + "." + j + ".score." + i, rankingScore[j][i]);
-				prop.setProperty("avalanche.ranking." + ruleName + "." + j + ".time." + i, rankingTime[j][i]);
+				prop.setProperty("avalanche.ranking." + ruleName + "." + numColors + "colors." +
+						j + ".score." + i, rankingScore[j][i]);
+				prop.setProperty("avalanche.ranking." + ruleName + "." + numColors + "colors." +
+						j + ".time." + i, rankingTime[j][i]);
 			}
 		}
 	}
