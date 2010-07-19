@@ -471,10 +471,6 @@ public class AvalancheMode extends DummyMode {
 			garbageAdd += (score+119)/120;
 			
 			setSpeed(engine);
-
-			if (engine.tspin) {
-				avalanche(engine, playerID);
-			}
 		}
 	}
 
