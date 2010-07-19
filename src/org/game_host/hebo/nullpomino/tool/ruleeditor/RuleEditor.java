@@ -1021,11 +1021,14 @@ public class RuleEditor extends JFrame implements ActionListener {
 		JPanel pMoveDASDelay = new JPanel();
 		panelMove.add(pMoveDASDelay);
 
-		JLabel lMoveDASDelay = new JLabel(getUIText("Move_DASDelay"));
-		pMoveDASDelay.add(lMoveDASDelay);
+		JLabel lMoveDASDelay1 = new JLabel(getUIText("Move_DASDelay1"));
+		pMoveDASDelay.add(lMoveDASDelay1);
 
 		txtfldMoveDASDelay = new JTextField("", 5);
 		pMoveDASDelay.add(txtfldMoveDASDelay);
+		
+		JLabel lMoveDASDelay2 = new JLabel(getUIText("Move_DASDelay2"));
+		pMoveDASDelay.add(lMoveDASDelay2);
 
 		// ○○のとき横溜め可能
 		chkboxMoveDASInReady = new JCheckBox(getUIText("Move_DASInReady"));
