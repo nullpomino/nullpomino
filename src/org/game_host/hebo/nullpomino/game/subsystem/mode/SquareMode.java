@@ -484,10 +484,8 @@ public class SquareMode extends DummyMode {
 				pts = 3 + (lines - 3)*2;
 			}
 
-			int squareClears = engine.field.getHowManySquareClears();
-			if (squareClears > 0) {
-				pts += 5*squareClears;
-			}
+			int[] squareClears = engine.field.getHowManySquareClears();
+			pts += 10*squareClears[0]+5*squareClears[1];
 
 			lastscore = pts;
 			scgettime = 120;
@@ -577,10 +575,10 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
-		int sq = engine.field.checkForSquares();
-		squares += sq;
-		if(sq == 1) engine.playSE("square_s");
-		else if(sq >= 2) engine.playSE("square_g");
+		int[] sq = engine.field.checkForSquares();
+		squares += sq[0] + sq[1];
+		if(sq[0] == 0 && sq[1] > 0) engine.playSE("square_s");
+		else if(sq[0] > 0) engine.playSE("square_g");
 	}
 
 	/*

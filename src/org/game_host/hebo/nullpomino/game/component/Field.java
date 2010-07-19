@@ -1605,10 +1605,10 @@ public class Field implements Serializable {
 
 	/**
 	 * Checks for 4x4 square formations and converts blocks to square blocks if needed.
-	 * @return Number of square formations (+1 for silver, +2 for gold)
+	 * @return Number of square formations (index 0 is gold, index 1 is silver)
 	 */
-	public int checkForSquares() {
-		int squares = 0;
+	public int[] checkForSquares() {
+		int[] squares = {0,0};
 
 		// Check for gold squares
 		for (int i = (hidden_height * -1); i < (getHeightWithoutHurryupFloor() - 3); i++) {
@@ -1657,7 +1657,7 @@ public class Field implements Serializable {
 				}
 				// We found a square! Set all the blocks equal to gold blocks.
 				if (squareCheck) {
-					squares += 2;
+					squares[0]++;
 					int[] squareX = new int[] {0, 1, 1, 2};
 					int[] squareY = new int[] {0, 3, 3, 6};
 					for (int k = 0; k < 4; k++) {
@@ -1713,7 +1713,7 @@ public class Field implements Serializable {
 				}
 				// We found a square! Set all the blocks equal to silver blocks.
 				if (squareCheck) {
-					squares += 1;
+					squares[1]++;
 					int[] squareX = new int[] {0, 1, 1, 2};
 					int[] squareY = new int[] {0, 3, 3, 6};
 					for (int k = 0; k < 4; k++) {
@@ -1743,10 +1743,10 @@ public class Field implements Serializable {
 
 	/**
 	 * Checks the lines that are currently being cleared to see how many strips of squares are present in them.
-	 * @return +1 for every 1x4 strip of silver, +2 for every strip of gold
+	 * @return +1 for every 1x4 strip of gold (index 0) or silver (index 1)
 	 */
-	public int getHowManySquareClears() {
-		int squares = 0;
+	public int[] getHowManySquareClears() {
+		int[] squares = {0,0};
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			// Check the lines we are clearing.
 			if (getLineFlag(i)) {
@@ -1756,16 +1756,19 @@ public class Field implements Serializable {
 					// Silver blocks are worth 1, gold are worth 2, but not if they are garbage (avalanche)
 					if (blk != null && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE)) {
 						if (blk.isGoldSquareBlock()) {
-							squares += 2;
+							squares[0]++;
 						} else if (blk.isSilverSquareBlock()) {
-							squares++;
+							squares[1]++;
 						}
 					}
 				}
 			}
 		}
 		// We have to divide the amount by 4 because it's based on 1x4 strips, not single blocks.
-		return squares/4;
+		squares[0] /= 4;
+		squares[1] /= 4;
+		
+		return squares;
 	}
 
 	/**
