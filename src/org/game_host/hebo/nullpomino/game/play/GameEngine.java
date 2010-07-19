@@ -279,8 +279,14 @@ public class GameEngine {
 	/** 横溜め速度カウント */
 	public int dasSpeedCount;
 
-	/** Used to repeat statMove() for instant DAS */
+	/** Repeat statMove() for instant DAS */
 	public boolean dasRepeat;
+	
+	/** In the middle of an instant DAS loop */ 
+	public boolean dasInstant;
+	
+	/** Disallow shift while locking key is pressed */
+	public int shiftLock;
 	
 	/** 先行回転 */
 	public int initialRotateDirection;
@@ -683,6 +689,8 @@ public class GameEngine {
 		dasDirection = 0;
 		dasSpeedCount = 1;
 		dasRepeat = false;
+		dasInstant = false;
+		shiftLock = 0;
 
 		initialRotateDirection = 0;
 		initialRotateLastDirection = 0;
@@ -1503,6 +1511,7 @@ public class GameEngine {
 				break;
 			case STAT_MOVE:
 				dasRepeat = true;
+				dasInstant = false;
 				while(dasRepeat){
 					statMove();
 				}
@@ -1865,6 +1874,7 @@ public class GameEngine {
 			lockDelayNow = 0;
 			dasSpeedCount = 1;
 			dasRepeat = false;
+			dasInstant = false;
 			extendedMoveCount = 0;
 			extendedRotateCount = 0;
 			softdropFall = 0;
@@ -1895,138 +1905,142 @@ public class GameEngine {
 		boolean updown = false; // 上下同時押しフラグ
 		if(ctrl.isPress(Controller.BUTTON_UP) && ctrl.isPress(Controller.BUTTON_DOWN)) updown = true;
 
-		// ホールド
-		if(ctrl.isPush(Controller.BUTTON_D) || initialHoldFlag) {
-			if(isHoldOK()) {
-				statc[0] = 0;
-				statc[1] = 1;
-				if(!initialHoldFlag) playSE("hold");
-				initialHoldContinuousUse = true;
-				initialHoldFlag = false;
-				holdDisable = true;
-				initialRotate();
-				statMove();
-				return;
-			} else if((statc[0] > 0) && (!initialHoldFlag)) {
-				playSE("holdfail");
+		if(!dasInstant) {
+			
+			// ホールド
+			if(ctrl.isPush(Controller.BUTTON_D) || initialHoldFlag) {
+				if(isHoldOK()) {
+					statc[0] = 0;
+					statc[1] = 1;
+					if(!initialHoldFlag) playSE("hold");
+					initialHoldContinuousUse = true;
+					initialHoldFlag = false;
+					holdDisable = true;
+					initialRotate();
+					statMove();
+					return;
+				} else if((statc[0] > 0) && (!initialHoldFlag)) {
+					playSE("holdfail");
+				}
 			}
-		}
-
-		// 回転
-		boolean onGroundBeforeRotate = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field);
-		int move = 0;
-		boolean rotated = false;
-
-		if(initialRotateDirection != 0) {
-			move = initialRotateDirection;
-			initialRotateLastDirection = initialRotateDirection;
-			initialRotateContinuousUse = true;
-			playSE("initialrotate");
-		} else if((statc[0] > 0) || (ruleopt.moveFirstFrame == true)) {
-			if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// ロールロール
-
-			// ボタン入力
-			if(ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_C)) move = -1;
-			else if(ctrl.isPush(Controller.BUTTON_B)) move = 1;
-			else if(ctrl.isPush(Controller.BUTTON_E)) move = 2;
-
-			if(move != 0) {
-				initialRotateLastDirection = move;
+	
+			// 回転
+			boolean onGroundBeforeRotate = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field);
+			int move = 0;
+			boolean rotated = false;
+	
+			if(initialRotateDirection != 0) {
+				move = initialRotateDirection;
+				initialRotateLastDirection = initialRotateDirection;
 				initialRotateContinuousUse = true;
+				playSE("initialrotate");
+			} else if((statc[0] > 0) || (ruleopt.moveFirstFrame == true)) {
+				if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// ロールロール
+	
+				// ボタン入力
+				if(ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_C)) move = -1;
+				else if(ctrl.isPush(Controller.BUTTON_B)) move = 1;
+				else if(ctrl.isPush(Controller.BUTTON_E)) move = 2;
+	
+				if(move != 0) {
+					initialRotateLastDirection = move;
+					initialRotateContinuousUse = true;
+				}
 			}
-		}
-
-		if((ruleopt.rotateButtonAllowDouble == false) && (move == 2)) move = -1;
-		if((ruleopt.rotateButtonAllowReverse == false) && (move == 1)) move = -1;
-		if(isRotateButtonDefaultRight() && (move != 2)) move = move * -1;
-
-		if(move != 0) {
-			// 回転後の方向を決める
-			int rt = getRotateDirection(move);
-
-			// 回転できるか判定
-			if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, rt, field) == false)
-			{
-				// 壁蹴りなしで回転できるとき
-				rotated = true;
-				kickused = false;
-				nowPieceObject.direction = rt;
-				nowPieceObject.updateConnectData();
-			} else if( (ruleopt.rotateWallkick == true) &&
-					   (wallkick != null) &&
-					   ((initialRotateDirection == 0) || (ruleopt.rotateInitialWallkick == true)) &&
-					   ((ruleopt.lockresetLimitOver != RuleOptions.LOCKRESET_LIMIT_OVER_NOWALLKICK) || (isRotateCountExceed() == false)) )
-			{
-				// 壁蹴りを試みる
-				boolean allowUpward = (ruleopt.rotateMaxUpwardWallkick < 0) || (nowUpwardWallkickCount < ruleopt.rotateMaxUpwardWallkick);
-				WallkickResult kick = wallkick.executeWallkick(nowPieceX, nowPieceY, move, nowPieceObject.direction, rt,
-									  allowUpward, nowPieceObject, field, ctrl);
-
-				if(kick != null) {
+	
+			if((ruleopt.rotateButtonAllowDouble == false) && (move == 2)) move = -1;
+			if((ruleopt.rotateButtonAllowReverse == false) && (move == 1)) move = -1;
+			if(isRotateButtonDefaultRight() && (move != 2)) move = move * -1;
+	
+			if(move != 0) {
+				// 回転後の方向を決める
+				int rt = getRotateDirection(move);
+	
+				// 回転できるか判定
+				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, rt, field) == false)
+				{
+					// 壁蹴りなしで回転できるとき
 					rotated = true;
-					kickused = true;
-					nowWallkickCount++;
-					if(kick.isUpward()) nowUpwardWallkickCount++;
-					nowPieceObject.direction = kick.direction;
+					kickused = false;
+					nowPieceObject.direction = rt;
 					nowPieceObject.updateConnectData();
-					nowPieceX += kick.offsetX;
-					nowPieceY += kick.offsetY;
+				} else if( (ruleopt.rotateWallkick == true) &&
+						   (wallkick != null) &&
+						   ((initialRotateDirection == 0) || (ruleopt.rotateInitialWallkick == true)) &&
+						   ((ruleopt.lockresetLimitOver != RuleOptions.LOCKRESET_LIMIT_OVER_NOWALLKICK) || (isRotateCountExceed() == false)) )
+				{
+					// 壁蹴りを試みる
+					boolean allowUpward = (ruleopt.rotateMaxUpwardWallkick < 0) || (nowUpwardWallkickCount < ruleopt.rotateMaxUpwardWallkick);
+					WallkickResult kick = wallkick.executeWallkick(nowPieceX, nowPieceY, move, nowPieceObject.direction, rt,
+										  allowUpward, nowPieceObject, field, ctrl);
+	
+					if(kick != null) {
+						rotated = true;
+						kickused = true;
+						nowWallkickCount++;
+						if(kick.isUpward()) nowUpwardWallkickCount++;
+						nowPieceObject.direction = kick.direction;
+						nowPieceObject.updateConnectData();
+						nowPieceX += kick.offsetX;
+						nowPieceY += kick.offsetY;
+					}
 				}
-			}
-
-			if(rotated == true) {
-				// 回転成功
-				nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
-
-				if((ruleopt.lockresetRotate == true) && (isRotateCountExceed() == false)) {
-					lockDelayNow = 0;
-					nowPieceObject.setDarkness(0f);
-				}
-
-				if(onGroundBeforeRotate) {
-					extendedRotateCount++;
-					lastmove = LASTMOVE_ROTATE_GROUND;
-				} else {
-					lastmove = LASTMOVE_ROTATE_AIR;
-				}
-
-				if(initialRotateDirection == 0) {
-					playSE("rotate");
-				}
-
-				nowPieceRotateCount++;
-				if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceRotate++;
-			} else {
-				// 回転失敗
-				playSE("rotfail");
-			}
-		}
-		initialRotateDirection = 0;
-
-		// ゲームオーバーチェック
-		if((statc[0] == 0) && (nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true)) {
-			// ブロックの出現位置を上にずらすことができる場合はそうする
-			for(int i = 0; i < ruleopt.pieceEnterMaxDistanceY; i++) {
-				if(nowPieceObject.big) nowPieceY -= 2;
-				else nowPieceY--;
-
-				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == false) {
+	
+				if(rotated == true) {
+					// 回転成功
 					nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
-					break;
+	
+					if((ruleopt.lockresetRotate == true) && (isRotateCountExceed() == false)) {
+						lockDelayNow = 0;
+						nowPieceObject.setDarkness(0f);
+					}
+	
+					if(onGroundBeforeRotate) {
+						extendedRotateCount++;
+						lastmove = LASTMOVE_ROTATE_GROUND;
+					} else {
+						lastmove = LASTMOVE_ROTATE_AIR;
+					}
+	
+					if(initialRotateDirection == 0) {
+						playSE("rotate");
+					}
+	
+					nowPieceRotateCount++;
+					if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceRotate++;
+				} else {
+					// 回転失敗
+					playSE("rotfail");
 				}
 			}
-
-			// 死亡
-			if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true) {
-				nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
-				nowPieceObject = null;
-				stat = STAT_GAMEOVER;
-				if((ending == 2) && (staffrollNoDeath)) stat = STAT_NOTHING;
-				resetStatc();
-				return;
+			initialRotateDirection = 0;
+	
+			// ゲームオーバーチェック
+			if((statc[0] == 0) && (nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true)) {
+				// ブロックの出現位置を上にずらすことができる場合はそうする
+				for(int i = 0; i < ruleopt.pieceEnterMaxDistanceY; i++) {
+					if(nowPieceObject.big) nowPieceY -= 2;
+					else nowPieceY--;
+	
+					if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == false) {
+						nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
+						break;
+					}
+				}
+	
+				// 死亡
+				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true) {
+					nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
+					nowPieceObject = null;
+					stat = STAT_GAMEOVER;
+					if((ending == 2) && (staffrollNoDeath)) stat = STAT_NOTHING;
+					resetStatc();
+					return;
+				}
 			}
+			
 		}
-
+		int move = 0;
 		boolean sidemoveflag = false;	// このフレームに横移動したらtrue
 
 		if((statc[0] > 0) || (ruleopt.moveFirstFrame == true)) {
@@ -2052,38 +2066,43 @@ public class GameEngine {
 			if(big && bigmove) move *= 2;
 
 			if( (move != 0) && ((dasCount == 0) || (dasCount >= getDAS())) ) {
-				if( (dasSpeedCount >= getDASDelay()) || (dasCount == 0) ) {
-					if(dasCount > 0) dasSpeedCount = 1;
-
-					if(nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false) {
-						nowPieceX += move;
-
-						if((getDASDelay() == 0) && (dasCount > 0) && (nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false)) {
-							dasRepeat = true;
+				shiftLock &= ctrl.getButtonBit();
+				
+				if(shiftLock == 0) {
+					if( (dasSpeedCount >= getDASDelay()) || (dasCount == 0) ) {
+						if(dasCount > 0) dasSpeedCount = 1;
+	
+						if(nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false) {
+							nowPieceX += move;
+	
+							if((getDASDelay() == 0) && (dasCount > 0) && (nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false)) {
+								dasRepeat = true;
+								dasInstant = true;
+							}
+	
+							//log.debug("Successful movement: move="+move);
+	
+							if((ruleopt.lockresetMove == true) && (isMoveCountExceed() == false)) {
+								lockDelayNow = 0;
+								nowPieceObject.setDarkness(0f);
+							}
+	
+							nowPieceMoveCount++;
+							if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceMove++;
+							nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
+	
+							if(onGroundBeforeMove) {
+								extendedMoveCount++;
+								lastmove = LASTMOVE_SLIDE_GROUND;
+							} else {
+								lastmove = LASTMOVE_SLIDE_AIR;
+							}
+	
+							playSE("move");
 						}
-
-						//log.debug("Successful movement: move="+move);
-
-						if((ruleopt.lockresetMove == true) && (isMoveCountExceed() == false)) {
-							lockDelayNow = 0;
-							nowPieceObject.setDarkness(0f);
-						}
-
-						nowPieceMoveCount++;
-						if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceMove++;
-						nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
-
-						if(onGroundBeforeMove) {
-							extendedMoveCount++;
-							lastmove = LASTMOVE_SLIDE_GROUND;
-						} else {
-							lastmove = LASTMOVE_SLIDE_AIR;
-						}
-
-						playSE("move");
+					} else {
+						dasSpeedCount++;
 					}
-				} else {
-					dasSpeedCount++;
 				}
 			}
 
@@ -2232,6 +2251,11 @@ public class GameEngine {
 				instantlock = true;
 			}
 
+			if((manualLock == true) && (ruleopt.shiftLockEnable)) {
+				// bit 1 and 2 are button_up and button_down currently
+				shiftLock = ctrl.getButtonBit() & 3;
+			}
+			
 			// 移動＆回転数制限超過
 			if( (ruleopt.lockresetLimitOver == RuleOptions.LOCKRESET_LIMIT_OVER_INSTANT) && (isMoveCountExceed() || isRotateCountExceed()) ) {
 				instantlock = true;
@@ -2308,6 +2332,9 @@ public class GameEngine {
 				if(owner.mode != null) owner.mode.pieceLocked(this, playerID, lineClearing);
 				owner.receiver.pieceLocked(this, playerID, lineClearing);
 
+				dasRepeat = false;
+				dasInstant = false;
+				
 				// 次の処理を決める(モード側でステータスを弄っている場合は何もしない)
 				if((stat == STAT_MOVE) || (versionMajor <= 6.3f)) {
 					resetStatc();

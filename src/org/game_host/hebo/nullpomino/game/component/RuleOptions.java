@@ -231,6 +231,8 @@ public class RuleOptions implements Serializable {
 	/** 横移動間隔 */
 	public int dasDelay;
 
+	public boolean shiftLockEnable;
+	
 	/** Ready画面で横溜め可能 */
 	public boolean dasInReady;
 
@@ -395,6 +397,8 @@ public class RuleOptions implements Serializable {
 
 		dasDelay = 0;
 
+		shiftLockEnable = false;
+		
 		dasInReady = true;
 		dasInMoveFirstFrame = true;
 		dasInLockFlash = true;
@@ -513,6 +517,8 @@ public class RuleOptions implements Serializable {
 
 		dasDelay = r.dasDelay;
 
+		shiftLockEnable = r.shiftLockEnable;
+		
 		dasInReady = r.dasInReady;
 		dasInMoveFirstFrame = r.dasInMoveFirstFrame;
 		dasInLockFlash = r.dasInLockFlash;
@@ -624,6 +630,8 @@ public class RuleOptions implements Serializable {
 		if(maxDAS != r.maxDAS) return false;
 
 		if(dasDelay != r.dasDelay) return false;
+		
+		if(shiftLockEnable != r.shiftLockEnable) return false; 
 
 		if(dasInReady != r.dasInReady) return false;
 		if(dasInMoveFirstFrame != r.dasInMoveFirstFrame) return false;
@@ -737,6 +745,8 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.maxDAS", maxDAS);
 
 		p.setProperty(id + ".ruleopt.dasDelay", dasDelay);
+		
+		p.setProperty(id + ".ruleopt.shiftLockEnable", shiftLockEnable);
 
 		p.setProperty(id + ".ruleopt.dasInReady", dasInReady);
 		p.setProperty(id + ".ruleopt.dasInMoveFirstFrame", dasInMoveFirstFrame);
@@ -848,6 +858,7 @@ public class RuleOptions implements Serializable {
 		maxDAS = p.getProperty(id + ".ruleopt.maxDAS", maxDAS);
 
 		dasDelay = p.getProperty(id + ".ruleopt.dasDelay", dasDelay);
+		shiftLockEnable = p.getProperty(id + ".ruleopt.shiftLockEnable", shiftLockEnable);
 
 		dasInReady =  p.getProperty(id + ".ruleopt.dasInReady", dasInReady);
 		dasInMoveFirstFrame =  p.getProperty(id + ".ruleopt.dasInMoveFirstFrame", dasInMoveFirstFrame);
