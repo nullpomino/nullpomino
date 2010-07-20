@@ -2040,6 +2040,7 @@ public class GameEngine {
 			}
 			
 		}
+		
 		int move = 0;
 		boolean sidemoveflag = false;	// このフレームに横移動したらtrue
 
@@ -2065,6 +2066,8 @@ public class GameEngine {
 
 			if(big && bigmove) move *= 2;
 
+			if((move != 0) && (dasCount == 0)) shiftLock = 0; 
+			
 			if( (move != 0) && ((dasCount == 0) || (dasCount >= getDAS())) ) {
 				shiftLock &= ctrl.getButtonBit();
 				
