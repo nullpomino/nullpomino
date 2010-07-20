@@ -1880,7 +1880,11 @@ public class Field implements Serializable {
 				blockColor = lineColor;
 				while (lineColor == blockColor)
 				{
-					getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					Block b = getBlock(x, y);
+					if (b.hard > 0)
+						b.hard--;
+					else
+						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
 					y++;
 					blockColor = getBlockColor(x, y, gemSame);
 				}
