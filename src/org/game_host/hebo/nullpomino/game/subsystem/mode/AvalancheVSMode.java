@@ -156,6 +156,9 @@ public class AvalancheVSMode extends DummyMode {
 
 	/** Denominator for score-to-garbage conversion */
 	private int[] garbageRate;
+	
+	/** Settings for hard garbage blocks */
+	private int[] garbageHard;
 
 	/** Hurryup開始までの秒数(0でHurryupなし) */
 	private int[] hurryupSeconds;
@@ -211,6 +214,7 @@ public class AvalancheVSMode extends DummyMode {
 		maxAttack = new int[MAX_PLAYERS];
 		rensaShibari = new int[MAX_PLAYERS];
 		garbageRate = new int[MAX_PLAYERS];
+		garbageHard = new int[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -267,6 +271,7 @@ public class AvalancheVSMode extends DummyMode {
 		numColors[playerID] = prop.getProperty("avalanchevs.numColors.p" + playerID, 5);
 		rensaShibari[playerID] = prop.getProperty("avalanchevs.rensaShibari.p" + playerID, 1);
 		garbageRate[playerID] = prop.getProperty("avalanchevs.garbageRate.p" + playerID, 120);
+		garbageHard[playerID] = prop.getProperty("avalanchevs.garbageHard.p" + playerID, 0);
 	}
 
 	/**
@@ -289,6 +294,7 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.numColors.p" + playerID, numColors[playerID]);
 		prop.setProperty("avalanchevs.rensaShibari.p" + playerID, rensaShibari[playerID]);
 		prop.setProperty("avalanchevs.garbageRate.p" + playerID, garbageRate[playerID]);
+		prop.setProperty("avalanchevs.garbageHard.p" + playerID, garbageHard[playerID]);
 	}
 
 	/**
@@ -486,13 +492,11 @@ public class AvalancheVSMode extends DummyMode {
 					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
-				/*
 				case 17:
-					hurryupInterval[playerID] += change;
-					if(hurryupInterval[playerID] < 1) hurryupInterval[playerID] = 99;
-					if(hurryupInterval[playerID] > 99) hurryupInterval[playerID] = 1;
+					garbageHard[playerID] += change;
+					if(garbageHard[playerID] < 0) garbageHard[playerID] = 9;
+					if(garbageHard[playerID] > 9) garbageHard[playerID] = 0;
 					break;
-				*/
 				case 18:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
@@ -645,10 +649,8 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 				                      (engine.statc[2] == 16));
-				/*
-				receiver.drawMenuFont(engine, playerID, 0, 16, "INTERVAL", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(hurryupInterval[playerID]), (engine.statc[2] == 17));
-				*/
+				receiver.drawMenuFont(engine, playerID, 0, 16, "HARD OJAMA", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(garbageHard[playerID]), (engine.statc[2] == 17));
 				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
 				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 18));
 			} else {
@@ -859,7 +861,7 @@ public class AvalancheVSMode extends DummyMode {
 		{
 			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
 			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID]);
+			engine.field.garbageDrop(engine, drop, big[playerID], garbageHard[playerID]);
 		}
 	}
 
@@ -875,7 +877,7 @@ public class AvalancheVSMode extends DummyMode {
 		{
 			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
 			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID]);
+			engine.field.garbageDrop(engine, drop, big[playerID], garbageHard[playerID]);
 			return true;
 		}
 		return false;

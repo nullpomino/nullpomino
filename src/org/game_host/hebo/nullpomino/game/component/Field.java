@@ -763,7 +763,13 @@ public class Field implements Serializable {
 				lines++;
 
 				for(int j = 0; j < width; j++) {
-					setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
+					Block b = getBlock(j, i);
+					if (b == null)
+						continue;
+					if (b.hard > 0)
+						b.hard--;
+					else
+						setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
 				}
 			}
 		}
@@ -2043,7 +2049,10 @@ public class Field implements Serializable {
 		{
 			if (flag)
 				b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
-			setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+			if (b.hard > 0)
+				b.hard--;
+			else
+				setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 		}
 		if (blockColor != targetColor)
 			return 0;
@@ -2383,7 +2392,7 @@ public class Field implements Serializable {
 		return total;
 	}
 
-	public void garbageDrop(GameEngine engine, int drop, boolean big) {
+	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard) {
 		int y = -1 * hidden_height;
 		int actualWidth = width;
 		if (big)
@@ -2393,7 +2402,7 @@ public class Field implements Serializable {
 		{
 			drop -= actualWidth;
 			for (int x = 0; x < actualWidth; x+=bigMove)
-				garbageDropPlace(x, y, big);
+				garbageDropPlace(x, y, big, hard);
 			y+=bigMove;
 		}
 		if (drop == 0)
@@ -2427,18 +2436,18 @@ public class Field implements Serializable {
 
 		for (int x = 0; x < actualWidth; x++)
 			if (placeBlock[x])
-				garbageDropPlace(x*bigMove, y, big);
+				garbageDropPlace(x*bigMove, y, big, hard);
 	}
-	private boolean garbageDropPlace (int x, int y, boolean big)
+	private boolean garbageDropPlace (int x, int y, boolean big, int hard)
 	{
 		Block b = getBlock(x, y);
 		if (b == null)
 			return false;
 		if (big)
 		{
-			garbageDropPlace(x+1, y, false);
-			garbageDropPlace(x, y+1, false);
-			garbageDropPlace(x+1, y+1, false);
+			garbageDropPlace(x+1, y, false, hard);
+			garbageDropPlace(x, y+1, false, hard);
+			garbageDropPlace(x+1, y+1, false, hard);
 		}
 		if (getBlockEmptyF(x, y))
 		{
@@ -2451,6 +2460,7 @@ public class Field implements Serializable {
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+			b.hard = hard;
 			return true;
 		}
 		return false;

@@ -152,6 +152,9 @@ public class Block implements Serializable {
 
 	/** アイテム番号 */
 	public int item;
+	
+	/** Number of extra clears required before block is erased */
+	public int hard;
 
 	/**
 	 * コンストラクタ
@@ -213,6 +216,7 @@ public class Block implements Serializable {
 		alpha = 1f;
 		pieceNum = -1;
 		item = 0;
+		hard = 0;
 	}
 
 	/**
