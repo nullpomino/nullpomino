@@ -258,7 +258,7 @@ public class AvalancheVSMode extends DummyMode {
 		garbageCounterMode[playerID] = prop.getProperty("avalanchevs.garbageCounterMode", GARBAGE_COUNTER_ON);
 		big[playerID] = prop.getProperty("avalanchevs.big.p" + playerID, false);
 		enableSE[playerID] = prop.getProperty("avalanchevs.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 0);
+		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
 		useMap[playerID] = prop.getProperty("avalanchevs.useMap.p" + playerID, false);
 		mapSet[playerID] = prop.getProperty("avalanchevs.mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("avalanchevs.mapNumber.p" + playerID, -1);
