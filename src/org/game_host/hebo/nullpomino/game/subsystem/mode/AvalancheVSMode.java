@@ -369,6 +369,7 @@ public class AvalancheVSMode extends DummyMode {
 		garbage[playerID] = 0;
 		garbageSent[playerID] = 0;
 		score[playerID] = 0;
+		zenKeshi[playerID] = false;
 		scgettime[playerID] = 0;
 
 		if(engine.owner.replayMode == false) {
@@ -765,10 +766,20 @@ public class AvalancheVSMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
 		}
+		
+		if (!owner.engine[playerID].gameActive)
+			return;
 
-		// ライン消去イベント表示
 		if(zenKeshi[playerID])
 			receiver.drawMenuFont(engine, playerID, 1, 21, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+		if (garbageHard[playerID] > 0 && engine.field != null)
+			for (int x = 0; x < engine.field.getWidth(); x++)
+				for (int y = 0; y < engine.field.getHeight(); y++)
+				{
+					int hard = engine.field.getBlock(x, y).hard;
+					if (hard > 0)
+						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
+				}
 	}
 
 	/*
