@@ -94,7 +94,10 @@ public class Field implements Serializable {
 	
 	/** Number of different colors in simultaneous color clears */
 	public int colorsCleared;
-	
+
+	/** Number of gems cleared in last color or line color clear */
+	public int gemsCleared;
+
 	/**
 	 * パラメータ付きコンストラクタ
 	 * @param w フィールドの幅
@@ -105,10 +108,8 @@ public class Field implements Serializable {
 		width = w;
 		height = h;
 		hidden_height = hh;
-
 		ceiling = false;
-		colorClearExtraCount = 0;
-		colorsCleared = 0;
+		
 		reset();
 	}
 
@@ -122,8 +123,6 @@ public class Field implements Serializable {
 	public Field(int w, int h, int hh, boolean c) {
 		this(w, h, hh);
 		ceiling = c;
-		colorClearExtraCount = 0;
-		colorsCleared = 0;
 	}
 
 	/**
@@ -150,6 +149,10 @@ public class Field implements Serializable {
 		lineflag_field = new boolean[height];
 		lineflag_hidden = new boolean[hidden_height];
 		hurryupFloorLines = 0;
+
+		colorClearExtraCount = 0;
+		colorsCleared = 0;
+		gemsCleared = 0;
 
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
@@ -179,6 +182,7 @@ public class Field implements Serializable {
 
 		colorClearExtraCount = f.colorClearExtraCount;
 		colorsCleared = f.colorsCleared;
+		gemsCleared = f.gemsCleared = 0;
 		
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
@@ -1851,6 +1855,8 @@ public class Field implements Serializable {
 	{
 		if (size < 1)
 			return 0;
+		if (flag)
+			gemsCleared = 0;
 		int total = 0;
 		int maxHeight = getHeightWithoutHurryupFloor();
 		int x, y, count, blockColor, lineColor;
@@ -1883,8 +1889,12 @@ public class Field implements Serializable {
 					Block b = getBlock(x, y);
 					if (b.hard > 0)
 						b.hard--;
-					else
+					else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+					{
+						if (b.isGemBlock())
+							gemsCleared++;
 						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					}
 					y++;
 					blockColor = getBlockColor(x, y, gemSame);
 				}
@@ -1916,7 +1926,15 @@ public class Field implements Serializable {
 				blockColor = lineColor;
 				while (lineColor == blockColor)
 				{
-					getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					Block b = getBlock(x, y);
+					if (b.hard > 0)
+						b.hard--;
+					else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+					{
+						if (b.isGemBlock())
+							gemsCleared++;
+						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					}
 					x++;
 					blockColor = getBlockColor(x, y, gemSame);
 				}
@@ -1952,7 +1970,15 @@ public class Field implements Serializable {
 				blockColor = lineColor;
 				while (lineColor == blockColor)
 				{
-					getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					Block b = getBlock(x, y);
+					if (b.hard > 0)
+						b.hard--;
+					else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+					{
+						if (b.isGemBlock())
+							gemsCleared++;
+						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					}
 					x++;
 					y++;
 					blockColor = getBlockColor(x, y, gemSame);
@@ -2503,5 +2529,110 @@ public class Field implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	public void addRandomHoverBlocks(GameEngine engine, int count, int[] colors, int minY, boolean avoidLines)
+	{
+		int placeHeight = height-minY;
+		int placeSize = placeHeight * width;
+		boolean[][] placeBlock = new boolean[width][placeHeight];
+		if (count < (placeSize >> 1))
+		{
+			for (int y = 0; y < placeHeight; y++)
+				for (int x = 0; x < width; x++)
+					placeBlock[x][y] = false;
+			int x, y;
+			for (int i = 0; i < count; i++)
+			{
+				x = engine.random.nextInt(width);
+				y = engine.random.nextInt(placeHeight);
+				if (placeBlock[x][y])
+					i--;
+				else
+					placeBlock[x][y] = true;
+			}
+		}
+		else
+		{
+			for (int y = 0; y < placeHeight; y++)
+				for (int x = 0; x < width; x++)
+					placeBlock[x][y] = true;
+			int x, y;
+			for (int i = placeSize; i > count; i--)
+			{
+				x = engine.random.nextInt(width);
+				y = engine.random.nextInt(placeHeight);
+				if (placeBlock[x][y])
+					placeBlock[x][y] = false;
+				else
+					i++;
+			}
+		}
+		for (int y = placeHeight-1; y >= 0; y--)
+		{
+			boolean bottomRowEmpty = true;
+			for (int x = 0; x < width && bottomRowEmpty; x++)
+				if (placeBlock[x][y])
+					bottomRowEmpty = false;
+			if (!bottomRowEmpty)
+				break;
+			minY++;
+			placeHeight--;
+		}
+		for (int y = 0; y < placeHeight; y++)
+			for (int x = 0; x < width; x++)
+				if (placeBlock[x][y])
+				{
+					if (!avoidLines || colors.length == 1)
+						addHoverBlock(x, y+minY, colors[engine.random.nextInt(colors.length)]);
+					else
+					{
+						int trueY = y+minY;
+						int colorUp = getBlockColor(x, trueY-1);
+						int test = getBlockColor(x, trueY-2);
+						if (colorUp != test || colorUp == Block.BLOCK_COLOR_NONE)
+							colorUp = -1;
+						int colorLeft = getBlockColor(x-1, trueY);
+						test = getBlockColor(x-2, trueY);
+						if (colorLeft != test || colorLeft == Block.BLOCK_COLOR_NONE)
+							colorLeft = -1;
+						if (colors.length == 2)
+						{
+							if ((colors[0] == colorUp && colors[1] != colorLeft) ||
+									(colors[0] == colorLeft && colors[1] != colorUp))
+								addHoverBlock(x, trueY, colors[1]);
+							else if ((colors[1] == colorUp && colors[0] != colorLeft) ||
+									(colors[1] == colorLeft && colors[0] != colorUp))
+								addHoverBlock(x, trueY, colors[0]);
+							else
+								addHoverBlock(x, trueY, colors[engine.random.nextInt(colors.length)]);
+						}
+						else
+						{
+							int color;
+							do {
+								color = colors[engine.random.nextInt(colors.length)];
+							} while (color == colorUp || color == colorLeft);
+							addHoverBlock(x, trueY, color);
+						}
+					}
+				}
+	}
+	public boolean addHoverBlock(int x, int y, int color)
+	{
+		Block b = getBlock(x, y);
+		if (b == null)
+			return false;
+		b.color = color;
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, true);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
+		return true;
 	}
 }

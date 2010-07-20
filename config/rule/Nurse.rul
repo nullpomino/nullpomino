@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-0.ruleopt.strWallkick=org.game_host.hebo.nullpomino.game.subsystem.wallkick.RxWallkick
+0.ruleopt.strWallkick=org.game_host.hebo.nullpomino.game.subsystem.wallkick.NurseWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
 0.ruleopt.pieceSpawnX.8.1=0
@@ -120,7 +120,7 @@
 0.ruleopt.maxARE=-1
 0.ruleopt.pieceSpawnYBig.2.3=0
 0.ruleopt.pieceSpawnYBig.2.2=0
-0.ruleopt.strRuleName=RX
+0.ruleopt.strRuleName=NURSE
 0.ruleopt.pieceSpawnYBig.2.1=0
 0.ruleopt.pieceSpawnYBig.2.0=0
 0.ruleopt.softdropLock=false
@@ -268,6 +268,7 @@
 0.ruleopt.pieceSpawnY.1.2=0
 0.ruleopt.pieceSpawnY.1.1=0
 0.ruleopt.pieceSpawnY.1.0=0
+0.ruleopt.shiftLockEnable=false
 0.ruleopt.pieceDefaultDirection.10=2
 0.ruleopt.lockresetLimitOver=0
 0.ruleopt.fieldHiddenHeight=0
