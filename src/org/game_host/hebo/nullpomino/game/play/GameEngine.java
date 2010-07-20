@@ -99,6 +99,10 @@ public class GameEngine {
 	/** T-Spin Miniの判定方法の定数 */
 	public static final int TSPINMINI_TYPE_ROTATECHECK = 0, TSPINMINI_TYPE_WALLKICKFLAG = 1;
 
+	/** Spin detection type */
+	public static final int SPINTYPE_4POINT = 1,
+							SPINTYPE_IMMOBILE = 2;
+	
 	/** コンボの種類の定数 */
 	public static final int COMBO_TYPE_DISABLE = 0, COMBO_TYPE_NORMAL = 1, COMBO_TYPE_DOUBLE = 2;
 
@@ -344,6 +348,9 @@ public class GameEngine {
 
 	/** T-Spin Miniならtrue */
 	public boolean tspinmini;
+	
+	/** EZ T-spin */
+	public boolean tspinez;
 
 	/** B2Bならtrue */
 	public boolean b2b;
@@ -357,12 +364,18 @@ public class GameEngine {
 	/** T-Spin有効フラグ */
 	public boolean tspinEnable;
 
+	/** EZ-T toggle */
+	public boolean tspinEnableEZ;
+	
 	/** 壁蹴りありのT-Spin許可 */
 	public boolean tspinAllowKick;
 
 	/** T-Spin Miniの判定方法 */
 	public int tspinminiType;
 
+	/** Spin detection type */
+	public int spinCheckType;
+	
 	/** O以外の全ピースにスピンボーナスを付ける */
 	public boolean useAllSpinBonus;
 
@@ -717,13 +730,16 @@ public class GameEngine {
 
 		tspin = false;
 		tspinmini = false;
+		tspinez = false;
 		b2b = false;
 		b2bcount = 0;
 		combo = 0;
 
 		tspinEnable = false;
+		tspinEnableEZ = false;
 		tspinAllowKick = true;
 		tspinminiType = TSPINMINI_TYPE_ROTATECHECK;
+		spinCheckType = SPINTYPE_4POINT;
 		useAllSpinBonus = false;
 		b2bEnable = false;
 		comboType = COMBO_TYPE_DISABLE;
@@ -1097,54 +1113,81 @@ public class GameEngine {
 	 * @param fld フィールド
 	 * @return T-Spinならtrue
 	 */
-	public boolean isTSpin(int x, int y, Piece piece, Field fld) {
-		if((piece == null) || (piece.id != Piece.PIECE_T)) return false;
-
-		if(!tspinAllowKick && kickused) return false;
-
-		int[] tx = new int[4];
-		int[] ty = new int[4];
-
-		// 判定用相対座標を設定
-		if(piece.big == true) {
-			tx[0] = 1;
-			ty[0] = 1;
-			tx[1] = 4;
-			ty[1] = 1;
-			tx[2] = 1;
-			ty[2] = 4;
-			tx[3] = 4;
-			ty[3] = 4;
-		} else {
-			tx[0] = 0;
-			ty[0] = 0;
-			tx[1] = 2;
-			ty[1] = 0;
-			tx[2] = 0;
-			ty[2] = 2;
-			tx[3] = 2;
-			ty[3] = 2;
+	
+	public void setTSpin(int x, int y, Piece piece, Field fld) {
+		if((piece == null) || (piece.id != Piece.PIECE_T)) {
+			tspin = false;
+			return;
 		}
-		for(int i = 0; i < tx.length; i++) {
-			if(piece.big) {
-				tx[i] += ruleopt.pieceOffsetX[piece.id][piece.direction] * 2;
-				ty[i] += ruleopt.pieceOffsetY[piece.id][piece.direction] * 2;
+
+		if(!tspinAllowKick && kickused) {
+			tspin = false;
+			return;
+		}
+
+		if(spinCheckType == SPINTYPE_4POINT) {
+			if(tspinminiType == TSPINMINI_TYPE_ROTATECHECK) {
+				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection(-1), field) &&
+						   nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection( 1), field))
+							tspinmini = true;
+			} else if(tspinminiType == TSPINMINI_TYPE_WALLKICKFLAG) {
+				tspinmini = kickused;
+			}
+		
+			int[] tx = new int[4];
+			int[] ty = new int[4];
+	
+			// 判定用相対座標を設定
+			if(piece.big == true) {
+				tx[0] = 1;
+				ty[0] = 1;
+				tx[1] = 4;
+				ty[1] = 1;
+				tx[2] = 1;
+				ty[2] = 4;
+				tx[3] = 4;
+				ty[3] = 4;
 			} else {
-				tx[i] += ruleopt.pieceOffsetX[piece.id][piece.direction];
-				ty[i] += ruleopt.pieceOffsetY[piece.id][piece.direction];
+				tx[0] = 0;
+				ty[0] = 0;
+				tx[1] = 2;
+				ty[1] = 0;
+				tx[2] = 0;
+				ty[2] = 2;
+				tx[3] = 2;
+				ty[3] = 2;
+			}
+			for(int i = 0; i < tx.length; i++) {
+				if(piece.big) {
+					tx[i] += ruleopt.pieceOffsetX[piece.id][piece.direction] * 2;
+					ty[i] += ruleopt.pieceOffsetY[piece.id][piece.direction] * 2;
+				} else {
+					tx[i] += ruleopt.pieceOffsetX[piece.id][piece.direction];
+					ty[i] += ruleopt.pieceOffsetY[piece.id][piece.direction];
+				}
+			}
+	
+			// 判定
+			int count = 0;
+	
+			for(int i = 0; i < tx.length; i++) {
+				if(fld.getBlockColor(x + tx[i], y + ty[i]) != Block.BLOCK_COLOR_NONE) count++;
+			}
+	
+			if(count >= 3) tspin = true;
+		} else if(spinCheckType == SPINTYPE_IMMOBILE) {
+			if( piece.checkCollision(x, y - 1, fld) &&
+					piece.checkCollision(x + 1, y, fld) &&
+					piece.checkCollision(x - 1, y, fld) ) {
+				tspin = true;
+				Field copyField = new Field(fld);
+				piece.placeToField(x, y, copyField);
+				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true; 
+			} else if((tspinEnableEZ) && (kickused == true)) {
+				tspin = true;
+				tspinez = true;
 			}
 		}
-
-		// 判定
-		int count = 0;
-
-		for(int i = 0; i < tx.length; i++) {
-			if(fld.getBlockColor(x + tx[i], y + ty[i]) != Block.BLOCK_COLOR_NONE) count++;
-		}
-
-		if(count >= 3) return true;
-
-		return false;
 	}
 
 	/**
@@ -1157,52 +1200,71 @@ public class GameEngine {
 	public void setAllSpin(int x, int y, Piece piece, Field fld) {
 		tspin = false;
 		tspinmini = false;
+		tspinez = false;
 
 		if(piece == null) return;
 		if(!tspinAllowKick && kickused) return;
 		if(piece.big) return;
 
-		int offsetX = ruleopt.pieceOffsetX[piece.id][piece.direction];
-		int offsetY = ruleopt.pieceOffsetY[piece.id][piece.direction];
+		if(spinCheckType == SPINTYPE_4POINT) {
 
-		for(int i = 0; i < Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction].length / 2; i++) {
-			boolean isHighSpot1 = false;
-			boolean isHighSpot2 = false;
-			boolean isLowSpot1 = false;
-			boolean isLowSpot2 = false;
-
-			if(!fld.getBlockEmptyF(
-				x + Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction][i * 2 + 0] + offsetX,
-				y + Piece.SPINBONUSDATA_HIGH_Y[piece.id][piece.direction][i * 2 + 0] + offsetY))
-			{
-				isHighSpot1 = true;
+			int offsetX = ruleopt.pieceOffsetX[piece.id][piece.direction];
+			int offsetY = ruleopt.pieceOffsetY[piece.id][piece.direction];
+	
+			for(int i = 0; i < Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction].length / 2; i++) {
+				boolean isHighSpot1 = false;
+				boolean isHighSpot2 = false;
+				boolean isLowSpot1 = false;
+				boolean isLowSpot2 = false;
+	
+				if(!fld.getBlockEmptyF(
+					x + Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction][i * 2 + 0] + offsetX,
+					y + Piece.SPINBONUSDATA_HIGH_Y[piece.id][piece.direction][i * 2 + 0] + offsetY))
+				{
+					isHighSpot1 = true;
+				}
+				if(!fld.getBlockEmptyF(
+					x + Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction][i * 2 + 1] + offsetX,
+					y + Piece.SPINBONUSDATA_HIGH_Y[piece.id][piece.direction][i * 2 + 1] + offsetY))
+				{
+					isHighSpot2 = true;
+				}
+				if(!fld.getBlockEmptyF(
+					x + Piece.SPINBONUSDATA_LOW_X[piece.id][piece.direction][i * 2 + 0] + offsetX,
+					y + Piece.SPINBONUSDATA_LOW_Y[piece.id][piece.direction][i * 2 + 0] + offsetY))
+				{
+					isLowSpot1 = true;
+				}
+				if(!fld.getBlockEmptyF(
+					x + Piece.SPINBONUSDATA_LOW_X[piece.id][piece.direction][i * 2 + 1] + offsetX,
+					y + Piece.SPINBONUSDATA_LOW_Y[piece.id][piece.direction][i * 2 + 1] + offsetY))
+				{
+					isLowSpot2 = true;
+				}
+	
+				//log.debug(isHighSpot1 + "," + isHighSpot2 + "," + isLowSpot1 + "," + isLowSpot2);
+	
+				if(isHighSpot1 && isHighSpot2 && (isLowSpot1 || isLowSpot2)) {
+					tspin = true;
+				} else if(!tspin && isLowSpot1 && isLowSpot2 && (isHighSpot1 || isHighSpot2)) {
+					tspin = true;
+					tspinmini = true;
+				}
 			}
-			if(!fld.getBlockEmptyF(
-				x + Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction][i * 2 + 1] + offsetX,
-				y + Piece.SPINBONUSDATA_HIGH_Y[piece.id][piece.direction][i * 2 + 1] + offsetY))
-			{
-				isHighSpot2 = true;
-			}
-			if(!fld.getBlockEmptyF(
-				x + Piece.SPINBONUSDATA_LOW_X[piece.id][piece.direction][i * 2 + 0] + offsetX,
-				y + Piece.SPINBONUSDATA_LOW_Y[piece.id][piece.direction][i * 2 + 0] + offsetY))
-			{
-				isLowSpot1 = true;
-			}
-			if(!fld.getBlockEmptyF(
-				x + Piece.SPINBONUSDATA_LOW_X[piece.id][piece.direction][i * 2 + 1] + offsetX,
-				y + Piece.SPINBONUSDATA_LOW_Y[piece.id][piece.direction][i * 2 + 1] + offsetY))
-			{
-				isLowSpot2 = true;
-			}
-
-			//log.debug(isHighSpot1 + "," + isHighSpot2 + "," + isLowSpot1 + "," + isLowSpot2);
-
-			if(isHighSpot1 && isHighSpot2 && (isLowSpot1 || isLowSpot2)) {
+		} else if(spinCheckType == SPINTYPE_IMMOBILE) {
+			int y2 = y - 1;
+			log.debug(x + "," + y2 + ":" + piece.checkCollision(x, y2, fld));
+			
+			if( piece.checkCollision(x, y - 1, fld) &&
+					piece.checkCollision(x + 1, y, fld) &&
+					piece.checkCollision(x - 1, y, fld) ) {
 				tspin = true;
-			} else if(!tspin && isLowSpot1 && isLowSpot2 && (isHighSpot1 || isHighSpot2)) {
+				Field copyField = new Field(fld);
+				piece.placeToField(x, y, copyField);
+				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true; 
+			} else if((tspinEnableEZ) && (kickused == true)) {
 				tspin = true;
-				tspinmini = true;
+				tspinez = true;
 			}
 		}
 	}
@@ -1889,6 +1951,7 @@ public class GameEngine {
 			kickused = false;
 			tspin = false;
 			tspinmini = false;
+			tspinez = false;
 
 			getNextObject(nextPieceCount + ruleopt.nextDisplay - 1).setAttribute(Block.BLOCK_ATTRIBUTE_BONE, bone);
 
@@ -2273,19 +2336,35 @@ public class GameEngine {
 			if( ((lockDelayNow >= getLockDelay()) && (getLockDelay() > 0)) || (instantlock == true) ) {
 				if(ruleopt.lockflash > 0) nowPieceObject.setDarkness(-0.8f);
 
-				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
+				/*if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
+				 
 					tspinmini = false;
 
 					// T-Spin Mini判定
+
 					if(!useAllSpinBonus) {
-						if(tspinminiType == TSPINMINI_TYPE_ROTATECHECK) {
-							if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection(-1), field) &&
-							   nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection( 1), field))
-								tspinmini = true;
-						} else if(tspinminiType == TSPINMINI_TYPE_WALLKICKFLAG) {
-							tspinmini = kickused;
+						if(spinCheckType == SPINTYPE_4POINT) {
+							if(tspinminiType == TSPINMINI_TYPE_ROTATECHECK) {
+								if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection(-1), field) &&
+								   nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection( 1), field))
+									tspinmini = true;
+							} else if(tspinminiType == TSPINMINI_TYPE_WALLKICKFLAG) {
+								tspinmini = kickused;
+							}
+						} else if(spinCheckType == SPINTYPE_IMMOBILE) {
+							Field copyField = new Field(field);
+							nowPieceObject.placeToField(nowPieceX, nowPieceY, copyField);
+							if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true; 
 						}
 					}
+				}*/
+
+				// T-Spin判定
+				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
+					if(useAllSpinBonus)
+						setAllSpin(nowPieceX, nowPieceY, nowPieceObject, field);
+					else
+						setTSpin(nowPieceX, nowPieceY, nowPieceObject, field);
 				}
 
 				nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_SELFPLACED, true);
@@ -2293,14 +2372,6 @@ public class GameEngine {
 				boolean partialLockOut = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, field);
 				boolean put = nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
 				
-				// T-Spin判定
-				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
-					if(useAllSpinBonus)
-						setAllSpin(nowPieceX, nowPieceY, nowPieceObject, field);
-					else
-						tspin = isTSpin(nowPieceX, nowPieceY, nowPieceObject, field);
-				}
-
 				playSE("lock");
 
 				holdDisable = false;

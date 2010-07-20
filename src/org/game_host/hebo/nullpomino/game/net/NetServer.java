@@ -823,7 +823,7 @@ public class NetServer {
 				roomInfo.useFractionalGarbage = Boolean.parseBoolean(message[21]);
 				roomInfo.garbageChangePerAttack = Boolean.parseBoolean(message[22]);
 				roomInfo.garbagePercent = Integer.parseInt(message[23]);
-
+				
 				roomInfo.roomID = roomCount;
 
 				roomCount++;

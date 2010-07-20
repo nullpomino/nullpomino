@@ -76,6 +76,15 @@ public class NetRoomInfo implements Serializable {
 	/** T-Spin有効フラグ(0=なし 1=普通 2=全スピン) */
 	public int tspinEnableType = 1;
 
+	/** Spin detection type */
+	public static final int SPINTYPE_4POINT = 1,
+							SPINTYPE_IMMOBILE = 2;
+
+	public int spinCheckType = SPINTYPE_4POINT;
+
+	/** Allow EZ-spins in spinCheckType 2 */
+	public boolean tspinEnableEZ = false;
+	
 	/** B2B有効 */
 	public boolean b2b = true;
 
@@ -210,6 +219,8 @@ public class NetRoomInfo implements Serializable {
 		lockDelay = n.lockDelay;
 		das = n.das;
 		tspinEnableType = n.tspinEnableType;
+		spinCheckType = n.spinCheckType;
+		tspinEnableEZ = n.tspinEnableEZ;
 		b2b = n.b2b;
 		combo = n.combo;
 
@@ -287,6 +298,8 @@ public class NetRoomInfo implements Serializable {
 		useFractionalGarbage = Boolean.parseBoolean(rdata[26]);
 		garbageChangePerAttack = Boolean.parseBoolean(rdata[27]);
 		garbagePercent = Integer.parseInt(rdata[28]);
+		spinCheckType = Integer.parseInt(rdata[29]);
+		tspinEnableEZ = Boolean.parseBoolean(rdata[30]);
 	}
 
 	/**
@@ -302,7 +315,7 @@ public class NetRoomInfo implements Serializable {
 	 * @return Stringの配列(String[29])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[29];
+		String[] rdata = new String[31];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -332,6 +345,8 @@ public class NetRoomInfo implements Serializable {
 		rdata[26] = Boolean.toString(useFractionalGarbage);
 		rdata[27] = Boolean.toString(garbageChangePerAttack);
 		rdata[28] = Integer.toString(garbagePercent);
+		rdata[29] = Integer.toString(spinCheckType);
+		rdata[30] = Boolean.toString(tspinEnableEZ);
 		return rdata;
 	}
 

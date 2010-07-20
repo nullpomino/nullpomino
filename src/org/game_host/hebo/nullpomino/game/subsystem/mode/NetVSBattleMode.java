@@ -74,7 +74,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 							 EVENT_TSPIN_SINGLE = 6,
 							 EVENT_TSPIN_DOUBLE = 7,
 							 EVENT_TSPIN_TRIPLE = 8,
-							 EVENT_TSPIN_DOUBLE_MINI = 9;
+							 EVENT_TSPIN_DOUBLE_MINI = 9,
+							 EVENT_TSPIN_EZ = 10;
 
 	/** ゲーム席とゲーム画面上でのフィールド番号の対応表 */
 	private static final int[][] GAME_SEAT_NUMBERS =
@@ -115,6 +116,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		{4, 3, 2, 2, 2},	// T-Double
 		{6, 4, 3, 3, 3},	// T-Triple
 		{4, 3, 2, 2, 2},	// T-Mini-D
+		{1, 1, 0, 0, 0},	// EZ-T
 	};
 
 	/** 攻撃力テーブル(新スピン用) */
@@ -130,6 +132,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		{4, 3, 2, 2, 2},	// T-Double
 		{6, 4, 3, 3, 3},	// T-Triple
 		{3, 2, 1, 1, 1},	// T-Mini-D
+		{0,	0, 0, 0, 0},	// EZ-T
 	};
 
 	/** 攻撃力テーブル参照用のインデックス番号 */
@@ -141,7 +144,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 							 LINE_ATTACK_INDEX_TSINGLE = 5,
 							 LINE_ATTACK_INDEX_TDOUBLE = 6,
 							 LINE_ATTACK_INDEX_TTRIPLE = 7,
-							 LINE_ATTACK_INDEX_TMINI_D = 8;
+							 LINE_ATTACK_INDEX_TMINI_D = 8,
+							 LINE_ATTACK_INDEX_EZ_T = 9;
 
 	/** コンボの攻撃力 */
 	private static final int[][] COMBO_ATTACK_TABLE = {
@@ -820,6 +824,9 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			engine.b2bEnable = currentRoomInfo.b2b;
 			engine.comboType = (currentRoomInfo.combo) ? GameEngine.COMBO_TYPE_NORMAL : GameEngine.COMBO_TYPE_DISABLE;
 
+			engine.spinCheckType = currentRoomInfo.spinCheckType;
+			engine.tspinEnableEZ = currentRoomInfo.tspinEnableEZ;
+			
 			if(currentRoomInfo.tspinEnableType == 0) {
 				engine.tspinEnable = false;
 				engine.useAllSpinBonus = false;
@@ -942,8 +949,12 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			int attackLineIndex = LINE_ATTACK_INDEX_SINGLE;
 
 			if(engine.tspin) {
+				if(engine.tspinez) {
+					attackLineIndex = LINE_ATTACK_INDEX_EZ_T;
+					lastevent[playerID] = EVENT_TSPIN_EZ;
+				}
 				// T-Spin 1列
-				if(lines == 1) {
+				else if(lines == 1) {
 					if(engine.tspinmini) {
 						attackLineIndex = LINE_ATTACK_INDEX_TMINI;
 						lastevent[playerID] = EVENT_TSPIN_SINGLE_MINI;
@@ -1416,6 +1427,10 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					if(lastb2b[playerID]) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b[playerID]) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if(lastcombo[playerID] >= 2)
@@ -1469,6 +1484,12 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 						receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED, 0.5f);
 					else
 						receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE, 0.5f);
+					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b[playerID])
+						receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "EZ-" + strPieceName, EventReceiver.COLOR_RED, 0.5f);
+					else
+						receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE, 0.5f);
 					break;
 				}
 
