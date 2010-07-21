@@ -2568,6 +2568,7 @@ public class Field implements Serializable {
 					i++;
 			}
 		}
+		/*
 		for (int y = placeHeight-1; y >= 0; y--)
 		{
 			boolean bottomRowEmpty = true;
@@ -2579,6 +2580,7 @@ public class Field implements Serializable {
 			minY++;
 			placeHeight--;
 		}
+		*/
 		for (int y = 0; y < placeHeight; y++)
 			for (int x = 0; x < width; x++)
 				if (placeBlock[x][y])

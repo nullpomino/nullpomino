@@ -647,7 +647,13 @@ public class PhysicianVSMode extends DummyMode {
 			}
 			if(hoverBlocks[playerID] > 0) {
 				engine.createFieldIfNeeded();
-				engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], HOVER_BLOCK_COLORS, 3, true);
+
+				engine.createFieldIfNeeded();
+				int minY = 6;
+				if (hoverBlocks[playerID] >= 80) minY = 3;
+				else if (hoverBlocks[playerID] >= 72) minY = 4;
+				else if (hoverBlocks[playerID] >= 64) minY = 5;
+				engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], HOVER_BLOCK_COLORS, minY, true);
 			} 
 		}
 
