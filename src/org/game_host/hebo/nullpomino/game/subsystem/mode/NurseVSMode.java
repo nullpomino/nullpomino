@@ -738,6 +738,7 @@ public class NurseVSMode extends DummyMode {
 			scgettime[playerID] = 120;
 			engine.statistics.scoreFromLineClear += pts;
 			engine.statistics.score += pts;
+			score[playerID] += pts;
 			engine.playSE("gem");
 			setSpeed(engine);
 		}
