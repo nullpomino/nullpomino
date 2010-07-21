@@ -775,22 +775,15 @@ public class PhysicianVSMode extends DummyMode {
 	public void onLast(GameEngine engine, int playerID) {
 		scgettime[playerID]++;
 
-		/*
-		int width = 1;
 		if (engine.field != null)
-			width = engine.field.getWidth();
-		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
-		// せり上がりメーター
-		if(garbage[playerID] * blockHeight / width > engine.meterValue) {
-			engine.meterValue += blockHeight / 2;
-		} else if(garbage[playerID] * blockHeight / width < engine.meterValue) {
-			engine.meterValue--;
+		{
+			int rest = engine.field.getHowManyGems();
+			engine.meterValue = (rest * receiver.getMeterMax(engine)) / hoverBlocks[playerID];
+			if (rest <= 3) engine.meterColor = GameEngine.METER_COLOR_GREEN;
+			else if (rest < (hoverBlocks[playerID] >> 2)) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+			else if (rest < (hoverBlocks[playerID] >> 1)) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+			else engine.meterColor = GameEngine.METER_COLOR_RED;
 		}
-		if(garbage[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
-		else if(garbage[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		else if(garbage[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
-		*/
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {

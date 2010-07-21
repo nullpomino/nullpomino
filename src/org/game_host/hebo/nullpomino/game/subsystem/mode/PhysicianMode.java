@@ -321,7 +321,7 @@ public class PhysicianMode extends DummyMode {
 		
 		int rest = engine.field.getHowManyGems();
 		engine.meterValue = (rest * receiver.getMeterMax(engine)) / hoverBlocks;
-		if (rest < 3) engine.meterColor = GameEngine.METER_COLOR_GREEN;
+		if (rest <= 3) engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		else if (rest < (hoverBlocks >> 2)) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else if (rest < (hoverBlocks >> 1)) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		else engine.meterColor = GameEngine.METER_COLOR_RED;
