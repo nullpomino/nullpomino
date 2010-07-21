@@ -1772,7 +1772,7 @@ public class GameEngine {
 						int size = nextPieceArrayObject[i].getMaxBlock();
 						int[] colors = new int[size];
 						for (int j = 0; j < size; j++)
-							colors[j] = blockColors[random.nextInt(blockColors.length)];
+							colors[j] = blockColors[random.nextInt(numColors)];
 						nextPieceArrayObject[i].setColor(colors);
 					}
 				}

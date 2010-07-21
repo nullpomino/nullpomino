@@ -42,9 +42,9 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
 import org.game_host.hebo.nullpomino.util.GeneralUtil;
 
 /**
- * AVALANCHE VS-BATTLE mode (beta)
+ * NURSE VS-BATTLE mode (beta)
  */
-public class AvalancheVSMode extends DummyMode {
+public class NurseVSMode extends DummyMode {
 	/** 現在のバージョン */
 	private static final int CURRENT_VERSION = 0;
 	
@@ -55,23 +55,23 @@ public class AvalancheVSMode extends DummyMode {
 	private static final int[] BLOCK_COLORS =
 	{
 		Block.BLOCK_COLOR_RED,
-		Block.BLOCK_COLOR_GREEN,
 		Block.BLOCK_COLOR_BLUE,
-		Block.BLOCK_COLOR_YELLOW,
-		Block.BLOCK_COLOR_PURPLE
+		Block.BLOCK_COLOR_YELLOW
 	};
+	/** Hovering block colors */
+	private static final int[] HOVER_BLOCK_COLORS =
+	{
+		Block.BLOCK_COLOR_GEM_RED,
+		Block.BLOCK_COLOR_GEM_BLUE,
+		Block.BLOCK_COLOR_GEM_YELLOW
+	};
+	private static final int[] BASE_SPEEDS = {10, 20, 25};
+	
+	/** Names of speed settings */
+	private static final String[] SPEED_NAME = {"LOW", "MED", "HI"};
 
 	/** プレイヤーの数 */
 	private static final int MAX_PLAYERS = 2;
-	
-	/** Names of garbage counter setting constants */
-	private final int GARBAGE_COUNTER_OFF = 0, GARBAGE_COUNTER_ON = 1, GARBAGE_COUNTER_FEVER = 2;
-
-	/** 邪魔ブロックタイプの表示名 */
-	//private final String[] GARBAGE_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
-	
-	/** Names of garbage counter settings */
-	private final String[] GARBAGE_COUNTER_STRING = {"OFF", "ON", "FEVER"};
 
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
@@ -82,23 +82,17 @@ public class AvalancheVSMode extends DummyMode {
 	/** 描画などのイベント処理 */
 	private EventReceiver receiver;
 
-	/** Rule settings for countering garbage not yet dropped */
-	private int[] garbageCounterMode;
-
 	/** 溜まっている邪魔ブロックの数 */
-	private int[] garbage;
+	//private int[] garbage;
 
 	/** 送った邪魔ブロックの数 */
-	private int[] garbageSent;
+	//private int[] garbageSent;
 
 	/** 最後にスコア獲得してから経過した時間 */
 	private int[] scgettime;
 
 	/** 使用するBGM */
 	private int bgmno;
-
-	/** ビッグ */
-	private boolean[] big;
 
 	/** 効果音ON/OFF */
 	private boolean[] enableSE;
@@ -134,41 +128,35 @@ public class AvalancheVSMode extends DummyMode {
 	private int version;
 	
 	/** Flag for all clear */
-	private boolean[] zenKeshi;
+	//private boolean[] zenKeshi;
 
 	/** Amount of points earned from most recent clear */
-	private int[] lastscore, lastmultiplier;
+	private int[] lastscore;
 	
 	/** Amount of garbage added in current chain */
-	private int[] garbageAdd;
+	//private int[] garbageAdd;
 	
 	/** Score */
 	private int[] score;
 	
-	/** Max amount of garbage dropped at once */
-	private int[] maxAttack;
-
-	/** Number of colors to use */
-	private int[] numColors;
-
-	/** Minimum chain count needed to send garbage */
-	private int[] rensaShibari;
-
-	/** Denominator for score-to-garbage conversion */
-	private int[] garbageRate;
+	/** Number of initial gem blocks */
+	private int[] hoverBlocks;
 	
-	/** Settings for hard garbage blocks */
-	private int[] garbageHard;
-
-	/** Hurryup開始までの秒数(0でHurryupなし) */
-	private int[] hurryupSeconds;
+	/** Speed mode */
+	private int[] speed;
+	
+	/** Number gem blocks cleared in current chain */
+	private int[] gemsClearedChainTotal;
+	
+	/** Each player's remaining gem count */
+	private int[] rest;
 
 	/*
 	 * モード名
 	 */
 	@Override
 	public String getName() {
-		return "AVALANCHE VS-BATTLE (BETA)";
+		return "NURSE VS-BATTLE (BETA)";
 	}
 
 	/*
@@ -187,15 +175,12 @@ public class AvalancheVSMode extends DummyMode {
 		owner = manager;
 		receiver = owner.receiver;
 
-		garbageCounterMode = new int[MAX_PLAYERS];
-		garbage = new int[MAX_PLAYERS];
-		garbageSent = new int[MAX_PLAYERS];
+		//garbage = new int[MAX_PLAYERS];
+		//garbageSent = new int[MAX_PLAYERS];
 
 		scgettime = new int[MAX_PLAYERS];
 		bgmno = 0;
-		big = new boolean[MAX_PLAYERS];
 		enableSE = new boolean[MAX_PLAYERS];
-		hurryupSeconds = new int[MAX_PLAYERS];
 		useMap = new boolean[MAX_PLAYERS];
 		mapSet = new int[MAX_PLAYERS];
 		mapNumber = new int[MAX_PLAYERS];
@@ -205,17 +190,14 @@ public class AvalancheVSMode extends DummyMode {
 		fldBackup = new Field[MAX_PLAYERS];
 		randMap = new Random();
 
-		zenKeshi = new boolean[MAX_PLAYERS];
 		lastscore = new int[MAX_PLAYERS];
-		lastmultiplier = new int[MAX_PLAYERS];
-		garbageAdd = new int[MAX_PLAYERS];
+		//garbageAdd = new int[MAX_PLAYERS];
 		score = new int[MAX_PLAYERS];
-		numColors = new int[MAX_PLAYERS];
-		maxAttack = new int[MAX_PLAYERS];
-		rensaShibari = new int[MAX_PLAYERS];
-		garbageRate = new int[MAX_PLAYERS];
-		garbageHard = new int[MAX_PLAYERS];
-
+		hoverBlocks = new int[MAX_PLAYERS];
+		speed = new int[MAX_PLAYERS];
+		gemsClearedChainTotal = new int[MAX_PLAYERS];
+		rest = new int[MAX_PLAYERS];
+		
 		winnerID = -1;
 	}
 
@@ -226,13 +208,13 @@ public class AvalancheVSMode extends DummyMode {
 	 * @param preset プリセット番号
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
-		engine.speed.gravity = prop.getProperty("avalanchevs.gravity." + preset, 4);
-		engine.speed.denominator = prop.getProperty("avalanchevs.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("avalanchevs.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("avalanchevs.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("avalanchevs.lineDelay." + preset, 10);
-		engine.speed.lockDelay = prop.getProperty("avalanchevs.lockDelay." + preset, 30);
-		engine.speed.das = prop.getProperty("avalanchevs.das." + preset, 14);
+		engine.speed.gravity = prop.getProperty("nursevs.gravity." + preset, 4);
+		engine.speed.denominator = prop.getProperty("nursevs.denominator." + preset, 256);
+		engine.speed.are = prop.getProperty("nursevs.are." + preset, 24);
+		engine.speed.areLine = prop.getProperty("nursevs.areLine." + preset, 24);
+		engine.speed.lineDelay = prop.getProperty("nursevs.lineDelay." + preset, 10);
+		engine.speed.lockDelay = prop.getProperty("nursevs.lockDelay." + preset, 30);
+		engine.speed.das = prop.getProperty("nursevs.das." + preset, 14);
 	}
 
 	/**
@@ -242,13 +224,13 @@ public class AvalancheVSMode extends DummyMode {
 	 * @param preset プリセット番号
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
-		prop.setProperty("avalanchevs.gravity." + preset, engine.speed.gravity);
-		prop.setProperty("avalanchevs.denominator." + preset, engine.speed.denominator);
-		prop.setProperty("avalanchevs.are." + preset, engine.speed.are);
-		prop.setProperty("avalanchevs.areLine." + preset, engine.speed.areLine);
-		prop.setProperty("avalanchevs.lineDelay." + preset, engine.speed.lineDelay);
-		prop.setProperty("avalanchevs.lockDelay." + preset, engine.speed.lockDelay);
-		prop.setProperty("avalanchevs.das." + preset, engine.speed.das);
+		prop.setProperty("nursevs.gravity." + preset, engine.speed.gravity);
+		prop.setProperty("nursevs.denominator." + preset, engine.speed.denominator);
+		prop.setProperty("nursevs.are." + preset, engine.speed.are);
+		prop.setProperty("nursevs.areLine." + preset, engine.speed.areLine);
+		prop.setProperty("nursevs.lineDelay." + preset, engine.speed.lineDelay);
+		prop.setProperty("nursevs.lockDelay." + preset, engine.speed.lockDelay);
+		prop.setProperty("nursevs.das." + preset, engine.speed.das);
 	}
 
 	/**
@@ -258,20 +240,14 @@ public class AvalancheVSMode extends DummyMode {
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
-		bgmno = prop.getProperty("avalanchevs.bgmno", 0);
-		garbageCounterMode[playerID] = prop.getProperty("avalanchevs.garbageCounterMode", GARBAGE_COUNTER_ON);
-		big[playerID] = prop.getProperty("avalanchevs.big.p" + playerID, false);
-		enableSE[playerID] = prop.getProperty("avalanchevs.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
-		useMap[playerID] = prop.getProperty("avalanchevs.useMap.p" + playerID, false);
-		mapSet[playerID] = prop.getProperty("avalanchevs.mapSet.p" + playerID, 0);
-		mapNumber[playerID] = prop.getProperty("avalanchevs.mapNumber.p" + playerID, -1);
-		presetNumber[playerID] = prop.getProperty("avalanchevs.presetNumber.p" + playerID, 0);
-		maxAttack[playerID] = prop.getProperty("avalanchevs.maxAttack.p" + playerID, 30);
-		numColors[playerID] = prop.getProperty("avalanchevs.numColors.p" + playerID, 5);
-		rensaShibari[playerID] = prop.getProperty("avalanchevs.rensaShibari.p" + playerID, 1);
-		garbageRate[playerID] = prop.getProperty("avalanchevs.garbageRate.p" + playerID, 120);
-		garbageHard[playerID] = prop.getProperty("avalanchevs.garbageHard.p" + playerID, 0);
+		bgmno = prop.getProperty("nursevs.bgmno", 0);
+		enableSE[playerID] = prop.getProperty("nursevs.enableSE.p" + playerID, true);
+		useMap[playerID] = prop.getProperty("nursevs.useMap.p" + playerID, false);
+		mapSet[playerID] = prop.getProperty("nursevs.mapSet.p" + playerID, 0);
+		mapNumber[playerID] = prop.getProperty("nursevs.mapNumber.p" + playerID, -1);
+		presetNumber[playerID] = prop.getProperty("nursevs.presetNumber.p" + playerID, 0);
+		speed[playerID] = prop.getProperty("nursevs.speed.p" + playerID, 1);
+		hoverBlocks[playerID] = prop.getProperty("nursevs.hoverBlocks.p" + playerID, 40);
 	}
 
 	/**
@@ -281,20 +257,14 @@ public class AvalancheVSMode extends DummyMode {
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
-		prop.setProperty("avalanchevs.bgmno", bgmno);
-		prop.setProperty("avalanchevs.garbageCounterMode", garbageCounterMode[playerID]);
-		prop.setProperty("avalanchevs.big.p" + playerID, big[playerID]);
-		prop.setProperty("avalanchevs.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
-		prop.setProperty("avalanchevs.useMap.p" + playerID, useMap[playerID]);
-		prop.setProperty("avalanchevs.mapSet.p" + playerID, mapSet[playerID]);
-		prop.setProperty("avalanchevs.mapNumber.p" + playerID, mapNumber[playerID]);
-		prop.setProperty("avalanchevs.presetNumber.p" + playerID, presetNumber[playerID]);
-		prop.setProperty("avalanchevs.maxAttack.p" + playerID, maxAttack[playerID]);
-		prop.setProperty("avalanchevs.numColors.p" + playerID, numColors[playerID]);
-		prop.setProperty("avalanchevs.rensaShibari.p" + playerID, rensaShibari[playerID]);
-		prop.setProperty("avalanchevs.garbageRate.p" + playerID, garbageRate[playerID]);
-		prop.setProperty("avalanchevs.garbageHard.p" + playerID, garbageHard[playerID]);
+		prop.setProperty("nursevs.bgmno", bgmno);
+		prop.setProperty("nursevs.enableSE.p" + playerID, enableSE[playerID]);
+		prop.setProperty("nursevs.useMap.p" + playerID, useMap[playerID]);
+		prop.setProperty("nursevs.mapSet.p" + playerID, mapSet[playerID]);
+		prop.setProperty("nursevs.mapNumber.p" + playerID, mapNumber[playerID]);
+		prop.setProperty("nursevs.presetNumber.p" + playerID, presetNumber[playerID]);
+		prop.setProperty("nursevs.speed.p" + playerID, speed[playerID]);
+		prop.setProperty("nursevs.hoverBlocks.p" + playerID, hoverBlocks[playerID]);
 	}
 
 	/**
@@ -357,21 +327,25 @@ public class AvalancheVSMode extends DummyMode {
 		}
 
 		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
-		engine.clearMode = GameEngine.CLEAR_COLOR;
-		engine.garbageColorClear = true;
+		engine.clearMode = GameEngine.CLEAR_LINE_COLOR;
+		engine.garbageColorClear = false;
+		engine.colorClearSize = 4;
 		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
-		engine.blockColors = BLOCK_COLORS;
 		engine.randomBlockColor = true;
-		engine.connectBlocks = false;
+		engine.blockColors = BLOCK_COLORS;
+		engine.connectBlocks = true;
+		engine.cascadeDelay = 18;
+		engine.gemSameColor = true;
 
-		garbage[playerID] = 0;
-		garbageSent[playerID] = 0;
+		//garbage[playerID] = 0;
+		//garbageSent[playerID] = 0;
 		score[playerID] = 0;
-		zenKeshi[playerID] = false;
 		scgettime[playerID] = 0;
-
+		gemsClearedChainTotal[playerID] = 0;
+		rest[playerID] = 0;
+		
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
 			loadPreset(engine, engine.owner.modeConfig, -1 - playerID);
@@ -379,7 +353,7 @@ public class AvalancheVSMode extends DummyMode {
 		} else {
 			loadOtherSetting(engine, engine.owner.replayProp);
 			loadPreset(engine, engine.owner.replayProp, -1 - playerID);
-			version = owner.replayProp.getProperty("avalanchevs.version", 0);
+			version = owner.replayProp.getProperty("nursevs.version", 0);
 		}
 	}
 
@@ -458,45 +432,17 @@ public class AvalancheVSMode extends DummyMode {
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
 					break;
 				case 9:
-					garbageCounterMode[playerID] += change;
-					if(garbageCounterMode[playerID] < 0) garbageCounterMode[playerID] = 2;
-					if(garbageCounterMode[playerID] > 2) garbageCounterMode[playerID] = 0;
+					speed[playerID] += change;
+					if(speed[playerID] < 0) speed[playerID] = 2;
+					if(speed[playerID] > 2) speed[playerID] = 0;
 					break;
 				case 10:
-					maxAttack[playerID] += change;
-					if(maxAttack[playerID] < 0) maxAttack[playerID] = 99;
-					if(maxAttack[playerID] > 99) maxAttack[playerID] = 0;
-					break;
-				case 11:
-					numColors[playerID] += change;
-					if(numColors[playerID] < 3) numColors[playerID] = 5;
-					if(numColors[playerID] > 5) numColors[playerID] = 3;
-					break;
-				case 12:
-					rensaShibari[playerID] += change;
-					if(rensaShibari[playerID] < 1) rensaShibari[playerID] = 20;
-					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
-					break;
-				case 13:
-					garbageRate[playerID] += change*10;
-					if(garbageRate[playerID] < 10) garbageRate[playerID] = 1000;
-					if(garbageRate[playerID] > 1000) garbageRate[playerID] = 10;
-					break;
-				case 14:
-					big[playerID] = !big[playerID];
+					hoverBlocks[playerID] += change;
+					if(hoverBlocks[playerID] < 0) hoverBlocks[playerID] = 99;
+					if(hoverBlocks[playerID] > 99) hoverBlocks[playerID] = 0;
 					break;
 				case 15:
 					enableSE[playerID] = !enableSE[playerID];
-					break;
-				case 16:
-					hurryupSeconds[playerID] += change;
-					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
-					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
-					break;
-				case 17:
-					garbageHard[playerID] += change;
-					if(garbageHard[playerID] < 0) garbageHard[playerID] = 9;
-					if(garbageHard[playerID] > 9) garbageHard[playerID] = 0;
 					break;
 				case 18:
 					bgmno += change;
@@ -632,26 +578,14 @@ public class AvalancheVSMode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "COUNTER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_COUNTER_STRING[garbageCounterMode[playerID]], (engine.statc[2] == 9));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 10));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(numColors[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "MIN CHAIN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(rensaShibari[playerID]), (engine.statc[2] == 12));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "OJAMA RATE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(garbageRate[playerID]), (engine.statc[2] == 13));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 14));
+				
+				receiver.drawMenuFont(engine, playerID, 0, 0, "SPEED", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 1, SPEED_NAME[speed[playerID]], (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 0, 2, "GEMS", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(hoverBlocks[playerID]), (engine.statc[2] == 10));
+				
 				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-				                      (engine.statc[2] == 16));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "HARD OJAMA", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(garbageHard[playerID]), (engine.statc[2] == 17));
 				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
 				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 18));
 			} else {
@@ -679,7 +613,6 @@ public class AvalancheVSMode extends DummyMode {
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			engine.numColors = numColors[playerID];
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
@@ -712,6 +645,10 @@ public class AvalancheVSMode extends DummyMode {
 			} else if(engine.field != null) {
 				engine.field.reset();
 			}
+			if(hoverBlocks[playerID] > 0) {
+				engine.createFieldIfNeeded();
+				engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], HOVER_BLOCK_COLORS, 3, true);
+			} 
 		}
 
 		return false;
@@ -724,10 +661,8 @@ public class AvalancheVSMode extends DummyMode {
 	public void startGame(GameEngine engine, int playerID) {
 		engine.b2bEnable = false;
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.big = big[playerID];
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
-		engine.colorClearSize = big[playerID] ? 12 : 4;
 
 		engine.tspinAllowKick = false;
 		engine.tspinEnable = false;
@@ -742,7 +677,7 @@ public class AvalancheVSMode extends DummyMode {
 		// ステータス表示
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1, 0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
-
+			/*
 			receiver.drawScoreFont(engine, playerID, -1, 2, "GARBAGE", EventReceiver.COLOR_PURPLE);
 			String garbageStr1P = String.valueOf(garbage[0]);
 			if (garbageAdd[0] > 0)
@@ -754,11 +689,21 @@ public class AvalancheVSMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 3, 3, garbageStr1P, (garbage[0] > 0));
 			receiver.drawScoreFont(engine, playerID, -1, 4, "2P:", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 3, 4, garbageStr2P, (garbage[1] > 0));
-
+			
 			receiver.drawScoreFont(engine, playerID, -1, 6, "ATTACK", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + String.valueOf(garbageSent[0]), EventReceiver.COLOR_RED);
 			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + String.valueOf(garbageSent[1]), EventReceiver.COLOR_BLUE);
+			*/
+			receiver.drawScoreFont(engine, playerID, -1, 2, "REST", EventReceiver.COLOR_PURPLE);
+			receiver.drawScoreFont(engine, playerID, -1, 3, "1P:", EventReceiver.COLOR_RED);
+			receiver.drawScoreFont(engine, playerID, 3, 3, String.valueOf(rest[0]), (rest[0] < 4));
+			receiver.drawScoreFont(engine, playerID, -1, 4, "2P:", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 3, 4, String.valueOf(rest[1]), (rest[1] < 4));
 
+			receiver.drawScoreFont(engine, playerID, -1, 6, "SPEED", EventReceiver.COLOR_GREEN);
+			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + SPEED_NAME[speed[0]], EventReceiver.COLOR_RED);
+			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + SPEED_NAME[speed[1]], EventReceiver.COLOR_BLUE);
+			
 			receiver.drawScoreFont(engine, playerID, -1, 10, "SCORE", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: " + String.valueOf(score[0]), EventReceiver.COLOR_RED);
 			receiver.drawScoreFont(engine, playerID, -1, 12, "2P: " + String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
@@ -769,128 +714,52 @@ public class AvalancheVSMode extends DummyMode {
 		
 		if (!owner.engine[playerID].gameActive)
 			return;
-
-		if(zenKeshi[playerID])
-			receiver.drawMenuFont(engine, playerID, 1, 21, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
-		if (garbageHard[playerID] > 0 && engine.field != null)
-			for (int x = 0; x < engine.field.getWidth(); x++)
-				for (int y = 0; y < engine.field.getHeight(); y++)
-				{
-					int hard = engine.field.getBlock(x, y).hard;
-					if (hard > 0)
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
-				}
 	}
 
 	/*
 	 * スコア計算
 	 */
 	@Override
-	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		int enemyID = 0;
-		if(playerID == 0) enemyID = 1;
-		
-		if (big[playerID])
-			avalanche >>= 2;
-		// ラインクリアボーナス
-		int pts = avalanche*10;
-		int garbageNew = 0;
-		boolean cleared = avalanche > 0;
-		if (cleared) {
-			if (zenKeshi[playerID])
-				garbageNew += 30;
-			if (engine.field.isEmpty()) {
-				engine.playSE("bravo");
-				zenKeshi[playerID] = true;
-				engine.statistics.score += 2100;
-			}
-			else
-				zenKeshi[playerID] = false;
-
-			int chain = engine.chain;
-			int multiplier = engine.field.colorClearExtraCount;
-			if (big[playerID])
-				multiplier >>= 2;
-			if (engine.field.colorsCleared > 1)
-				multiplier += (engine.field.colorsCleared-1)*2;
-			/*
-			if (multiplier < 0)
-				multiplier = 0;
-			if (chain == 0)
-				firstExtra = avalanche > engine.colorClearSize;
-			*/
-			if (chain == 2)
-				multiplier += 8;
-			else if (chain == 3)
-				multiplier += 16;
-			else if (chain >= 4)
-				multiplier += 32*(chain-3);
-			/*
-			if (firstExtra)
-				multiplier++;
-			*/
-			
-			if (multiplier > 999)
-				multiplier = 999;
-			if (multiplier < 1)
-				multiplier = 1;
-			
-			lastscore[playerID] = pts;
-			lastmultiplier[playerID] = multiplier;
-			scgettime[playerID] = 120;
-			int ptsTotal = pts*multiplier;
-			score[playerID] += ptsTotal;
-			
-			if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
-				ptsTotal <<= engine.statistics.time / (hurryupSeconds[playerID] * 60);
-
-			garbageNew += (ptsTotal+garbageRate[playerID]-1)/garbageRate[playerID];
-			if (chain >= rensaShibari[playerID])
+	public void calcScore(GameEngine engine, int playerID, int lines) {
+		int gemsCleared = engine.field.gemsCleared;
+		if (gemsCleared > 0 && lines > 0) {
+			int pts = 0;
+			while (gemsCleared > 0 && gemsClearedChainTotal[playerID] < 5)
 			{
-				garbageSent[playerID] += garbageNew;
-				if (garbageCounterMode[playerID] != GARBAGE_COUNTER_OFF)
-				{
-					if (garbage[playerID] > 0)
-					{
-						int delta = Math.min(garbage[playerID], garbageNew);
-						garbage[playerID] -= delta;
-						garbageNew -= delta;
-					}
-					if (garbageAdd[playerID] > 0 && garbageNew > 0)
-					{
-						int delta = Math.min(garbageAdd[playerID], garbageNew);
-						garbageAdd[playerID] -= delta;
-						garbageNew -= delta;
-					}
-				}
-				if (garbageNew > 0)
-					garbageAdd[enemyID] += garbageNew;
+				pts += 1 << gemsClearedChainTotal[playerID];
+				gemsClearedChainTotal[playerID]++;
+				gemsCleared--;
 			}
-		}
-		if ((!cleared || garbageCounterMode[playerID] != GARBAGE_COUNTER_FEVER)
-				&& !engine.field.canCascade() && garbage[playerID] > 0)
-		{
-			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
-			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID], garbageHard[playerID]);
+			if (gemsClearedChainTotal[playerID] >= 5)
+				pts += gemsCleared << 5;
+			pts *= (speed[playerID]+1) * 100;
+			gemsClearedChainTotal[playerID] += gemsCleared;
+			lastscore[playerID] = pts;
+			scgettime[playerID] = 120;
+			engine.statistics.scoreFromLineClear += pts;
+			engine.statistics.score += pts;
+			engine.playSE("gem");
+			setSpeed(engine);
 		}
 	}
 
+	/**
+	 * 落下速度を設定
+	 * @param engine GameEngine
+	 */
+	public void setSpeed(GameEngine engine) {
+		/*
+		engine.speed.gravity = BASE_SPEEDS[speed[playerID]]*(10+(engine.statistics.totalPieceLocked/10));
+		engine.speed.denominator = 3600;
+		*/
+	}
+
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		/*
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		if (garbageAdd[enemyID] > 0)
-		{
-			garbage[enemyID] += garbageAdd[enemyID];
-			garbageAdd[enemyID] = 0;
-		}
-		if (garbageCounterMode[playerID] != GARBAGE_COUNTER_FEVER && garbage[playerID] > 0)
-		{
-			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
-			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID], garbageHard[playerID]);
-			return true;
-		}
+		//TODO: Drop garbage blocks
+		*/
 		return false;
 	}
 
@@ -901,6 +770,7 @@ public class AvalancheVSMode extends DummyMode {
 	public void onLast(GameEngine engine, int playerID) {
 		scgettime[playerID]++;
 
+		/*
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();
@@ -915,31 +785,44 @@ public class AvalancheVSMode extends DummyMode {
 		else if(garbage[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		else if(garbage[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
+		*/
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
+			if (!p1Lose && owner.engine[1].field != null)
+			{
+				rest[1] = owner.engine[1].field.getHowManyGems();
+				p1Lose = (rest[1] == 0);
+			}
+			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
+			if (!p2Lose && owner.engine[0].field != null)
+			{
+				rest[0] = owner.engine[0].field.getHowManyGems();
+				p2Lose = (rest[0] == 0);
+			}
+			if(p1Lose && p2Lose) {
 				// 引き分け
 				winnerID = -1;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p2Lose && !p1Lose) {
 				// 1P勝利
 				winnerID = 0;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
 				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
-				owner.engine[0].resetStatc();
-				owner.engine[0].statc[1] = 1;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p1Lose && !p2Lose) {
 				// 2P勝利
 				winnerID = 1;
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+			}
+			if (p1Lose || p2Lose) {
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
+				owner.engine[0].statc[1] = 1;
 				owner.engine[1].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}
@@ -959,11 +842,11 @@ public class AvalancheVSMode extends DummyMode {
 		} else {
 			receiver.drawMenuFont(engine, playerID, 6, 2, "LOSE", EventReceiver.COLOR_WHITE);
 		}
-
+		/*
 		receiver.drawMenuFont(engine, playerID, 0, 3, "ATTACK", EventReceiver.COLOR_ORANGE);
 		String strScore = String.format("%10d", garbageSent[playerID]);
 		receiver.drawMenuFont(engine, playerID, 0, 4, strScore);
-
+		*/
 		receiver.drawMenuFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_ORANGE);
 		String strLines = String.format("%10d", engine.statistics.lines);
 		receiver.drawMenuFont(engine, playerID, 0, 6, strLines);
@@ -971,12 +854,12 @@ public class AvalancheVSMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 0, 7, "PIECE", EventReceiver.COLOR_ORANGE);
 		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
 		receiver.drawMenuFont(engine, playerID, 0, 8, strPiece);
-
+		/*
 		receiver.drawMenuFont(engine, playerID, 0, 9, "ATTACK/MIN", EventReceiver.COLOR_ORANGE);
 		float apm = (float)(garbageSent[playerID] * 3600) / (float)(engine.statistics.time);
 		String strAPM = String.format("%10g", apm);
 		receiver.drawMenuFont(engine, playerID, 0, 10, strAPM);
-
+		*/
 		receiver.drawMenuFont(engine, playerID, 0, 11, "LINE/MIN", EventReceiver.COLOR_ORANGE);
 		String strLPM = String.format("%10g", engine.statistics.lpm);
 		receiver.drawMenuFont(engine, playerID, 0, 12, strLPM);
@@ -1002,6 +885,6 @@ public class AvalancheVSMode extends DummyMode {
 			saveMap(fldBackup[playerID], owner.replayProp, playerID);
 		}
 
-		owner.replayProp.setProperty("avalanchevs.version", version);
+		owner.replayProp.setProperty("nursevs.version", version);
 	}
 }

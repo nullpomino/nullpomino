@@ -96,7 +96,7 @@ public class NurseMode extends DummyMode {
 	/** Number of initial gem blocks */
 	private int hoverBlocks;
 	
-	/** Number of initial gem blocks */
+	/** Speed mode */
 	private int speed;
 	
 	/** Number gem blocks cleared in current chain */
@@ -144,6 +144,7 @@ public class NurseMode extends DummyMode {
 		engine.blockColors = BLOCK_COLORS;
 		engine.connectBlocks = true;
 		engine.cascadeDelay = 18;
+		engine.gemSameColor = true;
 	}
 
 	/**
@@ -245,8 +246,6 @@ public class NurseMode extends DummyMode {
 	public void startGame(GameEngine engine, int playerID) {
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
 		engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
-
-		engine.gemSameColor = true;
 
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
