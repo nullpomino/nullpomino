@@ -29,6 +29,7 @@
 package org.game_host.hebo.nullpomino.game.component;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.util.CustomProperties;
@@ -2533,6 +2534,8 @@ public class Field implements Serializable {
 
 	public void addRandomHoverBlocks(GameEngine engine, int count, int[] colors, int minY, boolean avoidLines)
 	{
+		Random posRand = new Random(engine.random.nextLong());
+		Random colorRand = new Random(engine.random.nextLong());
 		int placeHeight = height-minY;
 		int placeSize = placeHeight * width;
 		boolean[][] placeBlock = new boolean[width][placeHeight];
@@ -2544,8 +2547,8 @@ public class Field implements Serializable {
 			int x, y;
 			for (int i = 0; i < count; i++)
 			{
-				x = engine.random.nextInt(width);
-				y = engine.random.nextInt(placeHeight);
+				x = posRand.nextInt(width);
+				y = posRand.nextInt(placeHeight);
 				if (placeBlock[x][y])
 					i--;
 				else
@@ -2560,33 +2563,20 @@ public class Field implements Serializable {
 			int x, y;
 			for (int i = placeSize; i > count; i--)
 			{
-				x = engine.random.nextInt(width);
-				y = engine.random.nextInt(placeHeight);
+				x = posRand.nextInt(width);
+				y = posRand.nextInt(placeHeight);
 				if (placeBlock[x][y])
 					placeBlock[x][y] = false;
 				else
 					i++;
 			}
 		}
-		/*
-		for (int y = placeHeight-1; y >= 0; y--)
-		{
-			boolean bottomRowEmpty = true;
-			for (int x = 0; x < width && bottomRowEmpty; x++)
-				if (placeBlock[x][y])
-					bottomRowEmpty = false;
-			if (!bottomRowEmpty)
-				break;
-			minY++;
-			placeHeight--;
-		}
-		*/
 		for (int y = 0; y < placeHeight; y++)
 			for (int x = 0; x < width; x++)
 				if (placeBlock[x][y])
 				{
 					if (!avoidLines || colors.length == 1)
-						addHoverBlock(x, y+minY, colors[engine.random.nextInt(colors.length)]);
+						addHoverBlock(x, y+minY, colors[colorRand.nextInt(colors.length)]);
 					else
 					{
 						int trueY = y+minY;
@@ -2607,13 +2597,13 @@ public class Field implements Serializable {
 									(colors[1] == colorLeft && colors[0] != colorUp))
 								addHoverBlock(x, trueY, colors[0]);
 							else
-								addHoverBlock(x, trueY, colors[engine.random.nextInt(colors.length)]);
+								addHoverBlock(x, trueY, colors[colorRand.nextInt(colors.length)]);
 						}
 						else
 						{
 							int color;
 							do {
-								color = colors[engine.random.nextInt(colors.length)];
+								color = colors[colorRand.nextInt(colors.length)];
 							} while (color == colorUp || color == colorLeft);
 							addHoverBlock(x, trueY, color);
 						}
