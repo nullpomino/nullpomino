@@ -38,9 +38,9 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
 import org.game_host.hebo.nullpomino.util.GeneralUtil;
 
 /**
- * NURSE mode (beta)
+ * PHYSICIAN mode (beta)
  */
-public class NurseMode extends DummyMode {
+public class PhysicianMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
 	
@@ -107,7 +107,7 @@ public class NurseMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "NURSE (BETA)";
+		return "PHYSICIAN (BETA)";
 	}
 
 	/*
@@ -260,7 +260,7 @@ public class NurseMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		receiver.drawScoreFont(engine, playerID, 0, 0, "NURSE", EventReceiver.COLOR_DARKBLUE);
+		receiver.drawScoreFont(engine, playerID, 0, 0, "PHYSICIAN", EventReceiver.COLOR_DARKBLUE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
@@ -412,9 +412,9 @@ public class NurseMode extends DummyMode {
 	 * @param prop プロパティファイル
 	 */
 	private void loadSetting(CustomProperties prop) {
-		hoverBlocks = prop.getProperty("nurse.hoverBlocks", 40);
-		speed = prop.getProperty("nurse.speed", 1);
-		version = prop.getProperty("nurse.version", 0);
+		hoverBlocks = prop.getProperty("physician.hoverBlocks", 40);
+		speed = prop.getProperty("physician.speed", 1);
+		version = prop.getProperty("physician.version", 0);
 	}
 
 	/**
@@ -422,9 +422,9 @@ public class NurseMode extends DummyMode {
 	 * @param prop プロパティファイル
 	 */
 	private void saveSetting(CustomProperties prop) {
-		prop.setProperty("nurse.hoverBlocks", hoverBlocks);
-		prop.setProperty("nurse.speed", speed);
-		prop.setProperty("nurse.version", version);
+		prop.setProperty("physician.hoverBlocks", hoverBlocks);
+		prop.setProperty("physician.speed", speed);
+		prop.setProperty("physician.version", version);
 	}
 
 	/**
@@ -434,8 +434,8 @@ public class NurseMode extends DummyMode {
 	 */
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
-			rankingScore[i] = prop.getProperty("nurse.ranking." + ruleName + ".score." + i, 0);
-			rankingTime[i] = prop.getProperty("nurse.ranking." + ruleName + ".time." + i, -1);
+			rankingScore[i] = prop.getProperty("physician.ranking." + ruleName + ".score." + i, 0);
+			rankingTime[i] = prop.getProperty("physician.ranking." + ruleName + ".time." + i, -1);
 		}
 	}
 
@@ -446,8 +446,8 @@ public class NurseMode extends DummyMode {
 	 */
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
-			prop.setProperty("nurse.ranking." + ruleName + ".score." + i, rankingScore[i]);
-			prop.setProperty("nurse.ranking." + ruleName + ".time." + i, rankingTime[i]);
+			prop.setProperty("physician.ranking." + ruleName + ".score." + i, rankingScore[i]);
+			prop.setProperty("physician.ranking." + ruleName + ".time." + i, rankingTime[i]);
 		}
 	}
 

@@ -42,9 +42,9 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
 import org.game_host.hebo.nullpomino.util.GeneralUtil;
 
 /**
- * NURSE VS-BATTLE mode (beta)
+ * PHYSICIAN VS-BATTLE mode (beta)
  */
-public class NurseVSMode extends DummyMode {
+public class PhysicianVSMode extends DummyMode {
 	/** 現在のバージョン */
 	private static final int CURRENT_VERSION = 0;
 	
@@ -156,7 +156,7 @@ public class NurseVSMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "NURSE VS-BATTLE (BETA)";
+		return "PHYSICIAN VS-BATTLE (BETA)";
 	}
 
 	/*
@@ -208,13 +208,13 @@ public class NurseVSMode extends DummyMode {
 	 * @param preset プリセット番号
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
-		engine.speed.gravity = prop.getProperty("nursevs.gravity." + preset, 4);
-		engine.speed.denominator = prop.getProperty("nursevs.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("nursevs.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("nursevs.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("nursevs.lineDelay." + preset, 10);
-		engine.speed.lockDelay = prop.getProperty("nursevs.lockDelay." + preset, 30);
-		engine.speed.das = prop.getProperty("nursevs.das." + preset, 14);
+		engine.speed.gravity = prop.getProperty("physicianvs.gravity." + preset, 4);
+		engine.speed.denominator = prop.getProperty("physicianvs.denominator." + preset, 256);
+		engine.speed.are = prop.getProperty("physicianvs.are." + preset, 24);
+		engine.speed.areLine = prop.getProperty("physicianvs.areLine." + preset, 24);
+		engine.speed.lineDelay = prop.getProperty("physicianvs.lineDelay." + preset, 10);
+		engine.speed.lockDelay = prop.getProperty("physicianvs.lockDelay." + preset, 30);
+		engine.speed.das = prop.getProperty("physicianvs.das." + preset, 14);
 	}
 
 	/**
@@ -224,13 +224,13 @@ public class NurseVSMode extends DummyMode {
 	 * @param preset プリセット番号
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
-		prop.setProperty("nursevs.gravity." + preset, engine.speed.gravity);
-		prop.setProperty("nursevs.denominator." + preset, engine.speed.denominator);
-		prop.setProperty("nursevs.are." + preset, engine.speed.are);
-		prop.setProperty("nursevs.areLine." + preset, engine.speed.areLine);
-		prop.setProperty("nursevs.lineDelay." + preset, engine.speed.lineDelay);
-		prop.setProperty("nursevs.lockDelay." + preset, engine.speed.lockDelay);
-		prop.setProperty("nursevs.das." + preset, engine.speed.das);
+		prop.setProperty("physicianvs.gravity." + preset, engine.speed.gravity);
+		prop.setProperty("physicianvs.denominator." + preset, engine.speed.denominator);
+		prop.setProperty("physicianvs.are." + preset, engine.speed.are);
+		prop.setProperty("physicianvs.areLine." + preset, engine.speed.areLine);
+		prop.setProperty("physicianvs.lineDelay." + preset, engine.speed.lineDelay);
+		prop.setProperty("physicianvs.lockDelay." + preset, engine.speed.lockDelay);
+		prop.setProperty("physicianvs.das." + preset, engine.speed.das);
 	}
 
 	/**
@@ -240,14 +240,14 @@ public class NurseVSMode extends DummyMode {
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
-		bgmno = prop.getProperty("nursevs.bgmno", 0);
-		enableSE[playerID] = prop.getProperty("nursevs.enableSE.p" + playerID, true);
-		useMap[playerID] = prop.getProperty("nursevs.useMap.p" + playerID, false);
-		mapSet[playerID] = prop.getProperty("nursevs.mapSet.p" + playerID, 0);
-		mapNumber[playerID] = prop.getProperty("nursevs.mapNumber.p" + playerID, -1);
-		presetNumber[playerID] = prop.getProperty("nursevs.presetNumber.p" + playerID, 0);
-		speed[playerID] = prop.getProperty("nursevs.speed.p" + playerID, 1);
-		hoverBlocks[playerID] = prop.getProperty("nursevs.hoverBlocks.p" + playerID, 40);
+		bgmno = prop.getProperty("physicianvs.bgmno", 0);
+		enableSE[playerID] = prop.getProperty("physicianvs.enableSE.p" + playerID, true);
+		useMap[playerID] = prop.getProperty("physicianvs.useMap.p" + playerID, false);
+		mapSet[playerID] = prop.getProperty("physicianvs.mapSet.p" + playerID, 0);
+		mapNumber[playerID] = prop.getProperty("physicianvs.mapNumber.p" + playerID, -1);
+		presetNumber[playerID] = prop.getProperty("physicianvs.presetNumber.p" + playerID, 0);
+		speed[playerID] = prop.getProperty("physicianvs.speed.p" + playerID, 1);
+		hoverBlocks[playerID] = prop.getProperty("physicianvs.hoverBlocks.p" + playerID, 40);
 	}
 
 	/**
@@ -257,14 +257,14 @@ public class NurseVSMode extends DummyMode {
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
-		prop.setProperty("nursevs.bgmno", bgmno);
-		prop.setProperty("nursevs.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("nursevs.useMap.p" + playerID, useMap[playerID]);
-		prop.setProperty("nursevs.mapSet.p" + playerID, mapSet[playerID]);
-		prop.setProperty("nursevs.mapNumber.p" + playerID, mapNumber[playerID]);
-		prop.setProperty("nursevs.presetNumber.p" + playerID, presetNumber[playerID]);
-		prop.setProperty("nursevs.speed.p" + playerID, speed[playerID]);
-		prop.setProperty("nursevs.hoverBlocks.p" + playerID, hoverBlocks[playerID]);
+		prop.setProperty("physicianvs.bgmno", bgmno);
+		prop.setProperty("physicianvs.enableSE.p" + playerID, enableSE[playerID]);
+		prop.setProperty("physicianvs.useMap.p" + playerID, useMap[playerID]);
+		prop.setProperty("physicianvs.mapSet.p" + playerID, mapSet[playerID]);
+		prop.setProperty("physicianvs.mapNumber.p" + playerID, mapNumber[playerID]);
+		prop.setProperty("physicianvs.presetNumber.p" + playerID, presetNumber[playerID]);
+		prop.setProperty("physicianvs.speed.p" + playerID, speed[playerID]);
+		prop.setProperty("physicianvs.hoverBlocks.p" + playerID, hoverBlocks[playerID]);
 	}
 
 	/**
@@ -353,7 +353,7 @@ public class NurseVSMode extends DummyMode {
 		} else {
 			loadOtherSetting(engine, engine.owner.replayProp);
 			loadPreset(engine, engine.owner.replayProp, -1 - playerID);
-			version = owner.replayProp.getProperty("nursevs.version", 0);
+			version = owner.replayProp.getProperty("physicianvs.version", 0);
 		}
 	}
 
@@ -676,7 +676,7 @@ public class NurseVSMode extends DummyMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		// ステータス表示
 		if(playerID == 0) {
-			receiver.drawScoreFont(engine, playerID, -1, 0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
+			receiver.drawScoreFont(engine, playerID, -1, 0, "PHYSICIAN VS", EventReceiver.COLOR_GREEN);
 			/*
 			receiver.drawScoreFont(engine, playerID, -1, 2, "GARBAGE", EventReceiver.COLOR_PURPLE);
 			String garbageStr1P = String.valueOf(garbage[0]);
@@ -886,6 +886,6 @@ public class NurseVSMode extends DummyMode {
 			saveMap(fldBackup[playerID], owner.replayProp, playerID);
 		}
 
-		owner.replayProp.setProperty("nursevs.version", version);
+		owner.replayProp.setProperty("physicianvs.version", version);
 	}
 }

@@ -5,4 +5,4 @@ org.game_host.hebo.nullpomino.game.subsystem.wallkick.ClassicPlusWallkick
 org.game_host.hebo.nullpomino.game.subsystem.wallkick.DTETWallkick
 org.game_host.hebo.nullpomino.game.subsystem.wallkick.WallOnlyWallkick
 org.game_host.hebo.nullpomino.game.subsystem.wallkick.AvalancheWallkick
-org.game_host.hebo.nullpomino.game.subsystem.wallkick.NurseWallkick
+org.game_host.hebo.nullpomino.game.subsystem.wallkick.PhysicianWallkick
