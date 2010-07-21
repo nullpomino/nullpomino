@@ -908,7 +908,7 @@ public class AvalancheVSMode extends DummyMode {
 		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
 		// せり上がりメーター
 		if(garbage[playerID] * blockHeight / width > engine.meterValue) {
-			engine.meterValue += blockHeight / 2;
+			engine.meterValue++;
 		} else if(garbage[playerID] * blockHeight / width < engine.meterValue) {
 			engine.meterValue--;
 		}
