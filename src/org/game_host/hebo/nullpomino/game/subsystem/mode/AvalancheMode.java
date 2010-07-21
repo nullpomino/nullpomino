@@ -83,7 +83,7 @@ public class AvalancheMode extends DummyMode {
 	private static final int ULTRA_MAX_TIME = 10800;
 
 	/** Max score in Sprint */
-	private static final int SPRINT_MAX_SCORE = 150;
+	private static final int SPRINT_MAX_SCORE = 15000;
 
 	/** GameManager object (Manages entire game status) */
 	private GameManager owner;
@@ -403,7 +403,7 @@ public class AvalancheMode extends DummyMode {
 			if(remainTime <= 600) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			// 時間切れ
-			if(engine.statistics.time >= ULTRA_MAX_TIME) {
+			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;
 				engine.resetStatc();
