@@ -647,8 +647,6 @@ public class PhysicianVSMode extends DummyMode {
 			}
 			if(hoverBlocks[playerID] > 0) {
 				engine.createFieldIfNeeded();
-
-				engine.createFieldIfNeeded();
 				int minY = 6;
 				if (hoverBlocks[playerID] >= 80) minY = 3;
 				else if (hoverBlocks[playerID] >= 72) minY = 4;
