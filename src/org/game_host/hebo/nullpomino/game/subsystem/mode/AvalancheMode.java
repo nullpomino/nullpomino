@@ -450,7 +450,8 @@ public class AvalancheMode extends DummyMode {
 			else
 				zenKeshi = false;
 
-			int chain = engine.chain-1;
+			int chain = engine.chain;
+			engine.playSE("combo" + Math.min(chain, 20));
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
@@ -460,12 +461,12 @@ public class AvalancheMode extends DummyMode {
 			if (chain == 0)
 				firstExtra = avalanche > engine.colorClearSize;
 			*/
-			if (chain == 1)
+			if (chain == 2)
 				multiplier += 8;
-			else if (chain == 2)
+			else if (chain == 3)
 				multiplier += 16;
-			else if (chain >= 3)
-				multiplier += 32*(chain-2);
+			else if (chain >= 4)
+				multiplier += 32*(chain-3);
 			/*
 			if (firstExtra)
 				multiplier++;

@@ -808,6 +808,7 @@ public class AvalancheVSMode extends DummyMode {
 				zenKeshi[playerID] = false;
 
 			int chain = engine.chain;
+			engine.playSE("combo" + Math.min(chain, 20));
 			int multiplier = engine.field.colorClearExtraCount;
 			if (big[playerID])
 				multiplier >>= 2;

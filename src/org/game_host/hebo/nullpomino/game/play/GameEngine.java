@@ -2540,7 +2540,8 @@ public class GameEngine {
 					if(li == 3) statistics.totalTSpinTriple++;
 				}
 			} else {
-				playSE("erase" + li);
+				if (clearMode == CLEAR_LINE)
+					playSE("erase" + li);
 
 				if((ending == 0) || (staffrollEnableStatistics)) {
 					if(li == 1) statistics.totalSingle++;
