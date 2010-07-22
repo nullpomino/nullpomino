@@ -64,14 +64,14 @@ public class AvalancheVSMode extends DummyMode {
 	/** プレイヤーの数 */
 	private static final int MAX_PLAYERS = 2;
 	
-	/** Names of garbage counter setting constants */
-	private final int GARBAGE_COUNTER_OFF = 0, GARBAGE_COUNTER_ON = 1, GARBAGE_COUNTER_FEVER = 2;
+	/** Names of ojama counter setting constants */
+	private final int OJAMA_COUNTER_OFF = 0, OJAMA_COUNTER_ON = 1, OJAMA_COUNTER_FEVER = 2;
 
 	/** 邪魔ブロックタイプの表示名 */
-	//private final String[] GARBAGE_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
+	//private final String[] OJAMA_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
 	
-	/** Names of garbage counter settings */
-	private final String[] GARBAGE_COUNTER_STRING = {"OFF", "ON", "FEVER"};
+	/** Names of ojama counter settings */
+	private final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
 
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
@@ -82,14 +82,14 @@ public class AvalancheVSMode extends DummyMode {
 	/** 描画などのイベント処理 */
 	private EventReceiver receiver;
 
-	/** Rule settings for countering garbage not yet dropped */
-	private int[] garbageCounterMode;
+	/** Rule settings for countering ojama not yet dropped */
+	private int[] ojamaCounterMode;
 
 	/** 溜まっている邪魔ブロックの数 */
-	private int[] garbage;
+	private int[] ojama;
 
 	/** 送った邪魔ブロックの数 */
-	private int[] garbageSent;
+	private int[] ojamaSent;
 
 	/** 最後にスコア獲得してから経過した時間 */
 	private int[] scgettime;
@@ -139,29 +139,59 @@ public class AvalancheVSMode extends DummyMode {
 	/** Amount of points earned from most recent clear */
 	private int[] lastscore, lastmultiplier;
 	
-	/** Amount of garbage added in current chain */
-	private int[] garbageAdd;
+	/** Amount of ojama added in current chain */
+	private int[] ojamaAdd;
 	
 	/** Score */
 	private int[] score;
 	
-	/** Max amount of garbage dropped at once */
+	/** Max amount of ojama dropped at once */
 	private int[] maxAttack;
 
 	/** Number of colors to use */
 	private int[] numColors;
 
-	/** Minimum chain count needed to send garbage */
+	/** Minimum chain count needed to send ojama */
 	private int[] rensaShibari;
 
-	/** Denominator for score-to-garbage conversion */
-	private int[] garbageRate;
+	/** Denominator for score-to-ojama conversion */
+	private int[] ojamaRate;
 	
-	/** Settings for hard garbage blocks */
-	private int[] garbageHard;
+	/** Settings for hard ojama blocks */
+	private int[] ojamaHard;
 
 	/** Hurryup開始までの秒数(0でHurryupなし) */
 	private int[] hurryupSeconds;
+
+	/** Fever points needed to enter Fever Mode */
+	private int[] feverThreshold;
+	
+	/** Fever points */
+	private int[] feverPoints;
+
+	/** Fever time */
+	private int[] feverTime;
+
+	/** Minimum and maximum fever time */
+	private int[] feverTimeMin, feverTimeMax;
+
+	/** Flag set to true when player is in Fever Mode */
+	private boolean[] inFever;
+
+	/** Backup fields for Fever Mode */
+	private Field[] feverBackupField;
+
+	/** Second ojama counter for Fever Mode */
+	private int[] ojamaFever;
+
+	/** Set to true when opponent starts chain while in Fever Mode */
+	private boolean[] ojamaAddToFever;
+	
+	/** Set to true when last drop resulted in a clear */
+	private boolean[] cleared;
+	
+	/** Set to true when dropping ojama blocks */
+	private boolean[] ojamaDrop;
 
 	/*
 	 * モード名
@@ -187,9 +217,9 @@ public class AvalancheVSMode extends DummyMode {
 		owner = manager;
 		receiver = owner.receiver;
 
-		garbageCounterMode = new int[MAX_PLAYERS];
-		garbage = new int[MAX_PLAYERS];
-		garbageSent = new int[MAX_PLAYERS];
+		ojamaCounterMode = new int[MAX_PLAYERS];
+		ojama = new int[MAX_PLAYERS];
+		ojamaSent = new int[MAX_PLAYERS];
 
 		scgettime = new int[MAX_PLAYERS];
 		bgmno = 0;
@@ -208,13 +238,25 @@ public class AvalancheVSMode extends DummyMode {
 		zenKeshi = new boolean[MAX_PLAYERS];
 		lastscore = new int[MAX_PLAYERS];
 		lastmultiplier = new int[MAX_PLAYERS];
-		garbageAdd = new int[MAX_PLAYERS];
+		ojamaAdd = new int[MAX_PLAYERS];
 		score = new int[MAX_PLAYERS];
 		numColors = new int[MAX_PLAYERS];
 		maxAttack = new int[MAX_PLAYERS];
 		rensaShibari = new int[MAX_PLAYERS];
-		garbageRate = new int[MAX_PLAYERS];
-		garbageHard = new int[MAX_PLAYERS];
+		ojamaRate = new int[MAX_PLAYERS];
+		ojamaHard = new int[MAX_PLAYERS];
+
+		feverThreshold = new int[MAX_PLAYERS];
+		feverPoints = new int[MAX_PLAYERS];
+		feverTime = new int[MAX_PLAYERS];
+		feverTimeMin = new int[MAX_PLAYERS];
+		feverTimeMax = new int[MAX_PLAYERS];
+		inFever = new boolean[MAX_PLAYERS];
+		feverBackupField = new Field[MAX_PLAYERS];
+		ojamaFever = new int[MAX_PLAYERS];
+		ojamaAddToFever = new boolean[MAX_PLAYERS];
+		cleared = new boolean[MAX_PLAYERS];
+		ojamaDrop = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -259,7 +301,7 @@ public class AvalancheVSMode extends DummyMode {
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
 		bgmno = prop.getProperty("avalanchevs.bgmno", 0);
-		garbageCounterMode[playerID] = prop.getProperty("avalanchevs.garbageCounterMode", GARBAGE_COUNTER_ON);
+		ojamaCounterMode[playerID] = prop.getProperty("avalanchevs.ojamaCounterMode", OJAMA_COUNTER_ON);
 		big[playerID] = prop.getProperty("avalanchevs.big.p" + playerID, false);
 		enableSE[playerID] = prop.getProperty("avalanchevs.enableSE.p" + playerID, true);
 		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
@@ -270,8 +312,11 @@ public class AvalancheVSMode extends DummyMode {
 		maxAttack[playerID] = prop.getProperty("avalanchevs.maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevs.numColors.p" + playerID, 5);
 		rensaShibari[playerID] = prop.getProperty("avalanchevs.rensaShibari.p" + playerID, 1);
-		garbageRate[playerID] = prop.getProperty("avalanchevs.garbageRate.p" + playerID, 120);
-		garbageHard[playerID] = prop.getProperty("avalanchevs.garbageHard.p" + playerID, 0);
+		ojamaRate[playerID] = prop.getProperty("avalanchevs.ojamaRate.p" + playerID, 120);
+		ojamaHard[playerID] = prop.getProperty("avalanchevs.ojamaHard.p" + playerID, 0);
+		feverThreshold[playerID] = prop.getProperty("avalanchevs.feverThreshold.p" + playerID, 0);
+		feverTimeMin[playerID] = prop.getProperty("avalanchevs.feverTimeMin.p" + playerID, 15);
+		feverTimeMax[playerID] = prop.getProperty("avalanchevs.feverTimeMax.p" + playerID, 30);
 	}
 
 	/**
@@ -282,7 +327,7 @@ public class AvalancheVSMode extends DummyMode {
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
 		prop.setProperty("avalanchevs.bgmno", bgmno);
-		prop.setProperty("avalanchevs.garbageCounterMode", garbageCounterMode[playerID]);
+		prop.setProperty("avalanchevs.ojamaCounterMode", ojamaCounterMode[playerID]);
 		prop.setProperty("avalanchevs.big.p" + playerID, big[playerID]);
 		prop.setProperty("avalanchevs.enableSE.p" + playerID, enableSE[playerID]);
 		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
@@ -293,8 +338,9 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("avalanchevs.numColors.p" + playerID, numColors[playerID]);
 		prop.setProperty("avalanchevs.rensaShibari.p" + playerID, rensaShibari[playerID]);
-		prop.setProperty("avalanchevs.garbageRate.p" + playerID, garbageRate[playerID]);
-		prop.setProperty("avalanchevs.garbageHard.p" + playerID, garbageHard[playerID]);
+		prop.setProperty("avalanchevs.ojamaRate.p" + playerID, ojamaRate[playerID]);
+		prop.setProperty("avalanchevs.ojamaHard.p" + playerID, ojamaHard[playerID]);
+		prop.setProperty("avalanchevs.feverThreshold.p" + playerID, feverThreshold[playerID]);
 	}
 
 	/**
@@ -366,11 +412,17 @@ public class AvalancheVSMode extends DummyMode {
 		engine.randomBlockColor = true;
 		engine.connectBlocks = false;
 
-		garbage[playerID] = 0;
-		garbageSent[playerID] = 0;
+		ojama[playerID] = 0;
+		ojamaSent[playerID] = 0;
 		score[playerID] = 0;
 		zenKeshi[playerID] = false;
 		scgettime[playerID] = 0;
+		feverPoints[playerID] = 0;
+		feverTime[playerID] = feverTimeMin[playerID] * 60;
+		inFever[playerID] = false;
+		feverBackupField[playerID] = null;
+		cleared[playerID] = false;
+		ojamaDrop[playerID] = false;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
@@ -393,13 +445,13 @@ public class AvalancheVSMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 21;
+				if(engine.statc[2] < 0) engine.statc[2] = 24;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 21) engine.statc[2] = 0;
+				if(engine.statc[2] > 24) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -458,9 +510,9 @@ public class AvalancheVSMode extends DummyMode {
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
 					break;
 				case 9:
-					garbageCounterMode[playerID] += change;
-					if(garbageCounterMode[playerID] < 0) garbageCounterMode[playerID] = 2;
-					if(garbageCounterMode[playerID] > 2) garbageCounterMode[playerID] = 0;
+					ojamaCounterMode[playerID] += change;
+					if(ojamaCounterMode[playerID] < 0) ojamaCounterMode[playerID] = 2;
+					if(ojamaCounterMode[playerID] > 2) ojamaCounterMode[playerID] = 0;
 					break;
 				case 10:
 					maxAttack[playerID] += change;
@@ -478,9 +530,9 @@ public class AvalancheVSMode extends DummyMode {
 					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
 					break;
 				case 13:
-					garbageRate[playerID] += change*10;
-					if(garbageRate[playerID] < 10) garbageRate[playerID] = 1000;
-					if(garbageRate[playerID] > 1000) garbageRate[playerID] = 10;
+					ojamaRate[playerID] += change*10;
+					if(ojamaRate[playerID] < 10) ojamaRate[playerID] = 1000;
+					if(ojamaRate[playerID] > 1000) ojamaRate[playerID] = 10;
 					break;
 				case 14:
 					big[playerID] = !big[playerID];
@@ -494,9 +546,9 @@ public class AvalancheVSMode extends DummyMode {
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
 				case 17:
-					garbageHard[playerID] += change;
-					if(garbageHard[playerID] < 0) garbageHard[playerID] = 9;
-					if(garbageHard[playerID] > 9) garbageHard[playerID] = 0;
+					ojamaHard[playerID] += change;
+					if(ojamaHard[playerID] < 0) ojamaHard[playerID] = 9;
+					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 0;
 					break;
 				case 18:
 					bgmno += change;
@@ -529,6 +581,21 @@ public class AvalancheVSMode extends DummyMode {
 					} else {
 						mapNumber[playerID] = -1;
 					}
+					break;
+				case 22:
+					feverThreshold[playerID] += change;
+					if(feverThreshold[playerID] < 0) feverThreshold[playerID] = 9;
+					if(feverThreshold[playerID] > 9) feverThreshold[playerID] = 0;
+					break;
+				case 23:
+					feverTimeMin[playerID] += change;
+					if(feverTimeMin[playerID] < 1) feverTimeMin[playerID] = feverTimeMax[playerID];
+					if(feverTimeMin[playerID] > feverTimeMax[playerID]) feverTimeMin[playerID] = 1;
+					break;
+				case 24:
+					feverTimeMax[playerID] += change;
+					if(feverTimeMax[playerID] < feverTimeMin[playerID]) feverTimeMax[playerID] = 99;
+					if(feverTimeMax[playerID] > 99) feverTimeMax[playerID] = feverTimeMin[playerID];
 					break;
 				}
 			}
@@ -634,7 +701,7 @@ public class AvalancheVSMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "COUNTER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_COUNTER_STRING[garbageCounterMode[playerID]], (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 1,  1, OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]], (engine.statc[2] == 9));
 				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_CYAN);
@@ -642,7 +709,7 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0,  6, "MIN CHAIN", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(rensaShibari[playerID]), (engine.statc[2] == 12));
 				receiver.drawMenuFont(engine, playerID, 0,  8, "OJAMA RATE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(garbageRate[playerID]), (engine.statc[2] == 13));
+				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(ojamaRate[playerID]), (engine.statc[2] == 13));
 				receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 14));
 				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
@@ -651,7 +718,7 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 				                      (engine.statc[2] == 16));
 				receiver.drawMenuFont(engine, playerID, 0, 16, "HARD OJAMA", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(garbageHard[playerID]), (engine.statc[2] == 17));
+				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 17));
 				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
 				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 18));
 			} else {
@@ -667,6 +734,13 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 									  (engine.statc[2] == 21));
+				receiver.drawMenuFont(engine, playerID, 0,  6, "FEVER", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  7, (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS",
+				                      (engine.statc[2] == 22));
+				receiver.drawMenuFont(engine, playerID, 0,  8, "F-MIN TIME", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  9, feverTimeMin[playerID] + "SEC", (engine.statc[2] == 23));
+				receiver.drawMenuFont(engine, playerID, 0, 10, "F-MAX TIME", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 11, feverTimeMax[playerID] + "SEC", (engine.statc[2] == 24));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -680,6 +754,7 @@ public class AvalancheVSMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
+			feverTime[playerID] = feverTimeMin[playerID] * 60;
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
@@ -743,21 +818,21 @@ public class AvalancheVSMode extends DummyMode {
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1, 0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
 
-			receiver.drawScoreFont(engine, playerID, -1, 2, "GARBAGE", EventReceiver.COLOR_PURPLE);
-			String garbageStr1P = String.valueOf(garbage[0]);
-			if (garbageAdd[0] > 0)
-				garbageStr1P = garbageStr1P + "(+" + String.valueOf(garbageAdd[0]) + ")";
-			String garbageStr2P = String.valueOf(garbage[1]);
-			if (garbageAdd[1] > 0)
-				garbageStr2P = garbageStr2P + "(+" + String.valueOf(garbageAdd[1]) + ")";
+			receiver.drawScoreFont(engine, playerID, -1, 2, "OJAMA", EventReceiver.COLOR_PURPLE);
+			String ojamaStr1P = String.valueOf(ojama[0]);
+			if (ojamaAdd[0] > 0 && !(inFever[0] && ojamaAddToFever[0]))
+				ojamaStr1P = ojamaStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
+			String ojamaStr2P = String.valueOf(ojama[1]);
+			if (ojamaAdd[1] > 0 && !(inFever[1] && ojamaAddToFever[1]))
+				ojamaStr2P = ojamaStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
 			receiver.drawScoreFont(engine, playerID, -1, 3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, 3, 3, garbageStr1P, (garbage[0] > 0));
+			receiver.drawScoreFont(engine, playerID, 3, 3, ojamaStr1P, (ojama[0] > 0));
 			receiver.drawScoreFont(engine, playerID, -1, 4, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 3, 4, garbageStr2P, (garbage[1] > 0));
+			receiver.drawScoreFont(engine, playerID, 3, 4, ojamaStr2P, (ojama[1] > 0));
 
 			receiver.drawScoreFont(engine, playerID, -1, 6, "ATTACK", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + String.valueOf(garbageSent[0]), EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + String.valueOf(garbageSent[1]), EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + String.valueOf(ojamaSent[0]), EventReceiver.COLOR_RED);
+			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + String.valueOf(ojamaSent[1]), EventReceiver.COLOR_BLUE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 10, "SCORE", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: " + String.valueOf(score[0]), EventReceiver.COLOR_RED);
@@ -765,14 +840,37 @@ public class AvalancheVSMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
+			
+			if (inFever[0] || inFever[1])
+			{
+				receiver.drawScoreFont(engine, playerID, -1, 17, "FEVER OJAMA", EventReceiver.COLOR_PURPLE);
+				String ojamaFeverStr1P = String.valueOf(ojamaFever[0]);
+				if (ojamaAdd[0] > 0 && inFever[0] && ojamaAddToFever[0])
+					ojamaFeverStr1P = ojamaFeverStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
+				String ojamaFeverStr2P = String.valueOf(ojamaFever[1]);
+				if (ojamaAdd[1] > 0 && inFever[1] && ojamaAddToFever[1])
+					ojamaFeverStr2P = ojamaFeverStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
+				receiver.drawScoreFont(engine, playerID, -1, 18, "1P:", EventReceiver.COLOR_RED);
+				receiver.drawScoreFont(engine, playerID, 3, 18, ojamaFeverStr1P, (ojamaFever[0] > 0));
+				receiver.drawScoreFont(engine, playerID, -1, 19, "2P:", EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 3, 19, ojamaFeverStr2P, (ojamaFever[1] > 0));
+			}
 		}
 		
 		if (!owner.engine[playerID].gameActive)
 			return;
-
+		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		if (feverThreshold[playerID] > 0)
+		{
+			receiver.drawMenuFont(engine, playerID, 0, 17, "FEVER POINT", playerColor);
+			receiver.drawMenuFont(engine, playerID, 0, 18, feverPoints[playerID] + " / " + feverThreshold[playerID], inFever[playerID]);
+			receiver.drawMenuFont(engine, playerID, 0, 19, "FEVER TIME", playerColor);
+			receiver.drawMenuFont(engine, playerID, 0, 20, GeneralUtil.getTime(feverTime[playerID]), inFever[playerID]);
+		}
+			
 		if(zenKeshi[playerID])
 			receiver.drawMenuFont(engine, playerID, 1, 21, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
-		if (garbageHard[playerID] > 0 && engine.field != null)
+		if (ojamaHard[playerID] > 0 && engine.field != null)
 			for (int x = 0; x < engine.field.getWidth(); x++)
 				for (int y = 0; y < engine.field.getHeight(); y++)
 				{
@@ -794,11 +892,11 @@ public class AvalancheVSMode extends DummyMode {
 			avalanche >>= 2;
 		// ラインクリアボーナス
 		int pts = avalanche*10;
-		int garbageNew = 0;
-		boolean cleared = avalanche > 0;
-		if (cleared) {
+		int ojamaNew = 0;
+		if (avalanche > 0) {
+			cleared[playerID] = true;
 			if (zenKeshi[playerID])
-				garbageNew += 30;
+				ojamaNew += 30;
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 				zenKeshi[playerID] = true;
@@ -809,6 +907,8 @@ public class AvalancheVSMode extends DummyMode {
 
 			int chain = engine.chain;
 			engine.playSE("combo" + Math.min(chain, 20));
+			if (chain == 1)
+				ojamaAddToFever[enemyID] = inFever[enemyID];
 			int multiplier = engine.field.colorClearExtraCount;
 			if (big[playerID])
 				multiplier >>= 2;
@@ -845,54 +945,111 @@ public class AvalancheVSMode extends DummyMode {
 			if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
 				ptsTotal <<= engine.statistics.time / (hurryupSeconds[playerID] * 60);
 
-			garbageNew += (ptsTotal+garbageRate[playerID]-1)/garbageRate[playerID];
+			ojamaNew += (ptsTotal+ojamaRate[playerID]-1)/ojamaRate[playerID];
 			if (chain >= rensaShibari[playerID])
 			{
-				garbageSent[playerID] += garbageNew;
-				if (garbageCounterMode[playerID] != GARBAGE_COUNTER_OFF)
+				ojamaSent[playerID] += ojamaNew;
+				if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
 				{
-					if (garbage[playerID] > 0)
+					boolean countered = false;
+					if (inFever[playerID])
 					{
-						int delta = Math.min(garbage[playerID], garbageNew);
-						garbage[playerID] -= delta;
-						garbageNew -= delta;
+						if (ojamaFever[playerID] > 0 && ojamaNew > 0)
+						{
+							int delta = Math.min(ojamaFever[playerID], ojamaNew);
+							ojamaFever[playerID] -= delta;
+							ojamaNew -= delta;
+							countered = true;
+						}
+						if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
+						{
+							int delta = Math.min(ojamaAdd[playerID], ojamaNew);
+							ojamaAdd[playerID] -= delta;
+							ojamaNew -= delta;
+							countered = true;
+						}
 					}
-					if (garbageAdd[playerID] > 0 && garbageNew > 0)
+					if (ojama[playerID] > 0 && ojamaNew > 0)
 					{
-						int delta = Math.min(garbageAdd[playerID], garbageNew);
-						garbageAdd[playerID] -= delta;
-						garbageNew -= delta;
+						int delta = Math.min(ojama[playerID], ojamaNew);
+						ojama[playerID] -= delta;
+						ojamaNew -= delta;
+						countered = true;
+					}
+					if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
+					{
+						int delta = Math.min(ojamaAdd[playerID], ojamaNew);
+						ojamaAdd[playerID] -= delta;
+						ojamaNew -= delta;
+						countered = true;
+					}
+					if (countered)
+					{
+						if (feverThreshold[playerID] > 0 && feverThreshold[playerID] > feverPoints[playerID])
+							feverPoints[playerID]++;
+						if (feverThreshold[enemyID] > 0)
+							feverTime[enemyID] = Math.min(feverTime[enemyID]+60,feverTimeMax[enemyID]*60);
 					}
 				}
-				if (garbageNew > 0)
-					garbageAdd[enemyID] += garbageNew;
+				if (ojamaNew > 0)
+					ojamaAdd[enemyID] += ojamaNew;
 			}
 		}
-		if ((!cleared || garbageCounterMode[playerID] != GARBAGE_COUNTER_FEVER)
-				&& !engine.field.canCascade() && garbage[playerID] > 0)
-		{
-			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
-			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID], garbageHard[playerID]);
-		}
+		else if (!engine.field.canCascade())
+			cleared[playerID] = false;
 	}
 
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		if (garbageAdd[enemyID] > 0)
+		if (ojamaAdd[enemyID] > 0)
 		{
-			garbage[enemyID] += garbageAdd[enemyID];
-			garbageAdd[enemyID] = 0;
+			if (ojamaAddToFever[enemyID] && inFever[enemyID])
+				ojamaFever[enemyID] += ojamaAdd[enemyID];
+			else
+				ojama[enemyID] += ojamaAdd[enemyID];
+			ojamaAdd[enemyID] = 0;
 		}
-		if (garbageCounterMode[playerID] != GARBAGE_COUNTER_FEVER && garbage[playerID] > 0)
+		checkFeverEnd(engine, playerID);
+		int ojamaNow = inFever[playerID] ? ojamaFever[playerID] : ojama[playerID];
+		if (ojamaNow > 0 && !ojamaDrop[playerID] &&
+				(!cleared[playerID] || ojamaCounterMode[playerID] != OJAMA_COUNTER_FEVER))
 		{
-			int drop = Math.min(garbage[playerID], maxAttack[playerID]);
-			garbage[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID], garbageHard[playerID]);
+			ojamaDrop[playerID] = true;
+			int drop = Math.min(ojamaNow, maxAttack[playerID]);
+			if (inFever[playerID])
+				ojamaFever[playerID] -= drop;
+			else
+				ojama[playerID] -= drop;
+			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID]);
 			return true;
 		}
+		checkFeverStart(engine, playerID);
 		return false;
+	}
+	private void checkFeverStart(GameEngine engine, int playerID)
+	{
+		if (!inFever[playerID] && feverPoints[playerID] == feverThreshold[playerID])
+		{
+			inFever[playerID] = true;
+			feverBackupField[playerID] = engine.field;
+			engine.field = null;
+			engine.createFieldIfNeeded();
+			//TODO: Add preset chain.
+		}
+	}
+	private void checkFeverEnd(GameEngine engine, int playerID)
+	{
+		if (inFever[playerID] && feverTime[playerID] == 0)
+		{
+			inFever[playerID] = false;
+			feverTime[playerID] = feverTimeMin[playerID] * 60;
+			feverPoints[playerID] = 0;
+			engine.field = feverBackupField[playerID];
+			ojama[playerID] += ojamaFever[playerID];
+			ojamaFever[playerID] = 0;
+			ojamaAddToFever[playerID] = false;
+		}
 	}
 
 	/*
@@ -901,20 +1058,28 @@ public class AvalancheVSMode extends DummyMode {
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		scgettime[playerID]++;
+		if (inFever[playerID] && feverTime[playerID] > 0)
+		{
+			if (feverTime[playerID] == 1)
+				engine.playSE("levelstop");
+			feverTime[playerID]--;
+		}
+		if (engine.stat == GameEngine.STAT_MOVE)
+			ojamaDrop[playerID] = false;
 
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();
 		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
 		// せり上がりメーター
-		if(garbage[playerID] * blockHeight / width > engine.meterValue) {
+		if(ojama[playerID] * blockHeight / width > engine.meterValue) {
 			engine.meterValue++;
-		} else if(garbage[playerID] * blockHeight / width < engine.meterValue) {
+		} else if(ojama[playerID] * blockHeight / width < engine.meterValue) {
 			engine.meterValue--;
 		}
-		if(garbage[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
-		else if(garbage[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		else if(garbage[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+		if(ojama[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
+		else if(ojama[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+		else if(ojama[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
 
 		// 決着
@@ -962,7 +1127,7 @@ public class AvalancheVSMode extends DummyMode {
 		}
 
 		receiver.drawMenuFont(engine, playerID, 0, 3, "ATTACK", EventReceiver.COLOR_ORANGE);
-		String strScore = String.format("%10d", garbageSent[playerID]);
+		String strScore = String.format("%10d", ojamaSent[playerID]);
 		receiver.drawMenuFont(engine, playerID, 0, 4, strScore);
 
 		receiver.drawMenuFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_ORANGE);
@@ -974,7 +1139,7 @@ public class AvalancheVSMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 0, 8, strPiece);
 
 		receiver.drawMenuFont(engine, playerID, 0, 9, "ATTACK/MIN", EventReceiver.COLOR_ORANGE);
-		float apm = (float)(garbageSent[playerID] * 3600) / (float)(engine.statistics.time);
+		float apm = (float)(ojamaSent[playerID] * 3600) / (float)(engine.statistics.time);
 		String strAPM = String.format("%10g", apm);
 		receiver.drawMenuFont(engine, playerID, 0, 10, strAPM);
 
