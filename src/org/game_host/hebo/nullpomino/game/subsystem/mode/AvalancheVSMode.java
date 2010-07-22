@@ -901,6 +901,7 @@ public class AvalancheVSMode extends DummyMode {
 				engine.playSE("bravo");
 				zenKeshi[playerID] = true;
 				engine.statistics.score += 2100;
+				score[playerID] += 2100;
 			}
 			else
 				zenKeshi[playerID] = false;
@@ -1065,8 +1066,10 @@ public class AvalancheVSMode extends DummyMode {
 			feverTime[playerID]--;
 		}
 		if (engine.stat == GameEngine.STAT_MOVE)
+		{
+			cleared[playerID] = false;
 			ojamaDrop[playerID] = false;
-
+		}
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();
