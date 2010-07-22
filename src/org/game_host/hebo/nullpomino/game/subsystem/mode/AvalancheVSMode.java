@@ -494,7 +494,7 @@ public class AvalancheVSMode extends DummyMode {
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 24) engine.statc[2] = 0;
+				if(engine.statc[2] > 26) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
