@@ -1081,6 +1081,7 @@ public class AvalancheVSMode extends DummyMode {
 				ojama[enemyID] += ojamaAdd[enemyID];
 			ojamaAdd[enemyID] = 0;
 		}
+		int feverChainNow = feverChain[playerID];
 		if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_FEVER)
 		{
 			if (feverTime[playerID] > 0)
@@ -1100,13 +1101,23 @@ public class AvalancheVSMode extends DummyMode {
 		{
 			if (feverTime[playerID] > 0)
 				feverTime[playerID] += (engine.chain-2)*30;
-			int chainShort = feverChain[playerID] - engine.chain;
-			if (chainShort <= 0 && feverChain[playerID] < feverChainMax[playerID])
-				feverChain[playerID]++;
+			int chainShort = feverChainNow - engine.chain;
+			if (chainShort <= 0)
+			{
+				engine.playSE("cool");
+				if (feverChain[playerID] < feverChainMax[playerID])
+					feverChain[playerID]++;
+			}
 			else if(chainShort == 2)
+			{
+				engine.playSE("regret");
 				feverChain[playerID]--;
+			}
 			else if (chainShort > 2)
+			{
+				engine.playSE("regret");
 				feverChain[playerID]-=2;
+			}
 			if (feverChain[playerID] < feverChainMin[playerID])
 				feverChain[playerID] = feverChainMin[playerID];
 			loadFeverMap(engine, playerID, feverChain[playerID]);
