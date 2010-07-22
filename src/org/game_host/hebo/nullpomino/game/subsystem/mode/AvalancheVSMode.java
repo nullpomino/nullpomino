@@ -1100,7 +1100,11 @@ public class AvalancheVSMode extends DummyMode {
 		if (inFever[playerID] && cleared[playerID])
 		{
 			if (feverTime[playerID] > 0)
-				feverTime[playerID] += (engine.chain-2)*30;
+			{
+				int addTime = (engine.chain-2)*30;
+				if (addTime > 0)
+					feverTime[playerID] += addTime;
+			}
 			int chainShort = feverChainNow - engine.chain;
 			if (chainShort <= 0)
 			{
