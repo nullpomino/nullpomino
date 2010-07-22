@@ -987,7 +987,7 @@ public class AvalancheVSMode extends DummyMode {
 					{
 						if (feverThreshold[playerID] > 0 && feverThreshold[playerID] > feverPoints[playerID])
 							feverPoints[playerID]++;
-						if (feverThreshold[enemyID] > 0)
+						if (feverThreshold[enemyID] > 0 && !inFever[enemyID])
 							feverTime[enemyID] = Math.min(feverTime[enemyID]+60,feverTimeMax[enemyID]*60);
 					}
 				}
@@ -1029,7 +1029,7 @@ public class AvalancheVSMode extends DummyMode {
 	}
 	private void checkFeverStart(GameEngine engine, int playerID)
 	{
-		if (!inFever[playerID] && feverPoints[playerID] == feverThreshold[playerID])
+		if (!inFever[playerID] && feverPoints[playerID] >= feverThreshold[playerID] && feverThreshold[playerID] > 0)
 		{
 			inFever[playerID] = true;
 			feverBackupField[playerID] = engine.field;
