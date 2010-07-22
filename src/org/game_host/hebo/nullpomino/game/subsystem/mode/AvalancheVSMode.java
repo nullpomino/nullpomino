@@ -1081,6 +1081,36 @@ public class AvalancheVSMode extends DummyMode {
 				ojama[enemyID] += ojamaAdd[enemyID];
 			ojamaAdd[enemyID] = 0;
 		}
+		if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_FEVER)
+		{
+			if (feverTime[playerID] > 0)
+				feverTime[playerID] += 300;
+			if (inFever[playerID] || feverPoints[playerID] >= feverThreshold[playerID])
+			{
+				feverChain[playerID] += 2;
+				if (feverChain[playerID] > feverChainMax[playerID])
+					feverChain[playerID] = feverChainMax[playerID];
+			}
+			else
+				loadFeverMap(engine, playerID, 4);
+			zenKeshi[playerID] = false;
+			zenKeshiDisplay[playerID] = 120;
+		}
+		if (inFever[playerID] && cleared[playerID])
+		{
+			if (feverTime[playerID] > 0)
+				feverTime[playerID] += (engine.chain-2)*30;
+			int chainShort = feverChain[playerID] - engine.chain;
+			if (chainShort <= 0 && feverChain[playerID] < feverChainMax[playerID])
+				feverChain[playerID]++;
+			else if(chainShort == 2)
+				feverChain[playerID]--;
+			else if (chainShort > 2)
+				feverChain[playerID]-=2;
+			if (feverChain[playerID] < feverChainMin[playerID])
+				feverChain[playerID] = feverChainMin[playerID];
+			loadFeverMap(engine, playerID, feverChain[playerID]);
+		}
 		//Check to end Fever Mode
 		if (inFever[playerID] && feverTime[playerID] == 0)
 		{
@@ -1112,16 +1142,17 @@ public class AvalancheVSMode extends DummyMode {
 			inFever[playerID] = true;
 			feverBackupField[playerID] = engine.field;
 			engine.field = null;
-			loadFeverMap(engine, playerID);
+			loadFeverMap(engine, playerID, feverChain[playerID]);
 		}
 		return false;
 	}
 
-	private void loadFeverMap(GameEngine engine, int playerID) {
+	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
 		engine.createFieldIfNeeded();
+		engine.field.reset();
 		engine.field.stringToField(propFeverMap[playerID].getProperty(
 				feverMapSubsets[playerID][engine.random.nextInt(feverMapSubsets[playerID].length)] +
-				"." + numColors[playerID] + "colors." + feverChain[playerID] + "chain"));
+				"." + numColors[playerID] + "colors." + chain + "chain"));
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
