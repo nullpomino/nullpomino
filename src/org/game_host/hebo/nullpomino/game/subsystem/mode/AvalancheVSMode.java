@@ -60,19 +60,28 @@ public class AvalancheVSMode extends DummyMode {
 		Block.BLOCK_COLOR_YELLOW,
 		Block.BLOCK_COLOR_PURPLE
 	};
+	
+	/** Fever map files list */
+	private static final String[] FEVER_MAPS = 
+	{
+		"Fever", "15th", "15thDS", "7", "Compendium"
+	};
 
 	/** プレイヤーの数 */
 	private static final int MAX_PLAYERS = 2;
 	
-	/** Names of ojama counter setting constants */
+	/** Ojama counter setting constants */
 	private final int OJAMA_COUNTER_OFF = 0, OJAMA_COUNTER_ON = 1, OJAMA_COUNTER_FEVER = 2;
 
-	/** 邪魔ブロックタイプの表示名 */
-	//private final String[] OJAMA_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
-	
 	/** Names of ojama counter settings */
 	private final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
 
+	/** Zenkeshi  setting constants */
+	private final int ZENKESHI_MODE_OFF = 0, ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
+
+	/** Names of zenkeshi settings */
+	private final String[] ZENKESHI_TYPE_NAMES = {"OFF", "ON", "FEVER"};
+	
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -192,6 +201,27 @@ public class AvalancheVSMode extends DummyMode {
 	
 	/** Set to true when dropping ojama blocks */
 	private boolean[] ojamaDrop;
+	
+	/** Selected fever map set file */
+	private int[] feverMapSet;
+	
+	/** Selected fever map set file's subset list */
+	private String[][] feverMapSubsets;
+	
+	/** Time to display "ZENKESHI!" */
+	private int[] zenKeshiDisplay;
+	
+	/** Zenkeshi reward type */
+	private int[] zenKeshiType;
+	
+	/** Fever map CustomProperties */
+	private CustomProperties[] propFeverMap;
+	
+	/** Chain levels for Fever Mode */
+	private int[] feverChain;
+	
+	/** Chain level boundaries for Fever Mode */
+	private int[] feverChainMin, feverChainMax;
 
 	/*
 	 * モード名
@@ -257,6 +287,14 @@ public class AvalancheVSMode extends DummyMode {
 		ojamaAddToFever = new boolean[MAX_PLAYERS];
 		cleared = new boolean[MAX_PLAYERS];
 		ojamaDrop = new boolean[MAX_PLAYERS];
+		feverMapSet = new int[MAX_PLAYERS];
+		zenKeshiDisplay = new int[MAX_PLAYERS];
+		zenKeshiType = new int[MAX_PLAYERS];
+		propFeverMap = new CustomProperties[MAX_PLAYERS];
+		feverChain = new int[MAX_PLAYERS];
+		feverChainMin = new int[MAX_PLAYERS];
+		feverChainMax = new int[MAX_PLAYERS];
+		feverMapSubsets = new String[MAX_PLAYERS][];
 
 		winnerID = -1;
 	}
@@ -317,6 +355,8 @@ public class AvalancheVSMode extends DummyMode {
 		feverThreshold[playerID] = prop.getProperty("avalanchevs.feverThreshold.p" + playerID, 0);
 		feverTimeMin[playerID] = prop.getProperty("avalanchevs.feverTimeMin.p" + playerID, 15);
 		feverTimeMax[playerID] = prop.getProperty("avalanchevs.feverTimeMax.p" + playerID, 30);
+		feverMapSet[playerID] = prop.getProperty("avalanchevs.feverMapSet.p" + playerID, 0);
+		zenKeshiType[playerID] = prop.getProperty("avalanchevs.zenKeshiType.p" + playerID, 1);
 	}
 
 	/**
@@ -341,6 +381,8 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.ojamaRate.p" + playerID, ojamaRate[playerID]);
 		prop.setProperty("avalanchevs.ojamaHard.p" + playerID, ojamaHard[playerID]);
 		prop.setProperty("avalanchevs.feverThreshold.p" + playerID, feverThreshold[playerID]);
+		prop.setProperty("avalanchevs.feverMapSet.p" + playerID, feverMapSet[playerID]);
+		prop.setProperty("avalanchevs.zenKeshiType.p" + playerID, zenKeshiType[playerID]);
 	}
 
 	/**
@@ -379,7 +421,7 @@ public class AvalancheVSMode extends DummyMode {
 	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
 			mapMaxNo[playerID] = 0;
-			propMap[playerID] = receiver.loadProperties("config/map/vsbattle/" + mapSet[playerID] + ".map");
+			propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
 		}
 
 		if((propMap[playerID] == null) && (engine.field != null)) {
@@ -423,6 +465,7 @@ public class AvalancheVSMode extends DummyMode {
 		feverBackupField[playerID] = null;
 		cleared[playerID] = false;
 		ojamaDrop[playerID] = false;
+		zenKeshiDisplay[playerID] = 0;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
@@ -445,7 +488,7 @@ public class AvalancheVSMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 24;
+				if(engine.statc[2] < 0) engine.statc[2] = 26;
 				engine.playSE("cursor");
 			}
 			// 下
@@ -597,6 +640,16 @@ public class AvalancheVSMode extends DummyMode {
 					if(feverTimeMax[playerID] < feverTimeMin[playerID]) feverTimeMax[playerID] = 99;
 					if(feverTimeMax[playerID] > 99) feverTimeMax[playerID] = feverTimeMin[playerID];
 					break;
+				case 25:
+					feverMapSet[playerID] += change;
+					if(feverMapSet[playerID] < 0) feverMapSet[playerID] = FEVER_MAPS.length-1;
+					if(feverMapSet[playerID] >= FEVER_MAPS.length) feverMapSet[playerID] = 0;
+					break;
+				case 26:
+					zenKeshiType[playerID] += change;
+					if(zenKeshiType[playerID] < 0) zenKeshiType[playerID] = 2;
+					if(zenKeshiType[playerID] > 2) zenKeshiType[playerID] = 0;
+					break;
 				}
 			}
 
@@ -662,6 +715,17 @@ public class AvalancheVSMode extends DummyMode {
 		}
 
 		return true;
+	}
+
+	private void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {
+		if((propFeverMap[playerID] == null) || (forceReload)) {
+			propFeverMap[playerID] = receiver.loadProperties("config/map/avalanche/" +
+					FEVER_MAPS[id] + ".map");
+			feverChainMin[playerID] = propFeverMap[playerID].getProperty("minChain", 3);
+			feverChainMax[playerID] = propFeverMap[playerID].getProperty("maxChain", 15);
+			String subsets = propFeverMap[playerID].getProperty("sets");
+			feverMapSubsets[playerID] = subsets.split(",");
+		}
 	}
 
 	/*
@@ -741,6 +805,10 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1,  9, feverTimeMin[playerID] + "SEC", (engine.statc[2] == 23));
 				receiver.drawMenuFont(engine, playerID, 0, 10, "F-MAX TIME", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 11, feverTimeMax[playerID] + "SEC", (engine.statc[2] == 24));
+				receiver.drawMenuFont(engine, playerID, 0, 12, "F-MAP SET", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 13, FEVER_MAPS[feverMapSet[playerID]].toUpperCase(), (engine.statc[2] == 25));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "ZENKESHI", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 15, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]], (engine.statc[2] == 26));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -755,6 +823,7 @@ public class AvalancheVSMode extends DummyMode {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
 			feverTime[playerID] = feverTimeMin[playerID] * 60;
+			feverChain[playerID] = 5;
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
@@ -787,6 +856,7 @@ public class AvalancheVSMode extends DummyMode {
 			} else if(engine.field != null) {
 				engine.field.reset();
 			}
+			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
 		}
 
 		return false;
@@ -868,7 +938,7 @@ public class AvalancheVSMode extends DummyMode {
 			receiver.drawMenuFont(engine, playerID, 0, 20, GeneralUtil.getTime(feverTime[playerID]), inFever[playerID]);
 		}
 			
-		if(zenKeshi[playerID])
+		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
 			receiver.drawMenuFont(engine, playerID, 1, 21, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 		if (ojamaHard[playerID] > 0 && engine.field != null)
 			for (int x = 0; x < engine.field.getWidth(); x++)
@@ -895,7 +965,7 @@ public class AvalancheVSMode extends DummyMode {
 		int ojamaNew = 0;
 		if (avalanche > 0) {
 			cleared[playerID] = true;
-			if (zenKeshi[playerID])
+			if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_ON)
 				ojamaNew += 30;
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
@@ -1011,7 +1081,18 @@ public class AvalancheVSMode extends DummyMode {
 				ojama[enemyID] += ojamaAdd[enemyID];
 			ojamaAdd[enemyID] = 0;
 		}
-		checkFeverEnd(engine, playerID);
+		//Check to end Fever Mode
+		if (inFever[playerID] && feverTime[playerID] == 0)
+		{
+			inFever[playerID] = false;
+			feverTime[playerID] = feverTimeMin[playerID] * 60;
+			feverPoints[playerID] = 0;
+			engine.field = feverBackupField[playerID];
+			ojama[playerID] += ojamaFever[playerID];
+			ojamaFever[playerID] = 0;
+			ojamaAddToFever[playerID] = false;
+		}
+		//Drop garbage if needed.
 		int ojamaNow = inFever[playerID] ? ojamaFever[playerID] : ojama[playerID];
 		if (ojamaNow > 0 && !ojamaDrop[playerID] &&
 				(!cleared[playerID] || ojamaCounterMode[playerID] != OJAMA_COUNTER_FEVER))
@@ -1025,32 +1106,30 @@ public class AvalancheVSMode extends DummyMode {
 			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID]);
 			return true;
 		}
-		checkFeverStart(engine, playerID);
-		return false;
-	}
-	private void checkFeverStart(GameEngine engine, int playerID)
-	{
+		//Check to start Fever Mode
 		if (!inFever[playerID] && feverPoints[playerID] >= feverThreshold[playerID] && feverThreshold[playerID] > 0)
 		{
 			inFever[playerID] = true;
 			feverBackupField[playerID] = engine.field;
 			engine.field = null;
-			engine.createFieldIfNeeded();
-			//TODO: Add preset chain.
+			loadFeverMap(engine, playerID);
 		}
+		return false;
 	}
-	private void checkFeverEnd(GameEngine engine, int playerID)
-	{
-		if (inFever[playerID] && feverTime[playerID] == 0)
-		{
-			inFever[playerID] = false;
-			feverTime[playerID] = feverTimeMin[playerID] * 60;
-			feverPoints[playerID] = 0;
-			engine.field = feverBackupField[playerID];
-			ojama[playerID] += ojamaFever[playerID];
-			ojamaFever[playerID] = 0;
-			ojamaAddToFever[playerID] = false;
-		}
+
+	private void loadFeverMap(GameEngine engine, int playerID) {
+		engine.createFieldIfNeeded();
+		engine.field.stringToField(propFeverMap[playerID].getProperty(
+				feverMapSubsets[playerID][engine.random.nextInt(feverMapSubsets[playerID].length)] +
+				"." + numColors[playerID] + "colors." + feverChain[playerID] + "chain"));
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
+		engine.field.setAllSkin(engine.getSkin());
+		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], engine.random);
 	}
 
 	/*
@@ -1059,6 +1138,8 @@ public class AvalancheVSMode extends DummyMode {
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		scgettime[playerID]++;
+		if (zenKeshiDisplay[playerID] > 0)
+			zenKeshiDisplay[playerID]--;
 		if (inFever[playerID] && feverTime[playerID] > 0)
 		{
 			if (feverTime[playerID] == 1)

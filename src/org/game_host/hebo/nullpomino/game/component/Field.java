@@ -29,6 +29,7 @@
 package org.game_host.hebo.nullpomino.game.component;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
@@ -2626,5 +2627,32 @@ public class Field implements Serializable {
 		b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
 		b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 		return true;
+	}
+
+	public void shuffleColors(int[] blockColors, int numColors, Random rand) {
+		blockColors = blockColors.clone();
+		int maxX = Math.min(blockColors.length, numColors);
+		int temp, j;
+		int i = maxX;
+		while (i > 1)
+		{
+			j = rand.nextInt(i);
+			i--;
+			if (j != i)
+			{
+				temp = blockColors[i];
+				blockColors[i] = blockColors[j];
+				blockColors[j] = temp;
+			}
+		}
+		for (int x = 0; x < width; x++)
+			for (int y = 0; y < height; y++)
+			{
+				temp = getBlockColor(x, y)-1;
+				if (numColors == 3 && temp >= 3)
+					temp--;
+				if (temp >= 0 && temp < maxX)
+					setBlockColor(x, y, blockColors[temp]);
+			}
 	}
 }
