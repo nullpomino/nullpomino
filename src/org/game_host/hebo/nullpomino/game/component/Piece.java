@@ -311,6 +311,17 @@ public class Piece implements Serializable {
 	}
 
 	/**
+	 * Fetches the colors of the blocks in the piece
+	 * @return An int array containing the color of each block
+	 */
+	public int[] getColors() {
+		int[] result = new int[block.length];
+		for(int i = 0; i < block.length; i++)
+			result[i] = block[i].color;
+		return result;
+	}
+
+	/**
 	 * すべてのブロックの模様を変更
 	 * @param skin 模様
 	 */
