@@ -1013,12 +1013,14 @@ public class AvalancheVSMode extends DummyMode {
 			int ptsTotal = pts*multiplier;
 			score[playerID] += ptsTotal;
 			
-			if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
-				ptsTotal <<= engine.statistics.time / (hurryupSeconds[playerID] * 60);
-
-			ojamaNew += (ptsTotal+ojamaRate[playerID]-1)/ojamaRate[playerID];
 			if (chain >= rensaShibari[playerID])
 			{
+				int rate = ojamaRate[playerID];
+				if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
+					rate >>= engine.statistics.time / (hurryupSeconds[playerID] * 60);
+				if (rate <= 0)
+					rate = 1;
+				ojamaNew += (ptsTotal+rate-1)/rate;
 				ojamaSent[playerID] += ojamaNew;
 				if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
 				{
