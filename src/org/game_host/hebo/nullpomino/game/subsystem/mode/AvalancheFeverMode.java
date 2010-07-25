@@ -149,6 +149,9 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Flag for all-clears */
 	private boolean zenKeshi;
 	
+	/** Number of all clears */
+	private int zenKeshiCount;
+	
 	/** List of subsets in selected map */
 	private String[] mapSubsets;
 
@@ -180,6 +183,7 @@ public class AvalancheFeverMode extends DummyMode {
 		
 		cleared = false;
 		zenKeshi = false;
+		zenKeshiCount = 0;
 		
 		timeLimit = TIME_LIMIT;
 		timeLimitAdd = 0;
@@ -374,12 +378,12 @@ public class AvalancheFeverMode extends DummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE  TIME", EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE    TIME", EventReceiver.COLOR_BLUE);
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
 					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[mapSet][i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 10, 4 + i, GeneralUtil.getTime(rankingTime[mapSet][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 12, 4 + i, GeneralUtil.getTime(rankingTime[mapSet][i]), (i == rankingRank));
 				}
 			}
 		} else {
@@ -457,7 +461,8 @@ public class AvalancheFeverMode extends DummyMode {
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 				zenKeshi = true;
-				engine.statistics.score += 2100;
+				zenKeshiCount++;
+				// engine.statistics.score += 2100;
 			}
 
 			int chain = engine.chain;
@@ -574,8 +579,8 @@ public class AvalancheFeverMode extends DummyMode {
 		String strScore = String.format("%10d", engine.statistics.score);
 		receiver.drawMenuFont(engine, playerID,  0, 4, strScore);
 
-		receiver.drawMenuFont(engine, playerID,  0, 5, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
+		receiver.drawMenuFont(engine, playerID,  0, 5, "ZENKESHI", EventReceiver.COLOR_BLUE);
+		String strLines = String.format("%10d", zenKeshiCount);
 		receiver.drawMenuFont(engine, playerID,  0, 6, strLines);
 
 		receiver.drawMenuFont(engine, playerID,  0, 7, "TIME", EventReceiver.COLOR_BLUE);
@@ -583,9 +588,9 @@ public class AvalancheFeverMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID,  0, 8, strTime);
 
 		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 9, "RANK", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 11, "RANK", EventReceiver.COLOR_BLUE);
 			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 10, strRank);
+			receiver.drawMenuFont(engine, playerID,  0, 12, strRank);
 		}
 	}
 
