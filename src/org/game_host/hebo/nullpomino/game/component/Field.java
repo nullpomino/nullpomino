@@ -1858,7 +1858,10 @@ public class Field implements Serializable {
 		if (size < 1)
 			return 0;
 		if (flag)
+		{
+			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 			gemsCleared = 0;
+		}
 		int total = 0;
 		int maxHeight = getHeightWithoutHurryupFloor();
 		int x, y, count, blockColor, lineColor;
@@ -2053,6 +2056,8 @@ public class Field implements Serializable {
 	 */
 	public int clearColor (int x, int y, boolean flag, boolean garbageClear, boolean gemSame)
 	{
+		if (flag)
+			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 		int blockColor = getBlockColor(x, y, gemSame);
 		if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
 			return 0;
