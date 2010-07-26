@@ -1135,6 +1135,9 @@ public class AvalancheVSMode extends DummyMode {
 			feverTime[playerID] = feverTimeMin[playerID] * 60;
 			feverPoints[playerID] = 0;
 			engine.field = feverBackupField[playerID];
+			if (engine.field != null)
+				engine.meterValue = ojama[playerID] * receiver.getBlockGraphicsHeight(engine, playerID) /
+					engine.field.getWidth();
 			ojama[playerID] += ojamaFever[playerID];
 			ojamaFever[playerID] = 0;
 			ojamaAddToFever[playerID] = false;
@@ -1160,6 +1163,7 @@ public class AvalancheVSMode extends DummyMode {
 			feverBackupField[playerID] = engine.field;
 			engine.field = null;
 			loadFeverMap(engine, playerID, feverChain[playerID]);
+			engine.meterValue = 0;
 		}
 		return false;
 	}
@@ -1204,14 +1208,15 @@ public class AvalancheVSMode extends DummyMode {
 			width = engine.field.getWidth();
 		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
 		// せり上がりメーター
-		if(ojama[playerID] * blockHeight / width > engine.meterValue) {
+		int ojamaNow = inFever[playerID] ? ojamaFever[playerID] : ojama[playerID];
+		if(ojamaNow * blockHeight / width > engine.meterValue) {
 			engine.meterValue++;
-		} else if(ojama[playerID] * blockHeight / width < engine.meterValue) {
+		} else if(ojamaNow * blockHeight / width < engine.meterValue) {
 			engine.meterValue--;
 		}
-		if(ojama[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
-		else if(ojama[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		else if(ojama[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+		if(ojamaNow >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
+		else if(ojamaNow >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+		else if(ojamaNow >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
 
 		// 決着
