@@ -2601,18 +2601,31 @@ public class GameEngine {
 			owner.receiver.calcScore(this, playerID, li);
 
 			// ブロックを消す演出を出す（まだ実際には消えていない）
-			for(int i = 0; i < field.getHeight(); i++) {
-				if(field.getLineFlag(i)) {
+			if (clearMode == CLEAR_LINE) {
+				for(int i = 0; i < field.getHeight(); i++) {
+					if(field.getLineFlag(i)) {
+						for(int j = 0; j < field.getWidth(); j++) {
+							Block blk = field.getBlock(j, i);
+	
+							if(blk != null) {
+								if(owner.mode != null) owner.mode.blockBreak(this, playerID, j, i, blk);
+								owner.receiver.blockBreak(this, playerID, j, i, blk);
+							}
+						}
+					}
+				}
+			} else if (clearMode == CLEAR_LINE_COLOR || clearMode == CLEAR_COLOR)
+				for(int i = 0; i < field.getHeight(); i++) {
 					for(int j = 0; j < field.getWidth(); j++) {
 						Block blk = field.getBlock(j, i);
-
-						if(blk != null) {
+						if (blk == null)
+							continue;
+						if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE)) {
 							if(owner.mode != null) owner.mode.blockBreak(this, playerID, j, i, blk);
 							owner.receiver.blockBreak(this, playerID, j, i, blk);
 						}
 					}
 				}
-			}
 
 			// ブロックを消す
 			if (clearMode == CLEAR_LINE)

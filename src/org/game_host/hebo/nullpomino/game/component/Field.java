@@ -2035,7 +2035,7 @@ public class Field implements Serializable {
 				if (clear >= size)
 				{
 					total += clear;
-					clearColor(j, i, true, garbageClear, gemSame);
+					clearColor(j, i, false, garbageClear, gemSame);
 				}
 			}
 		}
@@ -2076,12 +2076,14 @@ public class Field implements Serializable {
 		if (blockColor == Block.BLOCK_COLOR_INVALID)
 			return 0;
 		Block b = getBlock(x, y);
+		if (flag && b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+			return 0;
 		if (garbageClear && b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE)
 				 && !b.getAttribute(Block.BLOCK_ATTRIBUTE_WALL))
 		{
 			if (flag)
 				b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
-			if (b.hard > 0)
+			else if (b.hard > 0)
 				b.hard--;
 			else
 				setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
@@ -2090,7 +2092,10 @@ public class Field implements Serializable {
 			return 0;
 		if (flag)
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
-		setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+		else if (b.hard > 0)
+			b.hard--;
+		else
+			setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 		return 1 + clearColor(x+1, y, targetColor, flag, garbageClear, gemSame)
 				 + clearColor(x-1, y, targetColor, flag, garbageClear, gemSame)
 				 + clearColor(x, y+1, targetColor, flag, garbageClear, gemSame)
