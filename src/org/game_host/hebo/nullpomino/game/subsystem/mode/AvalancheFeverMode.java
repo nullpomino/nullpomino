@@ -107,10 +107,10 @@ public class AvalancheFeverMode extends DummyMode {
 	private int rankingRank;
 
 	/** ランキングのライン数 */
-	private int[][] rankingScore;
+	private int[][][] rankingScore;
 
 	/** ランキングのタイム */
-	private int[][] rankingTime;
+	private int[][][] rankingTime;
 	
 	/** Flag for all clear */
 	private int zenKeshiDisplay;
@@ -133,7 +133,6 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Time to display added time */
 	private int timeLimitAddDisplay;
 
-	
 	/** Fever map CustomProperties */
 	private CustomProperties propFeverMap;
 	
@@ -192,8 +191,8 @@ public class AvalancheFeverMode extends DummyMode {
 		feverChain = 5;
 
 		rankingRank = -1;
-		rankingScore = new int[FEVER_MAPS.length][RANKING_MAX];
-		rankingTime = new int[FEVER_MAPS.length][RANKING_MAX];
+		rankingScore = new int[3][FEVER_MAPS.length][RANKING_MAX];
+		rankingTime = new int[3][FEVER_MAPS.length][RANKING_MAX];
 
 		if(owner.replayMode == false) {
 			loadSetting(owner.modeConfig);
@@ -213,6 +212,7 @@ public class AvalancheFeverMode extends DummyMode {
 		engine.randomBlockColor = true;
 		engine.blockColors = BLOCK_COLORS;
 		engine.connectBlocks = false;
+		//engine.cascadeDelay = 1;
 		/*
 		engine.fieldWidth = 6;
 		engine.fieldHeight = 12;
@@ -374,7 +374,8 @@ public class AvalancheFeverMode extends DummyMode {
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "AVALANCHE FEVER MARATHON", EventReceiver.COLOR_DARKBLUE);
-		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + FEVER_MAPS[mapSet].toUpperCase() + ")", EventReceiver.COLOR_DARKBLUE);
+		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + FEVER_MAPS[mapSet].toUpperCase() + " " +
+				numColors + " COLORS)", EventReceiver.COLOR_DARKBLUE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
@@ -382,8 +383,8 @@ public class AvalancheFeverMode extends DummyMode {
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[mapSet][i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 12, 4 + i, GeneralUtil.getTime(rankingTime[mapSet][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[numColors-3][mapSet][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 12, 4 + i, GeneralUtil.getTime(rankingTime[numColors-3][mapSet][i]), (i == rankingRank));
 				}
 			}
 		} else {
@@ -436,7 +437,11 @@ public class AvalancheFeverMode extends DummyMode {
 		if (zenKeshiDisplay > 0)
 			zenKeshiDisplay--;
 		if (timeLimit > 0 && engine.timerActive)
+		{
+			if (timeLimit == 1)
+				engine.playSE("levelstop");
 			timeLimit--;
+		}
 		if (timeLimitAddDisplay > 0)
 			timeLimitAddDisplay--;
 
@@ -461,6 +466,7 @@ public class AvalancheFeverMode extends DummyMode {
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 				zenKeshi = true;
+				zenKeshiDisplay = 120;
 				zenKeshiCount++;
 				// engine.statistics.score += 2100;
 			}
@@ -523,7 +529,6 @@ public class AvalancheFeverMode extends DummyMode {
 				feverChain += 2;
 				if (feverChain > feverChainMax)
 					feverChain = feverChainMax;
-				zenKeshiDisplay = 120;
 			}
 			if (timeLimit > 0)
 			{
@@ -603,7 +608,7 @@ public class AvalancheFeverMode extends DummyMode {
 
 		// ランキング更新
 		if((owner.replayMode == false) && (engine.ai == null)) {
-			updateRanking(engine.statistics.score, engine.statistics.time, mapSet);
+			updateRanking(engine.statistics.score, engine.statistics.time, mapSet, numColors);
 
 			if(rankingRank != -1) {
 				saveRanking(owner.modeConfig, engine.ruleopt.strRuleName);
@@ -669,10 +674,12 @@ public class AvalancheFeverMode extends DummyMode {
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < FEVER_MAPS.length; j++) {
-				rankingScore[j][i] = prop.getProperty("avalanchefever.ranking." + ruleName + "." + numColors +
-						"colors." + FEVER_MAPS[j] + ".score." + i, 0);
-				rankingTime[j][i] = prop.getProperty("avalanchefever.ranking." + ruleName + "." + numColors +
-						"colors." + FEVER_MAPS[j] + ".time." + i, -1);
+				for(int colors = 3; colors <= 5; colors++) {
+					rankingScore[colors-3][j][i] = prop.getProperty("avalanchefever.ranking." + ruleName + "." + colors +
+							"colors." + FEVER_MAPS[j] + ".score." + i, 0);
+					rankingTime[colors-3][j][i] = prop.getProperty("avalanchefever.ranking." + ruleName + "." + colors +
+							"colors." + FEVER_MAPS[j] + ".time." + i, -1);
+				}
 			}
 		}
 	}
@@ -685,10 +692,12 @@ public class AvalancheFeverMode extends DummyMode {
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < FEVER_MAPS.length; j++) {
-				prop.setProperty("avalanchefever.ranking." + ruleName + "." + numColors + "colors." +
-						FEVER_MAPS[j] + ".score." + i, rankingScore[j][i]);
-				prop.setProperty("avalanchefever.ranking." + ruleName + "." + numColors + "colors." +
-						FEVER_MAPS[j] + ".time." + i, rankingTime[j][i]);
+				for(int colors = 3; colors <= 5; colors++) {
+					prop.setProperty("avalanchefever.ranking." + ruleName + "." + colors +
+							"colors." + FEVER_MAPS[j] + ".score." + i, rankingScore[colors-3][j][i]);
+					prop.setProperty("avalanchefever.ranking." + ruleName + "." + colors +
+							"colors." + FEVER_MAPS[j] + ".time." + i, rankingTime[colors-3][j][i]);
+				}
 			}
 		}
 	}
@@ -699,19 +708,19 @@ public class AvalancheFeverMode extends DummyMode {
 	 * @param li ライン
 	 * @param time タイム
 	 */
-	private void updateRanking(int sc, int time, int type) {
-		rankingRank = checkRanking(sc, time, type);
+	private void updateRanking(int sc, int time, int type, int colors) {
+		rankingRank = checkRanking(sc, time, type, colors);
 
 		if(rankingRank != -1) {
 			// ランキングをずらす
 			for(int i = RANKING_MAX - 1; i > rankingRank; i--) {
-				rankingScore[type][i] = rankingScore[type][i - 1];
-				rankingTime[type][i] = rankingTime[type][i - 1];
+				rankingScore[colors-3][type][i] = rankingScore[colors-3][type][i - 1];
+				rankingTime[colors-3][type][i] = rankingTime[colors-3][type][i - 1];
 			}
 
 			// 新しいデータを登録
-			rankingScore[type][rankingRank] = sc;
-			rankingTime[type][rankingRank] = time;
+			rankingScore[colors-3][type][rankingRank] = sc;
+			rankingTime[colors-3][type][rankingRank] = time;
 		}
 	}
 
@@ -721,22 +730,12 @@ public class AvalancheFeverMode extends DummyMode {
 	 * @param time タイム
 	 * @return 順位(ランク外なら-1)
 	 */
-	private int checkRanking(int sc, int time, int type) {
+	private int checkRanking(int sc, int time, int type, int colors) {
 		for(int i = 0; i < RANKING_MAX; i++) {
-			if (mapSet == 0) {
-				if(sc > rankingScore[type][i]) {
-					return i;
-				} else if((sc == rankingScore[type][i]) && (time < rankingTime[type][i])) {
-					return i;
-				}
-			} else if (mapSet == 1) {
-				if(sc > rankingScore[type][i]) {
-					return i;
-				}
-			} else if (mapSet == 2) {
-				if(time < rankingTime[type][i] || (rankingTime[type][i] < 0)) {
-					return i;
-				}
+			if(sc > rankingScore[colors-3][type][i]) {
+				return i;
+			} else if((sc == rankingScore[colors-3][type][i]) && (time < rankingTime[colors-3][type][i])) {
+				return i;
 			}
 		}
 

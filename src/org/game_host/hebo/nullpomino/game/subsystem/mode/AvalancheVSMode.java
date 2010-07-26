@@ -1188,7 +1188,7 @@ public class AvalancheVSMode extends DummyMode {
 		scgettime[playerID]++;
 		if (zenKeshiDisplay[playerID] > 0)
 			zenKeshiDisplay[playerID]--;
-		if (inFever[playerID] && feverTime[playerID] > 0)
+		if (inFever[playerID] && feverTime[playerID] > 0 && engine.timerActive)
 		{
 			if (feverTime[playerID] == 1)
 				engine.playSE("levelstop");

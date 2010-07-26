@@ -897,7 +897,9 @@ public class Field implements Serializable {
 			if(getLineFlag(i) == false) {
 				for(int j = 0; j < width; j++) {
 					if(getBlockEmpty(j, i) == false) {
-						return false;
+						Block b = getBlock(j, i);
+						if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+							return false;
 					}
 				}
 			}
