@@ -212,7 +212,8 @@ public class AvalancheFeverMode extends DummyMode {
 		engine.randomBlockColor = true;
 		engine.blockColors = BLOCK_COLORS;
 		engine.connectBlocks = false;
-		//engine.cascadeDelay = 1;
+		engine.cascadeDelay = 1;
+		engine.cascadeClearDelay = 10;
 		/*
 		engine.fieldWidth = 6;
 		engine.fieldHeight = 12;

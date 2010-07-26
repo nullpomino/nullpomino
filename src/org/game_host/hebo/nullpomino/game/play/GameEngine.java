@@ -582,6 +582,9 @@ public class GameEngine {
 
 	/** Delay for each step in cascade animations */
 	public int cascadeDelay;
+	
+	/** Delay between landing and checking for clears in cascade */
+	public int cascadeClearDelay;
 
 	/**
 	 * コンストラクタ
@@ -825,6 +828,7 @@ public class GameEngine {
 		lineColorDiagonals = false;
 		blockColors = BLOCK_COLORS_DEFAULT;
 		cascadeDelay = 0;
+		cascadeClearDelay = 0;
 
 		// イベント発生
 		if(owner.mode != null) {
@@ -2670,6 +2674,9 @@ public class GameEngine {
 				} else if(field.doCascadeGravity()) {
 					statc[6] = 0;
 					return;
+				} else if (statc[6] < getCascadeClearDelay()) {
+					statc[6]++;
+					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
 						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor) > 0) ||
 						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0)) {
@@ -2724,6 +2731,10 @@ public class GameEngine {
 
 	public int getCascadeDelay() {
 		return cascadeDelay;
+	}
+	
+	public int getCascadeClearDelay() {
+		return cascadeClearDelay;
 	}
 
 	/**
