@@ -704,7 +704,8 @@ public class PhysicianVSMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
-
+			
+			/*
 			receiver.drawScoreFont(engine, playerID, -1, 17, "OJAMA", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 18, "1P:", EventReceiver.COLOR_RED);
 			if (garbageColors[0] != null)
@@ -716,6 +717,7 @@ public class PhysicianVSMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 3, 19, String.valueOf(garbageColors[1].size()), true);
 			else
 				receiver.drawScoreFont(engine, playerID, 3, 19, "0", false);
+			*/
 		}
 		
 		if (!owner.engine[playerID].gameActive)
@@ -782,7 +784,12 @@ public class PhysicianVSMode extends DummyMode {
 		engine.field.lineColorsCleared = null;
 		if (cleared != null)
 			if (cleared.size() > 1)
-				garbageColors[enemyID] = cleared;
+			{
+				if (garbageColors[enemyID] == null)
+					garbageColors[enemyID] = cleared;
+				else
+					garbageColors[enemyID].addAll(cleared);
+			}
 		
 		return garbageCheck(engine, playerID);
 	}
