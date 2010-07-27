@@ -438,8 +438,8 @@ public class PhysicianVSMode extends DummyMode {
 					break;
 				case 10:
 					hoverBlocks[playerID] += change;
-					if(hoverBlocks[playerID] < 0) hoverBlocks[playerID] = 99;
-					if(hoverBlocks[playerID] > 99) hoverBlocks[playerID] = 0;
+					if(hoverBlocks[playerID] < 1) hoverBlocks[playerID] = 99;
+					if(hoverBlocks[playerID] > 99) hoverBlocks[playerID] = 1;
 					break;
 				case 15:
 					enableSE[playerID] = !enableSE[playerID];
