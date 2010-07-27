@@ -82,6 +82,9 @@ public class AvalancheVSMode extends DummyMode {
 	/** Names of zenkeshi settings */
 	private final String[] ZENKESHI_TYPE_NAMES = {"OFF", "ON", "FEVER"};
 	
+	/** Names of outline settings */
+	private final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
+	
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -222,6 +225,9 @@ public class AvalancheVSMode extends DummyMode {
 	
 	/** Chain level boundaries for Fever Mode */
 	private int[] feverChainMin, feverChainMax;
+	
+	/** Selected outline type */
+	private int[] outlineType;
 
 	/*
 	 * モード名
@@ -295,6 +301,7 @@ public class AvalancheVSMode extends DummyMode {
 		feverChainMin = new int[MAX_PLAYERS];
 		feverChainMax = new int[MAX_PLAYERS];
 		feverMapSubsets = new String[MAX_PLAYERS][];
+		outlineType = new int[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -357,6 +364,7 @@ public class AvalancheVSMode extends DummyMode {
 		feverTimeMax[playerID] = prop.getProperty("avalanchevs.feverTimeMax.p" + playerID, 30);
 		feverMapSet[playerID] = prop.getProperty("avalanchevs.feverMapSet.p" + playerID, 0);
 		zenKeshiType[playerID] = prop.getProperty("avalanchevs.zenKeshiType.p" + playerID, 1);
+		outlineType[playerID] =  prop.getProperty("avalanchevs.outlineType.p" + playerID, 1);
 	}
 
 	/**
@@ -383,6 +391,7 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.feverThreshold.p" + playerID, feverThreshold[playerID]);
 		prop.setProperty("avalanchevs.feverMapSet.p" + playerID, feverMapSet[playerID]);
 		prop.setProperty("avalanchevs.zenKeshiType.p" + playerID, zenKeshiType[playerID]);
+		prop.setProperty("avalanchevs.outlineType.p" + playerID, outlineType[playerID]);
 	}
 
 	/**
@@ -488,13 +497,13 @@ public class AvalancheVSMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 26;
+				if(engine.statc[2] < 0) engine.statc[2] = 27;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 26) engine.statc[2] = 0;
+				if(engine.statc[2] > 27) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -584,7 +593,8 @@ public class AvalancheVSMode extends DummyMode {
 					enableSE[playerID] = !enableSE[playerID];
 					break;
 				case 16:
-					hurryupSeconds[playerID] += change;
+					if (m > 10) hurryupSeconds[playerID] += change*m/10;
+					else hurryupSeconds[playerID] += change;
 					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
@@ -649,6 +659,11 @@ public class AvalancheVSMode extends DummyMode {
 					zenKeshiType[playerID] += change;
 					if(zenKeshiType[playerID] < 0) zenKeshiType[playerID] = 2;
 					if(zenKeshiType[playerID] > 2) zenKeshiType[playerID] = 0;
+					break;
+				case 27:
+					outlineType[playerID] += change;
+					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
+					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
 					break;
 				}
 			}
@@ -809,6 +824,8 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 13, FEVER_MAPS[feverMapSet[playerID]].toUpperCase(), (engine.statc[2] == 25));
 				receiver.drawMenuFont(engine, playerID, 0, 14, "ZENKESHI", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 15, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]], (engine.statc[2] == 26));
+				receiver.drawMenuFont(engine, playerID, 0, 16, "OUTLINE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 17, OUTLINE_TYPE_NAMES[outlineType[playerID]], (engine.statc[2] == 27));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -822,6 +839,11 @@ public class AvalancheVSMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
+
+			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
+			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
+			if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
+			
 			feverTime[playerID] = feverTimeMin[playerID] * 60;
 			feverChain[playerID] = 5;
 			// マップ読み込み・リプレイ保存用にバックアップ

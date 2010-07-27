@@ -248,6 +248,10 @@ public class AvalancheFeverMode extends DummyMode {
 			timeLimit = TIME_LIMIT;
 			timeLimitAdd = 0;
 			timeLimitAddDisplay = 0;
+
+			if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
+			if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
+			if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 		}
 		return false;
 	}
@@ -339,7 +343,7 @@ public class AvalancheFeverMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 0, 2, "OUTLINE", EventReceiver.COLOR_BLUE);
 		String strOutline = "";
 		if(outlinetype == 0) strOutline = "NORMAL";
-		if(outlinetype == 1) strOutline = "CONNECT";
+		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
 		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
 		receiver.drawMenuFont(engine, playerID, 0, 4, "COLORS", EventReceiver.COLOR_BLUE);
@@ -352,10 +356,6 @@ public class AvalancheFeverMode extends DummyMode {
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-
-		if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
-		if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
-		if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 
 		engine.tspinEnable = false;
 		engine.useAllSpinBonus = false;
@@ -561,7 +561,8 @@ public class AvalancheFeverMode extends DummyMode {
 			}
 			if (feverChain < feverChainMin)
 				feverChain = feverChainMin;
-			loadFeverMap(engine, playerID, feverChain);
+			if (timeLimit > 0)
+				loadFeverMap(engine, playerID, feverChain);
 		}
 
 		// 時間切れ
