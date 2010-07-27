@@ -2697,6 +2697,8 @@ public class GameEngine {
 			if(!skip) {
 				if(lineGravityType == LINE_GRAVITY_NATIVE) field.downFloatingBlocks();
 				playSE("linefall");
+				
+				field.lineColorsCleared = null;
 
 				if((stat == STAT_LINECLEAR) || (versionMajor <= 6.3f)) {
 					resetStatc();

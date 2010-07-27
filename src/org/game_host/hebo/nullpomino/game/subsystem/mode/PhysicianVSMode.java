@@ -687,23 +687,7 @@ public class PhysicianVSMode extends DummyMode {
 		// ステータス表示
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1, 0, "PHYSICIAN VS", EventReceiver.COLOR_GREEN);
-			/*
-			receiver.drawScoreFont(engine, playerID, -1, 2, "GARBAGE", EventReceiver.COLOR_PURPLE);
-			String garbageStr1P = String.valueOf(garbage[0]);
-			if (garbageAdd[0] > 0)
-				garbageStr1P = garbageStr1P + "(+" + String.valueOf(garbageAdd[0]) + ")";
-			String garbageStr2P = String.valueOf(garbage[1]);
-			if (garbageAdd[1] > 0)
-				garbageStr2P = garbageStr2P + "(+" + String.valueOf(garbageAdd[1]) + ")";
-			receiver.drawScoreFont(engine, playerID, -1, 3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, 3, 3, garbageStr1P, (garbage[0] > 0));
-			receiver.drawScoreFont(engine, playerID, -1, 4, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 3, 4, garbageStr2P, (garbage[1] > 0));
-			
-			receiver.drawScoreFont(engine, playerID, -1, 6, "ATTACK", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + String.valueOf(garbageSent[0]), EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + String.valueOf(garbageSent[1]), EventReceiver.COLOR_BLUE);
-			*/
+
 			receiver.drawScoreFont(engine, playerID, -1, 2, "REST", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 3, "1P:", EventReceiver.COLOR_RED);
 			receiver.drawScoreFont(engine, playerID, 3, 3, String.valueOf(rest[0]), (rest[0] < 4));
@@ -720,6 +704,18 @@ public class PhysicianVSMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
+
+			receiver.drawScoreFont(engine, playerID, -1, 17, "OJAMA", EventReceiver.COLOR_PURPLE);
+			receiver.drawScoreFont(engine, playerID, -1, 18, "1P:", EventReceiver.COLOR_RED);
+			if (garbageColors[0] != null)
+				receiver.drawScoreFont(engine, playerID, 3, 18, String.valueOf(garbageColors[0].size()), true);
+			else
+				receiver.drawScoreFont(engine, playerID, 3, 18, "0", false);
+			receiver.drawScoreFont(engine, playerID, -1, 19, "2P:", EventReceiver.COLOR_BLUE);
+			if (garbageColors[1] != null)
+				receiver.drawScoreFont(engine, playerID, 3, 19, String.valueOf(garbageColors[1].size()), true);
+			else
+				receiver.drawScoreFont(engine, playerID, 3, 19, "0", false);
 		}
 		
 		if (!owner.engine[playerID].gameActive)
@@ -731,6 +727,8 @@ public class PhysicianVSMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
+		if (engine.field == null)
+			return;
 		int gemsCleared = engine.field.gemsCleared;
 		if (gemsCleared > 0 && lines > 0) {
 			int pts = 0;
@@ -751,6 +749,14 @@ public class PhysicianVSMode extends DummyMode {
 			score[playerID] += pts;
 			engine.playSE("gem");
 			setSpeed(engine);
+		}
+		else if (lines == 0 && !engine.field.canCascade() && garbageColors[playerID] != null)
+		{
+			if (garbageCheck(engine, playerID))
+			{
+				engine.stat = GameEngine.STAT_LINECLEAR;
+				engine.statc[0] = engine.getLineDelay();
+			}
 		}
 	}
 
@@ -773,52 +779,57 @@ public class PhysicianVSMode extends DummyMode {
 		if(playerID == 0) enemyID = 1;
 		
 		ArrayList<Integer> cleared = engine.field.lineColorsCleared;
+		engine.field.lineColorsCleared = null;
 		if (cleared != null)
 			if (cleared.size() > 1)
 				garbageColors[enemyID] = cleared;
 		
-		if (garbageColors[playerID] != null)
-		{
-			int size = garbageColors[playerID].size();
-			if (size < 2)
-				return false;
-			Collections.shuffle(garbageColors[playerID], engine.random);
-			int[] colors = new int[4];
-			if (size >= 4)
-				for (int x = 0; x < 4; x++)
-					colors[x] = garbageColors[playerID].get(x).intValue();
-			else if (size == 3)
-			{
-				int skipSlot = engine.random.nextInt(4);
-				colors[skipSlot] = -1;
-				int i;
-				for (int x = 0; x < 3; x++)
-				{
-					i = x;
-					if (x >= skipSlot)
-						i++;
-					colors[i] = garbageColors[playerID].get(x).intValue();
-				}
-			}
-			else
-			{
-				int firstSlot = engine.random.nextInt(4);
-				colors[firstSlot] = garbageColors[playerID].get(0).intValue();
-				int secondSlot = firstSlot + 2;
-				if (secondSlot > 3)
-					secondSlot -= 4;
-				colors[secondSlot] = garbageColors[playerID].get(1).intValue();
-			}
-			int shift = engine.random.nextInt(2);
-			int y = (-1 * engine.field.getHiddenHeight());
-			for (int x = 0; x < 4; x++)
-				if (colors[x] != -1)
-					engine.field.garbageDropPlace(2*x+shift, y, false, 0, colors[x]);
-		}
-		//TODO: Drop garbage blocks
-		return false;
+		return garbageCheck(engine, playerID);
 	}
-
+	
+	private boolean garbageCheck(GameEngine engine, int playerID) {
+		if (garbageColors[playerID] == null)
+			return false;
+		int size = garbageColors[playerID].size();
+		if (size < 2)
+			return false;
+		Collections.shuffle(garbageColors[playerID], engine.random);
+		int[] colors = new int[4];
+		if (size >= 4)
+			for (int x = 0; x < 4; x++)
+				colors[x] = garbageColors[playerID].get(x).intValue();
+		else if (size == 3)
+		{
+			int skipSlot = engine.random.nextInt(4);
+			colors[skipSlot] = -1;
+			int i;
+			for (int x = 0; x < 3; x++)
+			{
+				i = x;
+				if (x >= skipSlot)
+					i++;
+				colors[i] = garbageColors[playerID].get(x).intValue();
+			}
+		}
+		else
+		{
+			int firstSlot = engine.random.nextInt(4);
+			colors[firstSlot] = garbageColors[playerID].get(0).intValue();
+			int secondSlot = firstSlot + 2;
+			if (secondSlot > 3)
+				secondSlot -= 4;
+			colors[secondSlot] = garbageColors[playerID].get(1).intValue();
+		}
+		int shift = engine.random.nextInt(2);
+		int y = (-1 * engine.field.getHiddenHeight());
+		for (int x = 0; x < 4; x++)
+			if (colors[x] != -1)
+				engine.field.garbageDropPlace(2*x+shift, y, false, 0, colors[x]);
+		engine.field.setAllSkin(engine.getSkin());
+		garbageColors[playerID] = null;
+		return true;
+	}
+	
 	/*
 	 * 各フレームの最後の処理
 	 */

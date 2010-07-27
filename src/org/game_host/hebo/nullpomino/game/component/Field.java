@@ -1800,55 +1800,54 @@ public class Field implements Serializable {
 	{
 		int total = 0;
 		Block b, bAdj;
-		if (checkLineColor(size, true, diagonals, gemSame) > 0)
-			for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++)
-				for(int j = 0; j < width; j++)
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++)
+			for(int j = 0; j < width; j++)
+			{
+				b = getBlock(j, i);
+				if (b == null)
+					continue;
+				if (b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
 				{
-					b = getBlock(j, i);
-					if (b == null)
-						continue;
-					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+					total++;
+					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
 					{
-						total++;
-						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+						bAdj = getBlock(j, i+1);
+						if (bAdj != null)
 						{
-							bAdj = getBlock(j, i+1);
-							if (bAdj != null)
-							{
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-							}
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 						}
-						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
-						{
-							bAdj = getBlock(j, i-1);
-							if (bAdj != null)
-							{
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-							}
-						}
-						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
-						{
-							bAdj = getBlock(j-1, i);
-							if (bAdj != null)
-							{
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-							}
-						}
-						if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
-						{
-							bAdj = getBlock(j+1, i);
-							if (bAdj != null)
-							{
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
-								bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
-							}
-						}
-						setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
 					}
+					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
+					{
+						bAdj = getBlock(j, i-1);
+						if (bAdj != null)
+						{
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+						}
+					}
+					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
+					{
+						bAdj = getBlock(j-1, i);
+						if (bAdj != null)
+						{
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+						}
+					}
+					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+					{
+						bAdj = getBlock(j+1, i);
+						if (bAdj != null)
+						{
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+							bAdj.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+						}
+					}
+					setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
 				}
+			}
 		return total;
 	}
 	/**
@@ -1866,7 +1865,8 @@ public class Field implements Serializable {
 		if (flag)
 		{
 			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
-			lineColorsCleared = new ArrayList<Integer>();
+			if (lineColorsCleared == null)
+				lineColorsCleared = new ArrayList<Integer>();
 			gemsCleared = 0;
 		}
 		int total = 0;
@@ -1895,7 +1895,8 @@ public class Field implements Serializable {
 					total += count;
 					if (!flag)
 						continue;
-					lineColorsCleared.add(new Integer(lineColor));
+					if (count == size)
+						lineColorsCleared.add(new Integer(lineColor));
 					x = j;
 					y = i;
 					blockColor = lineColor;
@@ -2408,6 +2409,7 @@ public class Field implements Serializable {
 		for (int x = 0; x < actualWidth; x++)
 			if (placeBlock[x])
 				garbageDropPlace(x*bigMove, y, big, hard);
+		setAllSkin(engine.getSkin());
 	}
 	
 	public boolean garbageDropPlace (int x, int y, boolean big, int hard)
@@ -2487,6 +2489,7 @@ public class Field implements Serializable {
 		boolean[][] placeBlock = new boolean[width][placeHeight];
 		if (count < (placeSize >> 1))
 		{
+			int colorShift = colorRand.nextInt(colors.length);
 			int x, y;
 			for (y = 0; y < placeHeight; y++)
 				for (x = 0; x < width; x++)
@@ -2495,14 +2498,11 @@ public class Field implements Serializable {
 			{
 				x = posRand.nextInt(width);
 				y = posRand.nextInt(placeHeight);
-				if (!getBlockEmpty(x, y))
+				if (!getBlockEmpty(x, y+minY))
 					i--;
 				else
 				{
-					if (count >= colors.length && i < colors.length)
-						addHoverBlock(x, y+minY, colors[i]);
-					else
-						addHoverBlock(x, y+minY, colors[engine.random.nextInt(colors.length)]);
+					addHoverBlock(x, y+minY, colors[((i+colorShift)%colors.length)]);
 					placeBlock[x][y] = true;
 				}
 			}
@@ -2525,7 +2525,7 @@ public class Field implements Serializable {
 			for (y = 0; y < placeHeight; y++)
 				for (x = 0; x < width; x++)
 					if (placeBlock[x][y])
-						addHoverBlock(x, y+minY, colors[engine.random.nextInt(colors.length)]);
+						addHoverBlock(x, y+minY, colors[colorRand.nextInt(colors.length)]);
 		}
 		if (!avoidLines || colors.length == 1)
 			return;
