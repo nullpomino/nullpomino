@@ -155,6 +155,9 @@ public class PhysicianVSMode extends DummyMode {
 	
 	/** Each player's garbage block colors to be dropped */
 	private ArrayList<Integer>[] garbageColors;
+	
+	/** Flash/normal mode settings */
+	private boolean[] flash;
 
 	/*
 	 * モード名
@@ -203,6 +206,7 @@ public class PhysicianVSMode extends DummyMode {
 		gemsClearedChainTotal = new int[MAX_PLAYERS];
 		rest = new int[MAX_PLAYERS];
 		garbageColors = new ArrayList[MAX_PLAYERS];
+		flash = new boolean[MAX_PLAYERS];
 		
 		winnerID = -1;
 	}
@@ -254,6 +258,7 @@ public class PhysicianVSMode extends DummyMode {
 		presetNumber[playerID] = prop.getProperty("physicianvs.presetNumber.p" + playerID, 0);
 		speed[playerID] = prop.getProperty("physicianvs.speed.p" + playerID, 1);
 		hoverBlocks[playerID] = prop.getProperty("physicianvs.hoverBlocks.p" + playerID, 40);
+		flash[playerID] = prop.getProperty("physicianvs.flash.p" + playerID, false);
 	}
 
 	/**
@@ -271,6 +276,7 @@ public class PhysicianVSMode extends DummyMode {
 		prop.setProperty("physicianvs.presetNumber.p" + playerID, presetNumber[playerID]);
 		prop.setProperty("physicianvs.speed.p" + playerID, speed[playerID]);
 		prop.setProperty("physicianvs.hoverBlocks.p" + playerID, hoverBlocks[playerID]);
+		prop.setProperty("physicianvs.flash.p" + playerID, flash[playerID]);
 	}
 
 	/**
@@ -447,6 +453,9 @@ public class PhysicianVSMode extends DummyMode {
 					if(hoverBlocks[playerID] < 1) hoverBlocks[playerID] = 99;
 					if(hoverBlocks[playerID] > 99) hoverBlocks[playerID] = 1;
 					break;
+				case 11:
+					flash[playerID] = !flash[playerID];
+					break;
 				case 15:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
@@ -587,8 +596,10 @@ public class PhysicianVSMode extends DummyMode {
 				
 				receiver.drawMenuFont(engine, playerID, 0, 0, "SPEED", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 1, SPEED_NAME[speed[playerID]], (engine.statc[2] == 9));
-				receiver.drawMenuFont(engine, playerID, 0, 2, "GEMS", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 0, 2, "VIRUS", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(hoverBlocks[playerID]), (engine.statc[2] == 10));
+				receiver.drawMenuFont(engine, playerID, 0, 4, "MODE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 5, (flash[playerID] ? "FLASH" : "NORMAL"), (engine.statc[2] == 11));
 				
 				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
@@ -657,7 +668,14 @@ public class PhysicianVSMode extends DummyMode {
 				if (hoverBlocks[playerID] >= 80) minY = 3;
 				else if (hoverBlocks[playerID] >= 72) minY = 4;
 				else if (hoverBlocks[playerID] >= 64) minY = 5;
-				engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], HOVER_BLOCK_COLORS, minY, true);
+				if (flash[playerID])
+				{
+					engine.field.addRandomHoverBlocks(engine, 3, HOVER_BLOCK_COLORS, minY, true);
+					engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], BLOCK_COLORS, minY, true);
+					engine.field.setAllSkin(12);
+				}
+				else
+					engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], HOVER_BLOCK_COLORS, minY, true);
 			} 
 		}
 
@@ -671,6 +689,7 @@ public class PhysicianVSMode extends DummyMode {
 	public void startGame(GameEngine engine, int playerID) {
 		engine.b2bEnable = false;
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
+		engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
 
@@ -690,9 +709,9 @@ public class PhysicianVSMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, -1, 2, "REST", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, 3, 3, String.valueOf(rest[0]), (rest[0] < 4));
+			receiver.drawScoreFont(engine, playerID, 3, 3, String.valueOf(rest[0]), (rest[0] <= (flash[playerID] ? 1 : 3)));
 			receiver.drawScoreFont(engine, playerID, -1, 4, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 3, 4, String.valueOf(rest[1]), (rest[1] < 4));
+			receiver.drawScoreFont(engine, playerID, 3, 4, String.valueOf(rest[1]), (rest[1] <= (flash[playerID] ? 1 : 3)));
 
 			receiver.drawScoreFont(engine, playerID, -1, 6, "SPEED", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + SPEED_NAME[speed[0]], EventReceiver.COLOR_RED);
@@ -831,8 +850,10 @@ public class PhysicianVSMode extends DummyMode {
 		int y = (-1 * engine.field.getHiddenHeight());
 		for (int x = 0; x < 4; x++)
 			if (colors[x] != -1)
+			{
 				engine.field.garbageDropPlace(2*x+shift, y, false, 0, colors[x]);
-		engine.field.setAllSkin(engine.getSkin());
+				engine.field.getBlock(2*x+shift, y).skin = engine.getSkin();
+			}
 		garbageColors[playerID] = null;
 		return true;
 	}
@@ -847,11 +868,21 @@ public class PhysicianVSMode extends DummyMode {
 		if (engine.field != null)
 		{
 			int rest = engine.field.getHowManyGems();
-			engine.meterValue = (rest * receiver.getMeterMax(engine)) / hoverBlocks[playerID];
-			if (rest <= 3) engine.meterColor = GameEngine.METER_COLOR_GREEN;
-			else if (rest < (hoverBlocks[playerID] >> 2)) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-			else if (rest < (hoverBlocks[playerID] >> 1)) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-			else engine.meterColor = GameEngine.METER_COLOR_RED;
+			if (flash[playerID])
+			{
+				engine.meterValue = (rest * receiver.getMeterMax(engine)) / 3;
+				if (rest == 1) engine.meterColor = GameEngine.METER_COLOR_GREEN;
+				else if (rest == 2) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+				else engine.meterColor = GameEngine.METER_COLOR_RED;
+			}
+			else
+			{
+				engine.meterValue = (rest * receiver.getMeterMax(engine)) / hoverBlocks[playerID];
+				if (rest <= 3) engine.meterColor = GameEngine.METER_COLOR_GREEN;
+				else if (rest < (hoverBlocks[playerID] >> 2)) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+				else if (rest < (hoverBlocks[playerID] >> 1)) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+				else engine.meterColor = GameEngine.METER_COLOR_RED;
+			}
 		}
 
 		// 決着
