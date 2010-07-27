@@ -99,6 +99,9 @@ public class Field implements Serializable {
 
 	/** Number of gems cleared in last color or line color clear */
 	public int gemsCleared;
+	
+	/** List of colors of lines cleared in most recent line color clear */
+	public ArrayList<Integer> lineColorsCleared;
 
 	/**
 	 * パラメータ付きコンストラクタ
@@ -155,6 +158,7 @@ public class Field implements Serializable {
 		colorClearExtraCount = 0;
 		colorsCleared = 0;
 		gemsCleared = 0;
+		lineColorsCleared = null;
 
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
@@ -1862,133 +1866,56 @@ public class Field implements Serializable {
 		if (flag)
 		{
 			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
+			lineColorsCleared = new ArrayList<Integer>();
 			gemsCleared = 0;
 		}
 		int total = 0;
-		int maxHeight = getHeightWithoutHurryupFloor();
 		int x, y, count, blockColor, lineColor;
-		//Check all vertical lines
-		for(int i = (hidden_height * -1); i < maxHeight+1-size; i++) {
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			for(int j = 0; j < width; j++) {
-				x = j;
-				y = i;
-				count = 0;
-				blockColor = getBlockColor(x, y, gemSame);
-				if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
+				lineColor = getBlockColor(j, i, gemSame);
+				if (lineColor == Block.BLOCK_COLOR_NONE || lineColor == Block.BLOCK_COLOR_INVALID)
 					continue;
-				lineColor = blockColor;
-				while (lineColor == blockColor)
-				{
-					count++;
-					y++;
-					blockColor = getBlockColor(x, y, gemSame);
-				}
-				if (count < size)
-					continue;
-				total += count;
-				if (!flag)
-					continue;
-				x = j;
-				y = i;
-				blockColor = lineColor;
-				while (lineColor == blockColor)
-				{
-					Block b = getBlock(x, y);
-					if (b.hard > 0)
-						b.hard--;
-					else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+				for (int dir = 0; dir < (diagonals ? 3 : 2); dir++) {
+					blockColor = lineColor;
+					x = j;
+					y = i;
+					count = 0;
+					while (lineColor == blockColor)
 					{
-						if (b.isGemBlock())
-							gemsCleared++;
-						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+						count++;
+						if (dir != 1)
+							y++;
+						if (dir != 0)
+							x++;
+						blockColor = getBlockColor(x, y, gemSame);
 					}
-					y++;
-					blockColor = getBlockColor(x, y, gemSame);
-				}
-			}
-		}
-		//Check all horizontal lines
-		for(int i = (hidden_height * -1); i < maxHeight; i++) {
-			for(int j = 0; j < width+1-size; j++) {
-				x = j;
-				y = i;
-				count = 0;
-				blockColor = getBlockColor(x, y, gemSame);
-				if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
-					continue;
-				lineColor = blockColor;
-				while (lineColor == blockColor)
-				{
-					count++;
-					x++;
-					blockColor = getBlockColor(x, y, gemSame);
-				}
-				if (count < size)
-					continue;
-				total += count;
-				if (!flag)
-					continue;
-				x = j;
-				y = i;
-				blockColor = lineColor;
-				while (lineColor == blockColor)
-				{
-					Block b = getBlock(x, y);
-					if (b.hard > 0)
-						b.hard--;
-					else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+					if (count < size)
+						continue;
+					total += count;
+					if (!flag)
+						continue;
+					lineColorsCleared.add(new Integer(lineColor));
+					x = j;
+					y = i;
+					blockColor = lineColor;
+					while (lineColor == blockColor)
 					{
-						if (b.isGemBlock())
-							gemsCleared++;
-						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+						Block b = getBlock(x, y);
+						if (b.hard > 0)
+							b.hard--;
+						else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
+						{
+							if (b.isGemBlock())
+								gemsCleared++;
+							b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+						}
+						if (dir != 1)
+							y++;
+						if (dir != 0)
+							x++;
+						blockColor = getBlockColor(x, y, gemSame);
 					}
-					x++;
-					blockColor = getBlockColor(x, y, gemSame);
-				}
-			}
-		}
-
-		if (!diagonals)
-			return total;
-		//Check all diagonal lines
-		for(int i = (hidden_height * -1); i < maxHeight+1-size; i++) {
-			for(int j = 0; j < width+1-size; j++) {
-				x = j;
-				y = i;
-				count = 0;
-				blockColor = getBlockColor(x, y, gemSame);
-				if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
-					continue;
-				lineColor = blockColor;
-				while (lineColor == blockColor)
-				{
-					x++;
-					y++;
-					blockColor = getBlockColor(x, y, gemSame);
-					count++;
-				}
-				if (count < size)
-					continue;
-				total += count;
-				if (!flag)
-					continue;
-				x = j;
-				y = i;
-				blockColor = lineColor;
-				while (lineColor == blockColor)
-				{
-					Block b = getBlock(x, y);
-					if (b.hard > 0)
-						b.hard--;
-					else if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE))
-					{
-						if (b.isGemBlock())
-							gemsCleared++;
-						b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
-					}
-					x++;
-					y++;
-					blockColor = getBlockColor(x, y, gemSame);
 				}
 			}
 		}
@@ -2482,7 +2409,13 @@ public class Field implements Serializable {
 			if (placeBlock[x])
 				garbageDropPlace(x*bigMove, y, big, hard);
 	}
-	private boolean garbageDropPlace (int x, int y, boolean big, int hard)
+	
+	public boolean garbageDropPlace (int x, int y, boolean big, int hard)
+	{
+		return garbageDropPlace(x, y, big, hard, Block.BLOCK_COLOR_GRAY);
+	}
+	
+	public boolean garbageDropPlace (int x, int y, boolean big, int hard, int color)
 	{
 		Block b = getBlock(x, y);
 		if (b == null)
@@ -2495,7 +2428,7 @@ public class Field implements Serializable {
 		}
 		if (getBlockEmptyF(x, y))
 		{
-			setBlockColor(x, y, Block.BLOCK_COLOR_GRAY);
+			setBlockColor(x, y, color);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
@@ -2554,26 +2487,32 @@ public class Field implements Serializable {
 		boolean[][] placeBlock = new boolean[width][placeHeight];
 		if (count < (placeSize >> 1))
 		{
-			for (int y = 0; y < placeHeight; y++)
-				for (int x = 0; x < width; x++)
-					placeBlock[x][y] = false;
 			int x, y;
+			for (y = 0; y < placeHeight; y++)
+				for (x = 0; x < width; x++)
+					placeBlock[x][y] = false;
 			for (int i = 0; i < count; i++)
 			{
 				x = posRand.nextInt(width);
 				y = posRand.nextInt(placeHeight);
-				if (placeBlock[x][y])
+				if (!getBlockEmpty(x, y))
 					i--;
 				else
+				{
+					if (count >= colors.length && i < colors.length)
+						addHoverBlock(x, y+minY, colors[i]);
+					else
+						addHoverBlock(x, y+minY, colors[engine.random.nextInt(colors.length)]);
 					placeBlock[x][y] = true;
+				}
 			}
 		}
 		else
 		{
-			for (int y = 0; y < placeHeight; y++)
-				for (int x = 0; x < width; x++)
-					placeBlock[x][y] = true;
 			int x, y;
+			for (y = 0; y < placeHeight; y++)
+				for (x = 0; x < width; x++)
+					placeBlock[x][y] = true;
 			for (int i = placeSize; i > count; i--)
 			{
 				x = posRand.nextInt(width);
@@ -2583,43 +2522,45 @@ public class Field implements Serializable {
 				else
 					i++;
 			}
+			for (y = 0; y < placeHeight; y++)
+				for (x = 0; x < width; x++)
+					if (placeBlock[x][y])
+						addHoverBlock(x, y+minY, colors[engine.random.nextInt(colors.length)]);
 		}
-		for (int y = 0; y < placeHeight; y++)
+		if (!avoidLines || colors.length == 1)
+			return;
+		int colorUp, colorLeft, blockColor;
+		for (int y = minY; y < height; y++)
 			for (int x = 0; x < width; x++)
-				if (placeBlock[x][y])
+				if (placeBlock[x][y-minY])
 				{
-					if (!avoidLines || colors.length == 1)
-						addHoverBlock(x, y+minY, colors[colorRand.nextInt(colors.length)]);
+					colorUp = getBlockColor(x, y-1);
+					int test = getBlockColor(x, y-2);
+					if (colorUp != test || colorUp == Block.BLOCK_COLOR_NONE)
+						colorUp = -1;
+					colorLeft = getBlockColor(x-1, y);
+					test = getBlockColor(x-2, y);
+					if (colorLeft != test || colorLeft == Block.BLOCK_COLOR_NONE)
+						colorLeft = -1;
+					blockColor = getBlockColor(x, y);
+					if (blockColor != colorUp && blockColor != colorLeft)
+						continue;
+					if (colors.length == 2)
+					{
+						if ((colors[0] == colorUp && colors[1] != colorLeft) ||
+								(colors[0] == colorLeft && colors[1] != colorUp))
+							setBlockColor(x, y, colors[1]);
+						else if ((colors[1] == colorUp && colors[0] != colorLeft) ||
+								(colors[1] == colorLeft && colors[0] != colorUp))
+							setBlockColor(x, y, colors[0]);
+					}
 					else
 					{
-						int trueY = y+minY;
-						int colorUp = getBlockColor(x, trueY-1);
-						int test = getBlockColor(x, trueY-2);
-						if (colorUp != test || colorUp == Block.BLOCK_COLOR_NONE)
-							colorUp = -1;
-						int colorLeft = getBlockColor(x-1, trueY);
-						test = getBlockColor(x-2, trueY);
-						if (colorLeft != test || colorLeft == Block.BLOCK_COLOR_NONE)
-							colorLeft = -1;
-						if (colors.length == 2)
-						{
-							if ((colors[0] == colorUp && colors[1] != colorLeft) ||
-									(colors[0] == colorLeft && colors[1] != colorUp))
-								addHoverBlock(x, trueY, colors[1]);
-							else if ((colors[1] == colorUp && colors[0] != colorLeft) ||
-									(colors[1] == colorLeft && colors[0] != colorUp))
-								addHoverBlock(x, trueY, colors[0]);
-							else
-								addHoverBlock(x, trueY, colors[colorRand.nextInt(colors.length)]);
-						}
-						else
-						{
-							int color;
-							do {
-								color = colors[colorRand.nextInt(colors.length)];
-							} while (color == colorUp || color == colorLeft);
-							addHoverBlock(x, trueY, color);
-						}
+						int color;
+						do {
+							color = colors[colorRand.nextInt(colors.length)];
+						} while (color == colorUp || color == colorLeft);
+						setBlockColor(x, y, color);
 					}
 				}
 	}

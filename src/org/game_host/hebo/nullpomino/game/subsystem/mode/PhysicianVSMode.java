@@ -28,6 +28,8 @@
 */
 package org.game_host.hebo.nullpomino.game.subsystem.mode;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import org.game_host.hebo.nullpomino.game.component.BGMStatus;
@@ -150,6 +152,9 @@ public class PhysicianVSMode extends DummyMode {
 	
 	/** Each player's remaining gem count */
 	private int[] rest;
+	
+	/** Each player's garbage block colors to be dropped */
+	private ArrayList<Integer>[] garbageColors;
 
 	/*
 	 * モード名
@@ -197,6 +202,7 @@ public class PhysicianVSMode extends DummyMode {
 		speed = new int[MAX_PLAYERS];
 		gemsClearedChainTotal = new int[MAX_PLAYERS];
 		rest = new int[MAX_PLAYERS];
+		garbageColors = new ArrayList[MAX_PLAYERS];
 		
 		winnerID = -1;
 	}
@@ -760,11 +766,56 @@ public class PhysicianVSMode extends DummyMode {
 	}
 
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
-		/*
+		if (engine.field == null)
+			return false;
+		
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
+		
+		ArrayList<Integer> cleared = engine.field.lineColorsCleared;
+		if (cleared != null)
+			if (cleared.size() > 1)
+				garbageColors[enemyID] = cleared;
+		
+		if (garbageColors[playerID] != null)
+		{
+			int size = garbageColors[playerID].size();
+			if (size < 2)
+				return false;
+			Collections.shuffle(garbageColors[playerID], engine.random);
+			int[] colors = new int[4];
+			if (size >= 4)
+				for (int x = 0; x < 4; x++)
+					colors[x] = garbageColors[playerID].get(x).intValue();
+			else if (size == 3)
+			{
+				int skipSlot = engine.random.nextInt(4);
+				colors[skipSlot] = -1;
+				int i;
+				for (int x = 0; x < 3; x++)
+				{
+					i = x;
+					if (x >= skipSlot)
+						i++;
+					colors[i] = garbageColors[playerID].get(x).intValue();
+				}
+			}
+			else
+			{
+				int firstSlot = engine.random.nextInt(4);
+				colors[firstSlot] = garbageColors[playerID].get(0).intValue();
+				int secondSlot = firstSlot + 2;
+				if (secondSlot > 3)
+					secondSlot -= 4;
+				colors[secondSlot] = garbageColors[playerID].get(1).intValue();
+			}
+			int shift = engine.random.nextInt(2);
+			int y = (-1 * engine.field.getHiddenHeight());
+			for (int x = 0; x < 4; x++)
+				if (colors[x] != -1)
+					engine.field.garbageDropPlace(2*x+shift, y, false, 0, colors[x]);
+		}
 		//TODO: Drop garbage blocks
-		*/
 		return false;
 	}
 
