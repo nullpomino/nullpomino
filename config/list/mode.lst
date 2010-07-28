@@ -4,6 +4,7 @@ org.game_host.hebo.nullpomino.game.subsystem.mode.ExtremeMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.LineRaceMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.ScoreRaceMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.DigRaceMode
+org.game_host.hebo.nullpomino.game.subsystem.mode.ComboRaceMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.UltraMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.TechnicianMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.SquareMode
