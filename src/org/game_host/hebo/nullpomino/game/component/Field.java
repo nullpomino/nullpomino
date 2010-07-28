@@ -2409,7 +2409,6 @@ public class Field implements Serializable {
 		for (int x = 0; x < actualWidth; x++)
 			if (placeBlock[x])
 				garbageDropPlace(x*bigMove, y, big, hard);
-		setAllSkin(engine.getSkin());
 	}
 	
 	public boolean garbageDropPlace (int x, int y, boolean big, int hard)

@@ -181,13 +181,18 @@ public class PhysicianMode extends DummyMode {
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
 
+			int m = 1;
+			if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
+			if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
+			
 			if(change != 0) {
 				engine.playSE("change");
 
 				switch(engine.statc[2]) {
 
 				case 0:
-					hoverBlocks += change;
+					if (m >= 10) hoverBlocks += change*10;
+					else hoverBlocks += change;
 					if(hoverBlocks < 1) hoverBlocks = 99;
 					if(hoverBlocks > 99) hoverBlocks = 1;
 					break;

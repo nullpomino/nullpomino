@@ -567,7 +567,8 @@ public class AvalancheVSMode extends DummyMode {
 					if(ojamaCounterMode[playerID] > 2) ojamaCounterMode[playerID] = 0;
 					break;
 				case 10:
-					maxAttack[playerID] += change;
+					if (m >= 10) maxAttack[playerID] += change*10;
+					else maxAttack[playerID] += change;
 					if(maxAttack[playerID] < 0) maxAttack[playerID] = 99;
 					if(maxAttack[playerID] > 99) maxAttack[playerID] = 0;
 					break;
@@ -582,7 +583,8 @@ public class AvalancheVSMode extends DummyMode {
 					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
 					break;
 				case 13:
-					ojamaRate[playerID] += change*10;
+					if (m >= 10) ojamaRate[playerID] += change*100;
+					else ojamaRate[playerID] += change*10;
 					if(ojamaRate[playerID] < 10) ojamaRate[playerID] = 1000;
 					if(ojamaRate[playerID] > 1000) ojamaRate[playerID] = 10;
 					break;
@@ -641,12 +643,14 @@ public class AvalancheVSMode extends DummyMode {
 					if(feverThreshold[playerID] > 9) feverThreshold[playerID] = 0;
 					break;
 				case 23:
-					feverTimeMin[playerID] += change;
+					if (m >= 10) feverTimeMin[playerID] += change*10;
+					else feverTimeMin[playerID] += change;
 					if(feverTimeMin[playerID] < 1) feverTimeMin[playerID] = feverTimeMax[playerID];
 					if(feverTimeMin[playerID] > feverTimeMax[playerID]) feverTimeMin[playerID] = 1;
 					break;
 				case 24:
-					feverTimeMax[playerID] += change;
+					if (m >= 10) feverTimeMax[playerID] += change*10;
+					else feverTimeMax[playerID] += change;
 					if(feverTimeMax[playerID] < feverTimeMin[playerID]) feverTimeMax[playerID] = 99;
 					if(feverTimeMax[playerID] > 99) feverTimeMax[playerID] = feverTimeMin[playerID];
 					break;
@@ -1037,6 +1041,7 @@ public class AvalancheVSMode extends DummyMode {
 			
 			if (chain >= rensaShibari[playerID])
 			{
+				//Add ojama
 				int rate = ojamaRate[playerID];
 				if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
 					rate >>= engine.statistics.time / (hurryupSeconds[playerID] * 60);
@@ -1046,6 +1051,7 @@ public class AvalancheVSMode extends DummyMode {
 				ojamaSent[playerID] += ojamaNew;
 				if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
 				{
+					//Counter ojama
 					boolean countered = false;
 					if (inFever[playerID])
 					{
@@ -1121,6 +1127,7 @@ public class AvalancheVSMode extends DummyMode {
 			zenKeshi[playerID] = false;
 			zenKeshiDisplay[playerID] = 120;
 		}
+		//Reset Fever board if necessary
 		if (inFever[playerID] && cleared[playerID])
 		{
 			if (feverTime[playerID] > 0)
@@ -1176,6 +1183,7 @@ public class AvalancheVSMode extends DummyMode {
 			else
 				ojama[playerID] -= drop;
 			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID]);
+			//engine.field.setAllSkin(engine.getSkin());
 			return true;
 		}
 		//Check to start Fever Mode

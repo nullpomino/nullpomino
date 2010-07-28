@@ -449,7 +449,8 @@ public class PhysicianVSMode extends DummyMode {
 					if(speed[playerID] > 2) speed[playerID] = 0;
 					break;
 				case 10:
-					hoverBlocks[playerID] += change;
+					if (m >= 10) hoverBlocks[playerID] += change*10;
+					else hoverBlocks[playerID] += change;
 					if(hoverBlocks[playerID] < 1) hoverBlocks[playerID] = 99;
 					if(hoverBlocks[playerID] > 99) hoverBlocks[playerID] = 1;
 					break;
