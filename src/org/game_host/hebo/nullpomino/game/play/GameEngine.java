@@ -2176,7 +2176,7 @@ public class GameEngine {
 							}
 	
 							playSE("move");
-						} else if (ruleopt.dasOnBlockedMove) {
+						} else if (ruleopt.dasChargeOnBlockedMove) {
 							dasCount = getDAS();
 							dasSpeedCount = getDASDelay();
 						}

@@ -366,7 +366,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JCheckBox chkboxMoveDASInEndingStart;
 	
 	/** DAS charge on blocked move checkbox*/
-	private JCheckBox chkboxMoveDASOnBlockedMove;
+	private JCheckBox chkboxMoveDASChargeOnBlockedMove;
 
 	/** 最初のフレームに移動可能 */
 	private JCheckBox chkboxMoveFirstFrame;
@@ -1051,8 +1051,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 		panelMove.add(chkboxMoveDASInARELastFrame);
 		chkboxMoveDASInEndingStart = new JCheckBox(getUIText("Move_DASInEndingStart"));
 		panelMove.add(chkboxMoveDASInEndingStart);
-		chkboxMoveDASOnBlockedMove = new JCheckBox(getUIText("Move_DASOnBlockedMove"));
-		panelMove.add(chkboxMoveDASOnBlockedMove);
+		chkboxMoveDASChargeOnBlockedMove = new JCheckBox(getUIText("Move_DASChargeOnBlockedMove"));
+		panelMove.add(chkboxMoveDASChargeOnBlockedMove);
 
 		// 最初のフレームに移動可能
 		chkboxMoveFirstFrame = new JCheckBox(getUIText("Move_FirstFrame"));
@@ -1469,7 +1469,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveDASInARE.setSelected(r.dasInARE);
 		chkboxMoveDASInARELastFrame.setSelected(r.dasInARELastFrame);
 		chkboxMoveDASInEndingStart.setSelected(r.dasInEndingStart);
-		chkboxMoveDASOnBlockedMove.setSelected(r.dasOnBlockedMove);
+		chkboxMoveDASChargeOnBlockedMove.setSelected(r.dasChargeOnBlockedMove);
 		chkboxMoveFirstFrame.setSelected(r.moveFirstFrame);
 		chkboxMoveDiagonal.setSelected(r.moveDiagonal);
 		chkboxMoveUpAndDown.setSelected(r.moveUpAndDown);
@@ -1581,7 +1581,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.dasInARE = chkboxMoveDASInARE.isSelected();
 		r.dasInARELastFrame = chkboxMoveDASInARELastFrame.isSelected();
 		r.dasInEndingStart = chkboxMoveDASInEndingStart.isSelected();
-		r.dasOnBlockedMove = chkboxMoveDASOnBlockedMove.isSelected();
+		r.dasChargeOnBlockedMove = chkboxMoveDASChargeOnBlockedMove.isSelected();
 		r.moveFirstFrame = chkboxMoveFirstFrame.isSelected();
 		r.moveDiagonal = chkboxMoveDiagonal.isSelected();
 		r.moveUpAndDown = chkboxMoveUpAndDown.isSelected();
