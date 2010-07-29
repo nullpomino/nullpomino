@@ -39,7 +39,7 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
 /**
  * CLASSIC MARATHON mode (Original from NullpoUE build 010210 by Zircean)
  */
-public class ClassicMarathonMode extends DummyMode {
+public class RetroMarathonMode extends DummyMode {
 	/** Current version of this mode */
 	private static final int CURRENT_VERSION = 2;
 
@@ -177,7 +177,7 @@ public class ClassicMarathonMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "CLASSIC MARATHON";
+		return "RETRO MARATHON";
 	}
 
 	/**
@@ -577,11 +577,11 @@ public class ClassicMarathonMode extends DummyMode {
 	 * @param prop CustomProperties
 	 */
 	private void loadSetting(CustomProperties prop) {
-		gametype = prop.getProperty("classicmarathon.gametype", 0);
-		startlevel = prop.getProperty("classicmarathon.startlevel", 0);
-		startheight = prop.getProperty("classicmarathon.startheight", 0);
-		big = prop.getProperty("classicmarathon.big", false);
-		version = prop.getProperty("classicmarathon.version", 0);
+		gametype = prop.getProperty("retromarathon.gametype", 0);
+		startlevel = prop.getProperty("retromarathon.startlevel", 0);
+		startheight = prop.getProperty("retromarathon.startheight", 0);
+		big = prop.getProperty("retromarathon.big", false);
+		version = prop.getProperty("retromarathon.version", 0);
 	}
 
 	/**
@@ -589,11 +589,11 @@ public class ClassicMarathonMode extends DummyMode {
 	 * @param prop CustomProperties
 	 */
 	private void saveSetting(CustomProperties prop) {
-		prop.setProperty("classicmarathon.gametype", gametype);
-		prop.setProperty("classicmarathon.startlevel", startlevel);
-		prop.setProperty("classicmarathon.startheight", startheight);
-		prop.setProperty("classicmarathon.big", big);
-		prop.setProperty("classicmarathon.version", version);
+		prop.setProperty("retromarathon.gametype", gametype);
+		prop.setProperty("retromarathon.startlevel", startlevel);
+		prop.setProperty("retromarathon.startheight", startheight);
+		prop.setProperty("retromarathon.big", big);
+		prop.setProperty("retromarathon.version", version);
 	}
 
 	/**
@@ -604,9 +604,9 @@ public class ClassicMarathonMode extends DummyMode {
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int gametypeIndex = 0; gametypeIndex < RANKING_TYPE; gametypeIndex++) {
-				rankingScore[gametypeIndex][i] = prop.getProperty("classicmarathon.ranking." + ruleName + "." + gametypeIndex + ".score." + i, 0);
-				rankingLines[gametypeIndex][i] = prop.getProperty("classicmarathon.ranking." + ruleName + "." + gametypeIndex + ".lines." + i, 0);
-				rankingLevel[gametypeIndex][i] = prop.getProperty("classicmarathon.ranking." + ruleName + "." + gametypeIndex + ".level." + i, 0);
+				rankingScore[gametypeIndex][i] = prop.getProperty("retromarathon.ranking." + ruleName + "." + gametypeIndex + ".score." + i, 0);
+				rankingLines[gametypeIndex][i] = prop.getProperty("retromarathon.ranking." + ruleName + "." + gametypeIndex + ".lines." + i, 0);
+				rankingLevel[gametypeIndex][i] = prop.getProperty("retromarathon.ranking." + ruleName + "." + gametypeIndex + ".level." + i, 0);
 			}
 		}
 	}
@@ -619,9 +619,9 @@ public class ClassicMarathonMode extends DummyMode {
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int gametypeIndex = 0; gametypeIndex < RANKING_TYPE; gametypeIndex++) {
-				prop.setProperty("classicmarathon.ranking." + ruleName + "." + gametypeIndex + ".score." + i, rankingScore[gametypeIndex][i]);
-				prop.setProperty("classicmarathon.ranking." + ruleName + "." + gametypeIndex + ".lines." + i, rankingLines[gametypeIndex][i]);
-				prop.setProperty("classicmarathon.ranking." + ruleName + "." + gametypeIndex + ".level." + i, rankingLevel[gametypeIndex][i]);
+				prop.setProperty("retromarathon.ranking." + ruleName + "." + gametypeIndex + ".score." + i, rankingScore[gametypeIndex][i]);
+				prop.setProperty("retromarathon.ranking." + ruleName + "." + gametypeIndex + ".lines." + i, rankingLines[gametypeIndex][i]);
+				prop.setProperty("retromarathon.ranking." + ruleName + "." + gametypeIndex + ".level." + i, rankingLevel[gametypeIndex][i]);
 			}
 		}
 	}
