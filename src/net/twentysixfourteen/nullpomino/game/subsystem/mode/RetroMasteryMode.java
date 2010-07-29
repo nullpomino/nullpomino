@@ -381,7 +381,7 @@ public class RetroMasteryMode extends DummyMode {
 			engine.statistics.score += pts;
 		}
 
-		efficiency = (actions != 0) ? engine.statistics.lines / actions : 0;
+		efficiency = (actions != 0) ? engine.statistics.lines / (float)actions : 0;
 
 		// Update meter
 		engine.meterValue = ((loons % 10) * receiver.getMeterMax(engine)) / 9;
