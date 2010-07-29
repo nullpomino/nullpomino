@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.component.Piece;
 import org.game_host.hebo.nullpomino.game.component.RuleOptions;
 import org.game_host.hebo.nullpomino.game.subsystem.ai.AIPlayer;
-import org.game_host.hebo.nullpomino.game.subsystem.randomizer.Randomizer;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 import org.game_host.hebo.nullpomino.game.subsystem.wallkick.Wallkick;
 
 /**

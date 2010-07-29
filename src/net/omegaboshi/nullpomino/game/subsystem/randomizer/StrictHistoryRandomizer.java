@@ -8,17 +8,35 @@ public class StrictHistoryRandomizer extends Randomizer {
 	int id;
 	
 	boolean[] curHist;
+	int numDistinctCurHist;
 	int[] notHist;
 	int notHistPos;
 	
+	public StrictHistoryRandomizer() {
+		super();
+	}
+	
 	public StrictHistoryRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
-		history = new int[] {Piece.PIECE_S, Piece.PIECE_Z, Piece.PIECE_O, Piece.PIECE_T};
-		curHist = new boolean[] {false, false, true, true, true, false, true, false, false, false, false};
-		notHist = new int[3];
+	}
+	
+	public void init() {
+		history = new int[] {Piece.PIECE_S, Piece.PIECE_Z, Piece.PIECE_O, Piece.PIECE_O};
+		curHist = new boolean[pieces.length];
+		notHist = new int[pieces.length];
 	}
 	
 	public int next() {
+		for (int i = 0; i < pieces.length; i++) {
+			curHist[i] = false;
+		}
+		numDistinctCurHist = 0;
+		for (int i = 0; i < 4; i++) {
+			if (!curHist[history[i]]) {
+				curHist[history[i]] = true;
+				numDistinctCurHist++;
+			}
+		}
 		notHistPos = 0;
 		for (int i = 0; i < pieces.length; i++) {
 			if (!curHist[i]) {
@@ -27,10 +45,6 @@ public class StrictHistoryRandomizer extends Randomizer {
 			}
 		}
 		id = notHist[r.nextInt(notHistPos)];
-		
-		curHist[pieces[id]] = true;
-		curHist[history[3]] = false;
-		
 		for (int i = 3; i > 0; i--) {
 			history[i] = history[i-1];
 		}

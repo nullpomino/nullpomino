@@ -47,7 +47,7 @@ import org.game_host.hebo.nullpomino.game.net.NetRoomInfo;
 import org.game_host.hebo.nullpomino.game.net.NetUtil;
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.game.play.GameManager;
-import org.game_host.hebo.nullpomino.game.subsystem.randomizer.Randomizer;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 import org.game_host.hebo.nullpomino.game.subsystem.wallkick.Wallkick;
 import org.game_host.hebo.nullpomino.gui.net.NetLobbyFrame;
 import org.game_host.hebo.nullpomino.gui.net.NetLobbyListener;

@@ -7,8 +7,15 @@ public class BagBonusRandomizer extends Randomizer {
 	int pt;
 	int bonus;
 	
+	public BagBonusRandomizer() {
+		super();
+	}
+	
 	public BagBonusRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
+	}
+	
+	public void init() {
 		baglen = pieces.length+1;
 		bag = new int[baglen];
 		pt = 0;

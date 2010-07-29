@@ -2,37 +2,20 @@ package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
 import org.game_host.hebo.nullpomino.game.component.Piece;
 
-public class History4RollsRandomizer extends Randomizer {
-
-	int[] history;
-	int id;
+public class History4RollsRandomizer extends LimitedHistoryRandomizer {
 	
-	boolean firstPiece;
+	public History4RollsRandomizer() {
+		super();
+	}
 	
 	public History4RollsRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
-		history = new int[] {Piece.PIECE_Z, Piece.PIECE_Z, Piece.PIECE_Z, Piece.PIECE_Z};
-		firstPiece = true;
+		
 	}
-	
-	public int next() {
-		if (firstPiece) {
-			do {
-				id = r.nextInt(pieces.length);
-			} while (pieces[id] != Piece.PIECE_O && pieces[id] != Piece.PIECE_Z && pieces[id] != Piece.PIECE_S);
-			firstPiece = false;
-		} else {
-			for (int i = 0; i < 4; i++) {
-				id = r.nextInt(pieces.length);
-				if (!(pieces[id] == history[0] || pieces[id] == history[1] || pieces[id] == history[2] || pieces[id] == history[3])) {
-					break;
-				}
-			}
-		}
-		for (int i = 3; i > 0; i--) {
-			history[i] = history[i-1];
-		}
-		history[0] = pieces[id];
-		return pieces[id];
+
+	public void init() {
+		super.init();
+		history = new int[] {Piece.PIECE_Z, Piece.PIECE_Z, Piece.PIECE_Z, Piece.PIECE_Z};
+		numrolls = 4;
 	}
 }

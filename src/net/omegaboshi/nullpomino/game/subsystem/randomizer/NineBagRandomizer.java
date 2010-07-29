@@ -1,29 +1,31 @@
 package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
-public class BagRandomizer extends Randomizer {
+public class NineBagRandomizer extends Randomizer {
 	
 	int[] bag;
+	int baglen;
 	int pt;
 	
-	public BagRandomizer() {
+	public NineBagRandomizer() {
 		super();
 	}
 	
-	public BagRandomizer(boolean[] pieceEnable, long seed) {
+	public NineBagRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
 	}
 	
 	public void init() {
-		bag = new int[pieces.length];
+		baglen = pieces.length*9;
+		bag = new int[baglen];
 		pt = 0;
-		for (int i = 0; i < pieces.length; i++) {
-			bag[i] = pieces[i];
+		for (int i = 0; i < baglen; i++) {
+			bag[i] = pieces[i%pieces.length];
 		}
 		shuffle();
 	}
-
+	
 	public void shuffle() {
-		for (int i = pieces.length; i > 1; i--) {
+		for (int i = baglen; i > 1; i--) {
 			int j = r.nextInt(i);
 			int temp = bag[i-1];
 			bag[i-1] = bag[j];
@@ -34,7 +36,7 @@ public class BagRandomizer extends Randomizer {
 	public int next() {
 		int id = bag[pt];
 		pt++;
-		if (pt == pieces.length) {
+		if (pt == baglen) {
 			pt = 0;
 			shuffle();
 		}

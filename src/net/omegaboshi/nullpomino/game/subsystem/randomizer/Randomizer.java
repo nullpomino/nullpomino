@@ -9,17 +9,21 @@ public abstract class Randomizer {
 	protected Random r;
 	public int[] pieces;
 	
-	public Randomizer() {
-		r = new Random(0);
-		pieces = new int[0];
-	}
+	public Randomizer() {}
 	
 	public Randomizer(boolean[] pieceEnable, long seed) {
-		setPieceEnable(pieceEnable);
-		reseed(seed);
+		setState(pieceEnable, seed);
 	}
 	
+	public void init() {}
+	
 	public abstract int next();
+	
+	public void setState(boolean[] pieceEnable, long seed) {
+		setPieceEnable(pieceEnable);
+		reseed(seed);
+		init();
+	}
 	
 	public void setPieceEnable(boolean[] pieceEnable) {
 		int piece = 0;

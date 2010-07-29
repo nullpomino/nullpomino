@@ -44,8 +44,8 @@ import org.game_host.hebo.nullpomino.game.component.SpeedParam;
 import org.game_host.hebo.nullpomino.game.component.Statistics;
 import org.game_host.hebo.nullpomino.game.component.WallkickResult;
 import org.game_host.hebo.nullpomino.game.subsystem.ai.AIPlayer;
-import org.game_host.hebo.nullpomino.game.subsystem.randomizer.MemorylessRandomizer;
-import org.game_host.hebo.nullpomino.game.subsystem.randomizer.Randomizer;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 import org.game_host.hebo.nullpomino.game.subsystem.wallkick.Wallkick;
 
 /**
@@ -1748,8 +1748,15 @@ public class GameEngine {
 				}
 
 				// NEXTピースの出現順を作成
-				if(randomizer == null) randomizer = new MemorylessRandomizer();
-				nextPieceArrayID = randomizer.createPieceSequence(nextPieceEnable, random, nextPieceArraySize);
+				if(randomizer == null) {
+					randomizer = new MemorylessRandomizer(nextPieceEnable, randSeed);
+				} else {
+					randomizer.setState(nextPieceEnable, randSeed);
+				}
+				nextPieceArrayID = new int[nextPieceArraySize];
+				for (int i = 0; i < nextPieceArraySize; i++) {
+					nextPieceArrayID[i] = randomizer.next();
+				}
 			}
 			// NEXTピースのオブジェクトを作成
 			if(nextPieceArrayObject == null) {

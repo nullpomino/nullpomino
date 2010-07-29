@@ -6,8 +6,15 @@ public class DoubleBagRandomizer extends Randomizer {
 	int baglen;
 	int pt;
 	
+	public DoubleBagRandomizer() {
+		super();
+	}
+	
 	public DoubleBagRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
+	}
+	
+	public void init() {
 		baglen = pieces.length*2;
 		bag = new int[baglen];
 		pt = 0;
