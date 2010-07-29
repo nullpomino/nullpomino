@@ -257,7 +257,7 @@ public class RuleOptions implements Serializable {
 	/** Charge DAS on blocked move */
 	public boolean dasChargeOnBlockedMove;
 	
-	/** Leave DAS charge alone when left/right are not held -- useful with dasDeadARE **/
+	/** Leave DAS charge alone when left/right are not held -- useful with dasRedirectInDelay **/
    public boolean dasStoreChargeOnNeutral;
    
    /** Allow direction changes during delays without zeroing DAS charge **/

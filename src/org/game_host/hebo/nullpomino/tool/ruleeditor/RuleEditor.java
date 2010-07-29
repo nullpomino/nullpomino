@@ -367,6 +367,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 	
 	/** DAS charge on blocked move checkbox*/
 	private JCheckBox chkboxMoveDASChargeOnBlockedMove;
+	
+	/** Store DAS Charge on neutral checkbox **/
+	private JCheckBox chkboxMoveDASStoreChargeOnNeutral;
+	
+	/** Redirect in delay checkbox **/
+	private JCheckBox chkboxMoveDASRedirectInDelay;
 
 	/** 最初のフレームに移動可能 */
 	private JCheckBox chkboxMoveFirstFrame;
@@ -1053,7 +1059,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		panelMove.add(chkboxMoveDASInEndingStart);
 		chkboxMoveDASChargeOnBlockedMove = new JCheckBox(getUIText("Move_DASChargeOnBlockedMove"));
 		panelMove.add(chkboxMoveDASChargeOnBlockedMove);
-
+		chkboxMoveDASStoreChargeOnNeutral = new JCheckBox(getUIText("Move_DASStoreChargeOnNeutral"));
+      panelMove.add(chkboxMoveDASStoreChargeOnNeutral);
+      chkboxMoveDASRedirectInDelay = new JCheckBox(getUIText("Move_DASRedirectInDelay"));
+      panelMove.add(chkboxMoveDASRedirectInDelay);
+      
 		// 最初のフレームに移動可能
 		chkboxMoveFirstFrame = new JCheckBox(getUIText("Move_FirstFrame"));
 		panelMove.add(chkboxMoveFirstFrame);
@@ -1470,6 +1480,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveDASInARELastFrame.setSelected(r.dasInARELastFrame);
 		chkboxMoveDASInEndingStart.setSelected(r.dasInEndingStart);
 		chkboxMoveDASChargeOnBlockedMove.setSelected(r.dasChargeOnBlockedMove);
+		chkboxMoveDASStoreChargeOnNeutral.setSelected(r.dasStoreChargeOnNeutral);
+		chkboxMoveDASRedirectInDelay.setSelected(r.dasRedirectInDelay);
 		chkboxMoveFirstFrame.setSelected(r.moveFirstFrame);
 		chkboxMoveDiagonal.setSelected(r.moveDiagonal);
 		chkboxMoveUpAndDown.setSelected(r.moveUpAndDown);
@@ -1582,6 +1594,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.dasInARELastFrame = chkboxMoveDASInARELastFrame.isSelected();
 		r.dasInEndingStart = chkboxMoveDASInEndingStart.isSelected();
 		r.dasChargeOnBlockedMove = chkboxMoveDASChargeOnBlockedMove.isSelected();
+		r.dasStoreChargeOnNeutral = chkboxMoveDASStoreChargeOnNeutral.isSelected();
+		r.dasRedirectInDelay = chkboxMoveDASRedirectInDelay.isSelected();
 		r.moveFirstFrame = chkboxMoveFirstFrame.isSelected();
 		r.moveDiagonal = chkboxMoveDiagonal.isSelected();
 		r.moveUpAndDown = chkboxMoveUpAndDown.isSelected();
