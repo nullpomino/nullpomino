@@ -256,6 +256,12 @@ public class RuleOptions implements Serializable {
 	
 	/** Charge DAS on blocked move */
 	public boolean dasChargeOnBlockedMove;
+	
+	/** Leave DAS charge alone when left/right are not held -- useful with dasDeadARE **/
+   public boolean dasStoreChargeOnNeutral;
+   
+   /** Allow direction changes during delays without zeroing DAS charge **/
+   public boolean dasRedirectInDelay;
 
 	/** 最初のフレームで移動可能 */
 	public boolean moveFirstFrame;
@@ -410,6 +416,8 @@ public class RuleOptions implements Serializable {
 		dasInARELastFrame = true;
 		dasInEndingStart = true;
 		dasChargeOnBlockedMove = false;
+	   dasStoreChargeOnNeutral = false;
+	   dasRedirectInDelay = false;
 
 		moveFirstFrame = true;
 		moveDiagonal = true;
@@ -531,6 +539,8 @@ public class RuleOptions implements Serializable {
 		dasInARELastFrame = r.dasInARELastFrame;
 		dasInEndingStart = r.dasInEndingStart;
 		dasChargeOnBlockedMove = r.dasChargeOnBlockedMove;
+		dasStoreChargeOnNeutral = r.dasStoreChargeOnNeutral;
+      dasRedirectInDelay = r.dasRedirectInDelay;
 
 		moveFirstFrame = r.moveFirstFrame;
 		moveDiagonal = r.moveDiagonal;
@@ -646,6 +656,8 @@ public class RuleOptions implements Serializable {
 		if(dasInARELastFrame != r.dasInARELastFrame) return false;
 		if(dasInEndingStart != r.dasInEndingStart) return false;
 		if(dasChargeOnBlockedMove != r.dasChargeOnBlockedMove) return false;
+		if(dasStoreChargeOnNeutral != r.dasStoreChargeOnNeutral) return false;
+		if(dasRedirectInDelay != r.dasRedirectInDelay) return false;
 
 		if(moveFirstFrame != r.moveFirstFrame) return false;
 		if(moveDiagonal != r.moveDiagonal) return false;
@@ -762,6 +774,8 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.dasInARELastFrame", dasInARELastFrame);
 		p.setProperty(id + ".ruleopt.dasInEndingStart", dasInEndingStart);
 		p.setProperty(id + ".ruleopt.dasOnBlockedMove", dasChargeOnBlockedMove);
+		p.setProperty(id + ".ruleopt.dasStoreChargeOnNeutral", dasStoreChargeOnNeutral);
+		p.setProperty(id + ".ruleopt.dasRedirectInARE", dasRedirectInDelay);
 
 		p.setProperty(id + ".ruleopt.moveFirstFrame", moveFirstFrame);
 		p.setProperty(id + ".ruleopt.moveDiagonal", moveDiagonal);
@@ -875,6 +889,8 @@ public class RuleOptions implements Serializable {
 		dasInARELastFrame = p.getProperty(id + ".ruleopt.dasInARELastFrame", dasInARELastFrame);
 		dasInEndingStart = p.getProperty(id + ".ruleopt.dasInEndingStart", dasInEndingStart);
 		dasChargeOnBlockedMove = p.getProperty(id + ".ruleopt.dasOnBlockedMove", dasChargeOnBlockedMove);
+		dasStoreChargeOnNeutral = p.getProperty(id + ".ruleopt.dasStoreChargeOnNeutral", dasStoreChargeOnNeutral);
+		dasRedirectInDelay = p.getProperty(id + ".ruleopt.dasRedirectInARE", dasRedirectInDelay);
 
 		moveFirstFrame = p.getProperty(id + ".ruleopt.moveFirstFrame", moveFirstFrame);
 		moveDiagonal = p.getProperty(id + ".ruleopt.moveDiagonal", moveDiagonal);

@@ -1071,10 +1071,18 @@ public class GameEngine {
 		int moveDirection = getMoveDirection();
 		if(moveDirection != 0) {
 			dasCount++;
-		} else {
+		} else if(!ruleopt.dasStoreChargeOnNeutral) {
 			dasCount = 0;
 		}
 		dasDirection = moveDirection;
+	}
+	
+	/**
+	 * Called if delay doesn't allow charging but dasRedirectInDelay == true
+	 * Updates dasDirection so player can change direction without dropping charge on entry.
+	 */
+	public void dasRedirect() {
+      dasDirection = getMoveDirection();
 	}
 
 	/**
@@ -1727,6 +1735,7 @@ public class GameEngine {
 
 		// 横溜め
 		if(ruleopt.dasInReady && gameActive) padRepeat();
+		else if(ruleopt.dasRedirectInDelay) { dasRedirect(); }
 
 		// 初期化
 		if(statc[0] == 0) {
@@ -1848,7 +1857,9 @@ public class GameEngine {
 		if((statc[0] > 0) || (ruleopt.dasInMoveFirstFrame)) {
 			if(dasDirection != moveDirection) {
 				dasDirection = moveDirection;
-				dasCount = 0;
+				if(!(dasDirection == 0 && ruleopt.dasStoreChargeOnNeutral)){
+				   dasCount = 0;
+				}
 			}
 		}
 
@@ -2492,6 +2503,7 @@ public class GameEngine {
 
 		// 横溜め
 		if(ruleopt.dasInLockFlash) padRepeat();
+		else if(ruleopt.dasRedirectInDelay) { dasRedirect(); }
 
 		// 次のステータス
 		if(statc[0] >= ruleopt.lockflash) {
@@ -2524,6 +2536,7 @@ public class GameEngine {
 
 		// 横溜め
 		if(ruleopt.dasInLineClear) padRepeat();
+		else if(ruleopt.dasRedirectInDelay) { dasRedirect(); }
 
 		// 最初のフレーム
 		if(statc[0] == 0) {
@@ -2783,6 +2796,7 @@ public class GameEngine {
 		// 横溜め
 		if( (ruleopt.dasInARE) && ((statc[0] < statc[1] - 1) || (ruleopt.dasInARELastFrame)) )
 			padRepeat();
+		else if(ruleopt.dasRedirectInDelay) { dasRedirect(); }
 
 		// 次のステータス
 		if((statc[0] >= statc[1]) && (!lagARE)) {
@@ -2815,6 +2829,7 @@ public class GameEngine {
 
 		// 横溜め
 		if(ruleopt.dasInEndingStart) padRepeat();
+		else if(ruleopt.dasRedirectInDelay) { dasRedirect(); }
 
 		if(statc[2] == 0) {
 			timerActive = false;
