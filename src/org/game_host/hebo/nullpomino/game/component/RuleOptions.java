@@ -253,6 +253,9 @@ public class RuleOptions implements Serializable {
 
 	/** エンディング突入画面で横溜め可能 */
 	public boolean dasInEndingStart;
+	
+	/** Charge DAS on blocked move */
+	public boolean dasOnBlockedMove;
 
 	/** 最初のフレームで移動可能 */
 	public boolean moveFirstFrame;
@@ -406,6 +409,7 @@ public class RuleOptions implements Serializable {
 		dasInARE = true;
 		dasInARELastFrame = true;
 		dasInEndingStart = true;
+		dasOnBlockedMove = false;
 
 		moveFirstFrame = true;
 		moveDiagonal = true;
@@ -526,6 +530,7 @@ public class RuleOptions implements Serializable {
 		dasInARE = r.dasInARE;
 		dasInARELastFrame = r.dasInARELastFrame;
 		dasInEndingStart = r.dasInEndingStart;
+		dasOnBlockedMove = r.dasOnBlockedMove;
 
 		moveFirstFrame = r.moveFirstFrame;
 		moveDiagonal = r.moveDiagonal;
@@ -640,6 +645,7 @@ public class RuleOptions implements Serializable {
 		if(dasInARE != r.dasInARE) return false;
 		if(dasInARELastFrame != r.dasInARELastFrame) return false;
 		if(dasInEndingStart != r.dasInEndingStart) return false;
+		if(dasOnBlockedMove != r.dasOnBlockedMove) return false;
 
 		if(moveFirstFrame != r.moveFirstFrame) return false;
 		if(moveDiagonal != r.moveDiagonal) return false;
@@ -755,6 +761,7 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.dasInARE", dasInARE);
 		p.setProperty(id + ".ruleopt.dasInARELastFrame", dasInARELastFrame);
 		p.setProperty(id + ".ruleopt.dasInEndingStart", dasInEndingStart);
+		p.setProperty(id + ".ruleopt.dasOnBlockedMove", dasOnBlockedMove);
 
 		p.setProperty(id + ".ruleopt.moveFirstFrame", moveFirstFrame);
 		p.setProperty(id + ".ruleopt.moveDiagonal", moveDiagonal);
@@ -860,13 +867,14 @@ public class RuleOptions implements Serializable {
 		dasDelay = p.getProperty(id + ".ruleopt.dasDelay", dasDelay);
 		shiftLockEnable = p.getProperty(id + ".ruleopt.shiftLockEnable", shiftLockEnable);
 
-		dasInReady =  p.getProperty(id + ".ruleopt.dasInReady", dasInReady);
-		dasInMoveFirstFrame =  p.getProperty(id + ".ruleopt.dasInMoveFirstFrame", dasInMoveFirstFrame);
-		dasInLockFlash =  p.getProperty(id + ".ruleopt.dasInLockFlash", dasInLockFlash);
-		dasInLineClear =  p.getProperty(id + ".ruleopt.dasInLineClear", dasInLineClear);
-		dasInARE =  p.getProperty(id + ".ruleopt.dasInARE", dasInARE);
-		dasInARELastFrame =  p.getProperty(id + ".ruleopt.dasInARELastFrame", dasInARELastFrame);
-		dasInEndingStart =  p.getProperty(id + ".ruleopt.dasInEndingStart", dasInEndingStart);
+		dasInReady = p.getProperty(id + ".ruleopt.dasInReady", dasInReady);
+		dasInMoveFirstFrame = p.getProperty(id + ".ruleopt.dasInMoveFirstFrame", dasInMoveFirstFrame);
+		dasInLockFlash = p.getProperty(id + ".ruleopt.dasInLockFlash", dasInLockFlash);
+		dasInLineClear = p.getProperty(id + ".ruleopt.dasInLineClear", dasInLineClear);
+		dasInARE = p.getProperty(id + ".ruleopt.dasInARE", dasInARE);
+		dasInARELastFrame = p.getProperty(id + ".ruleopt.dasInARELastFrame", dasInARELastFrame);
+		dasInEndingStart = p.getProperty(id + ".ruleopt.dasInEndingStart", dasInEndingStart);
+		dasOnBlockedMove = p.getProperty(id + ".ruleopt.dasOnBlockedMove", dasOnBlockedMove);
 
 		moveFirstFrame = p.getProperty(id + ".ruleopt.moveFirstFrame", moveFirstFrame);
 		moveDiagonal = p.getProperty(id + ".ruleopt.moveDiagonal", moveDiagonal);

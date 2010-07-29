@@ -302,13 +302,13 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** ライン消去前にブロックが光るフレームを入れる */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
 	
-	/** ARE cancel on move */
+	/** ARE cancel on move checkbox */
 	private JCheckBox chkboxARECancelMove;
 	
-	/** ARE cancel on rotate */
+	/** ARE cancel on rotate checkbox */
 	private JCheckBox chkboxARECancelRotate;
 	
-	/** ARE cancel on hold */
+	/** ARE cancel on hold checkbox */
 	private JCheckBox chkboxARECancelHold;
 
 	//----------------------------------------------------------------------
@@ -323,13 +323,13 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 落下アニメ */
 	private JCheckBox chkboxLineFallAnim;
 	
-	/** Line delay cancel on move */
+	/** Line delay cancel on move checkbox */
 	private JCheckBox chkboxLineCancelMove;
 	
-	/** Line delay cancel on rotate */
+	/** Line delay cancel on rotate checkbox */
 	private JCheckBox chkboxLineCancelRotate;
 	
-	/** Line delay cancel on hold */
+	/** Line delay cancel on hold checkbox */
 	private JCheckBox chkboxLineCancelHold;
 
 	//----------------------------------------------------------------------
@@ -364,6 +364,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** エンディング突入画面で横溜め可能 */
 	private JCheckBox chkboxMoveDASInEndingStart;
+	
+	/** DAS charge on blocked move checkbox*/
+	private JCheckBox chkboxMoveDASOnBlockedMove;
 
 	/** 最初のフレームに移動可能 */
 	private JCheckBox chkboxMoveFirstFrame;
@@ -380,7 +383,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 左右同時押ししたときに前のフレームの入力方向を優先する */
 	private JCheckBox chkboxMoveLeftAndRightUsePreviousInput;
 	
-	/** Shift lock*/
+	/** Shift lock checkbox */
 	private JCheckBox chkboxMoveShiftLockEnable;
 
 	//----------------------------------------------------------------------
@@ -1048,6 +1051,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 		panelMove.add(chkboxMoveDASInARELastFrame);
 		chkboxMoveDASInEndingStart = new JCheckBox(getUIText("Move_DASInEndingStart"));
 		panelMove.add(chkboxMoveDASInEndingStart);
+		chkboxMoveDASOnBlockedMove = new JCheckBox(getUIText("Move_DASOnBlockedMove"));
+		panelMove.add(chkboxMoveDASOnBlockedMove);
 
 		// 最初のフレームに移動可能
 		chkboxMoveFirstFrame = new JCheckBox(getUIText("Move_FirstFrame"));
@@ -1464,6 +1469,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveDASInARE.setSelected(r.dasInARE);
 		chkboxMoveDASInARELastFrame.setSelected(r.dasInARELastFrame);
 		chkboxMoveDASInEndingStart.setSelected(r.dasInEndingStart);
+		chkboxMoveDASOnBlockedMove.setSelected(r.dasOnBlockedMove);
 		chkboxMoveFirstFrame.setSelected(r.moveFirstFrame);
 		chkboxMoveDiagonal.setSelected(r.moveDiagonal);
 		chkboxMoveUpAndDown.setSelected(r.moveUpAndDown);
@@ -1575,6 +1581,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.dasInARE = chkboxMoveDASInARE.isSelected();
 		r.dasInARELastFrame = chkboxMoveDASInARELastFrame.isSelected();
 		r.dasInEndingStart = chkboxMoveDASInEndingStart.isSelected();
+		r.dasOnBlockedMove = chkboxMoveDASOnBlockedMove.isSelected();
 		r.moveFirstFrame = chkboxMoveFirstFrame.isSelected();
 		r.moveDiagonal = chkboxMoveDiagonal.isSelected();
 		r.moveUpAndDown = chkboxMoveUpAndDown.isSelected();
