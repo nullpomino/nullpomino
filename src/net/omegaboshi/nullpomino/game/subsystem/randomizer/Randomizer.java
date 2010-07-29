@@ -9,8 +9,19 @@ public abstract class Randomizer {
 	protected Random r;
 	public int[] pieces;
 	
+	public Randomizer() {
+		r = new Random(0);
+		pieces = new int[0];
+	}
+	
 	public Randomizer(boolean[] pieceEnable, long seed) {
-		r = new Random(seed);
+		setPieceEnable(pieceEnable);
+		reseed(seed);
+	}
+	
+	public abstract int next();
+	
+	public void setPieceEnable(boolean[] pieceEnable) {
 		int piece = 0;
 		for (int i = 0; i < Piece.PIECE_COUNT; i++) {
 			if  (pieceEnable[i]) piece++;
@@ -25,5 +36,7 @@ public abstract class Randomizer {
 		}
 	}
 	
-	public abstract int next();
+	public void reseed(long seed) {
+		r = new Random(seed);
+	}
 }
