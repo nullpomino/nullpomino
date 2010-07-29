@@ -1082,7 +1082,8 @@ public class RendererSDL extends EventReceiver {
 					NormalFontSDL.printFont(x + 60, y, NullpoMinoSDL.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
 					if(piece != null) {
-						int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
+						//int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
+					   int x2 = x + 4 + engine.getSpawnPosX(engine.field, piece) * 16; //Rules with spawn x modified were misaligned.
 						int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
 						drawPiece(x2, y2, piece);
 					}
