@@ -30,6 +30,7 @@ package org.game_host.hebo.nullpomino.tool.sequencer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -47,6 +48,7 @@ import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -66,7 +68,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.game_host.hebo.nullpomino.game.component.Piece;
-import org.game_host.hebo.nullpomino.game.subsystem.randomizer.Randomizer;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 import org.game_host.hebo.nullpomino.util.CustomProperties;
 
 /**
@@ -113,6 +115,9 @@ public class Sequencer extends JFrame implements ActionListener {
 	//----------------------------------------------------------------------
 	/** Generated Sequence */
 	private int[] sequence;
+	
+	/** Enabled Pieces */
+	private boolean[] nextPieceEnable;
 
 	/**
 	 * Constructor
@@ -161,6 +166,10 @@ public class Sequencer extends JFrame implements ActionListener {
 				log.warn("Failed to set native look&feel", e);
 			}
 		}
+		
+		// Initialize enabled pieces
+		nextPieceEnable = new boolean[Piece.PIECE_COUNT];
+		for(int i = 0; i < Piece.PIECE_STANDARD_COUNT; i++) nextPieceEnable[i] = true;
 
 		setTitle(getUIText("Title_Sequencer"));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -222,6 +231,18 @@ public class Sequencer extends JFrame implements ActionListener {
 		miExit.setActionCommand("Exit");
 		miExit.addActionListener(this);
 		mFile.add(miExit);
+		
+		// Options menu
+		JMenu mOptions = new JMenu(getUIText("JMenu_Options"));
+		mOptions.setMnemonic('P');
+		menuBar.add(mOptions);
+		
+		// Set piece enable
+		JMenuItem miSetPieceEnable = new JMenuItem(getUIText("JMenuItem_SetPieceEnable"));
+		miSetPieceEnable.setMnemonic('E');
+		miSetPieceEnable.setActionCommand("Set piece enable");
+		miSetPieceEnable.addActionListener(this);
+		mOptions.add(miSetPieceEnable);
 
 		// Set up content pane ------------------------------
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -280,7 +301,7 @@ public class Sequencer extends JFrame implements ActionListener {
 		pGenerate.add(btnGenerate);
 
 		// Sequence
-		txtareaSequence = new JTextArea(10,36);
+		txtareaSequence = new JTextArea(10,37);
 		txtareaSequence.setLineWrap(true);
 		txtareaSequence.setEditable(false);
 
@@ -401,18 +422,19 @@ public class Sequencer extends JFrame implements ActionListener {
 		Class<Randomizer> randomizerClass;
 		Randomizer randomizerObject;
 
-		Random random = new Random(getLongTextField(txtfldSeed));
-
 		String name = vectorRandomizer.get(comboboxRandomizer.getSelectedIndex());
-
-		boolean[] nextPieceEnable = new boolean[Piece.PIECE_COUNT];
-		for(int i = 0; i < Piece.PIECE_STANDARD_COUNT; i++) nextPieceEnable[i] = true;
 
 		try {
 			randomizerClass = (Class<Randomizer>) Class.forName(name);
 			randomizerObject = randomizerClass.newInstance();
-			sequence = randomizerObject.createPieceSequence(nextPieceEnable, random,
-				getIntTextField(txtfldSeqOffset)+getIntTextField(txtfldSeqLength));
+			randomizerObject.setState(nextPieceEnable, getLongTextField(txtfldSeed));
+			sequence = new int[getIntTextField(txtfldSeqLength)];
+			for (int i = 0; i < getIntTextField(txtfldSeqOffset); i++) {
+				randomizerObject.next();
+			}
+			for (int i = 0; i < sequence.length; i++) {
+				sequence[i] = randomizerObject.next();
+			}
 		} catch(Exception e) {
 			log.error("Randomizer class " + name + " load failed", e);
 		}
@@ -420,12 +442,10 @@ public class Sequencer extends JFrame implements ActionListener {
 
 	public void display() {
 		if (!txtareaSequence.getText().equals("")) txtareaSequence.setText("");
-		int j = 0;
-		for (int i = getIntTextField(txtfldSeqOffset); i < sequence.length; i++) {
-			txtareaSequence.append(getUIText("PieceName"+sequence[i]));
-			j++;
-			if (j % 5 == 0) txtareaSequence.append(" ");
-			if (j % 60 == 0) txtareaSequence.append("\n");
+		for (int i = 1; i <= sequence.length; i++) {
+			txtareaSequence.append(getUIText("PieceName"+sequence[i-1]));
+			if (i % 5 == 0) txtareaSequence.append(" ");
+			if (i % 60 == 0) txtareaSequence.append("\n");
 		}
 	}
 
@@ -485,6 +505,9 @@ public class Sequencer extends JFrame implements ActionListener {
 		} else if(e.getActionCommand() == "Reset") {
 			// Reset
 			reset();
+		} else if(e.getActionCommand() == "Set piece enable") {
+			// Set piece enable
+			setPieceEnable();
 		} else if(e.getActionCommand() == "Generate") {
 			// Generate
 			generate();
@@ -493,6 +516,30 @@ public class Sequencer extends JFrame implements ActionListener {
 			// Exit
 			dispose();
 		}
+	}
+	
+	public void setPieceEnable() {
+		final JFrame setPieceEnableFrame = new JFrame(getUIText("Title_SetPieceEnable"));
+		setPieceEnableFrame.getContentPane().setLayout(new GridLayout(0,2,10,10));
+		final JCheckBox[] chkboxEnable = new JCheckBox[Piece.PIECE_COUNT];
+		for (int i = 0; i < Piece.PIECE_COUNT; i++) {
+			chkboxEnable[i] = new JCheckBox("Piece "+getUIText("PieceName"+i));
+			chkboxEnable[i].setSelected(nextPieceEnable[i]);
+			setPieceEnableFrame.getContentPane().add(chkboxEnable[i]);
+		}
+		if (Piece.PIECE_COUNT % 2 == 0) setPieceEnableFrame.getContentPane().add(new JLabel(""));
+		final JButton btnConfirm = new JButton(getUIText("Button_Confirm"));
+		btnConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for (int i = 0; i < Piece.PIECE_COUNT; i++) {
+					nextPieceEnable[i] = chkboxEnable[i].isSelected();
+				}
+				setPieceEnableFrame.dispose();
+			}
+		});
+		setPieceEnableFrame.getContentPane().add(btnConfirm);
+		setPieceEnableFrame.pack();
+		setPieceEnableFrame.setVisible(true);
 	}
 
 	public static void main(String[] args) {
