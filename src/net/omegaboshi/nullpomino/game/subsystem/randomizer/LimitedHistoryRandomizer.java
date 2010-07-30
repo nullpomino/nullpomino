@@ -24,10 +24,10 @@ public abstract class LimitedHistoryRandomizer extends Randomizer {
 	}
 	
 	public int next() {
-		if (firstPiece) {
+		if (firstPiece && pieces != new int[] {Piece.PIECE_O, Piece.PIECE_Z, Piece.PIECE_S}) {
 			do {
 				id = r.nextInt(pieces.length);
-			} while (pieces[id] != Piece.PIECE_O && pieces[id] != Piece.PIECE_Z && pieces[id] != Piece.PIECE_S);
+			} while (pieces[id] == Piece.PIECE_O && pieces[id] == Piece.PIECE_Z && pieces[id] == Piece.PIECE_S);
 			firstPiece = false;
 		} else {
 			for (int i = 0; i < numrolls; i++) {
