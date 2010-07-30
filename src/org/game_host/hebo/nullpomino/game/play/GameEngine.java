@@ -703,7 +703,7 @@ public class GameEngine {
 
 		dasCount = 0;
 		dasDirection = 0;
-		dasSpeedCount = 1;
+		dasSpeedCount = getDASDelay();
 		dasRepeat = false;
 		dasInstant = false;
 		shiftLock = 0;
@@ -1956,7 +1956,7 @@ public class GameEngine {
 				gcount = 0;
 
 			lockDelayNow = 0;
-			dasSpeedCount = 1;
+			dasSpeedCount = getDASDelay();
 			dasRepeat = false;
 			dasInstant = false;
 			extendedMoveCount = 0;
