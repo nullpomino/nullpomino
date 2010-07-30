@@ -21,7 +21,7 @@
 0.ruleopt.pieceDefaultDirection.5=0
 0.ruleopt.pieceSpawnYBig.7.1=0
 0.ruleopt.pieceSpawnX.0.1=0
-0.ruleopt.strRandomizer=net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer
+0.ruleopt.strRandomizer=net.omegaboshi.nullpomino.game.subsystem.randomizer.BagNoSZORandomizer
 0.ruleopt.pieceDefaultDirection.4=0
 0.ruleopt.pieceSpawnYBig.7.0=0
 0.ruleopt.pieceSpawnX.0.0=0
