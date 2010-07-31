@@ -28,6 +28,7 @@
 */
 package org.game_host.hebo.nullpomino.gui.sdl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -420,13 +421,20 @@ public class RendererSDL extends EventReceiver {
 	@Override
 	public void saveReplay(GameManager owner, CustomProperties prop) {
 		if(owner.mode.isNetplayMode()) return;
-
-		String filename = NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + GeneralUtil.getReplayFilename();
+		
+		String foldername = NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay");
+		String filename = foldername + "/" + GeneralUtil.getReplayFilename();
 		try {
+			File repfolder = new File(foldername);
+			if (!repfolder.exists()) {
+				repfolder.mkdir();
+				log.info("Created replay folder: " + foldername);
+			}
+			
 			FileOutputStream out = new FileOutputStream(filename);
 			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
 			out.close();
-			log.info("Saved replay file:" + filename);
+			log.info("Saved replay file: " + filename);
 		} catch(IOException e) {
 			log.error("Couldn't save replay file to" + filename, e);
 		}

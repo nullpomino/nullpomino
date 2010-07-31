@@ -33,6 +33,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -384,12 +385,19 @@ public class RendererSwing extends EventReceiver {
 	public void saveReplay(GameManager owner, CustomProperties prop) {
 		if(owner.mode.isNetplayMode()) return;
 
-		String filename = NullpoMinoSwing.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + GeneralUtil.getReplayFilename();
+		String foldername = NullpoMinoSwing.propGlobal.getProperty("custom.replay.directory", "replay");
+		String filename = foldername + "/" + GeneralUtil.getReplayFilename();
 		try {
+			File repfolder = new File(foldername);
+			if (!repfolder.exists()) {
+				repfolder.mkdir();
+				log.info("Created replay folder: " + foldername);
+			}
+			
 			FileOutputStream out = new FileOutputStream(filename);
 			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
 			out.close();
-			log.info("Saved replay file:" + filename);
+			log.info("Saved replay file: " + filename);
 		} catch(IOException e) {
 			log.error("Couldn't save replay file to" + filename, e);
 		}
