@@ -814,15 +814,18 @@ public class NetServer {
 				roomInfo.tspinEnableType = Integer.parseInt(message[12]);
 				roomInfo.b2b = Boolean.parseBoolean(message[13]);
 				roomInfo.combo = Boolean.parseBoolean(message[14]);
-				roomInfo.reduceLineSend = Boolean.parseBoolean(message[15]);
-				roomInfo.hurryupSeconds = Integer.parseInt(message[16]);
-				roomInfo.hurryupInterval = Integer.parseInt(message[17]);
-				roomInfo.autoStartTNET2 = Boolean.parseBoolean(message[18]);
-				roomInfo.disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(message[19]);
-				roomInfo.useMap = Boolean.parseBoolean(message[20]);
-				roomInfo.useFractionalGarbage = Boolean.parseBoolean(message[21]);
-				roomInfo.garbageChangePerAttack = Boolean.parseBoolean(message[22]);
-				roomInfo.garbagePercent = Integer.parseInt(message[23]);
+				roomInfo.rensaBlock = Boolean.parseBoolean(message[15]);
+				roomInfo.counter = Boolean.parseBoolean(message[16]);
+				roomInfo.bravo = Boolean.parseBoolean(message[17]);
+				roomInfo.reduceLineSend = Boolean.parseBoolean(message[18]);
+				roomInfo.hurryupSeconds = Integer.parseInt(message[19]);
+				roomInfo.hurryupInterval = Integer.parseInt(message[20]);
+				roomInfo.autoStartTNET2 = Boolean.parseBoolean(message[21]);
+				roomInfo.disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(message[22]);
+				roomInfo.useMap = Boolean.parseBoolean(message[23]);
+				roomInfo.useFractionalGarbage = Boolean.parseBoolean(message[24]);
+				roomInfo.garbageChangePerAttack = Boolean.parseBoolean(message[25]);
+				roomInfo.garbagePercent = Integer.parseInt(message[26]);
 				
 				roomInfo.roomID = roomCount;
 

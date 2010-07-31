@@ -350,6 +350,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** コンボ有効(ルーム作成画面) */
 	protected JCheckBox chkboxCreateRoomCombo;
+	
+	/** Allow Rensa/Combo Block */
+	protected JCheckBox chkboxCreateRoomRensaBlock;
+	
+	/** Allow countering */
+   protected JCheckBox chkboxCreateRoomCounter;
+   
+   /** Enable bravo bonus */
+   protected JCheckBox chkboxCreateRoomBravo;
 
 	/** 3人以上生きている場合に攻撃力を減らす(ルーム作成画面) */
 	protected JCheckBox chkboxCreateRoomReduceLineSend;
@@ -1125,6 +1134,24 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomCombo.setSelected(propConfig.getProperty("createroom.defaultCombo", true));
 		chkboxCreateRoomCombo.setToolTipText(getUIText("CreateRoom_Combo_Tip"));
 		containerpanelCreateRoom.add(chkboxCreateRoomCombo);
+		
+		// ** Rensa/Combo Block
+		chkboxCreateRoomRensaBlock = new JCheckBox(getUIText("CreateRoom_RensaBlock"));
+      chkboxCreateRoomRensaBlock.setSelected(propConfig.getProperty("createroom.defaultRensaBlock", true));
+      chkboxCreateRoomRensaBlock.setToolTipText(getUIText("CreateRoom_RensaBlock_Tip"));
+      containerpanelCreateRoom.add(chkboxCreateRoomRensaBlock);
+      
+      // ** Garbage countering
+      chkboxCreateRoomCounter = new JCheckBox(getUIText("CreateRoom_Counter"));
+      chkboxCreateRoomCounter.setSelected(propConfig.getProperty("createroom.defaultCounter", true));
+      chkboxCreateRoomCounter.setToolTipText(getUIText("CreateRoom_Counter_Tip"));
+      containerpanelCreateRoom.add(chkboxCreateRoomCounter);
+      
+      // ** Bravo bonus
+      chkboxCreateRoomBravo = new JCheckBox(getUIText("CreateRoom_Bravo"));
+      chkboxCreateRoomBravo.setSelected(propConfig.getProperty("createroom.defaultBravo", true));
+      chkboxCreateRoomBravo.setToolTipText(getUIText("CreateRoom_Bravo_Tip"));
+      containerpanelCreateRoom.add(chkboxCreateRoomBravo);
 
 		// ** 3人以上生きている場合に攻撃力を減らす
 		chkboxCreateRoomReduceLineSend = new JCheckBox(getUIText("CreateRoom_ReduceLineSend"));
@@ -1652,6 +1679,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.tspinEnableType = propConfig.getProperty("createroom.defaultTSpinEnableType", 1);
 				r.b2b = propConfig.getProperty("createroom.defaultB2B", true);
 				r.combo = propConfig.getProperty("createroom.defaultCombo", true);
+				r.rensaBlock = propConfig.getProperty("createroom.defaultRensaBlock", true);
+				r.counter = propConfig.getProperty("createroom.defaultCounter", true);
+				r.bravo = propConfig.getProperty("createroom.defaultBravo", true);
 				r.reduceLineSend = propConfig.getProperty("createroom.defaultReduceLineSend", false);
 				r.garbageChangePerAttack = propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true);
 				r.useFractionalGarbage = propConfig.getProperty("createroom.defaultUseFractionalGarbage", false);
@@ -1681,6 +1711,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			comboboxCreateRoomTSpinEnableType.setSelectedIndex(r.tspinEnableType);
 			chkboxCreateRoomB2B.setSelected(r.b2b);
 			chkboxCreateRoomCombo.setSelected(r.combo);
+			chkboxCreateRoomRensaBlock.setSelected(r.rensaBlock);
+			chkboxCreateRoomCounter.setSelected(r.counter);
+			chkboxCreateRoomBravo.setSelected(r.bravo);
 			chkboxCreateRoomReduceLineSend.setSelected(r.reduceLineSend);
 			chkboxCreateRoomGarbageChangePerAttack.setSelected(r.garbageChangePerAttack);
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
@@ -1933,6 +1966,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultTSpinEnableType", backupRoomInfo.tspinEnableType);
 			propConfig.setProperty("createroom.defaultB2B", backupRoomInfo.b2b);
 			propConfig.setProperty("createroom.defaultCombo", backupRoomInfo.combo);
+			propConfig.setProperty("createroom.defaultRensaBlock", backupRoomInfo.rensaBlock);
+			propConfig.setProperty("createroom.defaultCounter", backupRoomInfo.counter);
+			propConfig.setProperty("createroom.defaultBravo", backupRoomInfo.bravo);
 			propConfig.setProperty("createroom.defaultReduceLineSend", backupRoomInfo.reduceLineSend);
 			propConfig.setProperty("createroom.defaultGarbageChangePerAttack", backupRoomInfo.garbageChangePerAttack);
 			propConfig.setProperty("createroom.defaultUseFractionalGarbage", backupRoomInfo.useFractionalGarbage);
@@ -2277,6 +2313,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				int tspinEnableType = comboboxCreateRoomTSpinEnableType.getSelectedIndex();
 				boolean b2b = chkboxCreateRoomB2B.isSelected();
 				boolean combo = chkboxCreateRoomCombo.isSelected();
+				boolean rensaBlock = chkboxCreateRoomRensaBlock.isSelected();
+				boolean counter = chkboxCreateRoomCounter.isSelected();
+				boolean bravo = chkboxCreateRoomBravo.isSelected();
 				boolean reduceLineSend = chkboxCreateRoomReduceLineSend.isSelected();
 				boolean autoStartTNET2 = chkboxCreateRoomAutoStartTNET2.isSelected();
 				boolean disableTimerAfterSomeoneCancelled = chkboxCreateRoomDisableTimerAfterSomeoneCancelled.isSelected();
@@ -2302,6 +2341,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				backupRoomInfo.tspinEnableType = tspinEnableType;
 				backupRoomInfo.b2b = b2b;
 				backupRoomInfo.combo = combo;
+				backupRoomInfo.rensaBlock = rensaBlock;
+				backupRoomInfo.counter = counter;
+				backupRoomInfo.bravo = bravo;
 				backupRoomInfo.reduceLineSend = reduceLineSend;
 				backupRoomInfo.autoStartTNET2 = autoStartTNET2;
 				backupRoomInfo.disableTimerAfterSomeoneCancelled = disableTimerAfterSomeoneCancelled;
@@ -2314,7 +2356,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg = "roomcreate\t" + roomName + "\t" + integerMaxPlayers + "\t" + integerAutoStartSeconds + "\t";
 				msg += integerGravity + "\t" + integerDenominator + "\t" + integerARE + "\t" + integerARELine + "\t";
 				msg += integerLineDelay + "\t" + integerLockDelay + "\t" + integerDAS + "\t" + rulelock + "\t";
-				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
+				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + rensaBlock + "\t" + counter + "\t" + bravo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\n";
 

@@ -1029,7 +1029,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 
 			// 全消し
-			if((lines >= 1) && (engine.field.isEmpty())) {
+			if((lines >= 1) && (engine.field.isEmpty()) && (currentRoomInfo.bravo)) {
 				engine.playSE("bravo");
 				pts += 6;
 			}
@@ -1051,7 +1051,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 			// 相殺
 			garbage[playerID] = getTotalGarbageLines();
-			if((pts > 0) && (garbage[playerID] > 0)) {
+			if((pts > 0) && (garbage[playerID] > 0) && (currentRoomInfo.counter)) {
 				while(!useFractionalGarbage && !garbageEntries.isEmpty() && (pts > 0)
 						|| useFractionalGarbage && !garbageEntries.isEmpty() && (pts >= GARBAGE_DENOMINATOR)) {
 					GarbageEntry garbageEntry = garbageEntries.getFirst();
@@ -1075,7 +1075,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		}
 
 		// せり上がり
-		if((lines == 0) && (getTotalGarbageLines() >= GARBAGE_DENOMINATOR) && (!isPractice)) {
+		if(((lines == 0) || (!currentRoomInfo.rensaBlock)) && (getTotalGarbageLines() >= GARBAGE_DENOMINATOR) && (!isPractice)) {
 			engine.playSE("garbage");
 
 			int smallGarbageCount = 0;	// 10pts未満の邪魔ブロック数の合計数(後でまとめてせり上げる)

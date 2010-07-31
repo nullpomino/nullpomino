@@ -90,6 +90,15 @@ public class NetRoomInfo implements Serializable {
 
 	/** コンボ有効 */
 	public boolean combo = true;
+	
+	/** Allow Rensa/Combo Block */
+   public boolean rensaBlock = true;
+   
+   /** Allow garbage countering */
+   public boolean counter = true;
+   
+   /** Enable bravo bonus */
+   public boolean bravo = true;
 
 	/** ルール固定フラグ */
 	public boolean ruleLock = false;
@@ -223,6 +232,9 @@ public class NetRoomInfo implements Serializable {
 		tspinEnableEZ = n.tspinEnableEZ;
 		b2b = n.b2b;
 		combo = n.combo;
+		rensaBlock = n.rensaBlock;
+		counter = n.counter;
+		bravo = n.bravo;
 
 		ruleLock = n.ruleLock;
 		ruleName = n.ruleName;
@@ -289,17 +301,20 @@ public class NetRoomInfo implements Serializable {
 		tspinEnableType = Integer.parseInt(rdata[17]);
 		b2b = Boolean.parseBoolean(rdata[18]);
 		combo = Boolean.parseBoolean(rdata[19]);
-		reduceLineSend = Boolean.parseBoolean(rdata[20]);
-		hurryupSeconds = Integer.parseInt(rdata[21]);
-		hurryupInterval = Integer.parseInt(rdata[22]);
-		autoStartTNET2 = Boolean.parseBoolean(rdata[23]);
-		disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(rdata[24]);
-		useMap = Boolean.parseBoolean(rdata[25]);
-		useFractionalGarbage = Boolean.parseBoolean(rdata[26]);
-		garbageChangePerAttack = Boolean.parseBoolean(rdata[27]);
-		garbagePercent = Integer.parseInt(rdata[28]);
-		spinCheckType = Integer.parseInt(rdata[29]);
-		tspinEnableEZ = Boolean.parseBoolean(rdata[30]);
+		rensaBlock = Boolean.parseBoolean(rdata[20]);
+		counter = Boolean.parseBoolean(rdata[21]);
+		bravo = Boolean.parseBoolean(rdata[22]);
+		reduceLineSend = Boolean.parseBoolean(rdata[23]);
+		hurryupSeconds = Integer.parseInt(rdata[24]);
+		hurryupInterval = Integer.parseInt(rdata[25]);
+		autoStartTNET2 = Boolean.parseBoolean(rdata[26]);
+		disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(rdata[27]);
+		useMap = Boolean.parseBoolean(rdata[28]);
+		useFractionalGarbage = Boolean.parseBoolean(rdata[29]);
+		garbageChangePerAttack = Boolean.parseBoolean(rdata[30]);
+		garbagePercent = Integer.parseInt(rdata[31]);
+		//spinCheckType = Integer.parseInt(rdata[32]);
+		//tspinEnableEZ = Boolean.parseBoolean(rdata[33]);
 	}
 
 	/**
@@ -315,7 +330,7 @@ public class NetRoomInfo implements Serializable {
 	 * @return Stringの配列(String[29])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[31];
+		String[] rdata = new String[34];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -336,17 +351,20 @@ public class NetRoomInfo implements Serializable {
 		rdata[17] = Integer.toString(tspinEnableType);
 		rdata[18] = Boolean.toString(b2b);
 		rdata[19] = Boolean.toString(combo);
-		rdata[20] = Boolean.toString(reduceLineSend);
-		rdata[21] = Integer.toString(hurryupSeconds);
-		rdata[22] = Integer.toString(hurryupInterval);
-		rdata[23] = Boolean.toString(autoStartTNET2);
-		rdata[24] = Boolean.toString(disableTimerAfterSomeoneCancelled);
-		rdata[25] = Boolean.toString(useMap);
-		rdata[26] = Boolean.toString(useFractionalGarbage);
-		rdata[27] = Boolean.toString(garbageChangePerAttack);
-		rdata[28] = Integer.toString(garbagePercent);
-		rdata[29] = Integer.toString(spinCheckType);
-		rdata[30] = Boolean.toString(tspinEnableEZ);
+		rdata[20] = Boolean.toString(rensaBlock);
+		rdata[21] = Boolean.toString(counter);
+		rdata[22] = Boolean.toString(bravo);
+		rdata[23] = Boolean.toString(reduceLineSend);
+		rdata[24] = Integer.toString(hurryupSeconds);
+		rdata[25] = Integer.toString(hurryupInterval);
+		rdata[26] = Boolean.toString(autoStartTNET2);
+		rdata[27] = Boolean.toString(disableTimerAfterSomeoneCancelled);
+		rdata[28] = Boolean.toString(useMap);
+		rdata[29] = Boolean.toString(useFractionalGarbage);
+		rdata[30] = Boolean.toString(garbageChangePerAttack);
+		rdata[31] = Integer.toString(garbagePercent);
+		//rdata[32] = Integer.toString(spinCheckType);
+		//rdata[33] = Boolean.toString(tspinEnableEZ);
 		return rdata;
 	}
 
