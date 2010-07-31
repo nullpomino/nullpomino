@@ -427,8 +427,11 @@ public class RendererSDL extends EventReceiver {
 		try {
 			File repfolder = new File(foldername);
 			if (!repfolder.exists()) {
-				repfolder.mkdir();
-				log.info("Created replay folder: " + foldername);
+				if (repfolder.mkdir()) {
+					log.info("Created replay folder: " + foldername);
+				} else {
+					log.info("Couldn't create replay folder at "+ foldername);
+				}
 			}
 			
 			FileOutputStream out = new FileOutputStream(filename);
@@ -436,7 +439,7 @@ public class RendererSDL extends EventReceiver {
 			out.close();
 			log.info("Saved replay file: " + filename);
 		} catch(IOException e) {
-			log.error("Couldn't save replay file to" + filename, e);
+			log.error("Couldn't save replay file to " + filename, e);
 		}
 	}
 
