@@ -976,17 +976,40 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// タブ
 		JTabbedPane tabbedPane = new JTabbedPane();
-		mainpanelCreateRoom.add(tabbedPane, BorderLayout.NORTH);
-
+		mainpanelCreateRoom.add(tabbedPane, BorderLayout.CENTER);
+		
+		// tabs
+		
 		// * 基本設定パネル
-		JPanel containerpanelCreateRoom = new JPanel();
-		containerpanelCreateRoom.setLayout(new BoxLayout(containerpanelCreateRoom, BoxLayout.Y_AXIS));
-		tabbedPane.addTab(getUIText("CreateRoom_Tab_Main"), containerpanelCreateRoom);
-		//mainpanelCreateRoom.add(containerpanelCreateRoom, BorderLayout.NORTH);
+		JPanel containerpanelCreateRoomMainOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_Main"), containerpanelCreateRoomMainOwner);
+
+		// * 速度設定パネル(引き伸ばし防止用)
+		JPanel containerpanelCreateRoomSpeedOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_Speed"), containerpanelCreateRoomSpeedOwner);
+
+		// * Bonus tab
+		JPanel containerpanelCreateRoomBonusOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_Bonus"), containerpanelCreateRoomBonusOwner);
+
+		// * Garbage tab
+		JPanel containerpanelCreateRoomGarbageOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_Garbage"), containerpanelCreateRoomGarbageOwner);
+		
+		// * Miscellaneous tab
+		JPanel containerpanelCreateRoomMiscOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_Misc"), containerpanelCreateRoomMiscOwner);
+
+		// general tab
+		
+		// * 速度設定パネル(本体)
+		JPanel containerpanelCreateRoomMain = new JPanel();
+		containerpanelCreateRoomMain.setLayout(new BoxLayout(containerpanelCreateRoomMain, BoxLayout.Y_AXIS));
+		containerpanelCreateRoomMainOwner.add(containerpanelCreateRoomMain, BorderLayout.NORTH);
 
 		// ** ルーム名パネル
 		JPanel subpanelName = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelName);
+		containerpanelCreateRoomMain.add(subpanelName);
 
 		// *** 「ルーム名:」ラベル
 		JLabel labelName = new JLabel(getUIText("CreateRoom_Name"));
@@ -1000,7 +1023,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// ** 参加人数パネル
 		JPanel subpanelMaxPlayers = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelMaxPlayers);
+		containerpanelCreateRoomMain.add(subpanelMaxPlayers);
 
 		// *** 「参加人数:」ラベル
 		JLabel labelMaxPlayers = new JLabel(getUIText("CreateRoom_MaxPlayers"));
@@ -1013,24 +1036,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomMaxPlayers.setToolTipText(getUIText("CreateRoom_MaxPlayers_Tip"));
 		subpanelMaxPlayers.add(spinnerCreateRoomMaxPlayers, BorderLayout.EAST);
 
-		// ** 自動開始前の待機時間パネル
-		JPanel subpanelAutoStartSeconds = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelAutoStartSeconds);
-
-		// *** 「自動開始前の待機時間:」ラベル
-		JLabel labelAutoStartSeconds = new JLabel(getUIText("CreateRoom_AutoStartSeconds"));
-		subpanelAutoStartSeconds.add(labelAutoStartSeconds, BorderLayout.WEST);
-
-		// *** 自動開始前の待機時間
-		int defaultAutoStartSeconds = propConfig.getProperty("createroom.defaultAutoStartSeconds", 15);
-		spinnerCreateRoomAutoStartSeconds = new JSpinner(new SpinnerNumberModel(defaultAutoStartSeconds, 0, 999, 1));
-		spinnerCreateRoomAutoStartSeconds.setPreferredSize(new Dimension(200, 20));
-		spinnerCreateRoomAutoStartSeconds.setToolTipText(getUIText("CreateRoom_AutoStartSeconds_Tip"));
-		subpanelAutoStartSeconds.add(spinnerCreateRoomAutoStartSeconds, BorderLayout.EAST);
-
 		// ** Hurryup秒数パネル
 		JPanel subpanelHurryupSeconds = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelHurryupSeconds);
+		containerpanelCreateRoomMain.add(subpanelHurryupSeconds);
 
 		// *** 「HURRY UP開始までの秒数:」ラベル
 		JLabel labelHurryupSeconds = new JLabel(getUIText("CreateRoom_HurryupSeconds"));
@@ -1045,7 +1053,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// ** Hurryup間隔パネル
 		JPanel subpanelHurryupInterval = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelHurryupInterval);
+		containerpanelCreateRoomMain.add(subpanelHurryupInterval);
 
 		// *** 「HURRY UP後、床をせり上げる間隔:」ラベル
 		JLabel labelHurryupInterval = new JLabel(getUIText("CreateRoom_HurryupInterval"));
@@ -1058,9 +1066,150 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomHurryupInterval.setToolTipText(getUIText("CreateRoom_HurryupInterval_Tip"));
 		subpanelHurryupInterval.add(spinnerCreateRoomHurryupInterval, BorderLayout.EAST);
 
+		// ** マップセットIDパネル
+		JPanel subpanelMapSetID = new JPanel(new BorderLayout());
+		containerpanelCreateRoomMain.add(subpanelMapSetID);
+
+		// *** 「マップセットID:」ラベル
+		JLabel labelMapSetID = new JLabel(getUIText("CreateRoom_MapSetID"));
+		subpanelMapSetID.add(labelMapSetID, BorderLayout.WEST);
+
+		// *** マップセットID
+		int defaultMapSetID = propConfig.getProperty("createroom.defaultMapSetID", 0);
+		spinnerCreateRoomMapSetID = new JSpinner(new SpinnerNumberModel(defaultMapSetID, 0, 99, 1));
+		spinnerCreateRoomMapSetID.setPreferredSize(new Dimension(200, 20));
+		spinnerCreateRoomMapSetID.setToolTipText(getUIText("CreateRoom_MapSetID_Tip"));
+		subpanelMapSetID.add(spinnerCreateRoomMapSetID, BorderLayout.EAST);
+
+		// ** マップ有効
+		chkboxCreateRoomUseMap = new JCheckBox(getUIText("CreateRoom_UseMap"));
+		chkboxCreateRoomUseMap.setMnemonic('P');
+		chkboxCreateRoomUseMap.setSelected(propConfig.getProperty("createroom.defaultUseMap", false));
+		chkboxCreateRoomUseMap.setToolTipText(getUIText("CreateRoom_UseMap_Tip"));
+		containerpanelCreateRoomMain.add(chkboxCreateRoomUseMap);
+
+		// ** 全員のルール固定
+		chkboxCreateRoomRuleLock = new JCheckBox(getUIText("CreateRoom_RuleLock"));
+		chkboxCreateRoomRuleLock.setMnemonic('L');
+		chkboxCreateRoomRuleLock.setSelected(propConfig.getProperty("createroom.defaultRuleLock", false));
+		chkboxCreateRoomRuleLock.setToolTipText(getUIText("CreateRoom_RuleLock_Tip"));
+		containerpanelCreateRoomMain.add(chkboxCreateRoomRuleLock);
+
+		// speed tab
+		
+		// * 速度設定パネル(本体)
+		JPanel containerpanelCreateRoomSpeed = new JPanel();
+		containerpanelCreateRoomSpeed.setLayout(new BoxLayout(containerpanelCreateRoomSpeed, BoxLayout.Y_AXIS));
+		containerpanelCreateRoomSpeedOwner.add(containerpanelCreateRoomSpeed, BorderLayout.NORTH);
+
+		// ** 落下速度(分子)パネル
+		JPanel subpanelGravity = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelGravity);
+
+		// *** 「落下速度(分子):」ラベル
+		JLabel labelGravity = new JLabel(getUIText("CreateRoom_Gravity"));
+		subpanelGravity.add(labelGravity, BorderLayout.WEST);
+
+		// *** 落下速度(分子)
+		int defaultGravity = propConfig.getProperty("createroom.defaultGravity", 1);
+		spinnerCreateRoomGravity = new JSpinner(new SpinnerNumberModel(defaultGravity, -1, 99999, 1));
+		spinnerCreateRoomGravity.setPreferredSize(new Dimension(200, 20));
+		subpanelGravity.add(spinnerCreateRoomGravity, BorderLayout.EAST);
+
+		// ** 落下速度(分母)パネル
+		JPanel subpanelDenominator = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelDenominator);
+
+		// *** 「落下速度(分母):」ラベル
+		JLabel labelDenominator = new JLabel(getUIText("CreateRoom_Denominator"));
+		subpanelDenominator.add(labelDenominator, BorderLayout.WEST);
+
+		// *** 落下速度(分母)
+		int defaultDenominator = propConfig.getProperty("createroom.defaultDenominator", 60);
+		spinnerCreateRoomDenominator = new JSpinner(new SpinnerNumberModel(defaultDenominator, 0, 99999, 1));
+		spinnerCreateRoomDenominator.setPreferredSize(new Dimension(200, 20));
+		subpanelDenominator.add(spinnerCreateRoomDenominator, BorderLayout.EAST);
+
+		// ** AREパネル
+		JPanel subpanelARE = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelARE);
+
+		// *** 「ARE:」ラベル
+		JLabel labelARE = new JLabel(getUIText("CreateRoom_ARE"));
+		subpanelARE.add(labelARE, BorderLayout.WEST);
+
+		// *** ARE
+		int defaultARE = propConfig.getProperty("createroom.defaultARE", 30);
+		spinnerCreateRoomARE = new JSpinner(new SpinnerNumberModel(defaultARE, 0, 99, 1));
+		spinnerCreateRoomARE.setPreferredSize(new Dimension(200, 20));
+		subpanelARE.add(spinnerCreateRoomARE, BorderLayout.EAST);
+
+		// ** ライン消去後AREパネル
+		JPanel subpanelARELine = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelARELine);
+
+		// *** 「ライン消去後ARE:」ラベル
+		JLabel labelARELine = new JLabel(getUIText("CreateRoom_ARELine"));
+		subpanelARELine.add(labelARELine, BorderLayout.WEST);
+
+		// *** ライン消去後ARE
+		int defaultARELine = propConfig.getProperty("createroom.defaultARELine", 30);
+		spinnerCreateRoomARELine = new JSpinner(new SpinnerNumberModel(defaultARELine, 0, 99, 1));
+		spinnerCreateRoomARELine.setPreferredSize(new Dimension(200, 20));
+		subpanelARELine.add(spinnerCreateRoomARELine, BorderLayout.EAST);
+
+		// ** ライン消去時間パネル
+		JPanel subpanelLineDelay = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelLineDelay);
+
+		// *** 「ライン消去時間:」ラベル
+		JLabel labelLineDelay = new JLabel(getUIText("CreateRoom_LineDelay"));
+		subpanelLineDelay.add(labelLineDelay, BorderLayout.WEST);
+
+		// *** ライン消去時間
+		int defaultLineDelay = propConfig.getProperty("createroom.defaultLineDelay", 20);
+		spinnerCreateRoomLineDelay = new JSpinner(new SpinnerNumberModel(defaultLineDelay, 0, 99, 1));
+		spinnerCreateRoomLineDelay.setPreferredSize(new Dimension(200, 20));
+		subpanelLineDelay.add(spinnerCreateRoomLineDelay, BorderLayout.EAST);
+
+		// ** 固定時間パネル
+		JPanel subpanelLockDelay = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelLockDelay);
+
+		// *** 「固定時間:」ラベル
+		JLabel labelLockDelay = new JLabel(getUIText("CreateRoom_LockDelay"));
+		subpanelLockDelay.add(labelLockDelay, BorderLayout.WEST);
+
+		// *** 固定時間
+		int defaultLockDelay = propConfig.getProperty("createroom.defaultLockDelay", 30);
+		spinnerCreateRoomLockDelay = new JSpinner(new SpinnerNumberModel(defaultLockDelay, 0, 98, 1));
+		spinnerCreateRoomLockDelay.setPreferredSize(new Dimension(200, 20));
+		subpanelLockDelay.add(spinnerCreateRoomLockDelay, BorderLayout.EAST);
+
+		// ** 横溜めパネル
+		JPanel subpanelDAS = new JPanel(new BorderLayout());
+		containerpanelCreateRoomSpeed.add(subpanelDAS);
+
+		// *** 「横溜め:」ラベル
+		JLabel labelDAS = new JLabel(getUIText("CreateRoom_DAS"));
+		subpanelDAS.add(labelDAS, BorderLayout.WEST);
+
+		// *** 横溜め
+		int defaultDAS = propConfig.getProperty("createroom.defaultDAS", 14);
+		spinnerCreateRoomDAS = new JSpinner(new SpinnerNumberModel(defaultDAS, 0, 99, 1));
+		spinnerCreateRoomDAS.setPreferredSize(new Dimension(200, 20));
+		subpanelDAS.add(spinnerCreateRoomDAS, BorderLayout.EAST);
+		
+		// bonus tab
+		
+		// bonus panel
+		JPanel containerpanelCreateRoomBonus = new JPanel();
+		containerpanelCreateRoomBonus.setLayout(new BoxLayout(containerpanelCreateRoomBonus, BoxLayout.Y_AXIS));
+		containerpanelCreateRoomBonusOwner.add(containerpanelCreateRoomBonus, BorderLayout.NORTH);
+		
 		// ** スピンボーナスパネル
 		JPanel subpanelTSpinEnableType = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelTSpinEnableType);
+		containerpanelCreateRoomBonus.add(subpanelTSpinEnableType);
 
 		// *** 「スピンボーナス:」ラベル
 		JLabel labelTSpinEnableType = new JLabel(getUIText("CreateRoom_TSpinEnableType"));
@@ -1076,25 +1225,37 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		comboboxCreateRoomTSpinEnableType.setPreferredSize(new Dimension(200, 20));
 		comboboxCreateRoomTSpinEnableType.setToolTipText(getUIText("CreateRoom_TSpinEnableType_Tip"));
 		subpanelTSpinEnableType.add(comboboxCreateRoomTSpinEnableType, BorderLayout.EAST);
+		
+		// ** B2B有効
+		chkboxCreateRoomB2B = new JCheckBox(getUIText("CreateRoom_B2B"));
+		chkboxCreateRoomB2B.setMnemonic('B');
+		chkboxCreateRoomB2B.setSelected(propConfig.getProperty("createroom.defaultB2B", true));
+		chkboxCreateRoomB2B.setToolTipText(getUIText("CreateRoom_B2B_Tip"));
+		containerpanelCreateRoomBonus.add(chkboxCreateRoomB2B);
 
-		// ** マップセットIDパネル
-		JPanel subpanelMapSetID = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelMapSetID);
-
-		// *** 「マップセットID:」ラベル
-		JLabel labelMapSetID = new JLabel(getUIText("CreateRoom_MapSetID"));
-		subpanelMapSetID.add(labelMapSetID, BorderLayout.WEST);
-
-		// *** マップセットID
-		int defaultMapSetID = propConfig.getProperty("createroom.defaultMapSetID", 0);
-		spinnerCreateRoomMapSetID = new JSpinner(new SpinnerNumberModel(defaultMapSetID, 0, 99, 1));
-		spinnerCreateRoomMapSetID.setPreferredSize(new Dimension(200, 20));
-		spinnerCreateRoomMapSetID.setToolTipText(getUIText("CreateRoom_MapSetID_Tip"));
-		subpanelMapSetID.add(spinnerCreateRoomMapSetID, BorderLayout.EAST);
-
+		// ** コンボ有効
+		chkboxCreateRoomCombo = new JCheckBox(getUIText("CreateRoom_Combo"));
+		chkboxCreateRoomCombo.setMnemonic('M');
+		chkboxCreateRoomCombo.setSelected(propConfig.getProperty("createroom.defaultCombo", true));
+		chkboxCreateRoomCombo.setToolTipText(getUIText("CreateRoom_Combo_Tip"));
+		containerpanelCreateRoomBonus.add(chkboxCreateRoomCombo);
+		
+		// ** Bravo bonus
+		chkboxCreateRoomBravo = new JCheckBox(getUIText("CreateRoom_Bravo"));
+		chkboxCreateRoomBravo.setSelected(propConfig.getProperty("createroom.defaultBravo", true));
+		chkboxCreateRoomBravo.setToolTipText(getUIText("CreateRoom_Bravo_Tip"));
+		containerpanelCreateRoomBonus.add(chkboxCreateRoomBravo);
+		
+		// garbage tab
+		
+		// garbage panel
+		JPanel containerpanelCreateRoomGarbage = new JPanel();
+		containerpanelCreateRoomGarbage.setLayout(new BoxLayout(containerpanelCreateRoomGarbage, BoxLayout.Y_AXIS));
+		containerpanelCreateRoomGarbageOwner.add(containerpanelCreateRoomGarbage, BorderLayout.NORTH);
+		
 		// ** Garbage change rate panel
 		JPanel subpanelGarbagePercent = new JPanel(new BorderLayout());
-		containerpanelCreateRoom.add(subpanelGarbagePercent);
+		containerpanelCreateRoomGarbage.add(subpanelGarbagePercent);
 
 		// ** Label for garbage change rate
 		JLabel labelGarbagePercent = new JLabel(getUIText("CreateRoom_GarbagePercent"));
@@ -1106,195 +1267,78 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomGarbagePercent.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomGarbagePercent.setToolTipText(getUIText("CreateRoom_GarbagePercent_Tip"));
 		subpanelGarbagePercent.add(spinnerCreateRoomGarbagePercent, BorderLayout.EAST);
-
-		// ** マップ有効
-		chkboxCreateRoomUseMap = new JCheckBox(getUIText("CreateRoom_UseMap"));
-		chkboxCreateRoomUseMap.setMnemonic('P');
-		chkboxCreateRoomUseMap.setSelected(propConfig.getProperty("createroom.defaultUseMap", false));
-		chkboxCreateRoomUseMap.setToolTipText(getUIText("CreateRoom_UseMap_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomUseMap);
-
-		// ** 全員のルール固定
-		chkboxCreateRoomRuleLock = new JCheckBox(getUIText("CreateRoom_RuleLock"));
-		chkboxCreateRoomRuleLock.setMnemonic('L');
-		chkboxCreateRoomRuleLock.setSelected(propConfig.getProperty("createroom.defaultRuleLock", false));
-		chkboxCreateRoomRuleLock.setToolTipText(getUIText("CreateRoom_RuleLock_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomRuleLock);
-
-		// ** B2B有効
-		chkboxCreateRoomB2B = new JCheckBox(getUIText("CreateRoom_B2B"));
-		chkboxCreateRoomB2B.setMnemonic('B');
-		chkboxCreateRoomB2B.setSelected(propConfig.getProperty("createroom.defaultB2B", true));
-		chkboxCreateRoomB2B.setToolTipText(getUIText("CreateRoom_B2B_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomB2B);
-
-		// ** コンボ有効
-		chkboxCreateRoomCombo = new JCheckBox(getUIText("CreateRoom_Combo"));
-		chkboxCreateRoomCombo.setMnemonic('M');
-		chkboxCreateRoomCombo.setSelected(propConfig.getProperty("createroom.defaultCombo", true));
-		chkboxCreateRoomCombo.setToolTipText(getUIText("CreateRoom_Combo_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomCombo);
 		
 		// ** Rensa/Combo Block
 		chkboxCreateRoomRensaBlock = new JCheckBox(getUIText("CreateRoom_RensaBlock"));
-      chkboxCreateRoomRensaBlock.setSelected(propConfig.getProperty("createroom.defaultRensaBlock", true));
-      chkboxCreateRoomRensaBlock.setToolTipText(getUIText("CreateRoom_RensaBlock_Tip"));
-      containerpanelCreateRoom.add(chkboxCreateRoomRensaBlock);
-      
-      // ** Garbage countering
-      chkboxCreateRoomCounter = new JCheckBox(getUIText("CreateRoom_Counter"));
-      chkboxCreateRoomCounter.setSelected(propConfig.getProperty("createroom.defaultCounter", true));
-      chkboxCreateRoomCounter.setToolTipText(getUIText("CreateRoom_Counter_Tip"));
-      containerpanelCreateRoom.add(chkboxCreateRoomCounter);
-      
-      // ** Bravo bonus
-      chkboxCreateRoomBravo = new JCheckBox(getUIText("CreateRoom_Bravo"));
-      chkboxCreateRoomBravo.setSelected(propConfig.getProperty("createroom.defaultBravo", true));
-      chkboxCreateRoomBravo.setToolTipText(getUIText("CreateRoom_Bravo_Tip"));
-      containerpanelCreateRoom.add(chkboxCreateRoomBravo);
+		chkboxCreateRoomRensaBlock.setSelected(propConfig.getProperty("createroom.defaultRensaBlock", true));
+		chkboxCreateRoomRensaBlock.setToolTipText(getUIText("CreateRoom_RensaBlock_Tip"));
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomRensaBlock);
 
+		// ** Garbage countering
+		chkboxCreateRoomCounter = new JCheckBox(getUIText("CreateRoom_Counter"));
+		chkboxCreateRoomCounter.setSelected(propConfig.getProperty("createroom.defaultCounter", true));
+		chkboxCreateRoomCounter.setToolTipText(getUIText("CreateRoom_Counter_Tip"));
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomCounter);
+		
 		// ** 3人以上生きている場合に攻撃力を減らす
 		chkboxCreateRoomReduceLineSend = new JCheckBox(getUIText("CreateRoom_ReduceLineSend"));
 		chkboxCreateRoomReduceLineSend.setMnemonic('R');
 		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", false));
 		chkboxCreateRoomReduceLineSend.setToolTipText(getUIText("CreateRoom_ReduceLineSend_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomReduceLineSend);
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomReduceLineSend);
 
 		// ** Set garbage type
 		chkboxCreateRoomGarbageChangePerAttack = new JCheckBox(getUIText("CreateRoom_GarbageChangePerAttack"));
 		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('G');
 		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
 		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomGarbageChangePerAttack);
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomGarbageChangePerAttack);
 
 		// ** 断片的邪魔ブロックシステムを使う
 		chkboxCreateRoomUseFractionalGarbage = new JCheckBox(getUIText("CreateRoom_UseFractionalGarbage"));
 		chkboxCreateRoomUseFractionalGarbage.setMnemonic('F');
 		chkboxCreateRoomUseFractionalGarbage.setSelected(propConfig.getProperty("createroom.defaultUseFractionalGarbage", false));
 		chkboxCreateRoomUseFractionalGarbage.setToolTipText(getUIText("CreateRoom_UseFractionalGarbage_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomUseFractionalGarbage);
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomUseFractionalGarbage);
+
+		// misc tab
+		
+		// misc panel
+		JPanel containerpanelCreateRoomMisc = new JPanel();
+		containerpanelCreateRoomMisc.setLayout(new BoxLayout(containerpanelCreateRoomMisc, BoxLayout.Y_AXIS));
+		containerpanelCreateRoomMiscOwner.add(containerpanelCreateRoomMisc, BorderLayout.NORTH);
+		
+		// ** 自動開始前の待機時間パネル
+		JPanel subpanelAutoStartSeconds = new JPanel(new BorderLayout());
+		containerpanelCreateRoomMisc.add(subpanelAutoStartSeconds);
+
+		// *** 「自動開始前の待機時間:」ラベル
+		JLabel labelAutoStartSeconds = new JLabel(getUIText("CreateRoom_AutoStartSeconds"));
+		subpanelAutoStartSeconds.add(labelAutoStartSeconds, BorderLayout.WEST);
+
+		// *** 自動開始前の待機時間
+		int defaultAutoStartSeconds = propConfig.getProperty("createroom.defaultAutoStartSeconds", 15);
+		spinnerCreateRoomAutoStartSeconds = new JSpinner(new SpinnerNumberModel(defaultAutoStartSeconds, 0, 999, 1));
+		spinnerCreateRoomAutoStartSeconds.setPreferredSize(new Dimension(200, 20));
+		spinnerCreateRoomAutoStartSeconds.setToolTipText(getUIText("CreateRoom_AutoStartSeconds_Tip"));
+		subpanelAutoStartSeconds.add(spinnerCreateRoomAutoStartSeconds, BorderLayout.EAST);
 
 		// ** TNET2タイプの自動スタートタイマーを使う
 		chkboxCreateRoomAutoStartTNET2 = new JCheckBox(getUIText("CreateRoom_AutoStartTNET2"));
 		chkboxCreateRoomAutoStartTNET2.setMnemonic('A');
 		chkboxCreateRoomAutoStartTNET2.setSelected(propConfig.getProperty("createroom.defaultAutoStartTNET2", false));
 		chkboxCreateRoomAutoStartTNET2.setToolTipText(getUIText("CreateRoom_AutoStartTNET2_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomAutoStartTNET2);
+		containerpanelCreateRoomMisc.add(chkboxCreateRoomAutoStartTNET2);
 
 		// ** 誰かキャンセルしたらタイマー無効化
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled = new JCheckBox(getUIText("CreateRoom_DisableTimerAfterSomeoneCancelled"));
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setMnemonic('D');
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(propConfig.getProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", false));
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setToolTipText(getUIText("CreateRoom_DisableTimerAfterSomeoneCancelled_Tip"));
-		containerpanelCreateRoom.add(chkboxCreateRoomDisableTimerAfterSomeoneCancelled);
-
-		// * 速度設定パネル(引き伸ばし防止用)
-		JPanel containerpanelCreateRoomSpeedOwner = new JPanel(new BorderLayout());
-		tabbedPane.addTab(getUIText("CreateRoom_Tab_Speed"), containerpanelCreateRoomSpeedOwner);
-
-		// * 速度設定パネル(本体)
-		JPanel containerpanelCreateRoomSpeedMain = new JPanel();
-		containerpanelCreateRoomSpeedMain.setLayout(new BoxLayout(containerpanelCreateRoomSpeedMain, BoxLayout.Y_AXIS));
-		containerpanelCreateRoomSpeedOwner.add(containerpanelCreateRoomSpeedMain, BorderLayout.NORTH);
-
-		// ** 落下速度(分子)パネル
-		JPanel subpanelGravity = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelGravity);
-
-		// *** 「落下速度(分子):」ラベル
-		JLabel labelGravity = new JLabel(getUIText("CreateRoom_Gravity"));
-		subpanelGravity.add(labelGravity, BorderLayout.WEST);
-
-		// *** 落下速度(分子)
-		int defaultGravity = propConfig.getProperty("createroom.defaultGravity", 1);
-		spinnerCreateRoomGravity = new JSpinner(new SpinnerNumberModel(defaultGravity, -1, 99999, 1));
-		spinnerCreateRoomGravity.setPreferredSize(new Dimension(200, 20));
-		subpanelGravity.add(spinnerCreateRoomGravity, BorderLayout.EAST);
-
-		// ** 落下速度(分母)パネル
-		JPanel subpanelDenominator = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelDenominator);
-
-		// *** 「落下速度(分母):」ラベル
-		JLabel labelDenominator = new JLabel(getUIText("CreateRoom_Denominator"));
-		subpanelDenominator.add(labelDenominator, BorderLayout.WEST);
-
-		// *** 落下速度(分母)
-		int defaultDenominator = propConfig.getProperty("createroom.defaultDenominator", 60);
-		spinnerCreateRoomDenominator = new JSpinner(new SpinnerNumberModel(defaultDenominator, 0, 99999, 1));
-		spinnerCreateRoomDenominator.setPreferredSize(new Dimension(200, 20));
-		subpanelDenominator.add(spinnerCreateRoomDenominator, BorderLayout.EAST);
-
-		// ** AREパネル
-		JPanel subpanelARE = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelARE);
-
-		// *** 「ARE:」ラベル
-		JLabel labelARE = new JLabel(getUIText("CreateRoom_ARE"));
-		subpanelARE.add(labelARE, BorderLayout.WEST);
-
-		// *** ARE
-		int defaultARE = propConfig.getProperty("createroom.defaultARE", 30);
-		spinnerCreateRoomARE = new JSpinner(new SpinnerNumberModel(defaultARE, 0, 99, 1));
-		spinnerCreateRoomARE.setPreferredSize(new Dimension(200, 20));
-		subpanelARE.add(spinnerCreateRoomARE, BorderLayout.EAST);
-
-		// ** ライン消去後AREパネル
-		JPanel subpanelARELine = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelARELine);
-
-		// *** 「ライン消去後ARE:」ラベル
-		JLabel labelARELine = new JLabel(getUIText("CreateRoom_ARELine"));
-		subpanelARELine.add(labelARELine, BorderLayout.WEST);
-
-		// *** ライン消去後ARE
-		int defaultARELine = propConfig.getProperty("createroom.defaultARELine", 30);
-		spinnerCreateRoomARELine = new JSpinner(new SpinnerNumberModel(defaultARELine, 0, 99, 1));
-		spinnerCreateRoomARELine.setPreferredSize(new Dimension(200, 20));
-		subpanelARELine.add(spinnerCreateRoomARELine, BorderLayout.EAST);
-
-		// ** ライン消去時間パネル
-		JPanel subpanelLineDelay = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelLineDelay);
-
-		// *** 「ライン消去時間:」ラベル
-		JLabel labelLineDelay = new JLabel(getUIText("CreateRoom_LineDelay"));
-		subpanelLineDelay.add(labelLineDelay, BorderLayout.WEST);
-
-		// *** ライン消去時間
-		int defaultLineDelay = propConfig.getProperty("createroom.defaultLineDelay", 20);
-		spinnerCreateRoomLineDelay = new JSpinner(new SpinnerNumberModel(defaultLineDelay, 0, 99, 1));
-		spinnerCreateRoomLineDelay.setPreferredSize(new Dimension(200, 20));
-		subpanelLineDelay.add(spinnerCreateRoomLineDelay, BorderLayout.EAST);
-
-		// ** 固定時間パネル
-		JPanel subpanelLockDelay = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelLockDelay);
-
-		// *** 「固定時間:」ラベル
-		JLabel labelLockDelay = new JLabel(getUIText("CreateRoom_LockDelay"));
-		subpanelLockDelay.add(labelLockDelay, BorderLayout.WEST);
-
-		// *** 固定時間
-		int defaultLockDelay = propConfig.getProperty("createroom.defaultLockDelay", 30);
-		spinnerCreateRoomLockDelay = new JSpinner(new SpinnerNumberModel(defaultLockDelay, 0, 98, 1));
-		spinnerCreateRoomLockDelay.setPreferredSize(new Dimension(200, 20));
-		subpanelLockDelay.add(spinnerCreateRoomLockDelay, BorderLayout.EAST);
-
-		// ** 横溜めパネル
-		JPanel subpanelDAS = new JPanel(new BorderLayout());
-		containerpanelCreateRoomSpeedMain.add(subpanelDAS);
-
-		// *** 「横溜め:」ラベル
-		JLabel labelDAS = new JLabel(getUIText("CreateRoom_DAS"));
-		subpanelDAS.add(labelDAS, BorderLayout.WEST);
-
-		// *** 横溜め
-		int defaultDAS = propConfig.getProperty("createroom.defaultDAS", 14);
-		spinnerCreateRoomDAS = new JSpinner(new SpinnerNumberModel(defaultDAS, 0, 99, 1));
-		spinnerCreateRoomDAS.setPreferredSize(new Dimension(200, 20));
-		subpanelDAS.add(spinnerCreateRoomDAS, BorderLayout.EAST);
-
+		containerpanelCreateRoomMisc.add(chkboxCreateRoomDisableTimerAfterSomeoneCancelled);
+		
+		// buttons
+		
 		// ** ボタン類パネル
 		JPanel subpanelButtons = new JPanel();
 		subpanelButtons.setLayout(new BoxLayout(subpanelButtons, BoxLayout.X_AXIS));
