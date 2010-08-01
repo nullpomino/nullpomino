@@ -61,4 +61,8 @@ public class LogSystemLog4j implements LogSystem {
 	public void warn(String message) {
 		log.warn(message);
 	}
+
+	public void warn(String message, Throwable e) {
+		log.warn(message, e);
+	}
 }
