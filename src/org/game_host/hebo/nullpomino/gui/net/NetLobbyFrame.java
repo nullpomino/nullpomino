@@ -1268,6 +1268,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomGarbagePercent.setToolTipText(getUIText("CreateRoom_GarbagePercent_Tip"));
 		subpanelGarbagePercent.add(spinnerCreateRoomGarbagePercent, BorderLayout.EAST);
 		
+		// ** Set garbage type
+		chkboxCreateRoomGarbageChangePerAttack = new JCheckBox(getUIText("CreateRoom_GarbageChangePerAttack"));
+		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('G');
+		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
+		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomGarbageChangePerAttack);
+		
 		// ** Rensa/Combo Block
 		chkboxCreateRoomRensaBlock = new JCheckBox(getUIText("CreateRoom_RensaBlock"));
 		chkboxCreateRoomRensaBlock.setSelected(propConfig.getProperty("createroom.defaultRensaBlock", true));
@@ -1286,13 +1293,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", false));
 		chkboxCreateRoomReduceLineSend.setToolTipText(getUIText("CreateRoom_ReduceLineSend_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomReduceLineSend);
-
-		// ** Set garbage type
-		chkboxCreateRoomGarbageChangePerAttack = new JCheckBox(getUIText("CreateRoom_GarbageChangePerAttack"));
-		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('G');
-		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
-		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
-		containerpanelCreateRoomGarbage.add(chkboxCreateRoomGarbageChangePerAttack);
 
 		// ** 断片的邪魔ブロックシステムを使う
 		chkboxCreateRoomUseFractionalGarbage = new JCheckBox(getUIText("CreateRoom_UseFractionalGarbage"));
