@@ -28,7 +28,6 @@
 */
 package org.game_host.hebo.nullpomino.game.subsystem.mode;
 
-import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.component.Block;
 import org.game_host.hebo.nullpomino.game.component.Controller;
 import org.game_host.hebo.nullpomino.game.component.Field;
@@ -42,8 +41,6 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
  * SQUARE mode
  */
 public class SquareMode extends DummyMode {
-	/** ログ */
-	static Logger log = Logger.getLogger(SquareMode.class);
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
@@ -475,10 +472,19 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
+		if (lines > 0 && engine.tspin) {
+			if (version == 0)
+				avalancheOld(engine, playerID, lines);
+			else
+				avalanche(engine, playerID, lines);
+			return;
+		}
+		
 		// Line clear bonus
 		int pts = lines;
 
 		if (lines > 0) {
+			engine.lineGravityType = GameEngine.LINE_GRAVITY_NATIVE;
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 			}
@@ -496,13 +502,6 @@ public class SquareMode extends DummyMode {
 			engine.statistics.score += pts;
 			setSpeed(engine);
 
-			if (engine.tspin) {
-				log.debug("Avalanche. Version = " + version);
-				if (version == 0)
-					avalancheOld(engine, playerID, lines);
-				else
-					avalanche(engine, playerID, lines);
-			}
 		}
 	}
 
@@ -521,8 +520,6 @@ public class SquareMode extends DummyMode {
 		boolean[] affectY = new boolean[height+hiddenHeight];
 		for (int i = 0; i < affectY.length; i++)
 			affectY[i] = false;
-		log.debug("Minimum block Y = " + engine.nowPieceObject.getMinimumBlockY() +
-				", nowPieceY = " + engine.nowPieceY);
 		int minY = engine.nowPieceObject.getMinimumBlockY()+engine.nowPieceY;
 		if (field.getLineFlag(minY))
 			for (int i = minY+hiddenHeight; i >= 0; i--)
@@ -567,6 +564,9 @@ public class SquareMode extends DummyMode {
 				}
 			}
 		}
+		// Reset line flags
+		for (int y = (-1 * hiddenHeight); y < height; y++)
+			engine.field.setLineFlag(y, false);
 		// Set cascade flag
 		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
 	}
