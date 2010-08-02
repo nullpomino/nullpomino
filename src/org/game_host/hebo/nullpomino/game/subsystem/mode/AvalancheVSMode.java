@@ -42,7 +42,7 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
 import org.game_host.hebo.nullpomino.util.GeneralUtil;
 
 /**
- * AVALANCHE VS-BATTLE mode (beta)
+ * AVALANCHE VS-BATTLE mode (Release Candidate 1)
  */
 public class AvalancheVSMode extends DummyMode {
 	/** 現在のバージョン */
@@ -234,7 +234,7 @@ public class AvalancheVSMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "AVALANCHE VS-BATTLE (BETA)";
+		return "AVALANCHE VS-BATTLE (RC1)";
 	}
 
 	/*

@@ -38,7 +38,7 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
 import org.game_host.hebo.nullpomino.util.GeneralUtil;
 
 /**
- * AVALANCHE FEVER MARATHON mode (beta)
+ * AVALANCHE FEVER MARATHON mode (Release Candidate 1)
  */
 public class AvalancheFeverMode extends DummyMode {
 	/** Current version */
@@ -159,7 +159,7 @@ public class AvalancheFeverMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "AVALANCHE 1P FEVER MARATHON (BETA)";
+		return "AVALANCHE 1P FEVER MARATHON (RC1)";
 	}
 
 	/*

@@ -38,7 +38,7 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
 import org.game_host.hebo.nullpomino.util.GeneralUtil;
 
 /**
- * AVALANCHE mode (beta)
+ * AVALANCHE mode (Release Candidate 1)
  */
 public class AvalancheMode extends DummyMode {
 	/** Current version */
@@ -135,7 +135,7 @@ public class AvalancheMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "AVALANCHE 1P (BETA)";
+		return "AVALANCHE 1P (RC1)";
 	}
 
 	/*
