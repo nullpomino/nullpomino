@@ -494,18 +494,83 @@ public class SquareMode extends DummyMode {
 			setSpeed(engine);
 
 			if (engine.tspin) {
-				avalanche(engine, playerID, lines);
+				if (version == 0)
+					avalancheOld(engine, playerID, lines);
+				else
+					avalanche(engine, playerID, lines);
 			}
 		}
 	}
 
+
 	/**
-	 * T-Spin avalanche routine.
+	 * Spin avalanche routine.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 * @param lines Number of lines cleared
 	 */
 	private void avalanche(GameEngine engine, int playerID, int lines) {
+		Field field = engine.field;
+		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
+		
+		int hiddenHeight = field.getHiddenHeight();
+		int height = field.getHeight();
+		boolean[] affectY = new boolean[height+hiddenHeight];
+		for (int i = 0; i < affectY.length; i++)
+			affectY[i] = false;
+		int minY = engine.nowPieceObject.getMinimumBlockY()+engine.nowPieceY;
+		if (field.getLineFlag(minY))
+			for (int i = minY+hiddenHeight; i >= 0; i--)
+				affectY[i] = true;
+		
+		int testY = minY+1;
+
+		while (!field.getLineFlag(testY) && testY < height)
+			testY++;
+		testY += hiddenHeight;
+		for (int y = testY+hiddenHeight; y < affectY.length; y++)
+			affectY[y] = true;
+
+		for (int y = (hiddenHeight * -1); y < height; y++)
+		{
+			if (affectY[y+hiddenHeight])
+			{
+				for(int x = 0; x < field.getWidth(); x++) {
+					Block blk = field.getBlock(x, y);
+					if((blk != null) && !blk.isEmpty()) {
+						// Change each affected block to broken and garbage, and break connections.
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+						if(grayoutEnable) blk.color = Block.BLOCK_COLOR_GRAY;
+					}
+				}
+			}
+			else
+			{
+				for(int x = 0; x < field.getWidth(); x++) {
+					Block blk = field.getBlock(x, y);
+					if((blk != null) && !blk.isEmpty()) {
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, true);
+					}
+				}
+			}
+		}
+		// Set cascade flag
+		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+	}
+	
+	/**
+	 * Old T-Spin avalanche routine.
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @param lines Number of lines cleared
+	 */
+	@Deprecated
+	private void avalancheOld(GameEngine engine, int playerID, int lines) {
 		Field field = engine.field;
 		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 
