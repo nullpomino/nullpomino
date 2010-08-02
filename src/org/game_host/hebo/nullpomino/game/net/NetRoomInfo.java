@@ -77,8 +77,8 @@ public class NetRoomInfo implements Serializable {
 	public int tspinEnableType = 1;
 
 	/** Spin detection type */
-	public static final int SPINTYPE_4POINT = 1,
-							SPINTYPE_IMMOBILE = 2;
+	public static final int SPINTYPE_4POINT = 0,
+							SPINTYPE_IMMOBILE = 1;
 
 	public int spinCheckType = SPINTYPE_4POINT;
 

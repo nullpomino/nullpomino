@@ -100,8 +100,8 @@ public class GameEngine {
 	public static final int TSPINMINI_TYPE_ROTATECHECK = 0, TSPINMINI_TYPE_WALLKICKFLAG = 1;
 
 	/** Spin detection type */
-	public static final int SPINTYPE_4POINT = 1,
-							SPINTYPE_IMMOBILE = 2;
+	public static final int SPINTYPE_4POINT = 0,
+							SPINTYPE_IMMOBILE = 1;
 	
 	/** コンボの種類の定数 */
 	public static final int COMBO_TYPE_DISABLE = 0, COMBO_TYPE_NORMAL = 1, COMBO_TYPE_DOUBLE = 2;
