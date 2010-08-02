@@ -527,7 +527,6 @@ public class SquareMode extends DummyMode {
 
 		while (!field.getLineFlag(testY) && testY < height)
 			testY++;
-		testY += hiddenHeight;
 		for (int y = testY+hiddenHeight; y < affectY.length; y++)
 			affectY[y] = true;
 
