@@ -1248,7 +1248,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		
 		// *** Spin check type combobox
 		String[] strSpinCheckTypeNames = new String[COMBOBOX_SPINCHECKTYPE_NAMES.length];
-		for(int i = 0; i < strSpinBonusNames.length; i++) {
+		for(int i = 0; i < strSpinCheckTypeNames.length; i++) {
 			strSpinBonusNames[i] = getUIText(COMBOBOX_SPINCHECKTYPE_NAMES[i]);
 		}
 		comboboxCreateRoomSpinCheckType = new JComboBox(strSpinCheckTypeNames);
