@@ -1258,7 +1258,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelSpinCheckType.add(comboboxCreateRoomSpinCheckType, BorderLayout.EAST);
 		
 		// ** EZ Spin checkbox
-		chkboxCreateRoomTSpinEnableEZ = new JCheckBox("CreateRoom_TSpinEnableEZ");
+		chkboxCreateRoomTSpinEnableEZ = new JCheckBox(getUIText("CreateRoom_TSpinEnableEZ"));
 		chkboxCreateRoomTSpinEnableEZ.setMnemonic('E');
 		chkboxCreateRoomTSpinEnableEZ.setSelected(propConfig.getProperty("createroom.defaultTSpinEnableEZ", false));
 		chkboxCreateRoomTSpinEnableEZ.setToolTipText(getUIText("CreateRoom_TSpinEnableEZ_Tip"));
