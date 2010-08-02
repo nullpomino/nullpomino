@@ -28,6 +28,7 @@
 */
 package org.game_host.hebo.nullpomino.game.subsystem.mode;
 
+import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.component.Block;
 import org.game_host.hebo.nullpomino.game.component.Controller;
 import org.game_host.hebo.nullpomino.game.component.Field;
@@ -41,8 +42,10 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
  * SQUARE mode
  */
 public class SquareMode extends DummyMode {
+	/** ログ */
+	static Logger log = Logger.getLogger(SquareMode.class);
 	/** Current version */
-	private static final int CURRENT_VERSION = 0;
+	private static final int CURRENT_VERSION = 1;
 
 	public int[] tableGravityChangeScore =
 	{
@@ -494,6 +497,7 @@ public class SquareMode extends DummyMode {
 			setSpeed(engine);
 
 			if (engine.tspin) {
+				log.debug("Avalanche. Version = " + version);
 				if (version == 0)
 					avalancheOld(engine, playerID, lines);
 				else
@@ -501,7 +505,6 @@ public class SquareMode extends DummyMode {
 			}
 		}
 	}
-
 
 	/**
 	 * Spin avalanche routine.
@@ -518,6 +521,8 @@ public class SquareMode extends DummyMode {
 		boolean[] affectY = new boolean[height+hiddenHeight];
 		for (int i = 0; i < affectY.length; i++)
 			affectY[i] = false;
+		log.debug("Minimum block Y = " + engine.nowPieceObject.getMinimumBlockY() +
+				", nowPieceY = " + engine.nowPieceY);
 		int minY = engine.nowPieceObject.getMinimumBlockY()+engine.nowPieceY;
 		if (field.getLineFlag(minY))
 			for (int i = minY+hiddenHeight; i >= 0; i--)
@@ -544,7 +549,7 @@ public class SquareMode extends DummyMode {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-						if(grayoutEnable) blk.color = Block.BLOCK_COLOR_GRAY;
+						/*if(grayoutEnable)*/ blk.color = Block.BLOCK_COLOR_GRAY;
 					}
 				}
 			}
@@ -552,6 +557,10 @@ public class SquareMode extends DummyMode {
 			{
 				for(int x = 0; x < field.getWidth(); x++) {
 					Block blk = field.getBlock(x, y);
+					if((blk != null) && !blk.isEmpty()) {
+						blk.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, true);
+					}
+					blk = field.getBlock(x, y-1);
 					if((blk != null) && !blk.isEmpty()) {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, true);
 					}
