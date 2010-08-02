@@ -103,7 +103,7 @@ public class SquareMode extends DummyMode {
 	private boolean tntAvalanche;
 
 	/** Grayout broken blocks */
-	private boolean grayoutEnable;
+	private int grayoutEnable;
 
 	/** Version number */
 	private int version;
@@ -141,6 +141,7 @@ public class SquareMode extends DummyMode {
 
 		outlinetype = 0;
 		tspinEnableType = 2;
+		grayoutEnable = 1;
 
 		rankingRank = -1;
 		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
@@ -224,7 +225,9 @@ public class SquareMode extends DummyMode {
 					tntAvalanche = !tntAvalanche;
 					break;
 				case 4:
-					grayoutEnable = !grayoutEnable;
+					grayoutEnable += change;
+					if(grayoutEnable < 0) grayoutEnable = 2;
+					if(grayoutEnable > 2) grayoutEnable = 0;
 					break;
 				}
 			}
@@ -281,7 +284,11 @@ public class SquareMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 0, 6, "AVALANCHE", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 7, tntAvalanche ? "TNT" : "WORLDS", (engine.statc[2] == 3));
 		receiver.drawMenuFont(engine, playerID, 0, 8, "GRAYOUT", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(grayoutEnable), (engine.statc[2] == 4));
+		String grayoutStr = "";
+		if(grayoutEnable == 0) grayoutStr = "OFF";
+		if(grayoutEnable == 1) grayoutStr = "SPIN ONLY";
+		if(grayoutEnable == 2) grayoutStr = "ALL";
+		receiver.drawMenuFont(engine, playerID, 1, 9, grayoutStr, (engine.statc[2] == 4));
 	}
 
 	/*
@@ -446,7 +453,7 @@ public class SquareMode extends DummyMode {
 	@Override
 	public boolean onLineClear(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 1) {
-			if(grayoutEnable) grayoutBrokenBlocks(engine.field);
+			if(grayoutEnable == 2) grayoutBrokenBlocks(engine.field);
 		}
 		return false;
 	}
@@ -546,7 +553,7 @@ public class SquareMode extends DummyMode {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-						/*if(grayoutEnable)*/ blk.color = Block.BLOCK_COLOR_GRAY;
+						if(grayoutEnable != 0) blk.color = Block.BLOCK_COLOR_GRAY;
 					}
 				}
 			}
@@ -616,7 +623,7 @@ public class SquareMode extends DummyMode {
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 						blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-						if(grayoutEnable) blk.color = Block.BLOCK_COLOR_GRAY;
+						if(grayoutEnable != 0) blk.color = Block.BLOCK_COLOR_GRAY;
 					}
 				}
 			}
@@ -713,7 +720,7 @@ public class SquareMode extends DummyMode {
 		outlinetype = prop.getProperty("square.outlinetype", 0);
 		tspinEnableType = prop.getProperty("square.tspinEnableType", 2);
 		tntAvalanche = prop.getProperty("square.tntAvalanche", false);
-		grayoutEnable = prop.getProperty("square.grayoutEnable", true);
+		grayoutEnable = prop.getProperty("square.grayoutEnable", 2);
 		version = prop.getProperty("square.version", 0);
 	}
 
