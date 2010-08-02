@@ -804,14 +804,14 @@ public class SquareMode extends DummyMode {
 				} else if((sc == rankingScore[type][i]) && (sq == rankingSquares[type][i]) && (time < rankingTime[type][i])) {
 					return i;
 				}
-			} else if (gametype == 1) {
+			} else if (gametype == 1 && time >= ULTRA_MAX_TIME) {
 				// Ultra
 				if(sc > rankingScore[type][i]) {
 					return i;
 				} else if((sc == rankingScore[type][i]) && (sq > rankingSquares[type][i])) {
 					return i;
 				}
-			} else if (gametype == 2) {
+			} else if (gametype == 2 && sc >= SPRINT_MAX_SCORE) {
 				// Sprint
 				if((time < rankingTime[type][i]) || (rankingTime[type][i] < 0)) {
 					return i;
