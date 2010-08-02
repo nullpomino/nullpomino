@@ -134,6 +134,9 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 		} else if(replaylist.length == 0) {
 			NormalFontSDL.printFontGrid(1, 1, "NO REPLAY FILE", NormalFontSDL.COLOR_RED);
 		} else {
+			if (cursor >= replaylist.length)
+				cursor = 0;
+			
 			String title = "SELECT REPLAY FILE";
 			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
 
