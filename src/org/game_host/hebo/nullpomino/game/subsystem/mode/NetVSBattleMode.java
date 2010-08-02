@@ -1009,7 +1009,9 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			if(engine.b2b) {
 				lastb2b[playerID] = true;
 
-				if(pts > 0) {
+				//If the Separate B2B Chunk feature is enabled, don't add the points yet.
+				//A second Garbage Entry will be added when the "attack" message is received.
+				if((pts > 0) && (!currentRoomInfo.b2bChunk)) {
 					if((attackLineIndex == LINE_ATTACK_INDEX_TTRIPLE) && (!engine.useAllSpinBonus))
 						pts += 2;
 					else
@@ -2228,6 +2230,15 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				{
 					GarbageEntry garbageEntry = new GarbageEntry(pts, playerID, uid);
 					garbageEntries.add(garbageEntry);
+					
+					if((lastb2b[playerID]) && (currentRoomInfo.b2bChunk)){ //Add a separate garbage entry if the separate b2b option is enabled.
+						if((lastevent[playerID] == EVENT_TSPIN_TRIPLE) && (currentRoomInfo.tspinEnableType != 2)) //Case for TST with All Spin disabled
+							garbageEntry = new GarbageEntry(2, playerID, uid);
+						else
+							garbageEntry = new GarbageEntry(1, playerID, uid);
+						garbageEntries.add(garbageEntry);
+					}
+					
 					garbage[0] = getTotalGarbageLines();
 					if(garbage[0] >= 4*GARBAGE_DENOMINATOR) owner.engine[0].playSE("danger");
 					netLobby.netPlayerClient.send("game\tgarbageupdate\t" + garbage[0] + "\n");

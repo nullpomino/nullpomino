@@ -87,6 +87,9 @@ public class NetRoomInfo implements Serializable {
 	
 	/** B2B有効 */
 	public boolean b2b = true;
+	
+   /** b2b adds as a separate garbage chunk */
+   public boolean b2bChunk;
 
 	/** コンボ有効 */
 	public boolean combo = true;
@@ -231,6 +234,7 @@ public class NetRoomInfo implements Serializable {
 		spinCheckType = n.spinCheckType;
 		tspinEnableEZ = n.tspinEnableEZ;
 		b2b = n.b2b;
+		b2bChunk = n.b2bChunk;
 		combo = n.combo;
 		rensaBlock = n.rensaBlock;
 		counter = n.counter;
@@ -313,8 +317,9 @@ public class NetRoomInfo implements Serializable {
 		useFractionalGarbage = Boolean.parseBoolean(rdata[29]);
 		garbageChangePerAttack = Boolean.parseBoolean(rdata[30]);
 		garbagePercent = Integer.parseInt(rdata[31]);
-		//spinCheckType = Integer.parseInt(rdata[32]);
-		//tspinEnableEZ = Boolean.parseBoolean(rdata[33]);
+		spinCheckType = Integer.parseInt(rdata[32]);
+		tspinEnableEZ = Boolean.parseBoolean(rdata[33]);
+		b2bChunk = Boolean.parseBoolean(rdata[34]);
 	}
 
 	/**
@@ -330,7 +335,7 @@ public class NetRoomInfo implements Serializable {
 	 * @return Stringの配列(String[29])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[34];
+		String[] rdata = new String[35];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -363,8 +368,9 @@ public class NetRoomInfo implements Serializable {
 		rdata[29] = Boolean.toString(useFractionalGarbage);
 		rdata[30] = Boolean.toString(garbageChangePerAttack);
 		rdata[31] = Integer.toString(garbagePercent);
-		//rdata[32] = Integer.toString(spinCheckType);
-		//rdata[33] = Boolean.toString(tspinEnableEZ);
+		rdata[32] = Integer.toString(spinCheckType);
+		rdata[33] = Boolean.toString(tspinEnableEZ);
+		rdata[34] = Boolean.toString(b2bChunk);
 		return rdata;
 	}
 

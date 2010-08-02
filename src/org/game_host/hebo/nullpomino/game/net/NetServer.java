@@ -826,6 +826,9 @@ public class NetServer {
 				roomInfo.useFractionalGarbage = Boolean.parseBoolean(message[24]);
 				roomInfo.garbageChangePerAttack = Boolean.parseBoolean(message[25]);
 				roomInfo.garbagePercent = Integer.parseInt(message[26]);
+				roomInfo.spinCheckType = Integer.parseInt(message[27]);
+				roomInfo.tspinEnableEZ = Boolean.parseBoolean(message[28]);
+				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
 				
 				roomInfo.roomID = roomCount;
 
