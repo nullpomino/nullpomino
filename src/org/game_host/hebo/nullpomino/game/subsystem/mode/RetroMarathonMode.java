@@ -220,7 +220,7 @@ public class RetroMarathonMode extends DummyMode {
 
 		engine.owner.backgroundStatus.bg = startlevel;
 		if(engine.owner.backgroundStatus.bg > 19) engine.owner.backgroundStatus.bg = 19;
-		levellines = Math.min((startlevel+1)*10,100);
+		levellines = Math.min((startlevel+1)*10,Math.max(100,(startlevel-5)*10));
 		engine.framecolor = GameEngine.FRAME_COLOR_GRAY;
 	}
 
@@ -285,7 +285,7 @@ public class RetroMarathonMode extends DummyMode {
 					if(startlevel < 0) startlevel = 19;
 					if(startlevel > 19) startlevel = 0;
 					engine.owner.backgroundStatus.bg = startlevel;
-					levellines = Math.min((startlevel+1)*10,100);
+					levellines = Math.min((startlevel+1)*10,Math.max(100,(startlevel-5)*10));
 					break;
 				case 2:
 					startheight += change;
@@ -342,6 +342,14 @@ public class RetroMarathonMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 0, 6, "BIG", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(big), (engine.statc[2] == 3));
 	}
+	
+	public boolean onReady(GameEngine engine, int playerID) {
+		if (engine.statc[0] == 0) {
+			engine.createFieldIfNeeded();
+			fillGarbage(engine,startheight);
+		}
+		return false;
+	}
 
 	/**
 	 * This function will be called before the game actually begins (after Ready&Go screen disappears)
@@ -352,7 +360,7 @@ public class RetroMarathonMode extends DummyMode {
 		engine.statistics.levelDispAdd = 1;
 		engine.big = big;
 
-		fillGarbage(engine,startheight);
+		
 
 		setSpeed(engine);
 	}
