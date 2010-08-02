@@ -1183,7 +1183,7 @@ public class AvalancheVSMode extends DummyMode {
 			else
 				ojama[playerID] -= drop;
 			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID]);
-			//engine.field.setAllSkin(engine.getSkin());
+			engine.field.setAllSkin(engine.getSkin());
 			return true;
 		}
 		//Check to start Fever Mode

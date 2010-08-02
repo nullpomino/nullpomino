@@ -157,6 +157,9 @@ public class StateReplaySelect extends BasicGameState {
 		} else if(replaylist.length == 0) {
 			NormalFont.printFontGrid(1, 1, "NO REPLAY FILE", NormalFont.COLOR_RED);
 		} else {
+			if (cursor >= replaylist.length)
+				cursor = 0;
+			
 			String title = "SELECT REPLAY FILE";
 			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
 
