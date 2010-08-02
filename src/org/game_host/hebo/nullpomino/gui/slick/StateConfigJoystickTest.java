@@ -123,6 +123,8 @@ public class StateConfigJoystickTest extends BasicGameState {
 		if(frame >= KEYACCEPTFRAME) {
 			NormalFont.printFontGrid(1, 23, "ENTER/BACKSPACE: EXIT", NormalFont.COLOR_GREEN);
 		}
+
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -142,6 +144,8 @@ public class StateConfigJoystickTest extends BasicGameState {
 				} catch (Throwable e) {}
 			}
 		}
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*

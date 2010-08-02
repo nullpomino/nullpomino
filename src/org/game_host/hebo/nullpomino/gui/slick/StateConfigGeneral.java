@@ -106,12 +106,6 @@ public class StateConfigGeneral extends BasicGameState {
 	/** 垂直同期を待つ */
 	protected boolean vsync;
 
-	/** 別のFPS算出法を使う */
-	protected boolean smoothdeltas;
-
-	/** 独自のFPS維持法を使う */
-	protected boolean useAlternateFPSSleep;
-
 	/** ゴーストピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
@@ -120,6 +114,12 @@ public class StateConfigGeneral extends BasicGameState {
 
 	/** Side piece preview */
 	protected boolean sidenext;
+
+	/** Timing of alternate FPS sleep (false=render true=update) */
+	protected boolean alternateFPSTiming;
+
+	/** Allow dynamic adjust of target FPS (as seen in Swing version) */
+	protected boolean alternateFPSDynamicAdjust;
 
 	/*
 	 * このステートのIDを取得
@@ -159,11 +159,11 @@ public class StateConfigGeneral extends BasicGameState {
 		joyMethod = prop.getProperty("option.joymethod", ControllerManager.CONTROLLER_METHOD_SLICK_DEFAULT);
 		showmeter = prop.getProperty("option.showmeter", true);
 		vsync = prop.getProperty("option.vsync", false);
-		smoothdeltas = prop.getProperty("option.smoothdeltas", false);
-		useAlternateFPSSleep = prop.getProperty("option.useAlternateFPSSleep", false);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
 		sidenext = prop.getProperty("option.sidenext", false);
+		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
+		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", true);
 	}
 
 	/**
@@ -189,11 +189,11 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.joymethod", joyMethod);
 		prop.setProperty("option.showmeter", showmeter);
 		prop.setProperty("option.vsync", vsync);
-		prop.setProperty("option.smoothdeltas", smoothdeltas);
-		prop.setProperty("option.useAlternateFPSSleep", useAlternateFPSSleep);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
 		prop.setProperty("option.sidenext", sidenext);
+		prop.setProperty("option.alternateFPSTiming", alternateFPSTiming);
+		prop.setProperty("option.alternateFPSDynamicAdjust", alternateFPSDynamicAdjust);
 	}
 
 	/*
@@ -226,11 +226,11 @@ public class StateConfigGeneral extends BasicGameState {
 		NormalFont.printFontGrid(2, 18, "JOYSTICK METHOD:" + JOYSTICK_METHOD_STRINGS[joyMethod], (cursor == 15));
 		NormalFont.printFontGrid(2, 19, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 16));
 		NormalFont.printFontGrid(2, 20, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 17));
-		NormalFont.printFontGrid(2, 21, "SMOOTH DELTAS:" + GeneralUtil.getOorX(smoothdeltas), (cursor == 18));
-		NormalFont.printFontGrid(2, 22, "FRAMERATE MODE:" + (useAlternateFPSSleep ? "CUSTOM (SDL&SWING)" : "SLICK DEFAULT"), (cursor == 19));
-		NormalFont.printFontGrid(2, 23, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 20));
-		NormalFont.printFontGrid(2, 24, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 21));
-		NormalFont.printFontGrid(2, 25, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 22));
+		NormalFont.printFontGrid(2, 21, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 18));
+		NormalFont.printFontGrid(2, 22, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 19));
+		NormalFont.printFontGrid(2, 23, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 20));
+		NormalFont.printFontGrid(2, 24, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 21));
+		NormalFont.printFontGrid(2, 25, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
 
 		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_Fullscreen"));
 		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SE"));
@@ -250,11 +250,11 @@ public class StateConfigGeneral extends BasicGameState {
 		if(cursor == 15) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_JoyMethod"));
 		if(cursor == 16) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_ShowMeter"));
 		if(cursor == 17) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_VSync"));
-		if(cursor == 18) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SmoothDeltas"));
-		if(cursor == 19) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_UseAlternateFPSSleep"));
-		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_NextShadow"));
-		if(cursor == 21) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_OutlineGhost"));
-		if(cursor == 22) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
+		if(cursor == 18) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_NextShadow"));
+		if(cursor == 19) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_OutlineGhost"));
+		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
+		if(cursor == 21) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSTiming"));
+		if(cursor == 22) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSDynamicAdjust"));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -266,7 +266,7 @@ public class StateConfigGeneral extends BasicGameState {
 			ssflag = false;
 		}
 
-		NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -365,19 +365,19 @@ public class StateConfigGeneral extends BasicGameState {
 					vsync = !vsync;
 					break;
 				case 18:
-					smoothdeltas = !smoothdeltas;
-					break;
-				case 19:
-					useAlternateFPSSleep = !useAlternateFPSSleep;
-					break;
-				case 20:
 					nextshadow = !nextshadow;
 					break;
-				case 21:
+				case 19:
 					outlineghost = !outlineghost;
 					break;
-				case 22:
+				case 20:
 					sidenext = !sidenext;
+					break;
+				case 21:
+					alternateFPSTiming = !alternateFPSTiming;
+					break;
+				case 22:
+					alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
 					break;
 			}
 		}
@@ -402,5 +402,7 @@ public class StateConfigGeneral extends BasicGameState {
 
 		// 終了ボタン
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }

@@ -290,7 +290,7 @@ public class StateInGame extends BasicGameState {
 			ssflag = false;
 		}
 
-		NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -451,5 +451,7 @@ public class StateInGame extends BasicGameState {
 			shutdown();
 			container.exit();
 		}
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }

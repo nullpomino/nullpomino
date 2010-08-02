@@ -132,7 +132,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 			NormalFont.printFontGrid(1, 23, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 		}
 
-		NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -153,6 +153,8 @@ public class StateConfigJoystickButton extends BasicGameState {
 				} catch (Throwable e) {}
 			}
 		}
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*

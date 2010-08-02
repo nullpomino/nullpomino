@@ -142,7 +142,7 @@ public class StateConfigKeyboard extends BasicGameState {
 			}
 		}
 
-		NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -150,6 +150,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		frame++;
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*

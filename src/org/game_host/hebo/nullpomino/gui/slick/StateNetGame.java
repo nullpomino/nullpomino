@@ -98,11 +98,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		NullpoMinoSlick.stopObserverClient();
 
 		// 60FPS
-		if(NullpoMinoSlick.useAlternateFPSSleep) {
-			NullpoMinoSlick.alternateTargetFPS = 60;
-		} else {
-			appContainer.setTargetFrameRate(60);
-		}
+		NullpoMinoSlick.altMaxFPS = 60;
 		appContainer.setAlwaysRender(true);
 		appContainer.setUpdateOnlyWhenVisible(false);
 
@@ -193,11 +189,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		}
 
 		// FPS復帰
-		if(NullpoMinoSlick.useAlternateFPSSleep) {
-			NullpoMinoSlick.alternateTargetFPS = NullpoMinoSlick.propConfig.getProperty("option.maxfps", 60);
-		} else {
-			appContainer.setTargetFrameRate(NullpoMinoSlick.propConfig.getProperty("option.maxfps", 60));
-		}
+		NullpoMinoSlick.altMaxFPS = NullpoMinoSlick.propConfig.getProperty("option.maxfps", 60);
 		appContainer.setAlwaysRender(false);
 		appContainer.setUpdateOnlyWhenVisible(true);
 	}
@@ -220,7 +212,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				ssflag = false;
 			}
 
-			NullpoMinoSlick.alternateFPSSleep();
+			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 		} catch (Exception e) {
 			log.error("render fail", e);
 		}
@@ -268,6 +260,8 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			// スクリーンショットボタン
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 				ssflag = true;
+
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 		} catch (Exception e) {
 			log.error("update fail", e);
 		}

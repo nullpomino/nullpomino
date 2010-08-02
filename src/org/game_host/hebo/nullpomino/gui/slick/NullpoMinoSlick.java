@@ -136,11 +136,20 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** チューニング設定画面のステート */
 	public static StateConfigGameTuning stateConfigGameTuning;
 
-	/** 独自のFPS維持法を使う */
-	public static boolean useAlternateFPSSleep;
+	/** Timing of alternate FPS sleep (false=render true=update) */
+	public static boolean alternateFPSTiming;
 
-	/** 独自のFPS維持法での目標FPS */
-	public static int alternateTargetFPS;
+	/** Allow dynamic adjust of target FPS (as seen in Swing version) */
+	public static boolean alternateFPSDynamicAdjust;
+
+	/** Target FPS */
+	public static int altMaxFPS;
+
+	/** Current max FPS */
+	public static int altMaxFPSCurrent;
+
+	/** Used for FPS calculation */
+	protected static long periodCurrent;
 
 	/** FPS維持用 */
 	protected static long beforeTime;
@@ -280,22 +289,17 @@ public class NullpoMinoSlick extends StateBasedGame {
 	 * いろいろな設定を反映させる
 	 */
 	public static void setGeneralConfig() {
-		useAlternateFPSSleep = propConfig.getProperty("option.useAlternateFPSSleep", false);
+		appGameContainer.setTargetFrameRate(-1);
+		beforeTime = System.nanoTime();
+		overSleepTime = 0L;
+		noDelays = 0;
 
-		if(useAlternateFPSSleep == true) {
-			appGameContainer.setTargetFrameRate(-1);
-			beforeTime = System.nanoTime();
-			overSleepTime = 0L;
-			noDelays = 0;
-			alternateTargetFPS = propConfig.getProperty("option.maxfps", 60);
-		} else {
-			int maxfps = propConfig.getProperty("option.maxfps", 60);
-			if(maxfps == 0) maxfps = -1;
-			appGameContainer.setTargetFrameRate(maxfps);
-		}
+		alternateFPSTiming = propConfig.getProperty("option.alternateFPSTiming", true);
+		alternateFPSDynamicAdjust = propConfig.getProperty("option.alternateFPSDynamicAdjust", true);
+		altMaxFPS = propConfig.getProperty("option.maxfps", 60);
+		altMaxFPSCurrent = altMaxFPS;
 
 		appGameContainer.setVSync(propConfig.getProperty("option.vsync", false));
-		appGameContainer.setSmoothDeltas(propConfig.getProperty("option.smoothdeltas", false));
 
 		int sevolume = propConfig.getProperty("option.sevolume", 128);
 		appGameContainer.setSoundVolume(sevolume / (float)128);
@@ -382,11 +386,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	 * Slick標準とは違うFPS維持
 	 */
 	public static void alternateFPSSleep() {
-		if(!useAlternateFPSSleep) return;
-
-		int maxfps = alternateTargetFPS;
+		int maxfps = altMaxFPSCurrent;
 		if(maxfps <= 0) return;
-		long period = (long) (1.0 / maxfps * 1000000000);
+		periodCurrent = (long) (1.0 / maxfps * 1000000000);
 
 		long afterTime, timeDiff, sleepTime;
 
@@ -394,7 +396,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		afterTime = System.nanoTime();
 		timeDiff = afterTime - beforeTime;
 		// 前回のフレームの休止時間誤差も引いておく
-		sleepTime = (period - timeDiff) - overSleepTime;
+		sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
 		if(sleepTime > 0) {
 			// 休止時間がとれる場合
@@ -419,7 +421,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		beforeTime = System.nanoTime();
 
-		calcFPS(period);
+		calcFPS(periodCurrent);
 	}
 
 	/**
@@ -444,6 +446,22 @@ public class NullpoMinoSlick extends StateBasedGame {
 			frameCount = 0L;
 			calcInterval = 0L;
 			prevCalcTime = timeNow;
+
+			// Set new target fps
+			if((altMaxFPS > 0) && (alternateFPSDynamicAdjust)) {
+				if(actualFPS < altMaxFPS - 1) {
+					// Too Slow
+					altMaxFPSCurrent++;
+					if(altMaxFPSCurrent > altMaxFPS + 5) altMaxFPSCurrent = altMaxFPS + 5;
+					periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
+				} else if(actualFPS > altMaxFPS + 1) {
+					// Too Fast
+					altMaxFPSCurrent--;
+					if(altMaxFPSCurrent < altMaxFPS - 5) altMaxFPSCurrent = altMaxFPS - 5;
+					if(altMaxFPSCurrent < 0) altMaxFPSCurrent = 0;
+					periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
+				}
+			}
 		}
 	}
 
@@ -498,10 +516,11 @@ public class NullpoMinoSlick extends StateBasedGame {
 	 */
 	public static void drawFPS(GameContainer container) {
 		if(propConfig.getProperty("option.showfps", true) == true) {
-			if(useAlternateFPSSleep)
+			if(!alternateFPSDynamicAdjust)
 				NormalFont.printFont(0, 480 - 16, df.format(actualFPS), NormalFont.COLOR_BLUE);
 			else
-				NormalFont.printFont(0, 480 - 16, String.valueOf(container.getFPS()), NormalFont.COLOR_BLUE);
+				NormalFont.printFont(0, 480 - 16, df.format(actualFPS) + "/" + altMaxFPSCurrent, NormalFont.COLOR_BLUE);
+			//NormalFont.printFont(0, 480 - 32, String.valueOf(container.getFPS()), NormalFont.COLOR_BLUE);
 		}
 	}
 

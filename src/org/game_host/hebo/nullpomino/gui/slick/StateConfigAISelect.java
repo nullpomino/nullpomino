@@ -210,7 +210,7 @@ public class StateConfigAISelect extends BasicGameState {
 			ssflag = false;
 		}
 
-		NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -288,5 +288,7 @@ public class StateConfigAISelect extends BasicGameState {
 
 		// 終了ボタン
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }

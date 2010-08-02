@@ -140,7 +140,7 @@ public class StateConfigGameTuning extends BasicGameState {
 			NullpoMinoSlick.saveScreenShot(container, g);
 			ssflag = false;
 		}
-		NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
@@ -220,5 +220,7 @@ public class StateConfigGameTuning extends BasicGameState {
 
 		// 終了ボタン
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }
