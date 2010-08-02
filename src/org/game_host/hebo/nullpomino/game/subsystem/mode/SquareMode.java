@@ -720,7 +720,10 @@ public class SquareMode extends DummyMode {
 		outlinetype = prop.getProperty("square.outlinetype", 0);
 		tspinEnableType = prop.getProperty("square.tspinEnableType", 2);
 		tntAvalanche = prop.getProperty("square.tntAvalanche", false);
-		grayoutEnable = prop.getProperty("square.grayoutEnable", 2);
+		if (version == 0)
+			grayoutEnable = prop.getProperty("square.grayoutEnable", false) ? 2 : 0;
+		else
+			grayoutEnable = prop.getProperty("square.grayoutEnable", 2);
 		version = prop.getProperty("square.version", 0);
 	}
 
