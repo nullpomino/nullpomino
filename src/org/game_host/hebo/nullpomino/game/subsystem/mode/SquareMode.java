@@ -479,7 +479,7 @@ public class SquareMode extends DummyMode {
 				avalanche(engine, playerID, lines);
 			return;
 		}
-		
+
 		// Line clear bonus
 		int pts = lines;
 
@@ -514,7 +514,7 @@ public class SquareMode extends DummyMode {
 	private void avalanche(GameEngine engine, int playerID, int lines) {
 		Field field = engine.field;
 		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
-		
+
 		int hiddenHeight = field.getHiddenHeight();
 		int height = field.getHeight();
 		boolean[] affectY = new boolean[height+hiddenHeight];
@@ -524,7 +524,7 @@ public class SquareMode extends DummyMode {
 		if (field.getLineFlag(minY))
 			for (int i = minY+hiddenHeight; i >= 0; i--)
 				affectY[i] = true;
-		
+
 		int testY = minY+1;
 
 		while (!field.getLineFlag(testY) && testY < height)
@@ -550,8 +550,9 @@ public class SquareMode extends DummyMode {
 					}
 				}
 			}
-			else
+			else if(tntAvalanche)
 			{
+				// Set anti-gravity when TNT avalanche is used
 				for(int x = 0; x < field.getWidth(); x++) {
 					Block blk = field.getBlock(x, y);
 					if((blk != null) && !blk.isEmpty()) {
@@ -570,7 +571,7 @@ public class SquareMode extends DummyMode {
 		// Set cascade flag
 		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
 	}
-	
+
 	/**
 	 * Old T-Spin avalanche routine.
 	 * @param engine GameEngine
