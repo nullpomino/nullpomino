@@ -1009,9 +1009,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			if(engine.b2b) {
 				lastb2b[playerID] = true;
 
-				//If the Separate B2B Chunk feature is enabled, don't add the points yet.
-				//A second Garbage Entry will be added when the "attack" message is received.
-				if((pts > 0) && (!currentRoomInfo.b2bChunk)) {
+				if(pts > 0) {
 					if((attackLineIndex == LINE_ATTACK_INDEX_TTRIPLE) && (!engine.useAllSpinBonus))
 						pts += 2;
 					else
@@ -2217,7 +2215,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 			// 攻撃
 			if(message[3].equals("attack")) {
-				int pts = Integer.parseInt(message[4]);
+				int pts = Integer.parseInt(message[4]);				
 				lastevent[playerID] = Integer.parseInt(message[5]);
 				lastb2b[playerID] = Boolean.parseBoolean(message[6]);
 				lastcombo[playerID] = Integer.parseInt(message[7]);
@@ -2228,14 +2226,19 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (pts > 0) && (!isPractice) && (!isNewcomer) &&
 				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || !playerTeams[0].equalsIgnoreCase(playerTeams[playerID])) )
 				{
-					GarbageEntry garbageEntry = new GarbageEntry(pts, playerID, uid);
-					garbageEntries.add(garbageEntry);
-					
+					int secondAdd = 0;
 					if((lastb2b[playerID]) && (currentRoomInfo.b2bChunk)){ //Add a separate garbage entry if the separate b2b option is enabled.
 						if((lastevent[playerID] == EVENT_TSPIN_TRIPLE) && (currentRoomInfo.tspinEnableType != 2)) //Case for TST with All Spin disabled
-							garbageEntry = new GarbageEntry(2, playerID, uid);
+							secondAdd = 2;
 						else
-							garbageEntry = new GarbageEntry(1, playerID, uid);
+							secondAdd = 1;
+					}
+					
+					GarbageEntry garbageEntry = new GarbageEntry(pts - secondAdd, playerID, uid);
+					garbageEntries.add(garbageEntry);
+					
+					if(secondAdd > 0){
+						garbageEntry = new GarbageEntry(secondAdd, playerID, uid);
 						garbageEntries.add(garbageEntry);
 					}
 					
