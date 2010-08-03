@@ -164,7 +164,7 @@ public class PhysicianVSMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "PHYSICIAN VS-BATTLE (BETA)";
+		return "PHYSICIAN VS-BATTLE (RC1)";
 	}
 
 	/*

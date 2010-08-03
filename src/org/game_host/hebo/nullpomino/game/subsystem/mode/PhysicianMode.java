@@ -102,15 +102,12 @@ public class PhysicianMode extends DummyMode {
 	/** Number gem blocks cleared in current chain */
 	private int gemsClearedChainTotal;
 
-	/** Set to true to show debug information */
-	private static final boolean DEBUG_ON = false;
-
 	/*
 	 * モード名
 	 */
 	@Override
 	public String getName() {
-		return "PHYSICIAN (BETA)";
+		return "PHYSICIAN (RC1)";
 	}
 
 	/*
@@ -253,7 +250,6 @@ public class PhysicianMode extends DummyMode {
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
@@ -263,9 +259,6 @@ public class PhysicianMode extends DummyMode {
 		setSpeed(engine);
 	}
 
-	/*
-	 * スコア表示
-	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "PHYSICIAN", EventReceiver.COLOR_DARKBLUE);
@@ -290,16 +283,9 @@ public class PhysicianMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 4, strScore);
 
 			receiver.drawScoreFont(engine, playerID, 0, 6, "REST", EventReceiver.COLOR_BLUE);
-			int rest = 0;
 			if (engine.field != null)
-				rest = engine.field.getHowManyGems();
-			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(rest));
-
-			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
-			
-			if (DEBUG_ON && engine.field != null)
 			{
+				receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(engine.field.getHowManyGems()));
 				int red = 0, yellow = 0, blue = 0;
 				for (int y = 0; y < engine.field.getHeight(); y++)
 					for (int x = 0; x < engine.field.getWidth(); x++)
@@ -312,11 +298,15 @@ public class PhysicianMode extends DummyMode {
 						else if (blockColor == Block.BLOCK_COLOR_GEM_YELLOW)
 							yellow++;
 					}
-				receiver.drawScoreFont(engine, playerID, 0, 15, "COLOR COUNTS", EventReceiver.COLOR_BLUE);
-				receiver.drawScoreFont(engine, playerID, 0, 16, String.valueOf(red), EventReceiver.COLOR_RED);
-				receiver.drawScoreFont(engine, playerID, 3, 16, String.valueOf(yellow), EventReceiver.COLOR_YELLOW);
-				receiver.drawScoreFont(engine, playerID, 6, 16, String.valueOf(blue), EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 0, 8, "(");
+				receiver.drawScoreFont(engine, playerID, 1, 8, String.valueOf(red), EventReceiver.COLOR_RED);
+				receiver.drawScoreFont(engine, playerID, 4, 8, String.valueOf(yellow), EventReceiver.COLOR_YELLOW);
+				receiver.drawScoreFont(engine, playerID, 7, 8, String.valueOf(blue), EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 9, 8, ")");
 			}
+
+			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
 		}
 	}
 
@@ -333,6 +323,7 @@ public class PhysicianMode extends DummyMode {
 			else if (hoverBlocks >= 72) minY = 4;
 			else if (hoverBlocks >= 64) minY = 5;
 			engine.field.addRandomHoverBlocks(engine, hoverBlocks, HOVER_BLOCK_COLORS, minY, true);
+			engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 		}
 		return false;
 	}
