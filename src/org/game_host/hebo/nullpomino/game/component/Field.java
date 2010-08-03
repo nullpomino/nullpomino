@@ -32,6 +32,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.tetrisconcept.poochy.nullpomino.ai.PoochyBot;
+
+import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.play.GameEngine;
 import org.game_host.hebo.nullpomino.util.CustomProperties;
 
@@ -39,6 +42,8 @@ import org.game_host.hebo.nullpomino.util.CustomProperties;
  * ゲームフィールド
  */
 public class Field implements Serializable {
+	/** ログ */
+	static Logger log = Logger.getLogger(PoochyBot.class);
 
 	/** シリアルバージョンID */
 	private static final long serialVersionUID = 7745183278794213487L;
@@ -2498,6 +2503,11 @@ public class Field implements Serializable {
 		int placeHeight = height-minY;
 		int placeSize = placeHeight * width;
 		boolean[][] placeBlock = new boolean[width][placeHeight];
+		int[] colorCounts = new int[colors.length];
+		for (int i = 0; i < colorCounts.length; i++)
+			colorCounts[i] = 0;
+		
+		int blockColor;
 		if (count < (placeSize >> 1))
 		{
 			int colorShift = colorRand.nextInt(colors.length);
@@ -2513,7 +2523,9 @@ public class Field implements Serializable {
 					i--;
 				else
 				{
-					addHoverBlock(x, y+minY, colors[((i+colorShift)%colors.length)]);
+					blockColor = ((i+colorShift)%colors.length);
+					colorCounts[blockColor]++;
+					addHoverBlock(x, y+minY, colors[blockColor]);
 					placeBlock[x][y] = true;
 				}
 			}
@@ -2536,11 +2548,15 @@ public class Field implements Serializable {
 			for (y = 0; y < placeHeight; y++)
 				for (x = 0; x < width; x++)
 					if (placeBlock[x][y])
-						addHoverBlock(x, y+minY, colors[colorRand.nextInt(colors.length)]);
+					{
+						blockColor = colorRand.nextInt(colors.length);
+						colorCounts[blockColor]++;
+						addHoverBlock(x, y+minY, colors[blockColor]);
+					}
 		}
 		if (!avoidLines || colors.length == 1)
 			return;
-		int colorUp, colorLeft, blockColor;
+		int colorUp, colorLeft, cIndex;
 		for (int y = minY; y < height; y++)
 			for (int x = 0; x < width; x++)
 				if (placeBlock[x][y-minY])
@@ -2550,24 +2566,161 @@ public class Field implements Serializable {
 					blockColor = getBlockColor(x, y);
 					if (blockColor != colorUp && blockColor != colorLeft)
 						continue;
+					
+					cIndex = -1;
+					for (int i = 0; i < colorCounts.length; i++)
+						if (colors[i] == blockColor)
+						{
+							cIndex = i;
+							break;
+						}
+					
 					if (colors.length == 2)
 					{
 						if ((colors[0] == colorUp && colors[1] != colorLeft) ||
 								(colors[0] == colorLeft && colors[1] != colorUp))
+						{
+							colorCounts[1]++;
+							colorCounts[cIndex]--;
 							setBlockColor(x, y, colors[1]);
+						}
 						else if ((colors[1] == colorUp && colors[0] != colorLeft) ||
 								(colors[1] == colorLeft && colors[0] != colorUp))
+						{
+							colorCounts[0]++;
+							colorCounts[cIndex]--;
 							setBlockColor(x, y, colors[0]);
+						}
 					}
 					else
 					{
-						int color;
+						int newColor;
 						do {
-							color = colors[colorRand.nextInt(colors.length)];
-						} while (color == colorUp || color == colorLeft);
-						setBlockColor(x, y, color);
+							newColor = colorRand.nextInt(colors.length);
+						} while (colors[newColor] == colorUp || colors[newColor] == colorLeft);
+						colorCounts[cIndex]--;
+						colorCounts[newColor]++;
+						setBlockColor(x, y, colors[newColor]);
 					}
 				}
+		boolean[] canSwitch = new boolean[colors.length];
+		int minCount = count/colors.length;
+		int maxCount = (count+colors.length-1)/colors.length;
+		boolean done = true;
+		for (int i = 0; i < colorCounts.length; i++)
+			if (colorCounts[i] > maxCount)
+			{
+				done = false;
+				break;
+			}
+		int colorSide, bestSwitch, bestSwitchCount;
+		int excess = 0;
+		boolean fill = false;
+		while (!done)
+		{
+			done = true;
+			for (int y = minY; y < height; y++)
+				for (int x = 0; x < width; x++)
+				{
+					blockColor = getBlockColor(x, y);
+					fill = blockColor == Block.BLOCK_COLOR_NONE;
+					cIndex = -1;
+					if (!fill)
+					{
+						for (int i = 0; i < colorCounts.length; i++)
+							if (colors[i] == blockColor)
+							{
+								cIndex = i;
+								break;
+							}
+						if (cIndex == -1)
+							continue;
+						if (colorCounts[cIndex] <= maxCount)
+							continue;
+					}
+					for (int i = 0; i < colorCounts.length; i++)
+						canSwitch[i] = colorCounts[i] < maxCount;
+	
+					colorSide = getBlockColor(x, y-2);
+					for (int i = 0; i < colors.length; i++)
+						if (colors[i] == colorSide)
+						{
+							canSwitch[i] = false;
+							break;
+						}
+					colorSide = getBlockColor(x, y+2);
+					for (int i = 0; i < colors.length; i++)
+						if (colors[i] == colorSide)
+						{
+							canSwitch[i] = false;
+							break;
+						}
+					colorSide = getBlockColor(x-2, y);
+					for (int i = 0; i < colors.length; i++)
+						if (colors[i] == colorSide)
+						{
+							canSwitch[i] = false;
+							break;
+						}
+					colorSide = getBlockColor(x+2, y);
+					for (int i = 0; i < colors.length; i++)
+						if (colors[i] == colorSide)
+						{
+							canSwitch[i] = false;
+							break;
+						}
+					bestSwitch = -1;
+					bestSwitchCount = Integer.MAX_VALUE;
+					for (int i = 0; i < colorCounts.length; i++)
+						if (canSwitch[i] && colorCounts[i] < bestSwitchCount)
+						{
+							bestSwitch = i;
+							bestSwitchCount = colorCounts[i];
+						}
+					if (bestSwitch != -1)
+					{
+						if (fill)
+						{
+							excess++;
+							addHoverBlock(x, y, colors[bestSwitch]);
+						}
+						else
+						{
+							colorCounts[cIndex]--;
+							setBlockColor(x, y, colors[bestSwitch]);
+						}
+						colorCounts[bestSwitch]++;
+						done = false;
+					}
+				}
+			while (excess > 0)
+			{
+				int x = posRand.nextInt(width);
+				int y = posRand.nextInt(placeHeight)+minY;
+				blockColor = getBlockColor(x, y);
+				for (int i = 0; i < colors.length; i++)
+					if (colors[i] == blockColor)
+					{
+						if (colorCounts[i] > minCount)
+						{
+							setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+							colorCounts[i]--;
+							excess--;
+						}
+						break;
+					}
+				
+			}
+			boolean balanced = true;
+			for (int i = 0; i < colorCounts.length; i++)
+				if (colorCounts[i] > maxCount)
+				{
+					balanced = false;
+					break;
+				}
+			if (balanced)
+				done = true;
+		}
 	}
 	public boolean addHoverBlock(int x, int y, int color)
 	{

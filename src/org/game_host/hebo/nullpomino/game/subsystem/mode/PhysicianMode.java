@@ -102,6 +102,9 @@ public class PhysicianMode extends DummyMode {
 	/** Number gem blocks cleared in current chain */
 	private int gemsClearedChainTotal;
 
+	/** Set to true to show debug information */
+	private static final boolean DEBUG_ON = false;
+
 	/*
 	 * モード名
 	 */
@@ -294,6 +297,26 @@ public class PhysicianMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
+			
+			if (DEBUG_ON && engine.field != null)
+			{
+				int red = 0, yellow = 0, blue = 0;
+				for (int y = 0; y < engine.field.getHeight(); y++)
+					for (int x = 0; x < engine.field.getWidth(); x++)
+					{
+						int blockColor = engine.field.getBlockColor(x, y);
+						if (blockColor == Block.BLOCK_COLOR_GEM_BLUE)
+							blue++;
+						else if (blockColor == Block.BLOCK_COLOR_GEM_RED)
+							red++;
+						else if (blockColor == Block.BLOCK_COLOR_GEM_YELLOW)
+							yellow++;
+					}
+				receiver.drawScoreFont(engine, playerID, 0, 15, "COLOR COUNTS", EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 0, 16, String.valueOf(red), EventReceiver.COLOR_RED);
+				receiver.drawScoreFont(engine, playerID, 3, 16, String.valueOf(yellow), EventReceiver.COLOR_YELLOW);
+				receiver.drawScoreFont(engine, playerID, 6, 16, String.valueOf(blue), EventReceiver.COLOR_BLUE);
+			}
 		}
 	}
 
