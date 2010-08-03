@@ -2545,14 +2545,8 @@ public class Field implements Serializable {
 			for (int x = 0; x < width; x++)
 				if (placeBlock[x][y-minY])
 				{
-					colorUp = getBlockColor(x, y-1);
-					int test = getBlockColor(x, y-2);
-					if (colorUp != test || colorUp == Block.BLOCK_COLOR_NONE)
-						colorUp = -1;
-					colorLeft = getBlockColor(x-1, y);
-					test = getBlockColor(x-2, y);
-					if (colorLeft != test || colorLeft == Block.BLOCK_COLOR_NONE)
-						colorLeft = -1;
+					colorUp = getBlockColor(x, y-2);
+					colorLeft = getBlockColor(x-2, y);
 					blockColor = getBlockColor(x, y);
 					if (blockColor != colorUp && blockColor != colorLeft)
 						continue;

@@ -76,7 +76,7 @@ public class AvalancheVSMode extends DummyMode {
 	/** Names of ojama counter settings */
 	private final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
 
-	/** Zenkeshi  setting constants */
+	/** Zenkeshi setting constants */
 	private final int ZENKESHI_MODE_OFF = 0, ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
 
 	/** Names of zenkeshi settings */
