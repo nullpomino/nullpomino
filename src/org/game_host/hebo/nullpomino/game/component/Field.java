@@ -2496,7 +2496,14 @@ public class Field implements Serializable {
 		return false;
 	}
 
-	public void addRandomHoverBlocks(GameEngine engine, int count, int[] colors, int minY, boolean avoidLines)
+	public void addRandomHoverBlocks(GameEngine engine, int count, int[] colors, int minY,
+			boolean avoidLines)
+	{
+		addRandomHoverBlocks(engine, count, colors, minY, avoidLines, false);
+	}
+
+	public void addRandomHoverBlocks(GameEngine engine, int count, int[] colors, int minY,
+			boolean avoidLines, boolean flashMode)
 	{
 		Random posRand = new Random(engine.random.nextLong());
 		Random colorRand = new Random(engine.random.nextLong());
@@ -2627,6 +2634,8 @@ public class Field implements Serializable {
 					cIndex = -1;
 					if (!fill)
 					{
+						if (!placeBlock[x][y-minY])
+							continue;
 						for (int i = 0; i < colorCounts.length; i++)
 							if (colors[i] == blockColor)
 							{
@@ -2683,6 +2692,7 @@ public class Field implements Serializable {
 						{
 							excess++;
 							addHoverBlock(x, y, colors[bestSwitch]);
+							placeBlock[x][y-minY] = true;
 						}
 						else
 						{
@@ -2697,6 +2707,8 @@ public class Field implements Serializable {
 			{
 				int x = posRand.nextInt(width);
 				int y = posRand.nextInt(placeHeight)+minY;
+				if (!placeBlock[x][y-minY])
+					continue;
 				blockColor = getBlockColor(x, y);
 				for (int i = 0; i < colors.length; i++)
 					if (colors[i] == blockColor)
@@ -2706,10 +2718,10 @@ public class Field implements Serializable {
 							setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 							colorCounts[i]--;
 							excess--;
+							placeBlock[x][y-minY] = false;
 						}
 						break;
 					}
-				
 			}
 			boolean balanced = true;
 			for (int i = 0; i < colorCounts.length; i++)
@@ -2720,6 +2732,42 @@ public class Field implements Serializable {
 				}
 			if (balanced)
 				done = true;
+		}
+		if (!flashMode)
+			return;
+		done = true;
+		boolean[] gemNeeded = new boolean[colors.length];
+		for (int i = 0; i < colors.length; i++)
+		{
+			if (colors[i] >= 2 && colors[i] <= 8 && colorCounts[i] > 0)
+			{
+				gemNeeded[i] = true;
+				done = false;
+			}
+			else
+				gemNeeded[i] = false;
+		}
+		while (!done)
+		{
+			int x = posRand.nextInt(width);
+			int y = posRand.nextInt(placeHeight)+minY;
+			if (!placeBlock[x][y-minY])
+				continue;
+			blockColor = getBlockColor(x, y);
+			for (int i = 0; i < colors.length; i++)
+				if (colors[i] == blockColor)
+				{
+					if (gemNeeded[i])
+					{
+						setBlockColor(x, y, blockColor+7);
+						gemNeeded[i] = false;
+					}
+					break;
+				}
+			done = true;
+			for (int i = 0; i < colors.length; i++)
+				if (gemNeeded[i])
+					done = false;
 		}
 	}
 	public boolean addHoverBlock(int x, int y, int color)

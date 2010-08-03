@@ -671,8 +671,7 @@ public class PhysicianVSMode extends DummyMode {
 				else if (hoverBlocks[playerID] >= 64) minY = 5;
 				if (flash[playerID])
 				{
-					engine.field.addRandomHoverBlocks(engine, 3, HOVER_BLOCK_COLORS, minY, true);
-					engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], BLOCK_COLORS, minY, true);
+					engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], BLOCK_COLORS, minY, true, true);
 					engine.field.setAllSkin(12);
 				}
 				else
