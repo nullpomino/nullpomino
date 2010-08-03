@@ -146,15 +146,14 @@ STANDARD-EXP     : Soft and hard drop behavior is reversed in this rule.
 STANDARD-FAST    : Suitable for fast game play.
 STANDARD-FAST-B  : Suitable for fast game play. Initial actions (initial rotation/hold) is less detected in this rule.
 STANDARD-FRIENDS : Pieces will spawn one space lower than usual, unless that space is occupied.
-StandardGiza     : hebo-MAI's rule. This rule is not too fast; giving you the opportunity to see the opponent's field in VS game.
+STANDARD-GIZA    : hebo-MAI's rule. This rule is not too fast; giving you the opportunity to see the opponent's field in VS game.
 STANDARD-HARD    : Difficult than normal STANDARD rule.
 STANDARD-HARD128 : Slightly easier variant of STANDARD-HARD rule. You can move/rotate the piece 128 times.
 STANDARD-HOLDNEXT: A rule created by holdnext. Enjoy the power of orange sticks.
 STANDARD-J       : This variant has slow movements, nothing more than that.
 STANDARD-PLUS    : A rule created by Blink. STANDARD-FAST with no line clear delay, and faster softdrop.
 STANDARD-SUPER3  : A classical rule with the rotation system of STANDARD rules but no wallkicks.
-STANDARD-ZERO    : This is harddrop.com official rule.
-                   A rule created by Wojtek. STANDARD-PLUS with no IHS and no IRS and 20G softdrop.
+STANDARD-ZERO    : A rule created by Wojtek. STANDARD-PLUS with 20G Soft Drop and Instant DAS.
 
 6. Game mode
 MARATHON
