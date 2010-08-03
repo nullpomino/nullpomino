@@ -1950,7 +1950,7 @@ public class Field implements Serializable {
 				if (clear >= size)
 				{
 					total += clear;
-					clearColor(j, i, true, garbageClear, true, ignoreHidden);
+					clearColor(j, i, false, garbageClear, true, ignoreHidden);
 				}
 			}
 		}
@@ -2054,6 +2054,35 @@ public class Field implements Serializable {
 				 + clearColor(x, y-1, targetColor, flag, garbageClear, gemSame, ignoreHidden);
 	}
 
+	/**
+	 * Clears all blocks of the same color
+	 * @param targetColor The color to clear
+	 * @param flag <code>true</code> to set BLOCK_ATTRIBUTE_ERASE to true on cleared blocks.
+	 * @param gemSame <code>true</code> to check gem blocks
+	 * @return The number of blocks cleared.
+	 */
+	public int allClearColor (int targetColor, boolean flag, boolean gemSame)
+	{
+		if (targetColor < 0)
+			return 0;
+		if (flag)
+			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
+		if (gemSame && targetColor >= 9 && targetColor <= 15)
+			targetColor -= 7;
+		int total = 0;
+		for (int y = (-1 * hidden_height); y < height; y++)
+			for (int x = 0; x < width; x++)
+				if (getBlockColor(x, y, gemSame) == targetColor)
+				{
+					total++;
+					if (flag)
+						getBlock(x, y).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+					else
+						setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+				}
+		return total;
+	}
+	
 	/**
 	 * Main routine for cascade gravity.
 	 * @return <code>true</code> if something falls. <code>false</code> if nothing falls.
@@ -2813,5 +2842,28 @@ public class Field implements Serializable {
 				if (temp >= 0 && temp < maxX)
 					setBlockColor(x, y, blockColors[temp]);
 			}
+	}
+
+	public int gemColorCheck(int size, boolean flag, boolean garbageClear, boolean ignoreHidden) {
+		Field temp = new Field(this);
+		int total = 0;
+		Block b;
+
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			for(int j = 0; j < width; j++) {
+				b = getBlock(j, i);
+				if (b == null)
+					continue;
+				if (!b.isGemBlock())
+					continue;
+				int clear = temp.clearColor(j, i, false, garbageClear, true, ignoreHidden);
+				if (clear >= size)
+				{
+					total += clear;
+					clearColor(j, i, true, garbageClear, true, ignoreHidden);
+				}
+			}
+		}
+		return total;
 	}
 }

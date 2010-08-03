@@ -114,7 +114,7 @@ public class GameEngine {
 	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1;
 
 	/** Clear mode settings */
-	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2;
+	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2, CLEAR_GEM_COLOR = 3;
 
 	/** Table for color-block item */
 	public static final int[] ITEM_COLOR_BRIGHT_TABLE =
@@ -2411,6 +2411,8 @@ public class GameEngine {
 					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden);
 				else if (clearMode == CLEAR_LINE_COLOR)
 					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor);
+				else if (clearMode == CLEAR_GEM_COLOR)
+					lineClearing = field.gemColorCheck(colorClearSize, false, garbageColorClear, ignoreHidden);
 				chain = 0;
 				lineGravityTotalLines = 0;
 
@@ -2551,6 +2553,8 @@ public class GameEngine {
 			// Set line color clear flags
 			else if (clearMode == CLEAR_LINE_COLOR)
 				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals, gemSameColor);
+			else if (clearMode == CLEAR_GEM_COLOR)
+				lineClearing = field.gemColorCheck(colorClearSize, true, garbageColorClear, ignoreHidden);
 
 			// ライン数を決める
 			int li = lineClearing;
@@ -2643,7 +2647,7 @@ public class GameEngine {
 						}
 					}
 				}
-			} else if (clearMode == CLEAR_LINE_COLOR || clearMode == CLEAR_COLOR)
+			} else if (clearMode == CLEAR_LINE_COLOR || clearMode == CLEAR_COLOR || clearMode == CLEAR_GEM_COLOR)
 				for(int i = 0; i < field.getHeight(); i++) {
 					for(int j = 0; j < field.getWidth(); j++) {
 						Block blk = field.getBlock(j, i);
@@ -2663,6 +2667,8 @@ public class GameEngine {
 				field.clearColor(colorClearSize, garbageColorClear, gemSameColor, ignoreHidden);
 			else if (clearMode == CLEAR_LINE_COLOR)
 				field.clearLineColor(colorClearSize, lineColorDiagonals, gemSameColor);
+			else if (clearMode == CLEAR_GEM_COLOR)
+				lineClearing = field.gemClearColor(colorClearSize, garbageColorClear, ignoreHidden);
 		}
 
 		// ラインを1段落とす
@@ -2704,7 +2710,8 @@ public class GameEngine {
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
 						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden) > 0) ||
-						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0)) {
+						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0) || 
+						((clearMode == CLEAR_GEM_COLOR) && field.gemColorCheck(colorClearSize, false, garbageColorClear, ignoreHidden) > 0)) {
 					tspin = false;
 					tspinmini = false;
 					chain++;
