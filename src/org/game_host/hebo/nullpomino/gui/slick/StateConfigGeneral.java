@@ -163,7 +163,7 @@ public class StateConfigGeneral extends BasicGameState {
 		outlineghost = prop.getProperty("option.outlineghost", false);
 		sidenext = prop.getProperty("option.sidenext", false);
 		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
-		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", true);
+		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
 	}
 
 	/**
