@@ -1,5 +1,5 @@
 NullpoMino
-Version 7.2.0
+Version 7.3.0
 
 1. What is this?
 A falling block puzzle game using Java.
@@ -30,28 +30,37 @@ Linux:
 	First, open a X-terminal emulator. Next, navigate to the folder where the archive was extracted.
 	(Use "ls" and "cd" command to navigate the folder)
 
-	Finally, enter the following command then press return key (all in one line):
+	Finally, enter the following commands:
 
 	To start Swing version:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.gui.swing.NullpoMinoSwing
+chmod +x play_swing
+./play_swing
 
 	To start Slick version:
-XMODIFIERS=@im=none java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib/jorbis-0.0.15.jar:lib/jogg-0.0.7.jar:lib/ibxm.jar:lib/jinput.jar -Djava.library.path=lib org.game_host.hebo.nullpomino.gui.slick.NullpoMinoSlick
+chmod +x play_slick
+./play_slick
 
 	To start SDL version:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/sdljava.jar -Djava.library.path=lib org.game_host.hebo.nullpomino.gui.sdl.NullpoMinoSDL
+chmod +x play_sdl
+./play_sdl
 
 	To start rule editor:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.tool.ruleeditor.RuleEditor
+chmod +x ruleeditor
+./ruleeditor
 
 	To start Sequence Viewer:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.tool.sequencer.Sequencer
+chmod +x sequencer
+./sequencer
 
 	To start MusicListEditor:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.tool.musiclisteditor.MusicListEditor
+chmod +x musiclisteditor
+./musiclisteditor
 
 	To start NetServer:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer
+chmod +x netserver
+./netserver
+
+	Note: You don't have to execute chmod command from 2nd time.
 
 	Depending on your video card and Linux version, you might encounter small or big problems.
 
@@ -61,7 +70,7 @@ java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.gam
 
 	Slick version problems:
 		Turn off 3D desktop (such as Beryl) to run smoother.
-		In the command line, "XMODIFIERS=@im=none" is not needed if your system don't have SCIM.
+		In the "play_slick" shell script, "XMODIFIERS=@im=none" is not needed if your system don't have SCIM.
 
 	SDL version problems:
 		If you tried SDL version but it didn't work, you need to manually install libsdl.
@@ -285,8 +294,7 @@ List of what you can't do & Known problems:
 	* No ID/Password system
 	* No rating system
 	* No password protected rooms
-	* Does not keep track your amount of wins
-	* No piece preview for opponents in any-rule games
+	* Does not completely keep track your amount of wins
 	* No chat flooding protection
 	* No ignorelist/banlist
 	* It has bad lobby GUI
@@ -343,17 +351,8 @@ java -cp NullpoMino.jar;lib\log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.
 java -cp NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer [PORT NUMBER]
 
 9. FAQ
-Q: I'm using 64bit Windows, but Slick version doesn't work.
-A: Please copy all files inside lib/LWJGL2_4_2 to lib directory.
-   It will update LWJGL to most-recent 2.4.2 version, which has better 64bit support.
-   However, this may cause problems to 32bit Windows.
-
 Q: All pieces are gray in color and it has no wallkicks.
 A: You are using "Default Rule" which has this behavior. Try switching to different one.
-
-Q: Game runs too fast in Slick version.
-A: Try switching "FRAMERATE MODE" option (General Config screen) to CUSTOM (SDL&SWING).
-   Changing VSYNC and/or SMOOTH DELTAS options may also help.
 
 Q: My Joystick/Gamepads doesn't work correctly in Slick version.
 A: Try changing "JOYSTICK METHOD" option (General Config screen) to LWGJL, then let's mess around "JOYSTICK SETTING" options.
@@ -373,6 +372,17 @@ NullpoMino created by:
 	Zircean
 	Poochy
 	Wojtek (aka dodd)
+	olivier.vidal1 (better known as Spirale)
+	kitaru2004
+	Shrapnel.City (aka Pineapple)
+	vic7070
+	myndzi
+	nightmareci
+	johnwchadwick
+	prelude234 (aka awake)
+
+	See also "People" section of Google Code project page:
+	http://code.google.com/p/nullpomino/people/list
 
 This game used the following tools, libraries and materials.
 Thank you on this occasion.
@@ -441,6 +451,9 @@ http://code.google.com/p/nullpomino/
 
 12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
+
+Version 7.3.0 (????/??/??)
+[TODO: Add changelog here]
 
 Version 7.2.0 (2010/06/19)
 #This version is NO LONGER compatible with 7.1.* netplay server.
@@ -803,12 +816,10 @@ First version.
 More features and fixes for Netplay
  * Fix CPU 100% bug of NetServer
  * Reduce RAM usage
- * Win count for every players
  * More room customize features
    (Garbage pattern options, and more...)
  * Detect disconnected players from server-side
  * Replay support
- * Piece preview for opponents in no-rule-lock games
  * Manage the lag
  * Password protected rooms
  * ID/Password and rating system or something like that

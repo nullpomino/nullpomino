@@ -36,90 +36,90 @@ import org.game_host.hebo.nullpomino.game.subsystem.mode.GameMode;
 import org.game_host.hebo.nullpomino.util.CustomProperties;
 
 /**
- * ゲーム状態の管理
+ * GameManager: The container of the game
  */
 public class GameManager {
-	/** ログ */
+	/** Log (Apache log4j) */
 	static Logger log = Logger.getLogger(GameManager.class);
 
-	/** メジャーバージョン */
+	/** Major version */
 	public static final float VERSION_MAJOR = 7.3f;
 
-	/** マイナーバージョン */
+	/** Minor version */
 	public static final int VERSION_MINOR = 0;
 
-	/** ゲームモード */
+	/** Game Mode */
 	public GameMode mode;
 
-	/** モードが保存する設定データのプロパティセット */
+	/** Properties used by game mode */
 	public CustomProperties modeConfig;
 
-	/** リプレイが格納されるプロパティセット */
+	/** Properties for replay file */
 	public CustomProperties replayProp;
 
-	/** リプレイならtrue */
+	/** true if replay mode */
 	public boolean replayMode;
 
-	/** リプレイ追記モード */
+	/** true if replay rerecording */
 	public boolean replayRerecord;
 
-	/** メニューだけ表示する（ゲーム画面を表示しない） */
+	/** true if display menus only (No game screens) */
 	public boolean menuOnly;
 
-	/** 描画などのイベント処理 */
+	/** EventReceiver: Manages various events, and renders everything to the screen */
 	public EventReceiver receiver;
 
-	/** BGMの状態 */
+	/** BGMStatus: Manages the status of background music */
 	public BGMStatus bgmStatus;
 
-	/** 背景の状態 */
+	/** BackgroundStatus: Manages the status of background image */
 	public BackgroundStatus backgroundStatus;
 
-	/** 各プレイヤーの状態 */
+	/** GameEngine: This is where the most action takes place */
 	public GameEngine[] engine;
 
 	/**
-	 * メジャーバージョンを取得
-	 * @return メジャーバージョン
+	 * Get major version
+	 * @return Major version
 	 */
 	public static float getVersionMajor() {
 		return VERSION_MAJOR;
 	}
 
 	/**
-	 * マイナーバージョンを取得
-	 * @return マイナーバージョン
+	 * Get minor version
+	 * @return Minor version
 	 */
 	public static int getVersionMinor() {
 		return VERSION_MINOR;
 	}
 
 	/**
-	 * マイナーバージョンを取得(旧バージョンとの互換用)
-	 * @return マイナーバージョン
+	 * Get minor version (For compatibility with old replays)
+	 * @return Minor version
 	 */
 	public static float getVersionMinorOld() {
 		return VERSION_MINOR;
 	}
 
 	/**
-	 * バージョンを文字列で取得
-	 * @return バージョンの文字列
+	 * Get version information as String
+	 * @return Version information
 	 */
 	public static String getVersionString() {
 		return VERSION_MAJOR + "." + VERSION_MINOR;
 	}
 
 	/**
-	 * パラメータなしコンストラクタ
+	 * Default constructor
 	 */
 	public GameManager() {
 		log.debug("GameManager constructor called");
 	}
 
 	/**
-	 * 通常のコンストラクタ
-	 * @param receiver 描画などのイベント処理
+	 * Normal constructor
+	 * @param receiver EventReceiver
 	 */
 	public GameManager(EventReceiver receiver) {
 		this();
@@ -127,7 +127,7 @@ public class GameManager {
 	}
 
 	/**
-	 * 初期化
+	 * Initialize the game
 	 */
 	public void init() {
 		log.debug("GameManager init()");
@@ -158,7 +158,7 @@ public class GameManager {
 	}
 
 	/**
-	 * ゲームのリセット
+	 * Reset the game
 	 */
 	public void reset() {
 		log.debug("GameManager reset()");
@@ -171,7 +171,7 @@ public class GameManager {
 	}
 
 	/**
-	 * 終了処理
+	 * Shutdown the game
 	 */
 	public void shutdown() {
 		log.debug("GameManager shutdown()");
@@ -194,16 +194,16 @@ public class GameManager {
 	}
 
 	/**
-	 * プレイヤー人数を取得
-	 * @return プレイヤー人数
+	 * Get number of players
+	 * @return Number of players
 	 */
 	public int getPlayers() {
 		return engine.length;
 	}
 
 	/**
-	 * どれかのゲームエンジンで終了フラグが立っているかどうか判定
-	 * @return どれかのゲームエンジンで終了フラグが立っているとtrue
+	 * Check if quit flag is true in any GameEngine object
+	 * @return true if the game should quit
 	 */
 	public boolean getQuitFlag() {
 		if(engine != null) {
@@ -217,8 +217,8 @@ public class GameManager {
 	}
 
 	/**
-	 * どれかのゲームエンジンが動作中か判定
-	 * @return どれかのゲームエンジンが動作中ならtrue
+	 * Check if at least 1 game is active
+	 * @return true if there is a active GameEngine
 	 */
 	public boolean isGameActive() {
 		if(engine != null) {
@@ -232,8 +232,8 @@ public class GameManager {
 	}
 
 	/**
-	 * 生き残ったプレイヤーのIDを取得
-	 * @return 生き残ったプレイヤーのID（1人プレイなら-1、引き分けなら-2）
+	 * Get winner ID
+	 * @return Player ID of last survivor. -1 in single player game. -2 in tied game.
 	 */
 	public int getWinner() {
 		if(engine.length < 2) return -1;
@@ -248,7 +248,7 @@ public class GameManager {
 	}
 
 	/**
-	 * 全てのゲームエンジンの状態を更新
+	 * Update every GameEngine
 	 */
 	public void updateAll() {
 		for(int i = 0; i < engine.length; i++) {
@@ -259,7 +259,7 @@ public class GameManager {
 	}
 
 	/**
-	 * 全てのゲームエンジンの描画処理を実行
+	 * Dispatches all render events to EventReceiver
 	 */
 	public void renderAll() {
 		for(int i = 0; i < engine.length; i++) {
@@ -268,7 +268,7 @@ public class GameManager {
 	}
 
 	/**
-	 * リプレイ保存時の処理
+	 * Replay save routine
 	 */
 	public void saveReplay() {
 		replayProp = new CustomProperties();
