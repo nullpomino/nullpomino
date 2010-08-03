@@ -1161,12 +1161,6 @@ public class AvalancheVSMode extends DummyMode {
 		//Reset Fever board if necessary
 		if (inFever[playerID] && cleared[playerID])
 		{
-			if (feverTime[playerID] > 0)
-			{
-				int addTime = (engine.chain-2)*30;
-				if (addTime > 0)
-					feverTime[playerID] += addTime;
-			}
 			int chainShort = feverChainNow - engine.chain;
 			if (chainShort <= 0)
 			{
@@ -1186,11 +1180,18 @@ public class AvalancheVSMode extends DummyMode {
 			}
 			if (feverChain[playerID] < feverChainMin[playerID])
 				feverChain[playerID] = feverChainMin[playerID];
-			loadFeverMap(engine, playerID, feverChain[playerID]);
+			if (feverTime[playerID] > 0)
+			{
+				int addTime = (engine.chain-2)*30;
+				if (addTime > 0)
+					feverTime[playerID] += addTime;
+				loadFeverMap(engine, playerID, feverChain[playerID]);
+			}
 		}
 		//Check to end Fever Mode
 		if (inFever[playerID] && feverTime[playerID] == 0)
 		{
+			engine.playSE("levelup");
 			inFever[playerID] = false;
 			feverTime[playerID] = feverTimeMin[playerID] * 60;
 			feverPoints[playerID] = 0;
@@ -1229,6 +1230,7 @@ public class AvalancheVSMode extends DummyMode {
 		//Check to start Fever Mode
 		if (!inFever[playerID] && feverPoints[playerID] >= feverThreshold[playerID] && feverThreshold[playerID] > 0)
 		{
+			engine.playSE("levelup");
 			inFever[playerID] = true;
 			feverBackupField[playerID] = engine.field;
 			engine.field = null;
