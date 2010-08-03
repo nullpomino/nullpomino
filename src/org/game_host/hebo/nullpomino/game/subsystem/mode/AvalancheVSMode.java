@@ -899,6 +899,7 @@ public class AvalancheVSMode extends DummyMode {
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
 		engine.colorClearSize = big[playerID] ? 12 : 4;
+		engine.ignoreHidden = true;
 
 		engine.tspinAllowKick = false;
 		engine.tspinEnable = false;

@@ -1928,7 +1928,7 @@ public class Field implements Serializable {
 	 * @param garbageClear <code>true</code> to clear garbage blocks adjacent to cleared clusters
 	 * @return Total number of blocks cleared.
 	 */
-	public int gemClearColor (int size, boolean garbageClear)
+	public int gemClearColor (int size, boolean garbageClear, boolean ignoreHidden)
 	{
 		Field temp = new Field(this);
 		int total = 0;
@@ -1941,15 +1941,19 @@ public class Field implements Serializable {
 					continue;
 				if (!b.isGemBlock())
 					continue;
-				int clear = temp.clearColor(j, i, false, garbageClear, true);
+				int clear = temp.clearColor(j, i, false, garbageClear, true, ignoreHidden);
 				if (clear >= size)
 				{
 					total += clear;
-					clearColor(j, i, true, garbageClear, true);
+					clearColor(j, i, true, garbageClear, true, ignoreHidden);
 				}
 			}
 		}
 		return total;
+	}
+	public int gemClearColor (int size, boolean garbageClear)
+	{
+		return gemClearColor(size, garbageClear, false);
 	}
 	/**
 	 * Performs all color clears of sufficient size.
@@ -1958,21 +1962,25 @@ public class Field implements Serializable {
 	 * @param gemSame <code>true</code> to check gem blocks
 	 * @return Total number of blocks cleared.
 	 */
-	public int clearColor (int size, boolean garbageClear, boolean gemSame)
+	public int clearColor (int size, boolean garbageClear, boolean gemSame, boolean ignoreHidden)
 	{
 		Field temp = new Field(this);
 		int total = 0;
-		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+		for(int i = ignoreHidden ? 0 : (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			for(int j = 0; j < width; j++) {
-				int clear = temp.clearColor(j, i, false, garbageClear, gemSame);
+				int clear = temp.clearColor(j, i, false, garbageClear, gemSame, ignoreHidden);
 				if (clear >= size)
 				{
 					total += clear;
-					clearColor(j, i, false, garbageClear, gemSame);
+					clearColor(j, i, false, garbageClear, gemSame, ignoreHidden);
 				}
 			}
 		}
 		return total;
+	}
+	public int clearColor (int size, boolean garbageClear, boolean gemSame)
+	{
+		return clearColor(size, garbageClear, gemSame, false);
 	}
 	/**
 	 * Clears the block at the given position as well as all adjacent blocks of
@@ -1984,7 +1992,8 @@ public class Field implements Serializable {
 	 * @param gemSame <code>true</code> to check gem blocks
 	 * @return The number of blocks cleared.
 	 */
-	public int clearColor (int x, int y, boolean flag, boolean garbageClear, boolean gemSame)
+	public int clearColor (int x, int y, boolean flag, boolean garbageClear, boolean gemSame,
+			boolean ignoreHidden)
 	{
 		if (flag)
 			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
@@ -1997,7 +2006,7 @@ public class Field implements Serializable {
 		if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE))
 			return 0;
 		else
-			return clearColor(x, y, blockColor, flag, garbageClear, gemSame);
+			return clearColor(x, y, blockColor, flag, garbageClear, gemSame, ignoreHidden);
 	}
 	/**
 	 * Note: This method is private because calling it with a targetColor parameter
@@ -2005,8 +2014,11 @@ public class Field implements Serializable {
 	 *       and crash the game. This check is handled by the above public method
 	 *       so as to avoid redundant checks.
 	 */
-	private int clearColor (int x, int y, int targetColor, boolean flag, boolean garbageClear, boolean gemSame)
+	private int clearColor (int x, int y, int targetColor, boolean flag, boolean garbageClear,
+			boolean gemSame, boolean ignoreHidden)
 	{
+		if (ignoreHidden && y < 0)
+			return 0;
 		int blockColor = getBlockColor(x, y, gemSame);
 		if (blockColor == Block.BLOCK_COLOR_INVALID)
 			return 0;
@@ -2031,10 +2043,10 @@ public class Field implements Serializable {
 			b.hard--;
 		else
 			setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
-		return 1 + clearColor(x+1, y, targetColor, flag, garbageClear, gemSame)
-				 + clearColor(x-1, y, targetColor, flag, garbageClear, gemSame)
-				 + clearColor(x, y+1, targetColor, flag, garbageClear, gemSame)
-				 + clearColor(x, y-1, targetColor, flag, garbageClear, gemSame);
+		return 1 + clearColor(x+1, y, targetColor, flag, garbageClear, gemSame, ignoreHidden)
+				 + clearColor(x-1, y, targetColor, flag, garbageClear, gemSame, ignoreHidden)
+				 + clearColor(x, y+1, targetColor, flag, garbageClear, gemSame, ignoreHidden)
+				 + clearColor(x, y-1, targetColor, flag, garbageClear, gemSame, ignoreHidden);
 	}
 
 	/**
@@ -2326,7 +2338,7 @@ public class Field implements Serializable {
 		return str;
 	}
 
-	public int checkColor(int size, boolean flag, boolean garbageClear, boolean gemSame) {
+	public int checkColor(int size, boolean flag, boolean garbageClear, boolean gemSame, boolean ignoreHidden) {
 		Field temp = new Field(this);
 		int total = 0;
 		boolean[] colorsClearedArray = new boolean[7];
@@ -2342,14 +2354,14 @@ public class Field implements Serializable {
 		{
 			for(int j = 0; j < width; j++)
 			{
-				int clear = temp.clearColor(j, i, false, garbageClear, gemSame);
+				int clear = temp.clearColor(j, i, false, garbageClear, gemSame, ignoreHidden);
 				if (clear >= size)
 				{
 					total += clear;
 					if (flag)
 					{
 						int blockColor = getBlockColor(j, i, gemSame);
-						clearColor(j, i, true, garbageClear, gemSame);
+						clearColor(j, i, true, garbageClear, gemSame, ignoreHidden);
 						colorClearExtraCount += clear - size;
 						if (blockColor >= 2 && blockColor <= 8)
 							colorsClearedArray[blockColor-2] = true;

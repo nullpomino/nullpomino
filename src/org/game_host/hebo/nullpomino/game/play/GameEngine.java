@@ -585,6 +585,9 @@ public class GameEngine {
 	
 	/** Delay between landing and checking for clears in cascade */
 	public int cascadeClearDelay;
+	
+	/** If true, color clears will ignore hidden rows */
+	public boolean ignoreHidden;
 
 	/**
 	 * コンストラクタ
@@ -824,6 +827,7 @@ public class GameEngine {
 		clearMode = CLEAR_LINE;
 		colorClearSize = -1;
 		garbageColorClear = false;
+		ignoreHidden = false;
 		connectBlocks = true;
 		lineColorDiagonals = false;
 		blockColors = BLOCK_COLORS_DEFAULT;
@@ -2406,7 +2410,7 @@ public class GameEngine {
 				if (clearMode == CLEAR_LINE)
 					lineClearing = field.checkLineNoFlag();
 				else if (clearMode == CLEAR_COLOR)
-					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor);
+					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden);
 				else if (clearMode == CLEAR_LINE_COLOR)
 					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor);
 				chain = 0;
@@ -2545,7 +2549,7 @@ public class GameEngine {
 				lineClearing = field.checkLine();
 			// Set color clear flags
 			else if (clearMode == CLEAR_COLOR)
-				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear, gemSameColor);
+				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear, gemSameColor, ignoreHidden);
 			// Set line color clear flags
 			else if (clearMode == CLEAR_LINE_COLOR)
 				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals, gemSameColor);
@@ -2658,7 +2662,7 @@ public class GameEngine {
 			if (clearMode == CLEAR_LINE)
 				field.clearLine();
 			else if (clearMode == CLEAR_COLOR)
-				field.clearColor(colorClearSize, garbageColorClear, gemSameColor);
+				field.clearColor(colorClearSize, garbageColorClear, gemSameColor, ignoreHidden);
 			else if (clearMode == CLEAR_LINE_COLOR)
 				field.clearLineColor(colorClearSize, lineColorDiagonals, gemSameColor);
 		}
@@ -2701,7 +2705,7 @@ public class GameEngine {
 					statc[6]++;
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
-						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor) > 0) ||
+						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden) > 0) ||
 						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0)) {
 					tspin = false;
 					tspinmini = false;

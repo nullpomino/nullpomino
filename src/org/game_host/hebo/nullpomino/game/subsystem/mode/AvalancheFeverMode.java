@@ -206,6 +206,7 @@ public class AvalancheFeverMode extends DummyMode {
 		engine.clearMode = GameEngine.CLEAR_COLOR;
 		engine.garbageColorClear = true;
 		engine.colorClearSize = 4;
+		engine.ignoreHidden = true;
 		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
