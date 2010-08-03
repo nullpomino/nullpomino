@@ -52,10 +52,10 @@ import org.game_host.hebo.nullpomino.game.subsystem.wallkick.Wallkick;
  * 各プレイヤーのゲームの処理
  */
 public class GameEngine {
-	/** ログ */
+	/** Log (Apache log4j) */
 	static Logger log = Logger.getLogger(GameEngine.class);
 
-	/** ステータス定数 */
+	/** Constants of main game status */
 	public static final int STAT_NOTHING = -1,
 							STAT_SETTING = 0,
 							STAT_READY = 1,
@@ -71,10 +71,10 @@ public class GameEngine {
 							STAT_FIELDEDIT = 11,
 							STAT_INTERRUPTITEM = 12;
 
-	/** ステータスカウンタの数 */
+	/** Number of free status counters (used by statc array) */
 	public static final int MAX_STATC = 10;
 
-	/** 最後にした操作の定数 */
+	/** Constants of last successful movements */
 	public static final int LASTMOVE_NONE = 0,
 							LASTMOVE_FALL_AUTO = 1,
 							LASTMOVE_FALL_SELF = 2,
@@ -83,30 +83,30 @@ public class GameEngine {
 							LASTMOVE_ROTATE_AIR = 5,
 							LASTMOVE_ROTATE_GROUND = 6;
 
-	/** 枠線表示の種類の定数 */
+	/** Constants of block outline type */
 	public static final int BLOCK_OUTLINE_NONE = 0, BLOCK_OUTLINE_NORMAL = 1, BLOCK_OUTLINE_CONNECT = 2, BLOCK_OUTLINE_SAMECOLOR = 3;
 
-	/** Ready→Goにかかるフレーム数のデフォルト値 */
+	/** Default duration of Ready->Go */
 	public static final int READY_START = 0, READY_END = 49, GO_START = 50, GO_END = 100;
 
-	/** フレームの色の定数 */
+	/** Constants of frame colors */
 	public static final int FRAME_COLOR_BLUE = 0, FRAME_COLOR_GREEN = 1, FRAME_COLOR_RED = 2, FRAME_COLOR_GRAY = 3, FRAME_COLOR_YELLOW = 4,
 							FRAME_COLOR_CYAN = 5, FRAME_COLOR_PINK = 6, FRAME_COLOR_PURPLE = 7;
 
-	/** メーター色の定数 */
+	/** Constants of meter colors */
 	public static final int METER_COLOR_RED = 0, METER_COLOR_ORANGE = 1, METER_COLOR_YELLOW = 2, METER_COLOR_GREEN = 3;
 
-	/** T-Spin Miniの判定方法の定数 */
+	/** Constants of T-Spin Mini detection type */
 	public static final int TSPINMINI_TYPE_ROTATECHECK = 0, TSPINMINI_TYPE_WALLKICKFLAG = 1;
 
 	/** Spin detection type */
 	public static final int SPINTYPE_4POINT = 0,
 							SPINTYPE_IMMOBILE = 1;
-	
-	/** コンボの種類の定数 */
+
+	/** Constants of combo type */
 	public static final int COMBO_TYPE_DISABLE = 0, COMBO_TYPE_NORMAL = 1, COMBO_TYPE_DOUBLE = 2;
 
-	/** プレイを中断する効果のあるアイテムの定数 */
+	/** Constants of gameplay-interruptable items */
 	public static final int INTERRUPTITEM_NONE = 0,
 							INTERRUPTITEM_MIRROR = 1;
 
@@ -116,7 +116,7 @@ public class GameEngine {
 	/** Clear mode settings */
 	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2;
 
-	/** カラーアイテム用テーブル */
+	/** Table for color-block item */
 	public static final int[] ITEM_COLOR_BRIGHT_TABLE =
 	{
 		10, 10,  9,  9,  8,  8,  8,  7,  7,  7,
@@ -136,130 +136,130 @@ public class GameEngine {
 		Block.BLOCK_COLOR_PURPLE
 	};;
 
-	/** このゲームエンジンを所有するGameOwnerクラス */
+	/** GameManager: Owner of this GameEngine */
 	public GameManager owner;
 
-	/** プレイヤーの番号 */
+	/** Player ID (0=1P) */
 	public int playerID;
 
-	/** ルール設定 */
+	/** RuleOptions: Most game settings are here */
 	public RuleOptions ruleopt;
 
-	/** 壁蹴りシステム */
+	/** Wallkick: The wallkick system */
 	public Wallkick wallkick;
 
-	/** ブロックピースの出現順の生成アルゴリズム */
+	/** Randomizer: Used by creation of next piece sequence */
 	public Randomizer randomizer;
 
-	/** フィールド */
+	/** Field: The playfield */
 	public Field field;
 
-	/** 入力状況 */
+	/** Controller: You can get player's input from here */
 	public Controller ctrl;
 
-	/** スコアなどの情報 */
+	/** Statistics: Various game statistics such as score, number of lines, etc */
 	public Statistics statistics;
 
-	/** 落下速度データ */
+	/** SpeedParam: Parameters of game speed (Gravity, ARE, Line clear delay, etc) */
 	public SpeedParam speed;
 
-	/** 落下速度カウンタ（これがspeed.denominatorに達するとブロックピースが1段下がる） */
+	/** Gravity counter (The piece falls when this reaches to the value of speed.denominator) */
 	public int gcount;
 
-	/** 最初の乱数シード */
+	/** The first random-seed */
 	public long randSeed;
 
-	/** ランダム番号生成 */
+	/** Random: Used for creating various randomness */
 	public Random random;
 
-	/** リプレイで使用する入力データ */
+	/** ReplayData: Manages input data for replays */
 	public ReplayData replayData;
 
-	/** AI */
+	/** AIPlayer: AI for auto playing */
 	public AIPlayer ai;
 
-	/** AIの移動速度 */
+	/** AI move delay */
 	public int aiMoveDelay;
 
-	/** AIの思考ルーチンの停止時間（スレッドを使う場合のみ） */
+	/** AI think delay (Only when using thread) */
 	public int aiThinkDelay;
 
-	/** AIでスレッドを使う */
+	/** Use thread for AI */
 	public boolean aiUseThread;
 
-	/** 現在のステータス番号 */
+	/** Current main game status */
 	public int stat;
 
-	/** 各ステータスが自由に使える変数 */
+	/** Free status counters */
 	public int[] statc;
 
-	/** ゲーム中ならtrue */
+	/** true if the game is active */
 	public boolean gameActive;
 
-	/** タイマー動作中ならtrue */
+	/** true if the timer is active */
 	public boolean timerActive;
 
-	/** リプレイ用タイマー */
+	/** Timer for replay */
 	public int replayTimer;
 
-	/** ゲーム開始時のミリ秒 */
+	/** Time of game start in milliseconds */
 	public long startTime;
 
-	/** ゲーム終了時のミリ秒 */
+	/** Time of game end in milliseconds */
 	public long endTime;
 
-	/** メジャーバージョン */
+	/** Major version */
 	public float versionMajor;
 
-	/** マイナーバージョン */
+	/** Minor version */
 	public int versionMinor;
 
-	/** 古いマイナーバージョン(6.9以前との互換性用) */
+	/** OLD minor version (Used for 6.9 or earlier replays) */
 	public float versionMinorOld;
 
-	/** ゲーム終了フラグ */
+	/** Game quit flag */
 	public boolean quitflag;
 
-	/** 操作中のブロックピースのオブジェクト */
+	/** Piece object of current piece */
 	public Piece nowPieceObject;
 
-	/** 操作中のブロックピースのX座標 */
+	/** X coord of current piece */
 	public int nowPieceX;
 
-	/** 操作中のブロックピースのY座標 */
+	/** Y coord of current piece */
 	public int nowPieceY;
 
-	/** 操作中のブロックピースをそのまま落とした場合のY座標 */
+	/** Bottommost Y coord of current piece (Used for ghost piece and harddrop) */
 	public int nowPieceBottomY;
 
-	/** 操作中のブロックピースの色(-1で変更しない) */
+	/** Write anything other than -1 to override whole current piece color */
 	public int nowPieceColorOverride;
 
-	/** 出現可能なピースの種類の配列 */
+	/** Allow/Disallow certain piece */
 	public boolean[] nextPieceEnable;
 
-	/** NEXTピース配列のサイズ（デフォルト1400、無視されることもある） */
+	/** Preferred size of next piece array. Might be ignored by certain Randomizer. (Default:1400) */
 	public int nextPieceArraySize;
 
-	/** NEXTピースのIDの配列 */
+	/** Array of next piece IDs */
 	public int[] nextPieceArrayID;
 
-	/** NEXTピースのオブジェクトの配列 */
+	/** Array of next piece Objects */
 	public Piece[] nextPieceArrayObject;
 
-	/** ブロックピースを置いた回数（NEXTピースの計算用） */
+	/** Number of pieces put (Used by next piece sequence) */
 	public int nextPieceCount;
 
-	/** ホールドに入っているブロックピースのオブジェクト（null:なし） */
+	/** Hold piece (null: None) */
 	public Piece holdPieceObject;
 
-	/** ホールドを使った直後ならtrue */
+	/** true if hold is disabled because player used it already */
 	public boolean holdDisable;
 
-	/** ホールドを使った回数 */
+	/** Number of holds used */
 	public int holdUsedCount;
 
-	/** 今消えているライン数 */
+	/** Number of lines currently clearing */
 	public int lineClearing;
 
 	/** Line gravity type (Native, Cascade, etc) */
@@ -271,145 +271,145 @@ public class GameEngine {
 	/** Number of lines cleared for this chains */
 	public int lineGravityTotalLines;
 
-	/** 地面に触れてから経過したフレーム数 */
+	/** Lock delay counter */
 	public int lockDelayNow;
 
-	/** 横溜めカウント */
+	/** DAS counter */
 	public int dasCount;
 
-	/** 横溜め方向 */
+	/** DAS direction (-1:Left 0:None 1:Right) */
 	public int dasDirection;
 
-	/** 横溜め速度カウント */
+	/** DAS delay counter */
 	public int dasSpeedCount;
 
 	/** Repeat statMove() for instant DAS */
 	public boolean dasRepeat;
-	
-	/** In the middle of an instant DAS loop */ 
+
+	/** In the middle of an instant DAS loop */
 	public boolean dasInstant;
-	
+
 	/** Disallow shift while locking key is pressed */
 	public int shiftLock;
-	
-	/** 先行回転 */
+
+	/** IRS direction */
 	public int initialRotateDirection;
 
-	/** 最後の先行回転の方向 */
+	/** Last IRS direction */
 	public int initialRotateLastDirection;
 
-	/** 先行回転連続使用フラグ */
+	/** IRS continuous use flag */
 	public boolean initialRotateContinuousUse;
 
-	/** 先行ホールド */
+	/** IHS */
 	public boolean initialHoldFlag;
 
-	/** 先行ホールド連続使用フラグ */
+	/** IHS continuous use flag */
 	public boolean initialHoldContinuousUse;
 
-	/** 今のピースが移動した回数 */
+	/** Number of current piece movement */
 	public int nowPieceMoveCount;
 
-	/** 今のピースが回転した回数 */
+	/** Number of current piece rotations */
 	public int nowPieceRotateCount;
 
-	/** 接地状態で移動した回数 */
+	/** Number of movement while touching to the floor */
 	public int extendedMoveCount;
 
-	/** 接地状態で回転した回数 */
+	/** Number of rotations while touching to the floor */
 	public int extendedRotateCount;
 
-	/** 壁蹴りを使用した回数 */
+	/** Number of wallkicks used by current piece */
 	public int nowWallkickCount;
 
-	/** 上方向への壁蹴りをした回数 */
+	/** Number of upward wallkicks used by current piece */
 	public int nowUpwardWallkickCount;
 
-	/** ソフトドロップで落ちた段数 */
+	/** Number of rows falled by soft drop (Used by soft drop bonuses) */
 	public int softdropFall;
 
-	/** ハードドロップで落ちた合計段数 */
+	/** Number of rows falled by hard drop (Used by soft drop bonuses) */
 	public int harddropFall;
 
-	/** ソフトドロップ連続使用フラグ */
+	/** Soft drop continuous use flag */
 	public boolean softdropContinuousUse;
 
-	/** ハードドロップ連続使用フラグ */
+	/** Hard drop continuous use flag */
 	public boolean harddropContinuousUse;
 
-	/** 手動で固定したらtrue */
+	/** true if the piece was manually locked by player */
 	public boolean manualLock;
 
-	/** 最後にした操作の種類 */
+	/** Last successful movement */
 	public int lastmove;
 
-	/** T-Spinならtrue */
+	/** ture if T-Spin */
 	public boolean tspin;
 
-	/** T-Spin Miniならtrue */
+	/** true if T-Spin Mini */
 	public boolean tspinmini;
-	
+
 	/** EZ T-spin */
 	public boolean tspinez;
 
-	/** B2Bならtrue */
+	/** true if B2B */
 	public boolean b2b;
 
-	/** B2B用カウンタ */
+	/** B2B counter */
 	public int b2bcount;
 
-	/** コンボカウンタ */
+	/** Number of combos */
 	public int combo;
 
-	/** T-Spin有効フラグ */
+	/** T-Spin enable flag */
 	public boolean tspinEnable;
 
 	/** EZ-T toggle */
 	public boolean tspinEnableEZ;
-	
-	/** 壁蹴りありのT-Spin許可 */
+
+	/** Allow T-Spin with wallkicks */
 	public boolean tspinAllowKick;
 
-	/** T-Spin Miniの判定方法 */
+	/** T-Spin Mini detection type */
 	public int tspinminiType;
 
 	/** Spin detection type */
 	public int spinCheckType;
-	
-	/** O以外の全ピースにスピンボーナスを付ける */
+
+	/** All Spins flag */
 	public boolean useAllSpinBonus;
 
-	/** B2B有効フラグ */
+	/** B2B enable flag */
 	public boolean b2bEnable;
 
-	/** コンボの種類 */
+	/** Combo type */
 	public int comboType;
 
-	/** ブロックを置いてから非表示にするまでのフレーム数（-1:なし） */
+	/** Number of frames before placed blocks disappear (-1:Disable) */
 	public int blockHidden;
 
-	/** ブロックが見えなくなるときに半透明効果を使うかどうか */
+	/** Use alpha-blending for blockHidden */
 	public boolean blockHiddenAnim;
 
-	/** ブロックの枠線表示の種類 */
+	/** Outline type */
 	public int blockOutlineType;
 
-	/** ブロックの枠線だけ表示する */
+	/** Show outline only flag. If enabled it does not show actual image of blocks. */
 	public boolean blockShowOutlineOnly;
 
-	/** ヘボHIDDEN 有効 */
+	/** Hebo-hidden Enable flag */
 	public boolean heboHiddenEnable;
 
-	/** ヘボHIDDEN タイマー現在値 */
+	/** Hebo-hidden Timer */
 	public int heboHiddenTimerNow;
 
-	/** ヘボHIDDEN タイマー最大値 */
+	/** Hebo-hidden Timer Max */
 	public int heboHiddenTimerMax;
 
-	/** ヘボHIDDEN 進行度現在値 */
+	/** Hebo-hidden Y coord */
 	public int heboHiddenYNow;
 
-	/** ヘボHIDDEN 進行度制限値 */
+	/** Hebo-hidden Y coord Limit */
 	public int heboHiddenYLimit;
 
 	/** Set when ARE or line delay is canceled */
@@ -421,136 +421,136 @@ public class GameEngine {
 	/** Piece must move right after canceled delay */
 	public boolean delayCancelMoveRight;
 
-	/** 骨ブロック */
+	/** Use bone blocks [][][][] */
 	public boolean bone;
 
-	/** ビッグ */
+	/** Big blocks */
 	public boolean big;
 
-	/** ビッグのときの横移動 */
+	/** Big movement type (false:1cell true:2cell) */
 	public boolean bigmove;
 
-	/** ビッグで消去ラインを半分にする */
+	/** Halves the amount of lines cleared in Big mode */
 	public boolean bighalf;
 
-	/** 壁蹴りを使ったらtrue */
+	/** true if wallkick is used */
 	public boolean kickused;
 
-	/** フィールドサイズ（-1にするとデフォルト） */
+	/** Field size (-1:Default) */
 	public int fieldWidth, fieldHeight, fieldHiddenHeight;
 
-	/** エンディングかどうか */
+	/** Ending mode (0:During the normal game) */
 	public int ending;
 
-	/** エンディング後にスタッフロール */
+	/** Enable staffroll challenge (Credits) in ending */
 	public boolean staffrollEnable;
 
-	/** ロール中に死なない */
+	/** Disable death in staffroll challenge */
 	public boolean staffrollNoDeath;
 
-	/** ロール中にライン数などの情報を更新 */
+	/** Update various statistics in staffroll challenge */
 	public boolean staffrollEnableStatistics;
 
-	/** フレームの色 */
+	/** Frame color */
 	public int framecolor;
 
-	/** READY→GOにかかるフレーム数 */
+	/** Duration of Ready->Go */
 	public int readyStart, readyEnd, goStart, goEnd;
 
-	/** 2回目以降のREADYGOならtrue */
+	/** true if Ready->Go is already done */
 	public boolean readyDone;
 
-	/** 残機 */
+	/** Number of lives */
 	public int lives;
 
-	/** ゴースト表示 */
+	/** Ghost piece flag */
 	public boolean ghost;
 
-	/** フィールド右のメーター量 */
+	/** Amount of meter */
 	public int meterValue;
 
-	/** フィールド右のメーター色 */
+	/** Color of meter */
 	public int meterColor;
 
-	/** ラグ発生フラグ（ピースを置いたあとフラグ解除までARE発生） */
+	/** Lag flag (Infinite length of ARE will happen after placing a piece until this flag is set to false) */
 	public boolean lagARE;
 
-	/** ラグ発生フラグ（ゲームをストップさせる） */
+	/** Lag flag (Pause the game completely) */
 	public boolean lagStop;
 
-	/** 画面表示半分 */
+	/** Mini display (Used for opponents in netplay) */
 	public boolean minidisplay;
 
-	/** 効果音再生許可 */
+	/** Sound effects enable flag */
 	public boolean enableSE;
 
-	/** 1人がゲームオーバーになれば全員終了させる */
+	/** Stops all other players when this player dies */
 	public boolean gameoverAll;
 
-	/** フィールド全体を表示するかどうか */
+	/** Field visible flag (false for invisible challenge) */
 	public boolean isVisible;
 
-	/** NEXT欄を表示するかどうか */
+	/** Piece preview visible flag */
 	public boolean isNextVisible;
 
-	/** ホールド欄を表示するかどうか */
+	/** Hold piece visible flag */
 	public boolean isHoldVisible;
 
-	/** フィールドエディット画面でのカーソル座標 */
+	/** Field edit screen: Cursor coord */
 	public int fldeditX, fldeditY;
 
-	/** フィールドエディット画面で選択しているブロック色 */
+	/** Field edit screen: Selected color */
 	public int fldeditColor;
 
-	/** フィールドエディット画面に入る前にいたステータス番号 */
+	/** Field edit screen: Previous game status number */
 	public int fldeditPreviousStat;
 
-	/** フィールドエディット画面に入ってから経過した時間 */
+	/** Field edit screen: Frame counter */
 	public int fldeditFrames;
 
-	/** Ready・Go中にホールドを押すとNEXTを1個飛ばす */
+	/** Next-skip during Ready->Go */
 	public boolean holdButtonNextSkip;
 
-	/** EventReceiver側でのテキスト描画を許可 */
+	/** Allow default text rendering (such as "READY", "GO!", "GAME OVER", etc) */
 	public boolean allowTextRenderByReceiver;
 
-	/** ロールロール(自動回転)有効フラグ */
+	/** RollRoll (Auto rotation) enable flag */
 	public boolean itemRollRollEnable;
 
-	/** ロールロール(自動回転)で回転する間隔 */
+	/** RollRoll (Auto rotation) interval */
 	public int itemRollRollInterval;
 
-	/** X-RAY有効フラグ */
+	/** X-RAY enable flag */
 	public boolean itemXRayEnable;
 
-	/** X-RAY用カウンタ */
+	/** X-RAY counter */
 	public int itemXRayCount;
 
-	/** カラー有効フラグ */
+	/** Color-block enable flag */
 	public boolean itemColorEnable;
 
-	/** カラー用カウンタ */
+	/** Color-block counter */
 	public int itemColorCount;
 
-	/** プレイ中断効果のあるアイテム */
+	/** Gameplay-interruptable item */
 	public int interruptItemNumber;
 
-	/** プレイ中断効果のあるアイテムが終了したあとのステータス */
+	/** Post-status of interruptable item */
 	public int interruptItemPreviousStat;
 
-	/** ミラー用バックアップフィールド */
+	/** Backup field for Mirror item */
 	public Field interruptItemMirrorField;
 
-	/** Aボタンでの回転方向を -1=ルールに従う 0=常に左回転 1=常に右回転 */
+	/** A button direction -1=Auto(Use rule settings) 0=Left 1=Right */
 	public int owRotateButtonDefaultRight;
 
-	/** ブロックの絵柄 -1=ルールに従う 0以上=固定 */
+	/** Block Skin (-1=Auto 0orAbove=Fixed) */
 	public int owSkin;
 
-	/** 最低/最大横溜め速度 -1=ルールに従う 0以上=固定 */
+	/** Min/Max DAS (-1=Auto 0orAbove=Fixed) */
 	public int owMinDAS, owMaxDAS;
 
-	/** 横移動速度 -1=ルールに従う 0以上=固定 */
+	/** DAS delay (-1=Auto 0orAbove=Fixed) */
 	public int owDasDelay;
 
 	/** Clear mode selection */
@@ -582,10 +582,10 @@ public class GameEngine {
 
 	/** Delay for each step in cascade animations */
 	public int cascadeDelay;
-	
+
 	/** Delay between landing and checking for clears in cascade */
 	public int cascadeClearDelay;
-	
+
 	/** If true, color clears will ignore hidden rows */
 	public boolean ignoreHidden;
 
@@ -660,7 +660,7 @@ public class GameEngine {
 			owMinDAS = owner.replayProp.getProperty(playerID + ".tuning.owMinDAS", -1);
 			owMaxDAS = owner.replayProp.getProperty(playerID + ".tuning.owMaxDAS", -1);
 			owDasDelay = owner.replayProp.getProperty(playerID + ".tuning.owDasDelay", -1);
-			
+
 			// Fixing old replays to accomodate for new DAS notation
 			if (versionMajor < 7.3) {
 				if  (owDasDelay >= 0) {
@@ -1080,7 +1080,7 @@ public class GameEngine {
 		}
 		dasDirection = moveDirection;
 	}
-	
+
 	/**
 	 * Called if delay doesn't allow charging but dasRedirectInDelay == true
 	 * Updates dasDirection so player can change direction without dropping charge on entry.
@@ -1122,14 +1122,12 @@ public class GameEngine {
 	}
 
 	/**
-	 * T-Spin判定
-	 * @param x X座標
-	 * @param y Y座標
-	 * @param piece 現在のブロックピース
-	 * @param fld フィールド
-	 * @return T-Spinならtrue
+	 * T-Spin routine
+	 * @param x X coord
+	 * @param y Y coord
+	 * @param piece Current piece object
+	 * @param fld Field object
 	 */
-	
 	public void setTSpin(int x, int y, Piece piece, Field fld) {
 		if((piece == null) || (piece.id != Piece.PIECE_T)) {
 			tspin = false;
@@ -1149,11 +1147,11 @@ public class GameEngine {
 			} else if(tspinminiType == TSPINMINI_TYPE_WALLKICKFLAG) {
 				tspinmini = kickused;
 			}
-		
+
 			int[] tx = new int[4];
 			int[] ty = new int[4];
-	
-			// 判定用相対座標を設定
+
+			// Setup 4-point coordinates
 			if(piece.big == true) {
 				tx[0] = 1;
 				ty[0] = 1;
@@ -1182,14 +1180,14 @@ public class GameEngine {
 					ty[i] += ruleopt.pieceOffsetY[piece.id][piece.direction];
 				}
 			}
-	
-			// 判定
+
+			// Check the corner of the T piece
 			int count = 0;
-	
+
 			for(int i = 0; i < tx.length; i++) {
 				if(fld.getBlockColor(x + tx[i], y + ty[i]) != Block.BLOCK_COLOR_NONE) count++;
 			}
-	
+
 			if(count >= 3) tspin = true;
 		} else if(spinCheckType == SPINTYPE_IMMOBILE) {
 			if( piece.checkCollision(x, y - 1, fld) &&
@@ -1198,7 +1196,7 @@ public class GameEngine {
 				tspin = true;
 				Field copyField = new Field(fld);
 				piece.placeToField(x, y, copyField);
-				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true; 
+				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true;
 			} else if((tspinEnableEZ) && (kickused == true)) {
 				tspin = true;
 				tspinez = true;
@@ -1226,13 +1224,13 @@ public class GameEngine {
 
 			int offsetX = ruleopt.pieceOffsetX[piece.id][piece.direction];
 			int offsetY = ruleopt.pieceOffsetY[piece.id][piece.direction];
-	
+
 			for(int i = 0; i < Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction].length / 2; i++) {
 				boolean isHighSpot1 = false;
 				boolean isHighSpot2 = false;
 				boolean isLowSpot1 = false;
 				boolean isLowSpot2 = false;
-	
+
 				if(!fld.getBlockEmptyF(
 					x + Piece.SPINBONUSDATA_HIGH_X[piece.id][piece.direction][i * 2 + 0] + offsetX,
 					y + Piece.SPINBONUSDATA_HIGH_Y[piece.id][piece.direction][i * 2 + 0] + offsetY))
@@ -1257,9 +1255,9 @@ public class GameEngine {
 				{
 					isLowSpot2 = true;
 				}
-	
+
 				//log.debug(isHighSpot1 + "," + isHighSpot2 + "," + isLowSpot1 + "," + isLowSpot2);
-	
+
 				if(isHighSpot1 && isHighSpot2 && (isLowSpot1 || isLowSpot2)) {
 					tspin = true;
 				} else if(!tspin && isLowSpot1 && isLowSpot2 && (isHighSpot1 || isHighSpot2)) {
@@ -1270,14 +1268,14 @@ public class GameEngine {
 		} else if(spinCheckType == SPINTYPE_IMMOBILE) {
 			int y2 = y - 1;
 			log.debug(x + "," + y2 + ":" + piece.checkCollision(x, y2, fld));
-			
+
 			if( piece.checkCollision(x, y - 1, fld) &&
 					piece.checkCollision(x + 1, y, fld) &&
 					piece.checkCollision(x - 1, y, fld) ) {
 				tspin = true;
 				Field copyField = new Field(fld);
 				piece.placeToField(x, y, copyField);
-				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true; 
+				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true;
 			} else if((tspinEnableEZ) && (kickused == true)) {
 				tspin = true;
 				tspinez = true;
@@ -1995,7 +1993,7 @@ public class GameEngine {
 		if(ctrl.isPress(Controller.BUTTON_UP) && ctrl.isPress(Controller.BUTTON_DOWN)) updown = true;
 
 		if(!dasInstant) {
-			
+
 			// ホールド
 			if(ctrl.isPush(Controller.BUTTON_D) || initialHoldFlag) {
 				if(isHoldOK()) {
@@ -2012,12 +2010,12 @@ public class GameEngine {
 					playSE("holdfail");
 				}
 			}
-	
+
 			// 回転
 			boolean onGroundBeforeRotate = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field);
 			int move = 0;
 			boolean rotated = false;
-	
+
 			if(initialRotateDirection != 0) {
 				move = initialRotateDirection;
 				initialRotateLastDirection = initialRotateDirection;
@@ -2025,26 +2023,26 @@ public class GameEngine {
 				playSE("initialrotate");
 			} else if((statc[0] > 0) || (ruleopt.moveFirstFrame == true)) {
 				if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// ロールロール
-	
+
 				// ボタン入力
 				if(ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_C)) move = -1;
 				else if(ctrl.isPush(Controller.BUTTON_B)) move = 1;
 				else if(ctrl.isPush(Controller.BUTTON_E)) move = 2;
-	
+
 				if(move != 0) {
 					initialRotateLastDirection = move;
 					initialRotateContinuousUse = true;
 				}
 			}
-	
+
 			if((ruleopt.rotateButtonAllowDouble == false) && (move == 2)) move = -1;
 			if((ruleopt.rotateButtonAllowReverse == false) && (move == 1)) move = -1;
 			if(isRotateButtonDefaultRight() && (move != 2)) move = move * -1;
-	
+
 			if(move != 0) {
 				// 回転後の方向を決める
 				int rt = getRotateDirection(move);
-	
+
 				// 回転できるか判定
 				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, rt, field) == false)
 				{
@@ -2062,7 +2060,7 @@ public class GameEngine {
 					boolean allowUpward = (ruleopt.rotateMaxUpwardWallkick < 0) || (nowUpwardWallkickCount < ruleopt.rotateMaxUpwardWallkick);
 					WallkickResult kick = wallkick.executeWallkick(nowPieceX, nowPieceY, move, nowPieceObject.direction, rt,
 										  allowUpward, nowPieceObject, field, ctrl);
-	
+
 					if(kick != null) {
 						rotated = true;
 						kickused = true;
@@ -2074,27 +2072,27 @@ public class GameEngine {
 						nowPieceY += kick.offsetY;
 					}
 				}
-	
+
 				if(rotated == true) {
 					// 回転成功
 					nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
-	
+
 					if((ruleopt.lockresetRotate == true) && (isRotateCountExceed() == false)) {
 						lockDelayNow = 0;
 						nowPieceObject.setDarkness(0f);
 					}
-	
+
 					if(onGroundBeforeRotate) {
 						extendedRotateCount++;
 						lastmove = LASTMOVE_ROTATE_GROUND;
 					} else {
 						lastmove = LASTMOVE_ROTATE_AIR;
 					}
-	
+
 					if(initialRotateDirection == 0) {
 						playSE("rotate");
 					}
-	
+
 					nowPieceRotateCount++;
 					if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceRotate++;
 				} else {
@@ -2103,20 +2101,20 @@ public class GameEngine {
 				}
 			}
 			initialRotateDirection = 0;
-	
+
 			// ゲームオーバーチェック
 			if((statc[0] == 0) && (nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true)) {
 				// ブロックの出現位置を上にずらすことができる場合はそうする
 				for(int i = 0; i < ruleopt.pieceEnterMaxDistanceY; i++) {
 					if(nowPieceObject.big) nowPieceY -= 2;
 					else nowPieceY--;
-	
+
 					if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == false) {
 						nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
 						break;
 					}
 				}
-	
+
 				// 死亡
 				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true) {
 					nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
@@ -2127,9 +2125,9 @@ public class GameEngine {
 					return;
 				}
 			}
-			
+
 		}
-		
+
 		int move = 0;
 		boolean sidemoveflag = false;	// このフレームに横移動したらtrue
 
@@ -2155,41 +2153,41 @@ public class GameEngine {
 
 			if(big && bigmove) move *= 2;
 
-			if((move != 0) && (dasCount == 0)) shiftLock = 0; 
-			
+			if((move != 0) && (dasCount == 0)) shiftLock = 0;
+
 			if( (move != 0) && ((dasCount == 0) || (dasCount >= getDAS())) ) {
 				shiftLock &= ctrl.getButtonBit();
-				
+
 				if(shiftLock == 0) {
 					if( (dasSpeedCount >= getDASDelay()) || (dasCount == 0) ) {
 						if(dasCount > 0) dasSpeedCount = 1;
-	
+
 						if(nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false) {
 							nowPieceX += move;
-	
+
 							if((getDASDelay() == 0) && (dasCount > 0) && (nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false)) {
 								dasRepeat = true;
 								dasInstant = true;
 							}
-	
+
 							//log.debug("Successful movement: move="+move);
-	
+
 							if((ruleopt.lockresetMove == true) && (isMoveCountExceed() == false)) {
 								lockDelayNow = 0;
 								nowPieceObject.setDarkness(0f);
 							}
-	
+
 							nowPieceMoveCount++;
 							if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceMove++;
 							nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
-	
+
 							if(onGroundBeforeMove) {
 								extendedMoveCount++;
 								lastmove = LASTMOVE_SLIDE_GROUND;
 							} else {
 								lastmove = LASTMOVE_SLIDE_AIR;
 							}
-	
+
 							playSE("move");
 						} else if (ruleopt.dasChargeOnBlockedMove) {
 							dasCount = getDAS();
@@ -2350,7 +2348,7 @@ public class GameEngine {
 				// bit 1 and 2 are button_up and button_down currently
 				shiftLock = ctrl.getButtonBit() & 3;
 			}
-			
+
 			// 移動＆回転数制限超過
 			if( (ruleopt.lockresetLimitOver == RuleOptions.LOCKRESET_LIMIT_OVER_INSTANT) && (isMoveCountExceed() || isRotateCountExceed()) ) {
 				instantlock = true;
@@ -2366,7 +2364,7 @@ public class GameEngine {
 				if(ruleopt.lockflash > 0) nowPieceObject.setDarkness(-0.8f);
 
 				/*if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
-				 
+
 					tspinmini = false;
 
 					// T-Spin Mini判定
@@ -2383,7 +2381,7 @@ public class GameEngine {
 						} else if(spinCheckType == SPINTYPE_IMMOBILE) {
 							Field copyField = new Field(field);
 							nowPieceObject.placeToField(nowPieceX, nowPieceY, copyField);
-							if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true; 
+							if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true;
 						}
 					}
 				}*/
@@ -2400,7 +2398,7 @@ public class GameEngine {
 
 				boolean partialLockOut = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, field);
 				boolean put = nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
-				
+
 				playSE("lock");
 
 				holdDisable = false;
@@ -2437,7 +2435,7 @@ public class GameEngine {
 
 				dasRepeat = false;
 				dasInstant = false;
-				
+
 				// 次の処理を決める(モード側でステータスを弄っている場合は何もしない)
 				if((stat == STAT_MOVE) || (versionMajor <= 6.3f)) {
 					resetStatc();
@@ -2637,7 +2635,7 @@ public class GameEngine {
 					if(field.getLineFlag(i)) {
 						for(int j = 0; j < field.getWidth(); j++) {
 							Block blk = field.getBlock(j, i);
-	
+
 							if(blk != null) {
 								if(owner.mode != null) owner.mode.blockBreak(this, playerID, j, i, blk);
 								owner.receiver.blockBreak(this, playerID, j, i, blk);
@@ -2724,7 +2722,7 @@ public class GameEngine {
 			if(!skip) {
 				if(lineGravityType == LINE_GRAVITY_NATIVE) field.downFloatingBlocks();
 				playSE("linefall");
-				
+
 				field.lineColorsCleared = null;
 
 				if((stat == STAT_LINECLEAR) || (versionMajor <= 6.3f)) {
@@ -2761,7 +2759,7 @@ public class GameEngine {
 	public int getCascadeDelay() {
 		return cascadeDelay;
 	}
-	
+
 	public int getCascadeClearDelay() {
 		return cascadeClearDelay;
 	}
