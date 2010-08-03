@@ -129,6 +129,12 @@ public class AvalancheMode extends DummyMode {
 	
 	/** Number of colors to use */
 	private int numColors;
+	
+	/** If true, both columns 3 and 4 are danger columns */
+	private boolean dangerColumnDouble;
+	
+	/** If true, red X's appear at tops of danger columns */
+	private boolean dangerColumnShowX;
 
 	/*
 	 * モード名
@@ -228,13 +234,13 @@ public class AvalancheMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 2;
+				if(engine.statc[2] < 0) engine.statc[2] = 4;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 2) engine.statc[2] = 0;
+				if(engine.statc[2] > 4) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -262,6 +268,12 @@ public class AvalancheMode extends DummyMode {
 					numColors += change;
 					if(numColors < 3) numColors = 5;
 					if(numColors > 5) numColors = 3;
+					break;
+				case 3:
+					dangerColumnDouble = !dangerColumnDouble;
+					break;
+				case 4:
+					dangerColumnShowX = !dangerColumnShowX;
 				}
 			}
 
@@ -310,6 +322,10 @@ public class AvalancheMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
 		receiver.drawMenuFont(engine, playerID, 0, 4, "COLORS", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(numColors), (engine.statc[2] == 2));
+		receiver.drawMenuFont(engine, playerID, 0, 6, "X COLUMN", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 7, dangerColumnDouble ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 3));
+		receiver.drawMenuFont(engine, playerID, 0, 8, "X SHOW", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(dangerColumnShowX), (engine.statc[2] == 4));
 	}
 
 	/*
@@ -388,6 +404,9 @@ public class AvalancheMode extends DummyMode {
 				
 			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
+			
+			if (dangerColumnShowX)
+				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "XX" : "X", EventReceiver.COLOR_RED);
 		}
 	}
 
@@ -501,6 +520,16 @@ public class AvalancheMode extends DummyMode {
 			garbageSent += garbageAdd;
 			garbageAdd = 0;
 		}
+		if (engine.field != null)
+		{
+			if (!engine.field.getBlockEmpty(2, 0) || (dangerColumnDouble && !engine.field.getBlockEmpty(3, 0)))
+			{
+				engine.stat = GameEngine.STAT_GAMEOVER;
+				engine.gameActive = false;
+				engine.resetStatc();
+				engine.statc[1] = 1;
+			}
+		}
 		return false;
 	}
 	
@@ -557,6 +586,8 @@ public class AvalancheMode extends DummyMode {
 		outlinetype = prop.getProperty("avalanche.outlinetype", 0);
 		numColors = prop.getProperty("avalanche.numcolors", 5);
 		version = prop.getProperty("avalanche.version", 0);
+		dangerColumnDouble = prop.getProperty("avalanche.dangerColumnDouble", false);
+		dangerColumnShowX = prop.getProperty("avalanche.dangerColumnShowX", false);
 	}
 
 	/**
@@ -568,6 +599,8 @@ public class AvalancheMode extends DummyMode {
 		prop.setProperty("avalanche.outlinetype", outlinetype);
 		prop.setProperty("avalanche.numcolors", numColors);
 		prop.setProperty("avalanche.version", version);
+		prop.setProperty("avalanche.dangerColumnDouble", dangerColumnDouble);
+		prop.setProperty("avalanche.dangerColumnShowX", dangerColumnShowX);
 	}
 
 	/**

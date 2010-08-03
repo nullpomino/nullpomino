@@ -421,6 +421,11 @@ public class AvalancheFeverMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 14, "(+" + (timeLimitAdd/60) + " SEC.)");
 			receiver.drawScoreFont(engine, playerID, 0, 16, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 17, GeneralUtil.getTime(engine.statistics.time));
+			
+			String timeStr = String.valueOf(timeLimit/60);
+			if (timeStr.length() == 1)
+				timeStr = "0" + timeStr;
+			receiver.drawMenuFont(engine, playerID, 2, 0, timeStr, EventReceiver.COLOR_RED);
 		}
 	}
 
@@ -564,6 +569,16 @@ public class AvalancheFeverMode extends DummyMode {
 				feverChain = feverChainMin;
 			if (timeLimit > 0)
 				loadFeverMap(engine, playerID, feverChain);
+		}
+		else if (engine.field != null)
+		{
+			if (!engine.field.getBlockEmpty(2, 0) || !engine.field.getBlockEmpty(3, 0))
+			{
+				engine.stat = GameEngine.STAT_GAMEOVER;
+				engine.gameActive = false;
+				engine.resetStatc();
+				engine.statc[1] = 1;
+			}
 		}
 
 		// 時間切れ

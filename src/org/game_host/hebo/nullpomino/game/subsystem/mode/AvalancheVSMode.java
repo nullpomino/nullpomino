@@ -228,6 +228,12 @@ public class AvalancheVSMode extends DummyMode {
 	
 	/** Selected outline type */
 	private int[] outlineType;
+	
+	/** If true, both columns 3 and 4 are danger columns */
+	private boolean[] dangerColumnDouble;
+	
+	/** If true, red X's appear at tops of danger columns */
+	private boolean[] dangerColumnShowX;
 
 	/*
 	 * モード名
@@ -302,6 +308,8 @@ public class AvalancheVSMode extends DummyMode {
 		feverChainMax = new int[MAX_PLAYERS];
 		feverMapSubsets = new String[MAX_PLAYERS][];
 		outlineType = new int[MAX_PLAYERS];
+		dangerColumnDouble = new boolean[MAX_PLAYERS];
+		dangerColumnShowX = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -365,6 +373,8 @@ public class AvalancheVSMode extends DummyMode {
 		feverMapSet[playerID] = prop.getProperty("avalanchevs.feverMapSet.p" + playerID, 0);
 		zenKeshiType[playerID] = prop.getProperty("avalanchevs.zenKeshiType.p" + playerID, 1);
 		outlineType[playerID] =  prop.getProperty("avalanchevs.outlineType.p" + playerID, 1);
+		dangerColumnDouble[playerID] =  prop.getProperty("avalanchevs.dangerColumnDouble.p" + playerID, false);
+		dangerColumnShowX[playerID] =  prop.getProperty("avalanchevs.dangerColumnShowX.p" + playerID, false);
 	}
 
 	/**
@@ -392,6 +402,8 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.feverMapSet.p" + playerID, feverMapSet[playerID]);
 		prop.setProperty("avalanchevs.zenKeshiType.p" + playerID, zenKeshiType[playerID]);
 		prop.setProperty("avalanchevs.outlineType.p" + playerID, outlineType[playerID]);
+		prop.setProperty("avalanchevs.dangerColumnDouble.p" + playerID, dangerColumnDouble[playerID]);
+		prop.setProperty("avalanchevs.dangerColumnShowX.p" + playerID, dangerColumnShowX[playerID]);
 	}
 
 	/**
@@ -497,13 +509,13 @@ public class AvalancheVSMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 27;
+				if(engine.statc[2] < 0) engine.statc[2] = 29;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 27) engine.statc[2] = 0;
+				if(engine.statc[2] > 29) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -562,55 +574,60 @@ public class AvalancheVSMode extends DummyMode {
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
 					break;
 				case 9:
+					bgmno += change;
+					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
+					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
+					break;
+				case 10:
 					ojamaCounterMode[playerID] += change;
 					if(ojamaCounterMode[playerID] < 0) ojamaCounterMode[playerID] = 2;
 					if(ojamaCounterMode[playerID] > 2) ojamaCounterMode[playerID] = 0;
 					break;
-				case 10:
+				case 11:
 					if (m >= 10) maxAttack[playerID] += change*10;
 					else maxAttack[playerID] += change;
 					if(maxAttack[playerID] < 0) maxAttack[playerID] = 99;
 					if(maxAttack[playerID] > 99) maxAttack[playerID] = 0;
 					break;
-				case 11:
+				case 12:
 					numColors[playerID] += change;
 					if(numColors[playerID] < 3) numColors[playerID] = 5;
 					if(numColors[playerID] > 5) numColors[playerID] = 3;
 					break;
-				case 12:
+				case 13:
 					rensaShibari[playerID] += change;
 					if(rensaShibari[playerID] < 1) rensaShibari[playerID] = 20;
 					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
 					break;
-				case 13:
+				case 14:
 					if (m >= 10) ojamaRate[playerID] += change*100;
 					else ojamaRate[playerID] += change*10;
 					if(ojamaRate[playerID] < 10) ojamaRate[playerID] = 1000;
 					if(ojamaRate[playerID] > 1000) ojamaRate[playerID] = 10;
 					break;
-				case 14:
+				case 15:
 					big[playerID] = !big[playerID];
 					break;
-				case 15:
+				case 16:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 16:
+				case 17:
 					if (m > 10) hurryupSeconds[playerID] += change*m/10;
 					else hurryupSeconds[playerID] += change;
 					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
-				case 17:
+				case 18:
 					ojamaHard[playerID] += change;
 					if(ojamaHard[playerID] < 0) ojamaHard[playerID] = 9;
 					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 0;
 					break;
-				case 18:
-					bgmno += change;
-					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
-					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
-					break;
 				case 19:
+					outlineType[playerID] += change;
+					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
+					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
+					break;
+				case 20:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -618,7 +635,7 @@ public class AvalancheVSMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 20:
+				case 21:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -627,7 +644,7 @@ public class AvalancheVSMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 21:
+				case 22:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -637,38 +654,38 @@ public class AvalancheVSMode extends DummyMode {
 						mapNumber[playerID] = -1;
 					}
 					break;
-				case 22:
+				case 23:
 					feverThreshold[playerID] += change;
 					if(feverThreshold[playerID] < 0) feverThreshold[playerID] = 9;
 					if(feverThreshold[playerID] > 9) feverThreshold[playerID] = 0;
 					break;
-				case 23:
+				case 24:
 					if (m >= 10) feverTimeMin[playerID] += change*10;
 					else feverTimeMin[playerID] += change;
 					if(feverTimeMin[playerID] < 1) feverTimeMin[playerID] = feverTimeMax[playerID];
 					if(feverTimeMin[playerID] > feverTimeMax[playerID]) feverTimeMin[playerID] = 1;
 					break;
-				case 24:
+				case 25:
 					if (m >= 10) feverTimeMax[playerID] += change*10;
 					else feverTimeMax[playerID] += change;
 					if(feverTimeMax[playerID] < feverTimeMin[playerID]) feverTimeMax[playerID] = 99;
 					if(feverTimeMax[playerID] > 99) feverTimeMax[playerID] = feverTimeMin[playerID];
 					break;
-				case 25:
+				case 26:
 					feverMapSet[playerID] += change;
 					if(feverMapSet[playerID] < 0) feverMapSet[playerID] = FEVER_MAPS.length-1;
 					if(feverMapSet[playerID] >= FEVER_MAPS.length) feverMapSet[playerID] = 0;
 					break;
-				case 26:
+				case 27:
 					zenKeshiType[playerID] += change;
 					if(zenKeshiType[playerID] < 0) zenKeshiType[playerID] = 2;
 					if(zenKeshiType[playerID] > 2) zenKeshiType[playerID] = 0;
 					break;
-				case 27:
-					outlineType[playerID] += change;
-					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
-					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
+				case 28:
+					dangerColumnDouble[playerID] = !dangerColumnDouble[playerID];
 					break;
+				case 29:
+					dangerColumnShowX[playerID] = !dangerColumnShowX[playerID];
 				}
 			}
 
@@ -753,7 +770,7 @@ public class AvalancheVSMode extends DummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 9) {
+			if(engine.statc[2] < 10) {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
@@ -777,59 +794,63 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 7));
 				receiver.drawMenuFont(engine, playerID, 0, 16, "SAVE", EventReceiver.COLOR_GREEN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 8));
-			} else if(engine.statc[2] < 19) {
+				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
+				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 9));
+			} else if(engine.statc[2] < 20) {
 				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
+					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 10) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "COUNTER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]], (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 1,  1, OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]], (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 10));
+				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 11));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(numColors[playerID]), (engine.statc[2] == 11));
+				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(numColors[playerID]), (engine.statc[2] == 12));
 				receiver.drawMenuFont(engine, playerID, 0,  6, "MIN CHAIN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(rensaShibari[playerID]), (engine.statc[2] == 12));
+				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(rensaShibari[playerID]), (engine.statc[2] == 13));
 				receiver.drawMenuFont(engine, playerID, 0,  8, "OJAMA RATE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(ojamaRate[playerID]), (engine.statc[2] == 13));
+				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(ojamaRate[playerID]), (engine.statc[2] == 14));
 				receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 14));
+				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 15));
 				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
+				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 16));
 				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-				                      (engine.statc[2] == 16));
+				                      (engine.statc[2] == 17));
 				receiver.drawMenuFont(engine, playerID, 0, 16, "HARD OJAMA", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 17));
-				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 18));
+				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 18));
+				receiver.drawMenuFont(engine, playerID, 0, 18, "OUTLINE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 19, OUTLINE_TYPE_NAMES[outlineType[playerID]], (engine.statc[2] == 19));
 			} else {
 				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 19) * 2) + 1, "b",
+					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 20) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 19));
+				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 20));
 				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 20));
+				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 21));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-									  (engine.statc[2] == 21));
+									  (engine.statc[2] == 22));
 				receiver.drawMenuFont(engine, playerID, 0,  6, "FEVER", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  7, (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS",
-				                      (engine.statc[2] == 22));
+				                      (engine.statc[2] == 23));
 				receiver.drawMenuFont(engine, playerID, 0,  8, "F-MIN TIME", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, feverTimeMin[playerID] + "SEC", (engine.statc[2] == 23));
+				receiver.drawMenuFont(engine, playerID, 1,  9, feverTimeMin[playerID] + "SEC", (engine.statc[2] == 24));
 				receiver.drawMenuFont(engine, playerID, 0, 10, "F-MAX TIME", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, feverTimeMax[playerID] + "SEC", (engine.statc[2] == 24));
+				receiver.drawMenuFont(engine, playerID, 1, 11, feverTimeMax[playerID] + "SEC", (engine.statc[2] == 25));
 				receiver.drawMenuFont(engine, playerID, 0, 12, "F-MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, FEVER_MAPS[feverMapSet[playerID]].toUpperCase(), (engine.statc[2] == 25));
+				receiver.drawMenuFont(engine, playerID, 1, 13, FEVER_MAPS[feverMapSet[playerID]].toUpperCase(), (engine.statc[2] == 26));
 				receiver.drawMenuFont(engine, playerID, 0, 14, "ZENKESHI", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]], (engine.statc[2] == 26));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "OUTLINE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, OUTLINE_TYPE_NAMES[outlineType[playerID]], (engine.statc[2] == 27));
+				receiver.drawMenuFont(engine, playerID, 1, 15, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]], (engine.statc[2] == 27));
+				receiver.drawMenuFont(engine, playerID, 0, 16, "X COLUMN", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 17, dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 28));
+				receiver.drawMenuFont(engine, playerID, 0, 18, "X SHOW", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 19, GeneralUtil.getONorOFF(dangerColumnShowX[playerID]), (engine.statc[2] == 29));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -967,6 +988,15 @@ public class AvalancheVSMode extends DummyMode {
 			
 		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
 			receiver.drawMenuFont(engine, playerID, 1, 21, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+		if (inFever[playerID])
+		{
+			String feverTimeStr = String.valueOf(feverTime[playerID]/60);
+			if (feverTimeStr.length() == 1)
+				feverTimeStr = "0" + feverTimeStr;
+			receiver.drawMenuFont(engine, playerID, 2, 0, feverTimeStr, EventReceiver.COLOR_RED);
+		}
+		else if (dangerColumnShowX[playerID])
+			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "XX" : "X", EventReceiver.COLOR_RED);
 		if (ojamaHard[playerID] > 0 && engine.field != null)
 			for (int x = 0; x < engine.field.getWidth(); x++)
 				for (int y = 0; y < engine.field.getHeight(); y++)
@@ -1186,6 +1216,15 @@ public class AvalancheVSMode extends DummyMode {
 			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID]);
 			engine.field.setAllSkin(engine.getSkin());
 			return true;
+		}
+		//Check for game over
+		if (engine.field != null)
+		{
+			if (!engine.field.getBlockEmpty(2, 0) ||
+					(dangerColumnDouble[playerID] && !engine.field.getBlockEmpty(3, 0)))
+			{
+				engine.stat = GameEngine.STAT_GAMEOVER;
+			}
 		}
 		//Check to start Fever Mode
 		if (!inFever[playerID] && feverPoints[playerID] >= feverThreshold[playerID] && feverThreshold[playerID] > 0)
