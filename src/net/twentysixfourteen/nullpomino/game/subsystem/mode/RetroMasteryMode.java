@@ -48,7 +48,9 @@ public class RetroMasteryMode extends DummyMode {
 	{
 		//	0  1  2  3  4  5  6  7  8  9    +xx
 		   48,40,32,27,22,18,15,12,10, 8, // 00
-		    7, 6,11, 5, 9, 4, 7, 3, 5, 2, // 10
+		    7, 6,11, 5, 9, 4, 7, 3,11,10, // 10
+		    9, 8,15,14,13,12,11,10, 9, 8, // 20
+		    1
 	};
 
 	/** Gravity table */
@@ -56,19 +58,35 @@ public class RetroMasteryMode extends DummyMode {
 	{
 		//	0  1  2  3  4  5  6  7  8  9    +xx
 		    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 00
-		    1, 1, 2, 1, 2, 1, 2, 1, 2, 1, // 10
+		    1, 1, 2, 1, 2, 1, 2, 1, 4, 4, // 10
+		    4, 4, 8, 8, 8, 8, 8, 8, 8, 8, // 20
+		    1
 	};
 
 	/** Lock delay table */
 	private static final int tableLockDelay[] =
 	{
 		//	0  1  2  3  4  5  6  7  8  9    +xx
-		   12,12,12,12,12,11,11,11,11,11, // 00
-		   10,10, 9, 9, 8, 8, 7, 7, 6, 6, // 10
+		   60,52,45,39,34,30,27,24,22,20, // 00
+		   19,18,17,16,15,14,13,12,11,10, // 10
+		    9, 8, 8, 8, 8, 7, 7, 7, 7, 7, // 20
+		    6
 	};
+
+	/** Game types */
+	private static final int GAMETYPE_200 = 0,
+							 GAMETYPE_ENDLESS = 1,
+							 GAMETYPE_PRESSURE = 2,
+							 GAMETYPE_MAX = 3;
+
+	/** Game type name */
+	private static final String[] GAMETYPE_NAME = {"200","ENDLESS","PRESSURE"};
 
 	/** Number of ranking records */
 	private static final int RANKING_MAX = 10;
+
+	/** Number of ranking types */
+	private static final int RANKING_TYPE = 3;
 
 	/** GameManager object (Manages entire game status) */
 	private GameManager owner;
@@ -81,6 +99,9 @@ public class RetroMasteryMode extends DummyMode {
 
 	/** Elapsed time from last line clear (lastscore is displayed to screen until this reaches to 120) */
 	private int scgettime;
+
+	/** Selected game type */
+	private int gametype;
 
 	/** Selected starting level */
 	private int startlevel;
@@ -113,13 +134,13 @@ public class RetroMasteryMode extends DummyMode {
 	private int rankingRank;
 
 	/** Score records */
-	private int[] rankingScore;
+	private int[][] rankingScore;
 
 	/** Line records */
-	private int[] rankingLines;
+	private int[][] rankingLines;
 
 	/** Level records */
-	private int[] rankingLevel;
+	private int[][] rankingLevel;
 
 	/**
 	 * Returns the name of this mode
@@ -146,9 +167,9 @@ public class RetroMasteryMode extends DummyMode {
 		efficiency = 0;
 
 		rankingRank = -1;
-		rankingScore = new int[RANKING_MAX];
-		rankingLines = new int[RANKING_MAX];
-		rankingLevel = new int[RANKING_MAX];
+		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
+		rankingLines = new int[RANKING_TYPE][RANKING_MAX];
+		rankingLevel = new int[RANKING_TYPE][RANKING_MAX];
 
 		engine.tspinEnable = false;
 		engine.b2bEnable = false;
@@ -170,7 +191,6 @@ public class RetroMasteryMode extends DummyMode {
 
 		engine.owner.backgroundStatus.bg = startlevel;
 		if(engine.owner.backgroundStatus.bg > 19) engine.owner.backgroundStatus.bg = 19;
-		levellines = (startlevel+1)*10;
 		engine.framecolor = GameEngine.FRAME_COLOR_GRAY;
 	}
 
@@ -192,6 +212,7 @@ public class RetroMasteryMode extends DummyMode {
 
 	/**
 	 * Main routine for game setup screen
+	 * FIXME: startlevel should be disabled (and default to 0) for GAMETYPE_PRESSURE
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
@@ -200,13 +221,13 @@ public class RetroMasteryMode extends DummyMode {
 			// Check for UP button, when pressed it will move cursor up.
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 1;
+				if(engine.statc[2] < 0) engine.statc[2] = 2;
 				receiver.playSE("cursor");
 			}
 			// Check for DOWN button, when pressed it will move cursor down.
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 1) engine.statc[2] = 0;
+				if(engine.statc[2] > 2) engine.statc[2] = 0;
 				receiver.playSE("cursor");
 			}
 
@@ -220,13 +241,17 @@ public class RetroMasteryMode extends DummyMode {
 
 				switch(engine.statc[2]) {
 				case 0:
+					gametype += change;
+					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
+					if(gametype > GAMETYPE_MAX - 1) gametype = 0;
+					break;
+				case 1:
 					startlevel += change;
 					if(startlevel < 0) startlevel = 19;
 					if(startlevel > 19) startlevel = 0;
 					engine.owner.backgroundStatus.bg = startlevel;
-					levellines = (startlevel+1)*10;
 					break;
-				case 1:
+				case 2:
 					big = !big;
 					break;
 				}
@@ -267,10 +292,12 @@ public class RetroMasteryMode extends DummyMode {
 			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
 		}
 
-		receiver.drawMenuFont(engine, playerID, 0, 0, "LEVEL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, String.format("%02d", startlevel), (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "BIG", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 3, GeneralUtil.getONorOFF(big), (engine.statc[2] == 1));
+		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
+		receiver.drawMenuFont(engine, playerID, 0, 2, "LEVEL", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 3, String.format("%02d", startlevel), (engine.statc[2] == 1));
+		receiver.drawMenuFont(engine, playerID, 0, 4, "BIG", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(big), (engine.statc[2] == 2));
 	}
 
 	/**
@@ -278,9 +305,24 @@ public class RetroMasteryMode extends DummyMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.statistics.level = startlevel;
-		engine.statistics.levelDispAdd = 1;
 		engine.big = big;
+		engine.statistics.levelDispAdd = 1;
+
+		switch (gametype) {
+		case GAMETYPE_PRESSURE:
+			engine.statistics.level = 0;
+			engine.owner.backgroundStatus.bg = 0;
+			levellines = 5;
+			break;
+		case GAMETYPE_200:
+			engine.statistics.level = startlevel;
+			levellines = 10 * Math.min(startlevel + 1, 10);
+			break;
+		case GAMETYPE_ENDLESS:
+			engine.statistics.level = startlevel;
+			levellines = startlevel <= 9 ? (startlevel + 1) * 10 : (startlevel + 11) * 5 ;
+			break;
+		}
 
 		setSpeed(engine);
 	}
@@ -291,6 +333,7 @@ public class RetroMasteryMode extends DummyMode {
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "RETRO MASTERY", EventReceiver.COLOR_GREEN);
+		receiver.drawScoreFont(engine, playerID, 0, 1, "("+GAMETYPE_NAME[gametype]+")", EventReceiver.COLOR_GREEN);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
@@ -298,9 +341,9 @@ public class RetroMasteryMode extends DummyMode {
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 12, 4 + i, String.valueOf(rankingLines[i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 17, 4 + i, String.valueOf(rankingLevel[i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 12, 4 + i, String.valueOf(rankingLines[gametype][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 17, 4 + i, String.format("%02d", rankingLevel[gametype][i]), (i == rankingRank));
 				}
 			}
 		} else {
@@ -346,6 +389,7 @@ public class RetroMasteryMode extends DummyMode {
 		engine.statistics.scoreFromSoftDrop += softdropscore;
 		softdropscore = 0;
 
+		harddropscore /= 2;
 		engine.statistics.score += harddropscore;
 		engine.statistics.scoreFromHardDrop += harddropscore;
 		harddropscore = 0;
@@ -367,7 +411,7 @@ public class RetroMasteryMode extends DummyMode {
 		}
 
 		// Do the ending (at 200 lines for now)
-		if(loons >= 200) {
+		if(gametype == GAMETYPE_200 && loons >= 200) {
 			engine.ending = 1;
 			engine.gameActive = false;
 		}
@@ -383,18 +427,11 @@ public class RetroMasteryMode extends DummyMode {
 
 		efficiency = (actions != 0) ? engine.statistics.lines / (float)actions : 0;
 
-		// Update meter
-		engine.meterValue = ((loons % 10) * receiver.getMeterMax(engine)) / 9;
-		engine.meterColor = GameEngine.METER_COLOR_GREEN;
-		if(loons % 10 >= 2) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-		if(loons % 10 >= 5) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		if(loons % 10 >= 8) engine.meterColor = GameEngine.METER_COLOR_RED;
-
 		if(loons >= levellines ) {
 			// Level up
 			engine.statistics.level++;
 
-			levellines += 10;
+			levellines += gametype == GAMETYPE_PRESSURE ? 5 : 10;
 
 			owner.backgroundStatus.fadesw = true;
 			owner.backgroundStatus.fadecount = 0;
@@ -402,12 +439,35 @@ public class RetroMasteryMode extends DummyMode {
 			int lv = engine.statistics.level;
 
 			if(lv < 0) lv = 0;
-			if(lv >= 19) lv = 19;
+			else if(lv >= 19) lv = 19;
 
 			owner.backgroundStatus.fadebg = lv;
 
 			setSpeed(engine);
 			receiver.playSE("levelup");
+		}
+
+		// Update meter
+		int togo = levellines - loons;
+		if (gametype == GAMETYPE_PRESSURE) {
+			engine.meterValue = ((loons % 5) * receiver.getMeterMax(engine)) / 4;
+			if(togo == 1) engine.meterColor = GameEngine.METER_COLOR_RED;
+			else if(togo == 2) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+			else if(togo == 3) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+			else engine.meterColor = GameEngine.METER_COLOR_GREEN;
+		} else if (engine.statistics.level == startlevel && startlevel != 0){
+			engine.meterValue = (loons * receiver.getMeterMax(engine)) / (levellines - 1);
+			if(togo <= 5) engine.meterColor = GameEngine.METER_COLOR_RED;
+			else if(togo <= 10) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+			else if(togo <= 20) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+			else engine.meterColor = GameEngine.METER_COLOR_GREEN;
+		} else {
+			engine.meterValue = ((10 - togo) * receiver.getMeterMax(engine)) / 9;
+			if(togo <= 2) engine.meterColor = GameEngine.METER_COLOR_RED;
+			else if(togo <= 5) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+			else if(togo <= 8) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+			else engine.meterColor = GameEngine.METER_COLOR_GREEN;
+			
 		}
 	}
 
@@ -472,7 +532,7 @@ public class RetroMasteryMode extends DummyMode {
 
 		// Checks/Updates the ranking
 		if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
-			updateRanking(engine.statistics.score, loons, engine.statistics.level);
+			updateRanking(engine.statistics.score, loons, engine.statistics.level, gametype);
 
 			if(rankingRank != -1) {
 				saveRanking(owner.modeConfig, engine.ruleopt.strRuleName);
@@ -486,9 +546,10 @@ public class RetroMasteryMode extends DummyMode {
 	 * @param prop CustomProperties
 	 */
 	private void loadSetting(CustomProperties prop) {
-		startlevel = prop.getProperty("classicmarathon.startlevel", 0);
-		big = prop.getProperty("classicmarathon.big", false);
-		version = prop.getProperty("classicmarathon.version", 0);
+		gametype = prop.getProperty("retromastery.gametype", 0);
+		startlevel = prop.getProperty("retromastery.startlevel", 0);
+		big = prop.getProperty("retromastery.big", false);
+		version = prop.getProperty("retromastery.version", 0);
 	}
 
 	/**
@@ -496,9 +557,10 @@ public class RetroMasteryMode extends DummyMode {
 	 * @param prop CustomProperties
 	 */
 	private void saveSetting(CustomProperties prop) {
-		prop.setProperty("classicmarathon.startlevel", startlevel);
-		prop.setProperty("classicmarathon.big", big);
-		prop.setProperty("classicmarathon.version", version);
+		prop.setProperty("retromastery.gametype", gametype);
+		prop.setProperty("retromastery.startlevel", startlevel);
+		prop.setProperty("retromastery.big", big);
+		prop.setProperty("retromastery.version", version);
 	}
 
 	/**
@@ -508,9 +570,11 @@ public class RetroMasteryMode extends DummyMode {
 	 */
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
-			rankingScore[i] = prop.getProperty("classicmarathon.ranking." + ruleName + "." + ".score." + i, 0);
-			rankingLines[i] = prop.getProperty("classicmarathon.ranking." + ruleName + "." + ".lines." + i, 0);
-			rankingLevel[i] = prop.getProperty("classicmarathon.ranking." + ruleName + "." + ".level." + i, 0);
+			for(int gametypeIndex = 0; gametypeIndex < RANKING_TYPE; gametypeIndex++) {
+				rankingScore[gametypeIndex][i] = prop.getProperty("retromastery.ranking." + ruleName + "." + gametypeIndex + ".score." + i, 0);
+				rankingLines[gametypeIndex][i] = prop.getProperty("retromastery.ranking." + ruleName + "." + gametypeIndex + ".lines." + i, 0);
+				rankingLevel[gametypeIndex][i] = prop.getProperty("retromastery.ranking." + ruleName + "." + gametypeIndex + ".level." + i, 0);
+			}
 		}
 	}
 
@@ -521,9 +585,11 @@ public class RetroMasteryMode extends DummyMode {
 	 */
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
-			prop.setProperty("classicmarathon.ranking." + ruleName + "." + ".score." + i, rankingScore[i]);
-			prop.setProperty("classicmarathon.ranking." + ruleName + "." + ".lines." + i, rankingLines[i]);
-			prop.setProperty("classicmarathon.ranking." + ruleName + "." + ".level." + i, rankingLevel[i]);
+			for(int gametypeIndex = 0; gametypeIndex < RANKING_TYPE; gametypeIndex++) {
+				prop.setProperty("retromastery.ranking." + ruleName + "." + gametypeIndex + ".score." + i, rankingScore[gametypeIndex][i]);
+				prop.setProperty("retromastery.ranking." + ruleName + "." + gametypeIndex + ".lines." + i, rankingLines[gametypeIndex][i]);
+				prop.setProperty("retromastery.ranking." + ruleName + "." + gametypeIndex + ".level." + i, rankingLevel[gametypeIndex][i]);
+			}
 		}
 	}
 
@@ -532,22 +598,23 @@ public class RetroMasteryMode extends DummyMode {
 	 * @param sc Score
 	 * @param li Lines
 	 * @param lv Level
+	 * @param type Game type
 	 */
-	private void updateRanking(int sc, int li, int lv) {
-		rankingRank = checkRanking(sc, li, lv);
+	private void updateRanking(int sc, int li, int lv, int type) {
+		rankingRank = checkRanking(sc, li, lv, type);
 
 		if(rankingRank != -1) {
 			// Shift the ranking data
 			for(int i = RANKING_MAX - 1; i > rankingRank; i--) {
-				rankingScore[i] = rankingScore[i - 1];
-				rankingLines[i] = rankingLines[i - 1];
-				rankingLevel[i] = rankingLevel[i - 1];
+				rankingScore[type][i] = rankingScore[type][i - 1];
+				rankingLines[type][i] = rankingLines[type][i - 1];
+				rankingLevel[type][i] = rankingLevel[type][i - 1];
 			}
 
 			// Insert a new data
-			rankingScore[rankingRank] = sc;
-			rankingLines[rankingRank] = li;
-			rankingLevel[rankingRank] = lv;
+			rankingScore[type][rankingRank] = sc;
+			rankingLines[type][rankingRank] = li;
+			rankingLevel[type][rankingRank] = lv;
 		}
 	}
 
@@ -558,13 +625,13 @@ public class RetroMasteryMode extends DummyMode {
 	 * @param lv Level
 	 * @return Place (First place is 0. -1 is Out of Rank)
 	 */
-	private int checkRanking(int sc, int li, int lv) {
+	private int checkRanking(int sc, int li, int lv, int type) {
 		for(int i = 0; i < RANKING_MAX; i++) {
-			if(sc > rankingScore[i]) {
+			if(sc > rankingScore[type][i]) {
 				return i;
-			} else if((sc == rankingScore[i]) && (li > rankingLines[i])) {
+			} else if((sc == rankingScore[type][i]) && (li > rankingLines[type][i])) {
 				return i;
-			} else if((sc == rankingScore[i]) && (li == rankingLines[i]) && (lv < rankingLevel[i])) {
+			} else if((sc == rankingScore[type][i]) && (li == rankingLines[type][i]) && (lv < rankingLevel[type][i])) {
 				return i;
 			}
 		}
