@@ -100,9 +100,6 @@ public class SPFMode extends DummyMode {
 	/** 描画などのイベント処理 */
 	private EventReceiver receiver;
 
-	/** Rule settings for countering ojama not yet dropped */
-	private int[] ojamaCounterMode;
-
 	/** 溜まっている邪魔ブロックの数 */
 	private int[] ojama;
 
@@ -116,7 +113,7 @@ public class SPFMode extends DummyMode {
 	private int bgmno;
 
 	/** ビッグ */
-	private boolean[] big;
+	//private boolean[] big;
 
 	/** 効果音ON/OFF */
 	private boolean[] enableSE;
@@ -156,9 +153,6 @@ public class SPFMode extends DummyMode {
 	
 	/** Score */
 	private int[] score;
-	
-	/** Max amount of ojama dropped at once */
-	private int[] maxAttack;
 	
 	/** Settings for hard ojama blocks */
 	private int[] ojamaHard;
@@ -214,13 +208,12 @@ public class SPFMode extends DummyMode {
 		owner = manager;
 		receiver = owner.receiver;
 
-		ojamaCounterMode = new int[MAX_PLAYERS];
 		ojama = new int[MAX_PLAYERS];
 		ojamaSent = new int[MAX_PLAYERS];
 
 		scgettime = new int[MAX_PLAYERS];
 		bgmno = 0;
-		big = new boolean[MAX_PLAYERS];
+		//big = new boolean[MAX_PLAYERS];
 		enableSE = new boolean[MAX_PLAYERS];
 		hurryupSeconds = new int[MAX_PLAYERS];
 		useMap = new boolean[MAX_PLAYERS];
@@ -234,7 +227,6 @@ public class SPFMode extends DummyMode {
 
 		lastscore = new int[MAX_PLAYERS];
 		score = new int[MAX_PLAYERS];
-		maxAttack = new int[MAX_PLAYERS];
 		ojamaHard = new int[MAX_PLAYERS];
 
 		cleared = new boolean[MAX_PLAYERS];
@@ -287,14 +279,13 @@ public class SPFMode extends DummyMode {
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
 		bgmno = prop.getProperty("spfvs.bgmno", 0);
-		big[playerID] = prop.getProperty("spfvs.big.p" + playerID, false);
+		//big[playerID] = prop.getProperty("spfvs.big.p" + playerID, false);
 		enableSE[playerID] = prop.getProperty("spfvs.enableSE.p" + playerID, true);
 		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
 		useMap[playerID] = prop.getProperty("spfvs.useMap.p" + playerID, false);
 		mapSet[playerID] = prop.getProperty("spfvs.mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("spfvs.mapNumber.p" + playerID, -1);
 		presetNumber[playerID] = prop.getProperty("spfvs.presetNumber.p" + playerID, 0);
-		maxAttack[playerID] = prop.getProperty("spfvs.maxAttack.p" + playerID, 30);
 		ojamaHard[playerID] = prop.getProperty("spfvs.ojamaHard.p" + playerID, 5);
 	}
 
@@ -306,15 +297,13 @@ public class SPFMode extends DummyMode {
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
 		prop.setProperty("spfvs.bgmno", bgmno);
-		prop.setProperty("spfvs.ojamaCounterMode", ojamaCounterMode[playerID]);
-		prop.setProperty("spfvs.big.p" + playerID, big[playerID]);
+		//prop.setProperty("spfvs.big.p" + playerID, big[playerID]);
 		prop.setProperty("spfvs.enableSE.p" + playerID, enableSE[playerID]);
 		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
 		prop.setProperty("spfvs.useMap.p" + playerID, useMap[playerID]);
 		prop.setProperty("spfvs.mapSet.p" + playerID, mapSet[playerID]);
 		prop.setProperty("spfvs.mapNumber.p" + playerID, mapNumber[playerID]);
 		prop.setProperty("spfvs.presetNumber.p" + playerID, presetNumber[playerID]);
-		prop.setProperty("spfvs.maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("spfvs.ojamaHard.p" + playerID, ojamaHard[playerID]);
 	}
 
@@ -419,13 +408,13 @@ public class SPFMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 23;
+				if(engine.statc[2] < 0) engine.statc[2] = 17;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 23) engine.statc[2] = 0;
+				if(engine.statc[2] > 17) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -489,34 +478,6 @@ public class SPFMode extends DummyMode {
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
 				case 10:
-					ojamaCounterMode[playerID] += change;
-					if(ojamaCounterMode[playerID] < 0) ojamaCounterMode[playerID] = 2;
-					if(ojamaCounterMode[playerID] > 2) ojamaCounterMode[playerID] = 0;
-					break;
-				case 11:
-					if (m >= 10) maxAttack[playerID] += change*10;
-					else maxAttack[playerID] += change;
-					if(maxAttack[playerID] < 0) maxAttack[playerID] = 99;
-					if(maxAttack[playerID] > 99) maxAttack[playerID] = 0;
-					break;
-				case 15:
-					big[playerID] = !big[playerID];
-					break;
-				case 16:
-					enableSE[playerID] = !enableSE[playerID];
-					break;
-				case 17:
-					if (m > 10) hurryupSeconds[playerID] += change*m/10;
-					else hurryupSeconds[playerID] += change;
-					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
-					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
-					break;
-				case 18:
-					ojamaHard[playerID] += change;
-					if(ojamaHard[playerID] < 1) ojamaHard[playerID] = 9;
-					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 1;
-					break;
-				case 20:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -524,7 +485,7 @@ public class SPFMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 21:
+				case 11:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -533,7 +494,7 @@ public class SPFMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 22:
+				case 12:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -543,6 +504,25 @@ public class SPFMode extends DummyMode {
 						mapNumber[playerID] = -1;
 					}
 					break;
+				case 15:
+					enableSE[playerID] = !enableSE[playerID];
+					break;
+				case 16:
+					if (m > 10) hurryupSeconds[playerID] += change*m/10;
+					else hurryupSeconds[playerID] += change;
+					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
+					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
+					break;
+				case 17:
+					ojamaHard[playerID] += change;
+					if(ojamaHard[playerID] < 1) ojamaHard[playerID] = 9;
+					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 1;
+					break;
+				/*
+				case 18:
+					big[playerID] = !big[playerID];
+					break;
+					*/
 				}
 			}
 
@@ -642,36 +622,32 @@ public class SPFMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 8));
 				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
 				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 9));
-			} else if(engine.statc[2] < 20) {
+			} else {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 10) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
 
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 16));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-				                      (engine.statc[2] == 17));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "HARD OJAMA", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 18));
-			} else {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 20) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
 				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 20));
+				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 21));
+				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 11));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-									  (engine.statc[2] == 22));
+									  (engine.statc[2] == 12));
+				receiver.drawMenuFont(engine, playerID, 0,  6, "DROP SET", EventReceiver.COLOR_CYAN);
+				
+				receiver.drawMenuFont(engine, playerID, 0,  8, "DROP MAP", EventReceiver.COLOR_CYAN);
+				
+				receiver.drawMenuFont(engine, playerID, 0, 10, "SE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
+				receiver.drawMenuFont(engine, playerID, 0, 12, "HURRYUP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 13, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
+				                      (engine.statc[2] == 16));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "COUNTER", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 17));
+				//receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
+				//receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 18));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -735,10 +711,11 @@ public class SPFMode extends DummyMode {
 	public void startGame(GameEngine engine, int playerID) {
 		engine.b2bEnable = false;
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.big = big[playerID];
+		//engine.big = big[playerID];
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
-		engine.colorClearSize = big[playerID] ? 8 : 2;
+		//engine.colorClearSize = big[playerID] ? 8 : 2;
+		engine.colorClearSize = 2;
 		engine.ignoreHidden = false;
 
 		engine.tspinAllowKick = false;
@@ -845,30 +822,21 @@ public class SPFMode extends DummyMode {
 		int height = engine.field.getHeight();
 		int hiddenHeight = engine.field.getHiddenHeight();
 
-		int[] pieceNowColors = engine.nowPieceObject.getColors();
 		int diamondBreakColor = Block.BLOCK_COLOR_INVALID;
-		boolean diamondSearch = false;
-		for (int i = 0; i < pieceNowColors.length; i++)
-			if (pieceNowColors[i] == DIAMOND_COLOR)
-			{
-				diamondSearch = true;
-				break;
-			}
-		if (diamondSearch)
-			for (int y = (-1*hiddenHeight); y < height && diamondBreakColor == Block.BLOCK_COLOR_INVALID; y++)
-				for (int x = 0; x < width && diamondBreakColor == Block.BLOCK_COLOR_INVALID; x++)
-					if (engine.field.getBlockColor(x, y) == DIAMOND_COLOR)
+		for (int y = (-1*hiddenHeight); y < height && diamondBreakColor == Block.BLOCK_COLOR_INVALID; y++)
+			for (int x = 0; x < width && diamondBreakColor == Block.BLOCK_COLOR_INVALID; x++)
+				if (engine.field.getBlockColor(x, y) == DIAMOND_COLOR)
+				{
+					receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
+					engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+					if (y+1 >= height)
 					{
-						receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
-						engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
-						if (y+1 >= height)
-						{
-							techBonusDisplay[playerID] = 120;
-							engine.statistics.score += 10000;
-							score[playerID] += 10000;
-						}
-						else
-							diamondBreakColor = engine.field.getBlockColor(x, y+1, true);
+						techBonusDisplay[playerID] = 120;
+						engine.statistics.score += 10000;
+						score[playerID] += 10000;
+					}
+					else
+						diamondBreakColor = engine.field.getBlockColor(x, y+1, true);
 					}
 		double pts = 0;
 		double add, multiplier;
@@ -939,6 +907,29 @@ public class SPFMode extends DummyMode {
 	
 	public void checkSquares (GameEngine engine, int playerID)
 	{
+		if (engine.field == null)
+			return;
+		
+		int width = engine.field.getWidth();
+		int height = engine.field.getHeight();
+		int hiddenHeight = engine.field.getHiddenHeight();
+		
+		int color;
+		for (int minX = 0; minX < width-1; minX++)
+			for (int minY = (-1*hiddenHeight); minY < height-1; minY++)
+			{
+				color = engine.field.getBlockColor(minX, minY);
+				if (color < Block.BLOCK_COLOR_RED || color > Block.BLOCK_COLOR_PURPLE)
+					continue;
+				if (color != engine.field.getBlockColor(minX+1, minY))
+					continue;
+				if (color != engine.field.getBlockColor(minX+1, minY))
+					continue;
+				if (color != engine.field.getBlockColor(minX, minY+1))
+					continue;
+				if (color != engine.field.getBlockColor(minX+1, minY+1))
+					continue;
+			}
 		//TODO: Check for power gems.
 	}
 
@@ -959,7 +950,8 @@ public class SPFMode extends DummyMode {
 				return false;
 			int drop = Math.min(ojama[playerID], width * dropRows);
 			ojama[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID], 3);
+			//engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID], 3);
+			engine.field.garbageDrop(engine, drop, false, ojamaHard[playerID], 3);
 			engine.field.setAllSkin(engine.getSkin());
 			int patternCol = 0;
 			for (int x = 0; x < engine.field.getWidth(); x++)
