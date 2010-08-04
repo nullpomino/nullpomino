@@ -187,10 +187,7 @@ public class SPFMode extends DummyMode {
 	
 	private static final int[][] TEST_DROP_PATTERN =
 	{
-		{2,2,2,2,2,2},
-		{5,5,5,5,5,5},
-		{7,7,7,7,7,7},
-		{4,4,4,4,4,4}
+		{2,5,7,4}
 	};
 	
 	/*
@@ -964,20 +961,24 @@ public class SPFMode extends DummyMode {
 			ojama[playerID] -= drop;
 			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID], 3);
 			engine.field.setAllSkin(engine.getSkin());
+			int patternCol = 0;
 			for (int x = 0; x < engine.field.getWidth(); x++)
 			{
+				if (patternCol >= dropPattern[playerID].length)
+					patternCol = 0;
 				int patternRow = 0;
 				for (int y = dropRows - hiddenHeight; y >= (-1 * hiddenHeight); y--)
 				{
 					Block b = engine.field.getBlock(x, y);
 					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) && b.secondaryColor == 0)
 					{
-						if (patternRow >= dropPattern[playerID].length)
+						if (patternRow >= dropPattern[playerID][patternCol].length)
 							patternRow = 0;
-						b.secondaryColor = dropPattern[playerID][patternRow][x];
+						b.secondaryColor = dropPattern[playerID][patternCol][patternRow];
 						patternRow++;
 					}
 				}
+				patternCol++;
 			}
 			return true;
 		}
