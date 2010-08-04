@@ -129,7 +129,7 @@
 0.ruleopt.softdropLock=true
 0.ruleopt.dasInLockFlash=false
 0.ruleopt.pieceOffsetY.9.3=0
-0.ruleopt.lockresetFall=false
+0.ruleopt.lockresetFall=true
 0.ruleopt.pieceOffsetY.9.2=0
 0.ruleopt.holdResetDirection=false
 0.ruleopt.pieceOffsetY.9.1=0
@@ -193,7 +193,7 @@
 0.ruleopt.skin=8
 0.ruleopt.lockresetMove=false
 0.ruleopt.rotateInitial=false
-0.ruleopt.maxLockDelay=0
+0.ruleopt.maxLockDelay=-1
 0.ruleopt.pieceSpawnX.6.3=1
 0.ruleopt.pieceSpawnX.6.2=1
 0.ruleopt.pieceSpawnX.6.1=1
