@@ -440,6 +440,8 @@ public class Field implements Serializable {
 		int blockColor = getBlockColor(x, y);
 		if (gemSame && blockColor >= 9 && blockColor <= 15)
 			blockColor -= 7;
+		else if (gemSame && blockColor == Block.BLOCK_COLOR_GEM_RAINBOW)
+			return Block.BLOCK_COLOR_RAINBOW;
 		return blockColor;
 	}
 

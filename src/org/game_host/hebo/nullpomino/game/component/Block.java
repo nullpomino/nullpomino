@@ -30,6 +30,8 @@ package org.game_host.hebo.nullpomino.game.component;
 
 import java.io.Serializable;
 
+import org.game_host.hebo.nullpomino.game.play.GameEngine;
+
 /**
  * ブロック
  */
@@ -72,7 +74,9 @@ public class Block implements Serializable {
 							BLOCK_COLOR_SQUARE_SILVER_6 = 30,
 							BLOCK_COLOR_SQUARE_SILVER_7 = 31,
 							BLOCK_COLOR_SQUARE_SILVER_8 = 32,
-							BLOCK_COLOR_SQUARE_SILVER_9 = 33;
+							BLOCK_COLOR_SQUARE_SILVER_9 = 33,
+							BLOCK_COLOR_RAINBOW = 34,
+							BLOCK_COLOR_GEM_RAINBOW = 35;
 
 	/** アイテムの定数 */
 	public static final int BLOCK_ITEM_NONE = 0,
@@ -155,6 +159,9 @@ public class Block implements Serializable {
 	
 	/** Number of extra clears required before block is erased */
 	public int hard;
+	
+	/** Color-shift phase for rainbow blocks */
+	public static int rainbowPhase = 0;
 
 	/**
 	 * コンストラクタ
@@ -266,7 +273,8 @@ public class Block implements Serializable {
 	 * @return このブロックが宝石ブロックだったらtrue
 	 */
 	public boolean isGemBlock() {
-		return (color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE);
+		return ((color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE)) ||
+				(color == BLOCK_COLOR_GEM_RAINBOW);
 	}
 
 	/**
@@ -291,5 +299,29 @@ public class Block implements Serializable {
 	 */
 	public boolean isNormalBlock() {
 		return (color >= BLOCK_COLOR_GRAY) && (color <= BLOCK_COLOR_PURPLE);
+	}
+	
+	public int getDrawColor() {
+		if (color == BLOCK_COLOR_GEM_RAINBOW)
+			return BLOCK_COLOR_GEM_RED + (rainbowPhase/3);
+		else if (color == BLOCK_COLOR_RAINBOW)
+			return BLOCK_COLOR_RED + (rainbowPhase/3);
+		else
+			return color;
+	}
+
+	public static void updateRainbowPhase(int time) {
+		rainbowPhase = time%21;
+	}
+
+	public static void updateRainbowPhase(GameEngine engine) {
+		if (engine != null && engine.timerActive)
+			updateRainbowPhase(engine.statistics.time);
+		else
+		{
+			rainbowPhase++;
+			if (rainbowPhase >= 21)
+				rainbowPhase = 0;
+		}
 	}
 }

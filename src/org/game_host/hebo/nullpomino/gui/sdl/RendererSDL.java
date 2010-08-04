@@ -531,7 +531,7 @@ public class RendererSDL extends EventReceiver {
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	protected void drawBlock(int x, int y, Block blk) throws SDLException {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
 	}
 
 	/**
@@ -543,7 +543,7 @@ public class RendererSDL extends EventReceiver {
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) throws SDLException {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class RendererSDL extends EventReceiver {
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) throws SDLException {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
 	}
 
 	/**
@@ -668,7 +668,7 @@ public class RendererSDL extends EventReceiver {
 							int x3 = x + (x2 * blksize);
 							int y3 = y + (y2 * blksize);
 
-							int colorID = blkTemp.color;
+							int colorID = blkTemp.getDrawColor();
 							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
 							long color = getColorByID(colorID);
 							graphics.fillRect(new SDLRect(x3, y3, blksize, blksize), color);
@@ -721,7 +721,7 @@ public class RendererSDL extends EventReceiver {
 						int x3 = x + (x2 * blksize);
 						int y3 = y + (y2 * blksize);
 
-						int colorID = blkTemp.color;
+						int colorID = blkTemp.getDrawColor();
 						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
 						long color = getColorByID(colorID);
 						graphics.fillRect(new SDLRect(x3, y3, blksize * 2, blksize * 2), color);
@@ -1315,13 +1315,14 @@ public class RendererSDL extends EventReceiver {
 	@Override
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
 		if(showlineeffect && !engine.minidisplay) {
+			int color = blk.getDrawColor();
 			// 通常ブロック
-			if((blk.color >= Block.BLOCK_COLOR_GRAY) && (blk.color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
+			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
 				EffectObjectSDL obj =
 					new EffectObjectSDL(1,
 										getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
 										getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
-										blk.color);
+										color);
 				effectlist.add(obj);
 			}
 			// 宝石ブロック
@@ -1330,7 +1331,7 @@ public class RendererSDL extends EventReceiver {
 					new EffectObjectSDL(2,
 										getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
 										getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
-										blk.color);
+										color);
 				effectlist.add(obj);
 			}
 		}

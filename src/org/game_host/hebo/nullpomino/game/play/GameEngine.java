@@ -589,6 +589,18 @@ public class GameEngine {
 	/** If true, color clears will ignore hidden rows */
 	public boolean ignoreHidden;
 
+	/** Bonus blocks appear once every this many pieces (0 to disable bonus blocks) */
+	public int bonusBlockFrequency;
+
+	/** Color IDs of bonus blocks */
+	public int[] bonusBlockColors;
+	
+	/** Number of bonus blocks in the bonus piece */
+	public int bonusBlockSize;
+	
+	/** Set to true to process rainbow block effects, false to skip. */
+	public boolean rainbowAnimate;
+	
 	/**
 	 * コンストラクタ
 	 * @param owner このゲームエンジンを所有するGameOwnerクラス
@@ -833,6 +845,12 @@ public class GameEngine {
 		blockColors = BLOCK_COLORS_DEFAULT;
 		cascadeDelay = 0;
 		cascadeClearDelay = 0;
+
+		bonusBlockFrequency = 0;
+		bonusBlockColors = null;
+		bonusBlockSize = 1;
+		
+		rainbowAnimate = false;
 
 		// イベント発生
 		if(owner.mode != null) {
@@ -1648,6 +1666,9 @@ public class GameEngine {
 		// 最初の処理
 		if(owner.mode != null) owner.mode.renderFirst(this, playerID);
 		owner.receiver.renderFirst(this, playerID);
+		
+		if (rainbowAnimate)
+			Block.updateRainbowPhase(this);
 
 		// 各ステータスの処理
 		switch(stat) {
@@ -1795,6 +1816,16 @@ public class GameEngine {
 						int[] colors = new int[size];
 						for (int j = 0; j < size; j++)
 							colors[j] = blockColors[random.nextInt(numColors)];
+						nextPieceArrayObject[i].setColor(colors);
+					}
+				}
+				if (bonusBlockFrequency > 0 && bonusBlockSize > 0 && bonusBlockColors != null)
+				{
+					int[] colors = new int[bonusBlockSize];
+					for(int i = bonusBlockFrequency-1; i < nextPieceArrayObject.length; i+=bonusBlockFrequency) {
+						int color = bonusBlockColors[random.nextInt(bonusBlockColors.length)];
+						for (int j = 0; j < bonusBlockSize; j++)
+							colors[j] = color;
 						nextPieceArrayObject[i].setColor(colors);
 					}
 				}

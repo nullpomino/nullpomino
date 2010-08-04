@@ -465,7 +465,7 @@ public class RendererSlick extends EventReceiver {
 	 * @param blk Blockクラスのインスタンス
 	 */
 	protected void drawBlock(int x, int y, Block blk) {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
 	}
 
 	/**
@@ -476,7 +476,7 @@ public class RendererSlick extends EventReceiver {
 	 * @param scale 拡大率
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
 	}
 
 	/**
@@ -488,7 +488,7 @@ public class RendererSlick extends EventReceiver {
 	 * @param darkness 暗さもしくは明るさ
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
 	}
 
 	/**
@@ -596,7 +596,7 @@ public class RendererSlick extends EventReceiver {
 							int y3 = y + (y2 * blksize);
 							int ls = (blksize-1);
 
-							int colorID = blkTemp.color;
+							int colorID = blkTemp.getDrawColor();
 							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
 							Color color = getColorByID(colorID);
 							if(showbg) {
@@ -655,7 +655,7 @@ public class RendererSlick extends EventReceiver {
 						int y3 = y + (y2 * blksize);
 						int ls = (blksize * 2 -1);
 
-						int colorID = blkTemp.color;
+						int colorID = blkTemp.getDrawColor();
 						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
 						Color color = getColorByID(colorID);
 						if(showbg) {
@@ -1251,12 +1251,13 @@ public class RendererSlick extends EventReceiver {
 	@Override
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
 		if(showlineeffect && !engine.minidisplay) {
+			int color = blk.getDrawColor();
 			// 通常ブロック
-			if((blk.color >= Block.BLOCK_COLOR_GRAY) && (blk.color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
+			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
 				EffectObject obj = new EffectObject(1,
 													getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
 													getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
-													blk.color);
+													color);
 				effectlist.add(obj);
 			}
 			// 宝石ブロック
@@ -1264,7 +1265,7 @@ public class RendererSlick extends EventReceiver {
 				EffectObject obj = new EffectObject(2,
 													getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
 													getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
-													blk.color);
+													color);
 				effectlist.add(obj);
 			}
 		}

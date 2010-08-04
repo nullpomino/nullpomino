@@ -530,7 +530,7 @@ public class RendererSwing extends EventReceiver {
 	 * @param blk Blockクラスのインスタンス
 	 */
 	protected void drawBlock(int x, int y, Block blk) {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
 	}
 
 	/**
@@ -541,7 +541,7 @@ public class RendererSwing extends EventReceiver {
 	 * @param scale 拡大率
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
 	}
 
 	/**
@@ -553,7 +553,7 @@ public class RendererSwing extends EventReceiver {
 	 * @param darkness 暗さもしくは明るさ
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
-		drawBlock(x, y, blk.color, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
 	}
 
 	/**
@@ -659,7 +659,7 @@ public class RendererSwing extends EventReceiver {
 							int y3 = y + (y2 * blksize);
 							int ls = (blksize-1);
 
-							int colorID = blkTemp.color;
+							int colorID = blkTemp.getDrawColor();
 							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
 							Color color = getColorByID(colorID);
 							graphics.setColor(color);
@@ -713,7 +713,7 @@ public class RendererSwing extends EventReceiver {
 						int y3 = y + (y2 * blksize);
 						int ls = (blksize * 2 -1);
 
-						int colorID = blkTemp.color;
+						int colorID = blkTemp.getDrawColor();
 						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
 						Color color = getColorByID(colorID);
 						graphics.setColor(color);
