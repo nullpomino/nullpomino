@@ -43,7 +43,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -115,7 +114,7 @@ public class Sequencer extends JFrame implements ActionListener {
 	//----------------------------------------------------------------------
 	/** Generated Sequence */
 	private int[] sequence;
-	
+
 	/** Enabled Pieces */
 	private boolean[] nextPieceEnable;
 
@@ -166,13 +165,13 @@ public class Sequencer extends JFrame implements ActionListener {
 				log.warn("Failed to set native look&feel", e);
 			}
 		}
-		
+
 		// Initialize enabled pieces
 		nextPieceEnable = new boolean[Piece.PIECE_COUNT];
 		for(int i = 0; i < Piece.PIECE_STANDARD_COUNT; i++) nextPieceEnable[i] = true;
 
 		setTitle(getUIText("Title_Sequencer"));
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		initUI();
 		pack();
@@ -231,12 +230,12 @@ public class Sequencer extends JFrame implements ActionListener {
 		miExit.setActionCommand("Exit");
 		miExit.addActionListener(this);
 		mFile.add(miExit);
-		
+
 		// Options menu
 		JMenu mOptions = new JMenu(getUIText("JMenu_Options"));
 		mOptions.setMnemonic('P');
 		menuBar.add(mOptions);
-		
+
 		// Set piece enable
 		JMenuItem miSetPieceEnable = new JMenuItem(getUIText("JMenuItem_SetPieceEnable"));
 		miSetPieceEnable.setMnemonic('E');
@@ -517,7 +516,7 @@ public class Sequencer extends JFrame implements ActionListener {
 			dispose();
 		}
 	}
-	
+
 	public void setPieceEnable() {
 		final JFrame setPieceEnableFrame = new JFrame(getUIText("Title_SetPieceEnable"));
 		setPieceEnableFrame.getContentPane().setLayout(new GridLayout(0,2,10,10));
