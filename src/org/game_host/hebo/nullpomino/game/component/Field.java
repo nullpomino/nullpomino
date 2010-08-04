@@ -2067,8 +2067,6 @@ public class Field implements Serializable {
 	{
 		if (targetColor < 0)
 			return 0;
-		if (flag)
-			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 		if (gemSame && targetColor >= 9 && targetColor <= 15)
 			targetColor -= 7;
 		int total = 0;
@@ -2412,7 +2410,11 @@ public class Field implements Serializable {
 		return total;
 	}
 
+
 	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard) {
+		garbageDrop(engine, drop, big, hard, -1);
+	}
+	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard, int avoidColumn) {
 		int y = -1 * hidden_height;
 		int actualWidth = width;
 		if (big)
@@ -2433,7 +2435,13 @@ public class Field implements Serializable {
 		{
 			for (int x = 0; x < actualWidth; x++)
 				placeBlock[x] = true;
-			for (int i = actualWidth; i > drop; i--)
+			int start = actualWidth;
+			if (avoidColumn >= 0 && avoidColumn < actualWidth)
+			{
+				start--;
+				placeBlock[avoidColumn] = false;
+			}
+			for (int i = start; i > drop; i--)
 			{
 				do {
 					j = engine.random.nextInt(actualWidth);
@@ -2449,7 +2457,7 @@ public class Field implements Serializable {
 			{
 				do {
 					j = engine.random.nextInt(actualWidth);
-				} while (placeBlock[j]);
+				} while (placeBlock[j] && j != avoidColumn);
 				placeBlock[j] = true;
 			}
 		}
@@ -2487,6 +2495,7 @@ public class Field implements Serializable {
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
 			b.hard = hard;
+			b.secondaryColor = 0;
 			return true;
 		}
 		return false;

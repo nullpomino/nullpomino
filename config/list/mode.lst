@@ -31,3 +31,4 @@ org.game_host.hebo.nullpomino.game.subsystem.mode.AvalancheFeverMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.AvalancheVSMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.PhysicianMode
 org.game_host.hebo.nullpomino.game.subsystem.mode.PhysicianVSMode
+org.game_host.hebo.nullpomino.game.subsystem.mode.SPFMode

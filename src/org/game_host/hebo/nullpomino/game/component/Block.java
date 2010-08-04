@@ -162,6 +162,9 @@ public class Block implements Serializable {
 	
 	/** Color-shift phase for rainbow blocks */
 	public static int rainbowPhase = 0;
+	
+	/** Color to turn into when garbage block turns into a regular block */
+	public int secondaryColor = 0;
 
 	/**
 	 * コンストラクタ
@@ -224,6 +227,7 @@ public class Block implements Serializable {
 		pieceNum = -1;
 		item = 0;
 		hard = 0;
+		secondaryColor = 0;
 	}
 
 	/**
@@ -239,6 +243,7 @@ public class Block implements Serializable {
 		alpha = b.alpha;
 		pieceNum = b.pieceNum;
 		item = b.item;
+		secondaryColor = b.secondaryColor;
 	}
 
 	/**
