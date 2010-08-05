@@ -132,6 +132,9 @@ public class SPFMode extends DummyMode {
 		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.2, 1.0, 1.0},
 	};
 	
+	/** Names of rainbow power settings */
+	private static final String[] RAINBOW_POWER_NAMES = {"50", "80", "100", "50/100"};
+	
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -1150,7 +1153,6 @@ public class SPFMode extends DummyMode {
 						minX = testX;
 						expanded = true;
 					}
-					testX++;
 				}
 				//Expand right
 				for (testX = maxX+1, done = false; testX < width && !done; testX++)
