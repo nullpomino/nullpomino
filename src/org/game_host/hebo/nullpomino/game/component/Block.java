@@ -334,4 +334,14 @@ public class Block implements Serializable {
 				rainbowPhase = 0;
 		}
 	}
+	
+	public static int gemToNormalColor(int color)
+	{
+		if ((color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE))
+			return color - 7;
+		else if (color == BLOCK_COLOR_GEM_RAINBOW)
+			return BLOCK_COLOR_RAINBOW;
+		else
+			return color;
+	}
 }

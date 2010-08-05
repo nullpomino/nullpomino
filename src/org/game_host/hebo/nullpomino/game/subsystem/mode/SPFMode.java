@@ -163,9 +163,6 @@ public class SPFMode extends DummyMode {
 
 	/** Hurryup開始までの秒数(0でHurryupなし) */
 	private int[] hurryupSeconds;
-
-	/** Set to true when last drop resulted in a clear */
-	private boolean[] cleared;
 	
 	/** Set to true when dropping ojama blocks */
 	private boolean[] ojamaDrop;
@@ -233,7 +230,6 @@ public class SPFMode extends DummyMode {
 		score = new int[MAX_PLAYERS];
 		ojamaHard = new int[MAX_PLAYERS];
 
-		cleared = new boolean[MAX_PLAYERS];
 		ojamaDrop = new boolean[MAX_PLAYERS];
 		zenKeshiDisplay = new int[MAX_PLAYERS];
 		techBonusDisplay = new int[MAX_PLAYERS];
@@ -384,7 +380,6 @@ public class SPFMode extends DummyMode {
 		ojamaSent[playerID] = 0;
 		score[playerID] = 0;
 		scgettime[playerID] = 0;
-		cleared[playerID] = false;
 		ojamaDrop[playerID] = false;
 		zenKeshiDisplay[playerID] = 0;
 		techBonusDisplay[playerID] = 0;
@@ -571,12 +566,10 @@ public class SPFMode extends DummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 9;
-			}
-			if(engine.statc[3] >= 120) {
+			if(engine.statc[3] >= 120)
 				engine.statc[4] = 1;
-			}
+			else if(engine.statc[3] >= 60)
+				engine.statc[2] = 10;
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
@@ -841,7 +834,7 @@ public class SPFMode extends DummyMode {
 					}
 					else
 						diamondBreakColor = engine.field.getBlockColor(x, y+1, true);
-					}
+				}
 		double pts = 0;
 		double add, multiplier;
 		Block b;
@@ -850,11 +843,10 @@ public class SPFMode extends DummyMode {
 			engine.field.allClearColor(diamondBreakColor, true, true);
 			for (int y = (-1*hiddenHeight); y < height; y++)
 			{
-				multiplier = ROW_VALUES[Math.min(Math.max(y, 0), ROW_VALUES.length)];
+				multiplier = getRowValue(y);
 				for (int x = 0; x < width; x++)
-					if (engine.field.getBlockColor(x, y) == diamondBreakColor)
+					if (engine.field.getBlockColor(x, y, true) == diamondBreakColor)
 					{
-						b = engine.field.getBlock(x, y);
 						pts += multiplier * 7 * DIAMOND_RATIO;
 						receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
 						engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
@@ -863,7 +855,7 @@ public class SPFMode extends DummyMode {
 		}
 		for (int y = (-1*hiddenHeight); y < height; y++)
 		{
-			multiplier = ROW_VALUES[Math.min(Math.max(y, 0), ROW_VALUES.length)];
+			multiplier = getRowValue(y);
 			for (int x = 0; x < width; x++)
 			{
 				b = engine.field.getBlock(x, y);
@@ -909,6 +901,11 @@ public class SPFMode extends DummyMode {
 		}
 		if (ojamaNew > 0)
 			ojama[enemyID] += ojamaNew;
+	}
+	
+	public static double getRowValue(int row)
+	{
+		return ROW_VALUES[Math.min(Math.max(row, 0), ROW_VALUES.length-1)];
 	}
 	
 	public void checkSquares (GameEngine engine, int playerID)
@@ -1141,22 +1138,29 @@ public class SPFMode extends DummyMode {
 						}
 					}
 				}
-		//TODO: Check for power gems.
 	}
 
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		if (engine.field == null)
 			return false;
 		
+		int width = engine.field.getWidth();
+		int height = engine.field.getHeight();
+		int hiddenHeight = engine.field.getHiddenHeight();
+		
+		for (int y = (-1*hiddenHeight); y < height; y++)
+			for (int x = 0; x < width; x++)
+				if (engine.field.getBlockColor(x, y) == DIAMOND_COLOR)
+				{
+					calcScore(engine, playerID, 0);
+					return true;
+				}
+		
 		checkSquares(engine, playerID);
 		
 		//Drop garbage if needed.
 		if (ojama[playerID] > 0)
 		{
-			int width = engine.field.getWidth();
-			//int height = engine.field.getHeight();
-			int hiddenHeight = engine.field.getHiddenHeight();
-			
 			ojamaDrop[playerID] = true;
 			int dropRows = Math.min((ojama[playerID] + width - 1) / width, engine.field.getHighestBlockY(3));
 			if (dropRows <= 0)
@@ -1199,10 +1203,7 @@ public class SPFMode extends DummyMode {
 		if (zenKeshiDisplay[playerID] > 0)
 			zenKeshiDisplay[playerID]--;
 		if (engine.stat == GameEngine.STAT_MOVE)
-		{
-			cleared[playerID] = false;
 			ojamaDrop[playerID] = false;
-		}
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();

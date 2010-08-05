@@ -379,13 +379,13 @@ public class PhysicianVSMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 21;
+				if(engine.statc[2] < 0) engine.statc[2] = 16;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 21) engine.statc[2] = 0;
+				if(engine.statc[2] > 16) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -457,15 +457,15 @@ public class PhysicianVSMode extends DummyMode {
 				case 11:
 					flash[playerID] = !flash[playerID];
 					break;
-				case 15:
+				case 12:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 18:
+				case 13:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 19:
+				case 14:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -473,7 +473,7 @@ public class PhysicianVSMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 20:
+				case 15:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -482,7 +482,7 @@ public class PhysicianVSMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 21:
+				case 16:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -536,12 +536,10 @@ public class PhysicianVSMode extends DummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 9;
-			}
-			if(engine.statc[3] >= 120) {
+			if(engine.statc[3] >= 120)
 				engine.statc[4] = 1;
-			}
+			else if(engine.statc[3] >= 60)
+				engine.statc[2] = 9;
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
@@ -589,7 +587,7 @@ public class PhysicianVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 7));
 				receiver.drawMenuFont(engine, playerID, 0, 16, "SAVE", EventReceiver.COLOR_GREEN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 8));
-			} else if(engine.statc[2] < 19) {
+			} else {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
@@ -602,23 +600,17 @@ public class PhysicianVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 4, "MODE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 5, (flash[playerID] ? "FLASH" : "NORMAL"), (engine.statc[2] == 11));
 				
-				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 18));
-			} else {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 19) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 19));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 20));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-									  (engine.statc[2] == 21));
+				receiver.drawMenuFont(engine, playerID, 0, 6, "SE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 12));
+				receiver.drawMenuFont(engine, playerID, 0, 8, "BGM", EventReceiver.COLOR_PINK);
+				receiver.drawMenuFont(engine, playerID, 1, 9, String.valueOf(bgmno), (engine.statc[2] == 13));
+				receiver.drawMenuFont(engine, playerID, 0, 10, "USE MAP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 14));
+				receiver.drawMenuFont(engine, playerID, 0, 12, "MAP SET", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(mapSet[playerID]), (engine.statc[2] == 15));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "MAP NO.", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 15, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
+									  (engine.statc[2] == 16));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);

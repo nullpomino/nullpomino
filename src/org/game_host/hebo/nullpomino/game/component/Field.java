@@ -437,12 +437,7 @@ public class Field implements Serializable {
 	 * @return 指定した座標にあるブロックの色（失敗したらBLOCK_COLOR_INVALID）
 	 */
 	public int getBlockColor(int x, int y, boolean gemSame) {
-		int blockColor = getBlockColor(x, y);
-		if (gemSame && blockColor >= 9 && blockColor <= 15)
-			blockColor -= 7;
-		else if (gemSame && blockColor == Block.BLOCK_COLOR_GEM_RAINBOW)
-			return Block.BLOCK_COLOR_RAINBOW;
-		return blockColor;
+		return Block.gemToNormalColor(getBlockColor(x, y));
 	}
 
 	/**
@@ -2067,8 +2062,8 @@ public class Field implements Serializable {
 	{
 		if (targetColor < 0)
 			return 0;
-		if (gemSame && targetColor >= 9 && targetColor <= 15)
-			targetColor -= 7;
+		if (gemSame)
+			targetColor = Block.gemToNormalColor(targetColor);
 		int total = 0;
 		for (int y = (-1 * hidden_height); y < height; y++)
 			for (int x = 0; x < width; x++)

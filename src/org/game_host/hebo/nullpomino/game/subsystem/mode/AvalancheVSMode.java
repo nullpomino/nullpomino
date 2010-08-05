@@ -730,12 +730,12 @@ public class AvalancheVSMode extends DummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 9;
-			}
-			if(engine.statc[3] >= 120) {
+			if(engine.statc[3] >= 180)
 				engine.statc[4] = 1;
-			}
+			else if(engine.statc[3] >= 120)
+				engine.statc[2] = 20;
+			else if(engine.statc[3] >= 60)
+				engine.statc[2] = 10;
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
