@@ -30,6 +30,7 @@ package org.game_host.hebo.nullpomino.game.subsystem.mode;
 
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.game_host.hebo.nullpomino.game.component.BGMStatus;
 import org.game_host.hebo.nullpomino.game.component.Block;
 import org.game_host.hebo.nullpomino.game.component.Controller;
@@ -45,6 +46,9 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
  * SPF VS-BATTLE mode (Alpha)
  */
 public class SPFMode extends DummyMode {
+	/** Log (Apache log4j) */
+	static Logger log = Logger.getLogger(SPFMode.class);
+	
 	/** 現在のバージョン */
 	private static final int CURRENT_VERSION = 0;
 	
@@ -909,6 +913,7 @@ public class SPFMode extends DummyMode {
 	
 	public void checkSquares (GameEngine engine, int playerID)
 	{
+		log.debug("checkSquares called.");
 		if (engine.field == null)
 			return;
 		
@@ -929,6 +934,7 @@ public class SPFMode extends DummyMode {
 				minY = y;
 				maxX = x;
 				maxY = y;
+				boolean expanded = false;
 				b = engine.field.getBlock(x, y);
 				if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
 						b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) &&
@@ -974,15 +980,19 @@ public class SPFMode extends DummyMode {
 							break;
 						maxY++;
 					}
+					log.debug("Pre-existing square found: (" + minX + ", " + minY + ") to (" +
+							 maxX + ", " + maxY + ")");
 				}
-				else if (color == engine.field.getBlockColor(x+1, y) &&
+				else if (b.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
+						color == engine.field.getBlockColor(x+1, y) &&
 						color == engine.field.getBlockColor(x, y+1) &&
 						color == engine.field.getBlockColor(x+1, y+1))
 				{
 					Block bR = engine.field.getBlock(x+1, y);
 					Block bD = engine.field.getBlock(x, y+1);
 					Block bDR = engine.field.getBlock(x+1, y+1);
-					if (bR.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
+					if (
+							bR.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
 							bD.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
 							bDR.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN))
 					{
@@ -993,19 +1003,22 @@ public class SPFMode extends DummyMode {
 						bR.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
 						bD.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
 						bDR.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
+						expanded = true;
 					}
+					log.debug("New square formed: (" + minX + ", " + minY + ") to (" +
+							 maxX + ", " + maxY + ")");
 				}
 				if (maxX <= minX || maxY <= minY)
 					continue; //No gem block, skip to next block
 				boolean expandHere, done;
 				int testX, testY;
 				Block bTest;
-				boolean expanded = false;
+				log.debug("Testing square for expansion. Coordinates before: (" + minX + ", " + minY + ") to (" +
+						 maxX + ", " + maxY + ")");
 				//Expand up
-				testY = minY-1;
-				done = false;
-				while (testY >= (-1 * hiddenHeight) && !done)
+				for (testY = minY-1, done = false; testY >= (-1 * hiddenHeight) && !done; testY--)
 				{
+					log.debug("Testing to expand up. testY = " + testY);
 					if (color != engine.field.getBlockColor(minX, testY) ||
 							color != engine.field.getBlockColor(maxX, testY))
 						break;
@@ -1030,9 +1043,7 @@ public class SPFMode extends DummyMode {
 					}
 				}
 				//Expand left
-				testX = minX-1;
-				done = false;
-				while (testX >= 0 && !done)
+				for (testX = minX-1, done = false; testX >= 0 && !done; testX--)
 				{
 					if (color != engine.field.getBlockColor(testX, minY) ||
 							color != engine.field.getBlockColor(testX, maxY))
@@ -1056,11 +1067,10 @@ public class SPFMode extends DummyMode {
 						minX = testX;
 						expanded = true;
 					}
+					testX++;
 				}
 				//Expand left
-				testX = maxX+1;
-				done = false;
-				while (testX < width && !done)
+				for (testX = maxX+1, done = false; testX < width && !done; testX++)
 				{
 					if (color != engine.field.getBlockColor(testX, minY) ||
 							color != engine.field.getBlockColor(testX, maxY))
@@ -1086,9 +1096,7 @@ public class SPFMode extends DummyMode {
 					}
 				}
 				//Expand down
-				testY = maxY+1;
-				done = false;
-				while (testY >= (-1 * hiddenHeight) && !done)
+				for (testY = maxY+1, done = false; testY < width && !done; testY++)
 				{
 					if (color != engine.field.getBlockColor(minX, testY) ||
 							color != engine.field.getBlockColor(maxX, testY))
@@ -1113,8 +1121,12 @@ public class SPFMode extends DummyMode {
 						expanded = true;
 					}
 				}
+				log.debug("expanded = " + expanded);
 				if (expanded)
 				{
+
+					log.debug("Expanding square. Coordinates after: (" + minX + ", " + minY + ") to (" +
+							 maxX + ", " + maxY + ")");
 					int size = Math.min(maxX - minX + 1, maxY - minY + 1);
 					for (testX = minX; testX <= maxX; testX++)
 						for (testY = minY; testY <= maxY; testY++)
@@ -1135,6 +1147,8 @@ public class SPFMode extends DummyMode {
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		if (engine.field == null)
 			return false;
+		
+		checkSquares(engine, playerID);
 		
 		//Drop garbage if needed.
 		if (ojama[playerID] > 0)
