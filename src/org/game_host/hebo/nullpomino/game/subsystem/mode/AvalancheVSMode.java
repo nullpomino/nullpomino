@@ -606,7 +606,8 @@ public class AvalancheVSMode extends DummyMode {
 					if(ojamaRate[playerID] > 1000) ojamaRate[playerID] = 10;
 					break;
 				case 15:
-					big[playerID] = !big[playerID];
+					//big[playerID] = !big[playerID];
+					big[playerID] = false;
 					break;
 				case 16:
 					enableSE[playerID] = !enableSE[playerID];
