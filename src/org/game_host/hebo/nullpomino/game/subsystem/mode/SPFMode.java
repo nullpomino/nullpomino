@@ -868,6 +868,8 @@ public class SPFMode extends DummyMode {
 				if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE) || b.isEmpty())
 					continue;
 				add = multiplier * 7;
+				if (b.bonusValue > 1)
+					add *= b.bonusValue;
 				if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE))
 				{
 					add /= 2.0;
@@ -915,21 +917,218 @@ public class SPFMode extends DummyMode {
 		int hiddenHeight = engine.field.getHiddenHeight();
 		
 		int color;
-		for (int minX = 0; minX < width-1; minX++)
-			for (int minY = (-1*hiddenHeight); minY < height-1; minY++)
+		Block b;
+		int minX, minY, maxX, maxY;
+		for (int x = 0; x < width; x++)
+			for (int y = (-1*hiddenHeight); y < height; y++)
 			{
-				color = engine.field.getBlockColor(minX, minY);
+				color = engine.field.getBlockColor(x, y);
 				if (color < Block.BLOCK_COLOR_RED || color > Block.BLOCK_COLOR_PURPLE)
 					continue;
-				if (color != engine.field.getBlockColor(minX+1, minY))
-					continue;
-				if (color != engine.field.getBlockColor(minX+1, minY))
-					continue;
-				if (color != engine.field.getBlockColor(minX, minY+1))
-					continue;
-				if (color != engine.field.getBlockColor(minX+1, minY+1))
-					continue;
-			}
+				minX = x;
+				minY = y;
+				maxX = x;
+				maxY = y;
+				b = engine.field.getBlock(x, y);
+				if (!b.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
+						b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) &&
+						b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) &&
+						!b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP) &&
+						!b.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
+				{
+					//Find boundaries of existing gem block
+					maxX++;
+					maxY++;
+					Block test;
+					while (maxX < width)
+					{
+						test = engine.field.getBlock(maxX, y);
+						if (test == null)
+						{
+							maxX--;
+							break;
+						}
+						if (test.color != color)
+						{
+							maxX--;
+							break;
+						}
+						if (!test.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+							break;
+						maxX++;
+					}
+					while (maxY < height)
+					{
+						test = engine.field.getBlock(x, maxY);
+						if (test == null)
+						{
+							maxY--;
+							break;
+						}
+						if (test.color != color)
+						{
+							maxY--;
+							break;
+						}
+						if (!test.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+							break;
+						maxY++;
+					}
+				}
+				else if (color == engine.field.getBlockColor(x+1, y) &&
+						color == engine.field.getBlockColor(x, y+1) &&
+						color == engine.field.getBlockColor(x+1, y+1))
+				{
+					Block bR = engine.field.getBlock(x+1, y);
+					Block bD = engine.field.getBlock(x, y+1);
+					Block bDR = engine.field.getBlock(x+1, y+1);
+					if (bR.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
+							bD.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN) &&
+							bDR.getAttribute(Block.BLOCK_ATTRIBUTE_BROKEN))
+					{
+						//Form new gem block
+						maxX = x+1;
+						maxY = y+1;
+						b.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
+						bR.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
+						bD.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
+						bDR.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
+					}
+				}
+				if (maxX <= minX || maxY <= minY)
+					continue; //No gem block, skip to next block
+				boolean expandHere, done;
+				int testX, testY;
+				Block bTest;
+				boolean expanded = false;
+				//Expand up
+				testY = minY-1;
+				done = false;
+				while (testY >= (-1 * hiddenHeight) && !done)
+				{
+					if (color != engine.field.getBlockColor(minX, testY) ||
+							color != engine.field.getBlockColor(maxX, testY))
+						break;
+					if (engine.field.getBlock(minX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) ||
+							engine.field.getBlock(maxX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+						break;
+					expandHere = true;
+					for (testX = minX; testX <= maxX && !done; testX++)
+					{
+						if (engine.field.getBlockColor(testX, testY) != color)
+						{
+							done = true;
+							expandHere = false;
+						}
+						else if (engine.field.getBlock(testX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
+							expandHere = false;
+					}
+					if (expandHere)
+					{
+						minY = testY;
+						expanded = true;
+					}
+				}
+				//Expand left
+				testX = minX-1;
+				done = false;
+				while (testX >= 0 && !done)
+				{
+					if (color != engine.field.getBlockColor(testX, minY) ||
+							color != engine.field.getBlockColor(testX, maxY))
+						break;
+					if (engine.field.getBlock(testX, minY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP) ||
+							engine.field.getBlock(testX, maxY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+						break;
+					expandHere = true;
+					for (testY = minY; testY <= maxY && !done; testY++)
+					{
+						if (engine.field.getBlockColor(testX, testY) != color)
+						{
+							done = true;
+							expandHere = false;
+						}
+						else if (engine.field.getBlock(testX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
+							expandHere = false;
+					}
+					if (expandHere)
+					{
+						minX = testX;
+						expanded = true;
+					}
+				}
+				//Expand left
+				testX = maxX+1;
+				done = false;
+				while (testX < width && !done)
+				{
+					if (color != engine.field.getBlockColor(testX, minY) ||
+							color != engine.field.getBlockColor(testX, maxY))
+						break;
+					if (engine.field.getBlock(testX, minY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP) ||
+							engine.field.getBlock(testX, maxY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+						break;
+					expandHere = true;
+					for (testY = minY; testY <= maxY && !done; testY++)
+					{
+						if (engine.field.getBlockColor(testX, testY) != color)
+						{
+							done = true;
+							expandHere = false;
+						}
+						else if (engine.field.getBlock(testX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+							expandHere = false;
+					}
+					if (expandHere)
+					{
+						maxX = testX;
+						expanded = true;
+					}
+				}
+				//Expand down
+				testY = maxY+1;
+				done = false;
+				while (testY >= (-1 * hiddenHeight) && !done)
+				{
+					if (color != engine.field.getBlockColor(minX, testY) ||
+							color != engine.field.getBlockColor(maxX, testY))
+						break;
+					if (engine.field.getBlock(minX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) ||
+							engine.field.getBlock(maxX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+						break;
+					expandHere = true;
+					for (testX = minX; testX <= maxX && !done; testX++)
+					{
+						if (engine.field.getBlockColor(testX, testY) != color)
+						{
+							done = true;
+							expandHere = false;
+						}
+						else if (engine.field.getBlock(testX, testY).getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+							expandHere = false;
+					}
+					if (expandHere)
+					{
+						maxY = testY;
+						expanded = true;
+					}
+				}
+				if (expanded)
+				{
+					int size = Math.min(maxX - minX + 1, maxY - minY + 1);
+					for (testX = minX; testX <= maxX; testX++)
+						for (testY = minY; testY <= maxY; testY++)
+						{
+							bTest = engine.field.getBlock(testX, testY);
+							bTest.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
+							bTest.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, testX != minX);
+							bTest.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, testY != maxY);
+							bTest.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, testY != minY);
+							bTest.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, testX != maxX);
+							bTest.bonusValue = size;
+						}
+					}
+				}
 		//TODO: Check for power gems.
 	}
 

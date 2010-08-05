@@ -164,8 +164,11 @@ public class Block implements Serializable {
 	public static int rainbowPhase = 0;
 	
 	/** Color to turn into when garbage block turns into a regular block */
-	public int secondaryColor = 0;
-
+	public int secondaryColor;
+	
+	/** Bonus value awarded when cleared */
+	public int bonusValue;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -228,6 +231,7 @@ public class Block implements Serializable {
 		item = 0;
 		hard = 0;
 		secondaryColor = 0;
+		bonusValue = 0;
 	}
 
 	/**
@@ -244,6 +248,7 @@ public class Block implements Serializable {
 		pieceNum = b.pieceNum;
 		item = b.item;
 		secondaryColor = b.secondaryColor;
+		bonusValue = b.bonusValue;
 	}
 
 	/**
