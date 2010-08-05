@@ -1152,7 +1152,7 @@ public class SPFMode extends DummyMode {
 					}
 					testX++;
 				}
-				//Expand left
+				//Expand right
 				for (testX = maxX+1, done = false; testX < width && !done; testX++)
 				{
 					if (color != engine.field.getBlockColor(testX, minY) ||
