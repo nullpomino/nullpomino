@@ -92,8 +92,45 @@ public class SPFMode extends DummyMode {
 	/** プレイヤーの数 */
 	private static final int MAX_PLAYERS = 2;
 	
-	/** Names of outline settings */
-	//private final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
+	/** Names of drop map sets */
+	private static final String[] DROP_SET_NAMES = {"CLASSIC", "REMIX"};
+	
+	private static final int[][][][] DROP_PATTERNS = {
+		{
+			{{2,2,2,2}, {5,5,5,5}, {7,7,7,7}, {4,4,4,4}},
+			{{2,2,4,4}, {2,2,4,4}, {5,5,2,2}, {5,5,2,2}, {7,7,5,5}, {7,7,5,5}},
+			{{5,5,5,5}, {2,7,2,7}, {2,7,2,7}, {2,7,2,7}, {2,7,2,7}, {4,4,4,4}},
+			{{2,5,7,4}},
+			{{7,7,4,4}, {4,4,7,7}, {2,2,5,5}, {2,2,5,5}, {4,4,7,7}, {7,7,4,4}},
+			{{4,7,7,5}, {7,7,5,5}, {7,5,5,2}, {5,5,2,2}, {2,5,5,4}, {5,5,4,4}},
+			{{2,2,5,5}, {4,4,5,5}, {2,2,5,5}, {2,2,7,7}, {4,4,7,7}, {2,2,7,7}},
+			{{5,5,5,5}, {2,2,7,7}, {2,2,7,7}, {7,7,2,2}, {7,7,2,2}, {4,4,4,4}},
+			{{5,7,4,2}, {2,5,7,4}, {4,2,5,7}, {7,4,2,5}},
+			{{2,5,7,4}, {5,7,4,2}, {7,4,2,5}, {4,2,5,7}},
+			{{2,2,2,2}},
+		},
+		{
+			{{2,2,7,2}, {5,5,4,5}, {7,7,5,7}, {4,4,2,4}},
+			{{2,2,4,4}, {2,2,4,4}, {5,5,2,2}, {5,5,2,2}, {7,7,5,5}, {7,7,5,5}},
+			{{5,5,4,4}, {2,7,2,7}, {2,7,2,7}, {2,7,2,7}, {2,7,2,7}, {5,5,4,4}},
+			{{2,5,7,4}},
+			{{7,7,4,4}, {4,4,7,7}, {2,5,5,5}, {2,2,2,5}, {4,4,7,7}, {7,7,4,4}},
+			{{7,7,7,7}, {5,7,4,2}, {7,4,2,5}, {4,2,5,7}, {2,5,7,4}, {5,5,5,5}},
+			{{2,2,5,5}, {4,4,5,5}, {2,2,5,5}, {2,2,7,7}, {4,4,7,7}, {2,2,7,7}},
+			{{5,4,5,4}, {2,2,2,7}, {2,7,7,7}, {7,2,2,2}, {7,7,7,2}, {4,5,4,5}},
+			{{5,7,4,2}, {2,5,7,4}, {4,2,5,7}, {7,4,2,5}},
+			{{2,5,7,4}, {5,7,4,2}, {7,4,2,5}, {4,2,5,7}},
+			{{2,2,2,2}},
+		}
+	};
+	private static final double[][] DROP_PATTERNS_ATTACK_MULTIPLIERS = {
+		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.7, 0.7, 1.0},
+		{1.0, 1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.85, 1.0},
+	};
+	private static final double[][] DROP_PATTERNS_DEFEND_MULTIPLIERS = {
+		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.2, 1.0, 1.0},
+	};
 	
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
@@ -164,9 +201,6 @@ public class SPFMode extends DummyMode {
 	/** Hurryup開始までの秒数(0でHurryupなし) */
 	private int[] hurryupSeconds;
 	
-	/** Set to true when dropping ojama blocks */
-	private boolean[] ojamaDrop;
-	
 	/** Time to display "ZENKESHI!" */
 	private int[] zenKeshiDisplay;
 	
@@ -180,17 +214,21 @@ public class SPFMode extends DummyMode {
 	/** Drop patterns */
 	private int[][][] dropPattern;
 	
-	private static final int[][] TEST_DROP_PATTERN =
-	{
-		{2,5,7,4}
-	};
+	/** Drop map set selected */
+	private int[] dropSet;
+	
+	/** Drop map selected */
+	private int[] dropMap;
+	
+	/** Drop multipliers */
+	private double[] attackMultiplier, defendMultiplier;
 	
 	/*
 	 * モード名
 	 */
 	@Override
 	public String getName() {
-		return "SPF VS-BATTLE (ALPHA)";
+		return "SPF VS-BATTLE (BETA)";
 	}
 
 	/*
@@ -230,11 +268,14 @@ public class SPFMode extends DummyMode {
 		score = new int[MAX_PLAYERS];
 		ojamaHard = new int[MAX_PLAYERS];
 
-		ojamaDrop = new boolean[MAX_PLAYERS];
 		zenKeshiDisplay = new int[MAX_PLAYERS];
 		techBonusDisplay = new int[MAX_PLAYERS];
 		
+		dropSet = new int[MAX_PLAYERS];
+		dropMap = new int[MAX_PLAYERS];
 		dropPattern = new int[MAX_PLAYERS][][];
+		attackMultiplier = new double[MAX_PLAYERS];
+		defendMultiplier = new double[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -287,6 +328,8 @@ public class SPFMode extends DummyMode {
 		mapNumber[playerID] = prop.getProperty("spfvs.mapNumber.p" + playerID, -1);
 		presetNumber[playerID] = prop.getProperty("spfvs.presetNumber.p" + playerID, 0);
 		ojamaHard[playerID] = prop.getProperty("spfvs.ojamaHard.p" + playerID, 5);
+		dropSet[playerID] = prop.getProperty("spfvs.dropSet.p" + playerID, 0);
+		dropMap[playerID] = prop.getProperty("spfvs.dropMap.p" + playerID, 0);
 	}
 
 	/**
@@ -305,6 +348,8 @@ public class SPFMode extends DummyMode {
 		prop.setProperty("spfvs.mapNumber.p" + playerID, mapNumber[playerID]);
 		prop.setProperty("spfvs.presetNumber.p" + playerID, presetNumber[playerID]);
 		prop.setProperty("spfvs.ojamaHard.p" + playerID, ojamaHard[playerID]);
+		prop.setProperty("spfvs.dropSet.p" + playerID, dropSet[playerID]);
+		prop.setProperty("spfvs.dropMap.p" + playerID, dropMap[playerID]);
 	}
 
 	/**
@@ -343,7 +388,7 @@ public class SPFMode extends DummyMode {
 	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
 			mapMaxNo[playerID] = 0;
-			propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
+			propMap[playerID] = receiver.loadProperties("config/map/spf/" + mapSet[playerID] + ".map");
 		}
 
 		if((propMap[playerID] == null) && (engine.field != null)) {
@@ -352,6 +397,25 @@ public class SPFMode extends DummyMode {
 			mapMaxNo[playerID] = propMap[playerID].getProperty("map.maxMapNumber", 0);
 			engine.createFieldIfNeeded();
 			loadMap(engine.field, propMap[playerID], id);
+			engine.field.setAllSkin(engine.getSkin());
+		}
+	}
+
+	private void loadDropMapPreview(GameEngine engine, int playerID, int[][] pattern, boolean forceReload) {
+		if((pattern == null) && (engine.field != null)) {
+			engine.field.reset();
+		} else if(propMap[playerID] != null) {
+			engine.createFieldIfNeeded();
+			int patternCol = 0;
+			int maxHeight = engine.field.getHeight()-1;
+			for (int x = 0; x < engine.field.getWidth(); x++)
+			{
+				if (patternCol >= pattern.length)
+					patternCol = 0;
+				for (int patternRow = 0; patternRow < pattern[patternCol].length; patternRow++)
+					engine.field.setBlockColor(x, maxHeight-patternRow, pattern[patternCol][patternRow]);
+				patternCol++;
+			}
 			engine.field.setAllSkin(engine.getSkin());
 		}
 	}
@@ -380,11 +444,8 @@ public class SPFMode extends DummyMode {
 		ojamaSent[playerID] = 0;
 		score[playerID] = 0;
 		scgettime[playerID] = 0;
-		ojamaDrop[playerID] = false;
 		zenKeshiDisplay[playerID] = 0;
 		techBonusDisplay[playerID] = 0;
-		
-		dropPattern[playerID] = TEST_DROP_PATTERN;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
@@ -502,6 +563,19 @@ public class SPFMode extends DummyMode {
 					} else {
 						mapNumber[playerID] = -1;
 					}
+					break;
+				case 13:
+					dropSet[playerID] += change;
+					if(dropSet[playerID] < 0) dropSet[playerID] = 1;
+					if(dropSet[playerID] > 1) dropSet[playerID] = 0;
+					if(dropMap[playerID] >= DROP_PATTERNS[dropSet[playerID]].length) dropMap[playerID] = 0;
+					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]], true);
+					break;
+				case 14:
+					dropMap[playerID] += change;
+					if(dropMap[playerID] < 0) dropMap[playerID] = DROP_PATTERNS[dropSet[playerID]].length-1;
+					if(dropMap[playerID] >= DROP_PATTERNS[dropSet[playerID]].length) dropMap[playerID] = 0;
+					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]], true);
 					break;
 				case 15:
 					enableSE[playerID] = !enableSE[playerID];
@@ -633,9 +707,16 @@ public class SPFMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 									  (engine.statc[2] == 12));
 				receiver.drawMenuFont(engine, playerID, 0,  6, "DROP SET", EventReceiver.COLOR_CYAN);
-				
+				receiver.drawMenuFont(engine, playerID, 1,  7, DROP_SET_NAMES[dropSet[playerID]], (engine.statc[2] == 13));
 				receiver.drawMenuFont(engine, playerID, 0,  8, "DROP MAP", EventReceiver.COLOR_CYAN);
-				
+				String dropMapStr = String.valueOf(DROP_PATTERNS[dropSet[playerID]].length);
+				if (dropMapStr.length() == 1)
+					dropMapStr = "0" + dropMapStr;
+				dropMapStr = String.valueOf(dropMap[playerID]+1) + "/" + dropMapStr;
+					if (dropMapStr.length() == 4)
+						dropMapStr = "0" + dropMapStr;
+				receiver.drawMenuFont(engine, playerID, 1,  9, dropMapStr, (engine.statc[2] == 14));
+								
 				receiver.drawMenuFont(engine, playerID, 0, 10, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
 				receiver.drawMenuFont(engine, playerID, 0, 12, "HURRYUP", EventReceiver.COLOR_CYAN);
@@ -664,6 +745,10 @@ public class SPFMode extends DummyMode {
 			engine.rainbowAnimate = (playerID == 0);
 			engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 			
+			dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
+			attackMultiplier[playerID] = DROP_PATTERNS_ATTACK_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]];
+			defendMultiplier[playerID] = DROP_PATTERNS_DEFEND_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]];
+			
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
@@ -672,7 +757,7 @@ public class SPFMode extends DummyMode {
 					engine.field.setAllSkin(engine.getSkin());
 				} else {
 					if(propMap[playerID] == null) {
-						propMap[playerID] = receiver.loadProperties("config/map/vsbattle/" + mapSet[playerID] + ".map");
+						propMap[playerID] = receiver.loadProperties("config/map/spf/" + mapSet[playerID] + ".map");
 					}
 
 					if(propMap[playerID] != null) {
@@ -880,7 +965,7 @@ public class SPFMode extends DummyMode {
 		if (engine.chain > 1)
 			pts += (engine.chain-1)*20.0;
 		engine.playSE("combo" + Math.min(engine.chain, 20));
-		int ojamaNew = (int) (pts/7.0);
+		double ojamaNew = (int) (pts*attackMultiplier[playerID]/7.0);
 	
 		if (engine.field.isEmpty()) {
 			engine.playSE("bravo");
@@ -893,14 +978,15 @@ public class SPFMode extends DummyMode {
 		lastscore[playerID] = ((int) pts) * 10;
 		scgettime[playerID] = 120;
 		score[playerID] += lastscore[playerID];
-		if (ojama[playerID] > 0 && ojamaNew > 0)
+		if (ojama[playerID] > 0 && ojamaNew > 0.0)
 		{
-			int delta = Math.min(ojama[playerID] << 1, ojamaNew);
+			int delta = Math.min(ojama[playerID] << 1, (int) ojamaNew);
 			ojama[playerID] -= delta >> 1;
 			ojamaNew -= delta;
 		}
-		if (ojamaNew > 0)
-			ojama[enemyID] += ojamaNew;
+		int ojamaSend = (int) (ojamaNew * defendMultiplier[enemyID]);
+		if (ojamaSend > 0)
+			ojama[enemyID] += ojamaSend;
 	}
 	
 	public static double getRowValue(int row)
@@ -1161,7 +1247,9 @@ public class SPFMode extends DummyMode {
 		//Drop garbage if needed.
 		if (ojama[playerID] > 0)
 		{
-			ojamaDrop[playerID] = true;
+			int enemyID = 0;
+			if(playerID == 0) enemyID = 1;
+			
 			int dropRows = Math.min((ojama[playerID] + width - 1) / width, engine.field.getHighestBlockY(3));
 			if (dropRows <= 0)
 				return false;
@@ -1173,7 +1261,7 @@ public class SPFMode extends DummyMode {
 			int patternCol = 0;
 			for (int x = 0; x < engine.field.getWidth(); x++)
 			{
-				if (patternCol >= dropPattern[playerID].length)
+				if (patternCol >= dropPattern[enemyID].length)
 					patternCol = 0;
 				int patternRow = 0;
 				for (int y = dropRows - hiddenHeight; y >= (-1 * hiddenHeight); y--)
@@ -1181,9 +1269,9 @@ public class SPFMode extends DummyMode {
 					Block b = engine.field.getBlock(x, y);
 					if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) && b.secondaryColor == 0)
 					{
-						if (patternRow >= dropPattern[playerID][patternCol].length)
+						if (patternRow >= dropPattern[enemyID][patternCol].length)
 							patternRow = 0;
-						b.secondaryColor = dropPattern[playerID][patternCol][patternRow];
+						b.secondaryColor = dropPattern[enemyID][patternCol][patternRow];
 						patternRow++;
 					}
 				}
@@ -1202,8 +1290,6 @@ public class SPFMode extends DummyMode {
 		scgettime[playerID]++;
 		if (zenKeshiDisplay[playerID] > 0)
 			zenKeshiDisplay[playerID]--;
-		if (engine.stat == GameEngine.STAT_MOVE)
-			ojamaDrop[playerID] = false;
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();

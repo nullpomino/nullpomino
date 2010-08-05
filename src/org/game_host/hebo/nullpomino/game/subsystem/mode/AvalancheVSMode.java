@@ -880,7 +880,7 @@ public class AvalancheVSMode extends DummyMode {
 					engine.field.setAllSkin(engine.getSkin());
 				} else {
 					if(propMap[playerID] == null) {
-						propMap[playerID] = receiver.loadProperties("config/map/vsbattle/" + mapSet[playerID] + ".map");
+						propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
 					}
 
 					if(propMap[playerID] != null) {
