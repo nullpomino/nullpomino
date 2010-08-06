@@ -131,20 +131,11 @@ public class ResourceHolderSDL {
 		imgFieldbg = loadImage(skindir + "/graphics/fieldbg.png");
 		imgBlankBlack = loadImage(skindir + "/graphics/blank_black.png");
 		imgBlankWhite = loadImage(skindir + "/graphics/blank_white.png");
-		imgBreak = new SDLSurface[BLOCK_BREAK_MAX][BLOCK_BREAK_SEGMENTS];
-		imgPErase = new SDLSurface[PERASE_MAX];
-		imgPlayBG = new SDLSurface[BACKGROUND_MAX];
 
-		for(int i = 0; i < BLOCK_BREAK_MAX; i++) {
-			for(int j = 0; j < BLOCK_BREAK_SEGMENTS; j++) {
-				imgBreak[i][j] = loadImage(skindir + "/graphics/break" + i + "_" + j + ".png");
-			}
-		}
-
-		for(int i = 0; i < imgPErase.length; i++)
-			imgPErase[i] = loadImage(skindir + "/graphics/perase" + i + ".png");
-		for(int i = 0; i < imgPlayBG.length; i++)
-			imgPlayBG[i] = loadImage(skindir + "/graphics/back" + i + ".png");
+		if(NullpoMinoSDL.propConfig.getProperty("option.showlineeffect", true) == true)
+			loadLineClearEffectImages();
+		if(NullpoMinoSDL.propConfig.getProperty("option.showbg", true) == true)
+			loadBackgroundImages();
 
 		// フォント
 		try {
@@ -235,6 +226,44 @@ public class ResourceHolderSDL {
 		if(NullpoMinoSDL.propConfig.getProperty("option.bgmpreload", false) == true) {
 			for(int i = 0; i < BGMStatus.BGM_COUNT; i++) {
 				bgmLoad(i, false);
+			}
+		}
+	}
+
+	/**
+	 * Load background images.
+	 */
+	public static void loadBackgroundImages() {
+		if(imgPlayBG == null) {
+			imgPlayBG = new SDLSurface[BACKGROUND_MAX];
+
+			String skindir = NullpoMinoSDL.propConfig.getProperty("custom.skin.directory", "res");
+			for(int i = 0; i < imgPlayBG.length; i++) {
+				imgPlayBG[i] = loadImage(skindir + "/graphics/back" + i + ".png");
+			}
+		}
+	}
+
+	/**
+	 * Load line-clear effect images.
+	 */
+	public static void loadLineClearEffectImages() {
+		String skindir = NullpoMinoSDL.propConfig.getProperty("custom.skin.directory", "res");
+
+		if(imgBreak == null) {
+			imgBreak = new SDLSurface[BLOCK_BREAK_MAX][BLOCK_BREAK_SEGMENTS];
+
+			for(int i = 0; i < BLOCK_BREAK_MAX; i++) {
+				for(int j = 0; j < BLOCK_BREAK_SEGMENTS; j++) {
+					imgBreak[i][j] = loadImage(skindir + "/graphics/break" + i + "_" + j + ".png");
+				}
+			}
+		}
+		if(imgPErase == null) {
+			imgPErase = new SDLSurface[PERASE_MAX];
+
+			for(int i = 0; i < imgPErase.length; i++) {
+				imgPErase[i] = loadImage(skindir + "/graphics/perase" + i + ".png");
 			}
 		}
 	}

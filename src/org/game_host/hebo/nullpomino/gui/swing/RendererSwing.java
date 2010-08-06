@@ -396,7 +396,7 @@ public class RendererSwing extends EventReceiver {
 					log.info("Couldn't create replay folder at "+ foldername);
 				}
 			}
-			
+
 			FileOutputStream out = new FileOutputStream(filename);
 			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
 			out.close();
@@ -1138,7 +1138,7 @@ public class RendererSwing extends EventReceiver {
 				int bg = engine.owner.backgroundStatus.bg;
 				if(engine.owner.backgroundStatus.fadesw) bg = engine.owner.backgroundStatus.fadebg;
 
-				if((bg >= 0) && (bg < ResourceHolderSwing.BACKGROUND_MAX)) {
+				if((ResourceHolderSwing.imgPlayBG != null) && (bg >= 0) && (bg < ResourceHolderSwing.BACKGROUND_MAX)) {
 					graphics.drawImage(ResourceHolderSwing.imgPlayBG[bg], 0, 0, null);
 				}
 			}

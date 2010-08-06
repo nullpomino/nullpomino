@@ -421,7 +421,7 @@ public class RendererSDL extends EventReceiver {
 	@Override
 	public void saveReplay(GameManager owner, CustomProperties prop) {
 		if(owner.mode.isNetplayMode()) return;
-		
+
 		String foldername = NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay");
 		String filename = foldername + "/" + GeneralUtil.getReplayFilename();
 		try {
@@ -433,7 +433,7 @@ public class RendererSDL extends EventReceiver {
 					log.info("Couldn't create replay folder at "+ foldername);
 				}
 			}
-			
+
 			FileOutputStream out = new FileOutputStream(filename);
 			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
 			out.close();
@@ -1219,7 +1219,7 @@ public class RendererSDL extends EventReceiver {
 						bg = engine.owner.backgroundStatus.fadebg;
 					}
 
-					if((bg >= 0) && (bg < ResourceHolderSDL.imgPlayBG.length) && (showbg == true)) {
+					if((ResourceHolderSDL.imgPlayBG != null) && (bg >= 0) && (bg < ResourceHolderSDL.imgPlayBG.length) && (showbg == true)) {
 						ResourceHolderSDL.imgPlayBG[bg].blitSurface(graphics);
 
 						if(engine.owner.backgroundStatus.fadesw && heavyeffect) {
@@ -1519,10 +1519,12 @@ public class RendererSDL extends EventReceiver {
 				NullpoMinoSDL.fixRect(rectSrc, rectDst);
 
 				try {
-					if(obj.anim < 30) {
-						ResourceHolderSDL.imgBreak[color][0].blitSurface(rectSrc, graphics, rectDst);
-					} else {
-						ResourceHolderSDL.imgBreak[color][1].blitSurface(rectSrc, graphics, rectDst);
+					if(ResourceHolderSDL.imgBreak != null) {
+						if(obj.anim < 30) {
+							ResourceHolderSDL.imgBreak[color][0].blitSurface(rectSrc, graphics, rectDst);
+						} else {
+							ResourceHolderSDL.imgBreak[color][1].blitSurface(rectSrc, graphics, rectDst);
+						}
 					}
 				} catch (SDLException e) {
 					log.debug("SDLException throwed", e);
@@ -1541,7 +1543,9 @@ public class RendererSDL extends EventReceiver {
 				NullpoMinoSDL.fixRect(rectSrc, rectDst);
 
 				try {
-					ResourceHolderSDL.imgPErase[color].blitSurface(rectSrc, graphics, rectDst);
+					if(ResourceHolderSDL.imgPErase != null) {
+						ResourceHolderSDL.imgPErase[color].blitSurface(rectSrc, graphics, rectDst);
+					}
 				} catch (SDLException e) {
 					log.debug("SDLException throwed", e);
 				}

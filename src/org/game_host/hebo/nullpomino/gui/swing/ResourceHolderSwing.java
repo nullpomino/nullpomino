@@ -86,10 +86,10 @@ public class ResourceHolderSwing {
 		imgFontSmall = loadImage(getURL(skindir + "/graphics/font_small.png"));
 		imgFrame = loadImage(getURL(skindir + "/graphics/frame.png"));
 		imgFieldbg = loadImage(getURL(skindir + "/graphics/fieldbg.png"));
-		imgPlayBG = new Image[BACKGROUND_MAX];
 
-		for(int i = 0; i < BACKGROUND_MAX; i++)
-			imgPlayBG[i] = loadImage(getURL(skindir + "/graphics/back" + i + ".png"));
+		if(NullpoMinoSwing.propConfig.getProperty("option.showbg", true) == true) {
+			loadBackgroundImages();
+		}
 
 		// 効果音
 		soundManager = new WaveEngine();
@@ -162,6 +162,20 @@ public class ResourceHolderSwing {
 			}
 
 			soundManager.setVolume(NullpoMinoSwing.propConfig.getProperty("option.sevolume", 0.5));
+		}
+	}
+
+	/**
+	 * Load background images.
+	 */
+	public static void loadBackgroundImages() {
+		if(imgPlayBG == null) {
+			imgPlayBG = new Image[BACKGROUND_MAX];
+
+			String skindir = NullpoMinoSwing.propConfig.getProperty("custom.skin.directory", "res");
+			for(int i = 0; i < BACKGROUND_MAX; i++) {
+				imgPlayBG[i] = loadImage(getURL(skindir + "/graphics/back" + i + ".png"));
+			}
 		}
 	}
 

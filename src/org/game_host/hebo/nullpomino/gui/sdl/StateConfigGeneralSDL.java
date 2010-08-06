@@ -328,6 +328,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NullpoMinoSDL.showfps = showfps;
 			NullpoMinoSDL.maxFPS = maxfps;
 
+			if(showlineeffect) ResourceHolderSDL.loadLineClearEffectImages();
+			if(showbg) ResourceHolderSDL.loadBackgroundImages();
+
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		}
 

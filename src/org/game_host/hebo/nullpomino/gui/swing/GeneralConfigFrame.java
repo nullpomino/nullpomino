@@ -243,6 +243,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 
 			NullpoMinoSwing.saveConfig();
 			ResourceHolderSwing.soundManager.setVolume(sevolume);
+			if(chkboxShowBackground.isSelected()) {
+				ResourceHolderSwing.loadBackgroundImages();
+			}
 
 			this.setVisible(false);
 		}
