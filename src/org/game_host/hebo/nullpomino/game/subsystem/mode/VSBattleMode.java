@@ -47,7 +47,7 @@ import org.game_host.hebo.nullpomino.util.GeneralUtil;
  */
 public class VSBattleMode extends DummyMode {
 	/** 現在のバージョン */
-	private static final int CURRENT_VERSION = 4;
+	private static final int CURRENT_VERSION = 5;
 
 	/** プレイヤーの数 */
 	private static final int MAX_PLAYERS = 2;
@@ -62,7 +62,8 @@ public class VSBattleMode extends DummyMode {
 							 EVENT_TSPIN_SINGLE = 6,
 							 EVENT_TSPIN_DOUBLE = 7,
 							 EVENT_TSPIN_TRIPLE = 8,
-							 EVENT_TSPIN_DOUBLE_MINI = 9;
+							 EVENT_TSPIN_DOUBLE_MINI = 9,
+							 EVENT_TSPIN_EZ = 10;
 
 	/** コンボの攻撃力 */
 	private final int[] COMBO_ATTACK_TABLE = {0,0,1,1,2,2,3,3,4,4,4,5};
@@ -94,11 +95,23 @@ public class VSBattleMode extends DummyMode {
 	/** 邪魔ブロックのタイプ */
 	private int[] garbageType;
 
+	/** Rate of change of garbage holes */
+	private int[] garbagePercent;
+
+	/** Allow garbage countering */
+	private boolean[] garbageCounter;
+
+	/** Allow garbage blocking */
+	private boolean[] garbageBlocking;
+
 	/** 溜まっている邪魔ブロックの数 */
 	private int[] garbage;
 
 	/** 送った邪魔ブロックの数 */
 	private int[] garbageSent;
+
+	/** Last garbage hole position */
+	private int[] lastHole;
 
 	/** 最後にスコア獲得してから経過した時間 */
 	private int[] scgettime;
@@ -127,8 +140,14 @@ public class VSBattleMode extends DummyMode {
 	/** 壁蹴りありT-Spin有効 */
 	private boolean[] enableTSpinKick;
 
-	/** B2B有効 */
-	private boolean[] enableB2B;
+	/** Spin check type (4Point or Immobile) */
+	private int[] spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean[] tspinEnableEZ;
+
+	/** B2B Type (0=OFF 1=ON 2=ON+Separated-garbage) */
+	private int[] b2bType;
 
 	/** コンボ有効 */
 	private boolean[] enableCombo;
@@ -206,9 +225,12 @@ public class VSBattleMode extends DummyMode {
 		receiver = owner.receiver;
 
 		garbageType = new int[MAX_PLAYERS];
+		garbagePercent = new int[MAX_PLAYERS];
+		garbageCounter = new boolean[MAX_PLAYERS];
+		garbageBlocking = new boolean[MAX_PLAYERS];
 		garbage = new int[MAX_PLAYERS];
 		garbageSent = new int[MAX_PLAYERS];
-
+		lastHole = new int[MAX_PLAYERS];
 		scgettime = new int[MAX_PLAYERS];
 		lastevent = new int[MAX_PLAYERS];
 		lastb2b = new boolean[MAX_PLAYERS];
@@ -218,7 +240,9 @@ public class VSBattleMode extends DummyMode {
 		tspinEnableType = new int[MAX_PLAYERS];
 		enableTSpin = new boolean[MAX_PLAYERS];
 		enableTSpinKick = new boolean[MAX_PLAYERS];
-		enableB2B = new boolean[MAX_PLAYERS];
+		spinCheckType = new int[MAX_PLAYERS];
+		tspinEnableEZ = new boolean[MAX_PLAYERS];
+		b2bType = new int[MAX_PLAYERS];
 		enableCombo = new boolean[MAX_PLAYERS];
 		big = new boolean[MAX_PLAYERS];
 		enableSE = new boolean[MAX_PLAYERS];
@@ -278,11 +302,25 @@ public class VSBattleMode extends DummyMode {
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
 		bgmno = prop.getProperty("vsbattle.bgmno", 0);
-		garbageType[playerID] = prop.getProperty("vsbattle.garbageType", GARBAGE_TYPE_NOCHANGE_ONE_ATTACK);
+		if(version >= 5) {
+			garbageType[playerID] = prop.getProperty("vsbattle.garbageType.p" + playerID, GARBAGE_TYPE_NOCHANGE_ONE_ATTACK);
+		} else {
+			garbageType[playerID] = prop.getProperty("vsbattle.garbageType", GARBAGE_TYPE_NOCHANGE_ONE_ATTACK);
+		}
+		garbagePercent[playerID] = prop.getProperty("vsbattle.garbagePercent.p" + playerID, 100);
+		garbageCounter[playerID] = prop.getProperty("vsbattle.garbageCounter.p" + playerID, true);
+		garbageBlocking[playerID] = prop.getProperty("vsbattle.garbageBlocking.p" + playerID, true);
 		tspinEnableType[playerID] = prop.getProperty("vsbattle.tspinEnableType.p" + playerID, 1);
 		enableTSpin[playerID] = prop.getProperty("vsbattle.enableTSpin.p" + playerID, true);
 		enableTSpinKick[playerID] = prop.getProperty("vsbattle.enableTSpinKick.p" + playerID, true);
-		enableB2B[playerID] = prop.getProperty("vsbattle.enableB2B.p" + playerID, true);
+		spinCheckType[playerID] = prop.getProperty("vsbattle.spinCheckType.p" + playerID, 0);
+		tspinEnableEZ[playerID] = prop.getProperty("vsbattle.tspinEnableEZ.p" + playerID, false);
+		if(version >= 5) {
+			b2bType[playerID] = prop.getProperty("vsbattle.b2bType.p" + playerID, 1);
+		} else {
+			boolean b = prop.getProperty("vsbattle.enableB2B.p" + playerID, true);
+			b2bType[playerID] = b ? 1 : 0;
+		}
 		enableCombo[playerID] = prop.getProperty("vsbattle.enableCombo.p" + playerID, true);
 		big[playerID] = prop.getProperty("vsbattle.big.p" + playerID, false);
 		enableSE[playerID] = prop.getProperty("vsbattle.enableSE.p" + playerID, true);
@@ -302,11 +340,16 @@ public class VSBattleMode extends DummyMode {
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
 		prop.setProperty("vsbattle.bgmno", bgmno);
-		prop.setProperty("vsbattle.garbageType", garbageType[playerID]);
+		prop.setProperty("vsbattle.garbageType.p" + playerID, garbageType[playerID]);
+		prop.setProperty("vsbattle.garbagePercent.p" + playerID, garbagePercent[playerID]);
+		prop.setProperty("vsbattle.garbageCounter.p" + playerID, garbageCounter[playerID]);
+		prop.setProperty("vsbattle.garbageBlocking.p" + playerID, garbageBlocking[playerID]);
 		prop.setProperty("vsbattle.tspinEnableType.p" + playerID, tspinEnableType[playerID]);
 		prop.setProperty("vsbattle.enableTSpin.p" + playerID, enableTSpin[playerID]);
 		prop.setProperty("vsbattle.enableTSpinKick.p" + playerID, enableTSpinKick[playerID]);
-		prop.setProperty("vsbattle.enableB2B.p" + playerID, enableB2B[playerID]);
+		prop.setProperty("vsbattle.spinCheckType.p" + playerID, spinCheckType[playerID]);
+		prop.setProperty("vsbattle.tspinEnableEZ.p" + playerID, tspinEnableEZ[playerID]);
+		prop.setProperty("vsbattle.b2bType.p" + playerID, b2bType[playerID]);
 		prop.setProperty("vsbattle.enableCombo.p" + playerID, enableCombo[playerID]);
 		prop.setProperty("vsbattle.big.p" + playerID, big[playerID]);
 		prop.setProperty("vsbattle.enableSE.p" + playerID, enableSE[playerID]);
@@ -394,6 +437,7 @@ public class VSBattleMode extends DummyMode {
 
 		garbage[playerID] = 0;
 		garbageSent[playerID] = 0;
+		lastHole[playerID] = -1;
 		scgettime[playerID] = 0;
 		lastevent[playerID] = EVENT_NONE;
 		lastb2b[playerID] = false;
@@ -404,13 +448,13 @@ public class VSBattleMode extends DummyMode {
 		hurryupCount[playerID] = 0;
 
 		if(engine.owner.replayMode == false) {
+			version = CURRENT_VERSION;
 			loadOtherSetting(engine, engine.owner.modeConfig);
 			loadPreset(engine, engine.owner.modeConfig, -1 - playerID);
-			version = CURRENT_VERSION;
 		} else {
+			version = owner.replayProp.getProperty("vsbattle.version", 0);
 			loadOtherSetting(engine, engine.owner.replayProp);
 			loadPreset(engine, engine.owner.replayProp, -1 - playerID);
-			version = owner.replayProp.getProperty("vsbattle.version", 0);
 		}
 	}
 
@@ -424,13 +468,13 @@ public class VSBattleMode extends DummyMode {
 			// 上
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 21;
+				if(engine.statc[2] < 0) engine.statc[2] = 26;
 				engine.playSE("cursor");
 			}
 			// 下
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 21) engine.statc[2] = 0;
+				if(engine.statc[2] > 26) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -494,42 +538,64 @@ public class VSBattleMode extends DummyMode {
 					if(garbageType[playerID] > 2) garbageType[playerID] = 0;
 					break;
 				case 10:
+					garbagePercent[playerID] += change;
+					if(garbagePercent[playerID] < 0) garbagePercent[playerID] = 100;
+					if(garbagePercent[playerID] > 100) garbagePercent[playerID] = 0;
+					break;
+				case 11:
+					garbageCounter[playerID] = !garbageCounter[playerID];
+					break;
+				case 12:
+					garbageBlocking[playerID] = !garbageBlocking[playerID];
+					break;
+				case 13:
 					//enableTSpin[playerID] = !enableTSpin[playerID];
 					tspinEnableType[playerID] += change;
 					if(tspinEnableType[playerID] < 0) tspinEnableType[playerID] = 2;
 					if(tspinEnableType[playerID] > 2) tspinEnableType[playerID] = 0;
 					break;
-				case 11:
+				case 14:
 					enableTSpinKick[playerID] = !enableTSpinKick[playerID];
 					break;
-				case 12:
-					enableB2B[playerID] = !enableB2B[playerID];
-					break;
-				case 13:
-					enableCombo[playerID] = !enableCombo[playerID];
-					break;
-				case 14:
-					big[playerID] = !big[playerID];
-					break;
 				case 15:
-					enableSE[playerID] = !enableSE[playerID];
+					spinCheckType[playerID] += change;
+					if(spinCheckType[playerID] < 0) spinCheckType[playerID] = 1;
+					if(spinCheckType[playerID] > 1) spinCheckType[playerID] = 0;
 					break;
 				case 16:
+					tspinEnableEZ[playerID] = !tspinEnableEZ[playerID];
+					break;
+				case 17:
+					//enableB2B[playerID] = !enableB2B[playerID];
+					b2bType[playerID] += change;
+					if(b2bType[playerID] < 0) b2bType[playerID] = 2;
+					if(b2bType[playerID] > 2) b2bType[playerID] = 0;
+					break;
+				case 18:
+					enableCombo[playerID] = !enableCombo[playerID];
+					break;
+				case 19:
+					big[playerID] = !big[playerID];
+					break;
+				case 20:
+					enableSE[playerID] = !enableSE[playerID];
+					break;
+				case 21:
 					hurryupSeconds[playerID] += change;
 					if(hurryupSeconds[playerID] < -1) hurryupSeconds[playerID] = 300;
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = -1;
 					break;
-				case 17:
+				case 22:
 					hurryupInterval[playerID] += change;
 					if(hurryupInterval[playerID] < 1) hurryupInterval[playerID] = 99;
 					if(hurryupInterval[playerID] > 99) hurryupInterval[playerID] = 1;
 					break;
-				case 18:
+				case 23:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 19:
+				case 24:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -537,7 +603,7 @@ public class VSBattleMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 20:
+				case 25:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -546,7 +612,7 @@ public class VSBattleMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 21:
+				case 26:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -661,7 +727,13 @@ public class VSBattleMode extends DummyMode {
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "GARBAGE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_TYPE_STRING[garbageType[playerID]], (engine.statc[2] == 9));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "SPIN BONUS", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 0,  2, "CHANGERATE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  3, garbagePercent[playerID] + "%", (engine.statc[2] == 10));
+				receiver.drawMenuFont(engine, playerID, 0,  4, "COUNTERING", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  5, GeneralUtil.getONorOFF(garbageCounter[playerID]), (engine.statc[2] == 11));
+				receiver.drawMenuFont(engine, playerID, 0,  6, "BLOCKING", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  7, GeneralUtil.getONorOFF(garbageBlocking[playerID]), (engine.statc[2] == 12));
+				receiver.drawMenuFont(engine, playerID, 0,  8, "SPIN BONUS", EventReceiver.COLOR_CYAN);
 				String strTSpinEnable = "";
 				if(version >= 4) {
 					if(tspinEnableType[playerID] == 0) strTSpinEnable = "OFF";
@@ -670,37 +742,45 @@ public class VSBattleMode extends DummyMode {
 				} else {
 					strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin[playerID]);
 				}
-				receiver.drawMenuFont(engine, playerID, 1,  3, strTSpinEnable, (engine.statc[2] == 10));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "EZ SPIN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, GeneralUtil.getONorOFF(enableTSpinKick[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "B2B", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, GeneralUtil.getONorOFF(enableB2B[playerID]), (engine.statc[2] == 12));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "COMBO", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, GeneralUtil.getONorOFF(enableCombo[playerID]), (engine.statc[2] == 13));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 14));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "SE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-				                      (engine.statc[2] == 16));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "INTERVAL", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(hurryupInterval[playerID]), (engine.statc[2] == 17));
-				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 18));
+				receiver.drawMenuFont(engine, playerID, 1,  9, strTSpinEnable, (engine.statc[2] == 13));
+				receiver.drawMenuFont(engine, playerID, 0, 10, "KICK SPIN", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(enableTSpinKick[playerID]), (engine.statc[2] == 14));
+				receiver.drawMenuFont(engine, playerID, 0, 12, "SPIN TYPE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 13, (spinCheckType[playerID] == 0) ? "4POINT" : "IMMOBILE", (engine.statc[2] == 15));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "EZIMMOBILE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 15, GeneralUtil.getONorOFF(tspinEnableEZ[playerID]), (engine.statc[2] == 16));
+				receiver.drawMenuFont(engine, playerID, 0, 16, "B2B", EventReceiver.COLOR_CYAN);
+				String strB2BType = "";
+				if(b2bType[playerID] == 0) strB2BType = "OFF";
+				if(b2bType[playerID] == 1) strB2BType = "ON";
+				if(b2bType[playerID] == 2) strB2BType = "SEPARATE";
+				receiver.drawMenuFont(engine, playerID, 1, 17, strB2BType, (engine.statc[2] == 17));
+				receiver.drawMenuFont(engine, playerID, 0, 18, "COMBO", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 19, GeneralUtil.getONorOFF(enableCombo[playerID]), (engine.statc[2] == 18));
 			} else {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 19) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
 
-				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 19));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 20));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-									  (engine.statc[2] == 21));
+				receiver.drawMenuFont(engine, playerID, 0,  0, "BIG", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 19));
+				receiver.drawMenuFont(engine, playerID, 0,  2, "SE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  3, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 20));
+				receiver.drawMenuFont(engine, playerID, 0,  4, "HURRYUP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  5, (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
+				                      (engine.statc[2] == 21));
+				receiver.drawMenuFont(engine, playerID, 0,  6, "INTERVAL", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(hurryupInterval[playerID]), (engine.statc[2] == 22));
+				receiver.drawMenuFont(engine, playerID, 0,  8, "BGM", EventReceiver.COLOR_PINK);
+				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(bgmno), (engine.statc[2] == 23));
+				receiver.drawMenuFont(engine, playerID, 0, 10, "USE MAP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 24));
+				receiver.drawMenuFont(engine, playerID, 0, 12, "MAP SET", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(mapSet[playerID]), (engine.statc[2] == 25));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "MAP NO.", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 15, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
+									  (engine.statc[2] == 26));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -757,7 +837,7 @@ public class VSBattleMode extends DummyMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.b2bEnable = enableB2B[playerID];
+		engine.b2bEnable = (b2bType[playerID] >= 1);
 		engine.comboType = enableCombo[playerID] ? GameEngine.COMBO_TYPE_NORMAL : GameEngine.COMBO_TYPE_DISABLE;
 		engine.big = big[playerID];
 		engine.enableSE = enableSE[playerID];
@@ -777,6 +857,11 @@ public class VSBattleMode extends DummyMode {
 			}
 		} else {
 			engine.tspinEnable = enableTSpin[playerID];
+		}
+
+		if(version >= 5) {
+			engine.spinCheckType = spinCheckType[playerID];
+			engine.tspinEnableEZ = tspinEnableEZ[playerID];
 		}
 	}
 
@@ -849,6 +934,10 @@ public class VSBattleMode extends DummyMode {
 				if(lastb2b[playerID]) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 				else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 				break;
+			case EVENT_TSPIN_EZ:
+				if(lastb2b[playerID]) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+				else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+				break;
 			}
 
 			if(lastcombo[playerID] >= 2)
@@ -867,11 +956,21 @@ public class VSBattleMode extends DummyMode {
 		// 攻撃
 		if(lines > 0) {
 			int pts = 0;
+			int ptsB2B = 0;
 			scgettime[playerID] = 0;
 
 			if(engine.tspin) {
+				// Immobile EZ Spin
+				if(engine.tspinez) {
+					if(engine.useAllSpinBonus) {
+						//pts += 0;
+					} else {
+						pts += 1;
+					}
+					lastevent[playerID] = EVENT_TSPIN_EZ;
+				}
 				// T-Spin 1列
-				if(lines == 1) {
+				else if(lines == 1) {
 					if(engine.tspinmini) {
 						if(engine.useAllSpinBonus) {
 							//pts += 0;
@@ -921,9 +1020,12 @@ public class VSBattleMode extends DummyMode {
 
 				if(pts > 0) {
 					if((version >= 1) && (lastevent[playerID] == EVENT_TSPIN_TRIPLE) && (!engine.useAllSpinBonus))
-						pts += 2;
+						ptsB2B += 2;
 					else
-						pts += 1;
+						ptsB2B += 1;
+
+					if(b2bType[playerID] == 1)
+						pts += ptsB2B;	// Non-separated B2B
 				}
 			} else {
 				lastb2b[playerID] = false;
@@ -970,10 +1072,11 @@ public class VSBattleMode extends DummyMode {
 
 			// 攻撃ライン数
 			garbageSent[playerID] += pts;
+			if(b2bType[playerID] == 2) garbageSent[playerID] += ptsB2B;
 
 			// 相殺
 			garbage[playerID] = getTotalGarbageLines(playerID);
-			if((pts > 0) && (garbage[playerID] > 0)) {
+			if((pts > 0) && (garbage[playerID] > 0) && (garbageCounter[playerID])) {
 				while(!garbageEntries[playerID].isEmpty() && (pts > 0)) {
 					GarbageEntry garbageEntry = garbageEntries[playerID].getFirst();
 					garbageEntry.lines -= pts;
@@ -990,6 +1093,12 @@ public class VSBattleMode extends DummyMode {
 			// 攻撃
 			if(pts > 0) {
 				garbageEntries[enemyID].add(new GarbageEntry(pts, playerID));
+
+				// Separated B2B
+				if((b2bType[playerID] == 2) && (ptsB2B > 0)) {
+					garbageEntries[enemyID].add(new GarbageEntry(ptsB2B, playerID));
+				}
+
 				garbage[enemyID] = getTotalGarbageLines(enemyID);
 
 				if((owner.engine[enemyID].ai == null) && (garbage[enemyID] >= 4)) {
@@ -1000,7 +1109,7 @@ public class VSBattleMode extends DummyMode {
 
 		// せり上がり
 		garbage[playerID] = getTotalGarbageLines(playerID);
-		if((lines == 0) && (garbage[playerID] > 0)) {
+		if( ((lines == 0) || (!garbageBlocking[playerID])) && (garbage[playerID] > 0) ) {
 			engine.playSE("garbage");
 
 			while(!garbageEntries[playerID].isEmpty()) {
@@ -1008,36 +1117,69 @@ public class VSBattleMode extends DummyMode {
 				int garbageColor = PLAYER_COLOR_BLOCK[garbageEntry.playerID];
 
 				if(garbageEntry.lines > 0) {
+					int hole = lastHole[playerID];
+					if((hole == -1) || (version <= 4)) {
+						hole = engine.random.nextInt(engine.field.getWidth());
+					}
+
 					if(garbageType[playerID] == GARBAGE_TYPE_NORMAL) {
 						// ノーマルな穴位置変更
-						int hole = engine.random.nextInt(engine.field.getWidth());
-
 						while(garbageEntry.lines > 0) {
 							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
 									  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
 									  1);
 
-							if(engine.random.nextInt(10) >= 7) {
-								hole = engine.random.nextInt(engine.field.getWidth());
+							if(version >= 5) {
+								if(engine.random.nextInt(100) < garbagePercent[playerID]) {
+									hole = engine.random.nextInt(engine.field.getWidth());
+								}
+							} else {
+								if(engine.random.nextInt(10) >= 7) {
+									hole = engine.random.nextInt(engine.field.getWidth());
+								}
 							}
 
 							garbageEntry.lines--;
 						}
 					} else if(garbageType[playerID] == GARBAGE_TYPE_NOCHANGE_ONE_RISE) {
 						// 1回のせり上がりで穴位置が変わらない
-						int hole = engine.random.nextInt(engine.field.getWidth());
+						if(version >= 5) {
+							if(engine.random.nextInt(100) < garbagePercent[playerID]) {
+								int newHole = engine.random.nextInt(engine.field.getWidth() - 1);
+								if(newHole >= hole) {
+									newHole++;
+								}
+								hole = newHole;
+							}
+						} else {
+							hole = engine.random.nextInt(engine.field.getWidth());
+						}
+
 						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-														  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
+														  Block.BLOCK_ATTRIBUTE_GARBAGE|Block.BLOCK_ATTRIBUTE_VISIBLE|Block.BLOCK_ATTRIBUTE_OUTLINE,
 														  garbage[playerID]);
 						garbageEntries[playerID].clear();
 						break;
 					} else if(garbageType[playerID] == GARBAGE_TYPE_NOCHANGE_ONE_ATTACK) {
 						// 邪魔ブロックの穴の位置が1回の攻撃で変わらない(2回以上なら変わる)
-						int hole = engine.random.nextInt(engine.field.getWidth());
+						if(version >= 5) {
+							if(engine.random.nextInt(100) < garbagePercent[playerID]) {
+								int newHole = engine.random.nextInt(engine.field.getWidth() - 1);
+								if(newHole >= hole) {
+									newHole++;
+								}
+								hole = newHole;
+							}
+						} else {
+							hole = engine.random.nextInt(engine.field.getWidth());
+						}
+
 						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-														  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
+														  Block.BLOCK_ATTRIBUTE_GARBAGE|Block.BLOCK_ATTRIBUTE_VISIBLE|Block.BLOCK_ATTRIBUTE_OUTLINE,
 														  garbageEntry.lines);
 					}
+
+					lastHole[playerID] = hole;
 				}
 			}
 
