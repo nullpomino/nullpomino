@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Thu Jul 29 00:12:18 EDT 2010
+#Fri Aug 06 06:48:34 CDT 2010
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.AvalancheWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -56,6 +56,7 @@
 0.ruleopt.nextDisplay=2
 0.ruleopt.pieceOffsetX.10.3=0
 0.ruleopt.pieceOffsetX.10.2=0
+0.ruleopt.dasStoreChargeOnNeutral=false
 0.ruleopt.pieceOffsetX.10.1=0
 0.ruleopt.pieceOffsetX.10.0=0
 0.ruleopt.lockflashOnlyFrame=true
@@ -86,6 +87,7 @@
 0.ruleopt.pieceSpawnXBig.1.0=0
 0.ruleopt.fieldCeiling=false
 0.ruleopt.pieceSpawnY.7.3=0
+0.ruleopt.dasRedirectInARE=false
 0.ruleopt.pieceSpawnY.7.2=0
 0.ruleopt.pieceSpawnY.7.1=0
 0.ruleopt.pieceSpawnY.7.0=0
@@ -272,7 +274,7 @@
 0.ruleopt.shiftLockEnable=false
 0.ruleopt.pieceDefaultDirection.10=2
 0.ruleopt.lockresetLimitOver=0
-0.ruleopt.fieldHiddenHeight=2
+0.ruleopt.fieldHiddenHeight=1
 0.ruleopt.pieceSpawnX.9.3=0
 0.ruleopt.pieceSpawnX.9.2=0
 0.ruleopt.pieceSpawnX.9.1=0
@@ -337,6 +339,7 @@
 0.ruleopt.pieceSpawnXBig.6.2=0
 0.ruleopt.pieceSpawnXBig.6.1=0
 0.ruleopt.pieceSpawnXBig.6.0=0
+0.ruleopt.dasOnBlockedMove=false
 0.ruleopt.pieceSpawnXBig.2.3=0
 0.ruleopt.pieceSpawnXBig.2.2=0
 0.ruleopt.pieceSpawnXBig.2.1=0
