@@ -142,6 +142,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Allow dynamic adjust of target FPS (as seen in Swing version) */
 	public static boolean alternateFPSDynamicAdjust;
 
+	/** Perfect FPS mode (more accurate, eats more CPU) */
+	public static boolean alternateFPSPerfectMode;
+
 	/** Target FPS */
 	public static int altMaxFPS;
 
@@ -174,6 +177,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 	/** FPS表示用DecimalFormat */
 	public static DecimalFormat df = new DecimalFormat("0.0");
+
+	/** Used by perfect fps mode */
+	public static long perfectFPSDelay = 0;
 
 	/** オブザーバークライアント */
 	public static NetObserverClient netObserverClient;
@@ -237,6 +243,8 @@ public class NullpoMinoSlick extends StateBasedGame {
 			log.error("Mode list load failed", e);
 		}
 
+		perfectFPSDelay = System.nanoTime();
+
 		// ゲーム画面などの初期化
 		try {
 			NullpoMinoSlick obj = new NullpoMinoSlick();
@@ -296,6 +304,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		alternateFPSTiming = propConfig.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = propConfig.getProperty("option.alternateFPSDynamicAdjust", false);
+		alternateFPSPerfectMode = propConfig.getProperty("option.alternateFPSPerfectMode", false);
 		altMaxFPS = propConfig.getProperty("option.maxfps", 60);
 		altMaxFPSCurrent = altMaxFPS;
 
@@ -383,52 +392,68 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * Slick標準とは違うFPS維持
+	 * FPS cap routine
 	 */
 	public static void alternateFPSSleep() {
+		alternateFPSSleep(false);
+	}
+
+	/**
+	 * FPS cap routine
+	 * @param ingame <code>true</code> if during the gameplay
+	 */
+	public static void alternateFPSSleep(boolean ingame) {
 		int maxfps = altMaxFPSCurrent;
-		if(maxfps <= 0) return;
-		periodCurrent = (long) (1.0 / maxfps * 1000000000);
 
-		long afterTime, timeDiff, sleepTime;
+		if(maxfps > 0) {
+			periodCurrent = (long) (1.0 / maxfps * 1000000000);
 
-		// 休止・FPS計算処理
-		afterTime = System.nanoTime();
-		timeDiff = afterTime - beforeTime;
-		// 前回のフレームの休止時間誤差も引いておく
-		sleepTime = (periodCurrent - timeDiff) - overSleepTime;
+			long afterTime, timeDiff, sleepTime;
 
-		if(sleepTime > 0) {
-			// 休止時間がとれる場合
-			if(maxfps > 0) {
-				try {
-					Thread.sleep(sleepTime / 1000000L);
-				} catch(InterruptedException e) {}
-				//appGameContainer.sleep((int) (sleepTime / 1000000L));
+			// 休止・FPS計算処理
+			afterTime = System.nanoTime();
+			timeDiff = afterTime - beforeTime;
+			// 前回のフレームの休止時間誤差も引いておく
+			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
+
+			if(alternateFPSPerfectMode && ingame) {
+				while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {}
+				perfectFPSDelay += 1000000000 / altMaxFPS;
+			} else if(sleepTime > 0) {
+				// 休止時間がとれる場合
+				if(maxfps > 0) {
+					try {
+						Thread.sleep(sleepTime / 1000000L);
+					} catch(InterruptedException e) {}
+					//appGameContainer.sleep((int) (sleepTime / 1000000L));
+				}
+				// sleep()の誤差
+				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+			} else {
+				// 状態更新・レンダリングで時間を使い切ってしまい
+				// 休止時間がとれない場合
+				overSleepTime = 0L;
+				// 休止なしが16回以上続いたら
+				if(++noDelays >= 16) {
+					Thread.yield(); // 他のスレッドを強制実行
+					noDelays = 0;
+				}
 			}
-			// sleep()の誤差
-			overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+
+			beforeTime = System.nanoTime();
+			if(!alternateFPSPerfectMode || !ingame) perfectFPSDelay = beforeTime;
+			calcFPS(ingame, periodCurrent);
 		} else {
-			// 状態更新・レンダリングで時間を使い切ってしまい
-			// 休止時間がとれない場合
-			overSleepTime = 0L;
-			// 休止なしが16回以上続いたら
-			if(++noDelays >= 16) {
-				Thread.yield(); // 他のスレッドを強制実行
-				noDelays = 0;
-			}
+			periodCurrent = (long) (1.0 / 60 * 1000000000);
+			calcFPS(ingame, periodCurrent);
 		}
-
-		beforeTime = System.nanoTime();
-
-		calcFPS(periodCurrent);
 	}
 
 	/**
 	 * FPSの計算
 	 * @param period FPSを計算する間隔
 	 */
-	protected static void calcFPS(long period) {
+	protected static void calcFPS(boolean ingame, long period) {
 		frameCount++;
 		calcInterval += period;
 
@@ -448,7 +473,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			prevCalcTime = timeNow;
 
 			// Set new target fps
-			if((altMaxFPS > 0) && (alternateFPSDynamicAdjust)) {
+			if((altMaxFPS > 0) && (alternateFPSDynamicAdjust) && (!alternateFPSPerfectMode || !ingame)) {
 				if(actualFPS < altMaxFPS - 1) {
 					// Too Slow
 					altMaxFPSCurrent++;
@@ -511,16 +536,23 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * FPS描画
+	 * FPS display
 	 * @param container GameContainer
 	 */
 	public static void drawFPS(GameContainer container) {
+		drawFPS(container, false);
+	}
+
+	/**
+	 * FPS display
+	 * @param container GameContainer
+	 */
+	public static void drawFPS(GameContainer container, boolean ingame) {
 		if(propConfig.getProperty("option.showfps", true) == true) {
-			if(!alternateFPSDynamicAdjust)
+			if(!alternateFPSDynamicAdjust || (alternateFPSPerfectMode && ingame))
 				NormalFont.printFont(0, 480 - 16, df.format(actualFPS), NormalFont.COLOR_BLUE);
 			else
 				NormalFont.printFont(0, 480 - 16, df.format(actualFPS) + "/" + altMaxFPSCurrent, NormalFont.COLOR_BLUE);
-			//NormalFont.printFont(0, 480 - 32, String.valueOf(container.getFPS()), NormalFont.COLOR_BLUE);
 		}
 	}
 

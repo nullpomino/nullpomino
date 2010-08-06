@@ -159,7 +159,7 @@ public class StateReplaySelect extends BasicGameState {
 		} else {
 			if (cursor >= replaylist.length)
 				cursor = 0;
-			
+
 			String title = "SELECT REPLAY FILE";
 			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
 
@@ -210,6 +210,11 @@ public class StateReplaySelect extends BasicGameState {
 	 * ゲーム状態の更新
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		if(!container.hasFocus()) {
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
+
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
