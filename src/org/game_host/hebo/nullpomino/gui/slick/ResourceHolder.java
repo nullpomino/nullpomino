@@ -125,20 +125,13 @@ public class ResourceHolder {
 		imgTitle = loadImage(skindir + "/graphics/title.png");
 		imgMenu = loadImage(skindir + "/graphics/menu.png");
 		imgFrame = loadImage(skindir + "/graphics/frame.png");
-		imgBreak = new Image[BLOCK_BREAK_MAX][BLOCK_BREAK_SEGMENTS];
-		imgPErase = new Image[PERASE_MAX];
-		imgPlayBG = new Image[BACKGROUND_MAX];
 
-		for(int i = 0; i < BLOCK_BREAK_MAX; i++) {
-			for(int j = 0; j < BLOCK_BREAK_SEGMENTS; j++) {
-				imgBreak[i][j] = loadImage(skindir + "/graphics/break" + i + "_" + j + ".png");
-			}
+		if(NullpoMinoSlick.propConfig.getProperty("option.showlineeffect", true) == true) {
+			loadLineClearEffectImages();
 		}
-
-		for(int i = 0; i < imgPErase.length; i++)
-			imgPErase[i] = loadImage(skindir + "/graphics/perase" + i + ".png");
-		for(int i = 0; i < imgPlayBG.length; i++)
-			imgPlayBG[i] = loadImage(skindir + "/graphics/back" + i + ".png");
+		if(NullpoMinoSlick.propConfig.getProperty("option.showbg", true) == true) {
+			loadBackgroundImages();
+		}
 
 		// フォント
 		try {
@@ -238,6 +231,43 @@ public class ResourceHolder {
 		if(NullpoMinoSlick.propConfig.getProperty("option.bgmpreload", false) == true) {
 			for(int i = 0; i < BGMStatus.BGM_COUNT; i++) {
 				bgmLoad(i, false);
+			}
+		}
+	}
+
+	/**
+	 * Load background images.
+	 */
+	public static void loadBackgroundImages() {
+		if(imgPlayBG == null) {
+			imgPlayBG = new Image[BACKGROUND_MAX];
+
+			String skindir = NullpoMinoSlick.propConfig.getProperty("custom.skin.directory", "res");
+			for(int i = 0; i < imgPlayBG.length; i++)
+				imgPlayBG[i] = loadImage(skindir + "/graphics/back" + i + ".png");
+		}
+	}
+
+	/**
+	 * Load line clear effect images.
+	 */
+	public static void loadLineClearEffectImages() {
+		String skindir = NullpoMinoSlick.propConfig.getProperty("custom.skin.directory", "res");
+
+		if(imgBreak == null) {
+			imgBreak = new Image[BLOCK_BREAK_MAX][BLOCK_BREAK_SEGMENTS];
+
+			for(int i = 0; i < BLOCK_BREAK_MAX; i++) {
+				for(int j = 0; j < BLOCK_BREAK_SEGMENTS; j++) {
+					imgBreak[i][j] = loadImage(skindir + "/graphics/break" + i + "_" + j + ".png");
+				}
+			}
+		}
+		if(imgPErase == null) {
+			imgPErase = new Image[PERASE_MAX];
+
+			for(int i = 0; i < imgPErase.length; i++) {
+				imgPErase[i] = loadImage(skindir + "/graphics/perase" + i + ".png");
 			}
 		}
 	}

@@ -382,7 +382,7 @@ public class RendererSlick extends EventReceiver {
 					log.info("Couldn't create replay folder at "+ foldername);
 				}
 			}
-			
+
 			FileOutputStream out = new FileOutputStream(filename);
 			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
 			out.close();
@@ -1157,7 +1157,7 @@ public class RendererSlick extends EventReceiver {
 					bg = engine.owner.backgroundStatus.fadebg;
 				}
 
-				if((bg >= 0) && (bg < ResourceHolder.imgPlayBG.length) && (showbg == true)) {
+				if((ResourceHolder.imgPlayBG != null) && (bg >= 0) && (bg < ResourceHolder.imgPlayBG.length) && (showbg == true)) {
 					graphics.setColor(Color.white);
 					graphics.drawImage(ResourceHolder.imgPlayBG[bg], 0, 0);
 
@@ -1427,13 +1427,13 @@ public class RendererSlick extends EventReceiver {
 					int srcy = ((obj.anim-1) / 6) * 96;
 					try {
 						graphics.drawImage(ResourceHolder.imgBreak[color][0], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96);
-					} catch (NullPointerException e) {}
+					} catch (Exception e) {}
 				} else {
 					int srcx = ((obj.anim-30) % 6) * 96;
 					int srcy = ((obj.anim-30) / 6) * 96;
 					try {
 						graphics.drawImage(ResourceHolder.imgBreak[color][1], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96);
-					} catch (NullPointerException e) {}
+					} catch (Exception e) {}
 				}
 			}
 			// 宝石ブロック
@@ -1444,7 +1444,9 @@ public class RendererSlick extends EventReceiver {
 				int srcy = ((obj.anim-1) / 10) * 32;
 				int color = obj.param - Block.BLOCK_COLOR_GEM_RED;
 
-				graphics.drawImage(ResourceHolder.imgPErase[color], x, y, x + 32, y + 32, srcx, srcy, srcx + 32, srcy + 32);
+				try {
+					graphics.drawImage(ResourceHolder.imgPErase[color], x, y, x + 32, y + 32, srcx, srcy, srcx + 32, srcy + 32);
+				} catch (Exception e) {}
 			}
 		}
 	}

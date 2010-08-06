@@ -98,7 +98,7 @@ public class StateLoading extends BasicGameState {
 			if(preloadCount < ResourceHolder.BLOCK_BREAK_MAX) {
 				try {
 					ResourceHolder.imgBreak[preloadCount][0].draw(0, 0);
-				} catch (NullPointerException e) {}
+				} catch (Exception e) {}
 				preloadCount++;
 			} else {
 				preloadCount = 0;
@@ -109,7 +109,7 @@ public class StateLoading extends BasicGameState {
 			if(preloadCount < ResourceHolder.BLOCK_BREAK_MAX) {
 				try {
 					ResourceHolder.imgBreak[preloadCount][1].draw(0, 0);
-				} catch (NullPointerException e) {}
+				} catch (Exception e) {}
 				preloadCount++;
 			} else {
 				preloadCount = 0;
@@ -117,8 +117,10 @@ public class StateLoading extends BasicGameState {
 			}
 		}
 		if(preloadSet == 2) {
-			if(preloadCount < ResourceHolder.imgPErase.length) {
-				ResourceHolder.imgPErase[preloadCount].draw(0, 0);
+			if(preloadCount < ResourceHolder.PERASE_MAX) {
+				try {
+					ResourceHolder.imgPErase[preloadCount].draw(0, 0);
+				} catch (Exception e) {}
 				preloadCount++;
 			} else {
 				preloadCount = 0;

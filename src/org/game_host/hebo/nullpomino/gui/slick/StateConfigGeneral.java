@@ -388,6 +388,8 @@ public class StateConfigGeneral extends BasicGameState {
 			saveConfig(NullpoMinoSlick.propConfig);
 			NullpoMinoSlick.saveConfig();
 			NullpoMinoSlick.setGeneralConfig();
+			if(showlineeffect) ResourceHolder.loadLineClearEffectImages();
+			if(showbg) ResourceHolder.loadBackgroundImages();
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
