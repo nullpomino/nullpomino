@@ -131,6 +131,11 @@ public class StateConfigJoystickTest extends BasicGameState {
 	 * ゲーム状態の更新
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		if(!container.hasFocus()) {
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
+
 		frame++;
 
 		// ジョイスティックボタン判定

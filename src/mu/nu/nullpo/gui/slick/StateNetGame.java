@@ -206,14 +206,14 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			}
 
 			// FPS
-			NullpoMinoSlick.drawFPS(container);
+			NullpoMinoSlick.drawFPS(container, true);
 			// スクリーンショット
 			if(ssflag) {
 				NullpoMinoSlick.saveScreenShot(container, g);
 				ssflag = false;
 			}
 
-			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 		} catch (Exception e) {
 			log.error("render fail", e);
 		}
@@ -262,7 +262,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 				ssflag = true;
 
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 		} catch (Exception e) {
 			log.error("update fail", e);
 		}

@@ -122,6 +122,9 @@ public class StateConfigGeneral extends BasicGameState {
 	/** Allow dynamic adjust of target FPS (as seen in Swing version) */
 	protected boolean alternateFPSDynamicAdjust;
 
+	/** Perfect FPS mode */
+	protected boolean alternateFPSPerfectMode;
+
 	/*
 	 * このステートのIDを取得
 	 */
@@ -165,6 +168,7 @@ public class StateConfigGeneral extends BasicGameState {
 		sidenext = prop.getProperty("option.sidenext", false);
 		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
+		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", false);
 	}
 
 	/**
@@ -195,6 +199,7 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.sidenext", sidenext);
 		prop.setProperty("option.alternateFPSTiming", alternateFPSTiming);
 		prop.setProperty("option.alternateFPSDynamicAdjust", alternateFPSDynamicAdjust);
+		prop.setProperty("option.alternateFPSPerfectMode", alternateFPSPerfectMode);
 	}
 
 	/*
@@ -232,6 +237,7 @@ public class StateConfigGeneral extends BasicGameState {
 		NormalFont.printFontGrid(2, 23, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 20));
 		NormalFont.printFontGrid(2, 24, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 21));
 		NormalFont.printFontGrid(2, 25, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
+		NormalFont.printFontGrid(2, 26, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 23));
 
 		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_Fullscreen"));
 		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SE"));
@@ -256,6 +262,7 @@ public class StateConfigGeneral extends BasicGameState {
 		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
 		if(cursor == 21) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSTiming"));
 		if(cursor == 22) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSDynamicAdjust"));
+		if(cursor == 23) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSPerfectMode"));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -283,12 +290,12 @@ public class StateConfigGeneral extends BasicGameState {
 		// カーソル移動
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 22;
+			if(cursor < 0) cursor = 23;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 22) cursor = 0;
+			if(cursor > 23) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -379,6 +386,9 @@ public class StateConfigGeneral extends BasicGameState {
 					break;
 				case 22:
 					alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
+					break;
+				case 23:
+					alternateFPSPerfectMode = !alternateFPSPerfectMode;
 					break;
 			}
 		}

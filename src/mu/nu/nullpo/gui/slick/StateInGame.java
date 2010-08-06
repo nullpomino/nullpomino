@@ -282,7 +282,7 @@ public class StateInGame extends BasicGameState {
 		}
 
 		// FPS
-		NullpoMinoSlick.drawFPS(container);
+		NullpoMinoSlick.drawFPS(container, true);
 		// オブザーバー
 		NullpoMinoSlick.drawObserverClient();
 		// スクリーンショット
@@ -291,14 +291,17 @@ public class StateInGame extends BasicGameState {
 			ssflag = false;
 		}
 
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 	}
 
 	/*
 	 * ゲームの状態を更新
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) return;
+		if(!container.hasFocus()) {
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
 
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
@@ -453,6 +456,6 @@ public class StateInGame extends BasicGameState {
 			container.exit();
 		}
 
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 	}
 }

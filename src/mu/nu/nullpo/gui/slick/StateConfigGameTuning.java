@@ -148,7 +148,11 @@ public class StateConfigGameTuning extends BasicGameState {
 	 * ゲーム状態の更新
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		// キー入力状態を更新
+		if(!container.hasFocus()) {
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
+
 		GameKey.gamekey[0].update(container.getInput());
 
 		// カーソル移動

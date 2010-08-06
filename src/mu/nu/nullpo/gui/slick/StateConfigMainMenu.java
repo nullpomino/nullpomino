@@ -107,6 +107,11 @@ public class StateConfigMainMenu extends BasicGameState {
 	 * ゲーム状態の更新
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		if(!container.hasFocus()) {
+			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
+
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
