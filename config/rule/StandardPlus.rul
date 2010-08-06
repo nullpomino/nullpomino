@@ -1,6 +1,6 @@
 #NullpoMino RuleData
 #Tue Aug 03 14:27:06 CEST 2010
-0.ruleopt.strWallkick=org.game_host.hebo.nullpomino.game.subsystem.wallkick.StandardWallkick
+0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.StandardWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
 0.ruleopt.pieceSpawnX.8.1=0

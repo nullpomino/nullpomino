@@ -2,7 +2,7 @@ package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
 import java.util.Random;
 
-import org.game_host.hebo.nullpomino.game.component.Piece;
+import mu.nu.nullpo.game.component.Piece;
 
 public abstract class Randomizer {
 	

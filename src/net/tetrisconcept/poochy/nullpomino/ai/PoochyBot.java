@@ -1,14 +1,15 @@
 package net.tetrisconcept.poochy.nullpomino.ai;
 
+import mu.nu.nullpo.game.component.Controller;
+import mu.nu.nullpo.game.component.Field;
+import mu.nu.nullpo.game.component.Piece;
+import mu.nu.nullpo.game.component.SpeedParam;
+import mu.nu.nullpo.game.component.WallkickResult;
+import mu.nu.nullpo.game.play.GameEngine;
+import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.game.subsystem.ai.DummyAI;
+
 import org.apache.log4j.Logger;
-import org.game_host.hebo.nullpomino.game.component.Controller;
-import org.game_host.hebo.nullpomino.game.component.Field;
-import org.game_host.hebo.nullpomino.game.component.Piece;
-import org.game_host.hebo.nullpomino.game.component.SpeedParam;
-import org.game_host.hebo.nullpomino.game.component.WallkickResult;
-import org.game_host.hebo.nullpomino.game.play.GameEngine;
-import org.game_host.hebo.nullpomino.game.play.GameManager;
-import org.game_host.hebo.nullpomino.game.subsystem.ai.DummyAI;
 
 /**
  * PoochyBot AI
@@ -16,28 +17,28 @@ import org.game_host.hebo.nullpomino.game.subsystem.ai.DummyAI;
  *         Poochy.Spambucket@gmail.com
  */
 public class PoochyBot extends DummyAI implements Runnable {
-	/** ログ */
+	/** Log */
 	static Logger log = Logger.getLogger(PoochyBot.class);
 
 	/** ホールド使用予定 */
 	public boolean bestHold;
 
-	/** 置く予定のX座標 */
+	/** 置く予定のX-coordinate */
 	public int bestX;
 
-	/** 置く予定のY座標 */
+	/** 置く予定のY-coordinate */
 	public int bestY;
 
-	/** 置く予定の方向 */
+	/** 置く予定のDirection */
 	public int bestRt;
 
-	/** 接地したあとのX座標 */
+	/** 接地したあとのX-coordinate */
 	public int bestXSub;
 
-	/** 接地したあとのY座標 */
+	/** 接地したあとのY-coordinate */
 	public int bestYSub;
 
-	/** 接地したあとの方向(-1：なし) */
+	/** 接地したあとのDirection(-1：なし) */
 	public int bestRtSub;
 
 	/** 最善手の評価得点 */
@@ -52,25 +53,25 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** このAIを所有するGameManager */
 	public GameManager gManager;
 
-	/** trueならスレッドに思考ルーチンの実行を指示 */
+	/** trueならスレッドにThink routineの実行を指示 */
 	public boolean thinkRequest;
 
-	/** trueならスレッドが思考ルーチン実行中 */
+	/** trueならスレッドがThink routine実行中 */
 	public boolean thinking;
 
 	/** スレッドを停止させる時間 */
 	public int thinkDelay;
 
-	/** 現在のピースの番号 */
+	/** Current ピースの number */
 	public int thinkCurrentPieceNo;
 
-	/** 思考が終わったピースの番号 */
+	/** 思考が終わったピースの number */
 	public int thinkLastPieceNo;
 
 	/** trueならスレッド動作中 */
 	public volatile boolean threadRunning;
 
-	/** 思考ルーチン実行用スレッド */
+	/** Think routine実行用スレッド */
 	public Thread thread;
 
 	/** Number of frames for which piece has been stuck */
@@ -109,7 +110,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 初期化処理
+	 * Initialization処理
 	 */
 	public void init(GameEngine engine, int playerID) {
 		delay = 0;
@@ -154,7 +155,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 新しいピース出現時の処理
+	 * Called whenever a new piece is spawned
 	 */
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
@@ -166,7 +167,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 各フレームの最初の処理
+	 * Called at the start of each frame
 	 */
 	public void onFirst(GameEngine engine, int playerID) {
 		inputARE = 0;
@@ -219,7 +220,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 各フレームの最後の処理
+	 * Called after every frame
 	 */
 	public void onLast(GameEngine engine, int playerID) {
 	}
@@ -1380,14 +1381,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 思考ルーチン
-	 * @param x X座標
-	 * @param y Y座標
-	 * @param rt 方向
-	 * @param rtOld 回転前の方向（-1：なし）
+	 * Think routine
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param rt Direction
+	 * @param rtOld 回転前のDirection（-1：なし）
 	 * @param fld フィールド（どんなに弄っても問題なし）
 	 * @param piece ピース
-	 * @param depth 妥協レベル（0からgetMaxThinkDepth()-1まで）
+	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
 	 * @return 評価得点
 	 */
 	public int thinkMain(int x, int y, int rt, int rtOld, Field fld, Piece piece, int depth) {
@@ -1398,7 +1399,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		if (big)
 			move = 2;
 
-		// 他のブロックに隣接していると加点
+		// Add points for being adjacent to other blocks
 		if(piece.checkCollision(x - 1, y, fld)) pts += 1;
 		if(piece.checkCollision(x + 1, y, fld)) pts += 1;
 		if(piece.checkCollision(x, y - 1, fld)) pts += 1000;
@@ -1409,7 +1410,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		int xMin = piece.getMinimumBlockX()+x;
 		int xMax = piece.getMaximumBlockX()+x;
 
-		// 穴の数とI型が必要な谷の数（設置前）
+		// Number of holes and valleys needing an I piece (before placement)
 		int holeBefore = fld.getHowManyHoles();
 		//int lidBefore = fld.getHowManyLidAboveHoles();
 
@@ -1490,7 +1491,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		needJValleyBefore >>= 1;
 		needLValleyBefore >>= 1;
 
-		// フィールドの高さ（設置前）
+		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
 		// T-Spinフラグ
 		boolean tspin = false;
@@ -1522,28 +1523,28 @@ public class PoochyBot extends DummyAI implements Runnable {
 			return Integer.MIN_VALUE;
 		}
 
-		// ライン消去
+		// Lines消去
 		int lines = fld.checkLine()/move;
 		if(lines > 0) {
 			fld.clearLine();
 			fld.downFloatingBlocks();
 		}
 
-		// 全消し
+		// All clear
 		boolean allclear = fld.isEmpty();
 		if(allclear) pts += 500000;
 
-		// フィールドの高さ（消去後）
+		// Field height (after clears)
 		int heightAfter = fld.getHighestBlockY();
 
 		int[] depthsAfter = getColumnDepths(fld);
 
-		// 危険フラグ
+		// Danger flag
 		boolean danger = (heightBefore <= 4*(move+1));
 		//Flag for really dangerously high stacks
 		boolean peril = (heightBefore <= 2*(move+1));
 
-		// 下に置くほど加点
+		// Additional points for lower placements
 		if((!danger) && (depth == 0))
 			pts += y * 10;
 		else
@@ -1602,7 +1603,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		}
 
 		if( (lines < 4) && (!allclear) ) {
-			// 穴の数とI型が必要な谷の数（設置後）
+			// Number of holes and valleys needing an I piece (after placement)
 			//int lidAfter = fld.getHowManyLidAboveHoles();
 
 			//Find valleys that need an I, J, or L.
@@ -1658,11 +1659,11 @@ public class PoochyBot extends DummyAI implements Runnable {
 			needLValleyAfter >>= 1;
 
 			if(holeAfter > holeBefore) {
-				// 新たに穴ができると減点
+				// Demerits for new holes
 				if(depth == 0) return Integer.MIN_VALUE;
 				pts -= (holeAfter - holeBefore) * 400;
 			} else if(holeAfter < holeBefore) {
-				// 穴を減らすと加点
+				// Add points for reduction in number of holes
 				pts += 10000;
 				if(!danger)
 					pts += (holeBefore - holeAfter) * 200;
@@ -1672,7 +1673,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 			/*
 			if(lidAfter < lidBefore) {
-				// 穴の上に乗っているブロックを減らすと加点
+				// Add points for reduction in number blocks above holes
 				pts += (lidAfter - lidBefore) * 500;
 			}
 			*/
@@ -1773,13 +1774,13 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 
 			if(heightBefore < heightAfter) {
-				// 高さを抑えると加点
+				// Add points for reducing the height
 				if((depth == 0) && (!danger))
 					pts += (heightAfter - heightBefore) * 10;
 				else
 					pts += (heightAfter - heightBefore) * 20;
 			} else if(heightBefore > heightAfter) {
-				// 高くすると減点
+				// Demerits for increase in height
 				if((depth > 0) || (danger))
 					pts -= (heightBefore - heightAfter) * 4;
 			}

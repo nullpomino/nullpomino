@@ -1,9 +1,9 @@
 package net.tetrisconcept.poochy.nullpomino.ai;
 
-import org.game_host.hebo.nullpomino.game.component.Controller;
-import org.game_host.hebo.nullpomino.game.component.Field;
-import org.game_host.hebo.nullpomino.game.component.Piece;
-import org.game_host.hebo.nullpomino.game.play.GameEngine;
+import mu.nu.nullpo.game.component.Controller;
+import mu.nu.nullpo.game.component.Field;
+import mu.nu.nullpo.game.component.Piece;
+import mu.nu.nullpo.game.play.GameEngine;
 
 public class PoochyBotDefNoPre extends PoochyBot {
 	/*
@@ -15,7 +15,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 	}
 
 	/*
-	 * 新しいピース出現時の処理
+	 * Called whenever a new piece is spawned
 	 */
 	@Override
 	public void newPiece(GameEngine engine, int playerID) {
@@ -28,7 +28,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 	}
 
 	/*
-	 * 各フレームの最初の処理
+	 * Called at the start of each frame
 	 */
 	@Override
 	public void onFirst(GameEngine engine, int playerID) {
@@ -72,21 +72,21 @@ public class PoochyBotDefNoPre extends PoochyBot {
 	}
 
 	/**
-	 * 思考ルーチン
-	 * @param x X座標
-	 * @param y Y座標
-	 * @param rt 方向
-	 * @param rtOld 回転前の方向（-1：なし）
+	 * Think routine
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param rt Direction
+	 * @param rtOld Direction before rotation (-1: none)
 	 * @param fld フィールド（どんなに弄っても問題なし）
 	 * @param piece ピース
-	 * @param depth 妥協レベル（0からgetMaxThinkDepth()-1まで）
+	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
 	 * @return 評価得点
 	 */
 	@Override
 	public int thinkMain(int x, int y, int rt, int rtOld, Field fld, Piece piece, int depth) {
 		int pts = 0;
 
-		// 他のブロックに隣接していると加点
+		// Add points for being adjacent to other blocks
 		if(piece.checkCollision(x - 1, y, fld)) pts += 1;
 		if(piece.checkCollision(x + 1, y, fld)) pts += 1;
 		if(piece.checkCollision(x, y - 1, fld)) pts += 1000;
@@ -97,7 +97,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 		int xMin = piece.getMinimumBlockX()+x;
 		int xMax = piece.getMaximumBlockX()+x;
 
-		// 穴の数とI型が必要な谷の数（設置前）
+		// Number of holes and valleys needing an I piece (before placement)
 		int holeBefore = fld.getHowManyHoles();
 		//int lidBefore = fld.getHowManyLidAboveHoles();
 		
@@ -160,7 +160,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 		needJValleyBefore >>= 1;
 		needLValleyBefore >>= 1;
 
-		// フィールドの高さ（設置前）
+		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
 		// T-Spinフラグ
 		boolean tspin = false;
@@ -185,35 +185,35 @@ public class PoochyBotDefNoPre extends PoochyBot {
 			}
 		}
 
-		// ピースを置く
+		// Place piece
 		if(!piece.placeToField(x, y, rt, fld)) {
 			debugOut("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Cannot place piece)");
 			return Integer.MIN_VALUE;
 		}
 
-		// ライン消去
+		// Clear lines
 		int lines = fld.checkLine();
 		if(lines > 0) {
 			fld.clearLine();
 			fld.downFloatingBlocks();
 		}
 
-		// 全消し
+		// All clear
 		boolean allclear = fld.isEmpty();
 		if(allclear) pts += 500000;
 
-		// フィールドの高さ（消去後）
+		// Field height (after clears)
 		int heightAfter = fld.getHighestBlockY();
 
 		int[] depthsAfter = getColumnDepths(fld);
 
-		// 危険フラグ
+		// Danger flag
 		//boolean danger = (heightBefore <= 8);
 		//Flag for really dangerously high stacks
 		boolean peril = (heightBefore <= 4);
 
-		// 下に置くほど加点
+		// Additional points for lower placements
 		pts += y * 20;
 
 		int holeAfter = fld.getHowManyHoles();
@@ -246,7 +246,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 		}
 
 		if( (lines < 4) && (!allclear) ) {
-			// 穴の数とI型が必要な谷の数（設置後）
+			// Number of holes and valleys needing an I piece (after placement)
 			//int lidAfter = fld.getHowManyLidAboveHoles();
 
 			//Find valleys that need an I, J, or L.
@@ -298,17 +298,17 @@ public class PoochyBotDefNoPre extends PoochyBot {
 			needLValleyAfter >>= 1;
 
 			if(holeAfter > holeBefore) {
-				// 新たに穴ができると減点
+				// Demerits for new holes
 				if(depth == 0) return Integer.MIN_VALUE;
 				pts -= (holeAfter - holeBefore) * 400;
 			} else if(holeAfter < holeBefore) {
-				// 穴を減らすと加点
+				// Add points for reduction in number of holes
 				pts += (holeBefore - holeAfter) * 400 + 10000;
 			}
 
 			/*
 			if(lidAfter < lidBefore) {
-				// 穴の上に乗っているブロックを減らすと加点
+				// Add points for reduction in number blocks above holes
 				pts += (lidAfter - lidBefore) * 500;
 			}
 			*/
@@ -379,10 +379,10 @@ public class PoochyBotDefNoPre extends PoochyBot {
 			else
 				pts += d;
 
-			// 高さを抑えると加点
+			// Add points for reducing the height
 			if(heightBefore < heightAfter)
 				pts += (heightAfter - heightBefore) * 20;
-			// 高くすると減点
+			// Demerits for increase in height
 			else if(heightBefore > heightAfter)
 				pts -= (heightBefore - heightAfter) * 4;
 			

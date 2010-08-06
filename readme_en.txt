@@ -345,9 +345,9 @@ To make "OK" signal to everyone:
 	But the port number is fixed to 9200, which is a default one.
 	If you want to change the port number, or if you are using Linux or MacOS, you will need to manually use the following command:
 	For Windows:
-java -cp NullpoMino.jar;lib\log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer [PORT NUMBER]
+java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [PORT NUMBER]
 	For Linux/MacOS:
-java -cp NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer [PORT NUMBER]
+java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [PORT NUMBER]
 
 9. FAQ
 Q: All pieces are gray in color and it has no wallkicks.

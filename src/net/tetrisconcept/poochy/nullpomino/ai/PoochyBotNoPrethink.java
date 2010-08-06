@@ -1,8 +1,8 @@
 package net.tetrisconcept.poochy.nullpomino.ai;
 
-import org.game_host.hebo.nullpomino.game.component.Controller;
-import org.game_host.hebo.nullpomino.game.component.Piece;
-import org.game_host.hebo.nullpomino.game.play.GameEngine;
+import mu.nu.nullpo.game.component.Controller;
+import mu.nu.nullpo.game.component.Piece;
+import mu.nu.nullpo.game.play.GameEngine;
 
 public class PoochyBotNoPrethink extends PoochyBot {
 	/*
@@ -14,7 +14,7 @@ public class PoochyBotNoPrethink extends PoochyBot {
 	}
 
 	/*
-	 * 新しいピース出現時の処理
+	 * Called whenever a new piece is spawned
 	 */
 	@Override
 	public void newPiece(GameEngine engine, int playerID) {
@@ -27,7 +27,7 @@ public class PoochyBotNoPrethink extends PoochyBot {
 	}
 
 	/*
-	 * 各フレームの最初の処理
+	 * Called at the start of each frame
 	 */
 	@Override
 	public void onFirst(GameEngine engine, int playerID) {

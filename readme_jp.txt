@@ -25,25 +25,25 @@ Java‚Åì‚Á‚½—‚¿‚à‚ÌƒAƒNƒVƒ‡ƒ“ƒpƒYƒ‹ƒQ[ƒ€‚à‚Ç‚«‚Å‚·B
 @@ˆÈ‰º‚ÌƒRƒ}ƒ“ƒh‚ğ“ü—Í‚µ‚ÄEnterƒL[‚ğ‰Ÿ‚·‚Æ‚½‚Ô‚ñ‹N“®‚µ‚Ü‚·Bi“r’†‚Å‰üs‚µ‚È‚¢‚æ‚¤‚Éj
 
 @@Swingƒo[ƒWƒ‡ƒ“:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.gui.swing.NullpoMinoSwing
+java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.gui.swing.NullpoMinoSwing
 
 @@Slickƒo[ƒWƒ‡ƒ“:
-XMODIFIERS=@im=none java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib/jorbis-0.0.15.jar:lib/jogg-0.0.7.jar:lib/ibxm.jar:lib/jinput.jar -Djava.library.path=lib org.game_host.hebo.nullpomino.gui.slick.NullpoMinoSlick
+XMODIFIERS=@im=none java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib/jorbis-0.0.15.jar:lib/jogg-0.0.7.jar:lib/ibxm.jar:lib/jinput.jar -Djava.library.path=lib mu.nu.nullpo.gui.slick.NullpoMinoSlick
 
 @@SDLƒo[ƒWƒ‡ƒ“:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/sdljava.jar -Djava.library.path=lib org.game_host.hebo.nullpomino.gui.sdl.NullpoMinoSDL
+java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/sdljava.jar -Djava.library.path=lib mu.nu.nullpo.gui.sdl.NullpoMinoSDL
 
 @@ƒ‹[ƒ‹ƒGƒfƒBƒ^:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.tool.ruleeditor.RuleEditor
+java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.ruleeditor.RuleEditor
 
 @@ƒV[ƒPƒ“ƒXƒrƒ…[ƒA:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.tool.sequencer.Sequencer
+java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.sequencer.Sequencer
 
 @@ƒ~ƒ…[ƒWƒbƒNƒŠƒXƒgƒGƒfƒBƒ^:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.tool.musiclisteditor.MusicListEditor
+java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.musiclisteditor.MusicListEditor
 
 @@ƒlƒbƒgƒvƒŒƒC—pƒT[ƒo[:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer
+java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer
 
 @@‚µ‚©‚µAg—p‚µ‚Ä‚¢‚éƒrƒfƒIƒJ[ƒh‚âLinux‚Ìƒo[ƒWƒ‡ƒ“‚É‚æ‚Á‚Ä‚Í‚¤‚Ü‚­“®‚©‚È‚¢‚©‚à‚µ‚ê‚Ü‚¹‚ñB
 
@@ -317,9 +317,9 @@ netserver.bat‚ğƒ_ƒuƒ‹ƒNƒŠƒbƒN‚·‚é‚ÆƒT[ƒo[‚ª‹N“®‚µ‚Ü‚·‚ªA‚±‚Ìê‡‚Ìƒ|[ƒg”Ô†‚
 ‘¼‚Ìƒ|[ƒg‚É•Ï‚¦‚½‚¢ê‡A‚¨‚æ‚ÑLinux‚Ü‚½‚ÍMac OS X‚ğg‚Á‚Ä‚¢‚éê‡‚ÍˆÈ‰º‚ÌƒRƒ}ƒ“ƒh‚ğg‚Á‚Ä‚­‚¾‚³‚¢B
 
 Windows:
-java -cp NullpoMino.jar;lib\log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer [ƒ|[ƒg”Ô†]
+java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ƒ|[ƒg”Ô†]
 Linux/MacOS:
-java -cp NullpoMino.jar:lib/log4j-1.2.15.jar org.game_host.hebo.nullpomino.game.net.NetServer [ƒ|[ƒg”Ô†]
+java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ƒ|[ƒg”Ô†]
 
 y»ìEÓ«z
 »ìF
