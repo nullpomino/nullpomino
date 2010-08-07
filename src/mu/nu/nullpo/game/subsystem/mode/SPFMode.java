@@ -1029,7 +1029,7 @@ public class SPFMode extends DummyMode {
 		score[playerID] += lastscore[playerID];
 
 		if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
-			ojamaNew *= 1 << ((engine.statistics.time / (hurryupSeconds[playerID] * 60)) - 1);
+			ojamaNew *= 1 << (engine.statistics.time / (hurryupSeconds[playerID] * 60));
 		
 		if (ojama[playerID] > 0 && ojamaNew > 0.0)
 		{
