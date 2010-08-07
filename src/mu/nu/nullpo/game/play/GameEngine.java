@@ -2198,6 +2198,7 @@ public class GameEngine {
 							nowPieceX += move;
 
 							if((getDASDelay() == 0) && (dasCount > 0) && (nowPieceObject.checkCollision(nowPieceX + move, nowPieceY, field) == false)) {
+								if(!dasInstant) playSE("move");
 								dasRepeat = true;
 								dasInstant = true;
 							}
@@ -2220,7 +2221,8 @@ public class GameEngine {
 								lastmove = LASTMOVE_SLIDE_AIR;
 							}
 
-							playSE("move");
+							if(!dasInstant) playSE("move");
+							
 						} else if (ruleopt.dasChargeOnBlockedMove) {
 							dasCount = getDAS();
 							dasSpeedCount = getDASDelay();
