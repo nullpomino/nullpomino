@@ -476,6 +476,8 @@ public class AvalancheVSMode extends DummyMode {
 		engine.connectBlocks = false;
 
 		ojama[playerID] = 0;
+		ojamaAdd[playerID] = 0;
+		ojamaFever[playerID] = 0;
 		ojamaSent[playerID] = 0;
 		score[playerID] = 0;
 		zenKeshi[playerID] = false;
