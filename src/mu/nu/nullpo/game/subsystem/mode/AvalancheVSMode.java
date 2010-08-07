@@ -326,7 +326,7 @@ public class AvalancheVSMode extends DummyMode {
 		engine.speed.are = prop.getProperty("avalanchevs.are." + preset, 24);
 		engine.speed.areLine = prop.getProperty("avalanchevs.areLine." + preset, 24);
 		engine.speed.lineDelay = prop.getProperty("avalanchevs.lineDelay." + preset, 10);
-		engine.speed.lockDelay = prop.getProperty("avalanchevs.lockDelay." + preset, 30);
+		engine.speed.lockDelay = prop.getProperty("avalanchevs.lockDelay." + preset, 60);
 		engine.speed.das = prop.getProperty("avalanchevs.das." + preset, 14);
 	}
 
@@ -560,9 +560,10 @@ public class AvalancheVSMode extends DummyMode {
 					if(engine.speed.lineDelay > 99) engine.speed.lineDelay = 0;
 					break;
 				case 5:
-					engine.speed.lockDelay += change;
-					if(engine.speed.lockDelay < 0) engine.speed.lockDelay = 99;
-					if(engine.speed.lockDelay > 99) engine.speed.lockDelay = 0;
+					if (m >= 10) engine.speed.lockDelay += change*10;
+					else engine.speed.lockDelay += change;
+					if(engine.speed.lockDelay < 0) engine.speed.lockDelay = 999;
+					if(engine.speed.lockDelay > 999) engine.speed.lockDelay = 0;
 					break;
 				case 6:
 					engine.speed.das += change;
