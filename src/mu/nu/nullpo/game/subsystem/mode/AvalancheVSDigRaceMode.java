@@ -62,12 +62,6 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
-
-	/** Zenkeshi setting constants */
-	private static final int ZENKESHI_MODE_OFF = 0, ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
-
-	/** Names of zenkeshi settings */
-	private static final String[] ZENKESHI_TYPE_NAMES = {"OFF", "ON", "FEVER"};
 	
 	/** Names of outline settings */
 	private static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
