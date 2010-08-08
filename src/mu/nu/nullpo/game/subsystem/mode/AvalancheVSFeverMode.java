@@ -525,8 +525,8 @@ public class AvalancheVSFeverMode extends DummyMode {
 					break;
 				case 18:
 					ojamaHandicap[playerID] += change * m;
-					if(ojamaHandicap[playerID] < 0) engine.speed.denominator = 9999;
-					if(ojamaHandicap[playerID] > 9999) engine.speed.denominator = 0;
+					if(ojamaHandicap[playerID] < 0) ojamaHandicap[playerID] = 9999;
+					if(ojamaHandicap[playerID] > 9999) ojamaHandicap[playerID] = 0;
 					break;
 				case 19:
 					feverMapSet[playerID] += change;
