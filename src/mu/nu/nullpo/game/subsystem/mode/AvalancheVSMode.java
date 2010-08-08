@@ -1275,11 +1275,6 @@ public class AvalancheVSMode extends DummyMode {
 				engine.playSE("levelstop");
 			feverTime[playerID]--;
 		}
-		if (engine.stat == GameEngine.STAT_MOVE)
-		{
-			cleared[playerID] = false;
-			ojamaDrop[playerID] = false;
-		}
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();
@@ -1324,6 +1319,13 @@ public class AvalancheVSMode extends DummyMode {
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}
 		}
+	}
+	
+	@Override
+	public boolean onMove (GameEngine engine, int playerID) {
+		cleared[playerID] = false;
+		ojamaDrop[playerID] = false;
+		return false;
 	}
 
 	/*

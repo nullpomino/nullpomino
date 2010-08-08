@@ -44,7 +44,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * SPF VS-BATTLE mode (Alpha)
+ * SPF VS-BATTLE mode (Beta)
  */
 public class SPFMode extends DummyMode {
 	/** Log (Apache log4j) */
@@ -266,7 +266,13 @@ public class SPFMode extends DummyMode {
 	private double[] attackMultiplier, defendMultiplier;
 	
 	/** Rainbow power settings for each player */
-	private int[] rainbowPower;
+	private int[] diamondPower;
+	
+	/** Frame when squares were last checked */
+	private int[] lastSquareCheck;
+	
+	/** Flag set when counters have been decremented */
+	private boolean[] hardDecremented;
 	
 	/*
 	 * Mode name
@@ -321,7 +327,9 @@ public class SPFMode extends DummyMode {
 		dropPattern = new int[MAX_PLAYERS][][];
 		attackMultiplier = new double[MAX_PLAYERS];
 		defendMultiplier = new double[MAX_PLAYERS];
-		rainbowPower = new int[MAX_PLAYERS];
+		diamondPower = new int[MAX_PLAYERS];
+		lastSquareCheck = new int[MAX_PLAYERS];
+		hardDecremented = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -376,7 +384,7 @@ public class SPFMode extends DummyMode {
 		ojamaHard[playerID] = prop.getProperty("spfvs.ojamaHard.p" + playerID, 5);
 		dropSet[playerID] = prop.getProperty("spfvs.dropSet.p" + playerID, 0);
 		dropMap[playerID] = prop.getProperty("spfvs.dropMap.p" + playerID, 0);
-		rainbowPower[playerID] = prop.getProperty("spfvs.rainbowPower.p" + playerID, 2);
+		diamondPower[playerID] = prop.getProperty("spfvs.rainbowPower.p" + playerID, 2);
 	}
 
 	/**
@@ -397,7 +405,7 @@ public class SPFMode extends DummyMode {
 		prop.setProperty("spfvs.ojamaHard.p" + playerID, ojamaHard[playerID]);
 		prop.setProperty("spfvs.dropSet.p" + playerID, dropSet[playerID]);
 		prop.setProperty("spfvs.dropMap.p" + playerID, dropMap[playerID]);
-		prop.setProperty("spfvs.rainbowPower.p" + playerID, rainbowPower[playerID]);
+		prop.setProperty("spfvs.rainbowPower.p" + playerID, diamondPower[playerID]);
 	}
 
 	/**
@@ -501,6 +509,8 @@ public class SPFMode extends DummyMode {
 		scgettime[playerID] = 0;
 		zenKeshiDisplay[playerID] = 0;
 		techBonusDisplay[playerID] = 0;
+		lastSquareCheck[playerID] = -1;
+		hardDecremented[playerID] = true;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
@@ -644,9 +654,9 @@ public class SPFMode extends DummyMode {
 					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 1;
 					break;
 				case 16:
-					rainbowPower[playerID] += change;
-					if(rainbowPower[playerID] < 0) rainbowPower[playerID] = 3;
-					if(rainbowPower[playerID] > 3) rainbowPower[playerID] = 0;
+					diamondPower[playerID] += change;
+					if(diamondPower[playerID] < 0) diamondPower[playerID] = 3;
+					if(diamondPower[playerID] > 3) diamondPower[playerID] = 0;
 					break;
 				case 17:
 					dropSet[playerID] += change;
@@ -720,7 +730,7 @@ public class SPFMode extends DummyMode {
 				loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 			}
 			else if(engine.statc[3] >= 60)
-				engine.statc[2] = 10;
+				engine.statc[2] = 9;
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
@@ -795,7 +805,7 @@ public class SPFMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 15));
 				receiver.drawMenuFont(engine, playerID, 0, 14, "RAINBOW", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 0, 15, "GEM POWER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 16, RAINBOW_POWER_NAMES[rainbowPower[playerID]], (engine.statc[2] == 16));
+				receiver.drawMenuFont(engine, playerID, 1, 16, RAINBOW_POWER_NAMES[diamondPower[playerID]], (engine.statc[2] == 16));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/3", EventReceiver.COLOR_YELLOW);
 			} else {
@@ -846,7 +856,7 @@ public class SPFMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = BLOCK_COLORS.length;
-			engine.bonusBlockFrequency = rainbowPower[playerID] == 0 ? 0 : 25;
+			engine.bonusBlockFrequency = diamondPower[playerID] == 0 ? 0 : 25;
 			engine.bonusBlockSize = 1;
 			engine.bonusBlockColors = BONUS_BLOCK_COLORS;
 			engine.rainbowAnimate = (playerID == 0);
@@ -972,24 +982,16 @@ public class SPFMode extends DummyMode {
 	}
 	
 	@Override
+	public boolean onMove (GameEngine engine, int playerID) {
+		hardDecremented[playerID] = false;
+		return false;
+	}
+	
+	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int avalanche) {
 		if (engine.field == null)
 			return;
-		for (int y = (engine.field.getHiddenHeight() * -1); y < engine.field.getHeight(); y++)
-			for (int x = 0; x < engine.field.getWidth(); x++)
-			{
-				Block b = engine.field.getBlock(x, y);
-				if (b == null)
-					continue;
-				if (b.hard > 1)
-					b.hard--;
-				else if (b.hard == 1)
-				{
-					b.hard = 0;
-					b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
-					b.color = b.secondaryColor;
-				}
-			}
+		checkAll(engine, playerID);
 	}
 
 	/*
@@ -997,39 +999,42 @@ public class SPFMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		int enemyID = 0;
-		if(playerID == 0) enemyID = 1;
-		
-		checkSquares(engine, playerID);
-		
 		if (engine.field == null)
 			return;
+		
+		checkAll(engine, playerID);
+		
 		if (engine.field.canCascade())
 			return;
+		
+		int enemyID = 0;
+		if(playerID == 0) enemyID = 1;
 		
 		int width = engine.field.getWidth();
 		int height = engine.field.getHeight();
 		int hiddenHeight = engine.field.getHiddenHeight();
 
 		int diamondBreakColor = Block.BLOCK_COLOR_INVALID;
-		for (int y = (-1*hiddenHeight); y < height && diamondBreakColor == Block.BLOCK_COLOR_INVALID; y++)
-			for (int x = 0; x < width && diamondBreakColor == Block.BLOCK_COLOR_INVALID; x++)
-				if (engine.field.getBlockColor(x, y) == DIAMOND_COLOR)
-				{
-					receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
-					engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
-					if (y+1 >= height)
+		if (diamondPower[playerID] > 0)
+			for (int y = (-1*hiddenHeight); y < height && diamondBreakColor == Block.BLOCK_COLOR_INVALID; y++)
+				for (int x = 0; x < width && diamondBreakColor == Block.BLOCK_COLOR_INVALID; x++)
+					if (engine.field.getBlockColor(x, y) == DIAMOND_COLOR)
 					{
-						techBonusDisplay[playerID] = 120;
-						engine.statistics.score += 10000;
-						score[playerID] += 10000;
+						receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
+						engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
+						if (y+1 >= height)
+						{
+							techBonusDisplay[playerID] = 120;
+							engine.statistics.score += 10000;
+							score[playerID] += 10000;
+						}
+						else
+							diamondBreakColor = engine.field.getBlockColor(x, y+1, true);
 					}
-					else
-						diamondBreakColor = engine.field.getBlockColor(x, y+1, true);
-				}
 		double pts = 0;
 		double add, multiplier;
 		Block b;
+		//Clear blocks from diamond
 		if (diamondBreakColor > Block.BLOCK_COLOR_NONE)
 		{
 			engine.field.allClearColor(diamondBreakColor, true, true);
@@ -1040,16 +1045,18 @@ public class SPFMode extends DummyMode {
 					if (engine.field.getBlockColor(x, y, true) == diamondBreakColor)
 					{
 						pts += multiplier * 7;
-						if (rainbowPower[playerID] == 1)
-							pts *= 0.5;
-						else if (rainbowPower[playerID] == 2)
-							pts *= 0.8;
-						//TODO: Add diamond glitch
 						receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
 						engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 					}
 			}
 		}
+		if (diamondPower[playerID] == 1)
+			pts *= 0.5;
+		else if (diamondPower[playerID] == 2)
+			pts *= 0.8;
+		//TODO: Add diamond glitch
+		//Clear blocks
+		engine.field.gemColorCheck(engine.colorClearSize, true, engine.garbageColorClear, engine.ignoreHidden);
 		for (int y = (-1*hiddenHeight); y < height; y++)
 		{
 			multiplier = getRowValue(y);
@@ -1068,9 +1075,9 @@ public class SPFMode extends DummyMode {
 					add /= 2.0;
 					b.secondaryColor = 0;
 					b.hard = 0;
-					receiver.blockBreak(engine, playerID, x, y, b);
-					engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 				}
+				receiver.blockBreak(engine, playerID, x, y, b);
+				engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 				pts += add;
 			}
 		}
@@ -1110,11 +1117,46 @@ public class SPFMode extends DummyMode {
 		return ROW_VALUES[Math.min(Math.max(row, 0), ROW_VALUES.length-1)];
 	}
 	
-	public void checkSquares (GameEngine engine, int playerID)
+	public void checkAll(GameEngine engine, int playerID) {
+		boolean recheck = checkHardDecrement(engine, playerID);
+		if (recheck)
+			log.debug("Converted garbage blocks to regular blocks. Rechecking squares.");
+		checkSquares(engine, playerID, recheck);
+	}
+	
+	public boolean checkHardDecrement (GameEngine engine, int playerID) {
+		if (hardDecremented[playerID])
+			return false;
+		hardDecremented[playerID] = true;
+		boolean result = false;
+		for (int y = (engine.field.getHiddenHeight() * -1); y < engine.field.getHeight(); y++)
+			for (int x = 0; x < engine.field.getWidth(); x++)
+			{
+				Block b = engine.field.getBlock(x, y);
+				if (b == null)
+					continue;
+				if (b.hard > 1)
+					b.hard--;
+				else if (b.hard == 1)
+				{
+					b.hard = 0;
+					b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
+					b.color = b.secondaryColor;
+					result = true;
+				}
+			}
+		return result;
+	}
+	
+	public void checkSquares (GameEngine engine, int playerID, boolean forceRecheck)
 	{
-		log.debug("checkSquares called.");
 		if (engine.field == null)
 			return;
+		if (engine.statistics.time == lastSquareCheck[playerID] && !forceRecheck)
+			return;
+		lastSquareCheck[playerID] = engine.statistics.time;
+		
+		log.debug("Checking squares.");
 		
 		int width = engine.field.getWidth();
 		int height = engine.field.getHeight();
@@ -1294,7 +1336,7 @@ public class SPFMode extends DummyMode {
 					}
 				}
 				//Expand down
-				for (testY = maxY+1, done = false; testY < width && !done; testY++)
+				for (testY = maxY+1, done = false; testY < height && !done; testY++)
 				{
 					if (color != engine.field.getBlockColor(minX, testY) ||
 							color != engine.field.getBlockColor(maxX, testY))
@@ -1356,8 +1398,8 @@ public class SPFMode extends DummyMode {
 					calcScore(engine, playerID, 0);
 					return true;
 				}
-		
-		checkSquares(engine, playerID);
+
+		checkAll(engine, playerID);
 		
 		//Drop garbage if needed.
 		if (ojama[playerID] > 0)

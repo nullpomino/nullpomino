@@ -1997,8 +1997,6 @@ public class Field implements Serializable {
 	public int clearColor (int x, int y, boolean flag, boolean garbageClear, boolean gemSame,
 			boolean ignoreHidden)
 	{
-		if (flag)
-			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 		int blockColor = getBlockColor(x, y, gemSame);
 		if (blockColor == Block.BLOCK_COLOR_NONE || blockColor == Block.BLOCK_COLOR_INVALID)
 			return 0;
@@ -2851,6 +2849,9 @@ public class Field implements Serializable {
 	}
 
 	public int gemColorCheck(int size, boolean flag, boolean garbageClear, boolean ignoreHidden) {
+		if (flag)
+			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
+		
 		Field temp = new Field(this);
 		int total = 0;
 		Block b;
@@ -2866,7 +2867,8 @@ public class Field implements Serializable {
 				if (clear >= size)
 				{
 					total += clear;
-					clearColor(j, i, true, garbageClear, true, ignoreHidden);
+					if (flag)
+						clearColor(j, i, true, garbageClear, true, ignoreHidden);
 				}
 			}
 		}
