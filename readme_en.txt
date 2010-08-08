@@ -502,6 +502,7 @@ Version 7.3.0 (????/??/??)
 #This version is NO LONGER compatible with 7.2.0 netplay server.
 +Swing/Slick/SDL: When saving replays, a replay folder will be created if one is not found.
 +Swing/Slick/SDL: Fixed location of NEXT piece when spawn offset is non-zero.
++Swing/Slick/SDL: Added option to display NEXT pieces on side of playfield.
 +Slick: Added PERFECT FPS option (uses more CPU, does not work in menus).
 +Slick: LWJGL updated to version 2.5, Slick updated to build 274
 +Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
@@ -523,8 +524,10 @@ Version 7.3.0 (????/??/??)
  Bonus: Spin check type, all clear bonus
 -NetPlay: Now correctly forces 60 FPS in SDL version
 -NetPlay: Saves chat logs even when game window is closed or Java process is killed
+-NetPlay: You can see opponent's HOLD/NEXT pieces in any-rule 2 player game now.
 -NetServer: Fixed "ghost room" bug
 -Slick/SDL: Fixed bug where replay screen could crash if replays were deleted.
++Added more maps (Thanks Jenn, SecretSalamender and Magnanimous!)
 *Added Mac/Linux boot scripts. (Thanks croikle!)
 *Renamed Standard-GIZA rule to fit naming convention.
 *[Internal change] Main package changed to mu.nu.nullpo
