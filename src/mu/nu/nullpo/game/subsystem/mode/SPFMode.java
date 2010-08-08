@@ -1056,7 +1056,7 @@ public class SPFMode extends DummyMode {
 			pts *= 0.8;
 		//TODO: Add diamond glitch
 		//Clear blocks
-		engine.field.gemColorCheck(engine.colorClearSize, true, engine.garbageColorClear, engine.ignoreHidden);
+		//engine.field.gemColorCheck(engine.colorClearSize, true, engine.garbageColorClear, engine.ignoreHidden);
 		for (int y = (-1*hiddenHeight); y < height; y++)
 		{
 			multiplier = getRowValue(y);
