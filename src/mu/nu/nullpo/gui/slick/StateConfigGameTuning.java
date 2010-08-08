@@ -77,7 +77,7 @@ public class StateConfigGameTuning extends BasicGameState {
 
 	/**
 	 * 設定読み込み
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
 		owRotateButtonDefaultRight = prop.getProperty(player + ".tuning.owRotateButtonDefaultRight", -1);
@@ -89,7 +89,7 @@ public class StateConfigGameTuning extends BasicGameState {
 
 	/**
 	 * 設定保存
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
 		prop.setProperty(player + ".tuning.owRotateButtonDefaultRight", owRotateButtonDefaultRight);

@@ -159,7 +159,7 @@ public class PracticeMode extends DummyMode {
 	/** レベルタイプ */
 	private int leveltype;
 
-	/** プリセット number */
+	/** Preset number */
 	private int presetNumber;
 
 	/** マップ number */
@@ -261,10 +261,10 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/**
-	 * プリセットを読み込み
+	 * Presetを読み込み
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to read from
+	 * @param preset Preset number
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("practice.gravity." + preset, 4);
@@ -297,10 +297,10 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/**
-	 * プリセットを保存
+	 * Presetを保存
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to save to
+	 * @param preset Preset number
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
 		prop.setProperty("practice.gravity." + preset, engine.speed.gravity);
@@ -335,7 +335,7 @@ public class PracticeMode extends DummyMode {
 	/**
 	 * マップ読み込み
 	 * @param field フィールド
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
@@ -349,7 +349,7 @@ public class PracticeMode extends DummyMode {
 	/**
 	 * マップ保存
 	 * @param field フィールド
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
@@ -564,10 +564,10 @@ public class PracticeMode extends DummyMode {
 						receiver.saveProperties("config/map/practice/" + mapNumber + ".map", prop);
 					}
 				} else if(engine.statc[2] == 37) {
-					// プリセット読み込み
+					// Preset読み込み
 					loadPreset(engine, owner.modeConfig, presetNumber);
 				} else if(engine.statc[2] == 38) {
-					// プリセット保存
+					// Preset保存
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {

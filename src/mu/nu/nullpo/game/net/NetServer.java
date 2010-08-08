@@ -1427,7 +1427,7 @@ public class NetServer {
 	/**
 	 * 順番待ちのプレイヤーをすべて空席に参加させる
 	 * @param roomInfo ルーム情報
-	 * @return 席に入れたプレイヤーの数
+	 * @return 席に入れたNumber of players
 	 */
 	private int joinAllQueuePlayers(NetRoomInfo roomInfo) throws IOException {
 		int playerJoinedCount = 0;

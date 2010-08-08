@@ -629,7 +629,7 @@ public class EventReceiver {
 	public void modeInit(GameManager manager) {}
 
 	/**
-	 * 各プレイヤーのInitializationが終わるときに呼び出される処理
+	 * Initialization for each playerが終わるときに呼び出される処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */

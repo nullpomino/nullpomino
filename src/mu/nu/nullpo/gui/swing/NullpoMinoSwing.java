@@ -750,7 +750,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 		gameManager.init();
 
-		// 各プレイヤーのInitialization
+		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			// チューニング設定
 			gameManager.engine[i].owRotateButtonDefaultRight = propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", -1);
@@ -833,7 +833,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 		gameManager.init();
 
-		// 各プレイヤーのInitialization
+		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			// ルール
 			RuleOptions ruleopt = new RuleOptions();
@@ -929,7 +929,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameManager.engine[0].aiUseThread = propGlobal.getProperty(0 + ".aiUseThread", true);
 		}
 
-		// 各プレイヤーのInitialization
+		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			gameManager.engine[i].init();
 		}

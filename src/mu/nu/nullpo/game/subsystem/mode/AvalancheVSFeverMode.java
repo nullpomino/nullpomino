@@ -66,7 +66,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		"Fever", "15th", "15thDS", "7", "Compendium"
 	};
 
-	/** プレイヤーの数 */
+	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
 
 	/** Zenkeshi setting constants */
@@ -85,7 +85,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	private static final int CHAIN_DISPLAY_NONE = 0, CHAIN_DISPLAY_YELLOW = 1,
 		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3, CHAIN_DISPLAY_FEVERSIZE = 4;
 	
-	/** 各プレイヤーの枠の色 */
+	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
 	/** GameManager that owns this mode */
@@ -211,7 +211,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	}
 
 	/*
-	 * プレイヤー数
+	 * Number of players
 	 */
 	@Override
 	public int getPlayers() {
@@ -219,7 +219,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	}
 
 	/*
-	 * モードのInitialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -270,10 +270,10 @@ public class AvalancheVSFeverMode extends DummyMode {
 	}
 
 	/**
-	 * スピードプリセットを読み込み
+	 * Read speed presets
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to read from
+	 * @param preset Preset number
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("avalanchevsfever.gravity." + preset, 4);
@@ -288,10 +288,10 @@ public class AvalancheVSFeverMode extends DummyMode {
 	}
 
 	/**
-	 * スピードプリセットを保存
+	 * Save speed presets
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to save to
+	 * @param preset Preset number
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
 		prop.setProperty("avalanchevsfever.gravity." + preset, engine.speed.gravity);
@@ -308,7 +308,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	/**
 	 * スピード以外の設定を読み込み
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
@@ -333,7 +333,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	/**
 	 * スピード以外の設定を保存
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
@@ -356,7 +356,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	}
 
 	/*
-	 * 各プレイヤーのInitialization
+	 * Initialization for each player
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {

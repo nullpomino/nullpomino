@@ -95,7 +95,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		Block.BLOCK_COLOR_YELLOW, Block.BLOCK_COLOR_PURPLE, Block.BLOCK_COLOR_CYAN
 	};
 
-	/** 各プレイヤーの枠の色 */
+	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {
 		GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE, GameEngine.FRAME_COLOR_GREEN,
 		GameEngine.FRAME_COLOR_YELLOW, GameEngine.FRAME_COLOR_PURPLE, GameEngine.FRAME_COLOR_CYAN
@@ -210,13 +210,13 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** 自分の勝利数 */
 	private int numWins;
 
-	/** 合計プレイヤー数(間に挟まれているnull席はカウントしない) */
+	/** 合計Number of players(間に挟まれているnull席はカウントしない) */
 	private int numPlayers;
 
 	/** 観戦者の数 */
 	private int numSpectators;
 
-	/** ゲームが始まったあとの合計プレイヤー数(間に挟まれているnull席はカウントしない) */
+	/** ゲームが始まったあとの合計Number of players(間に挟まれているnull席はカウントしない) */
 	private int numNowPlayers;
 
 	/** この部屋の最大人数 */
@@ -403,8 +403,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * 今この部屋で参戦状態のプレイヤーの数を返す
-	 * @return 参戦状態のプレイヤーの数
+	 * 今この部屋で参戦状態のNumber of playersを返す
+	 * @return 参戦状態のNumber of players
 	 */
 	/*
 	private int getCurrentNumberOfPlayers() {
@@ -649,7 +649,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/*
-	 * 各プレイヤーのInitialization
+	 * Initialization for each player
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
@@ -1285,7 +1285,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// プレイヤー数
+		// Number of players
 		if((playerID == getPlayers() - 1) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected()) &&
 		   (!owner.engine[1].isVisible || owner.engine[1].minidisplay || !isNetGameActive))
 		{
@@ -1303,7 +1303,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			receiver.drawDirectFont(engine, 0, 503, 366, "" + netLobby.netPlayerClient.getRoomInfoList().size(), EventReceiver.COLOR_WHITE, 0.5f);
 		}
 
-		// 全体プレイヤー数
+		// 全体Number of players
 		if((playerID == getPlayers() - 1) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
 			int fontcolor = EventReceiver.COLOR_BLUE;
 			if(netLobby.netPlayerClient.getObserverCount() > 0) fontcolor = EventReceiver.COLOR_GREEN;

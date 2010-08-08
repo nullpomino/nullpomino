@@ -679,7 +679,7 @@ public class RuleOptions implements Serializable {
 	/**
 	 * プロパティセットに保存
 	 * @param p プロパティセット
-	 * @param id プレイヤーIDまたはプリセットID
+	 * @param id プレイヤーIDまたはPresetID
 	 */
 	public void writeProperty(CustomProperties p, int id) {
 		p.setProperty(id + ".ruleopt.strRuleName", strRuleName);
@@ -795,7 +795,7 @@ public class RuleOptions implements Serializable {
 	/**
 	 * プロパティセットから読み込み
 	 * @param p プロパティセット
-	 * @param id プレイヤーIDまたはプリセットID
+	 * @param id プレイヤーIDまたはPresetID
 	 */
 	public void readProperty(CustomProperties p, int id) {
 		strRuleName = p.getProperty(id + ".ruleopt.strRuleName", strRuleName);

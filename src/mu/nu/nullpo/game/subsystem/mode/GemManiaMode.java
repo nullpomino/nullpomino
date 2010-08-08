@@ -425,7 +425,7 @@ public class GemManiaMode extends DummyMode {
 	/**
 	 * マップ読み込み
 	 * @param field フィールド
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
@@ -447,7 +447,7 @@ public class GemManiaMode extends DummyMode {
 	/**
 	 * マップ保存
 	 * @param field フィールド
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {

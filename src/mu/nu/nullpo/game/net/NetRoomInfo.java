@@ -112,7 +112,7 @@ public class NetRoomInfo implements Serializable {
 	/** ルール */
 	public RuleOptions ruleOpt = null;
 
-	/** 参加しているプレイヤーの数 */
+	/** 参加しているNumber of players */
 	public int playerSeatedCount = 0;
 
 	/** 観戦中の人の数 */
@@ -124,7 +124,7 @@ public class NetRoomInfo implements Serializable {
 	/** ゲーム中フラグ */
 	public boolean playing = false;
 
-	/** ゲーム開始直後のプレイヤー数 */
+	/** ゲーム開始直後のNumber of players */
 	public int startPlayers = 0;
 
 	/** 死亡カウント */
@@ -391,7 +391,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * プレイヤー数カウントを更新
+	 * Number of playersカウントを更新
 	 */
 	public void updatePlayerCount() {
 		playerSeatedCount = getNumberOfPlayerSeated();
@@ -498,7 +498,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 何人のプレイヤーが準備完了したか数える
-	 * @return 準備完了したプレイヤーの数
+	 * @return 準備完了したNumber of players
 	 */
 	public int getHowManyPlayersReady() {
 		int count = 0;
@@ -512,7 +512,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 何人のプレイヤーがプレイ中か数える(死んだ人とまだ部屋に来た直後の人は含みません)
-	 * @return プレイ中のプレイヤーの数
+	 * @return プレイ中のNumber of players
 	 */
 	public int getHowManyPlayersPlaying() {
 		int count = 0;

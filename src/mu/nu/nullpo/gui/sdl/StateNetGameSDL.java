@@ -137,7 +137,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			gameManager.engine[0].aiUseThread = NullpoMinoSDL.propGlobal.getProperty(0 + ".aiUseThread", true);
 		}
 
-		// 各プレイヤーのInitialization
+		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			gameManager.engine[i].init();
 		}

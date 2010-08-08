@@ -90,7 +90,7 @@ public class SPFMode extends DummyMode {
 	
 	private static final int[] BONUS_BLOCK_COLORS = {DIAMOND_COLOR};
 
-	/** プレイヤーの数 */
+	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
 	
 	/** Names of drop map sets */
@@ -178,7 +178,7 @@ public class SPFMode extends DummyMode {
 	/** Names of rainbow power settings */
 	private static final String[] RAINBOW_POWER_NAMES = {"NONE", "50%", "80%", "100%", "50/100%"};
 	
-	/** 各プレイヤーの枠の色 */
+	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
 	/** GameManager that owns this mode */
@@ -283,7 +283,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/*
-	 * プレイヤー数
+	 * Number of players
 	 */
 	@Override
 	public int getPlayers() {
@@ -291,7 +291,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/*
-	 * モードのInitialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -335,10 +335,10 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * スピードプリセットを読み込み
+	 * Read speed presets
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to read from
+	 * @param preset Preset number
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("spfvs.gravity." + preset, 4);
@@ -351,10 +351,10 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * スピードプリセットを保存
+	 * Save speed presets
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to save to
+	 * @param preset Preset number
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
 		prop.setProperty("spfvs.gravity." + preset, engine.speed.gravity);
@@ -369,7 +369,7 @@ public class SPFMode extends DummyMode {
 	/**
 	 * スピード以外の設定を読み込み
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
@@ -390,7 +390,7 @@ public class SPFMode extends DummyMode {
 	/**
 	 * スピード以外の設定を保存
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
@@ -411,7 +411,7 @@ public class SPFMode extends DummyMode {
 	/**
 	 * マップ読み込み
 	 * @param field フィールド
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
@@ -426,7 +426,7 @@ public class SPFMode extends DummyMode {
 	/**
 	 * マップ保存
 	 * @param field フィールド
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
@@ -484,7 +484,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/*
-	 * 各プレイヤーのInitialization
+	 * Initialization for each player
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {

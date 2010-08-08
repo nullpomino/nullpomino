@@ -49,7 +49,7 @@ public class VSBattleMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 5;
 
-	/** プレイヤーの数 */
+	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
 
 	/** Most recent scoring event typeの定数 */
@@ -83,7 +83,7 @@ public class VSBattleMode extends DummyMode {
 	/** 各プレイヤーの邪魔ブロックの色 */
 	private final int[] PLAYER_COLOR_BLOCK = {Block.BLOCK_COLOR_RED, Block.BLOCK_COLOR_BLUE};
 
-	/** 各プレイヤーの枠の色 */
+	/** Each player's frame color */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
 	/** GameManager that owns this mode */
@@ -209,7 +209,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * プレイヤー数
+	 * Number of players
 	 */
 	@Override
 	public int getPlayers() {
@@ -217,7 +217,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * モードのInitialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -263,10 +263,10 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * スピードプリセットを読み込み
+	 * Read speed presets
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to read from
+	 * @param preset Preset number
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("vsbattle.gravity." + preset, 4);
@@ -279,10 +279,10 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * スピードプリセットを保存
+	 * Save speed presets
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to save to
+	 * @param preset Preset number
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
 		prop.setProperty("vsbattle.gravity." + preset, engine.speed.gravity);
@@ -297,7 +297,7 @@ public class VSBattleMode extends DummyMode {
 	/**
 	 * スピード以外の設定を読み込み
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
@@ -335,7 +335,7 @@ public class VSBattleMode extends DummyMode {
 	/**
 	 * スピード以外の設定を保存
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		int playerID = engine.playerID;
@@ -364,7 +364,7 @@ public class VSBattleMode extends DummyMode {
 	/**
 	 * マップ読み込み
 	 * @param field フィールド
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
@@ -379,7 +379,7 @@ public class VSBattleMode extends DummyMode {
 	/**
 	 * マップ保存
 	 * @param field フィールド
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
@@ -424,7 +424,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * 各プレイヤーのInitialization
+	 * Initialization for each player
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {

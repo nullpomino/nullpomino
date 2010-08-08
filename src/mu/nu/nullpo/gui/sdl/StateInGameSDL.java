@@ -104,7 +104,7 @@ public class StateInGameSDL extends BaseStateSDL {
 
 		gameManager.init();
 
-		// 各プレイヤーのInitialization
+		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			// チューニング設定
 			gameManager.engine[i].owRotateButtonDefaultRight = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", -1);
@@ -182,7 +182,7 @@ public class StateInGameSDL extends BaseStateSDL {
 
 		gameManager.init();
 
-		// 各プレイヤーのInitialization
+		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			// ルール
 			RuleOptions ruleopt = new RuleOptions();

@@ -44,7 +44,7 @@ public class NetObserverClient extends NetBaseClient {
 	/** サーバーVersion */
 	protected volatile float serverVersion = 0f;
 
-	/** プレイヤー数 */
+	/** Number of players */
 	protected volatile int playerCount = 0;
 
 	/** オブザーバー数 */

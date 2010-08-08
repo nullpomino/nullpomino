@@ -78,7 +78,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 
 	/**
 	 * 設定読み込み
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
 		joyUseNumber = prop.getProperty("joyUseNumber.p" + player, -1);
@@ -89,7 +89,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 
 	/**
 	 * 設定保存
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
 		prop.setProperty("joyUseNumber.p" + player, joyUseNumber);

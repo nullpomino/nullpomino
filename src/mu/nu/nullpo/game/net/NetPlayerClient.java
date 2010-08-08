@@ -61,7 +61,7 @@ public class NetPlayerClient extends NetBaseClient {
 	/** サーバーVersion */
 	protected float serverVersion = -1f;
 
-	/** プレイヤー数 */
+	/** Number of players */
 	protected int playerCount = -1;
 
 	/** オブザーバー数 */
@@ -332,7 +332,7 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return プレイヤー数
+	 * @return Number of players
 	 */
 	public int getPlayerCount() {
 		return playerCount;

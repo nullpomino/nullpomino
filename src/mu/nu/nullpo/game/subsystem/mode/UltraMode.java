@@ -175,10 +175,10 @@ public class UltraMode extends DummyMode {
 	}
 
 	/**
-	 * プリセットを読み込み
+	 * Presetを読み込み
 	 * @param engine GameEngine
-	 * @param prop 読み込み元のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to read from
+	 * @param preset Preset number
 	 */
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("ultra.gravity." + preset, 4);
@@ -199,10 +199,10 @@ public class UltraMode extends DummyMode {
 	}
 
 	/**
-	 * プリセットを保存
+	 * Presetを保存
 	 * @param engine GameEngine
-	 * @param prop 保存先のProperty file
-	 * @param preset プリセット number
+	 * @param prop Property file to save to
+	 * @param preset Preset number
 	 */
 	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
 		prop.setProperty("ultra.gravity." + preset, engine.speed.gravity);

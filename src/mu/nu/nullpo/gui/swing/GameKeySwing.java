@@ -178,7 +178,7 @@ public class GameKeySwing {
 
 	/**
 	 * キー設定を読み込み
-	 * @param prop 読み込み元のProperty file
+	 * @param prop Property file to read from
 	 */
 	public void loadConfig(CustomProperties prop) {
 		keymap[BUTTON_UP] = prop.getProperty("key.p" + player + ".up", 0);
@@ -218,7 +218,7 @@ public class GameKeySwing {
 
 	/**
 	 * キー設定を保存
-	 * @param prop 保存先のProperty file
+	 * @param prop Property file to save to
 	 */
 	public void saveConfig(CustomProperties prop) {
 		prop.setProperty("key.p" + player + ".up", keymap[BUTTON_UP]);
