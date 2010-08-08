@@ -176,7 +176,7 @@ public class SPFMode extends DummyMode {
 	};
 	
 	/** Names of rainbow power settings */
-	private static final String[] RAINBOW_POWER_NAMES = {"50%", "80%", "100%", "50/100%"};
+	private static final String[] RAINBOW_POWER_NAMES = {"NONE", "50%", "80%", "100%", "50/100%"};
 	
 	/** 各プレイヤーの枠の色 */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
@@ -376,7 +376,7 @@ public class SPFMode extends DummyMode {
 		ojamaHard[playerID] = prop.getProperty("spfvs.ojamaHard.p" + playerID, 5);
 		dropSet[playerID] = prop.getProperty("spfvs.dropSet.p" + playerID, 0);
 		dropMap[playerID] = prop.getProperty("spfvs.dropMap.p" + playerID, 0);
-		rainbowPower[playerID] = prop.getProperty("spfvs.rainbowPower.p" + playerID, 1);
+		rainbowPower[playerID] = prop.getProperty("spfvs.rainbowPower.p" + playerID, 2);
 	}
 
 	/**
@@ -645,8 +645,8 @@ public class SPFMode extends DummyMode {
 					break;
 				case 16:
 					rainbowPower[playerID] += change;
-					if(rainbowPower[playerID] < 0) rainbowPower[playerID] = 2;
-					if(rainbowPower[playerID] > 2) rainbowPower[playerID] = 0;
+					if(rainbowPower[playerID] < 0) rainbowPower[playerID] = 3;
+					if(rainbowPower[playerID] > 3) rainbowPower[playerID] = 0;
 					break;
 				case 17:
 					dropSet[playerID] += change;
@@ -846,7 +846,7 @@ public class SPFMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = BLOCK_COLORS.length;
-			engine.bonusBlockFrequency = 25;
+			engine.bonusBlockFrequency = rainbowPower[playerID] == 0 ? 0 : 25;
 			engine.bonusBlockSize = 1;
 			engine.bonusBlockColors = BONUS_BLOCK_COLORS;
 			engine.rainbowAnimate = (playerID == 0);
@@ -1040,9 +1040,9 @@ public class SPFMode extends DummyMode {
 					if (engine.field.getBlockColor(x, y, true) == diamondBreakColor)
 					{
 						pts += multiplier * 7;
-						if (rainbowPower[playerID] == 0)
+						if (rainbowPower[playerID] == 1)
 							pts *= 0.5;
-						else if (rainbowPower[playerID] == 1)
+						else if (rainbowPower[playerID] == 2)
 							pts *= 0.8;
 						//TODO: Add diamond glitch
 						receiver.blockBreak(engine, playerID, x, y, engine.field.getBlock(x, y));
