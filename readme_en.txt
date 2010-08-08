@@ -505,7 +505,7 @@ Version 7.3.0 (????/??/??)
 +Swing/Slick/SDL: Added option to display NEXT pieces on side of playfield.
 +Slick: Added PERFECT FPS option (uses more CPU, does not work in menus).
 +Slick: LWJGL updated to version 2.5, Slick updated to build 274
-+Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
++Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, AVALANCHE VS FEVER MARATHON, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
  Modes for other gametypes are either Release Candidate (AVALANCHE, PHYSICIAN) or Beta (SPF).
  Special thanks to Puyo Nexus for supplying Fever chain data.
 +Added SQUARE, AVALANCHE, PHYSICIAN, and SPF rules
