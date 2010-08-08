@@ -1,4 +1,4 @@
-NullpoMino
+﻿NullpoMino
 Version 7.3.0
 
 1. What is this?
@@ -524,7 +524,7 @@ Version 7.3.0 (????/??/??)
  Bonus: Spin check type, all clear bonus
 -NetPlay: Now correctly forces 60 FPS in SDL version
 -NetPlay: Saves chat logs even when game window is closed or Java process is killed
--NetPlay: You can see opponent's HOLD/NEXT pieces in any-rule 2 player game now.
+-NetPlay: You can see opponent's HOLD/NEXT pieces in any-rule 2 players game now.
 -NetServer: Fixed "ghost room" bug
 -Slick/SDL: Fixed bug where replay screen could crash if replays were deleted.
 +Added more maps (Thanks Jenn, SecretSalamender and Magnanimous!)
