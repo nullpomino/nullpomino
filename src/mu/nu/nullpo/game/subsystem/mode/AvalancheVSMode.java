@@ -389,11 +389,13 @@ public class AvalancheVSMode extends DummyMode {
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("avalanchevs.gravity." + preset, 4);
 		engine.speed.denominator = prop.getProperty("avalanchevs.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("avalanchevs.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("avalanchevs.areLine." + preset, 24);
+		engine.speed.are = prop.getProperty("avalanchevs.are." + preset, 30);
+		engine.speed.areLine = prop.getProperty("avalanchevs.areLine." + preset, 30);
 		engine.speed.lineDelay = prop.getProperty("avalanchevs.lineDelay." + preset, 10);
 		engine.speed.lockDelay = prop.getProperty("avalanchevs.lockDelay." + preset, 60);
 		engine.speed.das = prop.getProperty("avalanchevs.das." + preset, 14);
+		engine.cascadeDelay = prop.getProperty("avalanchevs.fallDelay." + preset, 1);
+		engine.cascadeClearDelay = prop.getProperty("avalanchevs.clearDelay." + preset, 10);
 	}
 
 	/**
@@ -410,6 +412,8 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.lineDelay." + preset, engine.speed.lineDelay);
 		prop.setProperty("avalanchevs.lockDelay." + preset, engine.speed.lockDelay);
 		prop.setProperty("avalanchevs.das." + preset, engine.speed.das);
+		prop.setProperty("avalanchevs.fallDelay." + preset, engine.cascadeDelay);
+		prop.setProperty("avalanchevs.clearDelay." + preset, engine.cascadeClearDelay);
 	}
 
 	/**
@@ -591,13 +595,13 @@ public class AvalancheVSMode extends DummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 35;
+				if(engine.statc[2] < 0) engine.statc[2] = 37;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 35) engine.statc[2] = 0;
+				if(engine.statc[2] > 37) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -651,10 +655,14 @@ public class AvalancheVSMode extends DummyMode {
 					if(engine.speed.das > 99) engine.speed.das = 0;
 					break;
 				case 7:
+					engine.cascadeDelay += change;
+					if(engine.cascadeDelay < 0) engine.cascadeDelay = 20;
+					if(engine.cascadeDelay > 20) engine.cascadeDelay = 0;
+					break;
 				case 8:
-					presetNumber[playerID] += change;
-					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
-					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
+					engine.cascadeClearDelay += change;
+					if(engine.cascadeClearDelay < 0) engine.cascadeClearDelay = 99;
+					if(engine.cascadeClearDelay > 99) engine.cascadeClearDelay = 0;
 					break;
 				case 9:
 					ojamaCounterMode[playerID] += change;
@@ -800,6 +808,12 @@ public class AvalancheVSMode extends DummyMode {
 				case 35:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
+				case 36:
+				case 37:
+					presetNumber[playerID] += change;
+					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
+					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
+					break;
 				}
 			}
 
@@ -807,9 +821,9 @@ public class AvalancheVSMode extends DummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 7) {
+				if(engine.statc[2] == 36) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID]);
-				} else if(engine.statc[2] == 8) {
+				} else if(engine.statc[2] == 37) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID]);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -906,12 +920,12 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(engine.speed.lockDelay), (engine.statc[2] == 5));
 				receiver.drawMenuFont(engine, playerID, 0, 12, "DAS", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(engine.speed.das), (engine.statc[2] == 6));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "LOAD", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 7));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "SAVE", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 8));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "FALL DELAY", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(engine.cascadeDelay), (engine.statc[2] == 7));
+				receiver.drawMenuFont(engine, playerID, 0, 16, "CLEAR DELAY", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(engine.cascadeClearDelay), (engine.statc[2] == 8));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/4", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
@@ -939,7 +953,7 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 16, "X SHOW", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getONorOFF(dangerColumnShowX[playerID]), (engine.statc[2] == 17));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 27) {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 18) * 2) + 1, "b",
@@ -966,8 +980,8 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 16, "ZENKESHI", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]], (engine.statc[2] == 26));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
-			} else {
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
+			} else if(engine.statc[2] < 36) {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 27) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
@@ -994,7 +1008,19 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 16, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 35));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/4", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
+			} else {
+				if(owner.replayMode == false) {
+					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 36) * 2) + 1, "b",
+										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
+				}
+				
+				receiver.drawMenuFont(engine, playerID, 0, 0, "LOAD", EventReceiver.COLOR_GREEN);
+				receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 36));
+				receiver.drawMenuFont(engine, playerID, 0, 2, "SAVE", EventReceiver.COLOR_GREEN);
+				receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 37));
+				
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 5/5", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -1099,8 +1125,17 @@ public class AvalancheVSMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + String.valueOf(ojamaSent[1]), EventReceiver.COLOR_BLUE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 10, "SCORE", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: " + String.valueOf(score[0]), EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1, 12, "2P: " + String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: ", EventReceiver.COLOR_RED);
+			if (scgettime[0] > 0 && lastscore[0] > 0 && lastmultiplier[0] > 0)
+				receiver.drawScoreFont(engine, playerID, 3, 11, "+" + lastscore[0] + "X" + lastmultiplier[0], EventReceiver.COLOR_RED);
+			else
+				receiver.drawScoreFont(engine, playerID, 3, 11, String.valueOf(score[0]), EventReceiver.COLOR_RED);
+				
+			receiver.drawScoreFont(engine, playerID, -1, 12, "2P: ", EventReceiver.COLOR_BLUE);
+			if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
+				receiver.drawScoreFont(engine, playerID, 3, 12, "+" + lastscore[1] + "X" + lastmultiplier[1], EventReceiver.COLOR_BLUE);
+			else
+				receiver.drawScoreFont(engine, playerID, 3, 12, String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
@@ -1248,7 +1283,7 @@ public class AvalancheVSMode extends DummyMode {
 			
 			lastscore[playerID] = pts;
 			lastmultiplier[playerID] = multiplier;
-			scgettime[playerID] = 120;
+			scgettime[playerID] = 25;
 			int ptsTotal = pts*multiplier;
 			score[playerID] += ptsTotal;
 
@@ -1452,7 +1487,8 @@ public class AvalancheVSMode extends DummyMode {
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		scgettime[playerID]++;
+		if (scgettime[playerID] > 0)
+			scgettime[playerID]--;
 		if (zenKeshiDisplay[playerID] > 0)
 			zenKeshiDisplay[playerID]--;
 		if (chainDisplay[playerID] > 0)

@@ -29,6 +29,7 @@ mu.nu.nullpo.game.subsystem.mode.NetVSBattleMode
 mu.nu.nullpo.game.subsystem.mode.AvalancheMode
 mu.nu.nullpo.game.subsystem.mode.AvalancheFeverMode
 mu.nu.nullpo.game.subsystem.mode.AvalancheVSMode
+mu.nu.nullpo.game.subsystem.mode.AvalancheVSFeverMode
 mu.nu.nullpo.game.subsystem.mode.PhysicianMode
 mu.nu.nullpo.game.subsystem.mode.PhysicianVSMode
 mu.nu.nullpo.game.subsystem.mode.SPFMode

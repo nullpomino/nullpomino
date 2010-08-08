@@ -459,7 +459,7 @@ public class AvalancheFeverMode extends DummyMode {
 						color = EventReceiver.COLOR_GREEN;
 					else if (chain == feverChainDisplay-2)
 						color = EventReceiver.COLOR_ORANGE;
-					else if (chain < feverChainDisplay-1)
+					else if (chain < feverChainDisplay-2)
 						color = EventReceiver.COLOR_RED;
 				}
 				receiver.drawMenuFont(engine, playerID, chain > 9 ? 0 : 1, textHeight, chain + " CHAIN!", color);
