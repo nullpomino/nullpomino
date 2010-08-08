@@ -490,6 +490,7 @@ Also thanks to:
 	 (NullpoMino thread: http://www.tetrisconcept.net/forum/showthread.html?t=1381)
 	Hard Drop http://harddrop.com/
 	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
+	Puyo Nexus http://www.puyonexus.net/
 
 11. Project Page at Google code
 http://code.google.com/p/nullpomino/
@@ -505,7 +506,7 @@ Version 7.3.0 (????/??/??)
 +Slick: LWJGL updated to version 2.5, Slick updated to build 274
 +Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
  Modes for other gametypes are either Release Candidate (AVALANCHE, PHYSICIAN) or Beta (SPF).
- Special thanks to Puyo Nexus (http://www.puyonexus.com) for supplying Fever chain data.
+ Special thanks to Puyo Nexus for supplying Fever chain data.
 +Added SQUARE, AVALANCHE, PHYSICIAN, and SPF rules
 +Renamed CLASSIC MARATHON to RETRO MARATHON
 +Randomizer: Randomizers have been replaced. This breaks all replays prior to this release.
