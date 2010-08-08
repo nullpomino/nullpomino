@@ -104,6 +104,9 @@ public class Field implements Serializable {
 
 	/** Number of gems cleared in last color or line color clear */
 	public int gemsCleared;
+
+	/** Number of garbage blocks cleared in last color clear */
+	public int garbageCleared;
 	
 	/** List of colors of lines cleared in most recent line color clear */
 	public ArrayList<Integer> lineColorsCleared;
@@ -164,6 +167,7 @@ public class Field implements Serializable {
 		colorsCleared = 0;
 		gemsCleared = 0;
 		lineColorsCleared = null;
+		garbageCleared = 0;
 
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
@@ -194,6 +198,8 @@ public class Field implements Serializable {
 		colorClearExtraCount = f.colorClearExtraCount;
 		colorsCleared = f.colorsCleared;
 		gemsCleared = f.gemsCleared = 0;
+		lineColorsCleared = f.lineColorsCleared;
+		garbageCleared = f.garbageCleared;
 		
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
@@ -2029,7 +2035,10 @@ public class Field implements Serializable {
 				 && !b.getAttribute(Block.BLOCK_ATTRIBUTE_WALL))
 		{
 			if (flag)
+			{
 				b.setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
+				garbageCleared++;
+			}
 			else if (b.hard > 0)
 				b.hard--;
 			else
@@ -2371,6 +2380,7 @@ public class Field implements Serializable {
 		boolean[] colorsClearedArray = new boolean[7];
 		if (flag) 
 		{
+			garbageCleared = 0;
 			colorClearExtraCount = 0;
 			colorsCleared = 0;
 			for (int i = 0; i < 7; i++)
