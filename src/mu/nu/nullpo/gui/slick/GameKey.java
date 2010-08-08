@@ -43,7 +43,8 @@ public class GameKey {
 	/** ボタン number定数 */
 	public static final int BUTTON_UP = 0, BUTTON_DOWN = 1, BUTTON_LEFT = 2, BUTTON_RIGHT = 3, BUTTON_A = 4, BUTTON_B = 5, BUTTON_C = 6,
 			BUTTON_D = 7, BUTTON_E = 8, BUTTON_F = 9, BUTTON_QUIT = 10, BUTTON_PAUSE = 11, BUTTON_GIVEUP = 12, BUTTON_RETRY = 13,
-			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15,BUTTON_NAV_UP=16, BUTTON_NAV_DOWN=17, BUTTON_NAV_LEFT=18, BUTTON_NAV_RIGHT=19 ,BUTTON_NAV_SELECT=20, BUTTON_NAV_CANCEL=21;
+			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15, BUTTON_NAV_UP = 16, BUTTON_NAV_DOWN = 17, BUTTON_NAV_LEFT = 18, 
+			BUTTON_NAV_RIGHT = 19, BUTTON_NAV_SELECT = 20, BUTTON_NAV_CANCEL = 21;
 
 	/** ボタン数の定数 */
 	public static final int MAX_BUTTON = 22;
@@ -201,12 +202,12 @@ public class GameKey {
 		keymap[BUTTON_RETRY] = prop.getProperty("key.p" + player + ".retry", 0);
 		keymap[BUTTON_FRAMESTEP] = prop.getProperty("key.p" + player + ".framestep", 0);
 		keymap[BUTTON_SCREENSHOT] = prop.getProperty("key.p" + player + ".screenshot", 0);
-		keymap[BUTTON_NAV_UP]=prop.getProperty("key.p" + player + ".navigationup", Input.KEY_UP);
-		keymap[BUTTON_NAV_DOWN]=prop.getProperty("key.p" + player + ".navigationdown", Input.KEY_DOWN);
-		keymap[BUTTON_NAV_LEFT]=prop.getProperty("key.p" + player + ".navigationleft", Input.KEY_LEFT);
-		keymap[BUTTON_NAV_RIGHT]=prop.getProperty("key.p" + player + ".navigationright", Input.KEY_RIGHT);
-		keymap[BUTTON_NAV_SELECT]=prop.getProperty("key.p" + player + ".navigationselect", Input.KEY_ENTER);
-		keymap[BUTTON_NAV_CANCEL]=prop.getProperty("key.p" + player + ".navigationescape", Input.KEY_ESCAPE);;
+		keymap[BUTTON_NAV_UP] = prop.getProperty("key.p" + player + ".navigationup", Input.KEY_UP);
+		keymap[BUTTON_NAV_DOWN] = prop.getProperty("key.p" + player + ".navigationdown", Input.KEY_DOWN);
+		keymap[BUTTON_NAV_LEFT] = prop.getProperty("key.p" + player + ".navigationleft", Input.KEY_LEFT);
+		keymap[BUTTON_NAV_RIGHT] = prop.getProperty("key.p" + player + ".navigationright", Input.KEY_RIGHT);
+		keymap[BUTTON_NAV_SELECT] = prop.getProperty("key.p" + player + ".navigationselect", Input.KEY_ENTER);
+		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationescape", Input.KEY_ESCAPE);
 
 		//buttonmap[BUTTON_UP] = prop.getProperty("button.p" + player + ".up", 0);
 		//buttonmap[BUTTON_DOWN] = prop.getProperty("button.p" + player + ".down", 0);
@@ -225,11 +226,11 @@ public class GameKey {
 		buttonmap[BUTTON_FRAMESTEP] = prop.getProperty("button.p" + player + ".framestep", -1);
 		buttonmap[BUTTON_SCREENSHOT] = prop.getProperty("button.p" + player + ".screenshot", -1);
 		buttonmap[BUTTON_NAV_UP]=prop.getProperty("button.p" + player + ".navigationup", -1);
-		buttonmap[BUTTON_NAV_DOWN]=prop.getProperty("button.p" + player + ".navigationdown", -1);;
+		buttonmap[BUTTON_NAV_DOWN]=prop.getProperty("button.p" + player + ".navigationdown", -1);
 		buttonmap[BUTTON_NAV_LEFT]=prop.getProperty("button.p" + player + ".navigationleft", -1);
-		buttonmap[BUTTON_NAV_RIGHT]=prop.getProperty("button.p" + player + ".navigationright", -1);;
-		buttonmap[BUTTON_NAV_SELECT]=prop.getProperty("button.p" + player + ".navigationselect", -1);;
-		buttonmap[BUTTON_NAV_CANCEL]=prop.getProperty("button.p" + player + ".navigationcancel", -1);;
+		buttonmap[BUTTON_NAV_RIGHT]=prop.getProperty("button.p" + player + ".navigationright", -1);
+		buttonmap[BUTTON_NAV_SELECT]=prop.getProperty("button.p" + player + ".navigationselect", -1);
+		buttonmap[BUTTON_NAV_CANCEL]=prop.getProperty("button.p" + player + ".navigationcancel", -1);
 	}
 
 	/**

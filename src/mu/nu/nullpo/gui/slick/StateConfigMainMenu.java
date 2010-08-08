@@ -121,19 +121,18 @@ public class StateConfigMainMenu extends BasicGameState {
 		MouseInput.mouseInput.update(container.getInput());
 		
 		if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<48+6*16)){
-			int oldcursor=cursor;
+			int oldcursor = cursor;
 			cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
-			if (cursor!=oldcursor)
-			ResourceHolder.soundManager.play("cursor");
+			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
 		}
 		// カーソル移動
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 5;
 			ResourceHolder.soundManager.play("cursor");
 		}
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
 			cursor++;
 			if(cursor > 5) cursor = 0;
@@ -141,13 +140,13 @@ public class StateConfigMainMenu extends BasicGameState {
 		}
 
 		// プレイヤー number変更
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) {
+		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) {
 			player--;
 			if(player < 0) player = 1;
 			ResourceHolder.soundManager.play("change");
 		}
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) {
+		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) {
 			player++;
 			if(player > 1) player = 0;
@@ -155,7 +154,7 @@ public class StateConfigMainMenu extends BasicGameState {
 		}
 
 		// 決定ボタン
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+		// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT)|| MouseInput.mouseInput.isMouseClicked()) {
 			ResourceHolder.soundManager.play("decide");
 

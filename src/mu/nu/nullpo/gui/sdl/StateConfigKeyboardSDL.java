@@ -127,18 +127,24 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 16, "RETRY          : " + getKeyName(keymap[GameKeySDL.BUTTON_RETRY]), (keynum == 13));
 		NormalFontSDL.printFontGrid(2, 17, "FRAME STEP     : " + getKeyName(keymap[GameKeySDL.BUTTON_FRAMESTEP]), (keynum == 14));
 		NormalFontSDL.printFontGrid(2, 18, "SCREEN SHOT    : " + getKeyName(keymap[GameKeySDL.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFontSDL.printFontGrid(2, 19, "NAVIGATION UP     : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_UP]), (keynum == 16));
+		NormalFontSDL.printFontGrid(2, 20, "NAVIGATION DOWN   : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_DOWN]), (keynum == 17));
+		NormalFontSDL.printFontGrid(2, 21, "NAVIGATION LEFT   : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_LEFT]), (keynum == 18));
+		NormalFontSDL.printFontGrid(2, 22, "NAVIGATION RIGHT  : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_RIGHT]), (keynum == 19));
+		NormalFontSDL.printFontGrid(2, 23, "NAVIGATION SELECT : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_SELECT]), (keynum == 20));
+		NormalFontSDL.printFontGrid(2, 24, "NAVIGATION CANCEL : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_CANCEL]), (keynum == 21));
 
 		if(frame >= KEYACCEPTFRAME) {
 			if(keynum < GameKeySDL.MAX_BUTTON) {
 				NormalFontSDL.printFontGrid(1, 3 + keynum, "b", NormalFontSDL.COLOR_RED);
 
-				NormalFontSDL.printFontGrid(1, 20, "DELETE:    NO SET", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 25, "DELETE:    NO SET", NormalFontSDL.COLOR_GREEN);
 
-				if(!firstSetupMode) NormalFontSDL.printFontGrid(1, 21, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
+				if(!firstSetupMode) NormalFontSDL.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
 			} else {
-				NormalFontSDL.printFontGrid(1, 20, "ENTER:     OK", NormalFontSDL.COLOR_GREEN);
-				NormalFontSDL.printFontGrid(1, 21, "DELETE:    AGAIN", NormalFontSDL.COLOR_GREEN);
-				if(!firstSetupMode) NormalFontSDL.printFontGrid(1, 22, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 25, "ENTER:     OK", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFontSDL.COLOR_GREEN);
+				if(!firstSetupMode) NormalFontSDL.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
 			}
 		}
 	}

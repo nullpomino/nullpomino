@@ -130,8 +130,8 @@ public class StateConfigKeyboard extends BasicGameState {
 		NormalFont.printFontGrid(2, 18, "SCREEN SHOT       : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
 		NormalFont.printFontGrid(2, 19, "NAVIGATION UP     : " + getKeyName(keymap[GameKey.BUTTON_NAV_UP]), (keynum == 16));
 		NormalFont.printFontGrid(2, 20, "NAVIGATION DOWN   : " + getKeyName(keymap[GameKey.BUTTON_NAV_DOWN]), (keynum == 17));
-		NormalFont.printFontGrid(2, 21, "NAVIGATION LEFT     : " + getKeyName(keymap[GameKey.BUTTON_NAV_LEFT]), (keynum == 18));
-		NormalFont.printFontGrid(2, 22, "NAVIGATION RIGHT   : " + getKeyName(keymap[GameKey.BUTTON_NAV_RIGHT]), (keynum == 19));
+		NormalFont.printFontGrid(2, 21, "NAVIGATION LEFT   : " + getKeyName(keymap[GameKey.BUTTON_NAV_LEFT]), (keynum == 18));
+		NormalFont.printFontGrid(2, 22, "NAVIGATION RIGHT  : " + getKeyName(keymap[GameKey.BUTTON_NAV_RIGHT]), (keynum == 19));
 		NormalFont.printFontGrid(2, 23, "NAVIGATION SELECT : " + getKeyName(keymap[GameKey.BUTTON_NAV_SELECT]), (keynum == 20));
 		NormalFont.printFontGrid(2, 24, "NAVIGATION CANCEL : " + getKeyName(keymap[GameKey.BUTTON_NAV_CANCEL]), (keynum == 21));
 

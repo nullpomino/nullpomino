@@ -29,6 +29,8 @@
 package mu.nu.nullpo.gui.sdl;
 
 import sdljava.SDLException;
+import sdljava.event.MouseState;
+import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 
 /**
@@ -102,20 +104,41 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
+		// Mouse
+		MouseState ms = SDLEvent.getMouseState();
+		
+		int oldcursor=cursor;
+		if (cursor<MAX_MODE_IN_ONE_PAGE) {
+			if ((ms.getY()>=48) && (ms.getY()<64+(MAX_MODE_IN_ONE_PAGE+1)*16)) {
+				cursor=(ms.getY()-48)/16;
+			}
+		} else {
+			if (ms.getY()<48) {
+				cursor=MAX_MODE_IN_ONE_PAGE-1;
+			}
+			else if ((ms.getY()>=48) && (ms.getY()<64+(modenames.length-MAX_MODE_IN_ONE_PAGE-1)*16)) {
+				cursor=MAX_MODE_IN_ONE_PAGE+(ms.getY()-48)/16;
+			}
+		}
+		if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
+		
 		// カーソル移動
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = modenames.length - 1;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
 			cursor++;
 			if(cursor > modenames.length - 1) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
 		// 決定ボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || ms.getButtonState().buttonLeft()) {
 			ResourceHolderSDL.soundManager.play("decide");
 			NullpoMinoSDL.propGlobal.setProperty("name.mode", modenames[cursor]);
 			NullpoMinoSDL.saveConfig();
@@ -127,7 +150,8 @@ public class StateSelectModeSDL extends BaseStateSDL {
 		}
 
 		// Cancelボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL)) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		}
 	}
