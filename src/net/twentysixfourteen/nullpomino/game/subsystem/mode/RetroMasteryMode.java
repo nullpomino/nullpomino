@@ -37,7 +37,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * RETRO MASTERY mode by Pineapple 20100724ish
+ * RETRO MASTERY mode by Pineapple 20100722 - 20100808
  */
 public class RetroMasteryMode extends DummyMode {
 	/** Current version of this mode */
@@ -174,8 +174,8 @@ public class RetroMasteryMode extends DummyMode {
 		engine.tspinEnable = false;
 		engine.b2bEnable = false;
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.bighalf = false;
-		engine.bigmove = false;
+		engine.bighalf = true;
+		engine.bigmove = true;
 
 		engine.speed.are = 12;
 		engine.speed.areLine = 15;
@@ -189,7 +189,7 @@ public class RetroMasteryMode extends DummyMode {
 			loadSetting(owner.replayProp);
 		}
 
-		engine.owner.backgroundStatus.bg = startlevel;
+		engine.owner.backgroundStatus.bg = gametype == GAMETYPE_PRESSURE ? 0 : startlevel;
 		if(engine.owner.backgroundStatus.bg > 19) engine.owner.backgroundStatus.bg = 19;
 		engine.framecolor = GameEngine.FRAME_COLOR_GRAY;
 	}
@@ -212,7 +212,6 @@ public class RetroMasteryMode extends DummyMode {
 
 	/**
 	 * Main routine for game setup screen
-	 * FIXME: startlevel should be disabled (and default to 0) for GAMETYPE_PRESSURE
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
@@ -221,12 +220,14 @@ public class RetroMasteryMode extends DummyMode {
 			// Check for UP button, when pressed it will move cursor up.
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
+				if(engine.statc[2] == 1 && gametype == GAMETYPE_PRESSURE) engine.statc[2]--;
 				if(engine.statc[2] < 0) engine.statc[2] = 2;
 				receiver.playSE("cursor");
 			}
 			// Check for DOWN button, when pressed it will move cursor down.
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
+				if(engine.statc[2] == 1 && gametype == GAMETYPE_PRESSURE) engine.statc[2]++;
 				if(engine.statc[2] > 2) engine.statc[2] = 0;
 				receiver.playSE("cursor");
 			}
@@ -244,6 +245,7 @@ public class RetroMasteryMode extends DummyMode {
 					gametype += change;
 					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
 					if(gametype > GAMETYPE_MAX - 1) gametype = 0;
+					engine.owner.backgroundStatus.bg = gametype == GAMETYPE_PRESSURE ? 0 : startlevel;
 					break;
 				case 1:
 					startlevel += change;
@@ -294,8 +296,10 @@ public class RetroMasteryMode extends DummyMode {
 
 		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "LEVEL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 3, String.format("%02d", startlevel), (engine.statc[2] == 1));
+		if(gametype != GAMETYPE_PRESSURE){
+			receiver.drawMenuFont(engine, playerID, 0, 2, "LEVEL", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID, 1, 3, String.format("%02d", startlevel), (engine.statc[2] == 1));
+		}
 		receiver.drawMenuFont(engine, playerID, 0, 4, "BIG", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(big), (engine.statc[2] == 2));
 	}
@@ -311,7 +315,6 @@ public class RetroMasteryMode extends DummyMode {
 		switch (gametype) {
 		case GAMETYPE_PRESSURE:
 			engine.statistics.level = 0;
-			engine.owner.backgroundStatus.bg = 0;
 			levellines = 5;
 			break;
 		case GAMETYPE_200:
