@@ -217,22 +217,45 @@ public class StateConfigRuleSelect extends BasicGameState {
 
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
+		
+		//Mouse
+		MouseInput.mouseInput.update(container.getInput());
+		
+			int oldcursor=cursor;
+			if (cursor<MAX_FILE_IN_ONE_PAGE){
+				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,strFileNameList.length-1)*16)))
+			       cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
+			}
+			else{
+				if (MouseInput.mouseInput.getMouseY()<48){
+					cursor=MAX_FILE_IN_ONE_PAGE-1;
+				}
+				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(strFileNameList.length-MAX_FILE_IN_ONE_PAGE-1)*16))
+					
+				   cursor=MAX_FILE_IN_ONE_PAGE+(MouseInput.mouseInput.getMouseY()-48)/16;
+			}
+			if (cursor!=oldcursor)
+			   ResourceHolder.soundManager.play("cursor");
+
 
 		if((strFileNameList != null) && (strFileNameList.length > 0)) {
 			// カーソル移動
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
 				cursor--;
 				if(cursor < 0) cursor = strFileNameList.length - 1;
 				ResourceHolder.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-				cursor++;
+			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+			    cursor++;
 				if(cursor > strFileNameList.length - 1) cursor = 0;
 				ResourceHolder.soundManager.play("cursor");
 			}
 
 			// 決定ボタン
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+			//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
 				ResourceHolder.soundManager.play("decide");
 				NullpoMinoSlick.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
 				NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile", strFileNameList[cursor]);
@@ -260,7 +283,8 @@ public class StateConfigRuleSelect extends BasicGameState {
 		}
 
 		// Cancelボタン
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) && !firstSetupMode) {
+		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) && !firstSetupMode) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) && !firstSetupMode) {
 			game.enterState(StateConfigMainMenu.ID);
 			return;
 		}
