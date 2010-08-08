@@ -6,10 +6,15 @@ public class MouseInput {
 	private int mouseX;
 	private int mouseY;
 	public static MouseInput mouseInput;
-	private boolean mouseClicked;
+	private boolean mouseClickedA;
+	private boolean mouseClickedB;
 
 	public boolean isMouseClicked() {
-		return mouseClicked;
+		return mouseClickedA;
+	}
+
+	public boolean isMouseRightClicked() {
+		return mouseClickedB;
 	}
 
 	public static void initializeMouseInput() {
@@ -27,7 +32,8 @@ public class MouseInput {
 	public void update(Input input) {
 		mouseX = input.getMouseX();
 		mouseY = input.getMouseY();
-		mouseClicked = input.isMousePressed(Input.MOUSE_LEFT_BUTTON);
+		mouseClickedA = input.isMousePressed(Input.MOUSE_LEFT_BUTTON);
+		mouseClickedB = input.isMousePressed(Input.MOUSE_RIGHT_BUTTON);
 	}
 
 }

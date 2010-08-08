@@ -284,7 +284,8 @@ public class StateConfigRuleSelect extends BasicGameState {
 
 		// Cancelボタン
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) && !firstSetupMode) {
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) && !firstSetupMode) {
+		if((GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
+				&& !firstSetupMode) {
 			game.enterState(StateConfigMainMenu.ID);
 			return;
 		}

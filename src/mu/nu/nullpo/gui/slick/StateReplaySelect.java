@@ -279,7 +279,8 @@ public class StateReplaySelect extends BasicGameState {
 
 		// Cancelボタン
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) game.enterState(StateTitle.ID);
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
+			game.enterState(StateTitle.ID);
 
 		// スクリーンショットボタン
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
