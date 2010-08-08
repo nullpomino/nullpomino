@@ -5,7 +5,7 @@ Version 7.3.0
 A falling block puzzle game using Java.
 
 2. How to run
-This game needs Java Runtime Environment 1.6 or newer version to run. http://www.java.com/
+This game needs Java Runtime Environment 1.5 or newer version to run. http://www.java.com/
 
 Windows:
 	Double-click "play_swing.bat", "play_slick.bat" or "play_sdl.bat".
@@ -527,9 +527,11 @@ Version 7.3.0 (????/??/??)
 -NetPlay: You can see opponent's HOLD/NEXT pieces in any-rule 2 players game now.
 -NetServer: Fixed "ghost room" bug
 -Slick/SDL: Fixed bug where replay screen could crash if replays were deleted.
++Added STANDARD-HOLDNEXT rule
 +Added more maps (Thanks Jenn, SecretSalamender and Magnanimous!)
 *Added Mac/Linux boot scripts. (Thanks croikle!)
 *Renamed Standard-GIZA rule to fit naming convention.
+*Restored JRE 1.5 compability
 *[Internal change] Main package changed to mu.nu.nullpo
 *[Internal change] Documentation is being translated to English.
 
