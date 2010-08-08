@@ -2380,6 +2380,7 @@ public class Field implements Serializable {
 		boolean[] colorsClearedArray = new boolean[7];
 		if (flag) 
 		{
+			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 			garbageCleared = 0;
 			colorClearExtraCount = 0;
 			colorsCleared = 0;

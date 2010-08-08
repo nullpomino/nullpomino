@@ -307,6 +307,14 @@ AVALANCHE VS-BATTLE (RC1)
 	Clear chains to send your opponent garbage!
 	Only for use with "AVALANCHE" rule.
 
+AVALANCHE VS FEVER MARATHON (RC1)
+	Premade chains will drop down endlessly. Detonate them to neutralize your garbage handicap, then send your opponent garbage!
+	Only for use with "AVALANCHE" rule.
+
+AVALANCHE VS DIG RACE (RC1)
+	Dig down to the flashing gem as fast as you can. The first player to clear it wins!
+	Only for use with "AVALANCHE" rule.
+
 PHYSICIAN (RC1)
 	This is a puzzle mode where you clear gem blocks by lining up blocks of the same color, like throwing pills into a jar.
 	Clear more viruses at once to get more points.
@@ -505,7 +513,7 @@ Version 7.3.0 (????/??/??)
 +Swing/Slick/SDL: Added option to display NEXT pieces on side of playfield.
 +Slick: Added PERFECT FPS option (uses more CPU, does not work in menus).
 +Slick: LWJGL updated to version 2.5, Slick updated to build 274
-+Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, AVALANCHE VS FEVER MARATHON, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
++Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, AVALANCHE VS FEVER MARATHON, AVALANCHE VS DIG RACE, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
  Modes for other gametypes are either Release Candidate (AVALANCHE, PHYSICIAN) or Beta (SPF).
  Special thanks to Puyo Nexus for supplying Fever chain data.
 +Added SQUARE, AVALANCHE, PHYSICIAN, and SPF rules
