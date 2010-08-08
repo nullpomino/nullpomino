@@ -702,7 +702,7 @@ public class VSBattleMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "GRAVITY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0));
+				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "G-MAX", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "ARE", EventReceiver.COLOR_ORANGE);
@@ -726,7 +726,7 @@ public class VSBattleMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "GARBAGE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_TYPE_STRING[garbageType[playerID]], (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_TYPE_STRING[garbageType[playerID]], (engine.statc[2] == 9) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "CHANGERATE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, garbagePercent[playerID] + "%", (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "COUNTERING", EventReceiver.COLOR_CYAN);
@@ -764,7 +764,7 @@ public class VSBattleMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "BIG", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 19));
+				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 19) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 20));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "HURRYUP", EventReceiver.COLOR_CYAN);

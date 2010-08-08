@@ -781,7 +781,7 @@ public class AvalancheVSMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "GRAVITY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0));
+				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0 && !owner.replayMode));
 				receiver.drawMenuFont(engine, playerID, 0,  2, "G-MAX", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "ARE", EventReceiver.COLOR_ORANGE);
@@ -807,7 +807,8 @@ public class AvalancheVSMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "COUNTER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]], (engine.statc[2] == 10));
+				receiver.drawMenuFont(engine, playerID, 1,  1, OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
+						(engine.statc[2] == 10 && !owner.replayMode));
 				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 11));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_CYAN);
@@ -834,7 +835,7 @@ public class AvalancheVSMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 20));
+				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 20) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 21));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);

@@ -707,7 +707,7 @@ public class SPFMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "GRAVITY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0));
+				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "G-MAX", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "ARE", EventReceiver.COLOR_ORANGE);
@@ -733,7 +733,7 @@ public class SPFMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "BGM", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(bgmno), (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(bgmno), (engine.statc[2] == 9) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "USE MAP", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  3, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP SET", EventReceiver.COLOR_CYAN);
@@ -775,7 +775,7 @@ public class SPFMode extends DummyMode {
 				else
 					receiver.drawMenuFont(engine, playerID, 3,  3, multiplier + "%", EventReceiver.COLOR_GREEN);
 				receiver.drawMenuFont(engine, playerID, 0, 14, "DROP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, DROP_SET_NAMES[dropSet[playerID]], (engine.statc[2] == 17));
+				receiver.drawMenuFont(engine, playerID, 1, 15, DROP_SET_NAMES[dropSet[playerID]], (engine.statc[2] == 17 && !owner.replayMode));
 				receiver.drawMenuFont(engine, playerID, 0, 16, "DROP MAP", EventReceiver.COLOR_CYAN);
 				String dropMapStr = String.valueOf(DROP_PATTERNS[dropSet[playerID]].length);
 				if (dropMapStr.length() == 1)

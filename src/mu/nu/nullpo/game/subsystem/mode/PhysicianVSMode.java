@@ -570,7 +570,7 @@ public class PhysicianVSMode extends DummyMode {
 				}
 
 				receiver.drawMenuFont(engine, playerID, 0,  0, "GRAVITY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0));
+				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "G-MAX", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
 				receiver.drawMenuFont(engine, playerID, 0,  4, "ARE", EventReceiver.COLOR_ORANGE);
@@ -594,7 +594,7 @@ public class PhysicianVSMode extends DummyMode {
 				}
 				
 				receiver.drawMenuFont(engine, playerID, 0, 0, "SPEED", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 1, SPEED_NAME[speed[playerID]], (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 1, 1, SPEED_NAME[speed[playerID]], (engine.statc[2] == 9) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0, 2, "VIRUS", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(hoverBlocks[playerID]), (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0, 4, "MODE", EventReceiver.COLOR_CYAN);
