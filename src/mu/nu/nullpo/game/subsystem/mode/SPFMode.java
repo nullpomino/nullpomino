@@ -179,7 +179,7 @@ public class SPFMode extends DummyMode {
 	private static final String[] RAINBOW_POWER_NAMES = {"NONE", "50%", "80%", "100%", "50/100%"};
 	
 	/** 各プレイヤーの枠の色 */
-	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
+	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
 	/** GameManager that owns this mode */
 	private GameManager owner;

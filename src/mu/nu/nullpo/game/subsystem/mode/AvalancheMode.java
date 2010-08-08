@@ -135,6 +135,15 @@ public class AvalancheMode extends DummyMode {
 	
 	/** If true, red X's appear at tops of danger columns */
 	private boolean dangerColumnShowX;
+	
+	/** Last chain hit number */
+	private int chain;
+	
+	/** Time to display last chain */
+	private int chainDisplay;
+	
+	/** Chain display enable/disable */
+	private boolean showChains;
 
 	/*
 	 * Mode name
@@ -161,6 +170,10 @@ public class AvalancheMode extends DummyMode {
 		garbageSent = 0;
 		garbageAdd = 0;
 		//firstExtra = false;
+		
+		chain = 0;
+		chainDisplay = 0;
+		showChains = true;
 
 		rankingRank = -1;
 		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
@@ -234,13 +247,13 @@ public class AvalancheMode extends DummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 4;
+				if(engine.statc[2] < 0) engine.statc[2] = 5;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 4) engine.statc[2] = 0;
+				if(engine.statc[2] > 5) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -274,6 +287,9 @@ public class AvalancheMode extends DummyMode {
 					break;
 				case 4:
 					dangerColumnShowX = !dangerColumnShowX;
+					break;
+				case 5:
+					showChains = !showChains;
 				}
 			}
 
@@ -326,6 +342,8 @@ public class AvalancheMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 1, 7, dangerColumnDouble ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 3));
 		receiver.drawMenuFont(engine, playerID, 0, 8, "X SHOW", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(dangerColumnShowX), (engine.statc[2] == 4));
+		receiver.drawMenuFont(engine, playerID, 0, 10, "SHOW CHAIN", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(showChains), (engine.statc[2] == 5));
 	}
 
 	/*
@@ -398,15 +416,20 @@ public class AvalancheMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 6, "LINE", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(engine.statistics.lines));
 			*/
-			
-			if (zenKeshi)
-				receiver.drawScoreFont(engine, playerID, 0, 9, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 				
-			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawScoreFont(engine, playerID, 0, 9, "TIME", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 10, GeneralUtil.getTime(engine.statistics.time));
 			
 			if (dangerColumnShowX)
 				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "XX" : "X", EventReceiver.COLOR_RED);
+
+			int textHeight = 13;
+			if (engine.field != null)
+				textHeight = engine.field.getHeight()+1;
+			if (chain > 0 && chainDisplay > 0 && showChains)
+				receiver.drawMenuFont(engine, playerID, chain > 9 ? 0 : 1, textHeight, chain + " CHAIN!", EventReceiver.COLOR_YELLOW);
+			if (zenKeshi)
+				receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 		}
 	}
 
@@ -415,7 +438,10 @@ public class AvalancheMode extends DummyMode {
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		if (scgettime > 0) scgettime--;
+		if (scgettime > 0)
+			scgettime--;
+		if (chainDisplay > 0)
+			chainDisplay--;
 
 		if (gametype == 1) {
 			int remainTime = ULTRA_MAX_TIME - engine.statistics.time;
@@ -474,7 +500,8 @@ public class AvalancheMode extends DummyMode {
 			else
 				zenKeshi = false;
 
-			int chain = engine.chain;
+			chain = engine.chain;
+			chainDisplay = 60;
 			engine.playSE("combo" + Math.min(chain, 20));
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
@@ -588,6 +615,7 @@ public class AvalancheMode extends DummyMode {
 		version = prop.getProperty("avalanche.version", 0);
 		dangerColumnDouble = prop.getProperty("avalanche.dangerColumnDouble", false);
 		dangerColumnShowX = prop.getProperty("avalanche.dangerColumnShowX", false);
+		showChains = prop.getProperty("avalanche.showChains", true);
 	}
 
 	/**
@@ -601,6 +629,7 @@ public class AvalancheMode extends DummyMode {
 		prop.setProperty("avalanche.version", version);
 		prop.setProperty("avalanche.dangerColumnDouble", dangerColumnDouble);
 		prop.setProperty("avalanche.dangerColumnShowX", dangerColumnShowX);
+		prop.setProperty("avalanche.showChains", showChains);
 	}
 
 	/**
