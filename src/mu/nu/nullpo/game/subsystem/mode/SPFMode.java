@@ -480,13 +480,23 @@ public class SPFMode extends DummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 18;
+				if(engine.statc[2] < 0){
+					engine.statc[2] = 18;
+					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
+				}
+				else if (engine.statc[2] == 16)
+					engine.field = null;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 18) engine.statc[2] = 0;
+				if(engine.statc[2] > 18) {
+					engine.statc[2] = 0;
+					engine.field = null;
+				}
+				else if (engine.statc[2] == 17)
+					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 				engine.playSE("cursor");
 			}
 
@@ -592,15 +602,14 @@ public class SPFMode extends DummyMode {
 					break;
 				case 16:
 					rainbowPower[playerID] += change;
-					if(rainbowPower[playerID] < 0) rainbowPower[playerID] = 3;
-					if(rainbowPower[playerID] > 3) rainbowPower[playerID] = 0;
+					if(rainbowPower[playerID] < 0) rainbowPower[playerID] = 2;
+					if(rainbowPower[playerID] > 2) rainbowPower[playerID] = 0;
 					break;
 				case 17:
 					dropSet[playerID] += change;
 					if(dropSet[playerID] < 0) dropSet[playerID] = 1;
 					if(dropSet[playerID] > 1) dropSet[playerID] = 0;
 					if(dropMap[playerID] >= DROP_PATTERNS[dropSet[playerID]].length) dropMap[playerID] = 0;
-					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 					break;
 				case 18:
 					dropMap[playerID] += change;
@@ -659,7 +668,9 @@ public class SPFMode extends DummyMode {
 
 			if(engine.statc[3] >= 180)
 				engine.statc[4] = 1;
-			else if(engine.statc[3] >= 120)
+			else if(engine.statc[3] > 120)
+				engine.statc[2] = 17;
+			else if (engine.statc[3] == 120)
 			{
 				engine.statc[2] = 17;
 				loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
@@ -744,6 +755,7 @@ public class SPFMode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2), "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
+				
 				receiver.drawMenuFont(engine, playerID, 0,  0, "ATTACK", EventReceiver.COLOR_CYAN);
 				int multiplier = (int) (100 * DROP_PATTERNS_ATTACK_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]]);
 				if (multiplier >= 100)
