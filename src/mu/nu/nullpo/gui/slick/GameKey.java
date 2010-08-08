@@ -46,7 +46,7 @@ public class GameKey {
 			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15,BUTTON_NAV_UP=16, BUTTON_NAV_DOWN=17, BUTTON_NAV_LEFT=18, BUTTON_NAV_RIGHT=19 ,BUTTON_NAV_SELECT=20, BUTTON_NAV_CANCEL=21;
 
 	/** ボタン数の定数 */
-	public static final int MAX_BUTTON = 16;
+	public static final int MAX_BUTTON = 22;
 
 	/**
 	 * 全ステート共通のキー入力状態オブジェクトをInitialization
