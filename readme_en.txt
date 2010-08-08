@@ -124,6 +124,7 @@ You can select which rule to use in the CONFIG>RULE SELECT screen.
 You can create your own rule by using Rule Editor.
 
 (Default Rule)   : The default rule. It's not good for most players so I recommend you to select other rule.
+AVALANCHE        : A rule used to play AVALANCHE type games.
 CLASSIC0         : A classic rule that many Japanese players played like a monkey. Best suitable for RETRO MANIA mode.
 CLASSIC0-68K     : CLASSIC0 with reverse rotation.
 CLASSIC1         : Only 1 piece preview, no hold function, no hard drop function, less flexible wallkicks.
@@ -136,11 +137,14 @@ CLASSIC-EASY-A2  : Almost same as CLASSIC-EASY-A, but block colors are not diffe
 CLASSIC-EASY-B   : Soft and hard drop behavior is reversed in this rule.
 CLASSIC-EASY-B2  : Almost same as CLASSIC-EASY-B, but block colors are not different from others.
 CLASSIC-S        : CLASSIC0 with reverse rotation and "Wall Only" wallkick. It can kick wall, but not the already placed blocks.
-DTET             : That game was so good that the evil king had to kill it. This rule is a bit tricky.
+DTET             : That game was so good that the evil king had to kill it. This rule is a bit tricky. Has ARE/line clear canceling.
 NINTENDO-L       : A classical rule that was bundled with a handheld gadget which was made by king of video game.
 NINTENDO-L-FAST  : NINTENDO-L with faster sideways movement.
-NINTENDO-R       : A classical rule that was appeared before or after NINTENDO-L. Best suitable for CLASSIC MARATHON mode.
+NINTENDO-R       : A classical rule that was appeared before or after NINTENDO-L. Best suitable for RETRO MARATHON mode.
 NINTENDO-R-FAST  : NINTENDO-R with faster sideways movement.
+PHYSICIAN        : A rule used to play PHYSICIAN type games.
+SPF              : A rule used to play SPF type games.
+SQUARE           : Rule designed to make it easier to build squares. Best suitable for SQUARE mode.
 STANDARD         : Suitable for almost all kinds of players.
 STANDARD-EXP     : Soft and hard drop behavior is reversed in this rule.
 STANDARD-FAST    : Suitable for fast game play.
@@ -152,7 +156,7 @@ STANDARD-HARD128 : Slightly easier variant of STANDARD-HARD rule. You can move/r
 STANDARD-HOLDNEXT: A rule created by holdnext. Enjoy the power of orange sticks.
 STANDARD-J       : This variant has slow movements, nothing more than that.
 STANDARD-PLUS    : A rule created by Blink. STANDARD-FAST with no line clear delay, and faster softdrop.
-STANDARD-SUPER3  : A classical rule with the rotation system of STANDARD rules but no wallkicks.
+STANDARD-SUPER3  : A classical rule with the rotation system of STANDARD rules but no wallkicks. Has ARE canceling.
 STANDARD-ZERO    : A rule created by Wojtek. STANDARD-PLUS with 20G Soft Drop and Instant DAS.
 
 6. Game mode
@@ -183,6 +187,10 @@ DIG RACE
 	Clear all garbage lines as fast as possible.
 	You win the game when you clear the bottommost line (the line with gem blocks).
 	Amount of garbage lines is selectable from 5, 10, and 18.
+	
+COMBO RACE
+	Try to clear all the lines in the well in one combo.
+	Goal is selectable from 20, 40, and 100 lines.
 
 ULTRA
 	Score as many points as possible or clear as many lines as possible until the time limit.
@@ -200,9 +208,21 @@ TECHNICIAN
 	            When the 2-minute level timer runs out, the goal counter resets.
 	10MIN-HARD: This is similar to 10MIN-EASY, but when the 2-minute level timer runs out, your game ends instantly.
 	SPECIAL:    When the level increases, 30 seconds is added to your time limit. Survive as long as you can.
+	
+SQUARE
+	Try placing your pieces in 4x4 squares to get more points.
+	There are three different game types.
+	MARATHON: 	Keep playing until you top out. Go for the most points!
+	SPRINT:		Try to get 150 points as fast as you can. Can you do it in 8 lines?
+	ULTRA:		Get as many points as you can in 3 minutes.
+	Best effect can be achieved if you use "SQUARE" rule.
 
-CLASSIC MARATHON
+RETRO MARATHON
 	A classic game that takes you to the nostalgic feeling.
+	Best effect can be achieved if you use "NINTENDO-R" rule.
+	
+RETRO MASTERY
+	A game based on the classics where efficiency is important.
 	Best effect can be achieved if you use "NINTENDO-R" rule.
 
 RETRO MANIA
@@ -273,6 +293,32 @@ TOOL-VS MAP EDIT
 
 VS-BATTLE
 	Battle against human or AI opponent. You can send garbage blocks by clearing 2 or more lines at the same time.
+	
+AVALANCHE 1P (RC1)
+	This is a puzzle mode where the objective is to clear clusters of colors, not lines.
+	Make chains to score as much as you can before you top out!
+	Only for use with "AVALANCHE" rule.
+
+AVALANCHE 1P FEVER MARATHON (RC1)
+	Premade chains will drop down endlessly. Try to get the most points before time runs out!
+	Only for use with "AVALANCHE" rule.
+
+AVALANCHE VS-BATTLE (RC1)
+	Clear chains to send your opponent garbage!
+	Only for use with "AVALANCHE" rule.
+
+PHYSICIAN (RC1)
+	This is a puzzle mode where you clear gem blocks by lining up blocks of the same color, like throwing pills into a jar.
+	Clear more viruses at once to get more points.
+	Only for use with "PHYSICIAN" rule.
+
+PHYSICIAN VS-BATTLE (RC1)
+	Clear more than one gem block at a time to send your opponent garbage. Try to clear your gem blocks first!
+	Only for use with "PHYSICIAN" rule.
+
+SPF VS-BATTLE (BETA)
+	A puzzle mode based on a fighting game. Use gems to clear blocks of the same color and send garbage.
+	Only for use with "SPF" rule.
 
 7. How to add BGM
 Well, currently this game does not have any BGM by default.
@@ -374,10 +420,10 @@ NullpoMino created by:
 	olivier.vidal1 (better known as Spirale)
 	kitaru2004
 	Shrapnel.City (aka Pineapple)
-	vic7070
-	myndzi
+	vic7070 (aka Digital)
+	alight
 	nightmareci
-	johnwchadwick
+	johnwchadwick (aka nmn)
 	prelude234 (aka awake)
 
 	See also "People" section of Google Code project page:
@@ -452,7 +498,36 @@ http://code.google.com/p/nullpomino/
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
 
 Version 7.3.0 (????/??/??)
-[TODO: Add changelog here]
+#This version is NO LONGER compatible with 7.2.0 netplay server.
++Swing/Slick/SDL: When saving replays, a replay folder will be created if one is not found.
++Swing/Slick/SDL: Fixed location of NEXT piece when spawn offset is non-zero.
++Slick: Added PERFECT FPS option (uses more CPU, does not work in menus).
++Slick: LWJGL updated to version 2.5, Slick updated to build 274
++Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
+ Modes for other gametypes are either Release Candidate (AVALANCHE, PHYSICIAN) or Beta (SPF).
+ Special thanks to Puyo Nexus (http://www.puyonexus.com) for supplying Fever chain data.
++Added SQUARE, AVALANCHE, PHYSICIAN, and SPF rules
++Renamed CLASSIC MARATHON to RETRO MARATHON
++Randomizer: Randomizers have been replaced. This breaks all replays prior to this release.
++Sequencer: Added "Set piece enable" dialog.
++AI: Added "Defensive" and "No Prethink" versions of PoochyBot
++Engine: Added support for AVALANCHE, PHYSICIAN, and SPF type games
++Engine: Added rainbow blocks and rainbow gem blocks support
++Engine: Added delay canceling to properly simulate DTET and STANDARD-SUPER3 rules
++Engine: Added DAS charge on blocked move, neutral DAS store and DAS redirect in delays to properly simulate NINTENDO family rules
++Engine: Added Instant DAS and shift lock
++Engine: Added hard block and hard garbage support
++NetPlay/NetServer: Added more room creation options, separated options into tabs
+ Garbage: B2B separation, hole change rate, toggle change rate per attack, combo block, garbage countering
+ Bonus: Spin check type, all clear bonus
+-NetPlay: Now correctly forces 60 FPS in SDL version
+-NetPlay: Saves chat logs even when game window is closed or Java process is killed
+-NetServer: Fixed "ghost room" bug
+-Slick/SDL: Fixed bug where replay screen could crash if replays were deleted.
+*Added Mac/Linux boot scripts. (Thanks croikle!)
+*Renamed Standard-GIZA rule to fit naming convention.
+*[Internal change] Main package changed to mu.nu.nullpo
+*[Internal change] Documentation is being translated to English.
 
 Version 7.2.0 (2010/06/19)
 #This version is NO LONGER compatible with 7.1.* netplay server.
