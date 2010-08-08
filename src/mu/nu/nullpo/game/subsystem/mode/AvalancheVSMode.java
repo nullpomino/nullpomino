@@ -1063,10 +1063,10 @@ public class AvalancheVSMode extends DummyMode {
 					int color = (engine.statistics.time >> 2) % FEVER_METER_COLORS.length;
 					for (int x = 0; x < feverThreshold[playerID]; x++)
 					{
-						if (color >= FEVER_METER_COLORS.length)
-							color = 0;
+						if (color == 0)
+							color = FEVER_METER_COLORS.length;
+						color--;
 						receiver.drawMenuFont(engine, playerID, x, 18, "d", FEVER_METER_COLORS[color]);
-						color++;
 					}
 				}
 				else
