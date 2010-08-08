@@ -700,7 +700,7 @@ public class SPFMode extends DummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 10) {
+			if(engine.statc[2] < 9) {
 				if(owner.replayMode == false) {
 					receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
@@ -724,35 +724,39 @@ public class SPFMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 7));
 				receiver.drawMenuFont(engine, playerID, 0, 16, "SAVE", EventReceiver.COLOR_GREEN);
 				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 8));
-				receiver.drawMenuFont(engine, playerID, 0, 18, "BGM", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(bgmno), (engine.statc[2] == 9));
+				
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/3", EventReceiver.COLOR_YELLOW);
 			} else if (engine.statc[2] < 17){
 				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 10) * 2) + (engine.statc[2] > 15 ? 2 : 1), "b",
+					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + (engine.statc[2] == 16 ? 2 : 1), "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
 
-				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 10));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
+				receiver.drawMenuFont(engine, playerID, 0,  0, "BGM", EventReceiver.COLOR_PINK);
+				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(bgmno), (engine.statc[2] == 9));
+				receiver.drawMenuFont(engine, playerID, 0,  2, "USE MAP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  3, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 10));
+				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP SET", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(mapSet[playerID]), (engine.statc[2] == 11));
+				receiver.drawMenuFont(engine, playerID, 0,  6, "MAP NO.", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  7, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 									  (engine.statc[2] == 12));
 								
-				receiver.drawMenuFont(engine, playerID, 0,  6, "SE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 13));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
+				receiver.drawMenuFont(engine, playerID, 0,  8, "SE", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1,  9, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 13));
+				receiver.drawMenuFont(engine, playerID, 0, 10, "HURRYUP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 11, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 				                      (engine.statc[2] == 14));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "COUNTER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "RAINBOW", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 0, 13, "GEM POWER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 14, RAINBOW_POWER_NAMES[rainbowPower[playerID]], (engine.statc[2] == 16));
+				receiver.drawMenuFont(engine, playerID, 0, 12, "COUNTER", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 15));
+				receiver.drawMenuFont(engine, playerID, 0, 14, "RAINBOW", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 0, 15, "GEM POWER", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 16, RAINBOW_POWER_NAMES[rainbowPower[playerID]], (engine.statc[2] == 16));
+
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/3", EventReceiver.COLOR_YELLOW);
 			} else {
 				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2), "b",
+					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 10) * 2 + 1), "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
 				
@@ -770,16 +774,19 @@ public class SPFMode extends DummyMode {
 							multiplier == 100 ? EventReceiver.COLOR_YELLOW : EventReceiver.COLOR_RED);
 				else
 					receiver.drawMenuFont(engine, playerID, 3,  3, multiplier + "%", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 0, 15, "DROP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 16, DROP_SET_NAMES[dropSet[playerID]], (engine.statc[2] == 17));
-				receiver.drawMenuFont(engine, playerID, 0, 17, "DROP MAP", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 0, 14, "DROP SET", EventReceiver.COLOR_CYAN);
+				receiver.drawMenuFont(engine, playerID, 1, 15, DROP_SET_NAMES[dropSet[playerID]], (engine.statc[2] == 17));
+				receiver.drawMenuFont(engine, playerID, 0, 16, "DROP MAP", EventReceiver.COLOR_CYAN);
 				String dropMapStr = String.valueOf(DROP_PATTERNS[dropSet[playerID]].length);
 				if (dropMapStr.length() == 1)
 					dropMapStr = "0" + dropMapStr;
 				dropMapStr = String.valueOf(dropMap[playerID]+1) + "/" + dropMapStr;
 					if (dropMapStr.length() == 4)
 						dropMapStr = "0" + dropMapStr;
-				receiver.drawMenuFont(engine, playerID, 1, 18, dropMapStr, (engine.statc[2] == 18));
+				receiver.drawMenuFont(engine, playerID, 1, 17, dropMapStr, (engine.statc[2] == 18));
+
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/3", EventReceiver.COLOR_YELLOW);
+				
 				//receiver.drawMenuFont(engine, playerID, 0, 10, "BIG", EventReceiver.COLOR_CYAN);
 				//receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 18));
 			}
