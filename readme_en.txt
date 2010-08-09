@@ -511,6 +511,7 @@ Version 7.3.0 (????/??/??)
 +Swing/Slick/SDL: When saving replays, a replay folder will be created if one is not found.
 +Swing/Slick/SDL: Fixed location of NEXT piece when spawn offset is non-zero.
 +Swing/Slick/SDL: Added option to display NEXT pieces on side of playfield.
++Slick/SDL: You can now use the mouse and dedicated navigation keys on the menus.
 +Slick: Added PERFECT FPS option (uses more CPU, does not work in menus).
 +Slick: LWJGL updated to version 2.5, Slick updated to build 274
 +Added COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, AVALANCHE VS FEVER MARATHON, AVALANCHE VS DIG RACE, PHYSICIAN, PHYSICIAN VS-BATTLE, and SPF VS-BATTLE modes.
