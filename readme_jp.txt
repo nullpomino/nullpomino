@@ -1,5 +1,5 @@
 NullpoMino `‚Ê‚é‚Ûƒ~ƒm`
-Version 7.2.0
+Version 7.3.0
 
 y‚±‚ê‚Á‚Ä‰½Hz
 Java‚Åì‚Á‚½—Ž‚¿‚à‚ÌƒAƒNƒVƒ‡ƒ“ƒpƒYƒ‹ƒQ[ƒ€‚à‚Ç‚«‚Å‚·B
@@ -22,36 +22,44 @@ Java‚Åì‚Á‚½—Ž‚¿‚à‚ÌƒAƒNƒVƒ‡ƒ“ƒpƒYƒ‹ƒQ[ƒ€‚à‚Ç‚«‚Å‚·B
 
 ELinux
 @@’[––ƒEƒBƒ“ƒhƒE‚ÅNullpoMino‚ª‚ ‚éƒfƒBƒŒƒNƒgƒŠi‚±‚Ìƒtƒ@ƒCƒ‹‚ª‚ ‚éƒfƒBƒŒƒNƒgƒŠj‚Ü‚ÅˆÚ“®‚µ‚Ä
-@@ˆÈ‰º‚ÌƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚ÄEnterƒL[‚ð‰Ÿ‚·‚Æ‚½‚Ô‚ñ‹N“®‚µ‚Ü‚·Bi“r’†‚Å‰üs‚µ‚È‚¢‚æ‚¤‚Éj
+@@ˆÈ‰º‚ÌƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚ÄEnterƒL[‚ð‰Ÿ‚·‚Æ‚½‚Ô‚ñ‹N“®‚µ‚Ü‚·B
+@@(’:Å‰‚ÌchmodƒRƒ}ƒ“ƒh‚Í‹N“®—pƒVƒFƒ‹ƒXƒNƒŠƒvƒg‚ÉŽÀsŒ ŒÀ‚ð—^‚¦‚é‚à‚Ì‚Å‚·B2‰ñ–Ú‚Ì‹N“®‚©‚ç‚Í•K—v‚ ‚è‚Ü‚¹‚ñB)
 
 @@Swingƒo[ƒWƒ‡ƒ“:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.gui.swing.NullpoMinoSwing
+chmod +x play_swing
+./play_swing
 
 @@Slickƒo[ƒWƒ‡ƒ“:
-XMODIFIERS=@im=none java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib/jorbis-0.0.15.jar:lib/jogg-0.0.7.jar:lib/ibxm.jar:lib/jinput.jar -Djava.library.path=lib mu.nu.nullpo.gui.slick.NullpoMinoSlick
+chmod +x play_slick
+./play_slick
 
 @@SDLƒo[ƒWƒ‡ƒ“:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/sdljava.jar -Djava.library.path=lib mu.nu.nullpo.gui.sdl.NullpoMinoSDL
+chmod +x play_sdl
+./play_sdl
 
 @@ƒ‹[ƒ‹ƒGƒfƒBƒ^:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.ruleeditor.RuleEditor
+chmod +x ruleeditor
+./ruleeditor
 
 @@ƒV[ƒPƒ“ƒXƒrƒ…[ƒA:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.sequencer.Sequencer
+chmod +x sequencer
+./sequencer
 
 @@ƒ~ƒ…[ƒWƒbƒNƒŠƒXƒgƒGƒfƒBƒ^:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.musiclisteditor.MusicListEditor
+chmod +x musiclisteditor
+./musiclisteditor
 
 @@ƒlƒbƒgƒvƒŒƒC—pƒT[ƒo[:
-java -cp .:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer
+chmod +x netserver
+./netserver
 
-@@‚µ‚©‚µAŽg—p‚µ‚Ä‚¢‚éƒrƒfƒIƒJ[ƒh‚âLinux‚Ìƒo[ƒWƒ‡ƒ“‚É‚æ‚Á‚Ä‚Í‚¤‚Ü‚­“®‚©‚È‚¢‚©‚à‚µ‚ê‚Ü‚¹‚ñB
+@@Žg—p‚µ‚Ä‚¢‚éƒrƒfƒIƒJ[ƒh‚âLinux‚Ìƒo[ƒWƒ‡ƒ“‚É‚æ‚Á‚Ä‚Í‚¤‚Ü‚­“®‚©‚È‚¢‚©‚à‚µ‚ê‚Ü‚¹‚ñB
 
 @@Swingƒo[ƒWƒ‡ƒ“ŒÅ—L‚Ì–â‘è:
 @@@Œ»Žž“_‚Å‚Í‚Ü‚Æ‚à‚É“®‚«‚Ü‚¹‚ñB
 
 @@Slickƒo[ƒWƒ‡ƒ“ŒÅ—L‚Ì–â‘è:
-@@@ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“Å‰‚ÌXMODIFIERS=@im=none‚ÍAŽg‚Á‚Ä‚¢‚éIME‚ªSCIMˆÈŠO‚Ìê‡‚Í•s—v‚Å‚·B
+@@@ƒVƒFƒ‹ƒXƒNƒŠƒvƒg“à‚ÌƒRƒ}ƒ“ƒhƒ‰ƒCƒ“Å‰‚ÌXMODIFIERS=@im=none‚ÍAŽg‚Á‚Ä‚¢‚éIME‚ªSCIMˆÈŠO‚Ìê‡‚Í•s—v‚Å‚·B
 @@@3DƒfƒXƒNƒgƒbƒv‹@”\iBeryl‚Æ‚©j‚Í–³Œø‚É‚·‚é‚±‚Æ‚ð‚¨‚·‚·‚ß‚µ‚Ü‚·B
 @@@ˆê‰žx64‚Å‚à“®ì‚·‚é‚æ‚¤‚Å‚·B
 
@@ -93,6 +101,12 @@ GIVEUPFƒ^ƒCƒgƒ‹‚É–ß‚é
 RETRYFƒQ[ƒ€‚ðÅ‰‚©‚ç‚â‚è’¼‚·
 FRAME STEPFƒ|[ƒY’†‚É‰Ÿ‚·‚Æ1ƒtƒŒ[ƒ€‚¾‚¯ƒQ[ƒ€‚ði‚ß‚éiÝ’è‚Å—LŒø‚É‚µ‚Ä‚¢‚éê‡j
 SCREEN SHOTFƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ðssƒtƒHƒ‹ƒ_‚É•Û‘¶
+NAVIGATION UPFƒƒjƒ…[‰æ–Ê‚ÅƒJ[ƒ\ƒ‹‚ðã‚ÉˆÚ“®
+NAVIGATION DOWNFƒƒjƒ…[‰æ–Ê‚ÅƒJ[ƒ\ƒ‹‚ð‰º‚ÉˆÚ“®
+NAVIGATION LEFTFƒƒjƒ…[‰æ–Ê‚ÅƒJ[ƒ\ƒ‹‚Å‘I‘ð‚µ‚Ä‚¢‚é€–Ú‚Ì’l‚ð1‚ÂŒ¸‚ç‚·
+NAVIGATION RIGHTFƒƒjƒ…[‰æ–Ê‚ÅƒJ[ƒ\ƒ‹‚Å‘I‘ð‚µ‚Ä‚¢‚é€–Ú‚Ì’l‚ð1‚Â‘‚â‚·
+NAVIGATION SELECTFƒƒjƒ…[‰æ–Ê‚Å‚ÌŒˆ’è
+NAVIGATION CANCELFƒƒjƒ…[‰æ–Ê‚Å‚ÌƒLƒƒƒ“ƒZƒ‹
 
 yƒL[”z’uz
 ƒL[”z’u‚Í‰‰ñ‹N“®Žž‚ÉÝ’è‚µ‚Ü‚·B
@@ -110,6 +124,7 @@ CONFIG‚Ì’†‚É‚ ‚éu[RULE SELECT]v‚©‚çŽg—p‚·‚éƒ‹[ƒ‹‚ð•ÏX‚Å‚«‚Ü‚·B
 •t‘®‚Ìƒ‹[ƒ‹ƒGƒfƒBƒ^‚ðŽg‚¤‚Æ“ÆŽ©‚Ìƒ‹[ƒ‹‚ðì¬‚Å‚«‚Ü‚·B
 
 i–³–¼j@@@@@ F‰‰ñ‹N“®Žž‚ÉÝ’è‚³‚ê‚Ä‚¢‚éƒ‹[ƒ‹‚Å‚·B‘€ì«‚ªˆ«‚¢‚Ì‚Å‘¼‚Ìƒ‹[ƒ‹‚ÉØ‚è‘Ö‚¦‚é‚±‚Æ‚ð‚¨‚·‚·‚ß‚µ‚Ü‚·B
+AVALANCHE@@@@@FAVALANCHEƒ^ƒCƒv‚Ìƒ‚[ƒh—p‚Ìƒ‹[ƒ‹‚Å‚·B
 CLASSIC0 @@@@@F•ÇR‚è‚àƒz[ƒ‹ƒh‚à‚È‚¢ŒÃ“T“I‚Èƒ‹[ƒ‹(RETRO MANIAƒ‚[ƒh‚É‚¨‚·‚·‚ß)
 CLASSIC0-68K @@@FCLASSIC0‚É‹t‰ñ“]‚ª•t‚¢‚½ƒ‹[ƒ‹
 CLASSIC1 @@@@@FNEXT‚ª1ŒÂ‚¾‚¯Aƒz[ƒ‹ƒh‚È‚µAƒn[ƒhƒhƒƒbƒv‚È‚µA•Ç“o‚è•s‰Â‚Ìƒ‹[ƒ‹
@@ -125,19 +140,22 @@ NINTENDO-L @@@@Fƒ‚ƒmƒNƒ‚ÌƒuƒƒbƒN‚â‹·‚¢ƒtƒB[ƒ‹ƒh‚ð“Á’¥‚Æ‚·‚éŒÃ“T“I‚Èƒ‹[ƒ
 NINTENDO-L-FAST @ FNINTENDO-L‚Ì‰¡ˆÚ“®‚ð‘¬‚­‚µ‚½‚à‚Ì
 NINTENDO-R @@@@FNINTENDO-L‚æ‚è‚à‰EŠñ‚è‚É‰ñ“]‚µƒuƒƒbƒN‚àƒJƒ‰[‚ÈŒÃ“T“I‚Èƒ‹[ƒ‹(CLASSIC MARATHONƒ‚[ƒh‚É‚¨‚·‚·‚ß)
 NINTENDO-R-FAST @ FNINTENDO-R‚Ì‰¡ˆÚ“®‚ð‘¬‚­‚µ‚½‚à‚Ì
+PHYSICIAN@@@@@FPHYSICIANƒ^ƒCƒv‚Ìƒ‚[ƒh—p‚Ìƒ‹[ƒ‹‚Å‚·B
+SPF@@@@@@@@FSPFƒ^ƒCƒv‚Ìƒ‚[ƒh—p‚Ìƒ‹[ƒ‹‚Å‚·B
+SQUARE@@@@@@ FSQUAREƒ‚[ƒhŒü‚«‚Ìƒ‹[ƒ‹‚Å‚·B4x4‚Ì³•ûŒ`‚ªì‚èˆÕ‚¢‚æ‚¤‚È‡”Ô‚ÅƒuƒƒbƒN‚ªoŒ»‚µ‚Ü‚·B
 STANDARD@@@@@ F‰SŽÒ‚©‚çã‹‰ŽÒ‚Ü‚Åˆµ‚¢‚â‚·‚¢ƒ‹[ƒ‹‚ÅA•Ç“o‚è‚à‰Â”\
+STANDARD-EXP@@@ Fƒn[ƒhƒhƒƒbƒv‚ðŽg—p‚µ‚Ä‚à‘¦ŒÅ’è‚¹‚¸Aƒ\ƒtƒgƒhƒƒbƒv‚¾‚Æ‘¦ŒÅ’è‚É‚È‚éƒ‹[ƒ‹
 STANDARD-FAST@@@FSTANDARD‚æ‚è‚à‘f‘‚¢‘€ì‚ª‰Â”\
 STANDARD-FAST-B@@FSTANDARD-FAST‚æ‚è‚àæs‰ñ“]‚ª–\”­‚µ‚É‚­‚¢
 STANDARD-FRIENDS@ F“®‚«‚ª‚â‚â’x‚¢EoŒ»ˆÊ’u‚ª‘¼‚Ìƒ‹[ƒ‹‚Ì1ƒ}ƒX‰º
-StandardGiza@@@ Fhebo-MAI‚³‚ñì‚Ìƒ‹[ƒ‹E‚â‚â‘¬“x‚ª—}‚¦‚ç‚ê‚Ä‚¢‚Ä‘Îí‚Å‚Í‘¬“x‚Å‚Í‚È‚­í—ª«‚ª‹‚ß‚ç‚ê‚é
+STANDARD-GIZA@@@Fhebo-MAI‚³‚ñì‚Ìƒ‹[ƒ‹E‚â‚â‘¬“x‚ª—}‚¦‚ç‚ê‚Ä‚¢‚Ä‘Îí‚Å‚Í‘¬“x‚Å‚Í‚È‚­í—ª«‚ª‹‚ß‚ç‚ê‚é
 STANDARD-HARD@@@FSTANDARD‚æ‚è‚à­‚µ“ï‚µ‚¢
 STANDARD-HARD128@ FSTANDARD-HARD‚ð­‚µŠÈ’P‚É‚µ‚½‚à‚Ì(ƒuƒƒbƒN‚ª’n–Ê‚É’…’n‚µ‚½‚ ‚Æ128‰ñ‚Ü‚ÅˆÚ“®E‰ñ“]‰Â”\)
 STANDARD-HOLDNEXT@Fholdnext‚³‚ñì‚Ìƒ‹[ƒ‹EƒIƒŒƒ“ƒW–_‚ª“Á’¥
 STANDARD-J@@@@ F“®‚«‚ª‚©‚È‚è’x‚¢
 STANDARD-PLUS@@@FSTANDARD-FAST‚ðƒx[ƒX‚ÉAƒ‰ƒCƒ“Á‹ŽŽžŠÔ‚ð0‚É‚µ‚Äƒ\ƒtƒgƒhƒƒbƒv‘¬“x‚ðã‚°‚½ƒ‹[ƒ‹(Blink‚³‚ñì)
 STANDARD-SUPER3@@F‰ñ“]–@‘¥‚ªSTANDARD‚Æ“¯‚¶‚Å•ÇR‚è‚ª‘¶Ý‚µ‚È‚¢ƒ‹[ƒ‹
-STANDARD-ZERO@@@FSTANDARD-PLUS‚©‚çæs‰ñ“]Eæsƒz[ƒ‹ƒh‚ð–³‚­‚µ‚Äƒ\ƒtƒgƒhƒƒbƒv‘¬“x‚ð20G‚É‚µ‚½ƒ‹[ƒ‹
-@@@@@@@@@@ (Wojtek‚³‚ñìEharddrop.comŒöŽ®ƒ‹[ƒ‹)
+STANDARD-ZERO@@@FSTANDARD-PLUS‚ðƒx[ƒX‚ÉAæs‰ñ“]–³‚µEæsƒz[ƒ‹ƒh–³‚µEƒ\ƒtƒgƒhƒƒbƒv‘¬“x20GEƒ[ƒv‰¡ˆÚ“®‚ðŽæ‚è“ü‚ê‚½ƒ‹[ƒ‹ (Wojtek‚³‚ñì)
 
 yƒQ[ƒ€ƒ‚[ƒhz
 EMARATHON
@@ -163,6 +181,10 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚©‚çæs‰ñ“]Eæsƒz[ƒ‹ƒh‚ð–³‚­‚µ‚Äƒ\ƒtƒgƒhƒ
 @@‚Ç‚ê‚¾‚¯‘‚­‚·‚×‚Ä‚ÌŽ×–‚ƒuƒƒbƒN‚ðÁ‚¹‚é‚©‹£‚¤ƒ^ƒCƒ€ƒAƒ^ƒbƒNƒ‚[ƒh‚Å‚·B
 @@Ž×–‚ƒuƒƒbƒN‚Ì”‚Í5ƒ‰ƒCƒ“E10ƒ‰ƒCƒ“E18ƒ‰ƒCƒ“‚©‚ç‘I‘ð‰Â”\‚Å‚·B
 
+ECOMBO RACE
+@@‹K’èƒ‰ƒCƒ“”‚ðÁ‚·‚Ü‚Å‚ÉÅ‘å‚Å‰½ƒRƒ“ƒ{‚Å‚«‚é‚©‚ð‹£‚¢‚Ü‚·B
+@@‹K’èƒ‰ƒCƒ“”‚Í20ƒ‰ƒCƒ“E40ƒ‰ƒCƒ“E100ƒ‰ƒCƒ“‚©‚ç‘I‘ð‰Â”\‚Å‚·B
+
 EULTRA
 @@§ŒÀŽžŠÔ“à‚É‚Ç‚ê‚¾‚¯‘½‚­‚Ì“¾“_‚ð“¾‚ç‚ê‚é‚©A‚Ü‚½‚Í‚Ç‚ê‚¾‚¯‘½‚­‚Ìƒ‰ƒCƒ“‚ðÁ‚¹‚é‚©‚ð‹£‚¤ƒ‚[ƒh‚Å‚·B
 @@§ŒÀŽžŠÔ‚Í1`5•ª‚Ì5Ží—Þ‚©‚ç‘I‘ð‰Â”\‚Å‚·B
@@ -182,8 +204,23 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚©‚çæs‰ñ“]Eæsƒz[ƒ‹ƒh‚ð–³‚­‚µ‚Äƒ\ƒtƒgƒhƒ
 @@SPECIALF@ ƒŒƒxƒ‹ƒAƒbƒv‚·‚é‚½‚Ñ‚É§ŒÀŽžŠÔ‚ª30•b‰„’·‚³‚ê‚éƒQ[ƒ€ƒ^ƒCƒv‚Å‚·B
 @@@@@@@@‘‚­ƒŒƒxƒ‹ƒAƒbƒv‚·‚é‚Æ‚æ‚è’·‚­ƒvƒŒƒC‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B
 
-ECLASSIC MARATHON
+ESQUARE
+@@c4x‰¡4‚ÌƒTƒCƒY‚Ì³•ûŒ`‚ðì‚Á‚ÄÁ‚µ‚Ä‚¢‚­ƒ‚[ƒh‚Å‚·B
+@@2Ží—ÞˆÈã‚ÌƒuƒƒbƒN‚ðŽg‚Á‚Ä³•ûŒ`‚ðì‚é‚Æ‹âFA1Ží—Þ‚ÌƒuƒƒbƒN‚¾‚¯‚Å³•ûŒ`‚ðì‚é‚Æ‹àF‚É‚È‚è‚Ü‚·B
+@@‹àF‚Ì³•ûŒ`‚ðÁ‚·‚ÆA‹âF‚ðÁ‚µ‚½‚Æ‚«‚Ì2”{‚Ìƒ{[ƒiƒX‚ª“ü‚è‚Ü‚·B
+@@3Ží—Þ‚ÌƒQ[ƒ€ƒ^ƒCƒv‚ð‘I‚×‚Ü‚·B
+@@MARATHON:@ƒGƒ“ƒhƒŒƒX
+@@SPRINT:@@150“_Žæ‚é‚Ü‚Å‚Ìƒ^ƒCƒ€ƒAƒ^ƒbƒN
+@@ULTRA:@@ 3•ªŠÔƒXƒRƒAƒAƒ^ƒbƒN
+@@Šî–{“I‚É‚Ç‚ñ‚Èƒ‹[ƒ‹‚Å‚àˆê‰ž—V‚×‚Ü‚·‚ªAuSQUAREvƒ‹[ƒ‹‚ðŽg‚¤‚Æ³•ûŒ`‚ðì‚èˆÕ‚¢‡”Ô‚ÅƒuƒƒbƒN‚ª—Ž‚¿‚Ä‚«‚Ü‚·B
+
+ERETRO MARATHON
+@@‹Œ–¼CLASSIC MARATHONƒ‚[ƒhB
 @@MARATHON‚Æ‚Ù‚Ú“¯—l‚ÌƒQ[ƒ€‚ª—V‚×‚Ü‚·‚ªƒXƒs[ƒh‚Ìã¸‚ÍŠÉ‚â‚©‚Å‚·B
+@@uNINTENDO-Rvƒ‹[ƒ‹‚ª‚¨‚·‚·‚ß‚Å‚·B
+
+ERETRO MASTERY
+@@RETRO MARATHON‚Ìã‹‰ŽÒŒü‚¯ƒo[ƒWƒ‡ƒ“‚Å‚·B‚¢‚©‚É–³‘Ê‚ÈÁ‚µ•û‚ð‚µ‚È‚¢‚©‚ªd—v‚É‚È‚è‚Ü‚·B
 @@uNINTENDO-Rvƒ‹[ƒ‹‚ª‚¨‚·‚·‚ß‚Å‚·B
 
 ERETRO MANIA
@@ -204,6 +241,10 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚©‚çæs‰ñ“]Eæsƒz[ƒ‹ƒh‚ð–³‚­‚µ‚Äƒ\ƒtƒgƒhƒ
 @@GRADE MANIA2‚æ‚è‚à‚³‚ç‚É“ïˆÕ“x‚Ì‚‚¢ã‹‰ŽÒŒü‚¯ƒ‚[ƒh‚Å‚·B
 @@ƒvƒŒƒCƒ„[‚Ì˜r‘O‚É‰ž‚¶‚Ä—Ž‰º‘¬“x‚à•Ï‰»‚µ‚Ä‚«‚Ü‚·B
 
+ESCORE ATTACK
+@@ƒŒƒxƒ‹300‚É“ž’B‚·‚é‚Ü‚Å‚É‰Ò‚¢‚¾“¾“_‚ð‹£‚¤ƒ‚[ƒh‚Å‚·B
+@@“ïˆÕ“x‚Í‰SŽÒŒü‚¯‚Å‚·B
+
 ESPPED MANIA
 @@GRADE MANIA‚ÆŽ—‚½ƒVƒXƒeƒ€‚ð—p‚¢‚½A—Ž‰º‘¬“x‚ª‘¬‚¢’†‹‰ŽÒŒü‚¯ƒ‚[ƒh‚Å‚·B
 @@ƒŒƒxƒ‹500ˆÈ~‚És‚­‚É‚Í‚»‚ê‚È‚è‚Ì˜r‘O‚ª•K—v‚Æ‚È‚è‚Ü‚·B
@@ -211,10 +252,6 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚©‚çæs‰ñ“]Eæsƒz[ƒ‹ƒh‚ð–³‚­‚µ‚Äƒ\ƒtƒgƒhƒ
 ESPPED MANIA 2
 @@SPPED MANIA‚ð‘å‚«‚­’´‚¦‚é‘¬“x‚ÅƒuƒƒbƒN‚ª~‚Á‚Ä‚­‚éã‹‰ŽÒŒü‚¯ƒ‚[ƒh‚Å‚·B
 @@ƒŒƒxƒ‹500‚É“ž’B‚·‚é‚Æ‰½‚©‚ª‹N‚±‚è‚Ü‚·B
-
-ESCORE ATTACK
-@@ƒŒƒxƒ‹300‚É“ž’B‚·‚é‚Ü‚Å‚É‰Ò‚¢‚¾“¾“_‚ð‹£‚¤ƒ‚[ƒh‚Å‚·B
-@@“ïˆÕ“x‚Í‰SŽÒŒü‚¯‚Å‚·B
 
 EGARBAGE MANIA
 @@ŽžXŠDF‚ÌƒuƒƒbƒN‚ª‰º‚©‚ç‚¹‚èã‚ª‚Á‚Ä‚­‚éƒ‚[ƒh‚Å‚·B
@@ -248,14 +285,64 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚©‚çæs‰ñ“]Eæsƒz[ƒ‹ƒh‚ð–³‚­‚µ‚Äƒ\ƒtƒgƒhƒ
 @@ƒŠƒ~ƒbƒgƒ^ƒCƒ€‚ÍƒQ[ƒ€‘S‘Ì‚Ì§ŒÀŽžŠÔ‚ÅA‚±‚ê‚ª0‚É‚È‚é‚ÆƒQ[ƒ€ƒI[ƒo[‚Å‚·B
 @@ƒŠƒ~ƒbƒgƒ^ƒCƒ€‚ÍŠeƒXƒe[ƒW‚ð20•bˆÈ“à‚ÉƒNƒŠƒA‚·‚é‚Æ­‚µ‰ñ•œ‚µ‚Ü‚·B
 
-ETOOL-VS MAP EDIT
-@@‚±‚Ìƒ‚[ƒh‚ÍŒµ–§‚ÉŒ¾‚¤‚ÆuƒQ[ƒ€vƒ‚[ƒh‚Å‚Í‚ ‚è‚Ü‚¹‚ñB
-@@VS-BATTLE‚ÆƒlƒbƒgƒvƒŒƒC‚ÅŽg—p‚Å‚«‚éƒ}ƒbƒv‚ðì¬‚Å‚«‚éƒ‚[ƒh‚Å‚·B
-
 EVS-BATTLE
 @@lŠÔ‚Ü‚½‚ÍƒRƒ“ƒsƒ…[ƒ^‚Æ‘Îí‚·‚éƒ‚[ƒh‚Å‚·B
 @@ˆê“x‚É•¡”‚Ìƒ‰ƒCƒ“‚ðÁ‚·‚Æ‚¨Ž×–‚ƒuƒƒbƒN‚ð‘ŠŽè‚É‘—‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
 @@‚¨Ž×–‚ƒuƒƒbƒN‚Å‘ŠŽè‚ðƒQ[ƒ€ƒI[ƒo[‚É‚³‚¹‚é‚ÆŸ—˜‚Å‚·B
+
+ETOOL-VS MAP EDIT
+@@‚±‚Ìƒ‚[ƒh‚ÍŒµ–§‚ÉŒ¾‚¤‚ÆuƒQ[ƒ€vƒ‚[ƒh‚Å‚Í‚ ‚è‚Ü‚¹‚ñB
+@@VS-BATTLE‚ÆƒlƒbƒgƒvƒŒƒC‚ÅŽg—p‚Å‚«‚éƒ}ƒbƒv‚ðì¬‚Å‚«‚éƒ‚[ƒh‚Å‚·B
+@@[ƒtƒB[ƒ‹ƒh•ÒW‰æ–Ê‚Ì‚Æ‚«‚Ì‘€ì•û–@]
+@@@Up/Down/Left/Right: ƒJ[ƒ\ƒ‹‚ð“®‚©‚·
+@@@A: ƒJ[ƒ\ƒ‹ˆÊ’u‚ÉƒuƒƒbƒN‚ð’u‚­
+@@@B: ƒƒjƒ…[‚É–ß‚é
+@@@C+Left/Right: ”z’u‚·‚éƒuƒƒbƒN‚ÌF‚ð‘I‚Ô
+@@@D: ƒJ[ƒ\ƒ‹ˆÊ’u‚É‚ ‚éƒuƒƒbƒN‚ðÁ‚·
+
+EAVALANCHE 1P (RC1)
+@@“¯‚¶F‚ÌƒuƒƒbƒN‚ðc‚©‰¡‚É4‚ÂˆÈãŒq‚°‚ÄÁ‚µ‚Ä‚¢‚­ƒ‚[ƒh‚Å‚·B“r’†‚ÅÜ‚ê‹È‚ª‚Á‚Ä‚¢‚Ä‚àOK‚Å‚·‚ªAŽÎ‚ß‚É‚Í‚­‚Á‚Â‚«‚Ü‚¹‚ñB
+@@‹ó’†‚É•‚‚¢‚½ƒuƒƒbƒN‚Í‘S‚Äd—Í‚É]‚Á‚Ä—Ž‰º‚µ‚Ü‚·B‚±‚ê‚ð—˜—p‚µ‚Ä˜A½‚à‰Â”\‚Å‚·B
+@@‘I‚×‚éƒQ[ƒ€ƒ^ƒCƒv‚ÍSQUAREƒ‚[ƒh‚Æ“¯‚¶‚Å‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuAVALANCHEvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+EAVALANCHE 1P FEVER MARATHON (RC1)
+@@˜A½‚Ìƒ^ƒli‚ ‚ç‚©‚¶‚ßŠÈ’P‚É˜A½‚Å‚«‚é‚æ‚¤‚É‘g‚Ü‚ê‚½ƒuƒƒbƒNj‚ªÏ‚Ü‚ê‚½ó‘Ô‚ÅƒQ[ƒ€‚ªŽn‚Ü‚è‚Ü‚·B
+@@ˆê”Ô’·‚¢˜A½‚ª‚Å‚«‚é‚ÆŽv‚¤‚Æ‚±‚ë‚ÉƒuƒƒbƒN‚ð’u‚¢‚ÄA˜A½‚ðƒXƒ^[ƒg‚³‚¹‚Ä‚­‚¾‚³‚¢B
+@@˜A½I—¹ŒãAV‚µ‚¢˜A½‚Ìƒ^ƒl‚ªoŒ»‚µ‚Ü‚·B‚¤‚Ü‚­˜A½‚Å‚«‚ê‚ÎAŽŸ‚ÉoŒ»‚·‚é˜A½‚Ìƒ^ƒl‚ª‘å‚«‚­‚È‚èA§ŒÀŽžŠÔ‚à‘‚¦‚Ü‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuAVALANCHEvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+EAVALANCHE VS-BATTLE (RC1)
+@@AVALANCHE 1Pƒ‚[ƒh‚ÆŽ—‚½ƒ‹[ƒ‹‚Å‘Îí‚µ‚Ü‚·B˜A½‚ÅƒuƒƒbƒN‚ðÁ‚·‚Æ‘ŠŽè‚ÉŽ×–‚ƒuƒƒbƒN‚ð‘—‚èž‚Þ‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuAVALANCHEvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+EAVALANCHE VS FEVER MARATHON (RC1)
+@@˜A½‚Ìƒ^ƒli‚ ‚ç‚©‚¶‚ßŠÈ’P‚É˜A½‚Å‚«‚é‚æ‚¤‚É‘g‚Ü‚ê‚½ƒuƒƒbƒNj‚ªÏ‚Ü‚ê‚½ó‘Ô‚ÅƒQ[ƒ€‚ªŽn‚Ü‚è‚Ü‚·B
+@@˜A½‚·‚é‚ÆAHANDICAP—“‚Ì”Žš‚ªŒ¸‚Á‚Ä‚¢‚«‚Ü‚·B‚±‚ê‚ª0‚É‚È‚é‚ÆA‘ŠŽè‚ÉŽÀÛ‚ÉUŒ‚‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuAVALANCHEvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+EAVALANCHE VS DIG RACE (RC1)
+@@‘ŠŽè‚æ‚èæ‚ÉA7F‚ÉŒõ‚é•óÎƒuƒƒbƒN‚ðÁ‚·‚±‚Æ‚ª–Ú“I‚Ìƒ‚[ƒh‚Å‚·B•óÎƒuƒƒbƒN‚Í‘¼‚ÌƒuƒƒbƒN‚Ì‰º‚É–„‚à‚ê‚Ä‚¢‚Ü‚·B
+@@‘å‚«‚È˜A½‚ð‚·‚é‚Æ‘ŠŽè‚ÉŽ×–‚ƒuƒƒbƒN‚ð‘—‚é‚±‚Æ‚ªo—ˆ‚Ü‚·‚ªA’v–½‚ð—^‚¦‚é‚Ù‚Ç‚ÌUŒ‚—Í‚Í‚ ‚è‚Ü‚¹‚ñB
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuAVALANCHEvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+EPHYSICIAN (RC1)
+@@‚ ‚ç‚©‚¶‚ßƒtƒB[ƒ‹ƒh“à‚É’u‚©‚ê‚Ä‚¢‚éƒEƒCƒ‹ƒXi•óÎƒuƒƒbƒNj‚ðAã‚©‚ç—Ž‚¿‚Ä‚­‚é3F‚ÌƒJƒvƒZƒ‹i’ÊíƒuƒƒbƒNj‚ðŽg‚Á‚ÄÁ‚µ‚Ä‚¢‚­ƒ‚[ƒh‚Å‚·B
+@@ƒJƒvƒZƒ‹‚Íc‚©‰¡‚É4‚ÂˆÈã•À‚×‚é‚ÆÁ‚¦‚Ü‚·BŒq‚ª‚Á‚Ä‚¢‚é“¯F‚ÌƒEƒCƒ‹ƒX‚àˆê‚ÉÁ‚¦‚Ü‚·B
+@@‘S‚Ä‚ÌƒEƒCƒ‹ƒX‚ðÁ‚·‚ÆƒXƒe[ƒWƒNƒŠƒA‚Å‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuPHYSICIANvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+EPHYSICIAN VS-BATTLE (RC1)
+@@PHYSICIANƒ‚[ƒh‚Ìƒ‹[ƒ‹‚Å‘Îí‚µ‚Ü‚·B
+@@‘ŠŽè‚ªƒQ[ƒ€ƒI[ƒo[‚É‚È‚é‚©Aæ‚ÉƒEƒCƒ‹ƒX‚ð‘S‚ÄÁ‚·‚ÆŸ—˜‚Å‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuPHYSICIANvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
+
+ESPF VS-BATTLE (BETA)
+@@ã‚©‚ç—Ž‚¿‚Ä‚­‚éƒm[ƒ}ƒ‹ƒWƒFƒ€i’ÊíƒuƒƒbƒNj‚ðÏ‚Ýã‚°AŽžX—Ž‚¿‚Ä‚­‚éƒNƒ‰ƒbƒVƒ…ƒWƒFƒ€i•óÎƒuƒƒbƒNj‚ðŽg‚Á‚Äƒm[ƒ}ƒ‹ƒWƒFƒ€‚ðÁ‚µ‚Ä‚¢‚«‚Ü‚·B
+@@2~2ˆÈã‚Ì‘å‚«‚³‚Å“¯F‚Ìƒm[ƒ}ƒ‹ƒWƒFƒ€‚ðŽlŠpŒ`Œ^‚É‘g‚Ý‡‚í‚¹‚é‚ÆA‚æ‚è‹­—Í‚Èƒpƒ[ƒWƒFƒ€‚É•Ï‰»‚µ‚Ü‚·B
+@@ƒm[ƒ}ƒ‹ƒWƒFƒ€‚âƒpƒ[ƒWƒFƒ€‚Í‚¢‚­‚ç‚Å‚àŒq‚°‚Ä‚¢‚­‚±‚Æ‚ª‚Å‚«‚Ü‚·‚ªAƒNƒ‰ƒbƒVƒ…ƒWƒFƒ€‚ðŽg‚í‚È‚¢ŒÀ‚èÁ‚·‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñB
+@@ƒNƒ‰ƒbƒVƒ…ƒWƒFƒ€‚ðŽg‚Á‚ÄƒWƒFƒ€‚ðÁ‚·‚ÆA‘ŠŽè‚ÉƒJƒEƒ“ƒ^[ƒWƒFƒ€iŽ×–‚ƒuƒƒbƒNj‚ð‘—‚èž‚Þ‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+@@‚Ü‚Æ‚à‚ÉƒvƒŒƒC‚·‚éê‡‚ÍuSPFvƒ‹[ƒ‹‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B
 
 yBGM‚ð–Â‚ç‚·‚É‚Íz
 ‚Ü‚¾BGM‚Í•W€‚Å‚Í•t‚¢‚Ä‚¢‚Ü‚¹‚ñ‚ªA”CˆÓ‚Ì‰¹Šyƒtƒ@ƒCƒ‹‚ðÄ¶‚Å‚«‚Ü‚·B
@@ -321,70 +408,138 @@ java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ƒ|
 Linux/MacOS:
 java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ƒ|[ƒg”Ô†]
 
+yFAQz
+Q: ‘SƒuƒƒbƒN‚ªŠDF‚È‚ñ‚¾‚ª
+A: ƒ‹[ƒ‹‘I‘ð‰æ–Ê‚És‚Á‚Ä•Ê‚Ìƒ‹[ƒ‹‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢B
+
+Q: Slick”Å‚ÅƒWƒ‡ƒCƒXƒeƒBƒbƒN‚ª“®‚©‚È‚¢
+A: GENERAL CONFIG‰æ–Ê‚Ì"JOYSTICK METHOD"‚ÌÝ’è‚ðLWGJL‚É•Ï‚¦‚ÄAJOYSTICK SETTING‰æ–Ê‚ÌÝ’è‚ð‚¢‚ë‚¢‚ë˜M‚Á‚Ä‚­‚¾‚³‚¢B
+   Slick”Å‚ÌƒWƒ‡ƒCƒXƒeƒBƒbƒNƒTƒ|[ƒg‚ÍSDL”Å‚Ù‚Ç—Ç‚­‚È‚¢‚Å‚·B
+
+Q: SDL”Å‚ÌƒlƒbƒgƒvƒŒƒC‚ÅŽg—pRAM‚ªŒƒ‘‚·‚é
+A: Swing”Å‚©Slick”Å‚ðŽg‚Á‚Ä‚­‚¾‚³‚¢B¡‚Ì‚Æ‚±‚ë‚Ü‚Æ‚à‚È‰ðŒˆ•û–@‚Í‚ ‚è‚Ü‚¹‚ñBSDL‚©SDLJava‘¤‚Ì–â‘è‚Á‚Û‚¢‚Å‚·B
+
+Q: 64bit‚ÌOS‚ðŽg‚Á‚Ä‚¢‚Ü‚·BSDL”Å‚ª“®‚«‚Ü‚¹‚ñB
+A: ’ú‚ß‚ëB
+
 y»ìEŽÓŽ«z
 »ìF
-@NullNoname ŸbzEQ7554bc (•Ê–¼pbomqlu910963AŒ³–¼–³‚µ) pbomqlu910963@gmail.com
-@Zircean
-@Poochy
-@Wojtek (aka dodd)
+	NullNoname ŸbzEQ7554bc (•Ê–¼pbomqlu910963AŒ³–¼–³‚µ) pbomqlu910963@gmail.com
+	Zircean
+	Poochy
+	Wojtek (aka dodd)
+	olivier.vidal1 (better known as Spirale)
+	kitaru2004
+	Shrapnel.City (aka Pineapple)
+	vic7070 (aka Digital)
+	alight
+	nightmareci
+	johnwchadwick (aka nmn)
+	prelude234 (aka awake)
+
+	Google Code‚ÌPeopleƒy[ƒW:
+	http://code.google.com/p/nullpomino/people/list
 
 ‚±‚ÌƒQ[ƒ€‚ÍˆÈ‰º‚Ìƒc[ƒ‹Eƒ‰ƒCƒuƒ‰ƒŠE‘fÞ‚ðŽg—p‚µ‚Ü‚µ‚½B
 ‚±‚Ìê‚ðŽØ‚è‚Ä‚¨—ç\‚µã‚°‚Ü‚·B
 
 Eƒc[ƒ‹
-Eclipse 3.5
-http://www.eclipse.org/
-PictBear SE
-http://www20.pos.to/~sleipnir/
+	Eclipse 3.5
+	http://www.eclipse.org/
+	PictBear SE
+	http://www20.pos.to/~sleipnir/
 
 Eƒ‰ƒCƒuƒ‰ƒŠ
-Slick - 2D Game Library based on LWJGL
-http://slick.cokeandcode.com/
-Lightweight Java Game Library (LWJGL)
-http://www.lwjgl.org/
-JOrbis -- Pure Java Ogg Vorbis Decoder
-http://www.jcraft.com/jorbis/
-IBXM Java MOD/S3M/XM Player
-http://sites.google.com/site/mumart/
-sdljava - Java Binding to SDL
-http://sdljava.sourceforge.net/
-Simple DirectMedia Layer
-http://www.libsdl.org/
-Apache log4j 1.2.15
-http://logging.apache.org/log4j/1.2/index.html
-Crypt.java (Java-based implementation of the unix crypt(3) command)
-http://www.cacas.org/java/gnu/tools/
+	Slick - 2D Game Library based on LWJGL
+	http://slick.cokeandcode.com/
+	Lightweight Java Game Library (LWJGL)
+	http://www.lwjgl.org/
+	JOrbis -- Pure Java Ogg Vorbis Decoder
+	http://www.jcraft.com/jorbis/
+	IBXM Java MOD/S3M/XM Player
+	http://sites.google.com/site/mumart/
+	sdljava - Java Binding to SDL
+	http://sdljava.sourceforge.net/
+	Simple DirectMedia Layer
+	http://www.libsdl.org/
+	Apache log4j 1.2.15
+	http://logging.apache.org/log4j/1.2/index.html
+	Crypt.java (Java-based implementation of the unix crypt(3) command)
+	http://www.cacas.org/java/gnu/tools/
 
 EŒø‰Ê‰¹
-ƒUEƒ}ƒbƒ`ƒƒCƒJƒ@ƒY
-http://osabisi.sakura.ne.jp/m2/
-TAM Music Factory
-http://www.tam-music.com/
+	ƒUEƒ}ƒbƒ`ƒƒCƒJƒ@ƒY
+	http://osabisi.sakura.ne.jp/m2/
+	TAM Music Factory
+	http://www.tam-music.com/
 
 E”wŒi (res/graphics/oldbg)
-‚ä‚ñƒtƒŠ[ŽÊ^‘fÞW
-http://www.yunphoto.net/
+	‚ä‚ñƒtƒŠ[ŽÊ^‘fÞW
+	http://www.yunphoto.net/
 
 EƒtƒHƒ“ƒg
-ƒIƒŠƒWƒiƒ‹ƒtƒHƒ“ƒgy‚Ý‚©‚¿‚á‚ñz
-http://www001.upp.so-net.ne.jp/mikachan/
+	ƒIƒŠƒWƒiƒ‹ƒtƒHƒ“ƒgy‚Ý‚©‚¿‚á‚ñz
+	http://www001.upp.so-net.ne.jp/mikachan/
 
 EAlso thanks to:
-Lee
-Burbruee
-Steve
-Blink
-xlro (http://nullpo.nu.mu/)
-vicar (http://vicar.bob.buttobi.net/)
-SWR
-hebo-MAI
-tetrisconcept.net http://www.tetrisconcept.net/
- (NullpoMino thread: http://www.tetrisconcept.net/forum/showthread.html?t=1381)
-Hard Drop http://harddrop.com/
- (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
+	Lee
+	Burbruee
+	Steve
+	Blink
+	xlro (http://nullpo.nu.mu/)
+	vicar (http://vicar.bob.buttobi.net/)
+	SWR
+	hebo-MAI
+	tetrisconcept.net http://www.tetrisconcept.net/
+	 (NullpoMino thread: http://www.tetrisconcept.net/forum/showthread.html?t=1381)
+	Hard Drop http://harddrop.com/
+	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
+	Puyo Nexus http://www.puyonexus.net/
+
+yGoogle Code‚ÌƒvƒƒWƒFƒNƒgƒy[ƒWz
+http://code.google.com/p/nullpomino/
 
 yXV—š—ðz
 +‚ÍV‹@”\A-‚ÍƒoƒOC³A*‚Í‚»‚Ì‘¼‚ÌC³A#‚Í‚»‚Ì‘¼ƒƒ‚‚ðˆÓ–¡‚µ‚Ü‚·B
+
+Version 7.3.0 (2010/08/??)
+#‚±‚Ìƒo[ƒWƒ‡ƒ“‚©‚ç7.2.0‚ÌƒT[ƒo[‚Æ‚ÌŒÝŠ·«‚ÍŽ¸‚í‚ê‚Ü‚·B
+#‚±‚Ìƒo[ƒWƒ‡ƒ“ˆÈ‘O‚ÌƒŠƒvƒŒƒC‚Í‚±‚Ìƒo[ƒWƒ‡ƒ“‚©‚çŒ©‚ê‚Ü‚¹‚ñB
++Swing/Slick/SDL: ƒŠƒvƒŒƒC‚ð•Û‘¶‚·‚é‚Æ‚«AreplayƒtƒHƒ‹ƒ_‚ª–³‚¢ê‡‚ÍŽ©“®“I‚Éì¬‚·‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
++Swing/Slick/SDL: oŒ»ˆÊ’u•â³‚ª‚ ‚éƒ‹[ƒ‹‚ÅANEXTƒs[ƒX‚ª³‚µ‚¢ˆÊ’u‚É•\Ž¦‚³‚ê‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
++Swing/Slick/SDL: ƒtƒB[ƒ‹ƒh‚Ì‰¡‚ÉNEXT‚ð•\Ž¦‚·‚éÝ’è‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++Slick/SDL: ƒƒjƒ…[‰æ–Ê‚Åƒ}ƒEƒX‚ðŽg‚¦‚é‚æ‚¤‚É‚È‚è‚Ü‚µ‚½B‚Ü‚½AƒL[ƒ{[ƒh‘€ìŽž‚Íƒƒjƒ…[ê—p‚ÌƒL[Ý’è‚ðŽg—p‚·‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
+ (‰ŠúÝ’è ˆÚ“®:ƒJ[ƒ\ƒ‹ƒL[ Enter:Œˆ’è Escape:ƒLƒƒƒ“ƒZƒ‹)
++Slick: PERFECT FPSƒIƒvƒVƒ‡ƒ“‚ð’Ç‰Á‚µ‚Ü‚µ‚½B(ƒtƒŒ[ƒ€ƒŒ[ƒg‚ª‚æ‚è³Šm‚É‚È‚è‚Ü‚·‚ªA‚æ‚è‘½‚­‚ÌCPUƒpƒ[‚ðŽg—p‚µ‚Ü‚·Bƒƒjƒ…[‰æ–Ê‚Å‚Í“®‚«‚Ü‚¹‚ñB)
++Slick: LWJGL‚ð2.5‚ÉASlick‚ðbuild 274‚Éƒo[ƒWƒ‡ƒ“ƒAƒbƒv‚µ‚Ü‚µ‚½B
++ˆÈ‰º‚Ìƒ‚[ƒh‚ð’Ç‰Á‚µ‚Ü‚µ‚½:COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, AVALANCHE VS FEVER MARATHON, AVALANCHE VS DIG RACE, PHYSICIAN, PHYSICIAN VS-BATTLE, SPF VS-BATTLE
+ ƒ‰ƒCƒ“Á‹ŽŒ^‚Å‚È‚¢ƒ‚[ƒh‚ÍAƒŠƒŠ[ƒXŒó•â”Å(AVALANCHE, PHYSICIAN)‚Ü‚½‚Íƒx[ƒ^”Å(SPF)‚Å‚·B
+ ƒXƒyƒVƒƒƒ‹ƒTƒ“ƒNƒX:Puyo Nexus‚³‚ñ(˜A½‚Ìƒ^ƒl‚Ìƒf[ƒ^‚ð‚¨ŽØ‚è‚µ‚Ü‚µ‚½B‚ ‚è‚ª‚Æ‚¤I)
++STANDARD-HOLDNEXT, SQUARE, AVALANCHE, PHYSICIAN, SPFƒ‹[ƒ‹‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++CLASSIC MARATHONƒ‚[ƒh‚ðRETRO MARATHON‚É‰ü–¼‚µ‚Ü‚µ‚½B
++Randomizer: NEXT‡¶¬ƒAƒ‹ƒSƒŠƒYƒ€‚ÌƒVƒXƒeƒ€‚ð‘å•‚É•ÏX‚µA•¡”‚ÌV‚µ‚¢‚à‚Ì‚ð’Ç‰Á‚µ‚Ü‚µ‚½B‚±‚Ì‚½‚ßA‚±‚Ìƒo[ƒWƒ‡ƒ“ˆÈ‘O‚ÌƒŠƒvƒŒƒC‚Í‚à‚¤Œ©‚ê‚Ü‚¹‚ñB
++Sequencer: oŒ»‰Â”\ƒs[ƒX‚ÌÝ’è‰æ–Ê‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++AI: "Defensive"‚Æ"No Prethink"ƒo[ƒWƒ‡ƒ“‚ÌPoochyBot‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++Engine: “¯‚¶F‚ÌƒuƒƒbƒN‚ð•À‚×‚ÄÁ‚·ƒ^ƒCƒv‚Ìƒ‚[ƒh(AVALANCHE, PHYSICIAN, SPF)—p‚Ì‹@”\‚ð‘½”’Ç‰Á‚µ‚Ü‚µ‚½B
++Engine: 7F‚ÉŒõ‚éƒŒƒCƒ“ƒ{[ƒuƒƒbƒN‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++Engine: DTET‚âSTANDARD-SUPER3ƒ‹[ƒ‹—p‚É‘Ò‚¿ŽžŠÔƒLƒƒƒ“ƒZƒ‹‚Ì‹@”\‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++Engine: ‰¡—­‚ßŠÖ˜A‚Ì‹@”\‚ðŠg[‚µ‚Ü‚µ‚½B’Ç‰Á‚³‚ê‚½‹@”\‚Ì‘½‚­‚ÍNINTENDOŒnƒ‹[ƒ‹‚ÅŽg‚í‚ê‚Ä‚¢‚Ü‚·B
++Engine: ƒ[ƒvˆÚ“®(Instant DAS)‚ÆƒhƒƒbƒvƒL[‚ð—£‚·‚Ü‚Å‰¡—­‚ßˆÚ“®‚ð‚µ‚È‚¢‹@”\(Shift Lock)‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++Engine: ƒn[ƒhƒuƒƒbƒN‚ÆŒÅ‚¢Ž×–‚ƒuƒƒbƒN‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++NetPlay/NetServer: ƒ‹[ƒ€ì¬‰æ–Ê‚É‚æ‚è‘½‚­‚ÌÝ’è€–Ú‚ð’Ç‰Á‚µ‚Ü‚µ‚½B‚Ü‚½A‘½‚­‚ÌÝ’è€–Ú‚ðV‚µ‚­‚Å‚«‚½ƒ^ƒu‚ÉˆÚ‚µ‚Ü‚µ‚½B
+ Ž×–‚ƒuƒƒbƒN: B2B‚ÅŒŠ‚ÌˆÊ’u‚ð•Ï‚¦‚éA1‰ñ‚ÌUŒ‚‚²‚Æ‚ÉŽ×–‚ƒuƒƒbƒN‚ÌŒŠ‚ÌˆÊ’u‚ð•Ï‚¦‚éAŒŠ‚ÌˆÊ’u‚ª•Ï‚í‚éŠm—¦A‚¹‚èã‚ª‚è—}§A‘ŠŽE
+ ƒ{[ƒiƒX: ƒXƒsƒ“”»’èƒ^ƒCƒvA‘SÁ‚µƒ{[ƒiƒX
+-NetPlay: SDL”Å‚ÅƒlƒbƒgƒvƒŒƒCŽž‚É‚Í³‚µ‚­60FPSŒÅ’è‚É‚È‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
+-NetPlay: ƒQ[ƒ€‰æ–Ê‚ð’¼Ú•Â‚¶‚½‚èJava‚ÌƒvƒƒZƒX‚ð‹­§I—¹‚µ‚Ä‚àƒ`ƒƒƒbƒgƒƒO‚ª³‚µ‚­•Û‘¶‚³‚ê‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
+-NetPlay: ƒ‹[ƒ‹ŒÅ’è‚ª‚È‚¢’èˆõ2–¼‚Ìƒ‹[ƒ€‚Å‚àA‘ŠŽè‚ÌNEXT‚ÆHOLD‚ªŒ©‚¦‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
+-NetServer: —H—ì•”‰®ƒoƒO‚ðC³‚µ‚Ü‚µ‚½B
+-Slick/SDL: ‹N“®Œã‚ÉƒŠƒvƒŒƒC‚ðíœ‚·‚é‚ÆƒŠƒvƒŒƒC‘I‘ð‰æ–Ê‚Å—Ž‚¿‚é‰Â”\«‚ª‚ ‚éƒoƒO‚ðC³‚µ‚Ü‚µ‚½B
++‚æ‚è‘½‚­‚Ìƒ}ƒbƒv‚ð’Ç‰Á (Jenn‚³‚ñASecretSalamender‚³‚ñAMagnanimous‚³‚ñ‚ ‚è‚ª‚Æ‚¤I)
+*Mac‚ÆLinux—p‚Ì‹N“®—pƒVƒFƒ‹ƒXƒNƒŠƒvƒg‚ð’Ç‰Á‚µ‚Ü‚µ‚½B(croikle‚³‚ñ‚ ‚è‚ª‚Æ‚¤I)
+*‘¼‚Ìƒ‹[ƒ‹–¼‚Æ‚Ì®‡«‚Ì‚½‚ßAStandard-GIZAƒ‹[ƒ‹‚Ì–¼‘O‚ÉƒnƒCƒtƒ“‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
+*JRE1.5‚Æ‚ÌŒÝŠ·«‚ª•œŠˆ‚µ‚Ü‚µ‚½B
+*[“à•”•ÏX] ƒƒCƒ“‚ÌƒpƒbƒP[ƒW–¼‚ðmu.nu.nullpo‚É•ÏX‚µ‚Ü‚µ‚½B
+*[“à•”•ÏX] ‚¢‚­‚Â‚©‚Ìƒ\[ƒX’†‚ÌƒRƒƒ“ƒg‚ª‰pŒê‚É‚È‚è‚Ü‚µ‚½B
 
 Version 7.2.0 (2010/06/19)
 #‚±‚Ìƒo[ƒWƒ‡ƒ“‚©‚ç7.1.*‚ÌƒT[ƒo[‚Æ‚ÌŒÝŠ·«‚ÍŽ¸‚í‚ê‚Ü‚·B
@@ -720,6 +875,4 @@ Version 1 (2008/07/27)
 EPRACTICEƒ‚[ƒh‚ÌÝ’è€–Ú‚ð‘‚â‚·
 EAI‚ð‹­‚­‚·‚é
 EƒpƒYƒ‹ƒ‚[ƒh
-
-yGoogle Code‚ÌƒvƒƒWƒFƒNƒgƒy[ƒWz
-http://code.google.com/p/nullpomino/
+Ereadme_en.txt‚ÌTODO‚àŒ©‚Ä‚Ë
