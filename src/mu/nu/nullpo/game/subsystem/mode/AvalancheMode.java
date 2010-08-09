@@ -693,6 +693,8 @@ public class AvalancheMode extends DummyMode {
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int sc, int time, int type) {
+		if (gametype == 2 && sc < SPRINT_MAX_SCORE)
+			return -1;
 		for(int i = 0; i < RANKING_MAX; i++) {
 			if (gametype == 0) {
 				if(sc > rankingScore[type][i]) {
