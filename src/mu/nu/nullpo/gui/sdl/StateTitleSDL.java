@@ -118,9 +118,12 @@ public class StateTitleSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		// Mouse
+		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
+		
 		MouseInputSDL.mouseInput.update();
 		
-		if (MouseInputSDL.mouseInput.getMouseY() >= 64 && MouseInputSDL.mouseInput.getMouseY() < 64+5*16) {
+		if (mouseOldY != MouseInputSDL.mouseInput.getMouseY() && MouseInputSDL.mouseInput.getMouseY() >= 64 &&
+				MouseInputSDL.mouseInput.getMouseY() < 64+5*16) {
 			int oldcursor=cursor;
 			cursor=(MouseInputSDL.mouseInput.getMouseY()-64)/16;
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");

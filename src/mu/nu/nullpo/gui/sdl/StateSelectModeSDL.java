@@ -105,22 +105,26 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		// Mouse
+		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
+		
 		MouseInputSDL.mouseInput.update();
 		
-		int oldcursor=cursor;
-		if (cursor<MAX_MODE_IN_ONE_PAGE) {
-			if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(MAX_MODE_IN_ONE_PAGE+1)*16)) {
-				cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+		if (mouseOldY != MouseInputSDL.mouseInput.getMouseY()) {
+			int oldcursor=cursor;
+			if (cursor<MAX_MODE_IN_ONE_PAGE) {
+				if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(MAX_MODE_IN_ONE_PAGE+1)*16)) {
+					cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+				}
+			} else {
+				if (MouseInputSDL.mouseInput.getMouseY()<48) {
+					cursor=MAX_MODE_IN_ONE_PAGE-1;
+				}
+				else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(modenames.length-MAX_MODE_IN_ONE_PAGE-1)*16)) {
+					cursor=MAX_MODE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+				}
 			}
-		} else {
-			if (MouseInputSDL.mouseInput.getMouseY()<48) {
-				cursor=MAX_MODE_IN_ONE_PAGE-1;
-			}
-			else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(modenames.length-MAX_MODE_IN_ONE_PAGE-1)*16)) {
-				cursor=MAX_MODE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
-			}
+			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 		}
-		if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 		
 		// カーソル移動
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {

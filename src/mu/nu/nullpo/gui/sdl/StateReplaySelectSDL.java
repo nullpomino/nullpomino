@@ -181,22 +181,26 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	public void update() throws SDLException {
 		if((replaylist != null) && (replaylist.length > 0)) {
 			// Mouse
+			int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
+			
 			MouseInputSDL.mouseInput.isMouseClicked();
 			
-			int oldcursor=cursor;
-			if (cursor<MAX_FILE_IN_ONE_PAGE) {
-				if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,replaylist.length-1)*16))) {
-					cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+			if (mouseOldY != MouseInputSDL.mouseInput.getMouseY()) {
+				int oldcursor=cursor;
+				if (cursor<MAX_FILE_IN_ONE_PAGE) {
+					if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,replaylist.length-1)*16))) {
+						cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+					}
+				} else {
+					if (MouseInputSDL.mouseInput.getMouseY()<48) {
+						cursor=MAX_FILE_IN_ONE_PAGE-1;
+					}
+					else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(replaylist.length-MAX_FILE_IN_ONE_PAGE-1)*16)) {
+						cursor=MAX_FILE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+					}
 				}
-			} else {
-				if (MouseInputSDL.mouseInput.getMouseY()<48) {
-					cursor=MAX_FILE_IN_ONE_PAGE-1;
-				}
-				else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(replaylist.length-MAX_FILE_IN_ONE_PAGE-1)*16)) {
-					cursor=MAX_FILE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
-				}
+				if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 			}
-			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 			
 			// カーソル移動
 			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
