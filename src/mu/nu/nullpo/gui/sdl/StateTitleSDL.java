@@ -118,11 +118,11 @@ public class StateTitleSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		// Mouse
-		MouseState ms = SDLEvent.getMouseState();
+		MouseInputSDL.mouseInput.update();
 		
-		if (ms.getY() >= 64 && ms.getY() < 64+5*16) {
+		if (MouseInputSDL.mouseInput.getMouseY() >= 64 && MouseInputSDL.mouseInput.getMouseY() < 64+5*16) {
 			int oldcursor=cursor;
-			cursor=(ms.getY()-64)/16;
+			cursor=(MouseInputSDL.mouseInput.getMouseY()-64)/16;
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 		}
 		
@@ -142,7 +142,7 @@ public class StateTitleSDL extends BaseStateSDL {
 
 		// 決定ボタン
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || ms.getButtonState().buttonLeft()) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");
 
 			switch(cursor) {

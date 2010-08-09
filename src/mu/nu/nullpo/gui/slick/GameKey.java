@@ -207,7 +207,7 @@ public class GameKey {
 		keymap[BUTTON_NAV_LEFT] = prop.getProperty("key.p" + player + ".navigationleft", Input.KEY_LEFT);
 		keymap[BUTTON_NAV_RIGHT] = prop.getProperty("key.p" + player + ".navigationright", Input.KEY_RIGHT);
 		keymap[BUTTON_NAV_SELECT] = prop.getProperty("key.p" + player + ".navigationselect", Input.KEY_ENTER);
-		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationescape", Input.KEY_ESCAPE);
+		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationcancel", Input.KEY_ESCAPE);
 
 		//buttonmap[BUTTON_UP] = prop.getProperty("button.p" + player + ".up", 0);
 		//buttonmap[BUTTON_DOWN] = prop.getProperty("button.p" + player + ".down", 0);

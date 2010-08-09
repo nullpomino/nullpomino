@@ -29,9 +29,6 @@
 package mu.nu.nullpo.gui.sdl;
 
 import sdljava.SDLException;
-import sdljava.event.MouseButtonState;
-import sdljava.event.MouseState;
-import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 
 /**
@@ -76,11 +73,11 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		// Mouse
-		MouseState ms = SDLEvent.getMouseState();
+		MouseInputSDL.mouseInput.update();
 		
-		if (ms.getY() >= 48 && ms.getY() < 48+6*16) {
+		if (MouseInputSDL.mouseInput.getMouseY() >= 48 && MouseInputSDL.mouseInput.getMouseY() < 48+6*16) {
 			int oldcursor=cursor;
-			cursor=(ms.getY()-48)/16;
+			cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 		}
 		
@@ -114,7 +111,7 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 
 		// 決定ボタン
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || ms.getButtonState().buttonLeft()) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");
 
 			switch(cursor) {
@@ -151,6 +148,8 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 
 		// Cancelボタン
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		}
 	}
 }

@@ -111,22 +111,22 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 
 		NormalFontSDL.printFontGrid(1, 1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFontSDL.COLOR_ORANGE);
 
-		NormalFontSDL.printFontGrid(2, 3, "UP             : " + getKeyName(keymap[GameKeySDL.BUTTON_UP]), (keynum == 0));
-		NormalFontSDL.printFontGrid(2, 4, "DOWN           : " + getKeyName(keymap[GameKeySDL.BUTTON_DOWN]), (keynum == 1));
-		NormalFontSDL.printFontGrid(2, 5, "LEFT           : " + getKeyName(keymap[GameKeySDL.BUTTON_LEFT]), (keynum == 2));
-		NormalFontSDL.printFontGrid(2, 6, "RIGHT          : " + getKeyName(keymap[GameKeySDL.BUTTON_RIGHT]), (keynum == 3));
-		NormalFontSDL.printFontGrid(2, 7, "A (L/R-ROT)    : " + getKeyName(keymap[GameKeySDL.BUTTON_A]), (keynum == 4));
-		NormalFontSDL.printFontGrid(2, 8, "B (R/L-ROT)    : " + getKeyName(keymap[GameKeySDL.BUTTON_B]), (keynum == 5));
-		NormalFontSDL.printFontGrid(2, 9, "C (L/R-ROT)    : " + getKeyName(keymap[GameKeySDL.BUTTON_C]), (keynum == 6));
-		NormalFontSDL.printFontGrid(2, 10, "D (HOLD)       : " + getKeyName(keymap[GameKeySDL.BUTTON_D]), (keynum == 7));
-		NormalFontSDL.printFontGrid(2, 11, "E (180-ROT)    : " + getKeyName(keymap[GameKeySDL.BUTTON_E]), (keynum == 8));
-		NormalFontSDL.printFontGrid(2, 12, "F              : " + getKeyName(keymap[GameKeySDL.BUTTON_F]), (keynum == 9));
-		NormalFontSDL.printFontGrid(2, 13, "QUIT           : " + getKeyName(keymap[GameKeySDL.BUTTON_QUIT]), (keynum == 10));
-		NormalFontSDL.printFontGrid(2, 14, "PAUSE          : " + getKeyName(keymap[GameKeySDL.BUTTON_PAUSE]), (keynum == 11));
-		NormalFontSDL.printFontGrid(2, 15, "GIVEUP         : " + getKeyName(keymap[GameKeySDL.BUTTON_GIVEUP]), (keynum == 12));
-		NormalFontSDL.printFontGrid(2, 16, "RETRY          : " + getKeyName(keymap[GameKeySDL.BUTTON_RETRY]), (keynum == 13));
-		NormalFontSDL.printFontGrid(2, 17, "FRAME STEP     : " + getKeyName(keymap[GameKeySDL.BUTTON_FRAMESTEP]), (keynum == 14));
-		NormalFontSDL.printFontGrid(2, 18, "SCREEN SHOT    : " + getKeyName(keymap[GameKeySDL.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFontSDL.printFontGrid(2, 3, "UP                : " + getKeyName(keymap[GameKeySDL.BUTTON_UP]), (keynum == 0));
+		NormalFontSDL.printFontGrid(2, 4, "DOWN              : " + getKeyName(keymap[GameKeySDL.BUTTON_DOWN]), (keynum == 1));
+		NormalFontSDL.printFontGrid(2, 5, "LEFT              : " + getKeyName(keymap[GameKeySDL.BUTTON_LEFT]), (keynum == 2));
+		NormalFontSDL.printFontGrid(2, 6, "RIGHT             : " + getKeyName(keymap[GameKeySDL.BUTTON_RIGHT]), (keynum == 3));
+		NormalFontSDL.printFontGrid(2, 7, "A (L/R-ROT)       : " + getKeyName(keymap[GameKeySDL.BUTTON_A]), (keynum == 4));
+		NormalFontSDL.printFontGrid(2, 8, "B (R/L-ROT)       : " + getKeyName(keymap[GameKeySDL.BUTTON_B]), (keynum == 5));
+		NormalFontSDL.printFontGrid(2, 9, "C (L/R-ROT)       : " + getKeyName(keymap[GameKeySDL.BUTTON_C]), (keynum == 6));
+		NormalFontSDL.printFontGrid(2, 10, "D (HOLD)          : " + getKeyName(keymap[GameKeySDL.BUTTON_D]), (keynum == 7));
+		NormalFontSDL.printFontGrid(2, 11, "E (180-ROT)       : " + getKeyName(keymap[GameKeySDL.BUTTON_E]), (keynum == 8));
+		NormalFontSDL.printFontGrid(2, 12, "F                 : " + getKeyName(keymap[GameKeySDL.BUTTON_F]), (keynum == 9));
+		NormalFontSDL.printFontGrid(2, 13, "QUIT              : " + getKeyName(keymap[GameKeySDL.BUTTON_QUIT]), (keynum == 10));
+		NormalFontSDL.printFontGrid(2, 14, "PAUSE             : " + getKeyName(keymap[GameKeySDL.BUTTON_PAUSE]), (keynum == 11));
+		NormalFontSDL.printFontGrid(2, 15, "GIVEUP            : " + getKeyName(keymap[GameKeySDL.BUTTON_GIVEUP]), (keynum == 12));
+		NormalFontSDL.printFontGrid(2, 16, "RETRY             : " + getKeyName(keymap[GameKeySDL.BUTTON_RETRY]), (keynum == 13));
+		NormalFontSDL.printFontGrid(2, 17, "FRAME STEP        : " + getKeyName(keymap[GameKeySDL.BUTTON_FRAMESTEP]), (keynum == 14));
+		NormalFontSDL.printFontGrid(2, 18, "SCREEN SHOT       : " + getKeyName(keymap[GameKeySDL.BUTTON_SCREENSHOT]), (keynum == 15));
 		NormalFontSDL.printFontGrid(2, 19, "NAVIGATION UP     : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_UP]), (keynum == 16));
 		NormalFontSDL.printFontGrid(2, 20, "NAVIGATION DOWN   : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_DOWN]), (keynum == 17));
 		NormalFontSDL.printFontGrid(2, 21, "NAVIGATION LEFT   : " + getKeyName(keymap[GameKeySDL.BUTTON_NAV_LEFT]), (keynum == 18));

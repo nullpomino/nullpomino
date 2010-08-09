@@ -251,7 +251,7 @@ public class GameKeySDL {
 		keymap[BUTTON_NAV_LEFT] = prop.getProperty("key.p" + player + ".navigationleft", SDLKey.SDLK_LEFT);
 		keymap[BUTTON_NAV_RIGHT] = prop.getProperty("key.p" + player + ".navigationright", SDLKey.SDLK_RIGHT);
 		keymap[BUTTON_NAV_SELECT] = prop.getProperty("key.p" + player + ".navigationselect", SDLKey.SDLK_RETURN);
-		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationescape", SDLKey.SDLK_ESCAPE);
+		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationcancel", SDLKey.SDLK_ESCAPE);
 
 		//buttonmap[BUTTON_UP] = prop.getProperty("button.p" + player + ".up", 0);
 		//buttonmap[BUTTON_DOWN] = prop.getProperty("button.p" + player + ".down", 0);

@@ -178,19 +178,19 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	public void update() throws SDLException {
 		if((strFileNameList != null) && (strFileNameList.length > 0)) {
 			// Mouse
-			MouseState ms = SDLEvent.getMouseState();
+			MouseInputSDL.mouseInput.update();
 			
 			int oldcursor=cursor;
 			if (cursor<MAX_FILE_IN_ONE_PAGE) {
-				if ((ms.getY()>=48) && (ms.getY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,strFileNameList.length-1)*16))) {
-					cursor=(ms.getY()-48)/16;
+				if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,strFileNameList.length-1)*16))) {
+					cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 				}
 			} else {
-				if (ms.getY()<48) {
+				if (MouseInputSDL.mouseInput.getMouseY()<48) {
 					cursor=MAX_FILE_IN_ONE_PAGE-1;
 				}
-				else if ((ms.getY()>=48) && (ms.getY()<64+(strFileNameList.length-MAX_FILE_IN_ONE_PAGE-1)*16)) {
-					cursor=MAX_FILE_IN_ONE_PAGE+(ms.getY()-48)/16;
+				else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(strFileNameList.length-MAX_FILE_IN_ONE_PAGE-1)*16)) {
+					cursor=MAX_FILE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 				}
 			}
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
@@ -211,7 +211,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 
 			// 決定ボタン
 			// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || ms.getButtonState().buttonLeft()) {
+			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 				ResourceHolderSDL.soundManager.play("decide");
 				NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
 				NullpoMinoSDL.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
@@ -239,7 +239,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 
 		// Cancelボタン
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B) && !firstSetupMode) {
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) && !firstSetupMode) {
+		if((GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) && !firstSetupMode) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 			return;
 		}
