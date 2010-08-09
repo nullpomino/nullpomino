@@ -32,6 +32,8 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.gui.net.UpdateChecker;
 
 import sdljava.SDLException;
+import sdljava.event.MouseState;
+import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
@@ -115,20 +117,35 @@ public class StateTitleSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
+		// Mouse
+		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
+		
+		MouseInputSDL.mouseInput.update();
+		
+		if (mouseOldY != MouseInputSDL.mouseInput.getMouseY() && MouseInputSDL.mouseInput.getMouseY() >= 64 &&
+				MouseInputSDL.mouseInput.getMouseY() < 64+5*16) {
+			int oldcursor=cursor;
+			cursor=(MouseInputSDL.mouseInput.getMouseY()-64)/16;
+			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
+		}
+		
 		// カーソル移動
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 4;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
 			cursor++;
 			if(cursor > 4) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
 		// 決定ボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");
 
 			switch(cursor) {

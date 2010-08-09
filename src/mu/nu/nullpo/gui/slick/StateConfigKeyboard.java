@@ -112,33 +112,39 @@ public class StateConfigKeyboard extends BasicGameState {
 
 		NormalFont.printFontGrid(1, 1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(2, 3, "UP             : " + getKeyName(keymap[GameKey.BUTTON_UP]), (keynum == 0));
-		NormalFont.printFontGrid(2, 4, "DOWN           : " + getKeyName(keymap[GameKey.BUTTON_DOWN]), (keynum == 1));
-		NormalFont.printFontGrid(2, 5, "LEFT           : " + getKeyName(keymap[GameKey.BUTTON_LEFT]), (keynum == 2));
-		NormalFont.printFontGrid(2, 6, "RIGHT          : " + getKeyName(keymap[GameKey.BUTTON_RIGHT]), (keynum == 3));
-		NormalFont.printFontGrid(2, 7, "A (L/R-ROT)    : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
-		NormalFont.printFontGrid(2, 8, "B (R/L-ROT)    : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
-		NormalFont.printFontGrid(2, 9, "C (L/R-ROT)    : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
-		NormalFont.printFontGrid(2, 10, "D (HOLD)       : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
-		NormalFont.printFontGrid(2, 11, "E (180-ROT)    : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
-		NormalFont.printFontGrid(2, 12, "F              : " + getKeyName(keymap[GameKey.BUTTON_F]), (keynum == 9));
-		NormalFont.printFontGrid(2, 13, "QUIT           : " + getKeyName(keymap[GameKey.BUTTON_QUIT]), (keynum == 10));
-		NormalFont.printFontGrid(2, 14, "PAUSE          : " + getKeyName(keymap[GameKey.BUTTON_PAUSE]), (keynum == 11));
-		NormalFont.printFontGrid(2, 15, "GIVEUP         : " + getKeyName(keymap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
-		NormalFont.printFontGrid(2, 16, "RETRY          : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
-		NormalFont.printFontGrid(2, 17, "FRAME STEP     : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
-		NormalFont.printFontGrid(2, 18, "SCREEN SHOT    : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFont.printFontGrid(2, 3, "UP                : " + getKeyName(keymap[GameKey.BUTTON_UP]), (keynum == 0));
+		NormalFont.printFontGrid(2, 4, "DOWN              : " + getKeyName(keymap[GameKey.BUTTON_DOWN]), (keynum == 1));
+		NormalFont.printFontGrid(2, 5, "LEFT              : " + getKeyName(keymap[GameKey.BUTTON_LEFT]), (keynum == 2));
+		NormalFont.printFontGrid(2, 6, "RIGHT             : " + getKeyName(keymap[GameKey.BUTTON_RIGHT]), (keynum == 3));
+		NormalFont.printFontGrid(2, 7, "A (L/R-ROT)       : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
+		NormalFont.printFontGrid(2, 8, "B (R/L-ROT)       : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
+		NormalFont.printFontGrid(2, 9, "C (L/R-ROT)       : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
+		NormalFont.printFontGrid(2, 10, "D (HOLD)          : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
+		NormalFont.printFontGrid(2, 11, "E (180-ROT)       : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
+		NormalFont.printFontGrid(2, 12, "F                 : " + getKeyName(keymap[GameKey.BUTTON_F]), (keynum == 9));
+		NormalFont.printFontGrid(2, 13, "QUIT              : " + getKeyName(keymap[GameKey.BUTTON_QUIT]), (keynum == 10));
+		NormalFont.printFontGrid(2, 14, "PAUSE             : " + getKeyName(keymap[GameKey.BUTTON_PAUSE]), (keynum == 11));
+		NormalFont.printFontGrid(2, 15, "GIVEUP            : " + getKeyName(keymap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
+		NormalFont.printFontGrid(2, 16, "RETRY             : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
+		NormalFont.printFontGrid(2, 17, "FRAME STEP        : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
+		NormalFont.printFontGrid(2, 18, "SCREEN SHOT       : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFont.printFontGrid(2, 19, "NAVIGATION UP     : " + getKeyName(keymap[GameKey.BUTTON_NAV_UP]), (keynum == 16));
+		NormalFont.printFontGrid(2, 20, "NAVIGATION DOWN   : " + getKeyName(keymap[GameKey.BUTTON_NAV_DOWN]), (keynum == 17));
+		NormalFont.printFontGrid(2, 21, "NAVIGATION LEFT   : " + getKeyName(keymap[GameKey.BUTTON_NAV_LEFT]), (keynum == 18));
+		NormalFont.printFontGrid(2, 22, "NAVIGATION RIGHT  : " + getKeyName(keymap[GameKey.BUTTON_NAV_RIGHT]), (keynum == 19));
+		NormalFont.printFontGrid(2, 23, "NAVIGATION SELECT : " + getKeyName(keymap[GameKey.BUTTON_NAV_SELECT]), (keynum == 20));
+		NormalFont.printFontGrid(2, 24, "NAVIGATION CANCEL : " + getKeyName(keymap[GameKey.BUTTON_NAV_CANCEL]), (keynum == 21));
 
 		if(frame >= KEYACCEPTFRAME) {
 			if(keynum < GameKey.MAX_BUTTON) {
 				NormalFont.printFontGrid(1, 3 + keynum, "b", NormalFont.COLOR_RED);
 
-				NormalFont.printFontGrid(1, 20, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
-				if(!firstSetupMode) NormalFont.printFontGrid(1, 21, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 25, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
+				if(!firstSetupMode) NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 			} else {
-				NormalFont.printFontGrid(1, 20, "ENTER:     OK", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 21, "DELETE:    AGAIN", NormalFont.COLOR_GREEN);
-				if(!firstSetupMode) NormalFont.printFontGrid(1, 22, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 25, "ENTER:     OK", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFont.COLOR_GREEN);
+				if(!firstSetupMode) NormalFont.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 			}
 		}
 

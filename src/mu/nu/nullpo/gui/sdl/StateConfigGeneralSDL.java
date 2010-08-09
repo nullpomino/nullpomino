@@ -223,12 +223,14 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		// カーソル移動
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 19;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
 			cursor++;
 			if(cursor > 19) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
@@ -236,8 +238,10 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 
 		// Configuration changes
 		int change = 0;
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) change = -1;
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_RIGHT)) change = 1;
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) change = -1;
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_LEFT)) change = -1;
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_RIGHT)) change = 1;
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_RIGHT)) change = -1;
 
 		if(change != 0) {
 			ResourceHolderSDL.soundManager.play("change");
@@ -319,7 +323,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		}
 
 		// 決定ボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT)) {
 			ResourceHolderSDL.soundManager.play("decide");
 
 			saveConfig(NullpoMinoSDL.propConfig);
@@ -335,7 +340,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		}
 
 		// Cancelボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL)) {
 			loadConfig(NullpoMinoSDL.propConfig);
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		}

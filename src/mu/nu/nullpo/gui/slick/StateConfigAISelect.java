@@ -227,21 +227,27 @@ public class StateConfigAISelect extends BasicGameState {
 		GameKey.gamekey[0].update(container.getInput());
 
 		// カーソル移動
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-			cursor--;
+		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+				
+		    cursor--;
 			if(cursor < 0) cursor = 3;
 			ResourceHolder.soundManager.play("cursor");
 		}
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-			cursor++;
+		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+				
+		    cursor++;
 			if(cursor > 3) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
 		// Configuration changes
 		int change = 0;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) change = -1;
+		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) change = 1;
 
 		if(change != 0) {
 			ResourceHolder.soundManager.play("change");
@@ -269,8 +275,10 @@ public class StateConfigAISelect extends BasicGameState {
 		}
 
 		// 決定ボタン
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			ResourceHolder.soundManager.play("decide");
+		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_SELECT)) {
+				
+		    ResourceHolder.soundManager.play("decide");
 
 			if(aiID >= 0) NullpoMinoSlick.propGlobal.setProperty(player + ".ai", aiPathList[aiID]);
 			else NullpoMinoSlick.propGlobal.setProperty(player + ".ai", "");
@@ -284,8 +292,10 @@ public class StateConfigAISelect extends BasicGameState {
 		}
 
 		// Cancelボタン
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
-			game.enterState(StateConfigMainMenu.ID);
+		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+				
+		    game.enterState(StateConfigMainMenu.ID);
 			return;
 		}
 

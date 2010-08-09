@@ -72,32 +72,49 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
+		// Mouse
+		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
+		
+		MouseInputSDL.mouseInput.update();
+		
+		if (mouseOldY != MouseInputSDL.mouseInput.getMouseY() && MouseInputSDL.mouseInput.getMouseY() >= 48 && 
+				MouseInputSDL.mouseInput.getMouseY() < 48+6*16) {
+			int oldcursor=cursor;
+			cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
+		}
+		
 		// カーソル移動
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 5;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
 			cursor++;
 			if(cursor > 5) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
 		// プレイヤー number変更
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_LEFT)) {
 			player--;
 			if(player < 0) player = 1;
 			ResourceHolderSDL.soundManager.play("change");
 		}
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_RIGHT)) {
+		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_RIGHT)) {
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_RIGHT)) {
 			player++;
 			if(player > 1) player = 0;
 			ResourceHolderSDL.soundManager.play("change");
 		}
 
 		// 決定ボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");
 
 			switch(cursor) {
@@ -133,6 +150,9 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 		}
 
 		// Cancelボタン
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		}
 	}
 }

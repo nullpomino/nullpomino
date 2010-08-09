@@ -127,8 +127,11 @@ public class StateTitle extends BasicGameState {
 		NormalFont.printFontGrid(2, 6, "NETPLAY", (cursor == 2));
 		NormalFont.printFontGrid(2, 7, "CONFIG", (cursor == 3));
 		NormalFont.printFontGrid(2, 8, "EXIT", (cursor == 4));
-
-		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("Title_Start"));
+		
+		
+		
+        
+        if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("Title_Start"));
 		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("Title_Replay"));
 		if(cursor == 2) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("Title_NetPlay"));
 		if(cursor == 3) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("Title_Config"));
@@ -139,7 +142,8 @@ public class StateTitle extends BasicGameState {
 					UpdateChecker.getLatestVersionFullString(), UpdateChecker.getStrReleaseDate());
 			NormalFont.printTTFFont(16, 416, strTemp);
 		}
-
+        
+		
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
 		// オブザーバー
@@ -167,21 +171,37 @@ public class StateTitle extends BasicGameState {
 
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
-
+		
+		// Mouse
+		int mouseOldY = MouseInput.mouseInput.getMouseY();
+		
+		MouseInput.mouseInput.update(container.getInput());
+		
+		if (mouseOldY != MouseInput.mouseInput.getMouseY() && (MouseInput.mouseInput.getMouseY()>=64) && 
+				(MouseInput.mouseInput.getMouseY()<64+5*16)){
+			int oldcursor=cursor;
+			cursor=(MouseInput.mouseInput.getMouseY()-64)/16;
+			if (cursor!=oldcursor)
+			ResourceHolder.soundManager.play("cursor");
+		}
 		// カーソル移動
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+			
 			cursor--;
 			if(cursor < 0) cursor = 4;
 			ResourceHolder.soundManager.play("cursor");
 		}
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-			cursor++;
+		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+		    cursor++;
 			if(cursor > 4) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
 		// 決定ボタン
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
 			ResourceHolder.soundManager.play("decide");
 
 			switch(cursor) {
