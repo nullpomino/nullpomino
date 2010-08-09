@@ -1,7 +1,5 @@
 package mu.nu.nullpo.gui.sdl;
 
-import org.apache.log4j.Logger;
-
 import sdljava.SDLException;
 import sdljava.event.MouseState;
 import sdljava.event.SDLEvent;

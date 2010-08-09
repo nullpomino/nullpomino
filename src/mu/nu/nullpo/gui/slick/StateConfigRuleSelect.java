@@ -218,9 +218,12 @@ public class StateConfigRuleSelect extends BasicGameState {
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 		
-		//Mouse
+		// Mouse
+		int mouseOldY = MouseInput.mouseInput.getMouseY();
+		
 		MouseInput.mouseInput.update(container.getInput());
 		
+		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
 			int oldcursor=cursor;
 			if (cursor<MAX_FILE_IN_ONE_PAGE){
 				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,strFileNameList.length-1)*16)))
@@ -234,8 +237,8 @@ public class StateConfigRuleSelect extends BasicGameState {
 					
 				   cursor=MAX_FILE_IN_ONE_PAGE+(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
-			if (cursor!=oldcursor)
-			   ResourceHolder.soundManager.play("cursor");
+			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
+		}
 
 
 		if((strFileNameList != null) && (strFileNameList.length > 0)) {

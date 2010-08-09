@@ -172,10 +172,13 @@ public class StateTitle extends BasicGameState {
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 		
-		//Mouse
+		// Mouse
+		int mouseOldY = MouseInput.mouseInput.getMouseY();
+		
 		MouseInput.mouseInput.update(container.getInput());
 		
-		if ((MouseInput.mouseInput.getMouseY()>=64) && (MouseInput.mouseInput.getMouseY()<64+5*16)){
+		if (mouseOldY != MouseInput.mouseInput.getMouseY() && (MouseInput.mouseInput.getMouseY()>=64) && 
+				(MouseInput.mouseInput.getMouseY()<64+5*16)){
 			int oldcursor=cursor;
 			cursor=(MouseInput.mouseInput.getMouseY()-64)/16;
 			if (cursor!=oldcursor)

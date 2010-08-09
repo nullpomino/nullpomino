@@ -220,9 +220,12 @@ public class StateReplaySelect extends BasicGameState {
 		GameKey.gamekey[0].update(container.getInput());
 
 		GameKey.gamekey[0].update(container.getInput());
-		//Mouse
+		// Mouse
+		int mouseOldY = MouseInput.mouseInput.getMouseY();
+		
 		MouseInput.mouseInput.update(container.getInput());
 		
+		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
 			int oldcursor=cursor;
 			if (cursor<MAX_FILE_IN_ONE_PAGE){
 				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,replaylist.length-1)*16)))
@@ -236,8 +239,8 @@ public class StateReplaySelect extends BasicGameState {
 					
 				   cursor=MAX_FILE_IN_ONE_PAGE+(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
-			if (cursor!=oldcursor)
-			   ResourceHolder.soundManager.play("cursor");
+			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
+		}
 		
 		
 		if((replaylist != null) && (replaylist.length > 0)) {
