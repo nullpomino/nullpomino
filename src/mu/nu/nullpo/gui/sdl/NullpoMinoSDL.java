@@ -246,7 +246,6 @@ public class NullpoMinoSDL {
 		GameKeySDL.initGlobalGameKeySDL();
 		GameKeySDL.gamekey[0].loadConfig(propConfig);
 		GameKeySDL.gamekey[1].loadConfig(propConfig);
-		MouseInputSDL.initalizeMouseInput();
 
 		// ステートのInitialization
 		currentState = -1;

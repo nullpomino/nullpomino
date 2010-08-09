@@ -117,48 +117,33 @@ public class StateConfigMainMenu extends BasicGameState {
 
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
-		// Mouse
-		int mouseOldY = MouseInput.mouseInput.getMouseY();
-		
-		MouseInput.mouseInput.update(container.getInput());
-		
-		if (mouseOldY != MouseInput.mouseInput.getMouseY() && (MouseInput.mouseInput.getMouseY()>=48) &&
-				(MouseInput.mouseInput.getMouseY()<48+6*16)){
-			int oldcursor = cursor;
-			cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
-			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
-		}
+
 		// カーソル移動
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 5;
 			ResourceHolder.soundManager.play("cursor");
 		}
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
 			if(cursor > 5) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
 		// プレイヤー number変更
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) {
 			player--;
 			if(player < 0) player = 1;
 			ResourceHolder.soundManager.play("change");
 		}
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) {
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) {
 			player++;
 			if(player > 1) player = 0;
 			ResourceHolder.soundManager.play("change");
 		}
 
 		// 決定ボタン
-		// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			ResourceHolder.soundManager.play("decide");
 
 			switch (cursor) {
@@ -189,9 +174,8 @@ public class StateConfigMainMenu extends BasicGameState {
 		}
 
 		// Cancelボタン
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
-			game.enterState(StateTitle.ID);
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
+
 		// スクリーンショットボタン
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 

@@ -78,8 +78,6 @@ public class StateLoading extends BasicGameState {
 		GameKey.initGlobalGameKey();
 		GameKey.gamekey[0].loadConfig(NullpoMinoSlick.propConfig);
 		GameKey.gamekey[1].loadConfig(NullpoMinoSlick.propConfig);
-		MouseInput.initializeMouseInput();
-		
 
 		// 設定を反映させる
 		NullpoMinoSlick.setGeneralConfig();

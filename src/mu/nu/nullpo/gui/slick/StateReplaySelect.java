@@ -219,48 +219,21 @@ public class StateReplaySelect extends BasicGameState {
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
-		GameKey.gamekey[0].update(container.getInput());
-		// Mouse
-		int mouseOldY = MouseInput.mouseInput.getMouseY();
-		
-		MouseInput.mouseInput.update(container.getInput());
-		
-		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
-			int oldcursor=cursor;
-			if (cursor<MAX_FILE_IN_ONE_PAGE){
-				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,replaylist.length-1)*16)))
-			       cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
-			}
-			else{
-				if (MouseInput.mouseInput.getMouseY()<48){
-					cursor=MAX_FILE_IN_ONE_PAGE-1;
-				}
-				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(replaylist.length-MAX_FILE_IN_ONE_PAGE-1)*16))
-					
-				   cursor=MAX_FILE_IN_ONE_PAGE+(MouseInput.mouseInput.getMouseY()-48)/16;
-			}
-			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
-		}
-		
-		
 		if((replaylist != null) && (replaylist.length > 0)) {
 			// カーソル移動
-			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 				cursor--;
 				if(cursor < 0) cursor = replaylist.length - 1;
 				ResourceHolder.soundManager.play("cursor");
 			}
-			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 				cursor++;
 				if(cursor > replaylist.length - 1) cursor = 0;
 				ResourceHolder.soundManager.play("cursor");
 			}
 
 			// 決定ボタン
-			//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 				ResourceHolder.soundManager.play("decide");
 
 				CustomProperties prop = new CustomProperties();
@@ -281,9 +254,7 @@ public class StateReplaySelect extends BasicGameState {
 		}
 
 		// Cancelボタン
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
-			game.enterState(StateTitle.ID);
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
 
 		// スクリーンショットボタン
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
