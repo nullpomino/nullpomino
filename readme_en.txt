@@ -506,7 +506,7 @@ http://code.google.com/p/nullpomino/
 12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
 
-Version 7.3.0 (????/??/??)
+Version 7.3.0 (2010/08/09)
 #This version is NO LONGER compatible with 7.2.0 netplay server.
 +Swing/Slick/SDL: When saving replays, a replay folder will be created if one is not found.
 +Swing/Slick/SDL: Fixed location of NEXT piece when spawn offset is non-zero.
