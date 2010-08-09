@@ -49,10 +49,10 @@ import mu.nu.nullpo.util.GeneralUtil;
 public class PhysicianVSMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
+
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
 	{
@@ -67,8 +67,8 @@ public class PhysicianVSMode extends DummyMode {
 		Block.BLOCK_COLOR_GEM_BLUE,
 		Block.BLOCK_COLOR_GEM_YELLOW
 	};
-	private static final int[] BASE_SPEEDS = {10, 20, 25};
-	
+	//private static final int[] BASE_SPEEDS = {10, 20, 25};
+
 	/** Names of speed settings */
 	private static final String[] SPEED_NAME = {"LOW", "MED", "HI"};
 
@@ -128,34 +128,34 @@ public class PhysicianVSMode extends DummyMode {
 
 	/** Version */
 	private int version;
-	
+
 	/** Flag for all clear */
 	//private boolean[] zenKeshi;
 
 	/** Amount of points earned from most recent clear */
 	private int[] lastscore;
-	
+
 	/** Amount of garbage added in current chain */
 	//private int[] garbageAdd;
-	
+
 	/** Score */
 	private int[] score;
-	
+
 	/** Number of initial gem blocks */
 	private int[] hoverBlocks;
-	
+
 	/** Speed mode */
 	private int[] speed;
-	
+
 	/** Number gem blocks cleared in current chain */
 	private int[] gemsClearedChainTotal;
-	
+
 	/** Each player's remaining gem count */
 	private int[] rest;
-	
+
 	/** Each player's garbage block colors to be dropped */
 	private ArrayList<Integer>[] garbageColors;
-	
+
 	/** Flash/normal mode settings */
 	private boolean[] flash;
 
@@ -207,7 +207,7 @@ public class PhysicianVSMode extends DummyMode {
 		rest = new int[MAX_PLAYERS];
 		garbageColors = new ArrayList[MAX_PLAYERS];
 		flash = new boolean[MAX_PLAYERS];
-		
+
 		winnerID = -1;
 	}
 
@@ -357,7 +357,7 @@ public class PhysicianVSMode extends DummyMode {
 		scgettime[playerID] = 0;
 		gemsClearedChainTotal[playerID] = 0;
 		rest[playerID] = 0;
-		
+
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
 			loadPreset(engine, engine.owner.modeConfig, -1 - playerID);
@@ -592,14 +592,14 @@ public class PhysicianVSMode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 0, "SPEED", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 1, SPEED_NAME[speed[playerID]], (engine.statc[2] == 9) && !owner.replayMode);
 				receiver.drawMenuFont(engine, playerID, 0, 2, "VIRUS", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(hoverBlocks[playerID]), (engine.statc[2] == 10));
 				receiver.drawMenuFont(engine, playerID, 0, 4, "MODE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 5, (flash[playerID] ? "FLASH" : "NORMAL"), (engine.statc[2] == 11));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 6, "SE", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 12));
 				receiver.drawMenuFont(engine, playerID, 0, 8, "BGM", EventReceiver.COLOR_PINK);
@@ -668,7 +668,7 @@ public class PhysicianVSMode extends DummyMode {
 				}
 				else
 					engine.field.addRandomHoverBlocks(engine, hoverBlocks[playerID], HOVER_BLOCK_COLORS, minY, true);
-			} 
+			}
 		}
 
 		return false;
@@ -708,14 +708,14 @@ public class PhysicianVSMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, -1, 6, "SPEED", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + SPEED_NAME[speed[0]], EventReceiver.COLOR_RED);
 			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + SPEED_NAME[speed[1]], EventReceiver.COLOR_BLUE);
-			
+
 			receiver.drawScoreFont(engine, playerID, -1, 10, "SCORE", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: " + String.valueOf(score[0]), EventReceiver.COLOR_RED);
 			receiver.drawScoreFont(engine, playerID, -1, 12, "2P: " + String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
-			
+
 			/*
 			receiver.drawScoreFont(engine, playerID, -1, 17, "OJAMA", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 18, "1P:", EventReceiver.COLOR_RED);
@@ -730,7 +730,7 @@ public class PhysicianVSMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 3, 19, "0", false);
 			*/
 		}
-		
+
 		if (!owner.engine[playerID].gameActive)
 			return;
 	}
@@ -787,10 +787,10 @@ public class PhysicianVSMode extends DummyMode {
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		if (engine.field == null)
 			return false;
-		
+
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		
+
 		ArrayList<Integer> cleared = engine.field.lineColorsCleared;
 		engine.field.lineColorsCleared = null;
 		if (cleared != null)
@@ -801,10 +801,10 @@ public class PhysicianVSMode extends DummyMode {
 				else
 					garbageColors[enemyID].addAll(cleared);
 			}
-		
+
 		return garbageCheck(engine, playerID);
 	}
-	
+
 	private boolean garbageCheck(GameEngine engine, int playerID) {
 		if (garbageColors[playerID] == null)
 			return false;
@@ -849,7 +849,7 @@ public class PhysicianVSMode extends DummyMode {
 		garbageColors[playerID] = null;
 		return true;
 	}
-	
+
 	/*
 	 * Called after every frame
 	 */

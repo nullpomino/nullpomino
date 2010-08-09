@@ -46,10 +46,10 @@ import mu.nu.nullpo.util.GeneralUtil;
 public class AvalancheVSFeverMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
+
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
 	{
@@ -59,9 +59,9 @@ public class AvalancheVSFeverMode extends DummyMode {
 		Block.BLOCK_COLOR_YELLOW,
 		Block.BLOCK_COLOR_PURPLE
 	};
-	
+
 	/** Fever map files list */
-	private static final String[] FEVER_MAPS = 
+	private static final String[] FEVER_MAPS =
 	{
 		"Fever", "15th", "15thDS", "7", "Compendium"
 	};
@@ -70,21 +70,21 @@ public class AvalancheVSFeverMode extends DummyMode {
 	private static final int MAX_PLAYERS = 2;
 
 	/** Zenkeshi setting constants */
-	private static final int ZENKESHI_MODE_OFF = 0, ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
+	private static final int /*ZENKESHI_MODE_OFF = 0,*/ ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
 
 	/** Names of zenkeshi settings */
 	private static final String[] ZENKESHI_TYPE_NAMES = {"OFF", "ON", "FEVER"};
-	
+
 	/** Names of outline settings */
 	private static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
-	
+
 	/** Names of chain display settings */
 	private static final String[] CHAIN_DISPLAY_NAMES = {"OFF", "YELLOW", "PLAYER", "SIZE", "FEVERSIZE"};
-	
+
 	/** Constants for chain display settings */
-	private static final int CHAIN_DISPLAY_NONE = 0, CHAIN_DISPLAY_YELLOW = 1,
+	private static final int CHAIN_DISPLAY_NONE = 0, /*CHAIN_DISPLAY_YELLOW = 1,*/
 		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3, CHAIN_DISPLAY_FEVERSIZE = 4;
-	
+
 	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -117,19 +117,19 @@ public class AvalancheVSFeverMode extends DummyMode {
 
 	/** Version */
 	private int version;
-	
+
 	/** Flag for all clear */
 	private boolean[] zenKeshi;
 
 	/** Amount of points earned from most recent clear */
 	private int[] lastscore, lastmultiplier;
-	
+
 	/** Amount of ojama added in current chain */
 	private int[] ojamaAdd;
-	
+
 	/** Score */
 	private int[] score;
-	
+
 	/** Max amount of ojama dropped at once */
 	private int[] maxAttack;
 
@@ -141,7 +141,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 
 	/** Denominator for score-to-ojama conversion */
 	private int[] ojamaRate;
-	
+
 	/** Settings for hard ojama blocks */
 	private int[] ojamaHard;
 
@@ -150,55 +150,55 @@ public class AvalancheVSFeverMode extends DummyMode {
 
 	/** Second ojama counter for Fever Mode */
 	private int[] ojamaFever;
-	
+
 	/** Set to true when last drop resulted in a clear */
 	private boolean[] cleared;
-	
+
 	/** Set to true when dropping ojama blocks */
 	private boolean[] ojamaDrop;
-	
+
 	/** Selected fever map set file */
 	private int[] feverMapSet;
-	
+
 	/** Selected fever map set file's subset list */
 	private String[][] feverMapSubsets;
-	
+
 	/** Time to display "ZENKESHI!" */
 	private int[] zenKeshiDisplay;
-	
+
 	/** Zenkeshi reward type */
 	private int[] zenKeshiType;
-	
+
 	/** Fever map CustomProperties */
 	private CustomProperties[] propFeverMap;
-	
+
 	/** Chain levels for Fever Mode */
 	private int[] feverChain;
-	
+
 	/** Chain level boundaries for Fever Mode */
 	private int[] feverChainMin, feverChainMax;
-	
+
 	/** Selected outline type */
 	private int[] outlineType;
-	
+
 	/** If true, both columns 3 and 4 are danger columns */
 	private boolean[] dangerColumnDouble;
-	
+
 	/** If true, red X's appear at tops of danger columns */
 	private boolean[] dangerColumnShowX;
-	
+
 	/** Last chain hit number */
 	private int[] chain;
-	
+
 	/** Time to display last chain */
 	private int[] chainDisplay;
-	
+
 	/** Type of chain display */
 	private int[] chainDisplayType;
-	
+
 	/** Ojama handicap to start with */
 	private int[] ojamaHandicap;
-	
+
 	/** Fever chain count when last chain hit occurred */
 	private int[] feverChainDisplay;
 
@@ -660,7 +660,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
 										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
 				}
-				
+
 				receiver.drawMenuFont(engine, playerID, 0,  0, "ZENKESHI", EventReceiver.COLOR_CYAN);
 				receiver.drawMenuFont(engine, playerID, 1,  1, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]],
 						(engine.statc[2] == 9 && !owner.replayMode));
@@ -725,7 +725,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
 			if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
-			
+
 			ojama[playerID] = ojamaHandicap[playerID];
 			feverChain[playerID] = 5;
 			if(engine.field != null)
@@ -764,7 +764,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		// ステータス表示
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
-			
+
 			receiver.drawScoreFont(engine, playerID, -1,  2, "OJAMA", EventReceiver.COLOR_PURPLE);
 			String ojamaFeverStr1P = String.valueOf(ojamaFever[0]);
 			if (ojamaAdd[0] > 0)
@@ -792,7 +792,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 3, 14, "+" + lastscore[0] + "X" + lastmultiplier[0], EventReceiver.COLOR_RED);
 			else
 				receiver.drawScoreFont(engine, playerID, 3, 14, String.valueOf(score[0]), EventReceiver.COLOR_RED);
-				
+
 			receiver.drawScoreFont(engine, playerID, -1, 15, "2P: ", EventReceiver.COLOR_BLUE);
 			if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
 				receiver.drawScoreFont(engine, playerID, 3, 15, "+" + lastscore[1] + "X" + lastmultiplier[1], EventReceiver.COLOR_BLUE);
@@ -802,7 +802,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, -1, 17, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 18, GeneralUtil.getTime(engine.statistics.time));
 		}
-		
+
 		if (!owner.engine[playerID].gameActive)
 			return;
 		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
@@ -849,7 +849,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		
+
 		// Line clear bonus
 		int pts = avalanche*10;
 		int ojamaNew = 0;
@@ -889,12 +889,12 @@ public class AvalancheVSFeverMode extends DummyMode {
 			if (firstExtra)
 				multiplier++;
 			*/
-			
+
 			if (multiplier > 999)
 				multiplier = 999;
 			if (multiplier < 1)
 				multiplier = 1;
-			
+
 			lastscore[playerID] = pts;
 			lastmultiplier[playerID] = multiplier;
 			scgettime[playerID] = 25;
@@ -911,7 +911,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 					rate = 1;
 				ojamaNew += (ptsTotal+rate-1)/rate;
 				ojamaSent[playerID] += ojamaNew;
-				
+
 				//Counter ojama
 				if (ojamaFever[playerID] > 0 && ojamaNew > 0)
 				{
@@ -1035,7 +1035,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 			zenKeshiDisplay[playerID]--;
 		if (chainDisplay[playerID] > 0)
 			chainDisplay[playerID]--;
-		
+
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();
@@ -1081,7 +1081,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onMove (GameEngine engine, int playerID) {
 		cleared[playerID] = false;

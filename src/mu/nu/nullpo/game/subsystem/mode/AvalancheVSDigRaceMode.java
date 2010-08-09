@@ -46,10 +46,10 @@ import mu.nu.nullpo.util.GeneralUtil;
 public class AvalancheVSDigRaceMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
+
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
 	{
@@ -62,17 +62,17 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
-	
+
 	/** Names of outline settings */
 	private static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
-	
+
 	/** Names of chain display settings */
 	private static final String[] CHAIN_DISPLAY_NAMES = {"OFF", "YELLOW", "PLAYER", "SIZE"};
-	
+
 	/** Constants for chain display settings */
-	private static final int CHAIN_DISPLAY_NONE = 0, CHAIN_DISPLAY_YELLOW = 1,
+	private static final int CHAIN_DISPLAY_NONE = 0, /*CHAIN_DISPLAY_YELLOW = 1,*/
 		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3;
-	
+
 	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -108,13 +108,13 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 	/** Amount of points earned from most recent clear */
 	private int[] lastscore, lastmultiplier;
-	
+
 	/** Amount of ojama added in current chain */
 	private int[] ojamaAdd;
-	
+
 	/** Score */
 	private int[] score;
-	
+
 	/** Max amount of ojama dropped at once */
 	private int[] maxAttack;
 
@@ -126,37 +126,37 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 	/** Denominator for score-to-ojama conversion */
 	private int[] ojamaRate;
-	
+
 	/** Settings for hard ojama blocks */
 	private int[] ojamaHard;
 
 	/** Hurryup開始までの秒数(0でHurryupなし) */
 	private int[] hurryupSeconds;
-	
+
 	/** Set to true when last drop resulted in a clear */
 	private boolean[] cleared;
-	
+
 	/** Set to true when dropping ojama blocks */
 	private boolean[] ojamaDrop;
-	
+
 	/** Selected outline type */
 	private int[] outlineType;
-	
+
 	/** If true, both columns 3 and 4 are danger columns */
 	private boolean[] dangerColumnDouble;
-	
+
 	/** If true, red X's appear at tops of danger columns */
 	private boolean[] dangerColumnShowX;
-	
+
 	/** Last chain hit number */
 	private int[] chain;
-	
+
 	/** Time to display last chain */
 	private int[] chainDisplay;
-	
+
 	/** Type of chain display */
 	private int[] chainDisplayType;
-	
+
 	/** Ojama handicap to start with */
 	private int[] handicapRows;
 
@@ -639,7 +639,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
 			if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
-			
+
 			if(engine.field != null)
 				engine.field.reset();
 		}
@@ -700,7 +700,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		// ステータス表示
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
-			
+
 			receiver.drawScoreFont(engine, playerID, -1,  2, "OJAMA", EventReceiver.COLOR_PURPLE);
 			String ojamaFeverStr1P = String.valueOf(ojama[0]);
 			if (ojamaAdd[0] > 0)
@@ -723,7 +723,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 3, 11, "+" + lastscore[0] + "X" + lastmultiplier[0], EventReceiver.COLOR_RED);
 			else
 				receiver.drawScoreFont(engine, playerID, 3, 11, String.valueOf(score[0]), EventReceiver.COLOR_RED);
-				
+
 			receiver.drawScoreFont(engine, playerID, -1, 12, "2P: ", EventReceiver.COLOR_BLUE);
 			if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
 				receiver.drawScoreFont(engine, playerID, 3, 12, "+" + lastscore[1] + "X" + lastmultiplier[1], EventReceiver.COLOR_BLUE);
@@ -733,7 +733,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
 		}
-		
+
 		if (!owner.engine[playerID].gameActive)
 			return;
 		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
@@ -769,7 +769,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		
+
 		// Line clear bonus
 		int pts = avalanche*10;
 		int ojamaNew = 0;
@@ -798,12 +798,12 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			if (firstExtra)
 				multiplier++;
 			*/
-			
+
 			if (multiplier > 999)
 				multiplier = 999;
 			if (multiplier < 1)
 				multiplier = 1;
-			
+
 			lastscore[playerID] = pts;
 			lastmultiplier[playerID] = multiplier;
 			scgettime[playerID] = 25;
@@ -820,7 +820,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 					rate = 1;
 				ojamaNew += (ptsTotal+rate-1)/rate;
 				ojamaSent[playerID] += ojamaNew;
-				
+
 				//Counter ojama
 				if (ojama[playerID] > 0 && ojamaNew > 0)
 				{
@@ -881,7 +881,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			scgettime[playerID]--;
 		if (chainDisplay[playerID] > 0)
 			chainDisplay[playerID]--;
-		
+
 		int width = 1;
 		if (engine.field != null)
 			width = engine.field.getWidth();
@@ -932,7 +932,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onMove (GameEngine engine, int playerID) {
 		cleared[playerID] = false;
