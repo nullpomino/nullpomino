@@ -508,8 +508,6 @@ Version 7.3.0 (2010/08/??)
 +Swing/Slick/SDL: リプレイを保存するとき、replayフォルダが無い場合は自動的に作成するようにしました。
 +Swing/Slick/SDL: 出現位置補正があるルールで、NEXTピースが正しい位置に表示されるようにしました。
 +Swing/Slick/SDL: フィールドの横にNEXTを表示する設定を追加しました。
-+Slick/SDL: メニュー画面でマウスを使えるようになりました。また、キーボード操作時はメニュー専用のキー設定を使用するようにしました。
- (初期設定 移動:カーソルキー Enter:決定 Escape:キャンセル)
 +Slick: PERFECT FPSオプションを追加しました。(フレームレートがより正確になりますが、より多くのCPUパワーを使用します。メニュー画面では動きません。)
 +Slick: LWJGLを2.5に、Slickをbuild 274にバージョンアップしました。
 +以下のモードを追加しました:COMBO RACE, SQUARE, RETRO MASTERY, AVALANCHE 1P, AVALANCHE 1P FEVER MARATHON, AVALANCHE VS-BATTLE, AVALANCHE VS FEVER MARATHON, AVALANCHE VS DIG RACE, PHYSICIAN, PHYSICIAN VS-BATTLE, SPF VS-BATTLE
