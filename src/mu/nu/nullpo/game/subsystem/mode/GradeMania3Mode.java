@@ -238,6 +238,15 @@ public class GradeMania3Mode extends DummyMode {
 	/** REGRETを表示する残りフレーム数 */
 	private int regretdispframe;
 
+	/** COOL section flags*/
+	private boolean[] coolsection;
+
+	/** REGRET section flags*/
+	private boolean[] regretsection;
+	
+	/** Section time display color-code type */
+	private int stcolor;
+
 	/** ロール経過時間 */
 	private int rolltime;
 
@@ -416,6 +425,8 @@ public class GradeMania3Mode extends DummyMode {
 		gradeflash = 0;
 		sectiontime = new int[SECTION_MAX];
 		sectionIsNewRecord = new boolean[SECTION_MAX];
+		regretsection = new boolean[SECTION_MAX];
+		coolsection = new boolean[SECTION_MAX];
 		sectionscomp = 0;
 		sectionavgtime = 0;
 		sectionlasttime = 0;
@@ -514,6 +525,7 @@ public class GradeMania3Mode extends DummyMode {
 		gradedisp = prop.getProperty("grademania3.gradedisp", false);
 		lv500torikan = prop.getProperty("grademania3.lv500torikan", 25200);
 		enableexam = prop.getProperty("grademania3.enableexam", false);
+		stcolor = prop.getProperty("grademania3.stcolor", 1);
 	}
 
 	/**
@@ -530,6 +542,7 @@ public class GradeMania3Mode extends DummyMode {
 		prop.setProperty("grademania3.gradedisp", gradedisp);
 		prop.setProperty("grademania3.lv500torikan", lv500torikan);
 		prop.setProperty("grademania3.enableexam", enableexam);
+		prop.setProperty("grademania3.stcolor", stcolor);
 	}
 
 	/**
@@ -636,6 +649,10 @@ public class GradeMania3Mode extends DummyMode {
 				((previouscool == false) || ((previouscool == true) && (sectiontime[section] <= coolprevtime + 120))) )
 			{
 				cool = true;
+				coolsection[section] = true;
+			}
+			else {
+				coolsection[section] = false;
 			}
 			coolprevtime = sectiontime[section];
 			coolchecked = true;
@@ -655,7 +672,8 @@ public class GradeMania3Mode extends DummyMode {
 	 * @param levelb Lines消去前のレベル
 	 */
 	private void checkRegret(GameEngine engine, int levelb) {
-		if(sectionlasttime > tableTimeRegret[levelb / 100]) {
+		int section = levelb / 100;
+		if(sectionlasttime > tableTimeRegret[section]) {
 			previouscool = false;
 
 			coolcount--;
@@ -667,6 +685,10 @@ public class GradeMania3Mode extends DummyMode {
 
 			regretdispframe = 180;
 			engine.playSE("regret");
+			regretsection[section] = true;
+		}
+		else {
+			regretsection[section] = false;
 		}
 	}
 
@@ -697,13 +719,13 @@ public class GradeMania3Mode extends DummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 8;
+				if(engine.statc[2] < 0) engine.statc[2] = 9;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 8) engine.statc[2] = 0;
+				if(engine.statc[2] > 9) engine.statc[2] = 0;
 				engine.playSE("cursor");
 			}
 
@@ -741,12 +763,18 @@ public class GradeMania3Mode extends DummyMode {
 					gradedisp = !gradedisp;
 					break;
 				case 7:
-					lv500torikan += 60 * change;
+					if(engine.ctrl.isPress(Controller.BUTTON_E)) lv500torikan += 3600 * change;
+					else lv500torikan += 60 * change;
 					if(lv500torikan < 0) lv500torikan = 72000;
 					if(lv500torikan > 72000) lv500torikan = 0;
 					break;
 				case 8:
 					enableexam = !enableexam;
+					break;
+				case 9:
+					stcolor += change;
+					if(stcolor < 0) stcolor = 2;
+					if(stcolor > 2) stcolor = 0;
 					break;
 				}
 			}
@@ -841,6 +869,14 @@ public class GradeMania3Mode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 1, 15, strTorikan, (engine.statc[2] == 7));
 		receiver.drawMenuFont(engine, playerID, 0, 16, "EXAM", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getONorOFF(enableexam), (engine.statc[2] == 8));
+		receiver.drawMenuFont(engine, playerID, 0, 18, "STIMECOLOR", EventReceiver.COLOR_BLUE);
+		String scolorStr = "NONE";
+		if (showsectiontime) {
+			if (stcolor == 1) scolorStr = "NEWRECORD";
+			else if (stcolor == 2) scolorStr = "COOL";
+		}
+		receiver.drawMenuFont(engine, playerID, 1, 19, scolorStr, (engine.statc[2] == 9));
+		
 	}
 
 	/*
@@ -1001,12 +1037,23 @@ public class GradeMania3Mode extends DummyMode {
 
 						int section = engine.statistics.level / 100;
 						String strSeparator = " ";
-						if((i == section) && (engine.ending == 0)) strSeparator = "b";
+						
+						int color = EventReceiver.COLOR_WHITE;
+						if((i == section) && (engine.ending == 0)) {
+							strSeparator = "b";
+						} else {
+							if (stcolor == 1 && sectionIsNewRecord[i]) {
+								color = EventReceiver.COLOR_RED;
+							} else if (stcolor == 2) {
+								if (regretsection[i]) color = EventReceiver.COLOR_RED;
+								else if (coolsection[i])  color = EventReceiver.COLOR_GREEN;
+							}
+						}
 
 						String strSectionTime;
 						strSectionTime = String.format("%3d%s%s", temp, strSeparator, GeneralUtil.getTime(sectiontime[i]));
-
-						receiver.drawScoreFont(engine, playerID, 12, 3 + i, strSectionTime, (sectionIsNewRecord[i] == true));
+						
+						receiver.drawScoreFont(engine, playerID, 12, 3 + i, strSectionTime, color);
 					}
 				}
 
