@@ -6,25 +6,34 @@ public class MouseInput {
 	private int mouseX;
 	private int mouseY;
 	public static MouseInput mouseInput;
-	private boolean mouseClickedA;
-	private boolean mouseClickedB;
-	private int mousePressedA;
-	private int mousePressedB;
-
-	public boolean isMouseClicked() {
-		return mouseClickedA;
+	private int[] mousePressed;
+	
+	private MouseInput() {
+		mousePressed = new int[3];
 	}
 
+	public boolean isMouseClicked() {
+		return (mousePressed[0] == 1);
+	}
+	
+	public boolean isMouseMiddleClicked() {
+		return (mousePressed[1] == 1);
+	}
+	
 	public boolean isMouseRightClicked() {
-		return mouseClickedB;
+		return (mousePressed[2] == 1);
 	}
 	
 	public boolean isMousePressed() {
-		return (mousePressedA > 0);
+		return (mousePressed[0] > 0);
+	}
+	
+	public boolean isMouseMiddlePressed() {
+		return (mousePressed[1] > 0);
 	}
 	
 	public boolean isMouseRightPressed() {
-		return (mousePressedB > 0);
+		return (mousePressed[2] > 0);
 	}
 
 	public static void initializeMouseInput() {
@@ -42,17 +51,20 @@ public class MouseInput {
 	public void update(Input input) {
 		mouseX = input.getMouseX();
 		mouseY = input.getMouseY();
-		mouseClickedA = input.isMousePressed(Input.MOUSE_LEFT_BUTTON);
-		mouseClickedB = input.isMousePressed(Input.MOUSE_RIGHT_BUTTON);
 		if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-			mousePressedA++;
+			mousePressed[0]++;
 		} else {
-			mousePressedA = 0;
+			mousePressed[0] = 0;
+		}
+		if (input.isMouseButtonDown(Input.MOUSE_MIDDLE_BUTTON)) {
+			mousePressed[1]++;
+		} else {
+			mousePressed[1] = 0;
 		}
 		if (input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-			mousePressedB++;
+			mousePressed[2]++;
 		} else {
-			mousePressedB = 0;
+			mousePressed[2] = 0;
 		}
 	}
 

@@ -8,25 +8,34 @@ public class MouseInputSDL {
 	private int mouseX;
 	private int mouseY;
 	public static MouseInputSDL mouseInput;
-	private boolean mouseClickedA;
-	private boolean mouseClickedB;
-	private int mousePressedA;
-	private int mousePressedB;
+	private int[] mousePressed;
+	
+	private MouseInputSDL() {
+		mousePressed = new int[3];
+	}
 	
 	public boolean isMouseClicked() {
-		return mouseClickedA;
+		return (mousePressed[0] == 1);
+	}
+	
+	public boolean isMouseMiddleClicked() {
+		return (mousePressed[1] == 1);
 	}
 	
 	public boolean isMouseRightClicked() {
-		return mouseClickedB;
+		return (mousePressed[2] == 1);
 	}
 	
 	public boolean isMousePressed() {
-		return (mousePressedA > 0);
+		return (mousePressed[0] > 0);
+	}
+	
+	public boolean isMouseMiddlePressed() {
+		return (mousePressed[1] > 0);
 	}
 	
 	public boolean isMouseRightPressed() {
-		return (mousePressedB > 0);
+		return (mousePressed[2] > 0);
 	}
 	
 	public static void initalizeMouseInput() {
@@ -46,17 +55,20 @@ public class MouseInputSDL {
 		mouseX = ms.getX();
 		mouseY = ms.getY();
 		if (ms.getButtonState().buttonLeft()) {
-			mousePressedA++;
+			mousePressed[0]++;
 		} else {
-			mousePressedA = 0;
+			mousePressed[0] = 0;
 		}
-		mouseClickedA = (mousePressedA == 1);
+		if (ms.getButtonState().buttonMiddle()) {
+			mousePressed[1]++;
+		} else {
+			mousePressed[1] = 0;
+		}
 		if (ms.getButtonState().buttonRight()) {
-			mousePressedB++;
+			mousePressed[2]++;
 		} else {
-			mousePressedB = 0;
+			mousePressed[2] = 0;
 		}
-		mouseClickedB = (mousePressedB == 1);
 		ms = null;
 	}
 }
