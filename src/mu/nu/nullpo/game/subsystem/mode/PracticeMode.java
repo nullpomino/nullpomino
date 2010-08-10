@@ -42,7 +42,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * PRACTICEモード
+ * PRACTICEMode 
  */
 public class PracticeMode extends DummyMode {
 	/** Log */
@@ -51,7 +51,7 @@ public class PracticeMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 4;
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -65,10 +65,10 @@ public class PracticeMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE = 10,
 							 EVENT_TSPIN_TRIPLE = 11;
 
-	/** Comboで手に入るポイント */
+	/** Comboで手に入る point */
 	private static final int COMBO_GOAL_TABLE[] = {0,0,1,1,2,2,3,3,4,4,4,5};
 
-	/** レベルタイプの定数 */
+	/**  levelタイプの定count */
 	private static final int LEVELTYPE_NONE = 0,
 							 LEVELTYPE_10LINES = 1,
 							 LEVELTYPE_POINTS = 2,
@@ -84,7 +84,7 @@ public class PracticeMode extends DummyMode {
 		"GM"													// 18
 	};
 
-	/** レベルタイプの表示名 */
+	/**  levelタイプの表示名 */
 	private static final String[] LEVELTYPE_STRING = {"NONE", "10LINES", "POINTS", "MANIA", "MANIA+"};
 
 	/** Comboタイプの表示名 */
@@ -96,10 +96,10 @@ public class PracticeMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Level upまでの残りポイント */
+	/** Level upまでの残り point */
 	private int goal;
 
-	/** 直前に手に入れたポイント */
+	/** 直前に手に入れた point */
 	private int lastgoal;
 
 	/** Most recent increase in score */
@@ -114,16 +114,16 @@ public class PracticeMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
 	private int lastpiece;
 
-	/** Endingの残り時間 */
+	/** Endingの残り time */
 	private int rolltime;
 
-	/** Ending開始フラグ */
+	/** Ending開始 flag */
 	private boolean rollstarted;
 
 	/** 裏段位 */
@@ -153,10 +153,10 @@ public class PracticeMode extends DummyMode {
 	/** Big時の横移動単位 */
 	private boolean bigmove;
 
-	/** Big時Lines数半分 */
+	/** Big時Linescount半分 */
 	private boolean bighalf;
 
-	/** レベルタイプ */
+	/**  levelタイプ */
 	private int leveltype;
 
 	/** Preset number */
@@ -168,50 +168,50 @@ public class PracticeMode extends DummyMode {
 	/** Current version */
 	private int version;
 
-	/** 次のセクションのレベル（これ-1のときにレベルストップする） */
+	/** 次のSection の level（これ-1のときに levelストップする） */
 	private int nextseclv;
 
-	/** レベルが増えたフラグ */
+	/**  levelが増えた flag */
 	private boolean lvupflag;
 
-	/** Comboボーナス */
+	/** Combo bonus */
 	private int comboValue;
 
-	/** Hard dropボーナス */
+	/** Hard drop bonus */
 	private int harddropBonus;
 
-	/** レベルストップ音 */
+	/**  levelストップ音 */
 	private boolean lvstopse;
 
-	/** クリアになるレベル */
+	/** クリアになる level */
 	private int goallv;
 
-	/** 制限時間（0:なし） */
+	/** 制限 time（0:なし） */
 	private int timelimit;
 
-	/** Ending時間（0:なし） */
+	/** Ending time（0:なし） */
 	private int rolltimelimit;
 
 	/** 出現可能ピースの配列 */
 	private boolean[] pieceEnable;
 
-	/** マップ使用フラグ */
+	/** マップ使用 flag */
 	private boolean useMap;
 
 	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
 	private Field fldBackup;
 
-	/** 残り時間 */
+	/** 残り time */
 	private int timelimitTimer;
 
-	/** Level upごとに制限時間をリセットする */
+	/** Level upごとに制限 timeをリセットする */
 	private boolean timelimitResetEveryLevel;
 
-	/** 骨ブロックを使う */
+	/** 骨Blockを使う */
 	private boolean bone;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -708,10 +708,10 @@ public class PracticeMode extends DummyMode {
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			// 時間制限設定
+			//  time制限設定
 			if(timelimit > 0) timelimitTimer = timelimit;
 
-			// 骨ブロック
+			// 骨Block
 			engine.bone = bone;
 
 			// 出現可能なピースを設定
@@ -815,7 +815,7 @@ public class PracticeMode extends DummyMode {
 			}
 			*/
 		} else if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
-			// レベルタイプがMANIAのとき
+			//  levelタイプがMANIAのとき
 
 			// Score
 			receiver.drawScoreFont(engine, playerID, 0, 5, "SCORE", EventReceiver.COLOR_BLUE);
@@ -823,7 +823,7 @@ public class PracticeMode extends DummyMode {
 			if((lastscore > 0) && (scgettime < 120)) strScore += "(+" + lastscore + ")";
 			receiver.drawScoreFont(engine, playerID, 0, 6, strScore);
 
-			// レベル
+			//  level
 			receiver.drawScoreFont(engine, playerID, 0, 9, "LEVEL", EventReceiver.COLOR_BLUE);
 			int tempLevel = engine.statistics.level;
 			if(tempLevel < 0) tempLevel = 0;
@@ -847,7 +847,7 @@ public class PracticeMode extends DummyMode {
 			if((time < 10 * 60) && (time > 0) && (timelimit > 0)) fontcolor = EventReceiver.COLOR_RED;
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(time), fontcolor);
 
-			// ロール残り時間
+			// Roll 残り time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int remainTime = rolltimelimit - rolltime;
 				if(remainTime < 0) remainTime = 0;
@@ -855,7 +855,7 @@ public class PracticeMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(remainTime), ((remainTime > 0) && (remainTime < 10 * 60)));
 			}
 		} else {
-			// レベルタイプがMANIA以外のとき
+			//  levelタイプがMANIA以外のとき
 
 			// Score
 			receiver.drawScoreFont(engine, playerID, 0, 2, "SCORE", EventReceiver.COLOR_BLUE);
@@ -871,16 +871,16 @@ public class PracticeMode extends DummyMode {
 					strGoal += "(-" + String.valueOf(lastgoal) + ")";
 				receiver.drawScoreFont(engine, playerID, 0, 6, strGoal);
 			} else if(leveltype == LEVELTYPE_10LINES) {
-				// Lines(レベルタイプが10LINESのとき)
+				// Lines( levelタイプが10LINESのとき)
 				receiver.drawScoreFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_BLUE);
 				receiver.drawScoreFont(engine, playerID, 0, 6, engine.statistics.lines + "/" + ((engine.statistics.level + 1) * 10));
 			} else {
-				// Lines(レベルタイプがNONEのとき)
+				// Lines( levelタイプがNONEのとき)
 				receiver.drawScoreFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_BLUE);
 				receiver.drawScoreFont(engine, playerID, 0, 6, String.valueOf(engine.statistics.lines));
 			}
 
-			// レベル
+			//  level
 			if(leveltype != LEVELTYPE_NONE) {
 				receiver.drawScoreFont(engine, playerID, 0, 8, "LEVEL", EventReceiver.COLOR_BLUE);
 				receiver.drawScoreFont(engine, playerID, 0, 9, String.valueOf(engine.statistics.level + 1));
@@ -905,7 +905,7 @@ public class PracticeMode extends DummyMode {
 			if((time < 10 * 60) && (time > 0) && (timelimit > 0)) fontcolor = EventReceiver.COLOR_RED;
 			receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(time), fontcolor);
 
-			// ロール残り時間
+			// Roll 残り time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int remainTime = rolltimelimit - rolltime;
 				if(remainTime < 0) remainTime = 0;
@@ -913,7 +913,7 @@ public class PracticeMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 21, GeneralUtil.getTime(remainTime), ((remainTime > 0) && (remainTime < 10 * 60)));
 			}
 
-			// Lines消去イベント
+			// Line clearイベント
 			if((lastevent != EVENT_NONE) && (scgettime < 120)) {
 				String strPieceName = Piece.getPieceName(lastpiece);
 
@@ -976,7 +976,7 @@ public class PracticeMode extends DummyMode {
 			// Ending中
 			rolltime++;
 
-			// ロール終了
+			// Roll 終了
 			if(rolltime >= rolltimelimit) {
 				engine.gameActive = false;
 				engine.resetStatc();
@@ -985,7 +985,7 @@ public class PracticeMode extends DummyMode {
 		} else {
 			if((timelimitTimer > 0) && (engine.timerActive == true)) timelimitTimer--;
 
-			// 時間切れ
+			//  time切れ
 			if((timelimit > 0) && (timelimitTimer <= 0) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;
@@ -1005,12 +1005,12 @@ public class PracticeMode extends DummyMode {
 			}
 		}
 
-		// Meter更新
+		// Update meter
 		setMeter(engine, playerID);
 	}
 
 	/*
-	 * ゲームオーバー時の処理
+	 * Called at game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
@@ -1035,7 +1035,7 @@ public class PracticeMode extends DummyMode {
 					setMeter(engine, playerID);
 				}
 
-				// Hard dropボーナスInitialization
+				// Hard drop bonusInitialization
 				harddropBonus = 0;
 			}
 			if( (engine.ending == 0) && (engine.statc[0] > 0) && ((version >= 1) || (engine.holdDisable == false)) ) {
@@ -1094,7 +1094,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/**
-	 * レベルタイプがMANIAのときのCalculate score
+	 *  levelタイプがMANIAのときのCalculate score
 	 */
 	private void calcScoreMania(GameEngine engine, int playerID, int lines) {
 		// Combo
@@ -1132,7 +1132,7 @@ public class PracticeMode extends DummyMode {
 					engine.staffrollNoDeath = false;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のセクション
+				// 次のSection 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1142,10 +1142,10 @@ public class PracticeMode extends DummyMode {
 					owner.backgroundStatus.fadebg = owner.backgroundStatus.bg + 1;
 				}
 
-				// 次のセクションレベルを更新
+				// Update level for next section
 				nextseclv += 100;
 
-				// 制限時間リセット
+				// 制限 timeリセット
 				if((timelimitResetEveryLevel == true) && (timelimit > 0)) timelimitTimer = timelimit;
 			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
 				engine.playSE("levelstop");
@@ -1198,7 +1198,7 @@ public class PracticeMode extends DummyMode {
 
 
 	/**
-	 * レベルタイプがMANIA系以外のときのCalculate score
+	 *  levelタイプがMANIA系以外のときのCalculate score
 	 */
 	private void calcScoreNormal(GameEngine engine, int playerID, int lines) {
 		// Line clear bonus
@@ -1333,14 +1333,14 @@ public class PracticeMode extends DummyMode {
 
 				goal = 5 * (engine.statistics.level + 1);
 
-				// 制限時間リセット
+				// 制限 timeリセット
 				if((timelimitResetEveryLevel == true) && (timelimit > 0)) timelimitTimer = timelimit;
 
 				engine.playSE("levelup");
 			}
 		}
 
-		// Ending（レベルタイプNONE）
+		// Ending（ levelタイプNONE）
 		if( (version >= 2) && (leveltype == LEVELTYPE_NONE) && (engine.statistics.lines >= goallv + 1) && ((goallv != -1) || (version <= 2)) ) {
 			endingFlag = true;
 		}

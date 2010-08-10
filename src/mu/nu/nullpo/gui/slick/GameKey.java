@@ -40,13 +40,13 @@ public class GameKey {
 	/** キー入力状態（全ステート共通） */
 	public static GameKey[] gamekey;
 
-	/** ボタン number定数 */
+	/** Button number定count */
 	public static final int BUTTON_UP = 0, BUTTON_DOWN = 1, BUTTON_LEFT = 2, BUTTON_RIGHT = 3, BUTTON_A = 4, BUTTON_B = 5, BUTTON_C = 6,
 			BUTTON_D = 7, BUTTON_E = 8, BUTTON_F = 9, BUTTON_QUIT = 10, BUTTON_PAUSE = 11, BUTTON_GIVEUP = 12, BUTTON_RETRY = 13,
 			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15, BUTTON_NAV_UP = 16, BUTTON_NAV_DOWN = 17, BUTTON_NAV_LEFT = 18, 
 			BUTTON_NAV_RIGHT = 19, BUTTON_NAV_SELECT = 20, BUTTON_NAV_CANCEL = 21;
 
-	/** ボタン数の定数 */
+	/**  buttoncountの定count */
 	public static final int MAX_BUTTON = 22;
 
 	/**
@@ -62,13 +62,13 @@ public class GameKey {
 	/** キーコード */
 	public int keymap[];
 
-	/** ジョイスティックボタン number */
+	/** ジョイスティックButton number */
 	public int buttonmap[];
 
 	/** プレイヤーID */
 	public int player;
 
-	/** ボタン入力フラグ兼入力時間 */
+	/**  button入力 flag兼入力 time */
 	protected int inputstate[];
 
 	/**
@@ -92,7 +92,7 @@ public class GameKey {
 	}
 
 	/**
-	 * ボタン入力状態を更新
+	 *  button入力状態を更新
 	 * @param input Inputクラス（container.getInput()で取得可能）
 	 */
 	public void update(Input input) {
@@ -125,7 +125,7 @@ public class GameKey {
 	}
 
 	/**
-	 * ボタン入力状態をクリア
+	 * Clear button input state
 	 */
 	public void clear() {
 		for(int i = 0; i < MAX_BUTTON; i++) {
@@ -134,8 +134,8 @@ public class GameKey {
 	}
 
 	/**
-	 * ボタンが1フレームだけ押されているか判定
-	 * @param key ボタン number
+	 *  buttonが1フレームだけ押されているか判定
+	 * @param key Button number
 	 * @return 押されていたらtrue
 	 */
 	public boolean isPushKey(int key) {
@@ -143,8 +143,8 @@ public class GameKey {
 	}
 
 	/**
-	 * ボタンが押されているか判定
-	 * @param key ボタン number
+	 *  buttonが押されているか判定
+	 * @param key Button number
 	 * @return 押されていたらtrue
 	 */
 	public boolean isPressKey(int key) {
@@ -153,7 +153,7 @@ public class GameKey {
 
 	/**
 	 * メニューでカーソルが動くかどうか判定
-	 * @param key ボタン number
+	 * @param key Button number
 	 * @return カーソルが動くならtrue
 	 */
 	public boolean isMenuRepeatKey(int key) {
@@ -164,18 +164,18 @@ public class GameKey {
 	}
 
 	/**
-	 * ボタンを押している時間を取得
-	 * @param key ボタン number
-	 * @return ボタンを押している時間（0なら押してない）
+	 *  buttonを押している timeを取得
+	 * @param key Button number
+	 * @return  buttonを押している time（0なら押してない）
 	 */
 	public int getInputState(int key) {
 		return inputstate[key];
 	}
 
 	/**
-	 * ボタンを押している時間を強制変更
-	 * @param key ボタン number
-	 * @param state ボタンを押している時間
+	 *  buttonを押している timeを強制変更
+	 * @param key Button number
+	 * @param state  buttonを押している time
 	 */
 	public void setInputState(int key, int state) {
 		inputstate[key] = state;

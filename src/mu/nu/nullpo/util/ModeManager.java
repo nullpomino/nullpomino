@@ -37,13 +37,13 @@ import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import org.apache.log4j.Logger;
 
 /**
- * モード管理クラス
+ * Mode 管理クラス
  */
 public class ModeManager {
 	/** Log */
 	static Logger log = Logger.getLogger(ModeManager.class);
 
-	/** モードの動的配列 */
+	/** Mode の動的配列 */
 	public ArrayList<GameMode> modelist = new ArrayList<GameMode>();
 
 	/**
@@ -61,17 +61,17 @@ public class ModeManager {
 	}
 
 	/**
-	 * モードの数を取得(通常+ネットプレイ全部)
-	 * @return モードの数(通常+ネットプレイ全部)
+	 * Mode のcountを取得(通常+ネットプレイ全部)
+	 * @return Modeのcount(通常+ネットプレイ全部)
 	 */
 	public int getSize() {
 		return modelist.size();
 	}
 
 	/**
-	 * モードの数を取得
-	 * @param netplay falseなら通常モードだけ、trueならネットプレイ用モードだけ数える
-	 * @return モードの数
+	 * Mode のcountを取得
+	 * @param netplay falseなら通常Mode だけ、trueならネットプレイ用Mode だけcountえる
+	 * @return Modeのcount
 	 */
 	public int getNumberOfModes(boolean netplay) {
 		int count = 0;
@@ -102,7 +102,7 @@ public class ModeManager {
 
 	/**
 	 * 読み込まれているMode nameを取得
-	 * @param netplay falseなら通常モードだけ、trueならネットプレイ用モードだけ取得
+	 * @param netplay falseなら通常Mode だけ、trueならネットプレイ用Mode だけ取得
 	 * @return Mode nameの配列
 	 */
 	public String[] getModeNames(boolean netplay) {
@@ -123,8 +123,8 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode nameを取得
-	 * @param id モードID
+	 * Mode  nameを取得
+	 * @param id ModeID
 	 * @return Mode name（idが不正なら「*INVALID MODE*」）
 	 */
 	public String getName(int id) {
@@ -136,9 +136,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode nameからIDを取得
+	 * Mode  nameからIDを取得
 	 * @param name Mode name
-	 * @return モードID（見つからない場合は-1）
+	 * @return ModeID（見つからない場合は-1）
 	 */
 	public int getIDbyName(String name) {
 		if(name == null) return -1;
@@ -153,9 +153,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * モードオブジェクトを取得
-	 * @param id モードID
-	 * @return モードオブジェクト（idが不正ならnull）
+	 * Mode オブジェクトを取得
+	 * @param id ModeID
+	 * @return Modeオブジェクト（idが不正ならnull）
 	 */
 	public GameMode getMode(int id) {
 		try {
@@ -166,9 +166,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * モードオブジェクトを取得
+	 * Mode オブジェクトを取得
 	 * @param name Mode name
-	 * @return モードオブジェクト（見つからないならnull）
+	 * @return Modeオブジェクト（見つからないならnull）
 	 */
 	public GameMode getMode(String name) {
 		try {
@@ -179,7 +179,7 @@ public class ModeManager {
 	}
 
 	/**
-	 * Property fileに書かれた一覧からゲームモードを読み込み
+	 * Property fileに書かれた一覧からゲームMode を読み込み
 	 * @param prop Property file
 	 */
 	public void loadGameModes(CustomProperties prop) {
@@ -208,7 +208,7 @@ public class ModeManager {
 	}
 
 	/**
-	 * テキストファイルに書かれた一覧からゲームモードを読み込み
+	 * テキストファイルに書かれた一覧からゲームMode を読み込み
 	 * @param bf テキストファイルを読み込んだBufferedReader
 	 */
 	public void loadGameModes(BufferedReader bf) {

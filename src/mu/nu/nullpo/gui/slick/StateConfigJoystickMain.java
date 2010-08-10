@@ -44,7 +44,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 12;
 
-	/** キー入力を受付可能になるまでのフレーム数 */
+	/** キー入力を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** プレイヤー number */
@@ -53,7 +53,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/** 使用するジョイスティックの number */
@@ -150,7 +150,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -204,7 +204,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			ResourceHolder.soundManager.play("decide");
 
@@ -225,16 +225,16 @@ public class StateConfigJoystickMain extends BasicGameState {
 			}
 		}
 
-		// Cancelボタン
+		// Cancel button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 			loadConfig(NullpoMinoSlick.propConfig);
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

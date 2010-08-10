@@ -34,18 +34,18 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 
 /**
- * ゲームモードのインターフェイス
+ * ゲームMode のインターフェイス
  */
 public interface GameMode {
 	/**
-	 * Mode nameを取得
+	 * Mode  nameを取得
 	 * @return Mode name
 	 */
 	public String getName();
 
 	/**
-	 * このモードのプレイヤーの人数を取得
-	 * @return プレイヤーの人数
+	 * このMode のプレイヤーの人countを取得
+	 * @return プレイヤーの人count
 	 */
 	public int getPlayers();
 
@@ -100,7 +100,7 @@ public interface GameMode {
 	public boolean onReady(GameEngine engine, int playerID);
 
 	/**
-	 * ブロックピースの移動処理
+	 * Blockピースの移動処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 * @return trueを返すと通常の処理を行わない
@@ -108,7 +108,7 @@ public interface GameMode {
 	public boolean onMove(GameEngine engine, int playerID);
 
 	/**
-	 * ブロック固定直後の光っているときの処理
+	 * Block固定直後の光っているときの処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 * @return trueを返すと通常の処理を行わない
@@ -116,7 +116,7 @@ public interface GameMode {
 	public boolean onLockFlash(GameEngine engine, int playerID);
 
 	/**
-	 * Lines消去処理
+	 * Line clear処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 * @return trueを返すと通常の処理を行わない
@@ -140,7 +140,7 @@ public interface GameMode {
 	public boolean onEndingStart(GameEngine engine, int playerID);
 
 	/**
-	 * 各ゲームモードが自由に使えるステータスの処理
+	 * 各ゲームMode が自由に使えるステータスの処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 * @return trueでもfalseでも意味は変わりません
@@ -208,21 +208,21 @@ public interface GameMode {
 	public void renderReady(GameEngine engine, int playerID);
 
 	/**
-	 * ブロックピースの移動描画処理
+	 * Blockピースの移動描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
 	public void renderMove(GameEngine engine, int playerID);
 
 	/**
-	 * ブロック固定直後の光っているときの描画処理
+	 * Block固定直後の光っているときの描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
 	public void renderLockFlash(GameEngine engine, int playerID);
 
 	/**
-	 * Lines消去描画処理
+	 * Line clear描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
@@ -243,7 +243,7 @@ public interface GameMode {
 	public void renderEndingStart(GameEngine engine, int playerID);
 
 	/**
-	 * 各ゲームモードが自由に使えるステータスの描画処理
+	 * 各ゲームMode が自由に使えるステータスの描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
@@ -278,12 +278,12 @@ public interface GameMode {
 	public void renderFieldEdit(GameEngine engine, int playerID);
 
 	/**
-	 * ブロックを消す演出を出すときの処理
+	 * Blockを消す演出を出すときの処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk ブロック
+	 * @param blk Block
 	 */
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk);
 
@@ -291,7 +291,7 @@ public interface GameMode {
 	 * Calculate score(pieceLockedの前)
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param lines 消えるLines数（消えなかった場合は0）
+	 * @param lines 消えるLinescount（消えなかった場合は0）
 	 */
 	public void calcScore(GameEngine engine, int playerID, int lines);
 
@@ -299,7 +299,7 @@ public interface GameMode {
 	 * Soft drop使用後の処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param fall 今落下した段数
+	 * @param fall 今落下した段count
 	 */
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall);
 
@@ -307,7 +307,7 @@ public interface GameMode {
 	 * Hard drop使用後の処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param fall 今落下した段数
+	 * @param fall 今落下した段count
 	 */
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall);
 
@@ -319,15 +319,15 @@ public interface GameMode {
 	public void fieldEditExit(GameEngine engine, int playerID);
 
 	/**
-	 * ブロックピースが固定されたときの処理(calcScoreの直後)
+	 * Blockピースが固定されたときの処理(calcScoreの直後)
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param lines 消えるLines数（消えなかった場合は0）
+	 * @param lines 消えるLinescount（消えなかった場合は0）
 	 */
 	public void pieceLocked(GameEngine engine, int playerID, int lines);
 
 	/**
-	 * Lines消去が終わるときに呼び出される処理
+	 * Line clearが終わるときに呼び出される処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 * @return trueを返すと通常の処理を行わない
@@ -351,8 +351,8 @@ public interface GameMode {
 	public void loadReplay(GameEngine engine, int playerID, CustomProperties prop);
 
 	/**
-	 * ネットプレイ用モードかどうかを取得
-	 * @return ネットプレイ用モードならtrue
+	 * ネットプレイ用Mode かどうかを取得
+	 * @return ネットプレイ用Mode ならtrue
 	 */
 	public boolean isNetplayMode();
 

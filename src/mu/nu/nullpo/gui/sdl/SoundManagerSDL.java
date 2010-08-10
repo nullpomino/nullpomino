@@ -43,7 +43,7 @@ public class SoundManagerSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(SoundManagerSDL.class);
 
-	/** 登録できるWAVEファイルの最大数 */
+	/** 登録できるWAVEファイルの最大count */
 	protected int maxClips;
 
 	/** WAVEファイルデータ（名前->データ本体） */
@@ -52,7 +52,7 @@ public class SoundManagerSDL {
 	/** チャンネルデータ（名前->チャンネル number） */
 	protected HashMap<String, Integer> channelMap;
 
-	/** 登録されたWAVEファイル数 */
+	/** 登録されたWAVEファイルcount */
 	protected int counter = 0;
 
 	/**
@@ -64,7 +64,7 @@ public class SoundManagerSDL {
 
 	/**
 	 * Constructor
-	 * @param maxClips 登録できるWAVEファイルの最大数
+	 * @param maxClips 登録できるWAVEファイルの最大count
 	 */
 	public SoundManagerSDL(int maxClips) {
 		this.maxClips = maxClips;

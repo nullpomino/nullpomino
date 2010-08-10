@@ -109,7 +109,7 @@ public class ClassicPlusWallkick implements Wallkick {
 
 	/**
 	 * Wallkick可能かどうか調べる
-	 * @param piece ブロックピース
+	 * @param piece Blockピース
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
@@ -145,7 +145,7 @@ public class ClassicPlusWallkick implements Wallkick {
 
 	/**
 	 * Wallkick可能かどうか調べる（Big用）
-	 * @param piece ブロックピース
+	 * @param piece Blockピース
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
@@ -158,7 +158,7 @@ public class ClassicPlusWallkick implements Wallkick {
 				int x2 = (x + piece.dataX[rt][i] * 2);
 				int y2 = (y + piece.dataY[rt][i] * 2);
 
-				// 4ブロック分調べる
+				// 4Block分調べる
 				for(int k = 0; k < 2; k++)for(int l = 0; l < 2; l++) {
 					int x3 = x2 + k;
 					int y3 = y2 + l;

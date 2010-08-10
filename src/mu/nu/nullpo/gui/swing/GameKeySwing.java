@@ -38,12 +38,12 @@ public class GameKeySwing {
 	/** キー入力状態（全ステート共通） */
 	public static GameKeySwing gamekey[];
 
-	/** ボタン number定数 */
+	/** Button number定count */
 	public static final int BUTTON_UP = 0, BUTTON_DOWN = 1, BUTTON_LEFT = 2, BUTTON_RIGHT = 3, BUTTON_A = 4, BUTTON_B = 5, BUTTON_C = 6,
 			BUTTON_D = 7, BUTTON_E = 8, BUTTON_F = 9, BUTTON_PAUSE = 10, BUTTON_GIVEUP = 11, BUTTON_RETRY = 12,
 			BUTTON_FRAMESTEP = 13, BUTTON_SCREENSHOT = 14;
 
-	/** ボタン数の定数 */
+	/**  buttoncountの定count */
 	public static final int MAX_BUTTON = 15;
 
 	/**
@@ -58,7 +58,7 @@ public class GameKeySwing {
 	/** キーコード */
 	public int keymap[];
 
-	/** ジョイスティックボタン number */
+	/** ジョイスティックButton number */
 	public int buttonmap[];
 
 	/** ジョイスティックのDirectionキーが反応する閾値 */
@@ -67,10 +67,10 @@ public class GameKeySwing {
 	/** プレイヤーID */
 	public int player;
 
-	/** ボタン入力時間 */
+	/**  button入力 time */
 	protected int[] inputstate;
 
-	/** ボタン入力フラグ */
+	/**  button入力 flag */
 	protected boolean[] pressstate;
 
 	/**
@@ -96,7 +96,7 @@ public class GameKeySwing {
 	}
 
 	/**
-	 * ボタンを押している時間を更新（1フレーム1回実行）
+	 * Update button pressed times (run once per frame)
 	 */
 	public void update() {
 		for(int i = 0; i < MAX_BUTTON; i++) {
@@ -106,7 +106,7 @@ public class GameKeySwing {
 	}
 
 	/**
-	 * ボタン入力状態をクリア
+	 * Clear button input state
 	 */
 	public void clear() {
 		for(int i = 0; i < MAX_BUTTON; i++) {
@@ -116,8 +116,8 @@ public class GameKeySwing {
 	}
 
 	/**
-	 * ボタンが1フレームだけ押されているか判定
-	 * @param key ボタン number
+	 *  buttonが1フレームだけ押されているか判定
+	 * @param key Button number
 	 * @return 押されていたらtrue
 	 */
 	public boolean isPushKey(int key) {
@@ -125,8 +125,8 @@ public class GameKeySwing {
 	}
 
 	/**
-	 * ボタンが押されているか判定
-	 * @param key ボタン number
+	 *  buttonが押されているか判定
+	 * @param key Button number
 	 * @return 押されていたらtrue
 	 */
 	public boolean isPressKey(int key) {
@@ -135,7 +135,7 @@ public class GameKeySwing {
 
 	/**
 	 * メニューでカーソルが動くかどうか判定
-	 * @param key ボタン number
+	 * @param key Button number
 	 * @return カーソルが動くならtrue
 	 */
 	public boolean isMenuRepeatKey(int key) {
@@ -146,26 +146,26 @@ public class GameKeySwing {
 	}
 
 	/**
-	 * ボタンを押している時間を取得
-	 * @param key ボタン number
-	 * @return ボタンを押している時間（0なら押してない）
+	 *  buttonを押している timeを取得
+	 * @param key Button number
+	 * @return  buttonを押している time（0なら押してない）
 	 */
 	public int getInputState(int key) {
 		return inputstate[key];
 	}
 
 	/**
-	 * ボタンを押している時間を強制変更
-	 * @param key ボタン number
-	 * @param state ボタンを押している時間
+	 *  buttonを押している timeを強制変更
+	 * @param key Button number
+	 * @param state  buttonを押している time
 	 */
 	public void setInputState(int key, int state) {
 		inputstate[key] = state;
 	}
 
 	/**
-	 * ボタンの入力状態を設定
-	 * @param key ボタン number
+	 *  buttonの入力状態を設定
+	 * @param key Button number
 	 * @param pressed 押している場合はtrue、離した場合はfalse
 	 */
 	public void setPressState(int key, boolean pressed) {

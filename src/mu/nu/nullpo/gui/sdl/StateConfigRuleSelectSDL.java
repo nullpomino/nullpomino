@@ -42,13 +42,13 @@ import sdljava.video.SDLSurface;
  * ルール選択画面のステート
  */
 public class StateConfigRuleSelectSDL extends BaseStateSDL {
-	/** 1画面に表示する最大ファイル数 */
+	/** 1画面に表示する最大ファイルcount */
 	public static final int MAX_FILE_IN_ONE_PAGE = 20;
 
 	/** プレイヤーID */
 	public int player = 0;
 
-	/** 初期設定モード */
+	/** 初期設定Mode  */
 	protected boolean firstSetupMode;
 
 	/** ファイル名 */
@@ -213,7 +213,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 				ResourceHolderSDL.soundManager.play("cursor");
 			}
 
-			// 決定ボタン
+			// 決定 button
 			// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 				ResourceHolderSDL.soundManager.play("decide");
@@ -241,7 +241,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 			return;
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B) && !firstSetupMode) {
 		if((GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) && !firstSetupMode) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);

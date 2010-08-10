@@ -71,7 +71,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	/** 強制ホールド */
 	public boolean forceHold;
 
-	/** 移動を遅らせる用の変数 */
+	/** 移動を遅らせる用の変count */
 	public int delay;
 
 	/** このAIを所持するGameEngine */
@@ -86,7 +86,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	/** trueならスレッドがThink routine実行中 */
 	public boolean thinking;
 
-	/** スレッドを停止させる時間 */
+	/** スレッドを停止させる time */
 	public int thinkDelay;
 
 	/** Current ピースの number */
@@ -171,14 +171,14 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * ボタン入力状態を設定
+	 *  button入力状態を設定
 	 */
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) && (delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 		    (!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{
-			int input = 0;	// ボタン入力データ
+			int input = 0;	//  button入力データ
 			Piece pieceNow = engine.nowPieceObject;
 			int nowX = engine.nowPieceX;
 			int nowY = engine.nowPieceY;
@@ -531,7 +531,7 @@ public class BasicAI extends DummyAI implements Runnable {
 		int needIValleyBefore = fld.getTotalValleyNeedIPiece();
 		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
-		// T-Spinフラグ
+		// T-Spin flag
 		boolean tspin = false;
 		if((piece.id == Piece.PIECE_T) && (rtOld != -1) && (fld.isTSpinSpot(x, y, piece.big))) {
 			tspin = true;
@@ -542,7 +542,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			return 0;
 		}
 
-		// Lines消去
+		// Line clear
 		int lines = fld.checkLine();
 		if(lines > 0) {
 			fld.clearLine();
@@ -565,7 +565,7 @@ public class BasicAI extends DummyAI implements Runnable {
 		else
 			pts += y * 20;
 
-		// Lines数で加点
+		// Linescountで加点
 		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) && (!tspin) && (engine.combo < 1)) {
 			return 0;
 		}
@@ -600,7 +600,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			}
 
 			if(lidAfter > lidBefore) {
-				// 穴の上に乗っているブロックを増やすと減点
+				// 穴の上に乗っているBlockを増やすと減点
 				if(!danger)
 					pts -= (lidAfter - lidBefore) * 10;
 				else
@@ -614,7 +614,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			}
 
 			if((tspin) && (lines >= 1)) {
-				// T-Spinボーナス
+				// T-Spin bonus
 				pts += 100000 * lines;
 			}
 
@@ -642,7 +642,7 @@ public class BasicAI extends DummyAI implements Runnable {
 					pts -= (heightBefore - heightAfter) * 4;
 			}
 
-			// Comboボーナス
+			// Combo bonus
 			if((lines >= 1) && (engine.comboType != GameEngine.COMBO_TYPE_DISABLE)) {
 				pts += lines * engine.combo * 100;
 			}
@@ -652,8 +652,8 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 最大妥協レベルを取得
-	 * @return 最大妥協レベル
+	 * 最大妥協 levelを取得
+	 * @return 最大妥協 level
 	 */
 	public int getMaxThinkDepth() {
 		return 2;

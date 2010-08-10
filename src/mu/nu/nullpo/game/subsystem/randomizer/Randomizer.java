@@ -31,15 +31,15 @@ package mu.nu.nullpo.game.subsystem.randomizer;
 import java.util.Random;
 
 /**
- * ブロックピースの出現順を生成するインターフェイス
+ * Blockピースの出現順を生成するインターフェイス
  */
 public interface Randomizer {
 	/**
-	 * ブロックピースの出現順を生成
+	 * Blockピースの出現順を生成
 	 * @param pieceEnable 出現可能なピース（pieceEnable[id]がtrueなら出現可能なピース）
 	 * @param random ランダム number生成用
-	 * @param arrayMax 生成すべきブロックピースの配列のサイズ（必要なら無視してもOK）
-	 * @return ブロックピースの出現順の配列（ピースのIDだけ）
+	 * @param arrayMax 生成すべきBlockピースの配列のサイズ（必要なら無視してもOK）
+	 * @return Blockピースの出現順の配列（ピースのIDだけ）
 	 */
 	public int[] createPieceSequence(boolean[] pieceEnable, Random random, int arrayMax);
 }

@@ -103,7 +103,7 @@ public class PoochyBotDefensive extends PoochyBot {
 
 		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
-		// T-Spinフラグ
+		// T-Spin flag
 		boolean tspin = false;
 		if((piece.id == Piece.PIECE_T) && (rtOld != -1) && (fld.isTSpinSpot(x, y, piece.big))) {
 			tspin = true;
@@ -133,7 +133,7 @@ public class PoochyBotDefensive extends PoochyBot {
 			return Integer.MIN_VALUE;
 		}
 
-		// Lines消去
+		// Line clear
 		int lines = fld.checkLine();
 		if(lines > 0) {
 			fld.clearLine();

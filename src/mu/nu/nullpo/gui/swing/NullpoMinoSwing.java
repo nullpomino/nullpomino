@@ -113,10 +113,10 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** チューニング設定画面のフレーム */
 	public static GameTuningFrame gameTuningFrame;
 
-	/** 更新チェック設定画面のフレーム */
+	/** 更新 check 設定画面のフレーム */
 	public static UpdateCheckFrame updateCheckFrame;
 
-	/** プログラムに渡されたコマンドLines引数 */
+	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
 	/** 設定保存用Property file */
@@ -134,7 +134,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
-	/** モード管理 */
+	/** Mode 管理 */
 	public static ModeManager modeManager;
 
 	/** メイン画面のレイアウトマネージャ */
@@ -149,7 +149,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** ゲームMode nameの配列 */
 	public static String[] modeList;
 
-	/** モード選択リストボックス */
+	/** Mode 選択リストボックス */
 	public static JList listboxMode;
 
 	/** リプレイファイル選択ダイアログ */
@@ -161,12 +161,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** オブザーバークライアント */
 	public static NetObserverClient netObserverClient;
 
-	/** モードセレクト画面のラベル(新Versionがある場合は切り替わる) */
+	/** Mode セレクト画面のラベル(新Versionがある場合は切り替わる) */
 	public static JLabel lModeSelect;
 
 	/**
-	 * メイン関数
-	 * @param args プログラムに渡されたコマンドLines引数
+	 * メイン関count
+	 * @param args プログラムに渡されたコマンドLines引count
 	 */
 	public static void main(String[] args) {
 		programArgs = args;
@@ -189,7 +189,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			in.close();
 		} catch(IOException e) {}
 
-		// モード読み込み
+		// Mode読み込み
 		modeManager = new ModeManager();
 		try {
 			BufferedReader txtMode = new BufferedReader(new FileReader("config/list/mode.lst"));
@@ -344,7 +344,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 		setVisible(true);
 
-		// 新Versionチェック
+		// 新Version check 
 		if(propGlobal.getProperty("updatechecker.enable", true)) {
 			int startupCount = propGlobal.getProperty("updatechecker.startupCount", 0);
 			int startupMax = propGlobal.getProperty("updatechecker.startupMax", 5);
@@ -389,7 +389,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	protected void initTopScreenUI(JComponent p) {
 		p.setLayout(new BorderLayout());
 
-		// モードセレクト
+		// Modeセレクト
 		JPanel subpanelModeSelect = new JPanel(new BorderLayout());
 		subpanelModeSelect.setBorder(new EtchedBorder());
 		p.add(subpanelModeSelect, BorderLayout.CENTER);
@@ -406,7 +406,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		scpaneListboxMode.setPreferredSize(new Dimension(300, 375));
 		subpanelModeSelect.add(scpaneListboxMode, BorderLayout.CENTER);
 
-		// 開始ボタン
+		// 開始 button
 		JButton buttonStartOffline = new JButton(getUIText("Top_StartOffline"));
 		buttonStartOffline.setMnemonic('S');
 		buttonStartOffline.addActionListener(this);
@@ -442,7 +442,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		JTextField txtfldMessage = new JTextField();
 		panelChat.add(txtfldMessage, BorderLayout.PAGE_END);
 
-		// 画面下のボタン
+		// 画面下の button
 		JPanel panelButtons = new JPanel();
 		p.add(panelButtons, BorderLayout.PAGE_END);
 
@@ -553,7 +553,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		miKeyConfig2P.setActionCommand("Menu_KeyConfig2P");
 		menuConfig.add(miKeyConfig2P);
 
-		// 更新チェック設定
+		// 更新 check 設定
 		JMenuItem miUpdateCheck = new JMenuItem(getUIText("Menu_UpdateCheck"));
 		miUpdateCheck.setMnemonic('D');
 		miUpdateCheck.addActionListener(this);
@@ -569,7 +569,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * オフLinesゲーム開始ボタンが押されたとき
+	 * オフLinesゲーム開始 buttonが押されたとき
 	 */
 	protected void onStartOfflineClicked() {
 		String strMode = (String)listboxMode.getSelectedValue();
@@ -698,7 +698,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameTuningFrame.load(1);
 			gameTuningFrame.setVisible(true);
 		}
-		// 更新チェック設定
+		// 更新 check 設定
 		else if(e.getActionCommand() == "Menu_UpdateCheck") {
 			if(updateCheckFrame == null) {
 				updateCheckFrame = new UpdateCheckFrame(this);
@@ -739,7 +739,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		rendererSwing = new RendererSwing();
 		gameManager = new GameManager(rendererSwing);
 
-		// モード
+		// Mode
 		String modeName = propGlobal.getProperty("name.mode", "");
 		GameMode modeObj = modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -822,7 +822,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		gameManager.replayMode = true;
 		gameManager.replayProp = prop;
 
-		// モード
+		// Mode
 		String modeName = prop.getProperty("name.mode", "");
 		GameMode modeObj = modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -875,7 +875,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		rendererSwing = new RendererSwing();
 		gameManager = new GameManager(rendererSwing);
 
-		// モード
+		// Mode
 		String modeName = "NET-VS-BATTLE";
 		GameMode modeObj = modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -1061,7 +1061,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * モード選択リストボックス用MouseAdapter
+	 * Mode 選択リストボックス用MouseAdapter
 	 */
 	protected class ListboxModeMouseAdapter extends MouseAdapter {
 		@Override

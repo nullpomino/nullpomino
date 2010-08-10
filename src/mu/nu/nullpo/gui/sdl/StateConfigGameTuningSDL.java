@@ -44,10 +44,10 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	/** カーソル位置 */
 	protected int cursor;
 
-	/** Aボタンでの回転Directionを -1=ルールに従う 0=常に左回転 1=常に右回転 */
+	/** A buttonでの回転Directionを -1=ルールに従う 0=常に左回転 1=常に右回転 */
 	protected int owRotateButtonDefaultRight;
 
-	/** ブロックの絵柄 -1=ルールに従う 0以上=固定 */
+	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */
 	protected int owSkin;
 
 	/** 最低/最大横溜め速度 -1=ルールに従う 0以上=固定 */
@@ -125,7 +125,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -182,7 +182,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT)) {
 			ResourceHolderSDL.soundManager.play("decide");
@@ -193,7 +193,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL)) {
 			loadConfig(NullpoMinoSDL.propGlobal);

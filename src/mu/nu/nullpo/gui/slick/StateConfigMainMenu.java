@@ -47,7 +47,7 @@ public class StateConfigMainMenu extends BasicGameState {
 	/** プレイヤー number */
 	protected int player = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/*
@@ -104,7 +104,7 @@ public class StateConfigMainMenu extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -156,7 +156,7 @@ public class StateConfigMainMenu extends BasicGameState {
 			ResourceHolder.soundManager.play("change");
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
 			ResourceHolder.soundManager.play("decide");
@@ -188,14 +188,14 @@ public class StateConfigMainMenu extends BasicGameState {
 			}
 		}
 
-		// Cancelボタン
+		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
 			game.enterState(StateTitle.ID);
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

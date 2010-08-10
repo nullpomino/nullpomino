@@ -86,7 +86,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	/** 音楽のファイル名用テキストボックス */
 	private JTextField[] txtfldMusicFileNames;
 
-	/** ループなしチェックボックス */
+	/** ループなし check ボックス */
 	private JCheckBox[] chkboxNoLoop;
 
 	/** ファイル選択ダイアログ */
@@ -205,7 +205,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 			pMusicTempTextsButtons.add(btnOpen, BorderLayout.EAST);
 		}
 
-		// 画面下のボタン類
+		// 画面下の button類
 		JPanel pButtons = new JPanel();
 		pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -289,7 +289,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().startsWith("OpenFileDialog")) {
-			// ボタン number取得
+			// Button number取得
 			int number = 0;
 			try {
 				String strNum = e.getActionCommand().replaceFirst("OpenFileDialog", "");
@@ -360,8 +360,8 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * メイン関数
-	 * @param args コマンドLines引数
+	 * メイン関count
+	 * @param args コマンドLines引count
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log.cfg");

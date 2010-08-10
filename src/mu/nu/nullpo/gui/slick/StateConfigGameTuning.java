@@ -46,13 +46,13 @@ public class StateConfigGameTuning extends BasicGameState {
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** Aボタンでの回転Directionを -1=ルールに従う 0=常に左回転 1=常に右回転 */
+	/** A buttonでの回転Directionを -1=ルールに従う 0=常に左回転 1=常に右回転 */
 	protected int owRotateButtonDefaultRight;
 
-	/** ブロックの絵柄 -1=ルールに従う 0以上=固定 */
+	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */
 	protected int owSkin;
 
 	/** 最低/最大横溜め速度 -1=ルールに従う 0以上=固定 */
@@ -145,7 +145,7 @@ public class StateConfigGameTuning extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -210,7 +210,7 @@ public class StateConfigGameTuning extends BasicGameState {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
 			ResourceHolder.soundManager.play("decide");
@@ -221,7 +221,7 @@ public class StateConfigGameTuning extends BasicGameState {
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// Cancelボタン
+		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
 			
@@ -229,10 +229,10 @@ public class StateConfigGameTuning extends BasicGameState {
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

@@ -56,10 +56,10 @@ public interface AIPlayer {
 	public void shutdown(GameEngine engine, int playerID);
 
 	/**
-	 * ボタン入力状態を設定
+	 *  button入力状態を設定
 	 * @param engine このAIを所有するGameEngine
 	 * @param playerID プレイヤーID
-	 * @param ctrl ボタン入力状態管理クラス
+	 * @param ctrl  button入力状態管理クラス
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl);
 

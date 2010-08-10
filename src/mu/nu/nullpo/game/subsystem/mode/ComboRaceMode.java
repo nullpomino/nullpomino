@@ -48,13 +48,13 @@ public class ComboRaceMode extends DummyMode {
 	/** Number of ranking records */
 	private static final int RANKING_MAX = 10;
 
-	/** 制限時間 type */
+	/** 制限 time type */
 	private static final int GOALTYPE_MAX = 3;
 
-	/** 邪魔Lines数の定数 */
+	/** 邪魔Linescountの定count */
 	private static final int[] GOAL_TABLE = {20, 40, 100};
 	
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -131,7 +131,7 @@ public class ComboRaceMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
@@ -143,7 +143,7 @@ public class ComboRaceMode extends DummyMode {
 	/** Big */
 	private boolean big;
 
-	/** 邪魔Lines数 type（0=5,1=10,2=18） */
+	/** 邪魔Linescount type（0=5,1=10,2=18） */
 	private int goaltype;
 
 	/** Current version */
@@ -158,7 +158,7 @@ public class ComboRaceMode extends DummyMode {
 	/** Rankings' times */
 	private int[][] rankingTime;
 
-	/** ランキングのCombo */
+	/** Rankings' Combo */
 	private int[][] rankingCombo;
 
 	/** Shape type */

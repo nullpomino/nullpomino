@@ -42,16 +42,16 @@ import org.apache.log4j.Logger;
  * 画像や音声の管理をするクラス
  */
 public class ResourceHolderSwing {
-	/** 背景の数 */
+	/** 背景のcount */
 	public static final int BACKGROUND_MAX = 20;
 
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolderSwing.class);
 
-	/** ブロックの画像 */
+	/** Blockの画像 */
 	public static Image imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊ブロックの画像 */
+	/** 特殊Blockの画像 */
 	public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
 	/** 通常のフォント */

@@ -147,7 +147,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		scpaneRule.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(scpaneRule);
 
-		// デフォルトに戻すボタン
+		// デフォルトに戻す button
 		JButton btnUseDefault = new JButton(NullpoMinoSwing.getUIText("RuleSelect_UseDefault"));
 		btnUseDefault.setMnemonic('D');
 		btnUseDefault.addActionListener(this);
@@ -156,7 +156,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		btnUseDefault.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
 		this.add(btnUseDefault);
 
-		// ボタン類
+		//  button類
 		JPanel pButtons = new JPanel();
 		pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);

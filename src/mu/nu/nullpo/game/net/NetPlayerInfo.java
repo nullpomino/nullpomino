@@ -193,7 +193,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * プレイ中フラグをリセット
+	 * プレイ中 flagをリセット
 	 */
 	public void resetPlayState() {
 		ready = false;

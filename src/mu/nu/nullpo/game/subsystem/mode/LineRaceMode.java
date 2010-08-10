@@ -37,7 +37,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * LINE RACEモード
+ * LINE RACEMode 
  */
 public class LineRaceMode extends DummyMode {
 	/** Number of entries in rankings */
@@ -80,7 +80,7 @@ public class LineRaceMode extends DummyMode {
 	private float[][] rankingPPS;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -490,7 +490,7 @@ public class LineRaceMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param time Time
-	 * @param piece ピース数
+	 * @param piece ピースcount
 	 */
 	private void updateRanking(int time, int piece, float pps) {
 		rankingRank = checkRanking(time, piece, pps);
@@ -513,7 +513,7 @@ public class LineRaceMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param time Time
-	 * @param piece ピース数
+	 * @param piece ピースcount
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int time, int piece, float pps) {

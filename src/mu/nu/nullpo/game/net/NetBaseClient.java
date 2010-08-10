@@ -53,7 +53,7 @@ public class NetBaseClient extends Thread {
 	/** pingを打つ間隔(1000=1秒) */
 	public static final int PING_INTERVAL = 10 * 1000;
 
-	/** この回数だけpingを打っても反応がない場合は自動切断 */
+	/** この countだけpingを打っても反応がない場合は自動切断 */
 	public static final int PING_AUTO_DISCONNECT_COUNT = 3;
 
 	/** trueの間スレッドが動く */
@@ -77,7 +77,7 @@ public class NetBaseClient extends Thread {
 	/** メッセージ受け取りインターフェース */
 	protected LinkedList<NetMessageListener> listeners = new LinkedList<NetMessageListener>();
 
-	/** ping打った回数(サーバーからpongメッセージを受信するとリセット) */
+	/** ping打った count(サーバーからpongメッセージを受信するとリセット) */
 	protected int pingCount;
 
 	/** 自動ping打ちタイマー */

@@ -35,22 +35,22 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * モード選択画面のステート
+ * Mode 選択画面のステート
  */
 public class StateSelectMode extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 3;
 
-	/** 1画面に表示する最大モード数 */
+	/** 1画面に表示する最大Mode count */
 	public static final int MAX_MODE_IN_ONE_PAGE = 25;
 
-	/** Mode nameの配列 */
+	/** Mode  nameの配列 */
 	protected String[] modenames;
 
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/*
@@ -128,7 +128,7 @@ public class StateSelectMode extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -174,7 +174,7 @@ public class StateSelectMode extends BasicGameState {
 			ResourceHolder.soundManager.play("cursor");
 		}
 
-		// 決定ボタン
+		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 	    if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
 			ResourceHolder.soundManager.play("decide");
@@ -184,14 +184,14 @@ public class StateSelectMode extends BasicGameState {
 			game.enterState(StateInGame.ID);
 		}
 
-		// Cancelボタン
+		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
 			game.enterState(StateTitle.ID);
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

@@ -56,12 +56,12 @@ public class TSpinAI extends BasicAI {
 		int needIValleyBefore = fld.getTotalValleyNeedIPiece();
 		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
-		// T-Spinフラグ
+		// T-Spin flag
 		boolean tspin = false;
 		if((piece.id == Piece.PIECE_T) && (rtOld != -1) && (fld.isTSpinSpot(x, y, piece.big))) {
 			tspin = true;
 		}
-		// T-Spin穴の数 (before placement)
+		// T-Spin穴のcount (before placement)
 		int tslotBefore = 0;
 		//if( (nextpiece.id == Piece.PIECE_T) || ((holdpiece != null) && (holdpiece.id == Piece.PIECE_T)) ) {
 			tslotBefore = fld.getTSlotLineClearAll(false);
@@ -72,7 +72,7 @@ public class TSpinAI extends BasicAI {
 			return 0;
 		}
 
-		// Lines消去
+		// Line clear
 		int lines = fld.checkLine();
 		if(lines > 0) {
 			fld.clearLine();
@@ -95,7 +95,7 @@ public class TSpinAI extends BasicAI {
 		else
 			pts += y * 20;
 
-		// Lines数で加点
+		// Linescountで加点
 		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) && (!tspin) && (engine.combo < 1)) {
 			return 0;
 		}
@@ -116,7 +116,7 @@ public class TSpinAI extends BasicAI {
 			int holeAfter = fld.getHowManyHoles();
 			int lidAfter = fld.getHowManyLidAboveHoles();
 			int needIValleyAfter = fld.getTotalValleyNeedIPiece();
-			// T-Spin穴の数 (after placement)
+			// T-Spin穴のcount (after placement)
 			int tslotAfter = 0;
 			//if( (nextpiece.id == Piece.PIECE_T) || ((holdpiece != null) && (holdpiece.id == Piece.PIECE_T)) ) {
 				tslotAfter = fld.getTSlotLineClearAll(false);
@@ -148,7 +148,7 @@ public class TSpinAI extends BasicAI {
 			}
 
 			if((lidAfter > lidBefore) && (!newtslot)) {
-				// 穴の上に乗っているブロックを増やすと減点
+				// 穴の上に乗っているBlockを増やすと減点
 				if(!danger)
 					pts -= (lidAfter - lidBefore) * 10;
 				else
@@ -162,7 +162,7 @@ public class TSpinAI extends BasicAI {
 			}
 
 			if((tspin) && (lines >= 1) && (holeAfter < holeBefore)) {
-				// T-Spinボーナス
+				// T-Spin bonus
 				pts += 100000 * lines;
 			}
 
@@ -190,7 +190,7 @@ public class TSpinAI extends BasicAI {
 					pts -= (heightBefore - heightAfter) * 4;
 			}
 
-			// Comboボーナス
+			// Combo bonus
 			if((lines >= 1) && (engine.comboType != GameEngine.COMBO_TYPE_DISABLE)) {
 				pts += lines * engine.combo * 50;
 			}

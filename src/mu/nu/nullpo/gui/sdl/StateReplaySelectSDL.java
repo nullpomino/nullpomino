@@ -51,13 +51,13 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateReplaySelectSDL.class);
 
-	/** 1画面に表示する最大ファイル数 */
+	/** 1画面に表示する最大ファイルcount */
 	public static final int MAX_FILE_IN_ONE_PAGE = 20;
 
 	/** リプレイ一覧 */
 	protected String[] replaylist;
 
-	/** Mode name */
+	/** Mode  name */
 	protected String[] modenameList;
 
 	/** Rule name */
@@ -175,7 +175,7 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -216,7 +216,7 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 				ResourceHolderSDL.soundManager.play("cursor");
 			}
 
-			// 決定ボタン
+			// 決定 button
 			// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 				ResourceHolderSDL.soundManager.play("decide");
@@ -239,7 +239,7 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 			}
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);

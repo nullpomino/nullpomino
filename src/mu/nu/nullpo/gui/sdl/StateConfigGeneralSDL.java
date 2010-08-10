@@ -41,7 +41,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** カーソル位置 */
 	protected int cursor;
 
-	/** フルスクリーンフラグ */
+	/** フルスクリーン flag */
 	protected boolean fullscreen;
 
 	/** 効果音ON/OFF */
@@ -65,7 +65,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** 最大FPS */
 	protected int maxfps;
 
-	/** Lines消去エフェクト表示 */
+	/** Line clearエフェクト表示 */
 	protected boolean showlineeffect;
 
 	/** サウンドバッファサイズ */
@@ -86,7 +86,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** BGMボリューム */
 	protected int bgmvolume;
 
-	/** 同時再生できる効果音の数 */
+	/** 同時再生できる効果音のcount */
 	protected int soundChannels;
 
 	/** フィールド右側にMeterを表示 */
@@ -218,7 +218,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -322,7 +322,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT)) {
 			ResourceHolderSDL.soundManager.play("decide");
@@ -339,7 +339,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL)) {
 			loadConfig(NullpoMinoSDL.propConfig);

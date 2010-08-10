@@ -55,7 +55,7 @@ public class BaseStateSDL {
 	public void render(SDLSurface screen) throws SDLException {}
 
 	/**
-	 * ゲーム状態の更新
+	 * Update game state
 	 * @throws SDLException SDLのエラー
 	 */
 	public void update() throws SDLException {}

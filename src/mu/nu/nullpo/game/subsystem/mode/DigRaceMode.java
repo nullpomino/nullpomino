@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * DIG RACEモード
+ * DIG RACEMode 
  */
 public class DigRaceMode extends DummyMode {
 	/** Current version */
@@ -47,10 +47,10 @@ public class DigRaceMode extends DummyMode {
 	/** Number of entries in rankings */
 	private static final int RANKING_MAX = 10;
 
-	/** 邪魔Lines数 type */
+	/** 邪魔Linescount type */
 	private static final int GOALTYPE_MAX = 3;
 
-	/** 邪魔Lines数の定数 */
+	/** 邪魔Linescountの定count */
 	private static final int[] GOAL_TABLE = {5, 10, 18};
 
 	/** GameManager that owns this mode */
@@ -65,7 +65,7 @@ public class DigRaceMode extends DummyMode {
 	/** Big */
 	private boolean big;
 
-	/** 邪魔Lines数 type（0=5,1=10,2=18） */
+	/** 邪魔Linescount type（0=5,1=10,2=18） */
 	private int goaltype;
 
 	/** Current version */
@@ -87,7 +87,7 @@ public class DigRaceMode extends DummyMode {
 	private int[][] rankingPiece;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -518,7 +518,7 @@ public class DigRaceMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param time Time
-	 * @param piece ピース数
+	 * @param piece ピースcount
 	 */
 	private void updateRanking(int time, int lines, int piece) {
 		rankingRank = checkRanking(time, lines, piece);
@@ -541,7 +541,7 @@ public class DigRaceMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param time Time
-	 * @param piece ピース数
+	 * @param piece ピースcount
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int time, int lines, int piece) {

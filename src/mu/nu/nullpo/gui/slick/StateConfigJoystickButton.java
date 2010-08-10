@@ -36,13 +36,13 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * ジョイスティックボタン設定画面のステート
+ * ジョイスティック button設定画面のステート
  */
 public class StateConfigJoystickButton extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 10;
 
-	/** キー入力を受付可能になるまでのフレーム数 */
+	/** キー入力を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** プレイヤー number */
@@ -54,13 +54,13 @@ public class StateConfigJoystickButton extends BasicGameState {
 	/** 使用するジョイスティックの number */
 	protected int joyNumber;
 
-	/** 現在設定中のボタン */
+	/** 現在設定中の button */
 	protected int keynum;
 
-	/** 経過フレーム数 */
+	/** 経過 frame count */
 	protected int frame;
 
-	/** ボタン設定 */
+	/**  button設定 */
 	protected int buttonmap[];
 
 	/*
@@ -72,7 +72,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/**
-	 * ボタン設定をInitialization
+	 *  button設定をInitialization
 	 */
 	protected void reset() {
 		keynum = 4;
@@ -136,7 +136,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -146,7 +146,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 
 		frame++;
 
-		// ジョイスティックボタン判定
+		// ジョイスティック button判定
 		if(frame >= KEYACCEPTFRAME) {
 			for(int i = 0; i < ControllerManager.MAX_BUTTONS; i++) {
 				try {

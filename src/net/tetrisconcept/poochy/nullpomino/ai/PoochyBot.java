@@ -44,7 +44,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** 最善手の評価得点 */
 	public int bestPts;
 
-	/** 移動を遅らせる用の変数 */
+	/** 移動を遅らせる用の変count */
 	public int delay;
 
 	/** このAIを所持するGameEngine */
@@ -59,7 +59,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** trueならスレッドがThink routine実行中 */
 	public boolean thinking;
 
-	/** スレッドを停止させる時間 */
+	/** スレッドを停止させる time */
 	public int thinkDelay;
 
 	/** Current ピースの number */
@@ -85,7 +85,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	protected int setDAS;
 	/** Last input if done in ARE */
 	protected int inputARE;
-	/** 最大妥協レベル */
+	/** 最大妥協 level */
 	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
 	protected static final boolean DEBUG_ALL = true;
@@ -226,7 +226,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * ボタン入力状態を設定
+	 *  button入力状態を設定
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
@@ -1493,7 +1493,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
-		// T-Spinフラグ
+		// T-Spin flag
 		boolean tspin = false;
 		if((piece.id == Piece.PIECE_T) && (rtOld != -1) && (fld.isTSpinSpot(x, y, piece.big))) {
 			tspin = true;
@@ -1523,7 +1523,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			return Integer.MIN_VALUE;
 		}
 
-		// Lines消去
+		// Line clear
 		int lines = fld.checkLine()/move;
 		if(lines > 0) {
 			fld.clearLine();

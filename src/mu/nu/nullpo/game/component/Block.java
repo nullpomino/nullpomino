@@ -33,13 +33,13 @@ import java.io.Serializable;
 import mu.nu.nullpo.game.play.GameEngine;
 
 /**
- * ブロック
+ * Block
  */
 public class Block implements Serializable {
 	/** シリアルVersionID */
 	private static final long serialVersionUID = -7126899262733374545L;
 
-	/** ブロックの色の定数 */
+	/** Blockの色の定count */
 	public static final int BLOCK_COLOR_INVALID = -1,
 							BLOCK_COLOR_NONE = 0,
 							BLOCK_COLOR_GRAY = 1,
@@ -78,50 +78,50 @@ public class Block implements Serializable {
 							BLOCK_COLOR_RAINBOW = 34,
 							BLOCK_COLOR_GEM_RAINBOW = 35;
 
-	/** アイテムの定数 */
+	/** アイテムの定count */
 	public static final int BLOCK_ITEM_NONE = 0,
 							BLOCK_ITEM_RANDOM = 1;
 
-	/** 通常のブロックの色の最大数 */
+	/** 通常のBlockの色の最大count */
 	public static final int BLOCK_COLOR_COUNT = 9;
 
-	/** 通常＋宝石ブロックの色の最大数 */
+	/** 通常＋宝石Blockの色の最大count */
 	public static final int BLOCK_COLOR_EXT_COUNT = 16;
 
-	/** ブロック表示あり */
+	/** Block表示あり */
 	public static final int BLOCK_ATTRIBUTE_VISIBLE = 1;
 
 	/** 枠線表示あり */
 	public static final int BLOCK_ATTRIBUTE_OUTLINE = 2;
 
-	/** 骨ブロック */
+	/** 骨Block */
 	public static final int BLOCK_ATTRIBUTE_BONE = 4;
 
-	/** 上のブロックと繋がっている */
+	/** 上のBlockと繋がっている */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_UP = 8;
 
-	/** 下のブロックと繋がっている */
+	/** 下のBlockと繋がっている */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_DOWN = 16;
 
-	/** 左のブロックと繋がっている */
+	/** 左のBlockと繋がっている */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_LEFT = 32;
 
-	/** 右のブロックと繋がっている */
+	/** 右のBlockと繋がっている */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_RIGHT = 64;
 
-	/** 自分で置いたブロック */
+	/** 自分で置いたBlock */
 	public static final int BLOCK_ATTRIBUTE_SELFPLACED = 128;
 
 	/** 壊れたピースの一部分 */
 	public static final int BLOCK_ATTRIBUTE_BROKEN = 256;
 
-	/** 邪魔ブロック */
+	/** 邪魔Block */
 	public static final int BLOCK_ATTRIBUTE_GARBAGE = 512;
 
 	/** 壁 */
 	public static final int BLOCK_ATTRIBUTE_WALL = 1024;
 
-	/** 消える予定のブロック */
+	/** 消える予定のBlock */
 	public static final int BLOCK_ATTRIBUTE_ERASE = 2048;
 
 	/** Temporary mark for block linking check algorithm */
@@ -133,25 +133,25 @@ public class Block implements Serializable {
 	/** Anti-gravity flag (The block will not fall by gravity) */
 	public static final int BLOCK_ATTRIBUTE_ANTIGRAVITY = 16384;
 
-	/** ブロックの色 */
+	/** Blockの色 */
 	public int color;
 
-	/** ブロックの絵柄 */
+	/** Blockの絵柄 */
 	public int skin;
 
-	/** ブロックの属性 */
+	/** Blockの属性 */
 	public int attribute;
 
-	/** 固定してから経過したフレーム数 */
+	/** 固定してから経過した frame count */
 	public int elapsedFrames;
 
-	/** ブロックの暗さ、または明るさ（0.03だったら3%暗く、-0.05だったら5%明るい） */
+	/** Blockの暗さ、または明るさ（0.03だったら3%暗く、-0.05だったら5%明るい） */
 	public float darkness;
 
 	/** 透明度（1.0fで不透明、0.0fで完全に透明） */
 	public float alpha;
 
-	/** ゲームが始まってから何番目に置いたブロックか（負数だったら初期配置や邪魔ブロック） */
+	/** ゲームが始まってから何番目に置いたBlockか（負countだったら初期配置や邪魔Block） */
 	public int pieceNum;
 
 	/** アイテム number */
@@ -178,7 +178,7 @@ public class Block implements Serializable {
 
 	/**
 	 * 色指定可能なConstructor
-	 * @param color ブロックの色
+	 * @param color Blockの色
 	 */
 	public Block(int color) {
 		reset();
@@ -187,8 +187,8 @@ public class Block implements Serializable {
 
 	/**
 	 * 色と絵柄の指定が可能なConstructor
-	 * @param color ブロックの色
-	 * @param skin ブロックの絵柄
+	 * @param color Blockの色
+	 * @param skin Blockの絵柄
 	 */
 	public Block(int color, int skin) {
 		reset();
@@ -198,9 +198,9 @@ public class Block implements Serializable {
 
 	/**
 	 * 色と絵柄と属性の指定が可能なConstructor
-	 * @param color ブロックの色
-	 * @param skin ブロックの絵柄
-	 * @param attribute ブロックの属性
+	 * @param color Blockの色
+	 * @param skin Blockの絵柄
+	 * @param attribute Blockの属性
 	 */
 	public Block(int color, int skin, int attribute) {
 		reset();
@@ -271,16 +271,16 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * このブロックが空白かどうか判定
-	 * @return このブロックが空白だったらtrue
+	 * このBlockが空白かどうか判定
+	 * @return このBlockが空白だったらtrue
 	 */
 	public boolean isEmpty() {
 		return (color < BLOCK_COLOR_GRAY);
 	}
 
 	/**
-	 * このブロックが宝石ブロックかどうか判定
-	 * @return このブロックが宝石ブロックだったらtrue
+	 * このBlockが宝石Blockかどうか判定
+	 * @return このBlockが宝石Blockだったらtrue
 	 */
 	public boolean isGemBlock() {
 		return ((color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE)) ||

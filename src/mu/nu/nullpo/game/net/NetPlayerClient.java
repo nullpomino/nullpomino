@@ -64,7 +64,7 @@ public class NetPlayerClient extends NetBaseClient {
 	/** Number of players */
 	protected int playerCount = -1;
 
-	/** オブザーバー数 */
+	/** オブザーバーcount */
 	protected int observerCount = -1;
 
 	/**
@@ -135,7 +135,7 @@ public class NetPlayerClient extends NetBaseClient {
 			send("login\t" + GameManager.getVersionMajor() + "\t" + NetUtil.urlEncode(playerName) + "\t" + Locale.getDefault().getCountry() + "\t" +
 				 NetUtil.urlEncode(playerTeam) + "\n");
 		}
-		// 人数更新
+		// 人count更新
 		if(message[0].equals("observerupdate")) {
 			//observerupdate\t[PLAYERS]\t[OBSERVERS]
 			playerCount = Integer.parseInt(message[1]);
@@ -339,7 +339,7 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return オブザーバー数
+	 * @return オブザーバーcount
 	 */
 	public int getObserverCount() {
 		return observerCount;

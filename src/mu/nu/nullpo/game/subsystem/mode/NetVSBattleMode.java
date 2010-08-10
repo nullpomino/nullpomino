@@ -56,16 +56,16 @@ import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
- * NET-VS-BATTLEモード
+ * NET-VS-BATTLEMode 
  */
 public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetVSBattleMode.class);
 
-	/** プレイヤーの最大数 */
+	/** プレイヤーの最大count */
 	private static final int MAX_PLAYERS = 6;
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -89,7 +89,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		{1,2,3,4,5,0},
 	};
 
-	/** 各プレイヤーの邪魔ブロックの色 */
+	/** 各プレイヤーの邪魔Blockの色 */
 	private static final int[] PLAYER_COLOR_BLOCK = {
 		Block.BLOCK_COLOR_RED, Block.BLOCK_COLOR_BLUE, Block.BLOCK_COLOR_GREEN,
 		Block.BLOCK_COLOR_YELLOW, Block.BLOCK_COLOR_PURPLE, Block.BLOCK_COLOR_CYAN
@@ -101,10 +101,10 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		GameEngine.FRAME_COLOR_YELLOW, GameEngine.FRAME_COLOR_PURPLE, GameEngine.FRAME_COLOR_CYAN
 	};
 
-	/** 操作中ブロックが強制固定されるまでの時間 */
+	/** 操作中Blockが強制固定されるまでの time */
 	private static final int PIECE_AUTO_LOCK_TIME = 60 * 60;
 
-	/** 攻撃力テーブル(旧T-Spin用) */
+	/** 攻撃力 table(旧T-Spin用) */
 	private static final int[][] LINE_ATTACK_TABLE =
 	{
 		// 1-2人, 3人, 4人, 5人, 6人
@@ -120,7 +120,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		{1, 1, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力テーブル(新スピン用) */
+	/** 攻撃力 table(新スピン用) */
 	private static final int[][] LINE_ATTACK_TABLE_ALLSPIN =
 	{
 		// 1-2人, 3人, 4人, 5人, 6人
@@ -136,7 +136,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		{0,	0, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力テーブル参照用のインデックス number */
+	/** 攻撃力 table参照用のインデックス number */
 	private static final int LINE_ATTACK_INDEX_SINGLE = 0,
 							 LINE_ATTACK_INDEX_DOUBLE = 1,
 							 LINE_ATTACK_INDEX_TRIPLE = 2,
@@ -180,7 +180,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** 3人以上生きている場合に攻撃力を減らす */
 	private boolean reduceLineSend;
 
-	/** 新しい断片的邪魔ブロックシステムを使う */
+	/** 新しい断片的邪魔Blockシステムを使う */
 	private boolean useFractionalGarbage;
 
 	private int garbagePercent;
@@ -189,40 +189,40 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 	private int lastHole = -1;
 	
-	/** Hurryup開始までの秒数(-1でHurryupなし) */
+	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	private int hurryupSeconds;
 
-	/** Hurryup後に何回ブロックを置くたびに床をせり上げるか */
+	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
 	private int hurryupInterval;
 
 	/** Hurryup始まったらtrue */
 	private boolean hurryupStarted;
 
-	/** "HURRY UP!"表示の残り時間 */
+	/** "HURRY UP!"表示の残り time */
 	private int hurryupShowFrames;
 
 	/** 自分のゲーム席の number(-1:観戦中) */
 	private int playerSeatNumber;
 
-	/** 自分が部屋に入ってから行われたゲームの数 */
+	/** 自分が部屋に入ってから行われたゲームのcount */
 	private int numGames;
 
-	/** 自分の勝利数 */
+	/** 自分の勝利count */
 	private int numWins;
 
 	/** 合計Number of players(間に挟まれているnull席はカウントしない) */
 	private int numPlayers;
 
-	/** 観戦者の数 */
+	/** 観戦者のcount */
 	private int numSpectators;
 
 	/** ゲームが始まったあとの合計Number of players(間に挟まれているnull席はカウントしない) */
 	private int numNowPlayers;
 
-	/** この部屋の最大人数 */
+	/** この部屋の最大人count */
 	private int numMaxPlayers;
 
-	/** まだ生きている人数 */
+	/** まだ生きている人count */
 	private int numAlivePlayers;
 
 	/** 各フィールドのゲーム席の number */
@@ -234,7 +234,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** 準備完了状態ならtrue */
 	private boolean[] isReady;
 
-	/** 死亡フラグ */
+	/** 死亡 flag */
 	private boolean[] isDead;
 
 	/** 順位 */
@@ -264,25 +264,25 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** OK表示切り替え直後、変更が確定するまでtrue */
 	private boolean isReadyChangePending;
 
-	/** 練習モードならtrue */
+	/** 練習Mode ならtrue */
 	private boolean isPractice;
 
 	/** 自動スタートタイマー有効 */
 	private boolean autoStartActive;
 
-	/** 自動スタートまでの残り時間 */
+	/** 自動スタートまでの残り time */
 	private int autoStartTimer;
 
-	/** 経過時間カウント有効 */
+	/** 経過 timeカウント有効 */
 	private boolean netPlayTimerActive;
 
-	/** 経過時間 */
+	/** 経過 time */
 	private int netPlayTimer;
 
-	/** 操作中ブロックを動かしている時間 */
+	/** 操作中Blockを動かしている time */
 	private int pieceMoveTimer;
 
-	/** 前回の操作中ブロック typeや位置など */
+	/** 前回の操作中Block typeや位置など */
 	private int prevPieceID, prevPieceX, prevPieceY, prevPieceDir;
 
 	/** Time to display the most recent increase in score */
@@ -294,25 +294,25 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean[] lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int[] lastcombo;
 
 	/** Most recent scoring eventでのピースID */
 	private int[] lastpiece;
 
-	/** 送った邪魔ブロックの数 */
+	/** 送った邪魔Blockのcount */
 	private int[] garbageSent;
 
-	/** 溜まっている邪魔ブロックの数 */
+	/** 溜まっている邪魔Blockのcount */
 	private int[] garbage;
 
-	/** 敵から送られてきた邪魔ブロックのリスト */
+	/** 敵から送られてきた邪魔Blockのリスト */
 	private LinkedList<GarbageEntry> garbageEntries;
 
 	/** APM */
 	private float playerAPM;
 
-	/** Hurryup後にブロックを置いた回数 */
+	/** Hurryup後にBlockを置いた count */
 	private int hurryupCount;
 
 	/** マップリスト */
@@ -321,16 +321,16 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** 使用するマップ number */
 	private int mapNo;
 
-	/** 練習モードのマップ選択用乱数 */
+	/** 練習Mode のマップ選択用乱count */
 	private Random randMap;
 
-	/** 練習モードで前回使ったマップ number */
+	/** 練習Mode で前回使ったマップ number */
 	private int mapPreviousPracticeMap;
 
 	/** 最後に攻撃してきた相手のプレイヤー number */
 	private int lastAttackerUID;
 
-	/** KO数 */
+	/** KOcount */
 	private int currentKO;
 
 	/**
@@ -345,7 +345,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * プレイヤー存在フラグと人数を更新
+	 * プレイヤー存在 flagと人countを更新
 	 */
 	private void updatePlayerExist() {
 		numPlayers = 0;
@@ -380,8 +380,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * 生き残っているチーム数を返す(チーム無しプレイヤーも1つのチームと数える)
-	 * @return 生き残っているチーム数
+	 * 生き残っているチームcountを返す(チーム無しプレイヤーも1つのチームとcountえる)
+	 * @return 生き残っているチームcount
 	 */
 	private int getNumberOfTeamsAlive() {
 		LinkedList<String> listTeamName = new LinkedList<String>();
@@ -417,7 +417,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	*/
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -425,7 +425,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/*
-	 * 最大人数
+	 * 最大人count
 	 */
 	@Override
 	public int getPlayers() {
@@ -455,7 +455,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/*
-	 * モードInitialization
+	 * Mode Initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -511,7 +511,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * プレイヤー名更新
+	 * Update player names
 	 */
 	private void updatePlayerNames() {
 		LinkedList<NetPlayerInfo> pList = netLobby.getSameRoomPlayerInfoList();
@@ -530,8 +530,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * 今溜まっている邪魔ブロックの数を返す
-	 * @return 今溜まっている邪魔ブロックの数
+	 * 今溜まっている邪魔Blockのcountを返す
+	 * @return 今溜まっている邪魔Blockのcount
 	 */
 	private int getTotalGarbageLines() {
 		int count = 0;
@@ -603,7 +603,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * 練習モード開始
+	 * 練習Mode 開始
 	 * @param engine GameEngine
 	 */
 	private void startPractice(GameEngine engine) {
@@ -735,7 +735,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					}
 				}
 
-				// 練習モード
+				// 練習Mode 
 				if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 					engine.playSE("decide");
 					startPractice(engine);
@@ -921,7 +921,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/*
-	 * Lines消去
+	 * Line clear
 	 */
 	@Override
 	public boolean onLineClear(GameEngine engine, int playerID) {
@@ -1035,7 +1035,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				pts += 6;
 			}
 
-			// 宝石ブロック攻撃
+			// 宝石Block攻撃
 			pts += engine.field.getHowManyGemClears();
 
 			lastpiece[playerID] = engine.nowPieceObject.id;
@@ -1047,7 +1047,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				}
 			}
 
-			// 攻撃Lines数
+			// 攻撃Linescount
 			garbageSent[playerID] += pts;
 
 			// 相殺
@@ -1079,7 +1079,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		if(((lines == 0) || (!currentRoomInfo.rensaBlock)) && (getTotalGarbageLines() >= GARBAGE_DENOMINATOR) && (!isPractice)) {
 			engine.playSE("garbage");
 
-			int smallGarbageCount = 0;	// 10pts未満の邪魔ブロック数の合計数(後でまとめてせり上げる)
+			int smallGarbageCount = 0;	// 10pts未満の邪魔Blockcountの合計count(後でまとめてせり上げる)
 			int hole = lastHole;
 			int newHole;
 			if(hole == -1) {
@@ -1251,7 +1251,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 		}
 
-		// 練習モードやめる
+		// 練習Mode やめる
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive) && (engine.ctrl.isPush(Controller.BUTTON_F))) {
 			engine.timerActive = false;
 			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
@@ -1313,7 +1313,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			receiver.drawDirectFont(engine, 0, 0, 480-16, strObserverString, fontcolor);
 		}
 
-		// 経過時間
+		// 経過 time
 		if((playerID == 0) && (currentRoomID != -1)) {
 			receiver.drawDirectFont(engine, 0, 256, 16, GeneralUtil.getTime(netPlayTimer));
 
@@ -1348,7 +1348,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				}
 			}
 
-			// 邪魔ブロック数
+			// 邪魔Blockcount
 			if((garbage[playerID] > 0) && (useFractionalGarbage)) {
 				String strTempGarbage;
 
@@ -1369,7 +1369,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 		}
 
-		// 練習モード
+		// 練習Mode 
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive)) {
 			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120) || (lastcombo[playerID] < 2)) {
 				if(isPractice)
@@ -1389,7 +1389,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 									currentRoomInfo.autoStartTNET2, EventReceiver.COLOR_RED, EventReceiver.COLOR_YELLOW);
 		}
 
-		// Lines消去イベント表示
+		// Line clearイベント表示
 		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
 			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
@@ -1696,7 +1696,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			resetFlags();
 			owner.reset();
 		}
-		// 練習モード
+		// 練習Mode 
 		if(engine.ctrl.isPush(Controller.BUTTON_F) && (playerID == 0)) {
 			engine.playSE("decide");
 			startPractice(engine);
@@ -2169,7 +2169,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					}
 				}
 			}
-			// 操作中ブロック
+			// 操作中Block
 			if(message[3].equals("piece")) {
 				int id = Integer.parseInt(message[4]);
 
@@ -2407,10 +2407,10 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * 敵から送られてきた邪魔ブロックのデータ
+	 * 敵から送られてきた邪魔Blockのデータ
 	 */
 	private class GarbageEntry {
-		/** 邪魔ブロック数 */
+		/** 邪魔Blockcount */
 		public int lines = 0;
 
 		/** 送信元(ゲーム用プレイヤー number) */
@@ -2428,7 +2428,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔ブロック数
+		 * @param g 邪魔Blockcount
 		 */
 		@SuppressWarnings("unused")
 		public GarbageEntry(int g) {
@@ -2437,7 +2437,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔ブロック数
+		 * @param g 邪魔Blockcount
 		 * @param p 送信元(ゲーム用プレイヤー number)
 		 */
 		public GarbageEntry(int g, int p) {
@@ -2447,7 +2447,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔ブロック数
+		 * @param g 邪魔Blockcount
 		 * @param p 送信元(ゲーム用プレイヤー number)
 		 * @param s 送信元(ゲーム以外用プレイヤー number)
 		 */

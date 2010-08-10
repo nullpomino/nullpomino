@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * SCORE RACEモード
+ * SCORE RACEMode 
  */
 public class ScoreRaceMode extends DummyMode {
 	/** Current version */
@@ -50,10 +50,10 @@ public class ScoreRaceMode extends DummyMode {
 	/** 目標Score type */
 	private static final int GOALTYPE_MAX = 3;
 
-	/** 目標Scoreの定数 */
+	/** 目標Scoreの定count */
 	private static final int[] GOAL_TABLE = {10000, 25000, 30000};
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -85,7 +85,7 @@ public class ScoreRaceMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
@@ -131,7 +131,7 @@ public class ScoreRaceMode extends DummyMode {
 	private int[][] rankingLines;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {

@@ -48,7 +48,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateConfigAISelectSDL.class);
 
-	/** 1画面に表示する最大AI数 */
+	/** 1画面に表示する最大AIcount */
 	public static final int MAX_AI_IN_ONE_PAGE = 20;
 
 	/** プレイヤーID */
@@ -69,7 +69,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	/** AIの移動間隔 */
 	protected int aiMoveDelay = 0;
 
-	/** AIの思考の待ち時間 */
+	/** AIの思考の待ち time */
 	protected int aiThinkDelay = 0;
 
 	/** AIでスレッドを使う */
@@ -236,7 +236,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT)) {
 			ResourceHolderSDL.soundManager.play("decide");
@@ -252,7 +252,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			return;
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL)) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);

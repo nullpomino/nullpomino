@@ -39,7 +39,7 @@ public class RuleOptions implements Serializable {
 	/** シリアルVersionID */
 	private static final long serialVersionUID = 5781310758989780350L;
 
-	/** 横移動カウンタか回転カウンタが超過したら固定時間リセットを無効にする */
+	/** 横移動カウンタか回転カウンタが超過したら固定 timeリセットを無効にする */
 	public static final int LOCKRESET_LIMIT_OVER_NORESET = 0;
 
 	/** 横移動カウンタか回転カウンタが超過したら即座に固定する */
@@ -57,34 +57,34 @@ public class RuleOptions implements Serializable {
 	/** 使用する出現順補正アルゴリズムのクラス名（空文字列なら完全ランダム） */
 	public String strRandomizer;
 
-	/** ブロックピースの回転パターンのX-coordinate補正（11ピース×4Direction） */
+	/** Blockピースの回転パターンのX-coordinate補正（11ピース×4Direction） */
 	public int[][] pieceOffsetX;
 
-	/** ブロックピースの回転パターンのY-coordinate補正（11ピース×4Direction） */
+	/** Blockピースの回転パターンのY-coordinate補正（11ピース×4Direction） */
 	public int[][] pieceOffsetY;
 
-	/** ブロックピースの出現X-coordinate補正（11ピース×4Direction） */
+	/** Blockピースの出現X-coordinate補正（11ピース×4Direction） */
 	public int[][] pieceSpawnX;
 
-	/** ブロックピースの出現Y-coordinate補正（11ピース×4Direction） */
+	/** Blockピースの出現Y-coordinate補正（11ピース×4Direction） */
 	public int[][] pieceSpawnY;
 
-	/** ブロックピースのBig時の出現X-coordinate補正（11ピース×4Direction） */
+	/** BlockピースのBig時の出現X-coordinate補正（11ピース×4Direction） */
 	public int[][] pieceSpawnXBig;
 
-	/** ブロックピースのBig時の出現Y-coordinate補正（11ピース×4Direction） */
+	/** BlockピースのBig時の出現Y-coordinate補正（11ピース×4Direction） */
 	public int[][] pieceSpawnYBig;
 
-	/** ブロックピースの色 */
+	/** Blockピースの色 */
 	public int[] pieceColor;
 
-	/** ブロックピースの初期Direction */
+	/** Blockピースの初期Direction */
 	public int[] pieceDefaultDirection;
 
 	/** フィールドより上から出現 */
 	public boolean pieceEnterAboveField;
 
-	/** 出現予定地が埋まっているときにY-coordinateを上にずらす最大回数 */
+	/** 出現予定地が埋まっているときにY-coordinateを上にずらす最大 count */
 	public int pieceEnterMaxDistanceY;
 
 	/** フィールドの幅 */
@@ -105,7 +105,7 @@ public class RuleOptions implements Serializable {
 	/** フィールド枠外にはみ出しただけで死ぬかどうか */
 	public boolean fieldPartialLockoutDeath;
 
-	/** NEXTの数 */
+	/** NEXTのcount */
 	public int nextDisplay;
 
 	/** ホールド使用可否 */
@@ -117,10 +117,10 @@ public class RuleOptions implements Serializable {
 	/** 先行ホールド連続使用不可 */
 	public boolean holdInitialLimit;
 
-	/** ホールドを使ったときにブロックピースの向きを初期状態に戻す */
+	/** ホールドを使ったときにBlockピースの向きを初期状態に戻す */
 	public boolean holdResetDirection;
 
-	/** ホールドできる回数（-1:無制限） */
+	/** ホールドできる count（-1:無制限） */
 	public int holdLimit;
 
 	/** Hard drop使用可否 */
@@ -162,7 +162,7 @@ public class RuleOptions implements Serializable {
 	/** 先行回転でもWallkickする */
 	public boolean rotateInitialWallkick;
 
-	/** 上DirectionへのWallkickができる回数（-1:無限） */
+	/** 上DirectionへのWallkickができる count（-1:無限） */
 	public int rotateMaxUpwardWallkick;
 
 	/** falseなら左が正回転、trueなら右が正回転 */
@@ -174,34 +174,34 @@ public class RuleOptions implements Serializable {
 	/** 180度回転を許可（falseなら正回転と同じ） */
 	public boolean rotateButtonAllowDouble;
 
-	/** 落下で固定時間リセット */
+	/** 落下で固定 timeリセット */
 	public boolean lockresetFall;
 
-	/** 移動で固定時間リセット */
+	/** 移動で固定 timeリセット */
 	public boolean lockresetMove;
 
-	/** 回転で固定時間リセット */
+	/** 回転で固定 timeリセット */
 	public boolean lockresetRotate;
 
-	/** 横移動回数制限（-1:無限） */
+	/** 横移動 count制限（-1:無限） */
 	public int lockresetLimitMove;
 
-	/** 回転回数制限（-1:無限） */
+	/** 回転 count制限（-1:無限） */
 	public int lockresetLimitRotate;
 
 	/** 横移動カウンタと回転カウンタを共有（横移動カウンタだけ使う） */
 	public boolean lockresetLimitShareCount;
 
-	/** 横移動カウンタか回転カウンタが超過したときの処理（LOCKRESET_LIMIT_OVER_で始まる定数を使う） */
+	/** 横移動カウンタか回転カウンタが超過したときの処理（LOCKRESET_LIMIT_OVER_で始まる定countを使う） */
 	public int lockresetLimitOver;
 
-	/** 固定した瞬間光るフレーム数 */
+	/** 固定した瞬間光る frame count */
 	public int lockflash;
 
-	/** ブロックが光る専用フレームを入れる */
+	/** Blockが光る専用フレームを入れる */
 	public boolean lockflashOnlyFrame;
 
-	/** Lines消去前にブロックが光るフレームを入れる */
+	/** Line clear前にBlockが光るフレームを入れる */
 	public boolean lockflashBeforeLineClear;
 	
 	/** ARE cancel on move */
@@ -216,16 +216,16 @@ public class RuleOptions implements Serializable {
 	/** 最小/最大ARE（-1:指定なし） */
 	public int minARE, maxARE;
 
-	/** 最小/最大Lines消去後ARE（-1:指定なし） */
+	/** 最小/最大ARE after line clear（-1:指定なし） */
 	public int minARELine, maxARELine;
 
-	/** 最小/最大Lines消去時間（-1:指定なし） */
+	/** 最小/最大Line clear time（-1:指定なし） */
 	public int minLineDelay, maxLineDelay;
 
-	/** 最小/最大固定時間（-1:指定なし） */
+	/** 最小/最大固定 time（-1:指定なし） */
 	public int minLockDelay, maxLockDelay;
 
-	/** 最小/最大横溜め時間（-1:指定なし） */
+	/** 最小/最大横溜め time（-1:指定なし） */
 	public int minDAS, maxDAS;
 
 	/** 横移動間隔 */
@@ -239,10 +239,10 @@ public class RuleOptions implements Serializable {
 	/** 最初のフレームで横溜め可能 */
 	public boolean dasInMoveFirstFrame;
 
-	/** ブロックが光った瞬間に横溜め可能 */
+	/** Blockが光った瞬間に横溜め可能 */
 	public boolean dasInLockFlash;
 
-	/** Lines消去中に横溜め可能 */
+	/** Line clear中に横溜め可能 */
 	public boolean dasInLineClear;
 
 	/** ARE中に横溜め可能 */
@@ -278,7 +278,7 @@ public class RuleOptions implements Serializable {
 	/** 左右同時押ししたときに前のフレームの入力Directionを優先する（左を押しながら右を押すと右を無視して左を優先） */
 	public boolean moveLeftAndRightUsePreviousInput;
 
-	/** Lines消去後に上のブロックが1段ずつ落ちるアニメーションを表示 */
+	/** Line clear後に上のBlockが1段ずつ落ちるアニメーションを表示 */
 	public boolean lineFallAnim;
 	
 	/** Line delay cancel on move */
@@ -290,10 +290,10 @@ public class RuleOptions implements Serializable {
 	/** Line delay cancel on hold */
 	public boolean lineCancelHold;
 
-	/** ブロックの絵柄 */
+	/** Blockの絵柄 */
 	public int skin;
 
-	/** ゴーストの有無（falseならモード側でゴーストを有効にしていても非表示） */
+	/** ゴーストの有無（falseならMode 側でゴーストを有効にしていても非表示） */
 	public boolean ghost;
 
 	/**

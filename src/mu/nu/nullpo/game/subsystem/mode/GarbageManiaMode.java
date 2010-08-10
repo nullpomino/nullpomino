@@ -37,28 +37,28 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * GARBAGE MANIAモード
+ * GARBAGE MANIAMode 
  */
 public class GarbageManiaMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 3;
 
-	/** 落下速度テーブル */
+	/** 落下速度 table */
 	private static final int[] tableGravityValue =
 	{
 		4, 6, 8, 10, 12, 16, 32, 48, 64, 80, 96, 112, 128, 144, 4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 1280, 1024, 768, -1
 	};
 
-	/** 落下速度が変わるレベル */
+	/** 落下速度が変わる level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
 	};
 
-	/** BGMがフェードアウトするレベル */
+	/** BGMがフェードアウトする level */
 	private static final int[] tableBGMFadeout = {495,695,880,-1};
 
-	/** BGMが変わるレベル */
+	/** BGMが変わる level */
 	private static final int[] tableBGMChange  = {500,700,900,-1};
 
 	/** 裏段位の名前 */
@@ -69,16 +69,16 @@ public class GarbageManiaMode extends DummyMode {
 		"GM"													// 18
 	};
 
-	/** LV999ロールの時間 */
+	/** LV999 roll time */
 	private static final int ROLLTIMELIMIT = 2024;
 
 	/** Number of entries in rankings */
 	private static final int RANKING_MAX = 10;
 
-	/** 最大セクション数 */
+	/** 最大Section count */
 	private static final int SECTION_MAX = 10;
 
-	/** デフォルトのセクションTime */
+	/** デフォルトのSection Time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
 	/** せり上がりパターン */
@@ -145,28 +145,28 @@ public class GarbageManiaMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
 	private int gravityindex;
 
-	/** 次のセクションのレベル（これ-1のときにレベルストップする） */
+	/** 次のSection の level（これ-1のときに levelストップする） */
 	private int nextseclv;
 
-	/** レベルが増えたフラグ */
+	/**  levelが増えた flag */
 	private boolean lvupflag;
 
-	/** Hard dropした段数 */
+	/** Hard dropした段count */
 	private int harddropBonus;
 
-	/** Comboボーナス */
+	/** Combo bonus */
 	private int comboValue;
 
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り時間 */
+	/** 獲得Render scoreがされる残り time */
 	private int scgettime;
 
-	/** ロール経過時間 */
+	/** Roll 経過 time */
 	private int rolltime;
 
 	/** 裏段位 */
@@ -175,19 +175,19 @@ public class GarbageManiaMode extends DummyMode {
 	/** Current BGM */
 	private int bgmlv;
 
-	/** セクションTime */
+	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たセクションはtrue */
+	/** 新記録が出たSection はtrue */
 	private boolean[] sectionIsNewRecord;
 
-	/** どこかのセクションで新記録を出すとtrue */
+	/** どこかのSection で新記録を出すとtrue */
 	private boolean sectionAnyNewRecord;
 
-	/** クリアしたセクション数 */
+	/** Cleared Section count */
 	private int sectionscomp;
 
-	/** 平均セクションTime */
+	/** Average Section Time */
 	private int sectionavgtime;
 
 	/** せり上がりパターン number */
@@ -196,13 +196,13 @@ public class GarbageManiaMode extends DummyMode {
 	/** せり上がり用カウンタ（Linesを消さないと+1） */
 	private int garbageCount;
 
-	/** せり上がりした回数 */
+	/** せり上がりした count */
 	private int garbageTotal;
 
-	/** セクションTime記録表示中ならtrue */
+	/** Section Time記録表示中ならtrue */
 	private boolean isShowBestSectionTime;
 
-	/** 開始時のレベル */
+	/** 開始時の level */
 	private int startlevel;
 
 	/** trueなら常にゴーストON */
@@ -211,13 +211,13 @@ public class GarbageManiaMode extends DummyMode {
 	/** trueなら常に20G */
 	private boolean always20g;
 
-	/** trueならレベルストップ音有効 */
+	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** Bigモード */
+	/** BigMode  */
 	private boolean big;
 
-	/** trueならセクションTime表示有効 */
+	/** trueならSection Time表示有効 */
 	private boolean showsectiontime;
 
 	/** Version */
@@ -226,17 +226,17 @@ public class GarbageManiaMode extends DummyMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** ランキングのレベル */
+	/** Rankings'  level */
 	private int[] rankingLevel;
 
 	/** Rankings' times */
 	private int[] rankingTime;
 
-	/** セクションTime記録 */
+	/** Section Time記録 */
 	private int[] bestSectionTime;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -334,7 +334,7 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ゲーム開始時のBGMを設定
+	 * Set BGM at start of game
 	 * @param engine GameEngine
 	 */
 	private void setStartBgmlv(GameEngine engine) {
@@ -343,7 +343,7 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/**
-	 * 落下速度を更新
+	 * Update falling speed
 	 * @param engine GameEngine
 	 */
 	private void setSpeed(GameEngine engine) {
@@ -356,7 +356,7 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/**
-	 * 平均セクションTimeを更新
+	 * Update average section time
 	 */
 	private void setAverageSectionTime() {
 		if(sectionscomp > 0) {
@@ -371,8 +371,8 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/**
-	 * セクションTime更新処理
-	 * @param sectionNumber セクション number
+	 * Section Time更新処理
+	 * @param sectionNumber Section number
 	 */
 	private void stNewRecordCheck(int sectionNumber) {
 		if((sectiontime[sectionNumber] < bestSectionTime[sectionNumber]) && (!owner.replayMode)) {
@@ -434,7 +434,7 @@ public class GarbageManiaMode extends DummyMode {
 				}
 			}
 
-			// セクションTime表示切替
+			// Section Time表示切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
@@ -521,7 +521,7 @@ public class GarbageManiaMode extends DummyMode {
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (always20g == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
-					// ランキング
+					// Rankings
 					receiver.drawScoreFont(engine, playerID, 3, 2, "LEVEL TIME", EventReceiver.COLOR_BLUE);
 
 					for(int i = 0; i < RANKING_MAX; i++) {
@@ -532,7 +532,7 @@ public class GarbageManiaMode extends DummyMode {
 
 					receiver.drawScoreFont(engine, playerID, 0, 17, "F:VIEW SECTION TIME", EventReceiver.COLOR_GREEN);
 				} else {
-					// セクションTime
+					// Section Time
 					receiver.drawScoreFont(engine, playerID, 0, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
 					int totalTime = 0;
@@ -570,7 +570,7 @@ public class GarbageManiaMode extends DummyMode {
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 6, strScore);
 
-			// レベル
+			//  level
 			receiver.drawScoreFont(engine, playerID, 0, 9, "LEVEL", EventReceiver.COLOR_BLUE);
 			int tempLevel = engine.statistics.level;
 			if(tempLevel < 0) tempLevel = 0;
@@ -587,7 +587,7 @@ public class GarbageManiaMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 14, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(engine.statistics.time));
 
-			// ロール残り時間
+			// Roll 残り time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int time = ROLLTIMELIMIT - rolltime;
 				if(time < 0) time = 0;
@@ -595,7 +595,7 @@ public class GarbageManiaMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(time), ((time > 0) && (time < 10 * 60)));
 			}
 
-			// セクションTime
+			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
 				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
@@ -637,7 +637,7 @@ public class GarbageManiaMode extends DummyMode {
 			}
 			levelUp(engine);
 
-			// Hard dropボーナスInitialization
+			// Hard drop bonusInitialization
 			harddropBonus = 0;
 		}
 		if( (engine.ending == 0) && (engine.statc[0] > 0) && ((version >= 2) || (engine.holdDisable == false)) ) {
@@ -666,7 +666,7 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/**
-	 * レベルが上がったときの共通処理
+	 *  levelが上がったときの共通処理
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -764,7 +764,7 @@ public class GarbageManiaMode extends DummyMode {
 				setAverageSectionTime();
 				stNewRecordCheck(sectionscomp - 1);
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のセクション
+				// 次のSection 
 				engine.playSE("levelup");
 
 				sectionscomp++;
@@ -783,7 +783,7 @@ public class GarbageManiaMode extends DummyMode {
 					owner.bgmStatus.bgm = bgmlv;
 				}
 
-				// 次のセクションレベルを更新
+				// Update level for next section
 				nextseclv += 100;
 				if(nextseclv > 999) nextseclv = 999;
 			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
@@ -826,7 +826,7 @@ public class GarbageManiaMode extends DummyMode {
 		// 獲得Render score
 		if(scgettime > 0) scgettime--;
 
-		// セクションTime増加
+		// Section Time増加
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -842,7 +842,7 @@ public class GarbageManiaMode extends DummyMode {
 			else
 				rolltime += 1;
 
-			// 時間Meter
+			//  timeMeter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -850,7 +850,7 @@ public class GarbageManiaMode extends DummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ロール終了
+			// Roll 終了
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameActive = false;
 				engine.resetStatc();
@@ -860,7 +860,7 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー時の処理
+	 * Called at game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
@@ -957,7 +957,7 @@ public class GarbageManiaMode extends DummyMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		// セクションTime表示切替
+		// Section Time表示切替
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -1019,7 +1019,7 @@ public class GarbageManiaMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param gr 段位
-	 * @param lv レベル
+	 * @param lv  level
 	 * @param time Time
 	 */
 	private void updateRanking(int lv, int time) {
@@ -1041,7 +1041,7 @@ public class GarbageManiaMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param gr 段位
-	 * @param lv レベル
+	 * @param lv  level
 	 * @param time Time
 	 * @return Position (-1 if unranked)
 	 */
@@ -1058,7 +1058,7 @@ public class GarbageManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ベストセクションTime更新
+	 * Update best section time records
 	 */
 	private void updateBestSectionTime() {
 		for(int i = 0; i < SECTION_MAX; i++) {

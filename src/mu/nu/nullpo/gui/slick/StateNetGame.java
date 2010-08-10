@@ -69,7 +69,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** FPS表示 */
 	protected boolean showfps = true;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/** AppGameContainer（これを使ってタイトルバーを変える） */
@@ -107,7 +107,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		gameManager = new GameManager(new RendererSlick());
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
 
-		// モード
+		// Mode
 		String modeName = "NET-VS-BATTLE";
 		GameMode modeObj = NullpoMinoSlick.modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -220,7 +220,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		try {
@@ -258,7 +258,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				}
 			}
 
-			// スクリーンショットボタン
+			// スクリーンショット button
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 				ssflag = true;
 

@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * ULTRAモード
+ * ULTRAMode 
  */
 public class UltraMode extends DummyMode {
 	/** Current version */
@@ -50,10 +50,10 @@ public class UltraMode extends DummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 2;
 
-	/** 制限時間 type */
+	/** 制限 time type */
 	private static final int GOALTYPE_MAX = 5;
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -85,7 +85,7 @@ public class UltraMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
@@ -112,7 +112,7 @@ public class UltraMode extends DummyMode {
 	/** Big */
 	private boolean big;
 
-	/** 制限時間 type */
+	/** 制限 time type */
 	private int goaltype;
 
 	/** Last preset number used */
@@ -131,7 +131,7 @@ public class UltraMode extends DummyMode {
 	private int[][][] rankingLines;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -696,13 +696,13 @@ public class UltraMode extends DummyMode {
 			int limitTime = ((goaltype + 1) * 3600);
 			int remainTime = ((goaltype + 1) * 3600) - engine.statistics.time;
 
-			// 時間Meter
+			//  timeMeter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / limitTime;
 			if(remainTime <= 30*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// 時間切れ
+			//  time切れ
 			if(engine.statistics.time >= limitTime) {
 				engine.gameActive = false;
 				engine.timerActive = false;

@@ -62,7 +62,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Log */
 	static Logger log = Logger.getLogger(NullpoMinoSlick.class);
 
-	/** プログラムに渡されたコマンドLines引数 */
+	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
 	/** 設定保存用Property file */
@@ -86,7 +86,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** スクリーンショット用 */
 	public static BufferedImage ssImage;
 
-	/** モード管理 */
+	/** Mode 管理 */
 	public static ModeManager modeManager;
 
 	/** AppGameContainer */
@@ -101,7 +101,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** ゲーム画面のステート */
 	public static StateInGame stateInGame;
 
-	/** モード選択画面のステート */
+	/** Mode 選択画面のステート */
 	public static StateSelectMode stateSelectMode;
 
 	/** リプレイ選択画面のステート */
@@ -122,7 +122,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
 
-	/** ジョイスティックボタン設定画面のステート */
+	/** ジョイスティック button設定画面のステート */
 	public static StateConfigJoystickButton stateConfigJoystickButton;
 
 	/** ネットプレイ画面のステート */
@@ -170,7 +170,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** FPS計算用 */
 	protected static long prevCalcTime = 0;
 
-	/** フレーム数 */
+	/**  frame count */
 	protected static long frameCount = 0;
 
 	/** 実際のFPS */
@@ -186,8 +186,8 @@ public class NullpoMinoSlick extends StateBasedGame {
 	public static NetObserverClient netObserverClient;
 
 	/**
-	 * メイン関数
-	 * @param args プログラムに渡されたコマンドLines引数
+	 * メイン関count
+	 * @param args プログラムに渡されたコマンドLines引count
 	 */
 	public static void main(String[] args) {
 		programArgs = args;
@@ -234,7 +234,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			in.close();
 		} catch(IOException e) {}
 
-		// モード読み込み
+		// Mode読み込み
 		modeManager = new ModeManager();
 		try {
 			BufferedReader txtMode = new BufferedReader(new FileReader("config/list/mode.lst"));
@@ -414,14 +414,14 @@ public class NullpoMinoSlick extends StateBasedGame {
 			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回のフレームの休止時間誤差も引いておく
+			// 前回のフレームの休止 time誤差も引いておく
 			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
 			if(alternateFPSPerfectMode && ingame) {
 				while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {}
 				perfectFPSDelay += 1000000000 / altMaxFPS;
 			} else if(sleepTime > 0) {
-				// 休止時間がとれる場合
+				// 休止 timeがとれる場合
 				if(maxfps > 0) {
 					try {
 						Thread.sleep(sleepTime / 1000000L);
@@ -431,8 +431,8 @@ public class NullpoMinoSlick extends StateBasedGame {
 				// sleep()の誤差
 				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
 			} else {
-				// 状態更新・レンダリングで時間を使い切ってしまい
-				// 休止時間がとれない場合
+				// 状態更新・レンダリングで timeを使い切ってしまい
+				// 休止 timeがとれない場合
 				overSleepTime = 0L;
 				// 休止なしが16回以上続いたら
 				if(++noDelays >= 16) {
@@ -462,7 +462,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		if(calcInterval >= 1000000000L) {
 			long timeNow = System.nanoTime();
 
-			// 実際の経過時間を測定
+			// 実際の経過 timeを測定
 			long realElapsedTime = timeNow - prevCalcTime; // 単位: ns
 
 			// FPSを計算

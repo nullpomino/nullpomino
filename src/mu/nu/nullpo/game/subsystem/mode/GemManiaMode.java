@@ -50,10 +50,10 @@ public class GemManiaMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
-	/** 最大ステージ数 */
+	/** 最大ステージcount */
 	private static final int MAX_STAGE_TOTAL = 27;
 
-	/** 通常ステージ数 */
+	/** 通常ステージcount */
 	private static final int MAX_STAGE_NORMAL = 20;
 
 	/** NEXTリスト */
@@ -62,19 +62,19 @@ public class GemManiaMode extends DummyMode {
 		"6451324023650143620435621456302513025430312603452013625026345012660132450346213462054360143260534215"+
 		"0621543621435624013542130562345123641230462134502613542";
 
-	/** 落下速度テーブル */
+	/** 落下速度 table */
 	private static final int[] tableGravityValue =
 	{
 		4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 768, -1
 	};
 
-	/** 落下速度が変わるレベル */
+	/** 落下速度が変わる level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		20, 30, 33, 36, 39, 43, 47, 51, 100, 130, 160, 250, 300, 10000
 	};
 
-	/** Number of ranking typesの数 */
+	/** Number of ranking typesのcount */
 	private static final int RANKING_TYPE = 2;
 
 	/** Number of entries in rankings */
@@ -89,7 +89,7 @@ public class GemManiaMode extends DummyMode {
 	/** ステージセットのProperty file */
 	private CustomProperties propStageSet;
 
-	/** 残りプラチナブロック数 */
+	/** 残りプラチナBlockcount */
 	private int rest;
 
 	/** Current ステージ number */
@@ -98,19 +98,19 @@ public class GemManiaMode extends DummyMode {
 	/** 最終ステージ number */
 	private int laststage;
 
-	/** 挑戦したステージ数 */
+	/** 挑戦したステージcount */
 	private int trystage;
 
-	/** クリアしたステージ数 */
+	/** Cleared ステージcount */
 	private int clearstage;
 
 	/** クリア率 */
 	private int clearper;
 
-	/** ステージクリアフラグ */
+	/** ステージクリア flag */
 	private boolean clearflag;
 
-	/** ステージスキップフラグ */
+	/** ステージスキップ flag */
 	private boolean skipflag;
 
 	/** 残りリミットTime */
@@ -122,7 +122,7 @@ public class GemManiaMode extends DummyMode {
 	/** 残りステージTime */
 	private int stagetimeNow;
 
-	/** ステージ開始後の経過時間 */
+	/** ステージ開始後の経過 time */
 	private int cleartime;
 
 	/** スタート時のステージTime */
@@ -131,43 +131,43 @@ public class GemManiaMode extends DummyMode {
 	/** ステージBGM */
 	private int stagebgm;
 
-	/** Current 落下速度の number（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
 	private int gravityindex;
 
-	/** 次のセクションのレベル（これ-1のときにレベルストップする） */
+	/** 次のSection の level（これ-1のときに levelストップする） */
 	private int nextseclv;
 
-	/** レベル */
+	/**  level */
 	private int speedlevel;
 
-	/** レベルが増えたフラグ */
+	/**  levelが増えた flag */
 	private boolean lvupflag;
 
-	/** セクションTime */
+	/** Section Time */
 	private int[] sectiontime;
 
-	/** 今増えたリミットTime秒数 */
+	/** 今増えたリミットTime秒count */
 	private int timeextendSeconds;
 
-	/** 今増えたリミットTime秒数を表示する残りフレーム数 */
+	/** 今増えたリミットTime秒count display time frame count */
 	private int timeextendDisp;
 
-	/** ステージクリア時に増えたリミットTime秒数 */
+	/** ステージクリア時に増えたリミットTime秒count */
 	private int timeextendStageClearSeconds;
 
-	/** ブロックを置いた回数(1面終了でリセット) */
+	/** Blockを置いた count(1面終了でリセット) */
 	private int thisStageTotalPieceLockCount;
 
-	/** スキップボタンを押している時間 */
+	/** スキップ buttonを押している time */
 	private int skipbuttonPressTime;
 
-	/** ブロックピースを置いた回数（NEXTピースの計算用）のバックアップ（コンティニュー時に戻す） */
+	/** Blockピースを置いた count（NEXTピースの計算用）のバックアップ（コンティニュー時に戻す） */
 	private int continueNextPieceCount;
 
 	/** コンティニュー画面でNOを選ぶとtrue */
 	private boolean noContinue;
 
-	/** 完全クリアフラグ */
+	/** 完全クリア flag */
 	private int allclear;
 
 	/** トレーニングでのベストTime */
@@ -176,7 +176,7 @@ public class GemManiaMode extends DummyMode {
 	/** ミラー発動間隔 */
 	private int gimmickMirror;
 
-	/** ロールロール発動間隔 */
+	/** Roll Roll 発動間隔 */
 	private int gimmickRoll;
 
 	/** Big発動間隔 */
@@ -203,19 +203,19 @@ public class GemManiaMode extends DummyMode {
 	/** trueなら常に20G */
 	private boolean always20g;
 
-	/** trueならレベルストップ音有効 */
+	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** trueならセクションTime表示有効 */
+	/** trueならSection Time表示有効 */
 	private boolean showsectiontime;
 
 	/** NEXTをランダムにする */
 	private boolean randomnext;
 
-	/** トレーニングモード */
+	/** トレーニングMode  */
 	private int trainingType;
 
-	/** 開始時のブロックカウンタ */
+	/** 開始時のBlockカウンタ */
 	private int startnextc;
 
 	/** Version */
@@ -224,20 +224,20 @@ public class GemManiaMode extends DummyMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** ランキングの到達ステージ */
+	/** Rankings' 到達ステージ */
 	private int[][] rankingStage;
 
-	/** ランキングのクリア率 */
+	/** Rankings' クリア率 */
 	private int[][] rankingClearPer;
 
 	/** Rankings' times */
 	private int[][] rankingTime;
 
-	/** ランキングの完全クリアフラグ */
+	/** Rankings' 完全クリア flag */
 	private int[][] rankingAllClear;
 
 	/*
-	 * Mode nameを取得
+	 * Mode  nameを取得
 	 */
 	@Override
 	public String getName() {
@@ -348,7 +348,7 @@ public class GemManiaMode extends DummyMode {
 	 * @param engine GameEngine
 	 */
 	private void startStage(GameEngine engine) {
-		// スピードレベルInitialization
+		// スピード levelInitialization
 		speedlevel = -1;
 		gravityindex = 0;
 		nextseclv = 100;
@@ -495,7 +495,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * 落下速度を更新
+	 * Update falling speed
 	 * @param engine GameEngine
 	 */
 	private void setSpeed(GameEngine engine) {
@@ -522,7 +522,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージクリアや時間切れの判定
+	 * ステージクリアや time切れの判定
 	 * @param engine GameEngine
 	 */
 	private void checkStageEnd(GameEngine engine) {
@@ -1000,7 +1000,7 @@ public class GemManiaMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 9, GeneralUtil.getTime(trainingBestTime));
 			}
 
-			// レベル
+			//  level
 			receiver.drawScoreFont(engine, playerID, 0, 11, "LEVEL", EventReceiver.COLOR_PINK);
 			int tempLevel = speedlevel;
 			if(tempLevel < 0) tempLevel = 0;
@@ -1030,7 +1030,7 @@ public class GemManiaMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 20, strLimitTime, ((engine.timerActive) && (limittimeNow < 600) && (limittimeNow % 4 == 0)));
 			}
 
-			// セクションTime
+			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
 				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_PINK);
 
@@ -1079,7 +1079,7 @@ public class GemManiaMode extends DummyMode {
 			skipbuttonPressTime = 0;
 		}
 
-		// 経過時間
+		// 経過 time
 		if(engine.gameActive && engine.timerActive) {
 			cleartime++;
 			sectiontime[stage]++;
@@ -1089,7 +1089,7 @@ public class GemManiaMode extends DummyMode {
 		if(engine.gameActive && engine.timerActive && (limittimeNow > 0)) {
 			limittimeNow--;
 
-			// 時間Meter
+			//  timeMeter
 			if(limittimeNow >= limittimeStart) {
 				engine.meterValue = receiver.getMeterMax(engine);
 			} else {
@@ -1136,7 +1136,7 @@ public class GemManiaMode extends DummyMode {
 		}
 
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false)) {
-			// ロールロール
+			// Roll Roll 
 			engine.itemRollRollEnable = ((gimmickRoll > 0) && ((thisStageTotalPieceLockCount + 1) % gimmickRoll == 0));
 			// Big
 			engine.big = ((gimmickBig > 0) && ((thisStageTotalPieceLockCount + 1) % gimmickBig == 0));
@@ -1188,7 +1188,7 @@ public class GemManiaMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
-		// 実際に消えるLines数(Big時半分にならない)
+		// 実際に消えるLinescount(Big時半分にならない)
 		int realLines = engine.field.getLines();
 
 		if((realLines >= 1) && (engine.ending == 0)) {
@@ -1214,7 +1214,7 @@ public class GemManiaMode extends DummyMode {
 			if(speedlevel > 998) {
 				speedlevel = 998;
 			} else if(speedlevel >= nextseclv) {
-				// 次のセクション
+				// 次のSection 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1222,7 +1222,7 @@ public class GemManiaMode extends DummyMode {
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
 
-				// 次のセクションレベルを更新
+				// Update level for next section
 				nextseclv += 100;
 			} else if((speedlevel == nextseclv - 1) && (lvstopse == true)) {
 				engine.playSE("levelstop");
@@ -1231,7 +1231,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/*
-	 * Lines消去処理が終わったときの処理
+	 * Line clear処理が終わったときの処理
 	 */
 	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
@@ -1241,11 +1241,11 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/*
-	 * ブロックピースが固定されたときの処理(calcScoreの直後)
+	 * Blockピースが固定されたときの処理(calcScoreの直後)
 	 */
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
-		// 固定回数+1
+		// 固定 count+1
 		thisStageTotalPieceLockCount++;
 
 		// ミラー
@@ -1268,14 +1268,14 @@ public class GemManiaMode extends DummyMode {
 			if(clearflag) engine.playSE("stageclear");
 			else engine.playSE("stagefail");
 
-			// クリアしたステージ+1
+			// Cleared ステージ+1
 			if(clearflag) clearstage++;
 
 			// クリア率計算
 			trystage++;
 			clearper = (clearstage * 100) / trystage;
 
-			// Timeボーナス
+			// Time bonus
 			timeextendStageClearSeconds = 0;
 			if(clearflag) {
 				if(cleartime < 10 * 60) timeextendStageClearSeconds = 10;
@@ -1309,10 +1309,10 @@ public class GemManiaMode extends DummyMode {
 			engine.itemColorEnable = false;
 			engine.resetFieldVisible();
 
-			// セクションTime設定
+			// Section Time設定
 			if(!clearflag) {
 				if(!skipflag)
-					sectiontime[stage] = -1;	// 時間切れ
+					sectiontime[stage] = -1;	//  time切れ
 				else
 					sectiontime[stage] = -2;	// スキップ
 			} else {
@@ -1335,7 +1335,7 @@ public class GemManiaMode extends DummyMode {
 				engine.statc[1] += 30;
 			}
 
-			// 時間Meter
+			//  timeMeter
 			int limittimeTemp = limittimeNow + engine.statc[1];
 			if(skipflag) limittimeTemp = limittimeNow - engine.statc[1];
 
@@ -1450,7 +1450,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー時の処理(主にコンティニュー画面)
+	 * Called at game over(主にコンティニュー画面)
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
@@ -1693,7 +1693,7 @@ public class GemManiaMode extends DummyMode {
 	 * @param stg ステージ
 	 * @param clper クリア率
 	 * @param time Time
-	 * @param clear 完全クリアフラグ
+	 * @param clear 完全クリア flag
 	 */
 	private void updateRanking(int type, int stg, int clper, int time, int clear) {
 		rankingRank = checkRanking(type, stg, clper, time, clear);
@@ -1721,7 +1721,7 @@ public class GemManiaMode extends DummyMode {
 	 * @param stg ステージ
 	 * @param clper クリア率
 	 * @param time Time
-	 * @param clear 完全クリアフラグ
+	 * @param clear 完全クリア flag
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int type, int stg, int clper, int time, int clear) {

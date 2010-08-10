@@ -47,13 +47,13 @@ public class StateConfigGeneral extends BasicGameState {
 	/** ジョイスティック入力検出法の表示名 */
 	protected static final String[] JOYSTICK_METHOD_STRINGS = {"NONE", "SLICK DEFAULT", "SLICK ALTERNATE", "LWJGL"};
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** フルスクリーンフラグ */
+	/** フルスクリーン flag */
 	protected boolean fullscreen;
 
 	/** 効果音ON/OFF */
@@ -80,7 +80,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/** 最大FPS */
 	protected int maxfps;
 
-	/** Lines消去エフェクト表示 */
+	/** Line clearエフェクト表示 */
 	protected boolean showlineeffect;
 
 	/** 重い演出を使う */
@@ -278,7 +278,7 @@ public class StateConfigGeneral extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// TTFフォント描画
@@ -398,7 +398,7 @@ public class StateConfigGeneral extends BasicGameState {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
 			ResourceHolder.soundManager.play("decide");
@@ -410,7 +410,7 @@ public class StateConfigGeneral extends BasicGameState {
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// Cancelボタン
+		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
 			
@@ -418,10 +418,10 @@ public class StateConfigGeneral extends BasicGameState {
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

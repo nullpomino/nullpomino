@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
  */
 public class EventReceiver {
 	/**
-	 * 文字色の定数
+	 * 文字色の定count
 	 */
 	public static final int COLOR_WHITE = 0, COLOR_BLUE = 1, COLOR_RED = 2, COLOR_PINK = 3, COLOR_GREEN = 4, COLOR_YELLOW = 5, COLOR_CYAN = 6,
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
@@ -90,7 +90,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 * @param colorF flagがfalseの場合の文字色
 	 * @param colorT flagがtrueの場合の文字色
 	 */
@@ -110,7 +110,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 */
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, boolean flag) {
 		if(flag == false) {
@@ -155,7 +155,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 * @param colorF flagがfalseの場合の文字色
 	 * @param colorT flagがtrueの場合の文字色
 	 */
@@ -175,7 +175,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 */
 	public void drawTTFMenuFont(GameEngine engine, int playerID, int x, int y, String str, boolean flag) {
 		if(flag == false) {
@@ -234,7 +234,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 * @param colorF flagがfalseの場合の文字色
 	 * @param colorT flagがtrueの場合の文字色
 	 */
@@ -254,7 +254,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 */
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, boolean flag) {
 		if(flag == false) {
@@ -299,7 +299,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 * @param colorF flagがfalseの場合の文字色
 	 * @param colorT flagがtrueの場合の文字色
 	 */
@@ -319,7 +319,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 */
 	public void drawTTFScoreFont(GameEngine engine, int playerID, int x, int y, String str, boolean flag) {
 		if(flag == false) {
@@ -378,7 +378,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 * @param colorF flagがfalseの場合の文字色
 	 * @param colorT flagがtrueの場合の文字色
 	 */
@@ -398,7 +398,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 */
 	public void drawDirectFont(GameEngine engine, int playerID, int x, int y, String str, boolean flag) {
 		if(flag == false) {
@@ -443,7 +443,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 * @param colorF flagがfalseの場合の文字色
 	 * @param colorT flagがtrueの場合の文字色
 	 */
@@ -463,7 +463,7 @@ public class EventReceiver {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
-	 * @param flag 条件式またはboolean変数
+	 * @param flag 条件式またはboolean変count
 	 */
 	public void drawTTFDirectFont(GameEngine engine, int playerID, int x, int y, String str, boolean flag) {
 		if(flag == false) {
@@ -486,14 +486,14 @@ public class EventReceiver {
 	public void drawSpeedMeter(GameEngine engine, int playerID, int x, int y, int s) {}
 
 	/**
-	 * 1マスブロックを描画
+	 * 1マスBlockを描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param color 色
 	 * @param skin 絵柄
-	 * @param bone trueなら骨ブロック
+	 * @param bone trueなら骨Block
 	 * @param darkness 暗さもしくは明るさ
 	 * @param alpha 透明度
 	 * @param scale 拡大率
@@ -518,8 +518,8 @@ public class EventReceiver {
 	}
 
 	/**
-	 * ブロックの画像の幅を取得
-	 * @return ブロックの画像の幅
+	 * Blockの画像の幅を取得
+	 * @return Blockの画像の幅
 	 * @deprecated getBlockGraphicsWidth(GameEngine engine, int playerID)に置き換えられました
 	 */
 	@Deprecated
@@ -528,18 +528,18 @@ public class EventReceiver {
 	}
 
 	/**
-	 * ブロックの画像の幅を取得
+	 * Blockの画像の幅を取得
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @return ブロックの画像の幅
+	 * @return Blockの画像の幅
 	 */
 	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
 		return 0;
 	}
 
 	/**
-	 * ブロックの画像の高さを取得
-	 * @return ブロックの画像の高さ
+	 * Blockの画像の高さを取得
+	 * @return Blockの画像の高さ
 	 * @deprecated getBlockGraphicsHeight(GameEngine engine, int playerID)に置き換えられました
 	 */
 	@Deprecated
@@ -548,10 +548,10 @@ public class EventReceiver {
 	}
 
 	/**
-	 * ブロックの画像の高さを取得
+	 * Blockの画像の高さを取得
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @return ブロックの画像の高さ
+	 * @return Blockの画像の高さ
 	 */
 	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
 		return 0;
@@ -590,16 +590,16 @@ public class EventReceiver {
 	public void setGraphics(Object g) {}
 
 	/**
-	 * モードの設定を読み込み
-	 * @return モードの設定データ（nullならなし）
+	 * Mode の設定を読み込み
+	 * @return Modeの設定データ（nullならなし）
 	 */
 	public CustomProperties loadModeConfig() {
 		return null;
 	}
 
 	/**
-	 * モードの設定を保存
-	 * @param modeConfig モードの設定データ
+	 * Mode の設定を保存
+	 * @param modeConfig Modeの設定データ
 	 */
 	public void saveModeConfig(CustomProperties modeConfig) {}
 
@@ -671,21 +671,21 @@ public class EventReceiver {
 	public void onReady(GameEngine engine, int playerID) {}
 
 	/**
-	 * ブロックピースの移動処理
+	 * Blockピースの移動処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
 	public void onMove(GameEngine engine, int playerID) {}
 
 	/**
-	 * ブロック固定直後の光っているときの処理
+	 * Block固定直後の光っているときの処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
 	public void onLockFlash(GameEngine engine, int playerID) {}
 
 	/**
-	 * Lines消去処理
+	 * Line clear処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
@@ -706,7 +706,7 @@ public class EventReceiver {
 	public void onEndingStart(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各ゲームモードが自由に使えるステータスの処理
+	 * 各ゲームMode が自由に使えるステータスの処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
@@ -769,21 +769,21 @@ public class EventReceiver {
 	public void renderReady(GameEngine engine, int playerID) {}
 
 	/**
-	 * ブロックピースの移動描画処理
+	 * Blockピースの移動描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
 	public void renderMove(GameEngine engine, int playerID) {}
 
 	/**
-	 * ブロック固定直後の光っているときの処理
+	 * Block固定直後の光っているときの処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
 	public void renderLockFlash(GameEngine engine, int playerID) {}
 
 	/**
-	 * Lines消去描画処理
+	 * Line clear描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
@@ -804,7 +804,7 @@ public class EventReceiver {
 	public void renderEndingStart(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各ゲームモードが自由に使えるステータスの描画処理
+	 * 各ゲームMode が自由に使えるステータスの描画処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */
@@ -839,12 +839,12 @@ public class EventReceiver {
 	public void renderFieldEdit(GameEngine engine, int playerID) {}
 
 	/**
-	 * ブロックを消す演出を出すときの処理
+	 * Blockを消す演出を出すときの処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk ブロック
+	 * @param blk Block
 	 */
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {}
 
@@ -852,7 +852,7 @@ public class EventReceiver {
 	 * Calculate score
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param lines 消えるLines数（消えなかった場合は0）
+	 * @param lines 消えるLinescount（消えなかった場合は0）
 	 */
 	public void calcScore(GameEngine engine, int playerID, int lines) {}
 
@@ -860,7 +860,7 @@ public class EventReceiver {
 	 * Soft drop使用後の処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param fall 今落下した段数
+	 * @param fall 今落下した段count
 	 */
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {}
 
@@ -868,7 +868,7 @@ public class EventReceiver {
 	 * Hard drop使用後の処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param fall 今落下した段数
+	 * @param fall 今落下した段count
 	 */
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {}
 
@@ -880,15 +880,15 @@ public class EventReceiver {
 	public void fieldEditExit(GameEngine engine, int playerID) {}
 
 	/**
-	 * ブロックピースが固定されたときの処理(calcScoreの直後)
+	 * Blockピースが固定されたときの処理(calcScoreの直後)
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID プレイヤーID
-	 * @param lines 消えるLines数（消えなかった場合は0）
+	 * @param lines 消えるLinescount（消えなかった場合は0）
 	 */
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {}
 
 	/**
-	 * Lines消去が終わるときに呼び出される処理
+	 * Line clearが終わるときに呼び出される処理
 	 * @param engine GameEngine
 	 * @param playerID プレイヤーID
 	 */

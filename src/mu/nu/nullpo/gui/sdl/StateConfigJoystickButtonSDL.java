@@ -33,10 +33,10 @@ import sdljava.event.SDLKey;
 import sdljava.video.SDLSurface;
 
 /**
- * ジョイスティックボタン設定画面のステート
+ * ジョイスティック button設定画面のステート
  */
 public class StateConfigJoystickButtonSDL extends BaseStateSDL {
-	/** キー入力を受付可能になるまでのフレーム数 */
+	/** キー入力を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** プレイヤー number */
@@ -45,20 +45,20 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	/** 使用するジョイスティックの number */
 	protected int joyNumber;
 
-	/** 現在設定中のボタン */
+	/** 現在設定中の button */
 	protected int keynum;
 
-	/** 経過フレーム数 */
+	/** 経過 frame count */
 	protected int frame;
 
-	/** ボタン設定 */
+	/**  button設定 */
 	protected int buttonmap[];
 
 	/** 前のフレームのジョイスティックの入力状態 */
 	protected boolean previousJoyPressedState[];
 
 	/**
-	 * ボタン設定をInitialization
+	 *  button設定をInitialization
 	 */
 	protected void reset() {
 		keynum = 4;
@@ -79,10 +79,10 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 押されたボタンの numberを返す
+	 * 押された buttonの numberを返す
 	 * @param prev 前のフレームでの入力状態
 	 * @param now このフレームでの入力状態
-	 * @return 押されたボタンの number、無いなら-1
+	 * @return 押された buttonの number、無いなら-1
 	 */
 	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {
 		for(int i = 0; i < now.length; i++) {
@@ -136,7 +136,7 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {

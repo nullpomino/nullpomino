@@ -34,13 +34,13 @@ import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 
 /**
- * モード選択画面のステート
+ * Mode 選択画面のステート
  */
 public class StateSelectModeSDL extends BaseStateSDL {
-	/** 1画面に表示する最大モード数 */
+	/** 1画面に表示する最大Mode count */
 	public static final int MAX_MODE_IN_ONE_PAGE = 25;
 
-	/** Mode nameの配列 */
+	/** Mode  nameの配列 */
 	protected String[] modenames;
 
 	/** カーソル位置 */
@@ -100,7 +100,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -140,7 +140,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");
@@ -153,7 +153,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_INGAME);
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);

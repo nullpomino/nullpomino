@@ -46,10 +46,10 @@ public class NetRoomInfo implements Serializable {
 	/** ルーム名 */
 	public String strName = "";
 
-	/** 参加可能な最大人数 */
+	/** 参加可能な最大人count */
 	public int maxPlayers = 6;
 
-	/** 自動開始までの待機時間 */
+	/** 自動開始までの待機 time */
 	public int autoStartSeconds = 0;
 
 	/** 落下速度(分子) */
@@ -61,13 +61,13 @@ public class NetRoomInfo implements Serializable {
 	/** ARE */
 	public int are = 30;
 
-	/** Lines消去後ARE */
+	/** ARE after line clear */
 	public int areLine = 30;
 
-	/** Lines消去時間 */
+	/** Line clear time */
 	public int lineDelay = 40;
 
-	/** 固定時間 */
+	/** 固定 time */
 	public int lockDelay = 30;
 
 	/** DAS */
@@ -103,7 +103,7 @@ public class NetRoomInfo implements Serializable {
    /** Enable bravo bonus */
    public boolean bravo = true;
 
-	/** ルール固定フラグ */
+	/** ルール固定 flag */
 	public boolean ruleLock = false;
 
 	/** Rule name */
@@ -115,13 +115,13 @@ public class NetRoomInfo implements Serializable {
 	/** 参加しているNumber of players */
 	public int playerSeatedCount = 0;
 
-	/** 観戦中の人の数 */
+	/** 観戦中の人のcount */
 	public int spectatorCount = 0;
 
 	/** ルームにいる人全員のカウント(参戦中+観戦中) */
 	public int playerListCount = 0;
 
-	/** ゲーム中フラグ */
+	/** ゲーム中 flag */
 	public boolean playing = false;
 
 	/** ゲーム開始直後のNumber of players */
@@ -145,10 +145,10 @@ public class NetRoomInfo implements Serializable {
 	/** Hole change style (false=line true=attack)*/
 	public boolean garbageChangePerAttack = true;
 	
-	/** Hurryup開始までの秒数(-1でHurryupなし) */
+	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	public int hurryupSeconds = -1;
 
-	/** Hurryup後に何回ブロックを置くたびに床をせり上げるか */
+	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
 	public int hurryupInterval = 5;
 
 	/** 自動スタートタイマー type(false=NullpoMino true=TNET2) */
@@ -166,7 +166,7 @@ public class NetRoomInfo implements Serializable {
 	/** 前回のマップ */
 	public int mapPrevious = -1;
 
-	/** 新しい断片的邪魔ブロックシステムを使う */
+	/** 新しい断片的邪魔Blockシステムを使う */
 	public boolean useFractionalGarbage = false;
 
 	/** マップリスト */
@@ -400,8 +400,8 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 今ゲーム席にいる人の数を数える(null席はカウントしない)
-	 * @return 今ゲーム席にいる人の数
+	 * 今ゲーム席にいる人のcountをcountえる(null席はカウントしない)
+	 * @return 今ゲーム席にいる人のcount
 	 */
 	public int getNumberOfPlayerSeated() {
 		int count = 0;
@@ -497,7 +497,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 何人のプレイヤーが準備完了したか数える
+	 * 何人のプレイヤーが準備完了したかcountえる
 	 * @return 準備完了したNumber of players
 	 */
 	public int getHowManyPlayersReady() {
@@ -511,7 +511,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 何人のプレイヤーがプレイ中か数える(死んだ人とまだ部屋に来た直後の人は含みません)
+	 * 何人のプレイヤーがプレイ中かcountえる(死んだ人とまだ部屋に来た直後の人は含みません)
 	 * @return プレイ中のNumber of players
 	 */
 	public int getHowManyPlayersPlaying() {

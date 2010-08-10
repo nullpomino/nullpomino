@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * MARATHON+モード
+ * MARATHON+Mode 
  */
 public class MarathonPlusMode extends DummyMode {
 	/** Current version */
@@ -63,7 +63,7 @@ public class MarathonPlusMode extends DummyMode {
 	/** Number of game types */
 	private static final int GAMETYPE_MAX = 2;
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -95,7 +95,7 @@ public class MarathonPlusMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
@@ -104,16 +104,16 @@ public class MarathonPlusMode extends DummyMode {
 	/** Current BGM */
 	private int bgmlv;
 
-	/** ボーナスレベルでのLines数 */
+	/**  bonus levelでのLinescount */
 	private int bonusLines;
 
-	/** ボーナスレベルでブロックを置いた回数 */
+	/**  bonus levelでBlockを置いた count */
 	private int bonusPieceCount;
 
-	/** ボーナスレベルでのブロックが見える残り時間 */
+	/**  bonus levelでのBlockが見える残り time */
 	private int bonusFlashNow;
 
-	/** ボーナスレベル経過時間 */
+	/**  bonus level経過 time */
 	private int bonusTime;
 
 	/** Level at start time */
@@ -153,7 +153,7 @@ public class MarathonPlusMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -215,7 +215,7 @@ public class MarathonPlusMode extends DummyMode {
 	}
 
 	/**
-	 * ゲーム開始時のBGMを設定
+	 * Set BGM at start of game
 	 * @param engine GameEngine
 	 */
 	private void setStartBgmlv(GameEngine engine) {
@@ -645,7 +645,7 @@ public class MarathonPlusMode extends DummyMode {
 			if(engine.statistics.lines % 10 >= 8) engine.meterColor = GameEngine.METER_COLOR_RED;
 		}
 
-		// ボーナスレベル
+		//  bonus level
 		if(engine.statistics.level >= 20) {
 			bonusLines += lines;
 			bonusPieceCount++;
@@ -707,7 +707,7 @@ public class MarathonPlusMode extends DummyMode {
 	}
 
 	/*
-	 * ボーナスレベル到達画面の処理
+	 *  bonus level到達画面の処理
 	 */
 	@Override
 	public boolean onCustom(GameEngine engine, int playerID) {
@@ -733,7 +733,7 @@ public class MarathonPlusMode extends DummyMode {
 	}
 
 	/*
-	 * ボーナスレベル到達画面の描画
+	 *  bonus level到達画面の描画
 	 */
 	@Override
 	public void renderCustom(GameEngine engine, int playerID) {

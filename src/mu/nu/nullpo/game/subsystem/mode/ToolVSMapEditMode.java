@@ -62,7 +62,7 @@ public class ToolVSMapEditMode extends DummyMode {
 	private int nowMapID;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -70,7 +70,7 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/*
-	 * Mode initialization
+	 * Mode  initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {

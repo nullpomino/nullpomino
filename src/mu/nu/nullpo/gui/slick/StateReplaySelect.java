@@ -51,7 +51,7 @@ public class StateReplaySelect extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 4;
 
-	/** 1画面に表示する最大ファイル数 */
+	/** 1画面に表示する最大ファイルcount */
 	public static final int MAX_FILE_IN_ONE_PAGE = 20;
 
 	/** Log */
@@ -60,7 +60,7 @@ public class StateReplaySelect extends BasicGameState {
 	/** リプレイ一覧 */
 	protected String[] replaylist;
 
-	/** Mode name */
+	/** Mode  name */
 	protected String[] modenameList;
 
 	/** Rule name */
@@ -72,7 +72,7 @@ public class StateReplaySelect extends BasicGameState {
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/*
@@ -208,7 +208,7 @@ public class StateReplaySelect extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -258,7 +258,7 @@ public class StateReplaySelect extends BasicGameState {
 				ResourceHolder.soundManager.play("cursor");
 			}
 
-			// 決定ボタン
+			// 決定 button
 			//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
 				ResourceHolder.soundManager.play("decide");
@@ -280,15 +280,15 @@ public class StateReplaySelect extends BasicGameState {
 			}
 		}
 
-		// Cancelボタン
+		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
 			game.enterState(StateTitle.ID);
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

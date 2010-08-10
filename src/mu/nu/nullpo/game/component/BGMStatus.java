@@ -37,7 +37,7 @@ public class BGMStatus implements Serializable {
 	/** シリアルVersionID */
 	private static final long serialVersionUID = -1003092972570497408L;
 
-	/** 音楽の定数 */
+	/** 音楽の定count */
 	public static final int BGM_NOTHING = -1,
 							BGM_NORMAL1 = 0,
 							BGM_NORMAL2 = 1,
@@ -56,7 +56,7 @@ public class BGMStatus implements Serializable {
 							BGM_SPECIAL3 = 14,
 							BGM_SPECIAL4 = 15;
 
-	/** 音楽の最大数 */
+	/** 音楽の最大count */
 	public static final int BGM_COUNT = 16;
 
 	/** Current BGM number */

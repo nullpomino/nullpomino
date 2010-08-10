@@ -44,7 +44,7 @@ public class StateTitleSDL extends BaseStateSDL {
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** 新Versionのチェック済みならtrue */
+	/** 新Versionの check 済みならtrue */
 	protected boolean isNewVersionChecked = false;
 
 	/*
@@ -59,7 +59,7 @@ public class StateTitleSDL extends BaseStateSDL {
 		// GC呼び出し
 		System.gc();
 
-		// 新Versionチェック
+		// 新Version check 
 		if(!isNewVersionChecked && NullpoMinoSDL.propGlobal.getProperty("updatechecker.enable", true)) {
 			isNewVersionChecked = true;
 
@@ -113,7 +113,7 @@ public class StateTitleSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -143,7 +143,7 @@ public class StateTitleSDL extends BaseStateSDL {
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");

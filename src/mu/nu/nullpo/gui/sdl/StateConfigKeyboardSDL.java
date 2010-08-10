@@ -39,29 +39,29 @@ import sdljava.video.SDLVideo;
  * キーボード設定画面のステート
  */
 public class StateConfigKeyboardSDL extends BaseStateSDL {
-	/** キー入力を受付可能になるまでのフレーム数 */
+	/** キー入力を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
 	/** プレイヤー number */
 	public int player = 0;
 
-	/** 初期設定モード */
+	/** 初期設定Mode  */
 	protected boolean firstSetupMode;
 
-	/** 現在設定中のボタン */
+	/** 現在設定中の button */
 	protected int keynum;
 
-	/** 経過フレーム数 */
+	/** 経過 frame count */
 	protected int frame;
 
-	/** ボタン設定 */
+	/**  button設定 */
 	protected int keymap[];
 
 	/** 前のフレームのキー入力状態 */
 	protected boolean previousKeyPressedState[];
 
 	/**
-	 * ボタン設定をInitialization
+	 *  button設定をInitialization
 	 */
 	protected void reset() {
 		firstSetupMode = NullpoMinoSDL.propConfig.getProperty("option.firstSetupMode", true);
@@ -150,7 +150,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {

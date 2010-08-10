@@ -66,10 +66,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Meter表示 */
 	protected JCheckBox chkboxShowMeter;
 
-	/** フィールドのブロックの絵を表示（チェックなしの場合は枠線だけ） */
+	/** フィールドのBlockの絵を表示（ check なしの場合は枠線だけ） */
 	protected JCheckBox chkboxShowFieldBlockGraphics;
 
-	/** シンプルな絵柄のブロックを使う */
+	/** シンプルな絵柄のBlockを使う */
 	protected JCheckBox chkboxSimpleBlock;
 
 	/** 効果音 */
@@ -135,7 +135,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		txtfldSEVolume = new JTextField(5);
 		pSEVolume.add(txtfldSEVolume);
 
-		// ---------- チェックボックス ----------
+		// ---------- checkボックス ----------
 		chkboxShowFPS = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowFPS"));
 		chkboxShowFPS.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxShowFPS);
@@ -180,7 +180,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxSideNext.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxSideNext);
 
-		// ---------- 画面下のボタン ----------
+		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(pButtons, BorderLayout.SOUTH);
@@ -218,7 +218,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * ボタンクリック時の処理
+	 *  Called when button clicked
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "GeneralConfig_OK") {

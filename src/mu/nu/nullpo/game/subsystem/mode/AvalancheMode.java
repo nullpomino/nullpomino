@@ -91,7 +91,7 @@ public class AvalancheMode extends DummyMode {
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
 	private int gravityindex;
 
 	/** Amount of points earned from most recent clear */
@@ -146,7 +146,7 @@ public class AvalancheMode extends DummyMode {
 	private boolean showChains;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -445,14 +445,14 @@ public class AvalancheMode extends DummyMode {
 
 		if (gametype == 1) {
 			int remainTime = ULTRA_MAX_TIME - engine.statistics.time;
-			// 時間Meter
+			//  timeMeter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / ULTRA_MAX_TIME;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainTime <= 3600) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 1800) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 600) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// 時間切れ
+			//  time切れ
 			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;

@@ -58,22 +58,22 @@ public class StateInGame extends BasicGameState {
 	/** Log */
 	static Logger log = Logger.getLogger(StateInGame.class);
 
-	/** ポーズフラグ */
+	/** ポーズ flag */
 	protected boolean pause = false;
 
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/** フレームステップ有効フラグ */
+	/** フレームステップ有効 flag */
 	protected boolean enableframestep = false;
 
-	/** 倍速モード */
+	/** 倍速Mode  */
 	protected int fastforward = 0;
 
 	/** ポーズメニューのカーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/** AppGameContainer（これを使ってタイトルバーを変える） */
@@ -113,7 +113,7 @@ public class StateInGame extends BasicGameState {
 
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
 
-		// モード
+		// Mode
 		String modeName = NullpoMinoSlick.propGlobal.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSlick.modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -187,7 +187,7 @@ public class StateInGame extends BasicGameState {
 
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
 
-		// モード
+		// Mode
 		String modeName = prop.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSlick.modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -428,7 +428,7 @@ public class StateInGame extends BasicGameState {
 		}
 
 		if(gameManager != null) {
-			// リトライボタン
+			// リトライ button
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_RETRY) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_RETRY)) {
 				ResourceHolder.bgmStop();
 				pause = false;
@@ -446,11 +446,11 @@ public class StateInGame extends BasicGameState {
 			}
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 			ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_QUIT)) {
 			shutdown();
 			container.exit();

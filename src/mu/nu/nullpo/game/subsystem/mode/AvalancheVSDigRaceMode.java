@@ -82,10 +82,10 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** 溜まっている邪魔ブロックの数 */
+	/** 溜まっている邪魔Blockのcount */
 	private int[] ojama;
 
-	/** 送った邪魔ブロックの数 */
+	/** 送った邪魔Blockのcount */
 	private int[] ojamaSent;
 
 	/** Time to display the most recent increase in score */
@@ -130,7 +130,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	/** Settings for hard ojama blocks */
 	private int[] ojamaHard;
 
-	/** Hurryup開始までの秒数(0でHurryupなし) */
+	/** Hurryup開始までの秒count(0でHurryupなし) */
 	private int[] hurryupSeconds;
 
 	/** Set to true when last drop resulted in a clear */
@@ -161,7 +161,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	private int[] handicapRows;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -177,7 +177,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	}
 
 	/*
-	 * Mode initialization
+	 * Mode  initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {

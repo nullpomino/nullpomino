@@ -65,7 +65,7 @@ public class History4RollsRandomizer implements Randomizer {
 			history[3 - j] = history[3 - (j + 1)];
 		}
 
-		// 履歴に新しいブロックを入れる
+		// 履歴に新しいBlockを入れる
 		history[0] = id;
 
 		// Create draws
@@ -92,7 +92,7 @@ public class History4RollsRandomizer implements Randomizer {
 				history[3 - j] = history[3 - (j + 1)];
 			}
 
-			// 履歴に新しいブロックを入れる
+			// 履歴に新しいBlockを入れる
 			history[0] = id;
 
 			// Add to NEXT list

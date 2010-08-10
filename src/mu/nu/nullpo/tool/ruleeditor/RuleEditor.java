@@ -114,7 +114,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Rule name */
 	private JTextField txtfldRuleName;
 
-	/** NEXT表示数のテキストフィールド */
+	/** NEXT表示countのテキストフィールド */
 	private JTextField txtfldNextDisplay;
 
 	/** 絵柄のComboボックス */
@@ -123,10 +123,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** ゴースト有効 */
 	private JCheckBox chkboxGhost;
 
-	/** ブロックピースがフィールド枠外から出現 */
+	/** Blockピースがフィールド枠外から出現 */
 	private JCheckBox chkboxEnterAboveField;
 
-	/** 出現予定地が埋まっているときにY-coordinateを上にずらす最大回数 */
+	/** 出現予定地が埋まっているときにY-coordinateを上にずらす最大 count */
 	private JTextField txtfldEnterMaxDistanceY;
 
 	/** NEXT順生成アルゴリズム */
@@ -135,7 +135,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** NEXT順生成アルゴリズムのリスト */
 	private Vector<String> vectorRandomizer;
 
-	/** NEXT順生成アルゴリズムのリセットボタン */
+	/** NEXT順生成アルゴリズムのリセット button */
 	private JButton btnResetRandomizer;
 
 	//----------------------------------------------------------------------
@@ -171,10 +171,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 先行ホールド連続使用不可 */
 	private JCheckBox chkboxHoldInitialLimit;
 
-	/** ホールドを使ったときにブロックピースの向きを初期状態に戻す */
+	/** ホールドを使ったときにBlockピースの向きを初期状態に戻す */
 	private JCheckBox chkboxHoldResetDirection;
 
-	/** ホールドできる回数（-1:無制限） */
+	/** ホールドできる count（-1:無制限） */
 	private JTextField txtfldHoldLimit;
 
 	//----------------------------------------------------------------------
@@ -222,7 +222,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 先行回転でもWallkickする */
 	private JCheckBox chkboxRotateInitialWallkick;
 
-	/** 上DirectionへのWallkickができる回数（-1:無限） */
+	/** 上DirectionへのWallkickができる count（-1:無限） */
 	private JTextField txtfldRotateMaxUpwardWallkick;
 
 	/** falseなら左が正回転、trueなら右が正回転 */
@@ -240,37 +240,37 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Wallkickアルゴリズムのリスト */
 	private Vector<String> vectorWallkickSystem;
 
-	/** Wallkickアルゴリズムのリセットボタン */
+	/** Wallkickアルゴリズムのリセット button */
 	private JButton btnResetWallkickSystem;
 
 	//----------------------------------------------------------------------
-	/* 固定時間設定パネル */
+	/* 固定 time設定パネル */
 
-	/** 最低固定時間 */
+	/** 最低固定 time */
 	private JTextField txtfldLockDelayMin;
 
-	/** 最高固定時間 */
+	/** 最高固定 time */
 	private JTextField txtfldLockDelayMax;
 
-	/** 落下で固定時間リセット */
+	/** 落下で固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetFall;
 
-	/** 移動で固定時間リセット */
+	/** 移動で固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetMove;
 
-	/** 回転で固定時間リセット */
+	/** 回転で固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetRotate;
 
 	/** 横移動カウンタと回転カウンタを共有（横移動カウンタだけ使う） */
 	private JCheckBox chkboxLockDelayLockResetLimitShareCount;
 
-	/** 横移動回数制限 */
+	/** 横移動 count制限 */
 	private JTextField txtfldLockDelayLockResetLimitMove;
 
-	/** 回転回数制限 */
+	/** 回転 count制限 */
 	private JTextField txtfldLockDelayLockResetLimitRotate;
 
-	/** 横移動カウンタか回転カウンタが超過したら固定時間リセットを無効にする */
+	/** 横移動カウンタか回転カウンタが超過したら固定 timeリセットを無効にする */
 	private JRadioButton radioLockDelayLockResetLimitOverNoReset;
 
 	/** 横移動カウンタか回転カウンタが超過したら即座に固定する */
@@ -288,19 +288,19 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 最高ARE */
 	private JTextField txtfldAREMax;
 
-	/** 最低Lines消去後ARE */
+	/** 最低ARE after line clear */
 	private JTextField txtfldARELineMin;
 
-	/** 最高Lines消去後ARE */
+	/** 最高ARE after line clear */
 	private JTextField txtfldARELineMax;
 
-	/** 固定した瞬間に光るフレーム数 */
+	/** 固定した瞬間に光る frame count */
 	private JTextField txtfldARELockFlash;
 
-	/** ブロックが光る専用フレームを入れる */
+	/** Blockが光る専用フレームを入れる */
 	private JCheckBox chkboxARELockFlashOnlyFrame;
 
-	/** Lines消去前にブロックが光るフレームを入れる */
+	/** Line clear前にBlockが光るフレームを入れる */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
 	
 	/** ARE cancel on move checkbox */
@@ -313,12 +313,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JCheckBox chkboxARECancelHold;
 
 	//----------------------------------------------------------------------
-	/* Lines消去設定パネル */
+	/* Line clear設定パネル */
 
-	/** 最低Lines消去時間 */
+	/** 最低Line clear time */
 	private JTextField txtfldLineDelayMin;
 
-	/** 最高Lines消去時間 */
+	/** 最高Line clear time */
 	private JTextField txtfldLineDelayMax;
 	
 	/** 落下アニメ */
@@ -336,10 +336,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 	//----------------------------------------------------------------------
 	/* 移動設定パネル */
 
-	/** 最低横溜め時間 */
+	/** 最低横溜め time */
 	private JTextField txtfldMoveDASMin;
 
-	/** 最高横溜め時間 */
+	/** 最高横溜め time */
 	private JTextField txtfldMoveDASMax;
 
 	/** 横移動間隔 */
@@ -351,10 +351,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 最初のフレームで横溜め可能 */
 	private JCheckBox chkboxMoveDASInMoveFirstFrame;
 
-	/** ブロックが光った瞬間に横溜め可能 */
+	/** Blockが光った瞬間に横溜め可能 */
 	private JCheckBox chkboxMoveDASInLockFlash;
 
-	/** Lines消去中に横溜め可能 */
+	/** Line clear中に横溜め可能 */
 	private JCheckBox chkboxMoveDASInLineClear;
 
 	/** ARE中に横溜め可能 */
@@ -436,7 +436,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JComboBox[] comboboxPieceDirection;
 
 	//----------------------------------------------------------------------
-	/** ブロック画像 */
+	/** Block画像 */
 	private BufferedImage[] imgBlockSkins;
 
 	/**
@@ -602,7 +602,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldRuleName = new JTextField("", 15);
 		pRuleName.add(txtfldRuleName);
 
-		// NEXT表示数
+		// NEXT表示count
 		JPanel pNextDisplay = new JPanel();
 		panelBasic.add(pNextDisplay);
 
@@ -636,7 +636,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxEnterAboveField = new JCheckBox(getUIText("Basic_EnterAboveField"));
 		panelBasic.add(chkboxEnterAboveField);
 
-		// 出現予定地が埋まっているときにY-coordinateを上にずらす最大回数
+		// 出現予定地が埋まっているときにY-coordinateを上にずらす最大 count
 		JPanel pEnterMaxDistanceY = new JPanel();
 		panelBasic.add(pEnterMaxDistanceY);
 
@@ -728,11 +728,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxHoldInitialLimit = new JCheckBox(getUIText("Hold_HoldInitialLimit"));
 		panelHold.add(chkboxHoldInitialLimit);
 
-		// ホールドを使ったときにブロックピースの向きを初期状態に戻す
+		// ホールドを使ったときにBlockピースの向きを初期状態に戻す
 		chkboxHoldResetDirection = new JCheckBox(getUIText("Hold_HoldResetDirection"));
 		panelHold.add(chkboxHoldResetDirection);
 
-		// ホールドできる回数
+		// ホールドできる count
 		JPanel pHoldLimit = new JPanel();
 		panelHold.add(pHoldLimit);
 
@@ -821,7 +821,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxRotateButtonAllowDouble = new JCheckBox(getUIText("Rotate_RotateButtonAllowDouble"));
 		panelRotate.add(chkboxRotateButtonAllowDouble);
 
-		// UpDirectionへWallkickできる回数
+		// UpDirectionへWallkickできる count
 		JPanel pRotateMaxUpwardWallkick = new JPanel();
 		panelRotate.add(pRotateMaxUpwardWallkick);
 		JLabel lRotateMaxUpwardWallkick = new JLabel(getUIText("Rotate_RotateMaxUpwardWallkick"));
@@ -848,12 +848,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		btnResetWallkickSystem.addActionListener(this);
 		pWallkickSystem.add(btnResetWallkickSystem);
 
-		// 固定時間タブ --------------------------------------------------
+		// 固定 timeタブ --------------------------------------------------
 		JPanel panelLockDelay = new JPanel();
 		panelLockDelay.setLayout(new BoxLayout(panelLockDelay, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_LockDelay"), panelLockDelay);
 
-		// 最低固定時間と最高固定時間
+		// 最低固定 timeと最高固定 time
 		JLabel lLockDelayMin = new JLabel(getUIText("LockDelay_LockDelayMinMax"));
 		panelLockDelay.add(lLockDelayMin);
 
@@ -865,15 +865,15 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayMax = new JTextField("", 5);
 		pLockDelayMinMax.add(txtfldLockDelayMax);
 
-		// 落下で固定時間リセット
+		// 落下で固定 timeリセット
 		chkboxLockDelayLockResetFall = new JCheckBox(getUIText("LockDelay_LockResetFall"));
 		panelLockDelay.add(chkboxLockDelayLockResetFall);
 
-		// 移動で固定時間リセット
+		// 移動で固定 timeリセット
 		chkboxLockDelayLockResetMove = new JCheckBox(getUIText("LockDelay_LockResetMove"));
 		panelLockDelay.add(chkboxLockDelayLockResetMove);
 
-		// 回転で固定時間リセット
+		// 回転で固定 timeリセット
 		chkboxLockDelayLockResetRotate = new JCheckBox(getUIText("LockDelay_LockResetRotate"));
 		panelLockDelay.add(chkboxLockDelayLockResetRotate);
 
@@ -881,7 +881,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLockDelayLockResetLimitShareCount = new JCheckBox(getUIText("LockDelay_LockDelayLockResetLimitShareCount"));
 		panelLockDelay.add(chkboxLockDelayLockResetLimitShareCount);
 
-		// 横移動回数制限
+		// 横移動 count制限
 		JPanel pLockDelayLockResetLimitMove = new JPanel();
 		panelLockDelay.add(pLockDelayLockResetLimitMove);
 		JLabel lLockDelayLockResetLimitMove = new JLabel(getUIText("LockDelay_LockDelayLockResetLimitMove"));
@@ -890,7 +890,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayLockResetLimitMove = new JTextField("", 5);
 		pLockDelayLockResetLimitMove.add(txtfldLockDelayLockResetLimitMove);
 
-		// 回転回数制限
+		// 回転 count制限
 		JPanel pLockDelayLockResetLimitRotate = new JPanel();
 		panelLockDelay.add(pLockDelayLockResetLimitRotate);
 		JLabel lLockDelayLockResetLimitRotate = new JLabel(getUIText("LockDelay_LockDelayLockResetLimitRotate"));
@@ -899,7 +899,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayLockResetLimitRotate = new JTextField("", 5);
 		pLockDelayLockResetLimitRotate.add(txtfldLockDelayLockResetLimitRotate);
 
-		// 移動または回転回数制限が超過した時の設定
+		// 移動または回転 count制限が超過した時の設定
 		JPanel pLockDelayLockResetLimitOver = new JPanel();
 		pLockDelayLockResetLimitOver.setLayout(new BoxLayout(pLockDelayLockResetLimitOver, BoxLayout.Y_AXIS));
 		panelLockDelay.add(pLockDelayLockResetLimitOver);
@@ -938,7 +938,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldAREMax = new JTextField("", 5);
 		pAREMinMax.add(txtfldAREMax);
 
-		// 最低Lines消去後AREと最高Lines消去後ARE
+		// 最低ARE after line clearと最高ARE after line clear
 		JLabel lARELineMin = new JLabel(getUIText("ARE_LineMinMax"));
 		panelARE.add(lARELineMin);
 
@@ -950,7 +950,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELineMax = new JTextField("", 5);
 		pARELineMinMax.add(txtfldARELineMax);
 
-		// 固定した瞬間に光るフレーム数
+		// 固定した瞬間に光る frame count
 		JLabel lARELockFlash = new JLabel(getUIText("ARE_LockFlash"));
 		panelARE.add(lARELockFlash);
 
@@ -960,11 +960,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELockFlash = new JTextField("", 5);
 		pARELockFlash.add(txtfldARELockFlash);
 
-		// ブロックが光る専用フレームを入れる
+		// Blockが光る専用フレームを入れる
 		chkboxARELockFlashOnlyFrame = new JCheckBox(getUIText("ARE_LockFlashOnlyFrame"));
 		panelARE.add(chkboxARELockFlashOnlyFrame);
 
-		// Lines消去前にブロックが光るフレームを入れる
+		// Line clear前にBlockが光るフレームを入れる
 		chkboxARELockFlashBeforeLineClear = new JCheckBox(getUIText("ARE_LockFlashBeforeLineClear"));
 		panelARE.add(chkboxARELockFlashBeforeLineClear);
 		
@@ -980,12 +980,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxARECancelHold = new JCheckBox(getUIText("ARE_CancelHold"));
 		panelARE.add(chkboxARECancelHold);
 
-		// Lines消去タブ --------------------------------------------------
+		// Line clearタブ --------------------------------------------------
 		JPanel panelLine = new JPanel();
 		panelLine.setLayout(new BoxLayout(panelLine, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Line"), panelLine);
 
-		// 最低Lines消去時間と最高Lines消去時間
+		// 最低Line clear timeと最高Line clear time
 		JLabel lLineMin = new JLabel(getUIText("Line_MinMax"));
 		panelLine.add(lLineMin);
 
@@ -1018,7 +1018,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		panelMove.setLayout(new BoxLayout(panelMove, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Move"), panelMove);
 
-		// 最低横溜め時間と最高横溜め時間
+		// 最低横溜め timeと最高横溜め time
 		JLabel lMoveDASMin = new JLabel(getUIText("Move_DASMinMax"));
 		panelMove.add(lMoveDASMin);
 
@@ -1281,7 +1281,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ブロック画像を読み込み
+	 * Block画像を読み込み
 	 */
 	private void loadBlockSkins() {
 		String skindir = propConfig.getProperty("custom.skin.directory", "res");
@@ -1774,8 +1774,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * メイン関数
-	 * @param args コマンドLines引数
+	 * メイン関count
+	 * @param args コマンドLines引count
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log.cfg");

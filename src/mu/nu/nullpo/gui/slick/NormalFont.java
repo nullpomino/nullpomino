@@ -35,7 +35,7 @@ import org.newdawn.slick.SlickException;
  * 普通の文字列の表示クラス
  */
 public class NormalFont {
-	/** 文字色の定数 */
+	/** 文字色の定count */
 	public static final int COLOR_WHITE = 0, COLOR_BLUE = 1, COLOR_RED = 2, COLOR_PINK = 3, COLOR_GREEN = 4, COLOR_YELLOW = 5, COLOR_CYAN = 6,
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
 

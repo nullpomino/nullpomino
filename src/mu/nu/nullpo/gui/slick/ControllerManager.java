@@ -42,10 +42,10 @@ public class ControllerManager {
 	/** Log */
 	static Logger log = Logger.getLogger(ControllerManager.class);
 
-	/** 最小/最大ボタン数 */
+	/** 最小/最大 buttoncount */
 	public static final int MIN_BUTTONS = 3, MAX_BUTTONS = 100;
 
-	/** ジョイスティック状態検出法の定数 */
+	/** ジョイスティック状態検出法の定count */
 	public static final int CONTROLLER_METHOD_NONE = 0,
 							CONTROLLER_METHOD_SLICK_DEFAULT = 1,
 							CONTROLLER_METHOD_SLICK_ALTERNATE = 2,
@@ -100,8 +100,8 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの数を取得
-	 * @return ジョイスティックの数
+	 * ジョイスティックのcountを取得
+	 * @return ジョイスティックのcount
 	 */
 	public static int getControllerCount() {
 		if(controllers == null) return 0;
@@ -209,11 +209,11 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの特定のボタンが押されているならtrue
+	 * ジョイスティックの特定の buttonが押されているならtrue
 	 * @param player プレイヤー number
 	 * @param input Inputクラス（container.getInput()で取得可能）
-	 * @param button ボタン number
-	 * @return 指定したボタンが押されているとtrue
+	 * @param button Button number
+	 * @return 指定した buttonが押されているとtrue
 	 */
 	public static boolean isControllerButton(int player, Input input, int button) {
 		int controller = controllerID[player];

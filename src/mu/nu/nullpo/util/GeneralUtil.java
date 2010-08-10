@@ -41,7 +41,7 @@ import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
- * いろいろなstaticな関数群
+ * いろいろなstaticな関count群
  */
 public class GeneralUtil {
 	/** Log */
@@ -93,9 +93,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * 出現できるピースの数を取得
+	 * 出現できるピースのcountを取得
 	 * @param pieceEnable 各ピースの出現可否
-	 * @return 出現できるピースの数
+	 * @return 出現できるピースのcount
 	 */
 	public static int getNumberOfPiecesCanAppear(boolean[] pieceEnable) {
 		if(pieceEnable == null) return Piece.PIECE_COUNT;
@@ -126,7 +126,7 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * 数値の入った文字列からNEXTピースの出現順を作成
+	 * count値の入った文字列からNEXTピースの出現順を作成
 	 * @param strSrc 文字列
 	 * @return NEXTピースのIDの配列
 	 */

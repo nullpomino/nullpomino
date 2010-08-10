@@ -37,19 +37,19 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * GRADE MANIAモード
+ * GRADE MANIAMode 
  */
 public class GradeManiaMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
-	/** 落下速度テーブル */
+	/** 落下速度 table */
 	private static final int[] tableGravityValue =
 	{
 		4, 6, 8, 10, 12, 16, 32, 48, 64, 80, 96, 112, 128, 144, 4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 1280, 1024, 768, -1
 	};
 
-	/** 落下速度が変わるレベル */
+	/** 落下速度が変わる level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
@@ -80,7 +80,7 @@ public class GradeManiaMode extends DummyMode {
 		"ALUMINUM","STEEL","BRONZE","SILVER","GOLD","PLATINUM","DIAMOND"
 	};
 
-	/** LV999ロールの時間 */
+	/** LV999 roll time */
 	private static final int ROLLTIMELIMIT = 2968;
 
 	/** GMを取るために必要なLV300到達時の最低段位 */
@@ -104,10 +104,10 @@ public class GradeManiaMode extends DummyMode {
 	/** Number of entries in rankings */
 	private static final int RANKING_MAX = 10;
 
-	/** 最大セクション数 */
+	/** 最大Section count */
 	private static final int SECTION_MAX = 10;
 
-	/** デフォルトのセクションTime */
+	/** デフォルトのSection Time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
 	/** GameManager that owns this mode */
@@ -116,37 +116,37 @@ public class GradeManiaMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
 	private int gravityindex;
 
-	/** 次のセクションのレベル（これ-1のときにレベルストップする） */
+	/** 次のSection の level（これ-1のときに levelストップする） */
 	private int nextseclv;
 
-	/** レベルが増えたフラグ */
+	/**  levelが増えた flag */
 	private boolean lvupflag;
 
 	/** 段位 */
 	private int grade;
 
-	/** 最後に段位が上がった時間 */
+	/** 最後に段位が上がった time */
 	private int lastGradeTime;
 
-	/** Comboボーナス */
+	/** Combo bonus */
 	private int comboValue;
 
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り時間 */
+	/** 獲得Render scoreがされる残り time */
 	private int scgettime;
 
-	/** ロール経過時間 */
+	/** Roll 経過 time */
 	private int rolltime;
 
-	/** LV300到達時に段位が規定数以上だったらtrueになる */
+	/** LV300到達時に段位が規定count以上だったらtrueになる */
 	private boolean gm300;
 
-	/** LV500到達時に段位が規定数以上＆Timeが規定以下だったらtrueになる */
+	/** LV500到達時に段位が規定count以上＆Timeが規定以下だったらtrueになる */
 	private boolean gm500;
 
 	/** 裏段位 */
@@ -155,28 +155,28 @@ public class GradeManiaMode extends DummyMode {
 	/** Current BGM */
 	private int bgmlv;
 
-	/** 段位表示を光らせる残りフレーム数 */
+	/** 段位表示を光らせる残り frame count */
 	private int gradeflash;
 
-	/** セクションTime */
+	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たセクションはtrue */
+	/** 新記録が出たSection はtrue */
 	private boolean[] sectionIsNewRecord;
 
-	/** どこかのセクションで新記録を出すとtrue */
+	/** どこかのSection で新記録を出すとtrue */
 	private boolean sectionAnyNewRecord;
 
-	/** クリアしたセクション数 */
+	/** Cleared Section count */
 	private int sectionscomp;
 
-	/** 平均セクションTime */
+	/** Average Section Time */
 	private int sectionavgtime;
 
-	/** セクションTime記録表示中ならtrue */
+	/** Section Time記録表示中ならtrue */
 	private boolean isShowBestSectionTime;
 
-	/** 開始時のレベル */
+	/** 開始時の level */
 	private int startlevel;
 
 	/** trueなら常にゴーストON */
@@ -185,13 +185,13 @@ public class GradeManiaMode extends DummyMode {
 	/** trueなら常に20G */
 	private boolean always20g;
 
-	/** trueならレベルストップ音有効 */
+	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** Bigモード */
+	/** BigMode  */
 	private boolean big;
 
-	/** trueならセクションTime表示有効 */
+	/** trueならSection Time表示有効 */
 	private boolean showsectiontime;
 
 	/** Version */
@@ -200,20 +200,20 @@ public class GradeManiaMode extends DummyMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** ランキングの段位 */
+	/** Rankings' 段位 */
 	private int[] rankingGrade;
 
-	/** ランキングのレベル */
+	/** Rankings'  level */
 	private int[] rankingLevel;
 
 	/** Rankings' times */
 	private int[] rankingTime;
 
-	/** セクションTime記録 */
+	/** Section Time記録 */
 	private int[] bestSectionTime;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -312,7 +312,7 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/**
-	 * 落下速度を更新
+	 * Update falling speed
 	 * @param engine GameEngine
 	 */
 	private void setSpeed(GameEngine engine) {
@@ -325,7 +325,7 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/**
-	 * 平均セクションTimeを更新
+	 * Update average section time
 	 */
 	private void setAverageSectionTime() {
 		if(sectionscomp > 0) {
@@ -340,8 +340,8 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/**
-	 * セクションTime更新処理
-	 * @param sectionNumber セクション number
+	 * Section Time更新処理
+	 * @param sectionNumber Section number
 	 */
 	private void stNewRecordCheck(int sectionNumber) {
 		if((sectiontime[sectionNumber] < bestSectionTime[sectionNumber]) && (!owner.replayMode)) {
@@ -403,7 +403,7 @@ public class GradeManiaMode extends DummyMode {
 				}
 			}
 
-			// セクションTime表示切替
+			// Section Time表示切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
@@ -492,7 +492,7 @@ public class GradeManiaMode extends DummyMode {
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (always20g == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
-					// ランキング
+					// Rankings
 					receiver.drawScoreFont(engine, playerID, 3, 2, "GRADE LEVEL TIME", EventReceiver.COLOR_BLUE);
 
 					for(int i = 0; i < RANKING_MAX; i++) {
@@ -505,7 +505,7 @@ public class GradeManiaMode extends DummyMode {
 
 					receiver.drawScoreFont(engine, playerID, 0, 17, "F:VIEW SECTION TIME", EventReceiver.COLOR_GREEN);
 				} else {
-					// セクションTime
+					// Section Time
 					receiver.drawScoreFont(engine, playerID, 0, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
 					int totalTime = 0;
@@ -568,7 +568,7 @@ public class GradeManiaMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(time), ((time > 0) && (time < 10 * 60)));
 			}
 
-			// セクションTime
+			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
 				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
@@ -635,7 +635,7 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/**
-	 * レベルが上がったときの共通処理
+	 *  levelが上がったときの共通処理
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -724,7 +724,7 @@ public class GradeManiaMode extends DummyMode {
 					engine.ending = 1;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のセクション
+				// 次のSection 
 				engine.playSE("levelup");
 
 				owner.backgroundStatus.fadesw = true;
@@ -772,7 +772,7 @@ public class GradeManiaMode extends DummyMode {
 		// 獲得Render score
 		if(scgettime > 0) scgettime--;
 
-		// セクションTime増加
+		// Section Time増加
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -785,7 +785,7 @@ public class GradeManiaMode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			// 時間Meter
+			//  timeMeter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -793,7 +793,7 @@ public class GradeManiaMode extends DummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ロール終了
+			// Roll 終了
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameActive = false;
 				engine.resetStatc();
@@ -803,7 +803,7 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー時の処理
+	 * Called at game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
@@ -914,7 +914,7 @@ public class GradeManiaMode extends DummyMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		// セクションTime表示切替
+		// Section Time表示切替
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -980,7 +980,7 @@ public class GradeManiaMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param gr 段位
-	 * @param lv レベル
+	 * @param lv  level
 	 * @param time Time
 	 */
 	private void updateRanking(int gr, int lv, int time) {
@@ -1004,7 +1004,7 @@ public class GradeManiaMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param gr 段位
-	 * @param lv レベル
+	 * @param lv  level
 	 * @param time Time
 	 * @return Position (-1 if unranked)
 	 */
@@ -1024,7 +1024,7 @@ public class GradeManiaMode extends DummyMode {
 
 
 	/**
-	 * ベストセクションTime更新
+	 * Update best section time records
 	 */
 	private void updateBestSectionTime() {
 		for(int i = 0; i < SECTION_MAX; i++) {

@@ -82,7 +82,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			log.warn("SDLException throwed", e);
 		}
 
-		// モード
+		// Mode
 		String modeName = "NET-VS-BATTLE";
 		GameMode modeObj = NullpoMinoSDL.modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -184,7 +184,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {

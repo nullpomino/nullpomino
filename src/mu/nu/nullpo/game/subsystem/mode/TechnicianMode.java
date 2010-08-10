@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * TECHNICIANモード
+ * TECHNICIANMode 
  */
 public class TechnicianMode extends DummyMode {
 	/** Current version */
@@ -50,10 +50,10 @@ public class TechnicianMode extends DummyMode {
 	/** Fall velocity table (denominators) */
 	private static final int tableDenominator[] = {63, 50, 39, 30, 22, 16, 12,  8,  6,  4,  3,  2,  1, 256, 256,  256,  256, 256, 256, 256};
 
-	/** BGMが変わるレベル */
+	/** BGMが変わる level */
 	private static final int tableBGMChange[]   = {9, 15, 19, 23, 27, -1};
 
-	/** Comboで手に入るポイント */
+	/** Comboで手に入る point */
 	private static final int COMBO_GOAL_TABLE[] = {0,0,1,1,2,2,3,3,4,4,4,5};
 
 	/** Number of entries in rankings */
@@ -62,7 +62,7 @@ public class TechnicianMode extends DummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 5;
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -76,7 +76,7 @@ public class TechnicianMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE = 10,
 							 EVENT_TSPIN_TRIPLE = 11;
 
-	/** Game type typeの定数 */
+	/** Game type typeの定count */
 	private static final int GAMETYPE_LV15_EASY = 0,
 							 GAMETYPE_LV15_HARD = 1,
 							 GAMETYPE_10MIN_EASY = 2,
@@ -86,22 +86,22 @@ public class TechnicianMode extends DummyMode {
 	/** Game typeの表示名 */
 	private static final String[] GAMETYPE_NAME = {"LV15-EASY", "LV15-HARD", "10MIN-EASY", "10MIN-HARD", "SPECIAL"};
 
-	/** Game type typeの数 */
+	/** Game type typeのcount */
 	private static final int GAMETYPE_MAX = 5;
 
-	/** 各レベルの制限時間 */
+	/** 各 levelの制限 time */
 	private static final int TIMELIMIT_LEVEL = 3600*2;
 
-	/** 10分間モードのゲーム制限時間 */
+	/** 10分間Mode のゲーム制限 time */
 	private static final int TIMELIMIT_10MIN = 3600*10;
 
-	/** SPECIALモード開始時の制限時間 */
+	/** SPECIALMode 開始時の制限 time */
 	private static final int TIMELIMIT_SPECIAL = 3600*2;
 
-	/** SPECIALモードでLevel upしたときに増える時間 */
+	/** SPECIALMode でLevel upしたときに増える time */
 	private static final int TIMELIMIT_SPECIAL_BONUS = 60*30;
 
-	/** Endingの時間 */
+	/** Endingの time */
 	private static final int TIMELIMIT_ROLL = 3600;
 
 	/** GameManager that owns this mode */
@@ -110,34 +110,34 @@ public class TechnicianMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Level upまでの残りポイント */
+	/** Level upまでの残り point */
 	private int goal;
 
-	/** このレベルでの経過時間 */
+	/** この levelでの経過 time */
 	private int levelTimer;
 
-	/** このレベルでタイマーが切れていたらtrue */
+	/** この levelでタイマーが切れていたらtrue */
 	private boolean levelTimeOut;
 
-	/** ゲーム全体の制限時間 */
+	/** ゲーム全体の制限 time */
 	private int totalTimer;
 
-	/** Ending時間 */
+	/** Ending time */
 	private int rolltime;
 
-	/** 直前に手に入れたポイント */
+	/** 直前に手に入れた point */
 	private int lastgoal;
 
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 直前に手に入れたTimeボーナス */
+	/** 直前に手に入れたTime bonus */
 	private int lasttimebonus;
 
 	/** Time to display the most recent increase in score */
 	private int scgettime;
 
-	/** REGRETを表示する残りフレーム数 */
+	/** REGRET display time frame count */
 	private int regretdispframe;
 
 	/** Most recent scoring event type */
@@ -146,7 +146,7 @@ public class TechnicianMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
@@ -195,7 +195,7 @@ public class TechnicianMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -258,7 +258,7 @@ public class TechnicianMode extends DummyMode {
 	}
 
 	/**
-	 * ゲーム開始時のBGMを設定
+	 * Set BGM at start of game
 	 * @param engine GameEngine
 	 */
 	private void setStartBgmlv(GameEngine engine) {
@@ -500,7 +500,7 @@ public class TechnicianMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 17, "+" + (lasttimebonus / 60) + "SEC.", EventReceiver.COLOR_YELLOW);
 			}
 
-			// Ending時間
+			// Ending time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int remainRollTime = TIMELIMIT_ROLL - rolltime;
 				if(remainRollTime < 0) remainRollTime = 0;
@@ -514,7 +514,7 @@ public class TechnicianMode extends DummyMode {
 				receiver.drawMenuFont(engine,playerID,2,21,"REGRET",(regretdispframe % 4 == 0),EventReceiver.COLOR_WHITE,EventReceiver.COLOR_ORANGE);
 			}
 			else if((lastevent != EVENT_NONE) && (scgettime < 120)) {
-				// 直前のLines消去 type表示
+				// 直前のLine clear type表示
 				String strPieceName = Piece.getPieceName(lastpiece);
 
 				switch(lastevent) {
@@ -573,12 +573,12 @@ public class TechnicianMode extends DummyMode {
 		scgettime++;
 		if(regretdispframe > 0) regretdispframe--;
 
-		// レベルTime
+		//  levelTime
 		if(engine.gameActive && engine.timerActive && (gametype != GAMETYPE_SPECIAL)) {
 			levelTimer++;
 			int remainTime = TIMELIMIT_LEVEL - levelTimer;
 
-			// 時間Meter
+			//  timeMeter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / TIMELIMIT_LEVEL;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainTime <= 60*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
@@ -586,7 +586,7 @@ public class TechnicianMode extends DummyMode {
 			if(remainTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			if(levelTimer >= TIMELIMIT_LEVEL) {
-				// 時間切れ
+				//  time切れ
 				levelTimeOut = true;
 
 				if((gametype == GAMETYPE_LV15_HARD) || (gametype == GAMETYPE_10MIN_HARD)) {
@@ -610,7 +610,7 @@ public class TechnicianMode extends DummyMode {
 		if(engine.gameActive && engine.timerActive && (gametype != GAMETYPE_LV15_EASY) && (gametype != GAMETYPE_LV15_HARD)) {
 			totalTimer--;
 
-			// 時間Meter
+			//  timeMeter
 			if(gametype == GAMETYPE_SPECIAL) {
 				engine.meterValue = (totalTimer * receiver.getMeterMax(engine)) / (5 * 3600);
 				engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -620,7 +620,7 @@ public class TechnicianMode extends DummyMode {
 			}
 
 			if(totalTimer < 0) {
-				// 時間切れ
+				//  time切れ
 				engine.gameActive = false;
 				engine.timerActive = false;
 				engine.resetStatc();
@@ -642,7 +642,7 @@ public class TechnicianMode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			// 時間Meter
+			//  timeMeter
 			int remainRollTime = TIMELIMIT_ROLL - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / TIMELIMIT_ROLL;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -650,7 +650,7 @@ public class TechnicianMode extends DummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ロール終了
+			// Roll 終了
 			if(rolltime >= TIMELIMIT_ROLL) {
 				scgettime = 0;
 				lastscore = totalTimer * 2;
@@ -783,7 +783,7 @@ public class TechnicianMode extends DummyMode {
 		}
 
 		if(engine.ending == 0) {
-			// Timeボーナス
+			// Time bonus
 			if((goal <= 0) && (levelTimeOut == false) && (gametype != GAMETYPE_SPECIAL)) {
 				lasttimebonus = (TIMELIMIT_LEVEL - levelTimer) * (engine.statistics.level + 1);
 				if(lasttimebonus < 0) lasttimebonus = 0;

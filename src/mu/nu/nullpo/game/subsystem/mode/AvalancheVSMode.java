@@ -131,10 +131,10 @@ public class AvalancheVSMode extends DummyMode {
 	/** Rule settings for countering ojama not yet dropped */
 	private int[] ojamaCounterMode;
 
-	/** 溜まっている邪魔ブロックの数 */
+	/** 溜まっている邪魔Blockのcount */
 	private int[] ojama;
 
-	/** 送った邪魔ブロックの数 */
+	/** 送った邪魔Blockのcount */
 	private int[] ojamaSent;
 
 	/** Time to display the most recent increase in score */
@@ -149,7 +149,7 @@ public class AvalancheVSMode extends DummyMode {
 	/** 効果音ON/OFF */
 	private boolean[] enableSE;
 
-	/** マップ使用フラグ */
+	/** マップ使用 flag */
 	private boolean[] useMap;
 
 	/** 使用するマップセット number */
@@ -173,7 +173,7 @@ public class AvalancheVSMode extends DummyMode {
 	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
 	private Field[] fldBackup;
 
-	/** マップ選択用乱数 */
+	/** マップ選択用乱count */
 	private Random randMap;
 
 	/** Version */
@@ -206,7 +206,7 @@ public class AvalancheVSMode extends DummyMode {
 	/** Settings for hard ojama blocks */
 	private int[] ojamaHard;
 
-	/** Hurryup開始までの秒数(0でHurryupなし) */
+	/** Hurryup開始までの秒count(0でHurryupなし) */
 	private int[] hurryupSeconds;
 
 	/** Fever points needed to enter Fever Mode */
@@ -294,7 +294,7 @@ public class AvalancheVSMode extends DummyMode {
 	private boolean[] ojamaMeter;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -310,7 +310,7 @@ public class AvalancheVSMode extends DummyMode {
 	}
 
 	/*
-	 * Mode initialization
+	 * Mode  initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {

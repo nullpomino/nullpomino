@@ -52,10 +52,10 @@ public class StateTitle extends BasicGameState {
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** 新Versionのチェック済みならtrue */
+	/** 新Versionの check 済みならtrue */
 	protected boolean isNewVersionChecked = false;
 
 	/*
@@ -88,7 +88,7 @@ public class StateTitle extends BasicGameState {
 			((AppGameContainer) container).setUpdateOnlyWhenVisible(true);
 		}
 
-		// 新Versionチェック
+		// 新Version check 
 		if(!isNewVersionChecked && NullpoMinoSlick.propGlobal.getProperty("updatechecker.enable", true)) {
 			isNewVersionChecked = true;
 
@@ -199,7 +199,7 @@ public class StateTitle extends BasicGameState {
 			ResourceHolder.soundManager.play("cursor");
 		}
 
-		// 決定ボタン
+		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
 			ResourceHolder.soundManager.play("decide");
@@ -223,10 +223,10 @@ public class StateTitle extends BasicGameState {
 			}
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

@@ -50,7 +50,7 @@ public class StateConfigAISelect extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 8;
 
-	/** 1画面に表示する最大AI数 */
+	/** 1画面に表示する最大AIcount */
 	public static final int MAX_AI_IN_ONE_PAGE = 20;
 
 	/** Log */
@@ -74,7 +74,7 @@ public class StateConfigAISelect extends BasicGameState {
 	/** AIの移動間隔 */
 	protected int aiMoveDelay = 0;
 
-	/** AIの思考の待ち時間 */
+	/** AIの思考の待ち time */
 	protected int aiThinkDelay = 0;
 
 	/** AIでスレッドを使う */
@@ -83,7 +83,7 @@ public class StateConfigAISelect extends BasicGameState {
 	/** カーソル位置 */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/*
@@ -215,7 +215,7 @@ public class StateConfigAISelect extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -274,7 +274,7 @@ public class StateConfigAISelect extends BasicGameState {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_SELECT)) {
 				
@@ -291,7 +291,7 @@ public class StateConfigAISelect extends BasicGameState {
 			return;
 		}
 
-		// Cancelボタン
+		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
 				
@@ -299,10 +299,10 @@ public class StateConfigAISelect extends BasicGameState {
 			return;
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了ボタン
+		// 終了 button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

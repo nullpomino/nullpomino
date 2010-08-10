@@ -37,7 +37,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * MARATHONモード
+ * MARATHONMode 
  */
 public class MarathonMode extends DummyMode {
 	/** Current version */
@@ -145,7 +145,7 @@ public class MarathonMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {

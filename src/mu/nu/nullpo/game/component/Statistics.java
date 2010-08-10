@@ -42,7 +42,7 @@ public class Statistics implements Serializable {
 	/** 合計Score */
 	public int score;
 
-	/** Lines消去のScore */
+	/** Line clearのScore */
 	public int scoreFromLineClear;
 
 	/** Soft dropのScore */
@@ -54,73 +54,73 @@ public class Statistics implements Serializable {
 	/** その他の方法で手に入れたScore */
 	public int scoreFromOtherBonus;
 
-	/** 合計Lines数 */
+	/** 合計Linescount */
 	public int lines;
 
-	/** 経過時間 */
+	/** 経過 time */
 	public int time;
 
-	/** レベル */
+	/**  level */
 	public int level;
 
-	/** レベルの表示に加算する数（表示レベルが内部の値と異なる場合に使用） */
+	/**  levelの表示に加算するcount（表示 levelが内部の値と異なる場合に使用） */
 	public int levelDispAdd;
 
-	/** 置いたピースの数 */
+	/** 置いたピースのcount */
 	public int totalPieceLocked;
 
-	/** ピースを操作していた合計時間 */
+	/** ピースを操作していた合計 time */
 	public int totalPieceActiveTime;
 
-	/** ピースを移動させた合計回数 */
+	/** ピースを移動させた合計 count */
 	public int totalPieceMove;
 
-	/** ピースを回転させた合計回数 */
+	/** ピースを回転させた合計 count */
 	public int totalPieceRotate;
 
-	/** 1Lines消し回数 */
+	/** 1Lines消し count */
 	public int totalSingle;
 
-	/** 2Lines消し回数 */
+	/** 2Lines消し count */
 	public int totalDouble;
 
-	/** 3Lines消し回数 */
+	/** 3Lines消し count */
 	public int totalTriple;
 
-	/** 4Lines消し回数 */
+	/** 4Lines消し count */
 	public int totalFour;
 
-	/** T-Spin0Lines（Wallkickあり）回数 */
+	/** T-Spin0Lines（Wallkickあり） count */
 	public int totalTSpinZeroMini;
 
-	/** T-Spin0Lines（Wallkickなし）回数 */
+	/** T-Spin0Lines（Wallkickなし） count */
 	public int totalTSpinZero;
 
-	/** T-Spin1Lines（Wallkickあり）回数 */
+	/** T-Spin1Lines（Wallkickあり） count */
 	public int totalTSpinSingleMini;
 
-	/** T-Spin1Lines（Wallkickなし）回数 */
+	/** T-Spin1Lines（Wallkickなし） count */
 	public int totalTSpinSingle;
 
-	/** T-Spin2Lines（Wallkickあり）回数 */
+	/** T-Spin2Lines（Wallkickあり） count */
 	public int totalTSpinDoubleMini;
 
-	/** T-Spin2Lines（Wallkickなし）回数 */
+	/** T-Spin2Lines（Wallkickなし） count */
 	public int totalTSpinDouble;
 
-	/** T-Spin3Lines回数 */
+	/** T-Spin3Lines count */
 	public int totalTSpinTriple;
 
-	/** Back to Back 4Lines消し回数 */
+	/** Back to Back 4Lines消し count */
 	public int totalB2BFour;
 
-	/** Back to Back T-Spin消し回数 */
+	/** Back to Back T-Spin消し count */
 	public int totalB2BTSpin;
 
-	/** ホールド使用回数 */
+	/** ホールド使用 count */
 	public int totalHoldUsed;
 
-	/** 最大Combo数 */
+	/** 最大Combocount */
 	public int maxCombo;
 
 	/** 1Linesあたりの得点（Score Per Line） */
@@ -132,16 +132,16 @@ public class Statistics implements Serializable {
 	/** 1秒間あたりの得点（Score Per Second） */
 	public double sps;
 
-	/** 1分間あたりのLines数（Lines Per Minute） */
+	/** 1分間あたりのLinescount（Lines Per Minute） */
 	public float lpm;
 
-	/** 1秒間あたりのLines数（Lines Per Second） */
+	/** 1秒間あたりのLinescount（Lines Per Second） */
 	public float lps;
 
-	/** 1分間あたりのピース数（Pieces Per Minute） */
+	/** 1分間あたりのピースcount（Pieces Per Minute） */
 	public float ppm;
 
-	/** 1秒間あたりのピース数（Pieces Per Second） */
+	/** 1秒間あたりのピースcount（Pieces Per Second） */
 	public float pps;
 
 	/** TAS detection: slowdown rate */

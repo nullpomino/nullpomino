@@ -64,16 +64,16 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	/** プレイヤー number */
 	protected int playerID;
 
-	/** Aボタンでの回転Directionはルールに従う */
+	/** A buttonでの回転Directionはルールに従う */
 	protected JRadioButton radioRotateButtonDefaultRightAuto;
-	/** Aボタンでの回転Directionを左回転に固定 */
+	/** A buttonでの回転Directionを左回転に固定 */
 	protected JRadioButton radioRotateButtonDefaultRightLeft;
-	/** Aボタンでの回転Directionを右回転に固定 */
+	/** A buttonでの回転Directionを右回転に固定 */
 	protected JRadioButton radioRotateButtonDefaultRightRight;
 
 	/** 絵柄のComboボックス */
 	protected JComboBox comboboxSkin;
-	/** ブロック画像 */
+	/** Block画像 */
 	protected BufferedImage[] imgBlockSkins;
 
 	/** 最小DAS */
@@ -93,7 +93,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		super();
 		this.owner = owner;
 
-		// ブロック画像の読み込み
+		// Block画像の読み込み
 		loadBlockSkins();
 
 		// GUIのInitialization
@@ -110,7 +110,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		// ---------- Aボタンでの回転Direction ----------
+		// ---------- A buttonでの回転Direction ----------
 		JPanel pRotateButtonDefaultRight = new JPanel();
 		pRotateButtonDefaultRight.setLayout(new BoxLayout(pRotateButtonDefaultRight, BoxLayout.Y_AXIS));
 		pRotateButtonDefaultRight.setAlignmentX(LEFT_ALIGNMENT);
@@ -185,7 +185,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		txtfldDasDelay = new JTextField(5);
 		pDasDelay.add(txtfldDasDelay);
 
-		// ---------- 画面下のボタン ----------
+		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(pButtons);
@@ -204,7 +204,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ブロック画像を読み込み
+	 * Block画像を読み込み
 	 */
 	protected void loadBlockSkins() {
 		BufferedImage imgBlock = (BufferedImage) ResourceHolderSwing.imgBlock;
@@ -264,7 +264,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * ボタンクリック時の処理
+	 *  Called when button clicked
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// OK

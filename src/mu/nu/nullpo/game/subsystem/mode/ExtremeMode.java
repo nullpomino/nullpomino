@@ -38,28 +38,28 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * EXTREMEモード
+ * EXTREMEMode 
  */
 public class ExtremeMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
-	/** Endingの時間 */
+	/** Endingの time */
 	protected static final int ROLLTIMELIMIT = 2968;
 
-	/** AREテーブル */
+	/** ARE table */
 	private static final int tableARE[] = {25,20,15,10,10,10, 8, 6, 5, 4, 4, 3, 2, 2, 1, 1, 0, 0, 0, 0};
 
-	/** Lines消去後AREテーブル */
+	/** ARE after line clear table */
 	private static final int tableARELine[] = {25,20,15,10, 6, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0};
 
-	/** Lines消去時間テーブル */
+	/** Line clear time table */
 	private static final int tableLineDelay[] = {40,20,10, 5, 6, 4, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	/** 固定時間テーブル */
+	/** 固定 time table */
 	private static final int tableLockDelay[] = {30,25,25,20,18,18,17,16,15,15,14,14,14,13,13,13,13,12,11,11};
 
-	/** DASテーブル */
+	/** DAS table */
 	private static final int tableDAS[] = {16,10,10, 8, 8, 6, 6, 6, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3};
 
 	/** Line counts when BGM changes occur */
@@ -71,7 +71,7 @@ public class ExtremeMode extends DummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 2;
 
-	/** Most recent scoring event typeの定数 */
+	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -103,13 +103,13 @@ public class ExtremeMode extends DummyMode {
 	/** Most recent scoring eventでB2Bだったらtrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombo数 */
+	/** Most recent scoring eventでのCombocount */
 	private int lastcombo;
 
 	/** Most recent scoring eventでのピースID */
 	private int lastpiece;
 
-	/** Ending時間 */
+	/** Ending time */
 	private int rolltime;
 
 	/** Current BGM */
@@ -155,7 +155,7 @@ public class ExtremeMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -479,7 +479,7 @@ public class ExtremeMode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			// 時間Meter
+			//  timeMeter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			if(remainRollTime < 0) remainRollTime = 0;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;
@@ -488,7 +488,7 @@ public class ExtremeMode extends DummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ロール終了
+			// Roll 終了
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameActive = false;
 				engine.resetStatc();

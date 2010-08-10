@@ -41,7 +41,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * GRADE MANIA 3モード
+ * GRADE MANIA 3Mode 
  */
 public class GradeMania3Mode extends DummyMode {
 	/** Log */
@@ -50,52 +50,52 @@ public class GradeMania3Mode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 2;
 
-	/** セクションCOOL基準Time */
+	/** Section COOL criteria Time */
 	private static final int[] tableTimeCool =
 	{
 		3120, 3120, 2940, 2700, 2700, 2520, 2520, 2280, 2280, 0
 	};
 
-	/** セクションREGRET基準Time */
+	/** Section REGRET criteria Time */
 	private static final int[] tableTimeRegret =
 	{
 		5400, 4500, 4500, 4080, 3600, 3600, 3000, 3000, 3000, 3000
 	};
 
-	/** 落下速度テーブル */
+	/** 落下速度 table */
 	private static final int[] tableGravityValue =
 	{
 		4, 6, 8, 10, 12, 16, 32, 48, 64, 80, 96, 112, 128, 144, 4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 1280, 1024, 768, -1
 	};
 
-	/** 落下速度が変わるレベル */
+	/** 落下速度が変わる level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
 	};
 
-	/** AREテーブル */
+	/** ARE table */
 	private static final int[] tableARE       = {23, 23, 23, 23, 23, 23, 23, 14, 10, 10,  4,  3,  2};
 
-	/** Lines消去後AREテーブル */
+	/** ARE after line clear table */
 	private static final int[] tableARELine   = {23, 23, 23, 23, 23, 23, 14, 10,  4,  4,  4,  3,  2};
 
-	/** Lines消去時間テーブル */
+	/** Line clear time table */
 	private static final int[] tableLineDelay = {40, 40, 40, 40, 40, 25, 16, 12,  6,  6,  6,  6,  6};
 
-	/** 固定時間テーブル */
+	/** 固定 time table */
 	private static final int[] tableLockDelay = {31, 31, 31, 31, 31, 31, 31, 31, 31, 18, 18, 16, 16};
 
-	/** DASテーブル */
+	/** DAS table */
 	private static final int[] tableDAS       = {15, 15, 15, 15, 15,  9,  9,  9,  9,  7,  7,  7,  7};
 
-	/** BGMがフェードアウトするレベル */
+	/** BGM fadeout level */
 	private static final int[] tableBGMFadeout = {485,685,-1};
 
-	/** BGMが変わるレベル */
+	/** BGM change level */
 	private static final int[] tableBGMChange  = {500,700,-1};
 
-	/** Lines消去時に入る段位ポイント */
+	/** Line clear時に入る段位 point */
 	private static final int[][] tableGradePoint =
 	{
 		{10,10,10,10,10, 5, 5, 5, 5, 5, 2},
@@ -104,7 +104,7 @@ public class GradeMania3Mode extends DummyMode {
 		{50,40,40,40,40,30,30,30,30,30,30},
 	};
 
-	/** 段位ポイントのComboボーナス */
+	/** 段位 pointのCombo bonus */
 	private static final float[][] tableGradeComboBonus =
 	{
 		{1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f},
@@ -119,13 +119,13 @@ public class GradeMania3Mode extends DummyMode {
 		1, 2, 3, 4, 5, 7, 9, 12, 15, 18, 19, 20, 23, 25, 27, 29, 31, -1
 	};
 
-	/** 段位ポイントが1つ減る時間 */
+	/** 段位 pointが1つ減る time */
 	private static final int[] tableGradeDecayRate =
 	{
 		125, 80, 80, 50, 45, 45, 45, 40, 40, 40, 40, 40, 30, 30, 30, 20, 20, 20, 20, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10
 	};
 
-	///** 段位の数 */
+	///** 段位のcount */
 	//private static final int GRADE_MAX = 33;
 
 	/** 段位の名前 */
@@ -145,7 +145,7 @@ public class GradeMania3Mode extends DummyMode {
 		"GM"													// 18
 	};
 
-	/** LV999ロールの時間 */
+	/** LV999 roll time */
 	private static final int ROLLTIMELIMIT = 3238;
 
 	/** Number of entries in rankings */
@@ -160,10 +160,10 @@ public class GradeMania3Mode extends DummyMode {
 	/** 段位認定試験の発生確率(EXAM_CHANCE分の1の確率で発生) */
 	private static final int EXAM_CHANCE = 3;
 
-	/** 最大セクション数 */
+	/** 最大Section count */
 	private static final int SECTION_MAX = 10;
 
-	/** デフォルトのセクションTime */
+	/** デフォルトのSection Time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
 	/** GameManager that owns this mode */
@@ -172,16 +172,16 @@ public class GradeMania3Mode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
 	private int gravityindex;
 
-	/** 次のセクションのレベル（これ-1のときにレベルストップする） */
+	/** 次のSection の level（これ-1のときに levelストップする） */
 	private int nextseclv;
 
-	/** 内部レベル */
+	/** 内部 level */
 	private int internalLevel;
 
-	/** レベルが増えたフラグ */
+	/**  levelが増えた flag */
 	private boolean lvupflag;
 
 	/** 最終結果などに表示される実際の段位 */
@@ -193,49 +193,49 @@ public class GradeMania3Mode extends DummyMode {
 	/** メインの段位の内部段位 */
 	private int gradeBasicInternal;
 
-	/** メインの段位の内部段位ポイント */
+	/** メインの段位の内部段位 point */
 	private int gradeBasicPoint;
 
-	/** メインの段位の内部段位ポイントが1つ減る時間 */
+	/** メインの段位の内部段位 pointが1つ減る time */
 	private int gradeBasicDecay;
 
-	/** 最後に段位が上がった時間 */
+	/** 最後に段位が上がった time */
 	private int lastGradeTime;
 
-	/** Hard dropした段数 */
+	/** Hard dropした段count */
 	private int harddropBonus;
 
-	/** Comboボーナス */
+	/** Combo bonus */
 	private int comboValue;
 
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り時間 */
+	/** 獲得Render scoreがされる残り time */
 	private int scgettime;
 
-	/** このセクションでCOOLを出すとtrue */
+	/** このSection でCOOLを出すとtrue */
 	private boolean cool;
 
-	/** COOL回数 */
+	/** COOL count */
 	private int coolcount;
 
-	/** 直前のセクションでCOOLを出したらtrue */
+	/** 直前のSection でCOOLを出したらtrue */
 	private boolean previouscool;
 
-	/** 直前のセクションでのレベル70通過Time */
+	/** 直前のSection での level70通過Time */
 	private int coolprevtime;
 
-	/** このセクションでCOOLチェックをしたらtrue */
+	/** このSection でCOOL check をしたらtrue */
 	private boolean coolchecked;
 
-	/** このセクションでCOOL表示をしたらtrue */
+	/** このSection でCOOL表示をしたらtrue */
 	private boolean cooldisplayed;
 
-	/** COOLを表示する残りフレーム数 */
+	/** COOL display time frame count */
 	private int cooldispframe;
 
-	/** REGRETを表示する残りフレーム数 */
+	/** REGRET display time frame count */
 	private int regretdispframe;
 
 	/** COOL section flags*/
@@ -247,13 +247,13 @@ public class GradeMania3Mode extends DummyMode {
 	/** Section time display color-code type */
 	private int stcolor;
 
-	/** ロール経過時間 */
+	/** Roll 経過 time */
 	private int rolltime;
 
-	/** ロール完全クリアフラグ */
+	/** Roll completely cleared flag */
 	private int rollclear;
 
-	/** ロール開始フラグ */
+	/** Roll started flag */
 	private boolean rollstarted;
 
 	/** 裏段位 */
@@ -262,49 +262,49 @@ public class GradeMania3Mode extends DummyMode {
 	/** Current BGM */
 	private int bgmlv;
 
-	/** 段位表示を光らせる残りフレーム数 */
+	/** 段位表示を光らせる残り frame count */
 	private int gradeflash;
 
-	/** セクションTime */
+	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たセクションはtrue */
+	/** 新記録が出たSection はtrue */
 	private boolean[] sectionIsNewRecord;
 
-	/** クリアしたセクション数 */
+	/** Cleared Section count */
 	private int sectionscomp;
 
-	/** 平均セクションTime */
+	/** Average Section Time */
 	private int sectionavgtime;
 
-	/** 直前のセクションTime */
+	/** 直前のSection Time */
 	private int sectionlasttime;
 
-	/** 消えロール開始フラグ */
+	/** 消えRoll started flag */
 	private boolean mrollFlag;
 
-	/** ロール中に稼いだポイント（段位上昇用） */
+	/** Roll 中に稼いだ point（段位上昇用） */
 	private float rollPoints;
 
-	/** ロール中に稼いだポイント（合計） */
+	/** Roll 中に稼いだ point（合計） */
 	private float rollPointsTotal;
 
-	/** ACメダル状態 */
+	/** AC medal 状態 */
 	private int medalAC;
 
-	/** STメダル状態 */
+	/** ST medal 状態 */
 	private int medalST;
 
-	/** SKメダル状態 */
+	/** SK medal 状態 */
 	private int medalSK;
 
-	/** COメダル状態 */
+	/** CO medal 状態 */
 	private int medalCO;
 
-	/** セクションTime記録表示中ならtrue */
+	/** Section Time記録表示中ならtrue */
 	private boolean isShowBestSectionTime;
 
-	/** 開始時のレベル */
+	/** 開始時の level */
 	private int startlevel;
 
 	/** trueなら常にゴーストON */
@@ -313,13 +313,13 @@ public class GradeMania3Mode extends DummyMode {
 	/** trueなら常に20G */
 	private boolean always20g;
 
-	/** trueならレベルストップ音有効 */
+	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** Bigモード */
+	/** BigMode  */
 	private boolean big;
 
-	/** trueならセクションTime表示有効 */
+	/** trueならSection Time表示有効 */
 	private boolean showsectiontime;
 
 	/** 段位表示 */
@@ -337,19 +337,19 @@ public class GradeMania3Mode extends DummyMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** ランキングの段位 */
+	/** Rankings' 段位 */
 	private int[][] rankingGrade;
 
-	/** ランキングのレベル */
+	/** Rankings'  level */
 	private int[][] rankingLevel;
 
 	/** Rankings' times */
 	private int[][] rankingTime;
 
-	/** ランキングのロール完全クリアフラグ */
+	/** Rankings' Roll completely cleared flag */
 	private int[][] rankingRollclear;
 
-	/** セクションTime記録 */
+	/** Section Time記録 */
 	private int[][] bestSectionTime;
 
 	/** 段位履歴（昇格・降格試験用） */
@@ -361,26 +361,26 @@ public class GradeMania3Mode extends DummyMode {
 	/** Current 認定段位 */
 	private int qualifiedGrade;
 
-	/** 降格試験ポイント（30以上溜まると降格試験発生） */
+	/** 降格試験 point（30以上溜まると降格試験発生） */
 	private int demotionPoints;
 
-	/** 昇格試験フラグ */
+	/** 昇格試験 flag */
 	private boolean promotionFlag;
 
-	/** 降格試験フラグ */
+	/** 降格試験 flag */
 	private boolean demotionFlag;
 
 	/** 降格試験での目標段位 */
 	private int demotionExamGrade;
 
-	/** 試験開始前演出のフレーム数 */
+	/** 試験開始前演出の frame count */
 	private int readyframe;
 
-	/** 試験終了演出のフレーム数 */
+	/** 試験終了演出の frame count */
 	private int passframe;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -546,7 +546,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * ゲーム開始時のBGMを設定
+	 * Set BGM at start of game
 	 * @param engine GameEngine
 	 */
 	private void setStartBgmlv(GameEngine engine) {
@@ -555,7 +555,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * 落下速度を更新
+	 * Update falling speed
 	 * @param engine GameEngine
 	 */
 	private void setSpeed(GameEngine engine) {
@@ -584,7 +584,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * 平均セクションTimeを更新
+	 * Update average section time
 	 */
 	private void setAverageSectionTime() {
 		if(sectionscomp > 0) {
@@ -599,9 +599,9 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * STメダルチェック
+	 * ST medal check
 	 * @param engine GameEngine
-	 * @param sectionNumber セクション number
+	 * @param sectionNumber Section number
 	 */
 	private void stMedalCheck(GameEngine engine, int sectionNumber) {
 		int type = enableexam ? 1 : 0;
@@ -625,9 +625,9 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * メダルの文字色を取得
-	 * @param medalColor メダル状態
-	 * @return メダルの文字色
+	 *  medal の文字色を取得
+	 * @param medalColor  medal 状態
+	 * @return  medal の文字色
 	 */
 	private int getMedalFontColor(int medalColor) {
 		if(medalColor == 1) return EventReceiver.COLOR_RED;
@@ -637,11 +637,11 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * COOLのチェック
+	 * COOLの check 
 	 * @param engine GameEngine
 	 */
 	private void checkCool(GameEngine engine) {
-		// COOLチェック
+		// COOL check 
 		if((engine.statistics.level % 100 >= 70) && (coolchecked == false)) {
 			int section = engine.statistics.level / 100;
 
@@ -667,9 +667,9 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * REGRETのチェック
+	 * REGRETの check 
 	 * @param engine GameEngine
-	 * @param levelb Lines消去前のレベル
+	 * @param levelb Line clear前の level
 	 */
 	private void checkRegret(GameEngine engine, int levelb) {
 		int section = levelb / 100;
@@ -779,7 +779,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// セクションTime表示切替
+			// Section Time表示切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
@@ -911,7 +911,7 @@ public class GradeMania3Mode extends DummyMode {
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (!owner.replayMode)) ) {
 			if((startlevel == 0) && (!big) && (!always20g) && (!owner.replayMode) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
-					// ランキング
+					// Rankings
 					receiver.drawScoreFont(engine, playerID, 3, 2, "GRADE LEVEL TIME", EventReceiver.COLOR_BLUE);
 
 					for(int i = 0; i < RANKING_MAX; i++) {
@@ -933,7 +933,7 @@ public class GradeMania3Mode extends DummyMode {
 
 					receiver.drawScoreFont(engine, playerID, 0, 17, "F:VIEW SECTION TIME", EventReceiver.COLOR_GREEN);
 				} else {
-					// セクションTime
+					// Section Time
 					receiver.drawScoreFont(engine, playerID, 0, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
 					int totalTime = 0;
@@ -987,7 +987,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// レベル
+			//  level
 			receiver.drawScoreFont(engine, playerID, 0, 9, "LEVEL", EventReceiver.COLOR_BLUE);
 			int tempLevel = engine.statistics.level;
 			if(tempLevel < 0) tempLevel = 0;
@@ -1004,7 +1004,7 @@ public class GradeMania3Mode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 14, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(engine.statistics.time));
 
-			// ロール残り時間
+			// Roll 残り time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int time = ROLLTIMELIMIT - rolltime;
 				if(time < 0) time = 0;
@@ -1020,13 +1020,13 @@ public class GradeMania3Mode extends DummyMode {
 				receiver.drawMenuFont(engine,playerID,2,21,"COOL!!",(cooldispframe % 4 == 0),EventReceiver.COLOR_WHITE,EventReceiver.COLOR_ORANGE);
 			}
 
-			// メダル
+			//  medal 
 			if(medalAC >= 1) receiver.drawScoreFont(engine, playerID, 0, 20, "AC", getMedalFontColor(medalAC));
 			if(medalST >= 1) receiver.drawScoreFont(engine, playerID, 3, 20, "ST", getMedalFontColor(medalST));
 			if(medalSK >= 1) receiver.drawScoreFont(engine, playerID, 0, 21, "SK", getMedalFontColor(medalSK));
 			if(medalCO >= 1) receiver.drawScoreFont(engine, playerID, 3, 21, "CO", getMedalFontColor(medalCO));
 
-			// セクションTime
+			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
 				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
@@ -1118,14 +1118,14 @@ public class GradeMania3Mode extends DummyMode {
 			}
 			levelUp(engine);
 
-			// Hard dropボーナスInitialization
+			// Hard drop bonusInitialization
 			harddropBonus = 0;
 		}
 		if( (engine.ending == 0) && (engine.statc[0] > 0) && ((version >= 1) || (engine.holdDisable == false)) ) {
 			lvupflag = false;
 		}
 
-		// 段位ポイント減少
+		// 段位 point減少
 		if((engine.timerActive == true) && (gradeBasicPoint > 0) && (engine.combo <= 0) && (engine.lockDelayNow < engine.getLockDelay() - 1)) {
 			gradeBasicDecay++;
 
@@ -1177,7 +1177,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * レベルが上がったときの共通処理
+	 *  levelが上がったときの共通処理
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -1187,7 +1187,7 @@ public class GradeMania3Mode extends DummyMode {
 		if(engine.statistics.level % 100 >= 80) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(engine.statistics.level == nextseclv - 1) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-		// COOLチェック
+		// COOL check 
 		checkCool(engine);
 
 		// 速度変更
@@ -1226,7 +1226,7 @@ public class GradeMania3Mode extends DummyMode {
 		}
 
 		if((lines >= 1) && (engine.ending == 0)) {
-			// 段位ポイント
+			// 段位 point
 			int index = gradeBasicInternal;
 			if(index > 10) index = 10;
 			int basepoint = tableGradePoint[lines - 1][index];
@@ -1259,7 +1259,7 @@ public class GradeMania3Mode extends DummyMode {
 
 			// 4Lines消しカウント
 			if(lines >= 4) {
-				// SKメダル
+				// SK medal 
 				if(big == true) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						engine.playSE("medal");
@@ -1273,7 +1273,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// ACメダル
+			// AC medal 
 			if(engine.field.isEmpty()) {
 				engine.playSE("bravo");
 
@@ -1283,7 +1283,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// COメダル
+			// CO medal 
 			if(big == true) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					engine.playSE("medal");
@@ -1329,18 +1329,18 @@ public class GradeMania3Mode extends DummyMode {
 
 				lastGradeTime = engine.statistics.time;
 
-				// セクションTimeを記録
+				// Section Timeを記録
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// STメダル
+				// ST medal 
 				stMedalCheck(engine, levelb / 100);
 
 				// REGRET判定
 				checkRegret(engine, levelb);
 
-				// 条件を全て満たしているなら消えロール発動
+				// 条件を全て満たしているなら消えRoll 発動
 				if(version >= 2) {
 					if((grade >= 24) && (coolcount >= 9)) mrollFlag = true;
 				} else {
@@ -1348,7 +1348,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			} else if((nextseclv == 500) && (engine.statistics.level >= 500) && (lv500torikan > 0) && (engine.statistics.time > lv500torikan) &&
 					  (!promotionFlag) && (!demotionFlag)) {
-				// レベル500とりカン
+				//  level500とりカン
 				engine.statistics.level = 999;
 				engine.timerActive = false;
 				engine.gameActive = false;
@@ -1357,18 +1357,18 @@ public class GradeMania3Mode extends DummyMode {
 
 				secretGrade = engine.field.getSecretGrade();
 
-				// セクションTimeを記録
+				// Section Timeを記録
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// STメダル
+				// ST medal 
 				stMedalCheck(engine, levelb / 100);
 
 				// REGRET判定
 				checkRegret(engine, levelb);
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のセクション
+				// 次のSection 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1383,12 +1383,12 @@ public class GradeMania3Mode extends DummyMode {
 					owner.bgmStatus.bgm = bgmlv;
 				}
 
-				// セクションTimeを記録
+				// Section Timeを記録
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// STメダル
+				// ST medal 
 				stMedalCheck(engine, levelb / 100);
 
 				// REGRET判定
@@ -1414,7 +1414,7 @@ public class GradeMania3Mode extends DummyMode {
 				coolchecked = false;
 				cooldisplayed = false;
 
-				// 次のセクションレベルを更新
+				// Update level for next section
 				nextseclv += 100;
 				if(nextseclv > 999) nextseclv = 999;
 			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
@@ -1437,7 +1437,7 @@ public class GradeMania3Mode extends DummyMode {
 			engine.statistics.score += lastscore;
 			scgettime = 120;
 		} else if((lines >= 1) && (engine.ending == 2)) {
-			// ロール中のLines消去
+			// Roll 中のLine clear
 			float points = 0f;
 			if(mrollFlag == false) {
 				if(lines == 1) points = 0.04f;
@@ -1492,7 +1492,7 @@ public class GradeMania3Mode extends DummyMode {
 			setSpeed(engine);
 		}
 
-		// セクションTime増加
+		// Section Time増加
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -1505,7 +1505,7 @@ public class GradeMania3Mode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			// 時間Meter
+			//  timeMeter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -1513,7 +1513,7 @@ public class GradeMania3Mode extends DummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ロール終了
+			// Roll 終了
 			if(rolltime >= ROLLTIMELIMIT) {
 				rollclear = 2;
 
@@ -1752,7 +1752,7 @@ public class GradeMania3Mode extends DummyMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		// セクションTime表示切替
+		// Section Time表示切替
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -1872,7 +1872,7 @@ public class GradeMania3Mode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param gr 段位
-	 * @param lv レベル
+	 * @param lv  level
 	 * @param time Time
 	 */
 	private void updateRanking(int gr, int lv, int time, int clear, int type) {
@@ -1898,7 +1898,7 @@ public class GradeMania3Mode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param gr 段位
-	 * @param lv レベル
+	 * @param lv  level
 	 * @param time Time
 	 * @return Position (-1 if unranked)
 	 */
@@ -1968,7 +1968,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * ベストセクションTime更新
+	 * Update best section time records
 	 */
 	private void updateBestSectionTime() {
 		for(int i = 0; i < SECTION_MAX; i++) {

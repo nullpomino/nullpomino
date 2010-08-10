@@ -54,16 +54,16 @@ public class StateInGameSDL extends BaseStateSDL {
 	/** ゲームのメインクラス */
 	protected GameManager gameManager;
 
-	/** ポーズフラグ */
+	/** ポーズ flag */
 	protected boolean pause = false;
 
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/** フレームステップ有効フラグ */
+	/** フレームステップ有効 flag */
 	protected boolean enableframestep = false;
 
-	/** 倍速モード */
+	/** 倍速Mode  */
 	protected int fastforward = 0;
 
 	/** ポーズメニューのカーソル位置 */
@@ -92,7 +92,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			log.warn("SDLException throwed", e);
 		}
 
-		// モード
+		// Mode
 		String modeName = NullpoMinoSDL.propGlobal.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSDL.modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -170,7 +170,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			log.warn("SDLException throwed", e);
 		}
 
-		// モード
+		// Mode
 		String modeName = prop.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSDL.modeManager.getMode(modeName);
 		if(modeObj == null) {
@@ -258,7 +258,7 @@ public class StateInGameSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -380,7 +380,7 @@ public class StateInGameSDL extends BaseStateSDL {
 		}
 
 		if(gameManager != null) {
-			// リトライボタン
+			// リトライ button
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_RETRY) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_RETRY)) {
 				ResourceHolderSDL.bgmStop();
 				pause = false;

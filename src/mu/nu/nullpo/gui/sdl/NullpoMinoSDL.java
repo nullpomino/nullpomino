@@ -82,13 +82,13 @@ public class NullpoMinoSDL {
 							STATE_CONFIG_JOYSTICK_TEST = 12,
 							STATE_CONFIG_GAMETUNING = 13;
 
-	/** ゲームステートの数 */
+	/** ゲームステートのcount */
 	public static final int STATE_MAX = 14;
 
 	/** 認識するキーの最大値 */
 	public static final int SDL_KEY_MAX = 322;
 
-	/** プログラムに渡されたコマンドLines引数 */
+	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
 	/** 設定保存用Property file */
@@ -109,10 +109,10 @@ public class NullpoMinoSDL {
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
-	/** モード管理 */
+	/** Mode 管理 */
 	public static ModeManager modeManager;
 
-	/** 終了フラグ */
+	/** 終了 flag */
 	public static boolean quit = false;
 
 	/** FPS表示 */
@@ -124,7 +124,7 @@ public class NullpoMinoSDL {
 	/** FPS計算用 */
 	protected static long prevCalcTime = 0;
 
-	/** フレーム数 */
+	/**  frame count */
 	protected static long frameCount = 0;
 
 	/** 実際のFPS */
@@ -145,7 +145,7 @@ public class NullpoMinoSDL {
 	/** ジョイスティックのハットスイッチ無視 */
 	public static boolean[] joyIgnorePOV;
 
-	/** ジョイスティックの数 */
+	/** ジョイスティックのcount */
 	public static int joystickMax;
 
 	/** ジョイスティック */
@@ -154,16 +154,16 @@ public class NullpoMinoSDL {
 	/** ジョイスティックのDirectionキー状態 */
 	public static int[] joyAxisX, joyAxisY;
 
-	/** ジョイスティックのハットスイッチの数 */
+	/** ジョイスティックのハットスイッチのcount */
 	public static int[] joyMaxHat;
 
 	/** ジョイスティックのハットスイッチの状態 */
 	public static HatState[] joyHatState;
 
-	/** ジョイスティックのボタンの数 */
+	/** ジョイスティックの buttonのcount */
 	public static int[] joyMaxButton;
 
-	/** ジョイスティックのボタンを押しているならtrue */
+	/** ジョイスティックの buttonを押しているならtrue */
 	public static boolean[][] joyPressedState;
 
 	/** ゲームステート */
@@ -172,10 +172,10 @@ public class NullpoMinoSDL {
 	/** Current ステート */
 	public static int currentState;
 
-	/** 終了ボタンやスクリーンショットボタンの使用許可 */
+	/** 終了 buttonやスクリーンショット buttonの使用許可 */
 	public static boolean enableSpecialKeys;
 
-	/** 終了ボタン使用許可 */
+	/** 終了 button使用許可 */
 	public static boolean allowQuit;
 
 	/** 最大FPS */
@@ -185,8 +185,8 @@ public class NullpoMinoSDL {
 	public static NetObserverClient netObserverClient;
 
 	/**
-	 * メイン関数
-	 * @param args プログラムに渡された引数
+	 * メイン関count
+	 * @param args プログラムに渡された引count
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log_sdl.cfg");
@@ -231,7 +231,7 @@ public class NullpoMinoSDL {
 			in.close();
 		} catch(IOException e) {}
 
-		// モード読み込み
+		// Mode読み込み
 		modeManager = new ModeManager();
 		try {
 			BufferedReader txtMode = new BufferedReader(new FileReader("config/list/mode.lst"));
@@ -420,7 +420,7 @@ public class NullpoMinoSDL {
 				if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_SCREENSHOT) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_SCREENSHOT))
 					saveScreenShot();
 
-				// 終了ボタン
+				// 終了 button
 				if(allowQuit) {
 					if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_QUIT) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_QUIT))
 						enterState(-1);
@@ -433,12 +433,12 @@ public class NullpoMinoSDL {
 			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回のフレームの休止時間誤差も引いておく
+			// 前回のフレームの休止 time誤差も引いておく
 			long period = (long) (1.0 / maxFPS * 1000000000);
 			sleepTime = (period - timeDiff) - overSleepTime;
 
 			if(sleepTime > 0) {
-				// 休止時間がとれる場合
+				// 休止 timeがとれる場合
 				if(maxFPS > 0) {
 					try {
 						Thread.sleep(sleepTime / 1000000L);
@@ -447,8 +447,8 @@ public class NullpoMinoSDL {
 				// sleep()の誤差
 				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
 			} else {
-				// 状態更新・レンダリングで時間を使い切ってしまい
-				// 休止時間がとれない場合
+				// 状態更新・レンダリングで timeを使い切ってしまい
+				// 休止 timeがとれない場合
 				overSleepTime = 0L;
 				// 休止なしが16回以上続いたら
 				if(++noDelays >= 16) {
@@ -591,7 +591,7 @@ public class NullpoMinoSDL {
 			if(event == null) break;
 
 			if(event instanceof SDLQuitEvent) {
-				// 終了ボタン
+				// 終了 button
 				enterState(-1);
 			} else if(event instanceof SDLKeyboardEvent) {
 				// キー入力
@@ -651,7 +651,7 @@ public class NullpoMinoSDL {
 		if(calcInterval >= 1000000000L) {
 			long timeNow = System.nanoTime();
 
-			// 実際の経過時間を測定
+			// 実際の経過 timeを測定
 			long realElapsedTime = timeNow - prevCalcTime; // 単位: ns
 
 			// FPSを計算

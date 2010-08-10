@@ -42,25 +42,25 @@ public class StateConfigKeyboard extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 9;
 
-	/** キー入力を受付可能になるまでのフレーム数 */
+	/** キー入力を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
 	/** プレイヤー number */
 	public int player = 0;
 
-	/** 初期設定モード */
+	/** 初期設定Mode  */
 	protected boolean firstSetupMode;
 
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
-	/** 現在設定中のボタン */
+	/** 現在設定中の button */
 	protected int keynum;
 
-	/** 経過フレーム数 */
+	/** 経過 frame count */
 	protected int frame;
 
-	/** ボタン設定 */
+	/**  button設定 */
 	protected int keymap[];
 
 	/*
@@ -72,7 +72,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/**
-	 * ボタン設定をInitialization
+	 *  button設定をInitialization
 	 */
 	protected void reset() {
 		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
@@ -152,7 +152,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {

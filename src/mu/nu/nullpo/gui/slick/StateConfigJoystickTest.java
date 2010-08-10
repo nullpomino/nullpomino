@@ -43,25 +43,25 @@ public class StateConfigJoystickTest extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 13;
 
-	/** キー入力を受付可能になるまでのフレーム数 */
+	/** キー入力を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** プレイヤー number */
 	public int player = 0;
 
-	/** スクリーンショット撮影フラグ */
+	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
 	/** 使用するジョイスティックの number */
 	protected int joyNumber;
 
-	/** 最後に押されたボタン */
+	/** 最後に押された button */
 	protected int lastPressButton;
 
-	/** 経過フレーム数 */
+	/** 経過 frame count */
 	protected int frame;
 
-	/** ボタン数 */
+	/**  buttoncount */
 	protected int buttonCount;
 
 	/** StateBasedGame */
@@ -128,7 +128,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {
@@ -138,7 +138,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 
 		frame++;
 
-		// ジョイスティックボタン判定
+		// ジョイスティック button判定
 		if(frame >= KEYACCEPTFRAME) {
 			for(int i = 0; i < buttonCount; i++) {
 				try {

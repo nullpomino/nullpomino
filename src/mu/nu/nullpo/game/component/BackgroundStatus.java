@@ -40,7 +40,7 @@ public class BackgroundStatus implements Serializable {
 	/** 背景 number */
 	public int bg;
 
-	/** 背景フェードフラグ */
+	/** 背景フェード flag */
 	public boolean fadesw;
 
 	/** 背景フェードの状態（falseならフェードアウト、trueならフェードイン） */

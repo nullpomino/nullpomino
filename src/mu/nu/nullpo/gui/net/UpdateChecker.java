@@ -48,7 +48,7 @@ public class UpdateChecker implements Runnable {
 	/** デフォルトのXMLのURL */
 	public static final String DEFAULT_XML_URL = "http://dl.dropbox.com/u/6118422/NullpoUpdate.xml";
 
-	/** 状態の定数 */
+	/** 状態の定count */
 	public static final int STATUS_INACTIVE = 0,
 							STATUS_LOADING = 1,
 							STATUS_ERROR = 2,
@@ -69,14 +69,14 @@ public class UpdateChecker implements Runnable {
 	/** リリース日 */
 	private static String strReleaseDate = null;
 
-	/** ダウンロードURL */
-	private static String strDownloadURL = null;
+	/**  download URL */
+	private static String str download URL = null;
 
-	/** 更新チェック用スレッド */
+	/** 更新 check 用スレッド */
 	private static Thread thread = null;
 
 	/**
-	 * XMLをダウンロードしてVersion numberなどを取得
+	 * XMLを download してVersion numberなどを取得
 	 * @return 成功したらtrue
 	 */
 	private static boolean checkUpdate() {
@@ -107,14 +107,14 @@ public class UpdateChecker implements Runnable {
 					log.debug("Release Date:" + strReleaseDate);
 				}
 
-				pat = Pattern.compile("<DownloadURL>.*</DownloadURL>");
+				pat = Pattern.compile("< download URL>.*</ download URL>");
 				matcher = pat.matcher(str);
 				if(matcher.find()) {
 					String tempStr = matcher.group();
-					tempStr = tempStr.replace("<DownloadURL>", "");
-					tempStr = tempStr.replace("</DownloadURL>", "");
-					strDownloadURL = tempStr;
-					log.debug("Download URL:" + strDownloadURL);
+					tempStr = tempStr.replace("< download URL>", "");
+					tempStr = tempStr.replace("</ download URL>", "");
+					str download URL = tempStr;
+					log.debug(" download  URL:" + str download URL);
 				}
 			}
 
@@ -194,7 +194,7 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * Versionチェック
+	 * Version check 
 	 * @param strURL 最新版の情報が入ったXMLファイルのURL(nullまたは空文字列にするとデフォルト値を使う)
 	 */
 	public static void startCheckForUpdates(String strURL) {
@@ -255,11 +255,11 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * 最新版のダウンロード先URLを取得
-	 * @return 最新版のダウンロード先URL
+	 * 最新版の download 先URLを取得
+	 * @return 最新版の download 先URL
 	 */
-	public static String getStrDownloadURL() {
-		return strDownloadURL;
+	public static String getStr download URL() {
+		return str download URL;
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/*
-	 * 更新チェックスレッドの処理
+	 * 更新 check スレッドの処理
 	 */
 	public void run() {
 		// 開始
@@ -300,7 +300,7 @@ public class UpdateChecker implements Runnable {
 			}
 		}
 
-		// 更新チェック
+		// 更新 check 
 		if(checkUpdate() == true) {
 			status = STATUS_COMPLETE;
 		} else {

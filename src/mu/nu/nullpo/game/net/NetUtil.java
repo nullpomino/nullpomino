@@ -129,7 +129,7 @@ public class NetUtil {
 	/**
 	 * トリップ作成
 	 * @param tripkey パスワード
-	 * @param maxlen トリップ桁数(10が普通)
+	 * @param maxlen トリップ桁count(10が普通)
 	 * @return 作成されたトリップ
 	 */
 	public static String createTripCode(String tripkey, int maxlen) {
@@ -171,7 +171,7 @@ public class NetUtil {
 	}
 
 	/**
-	 * byte配列を圧縮(圧縮レベルは9になります)<br>
+	 * byte配列を圧縮(圧縮 levelは9になります)<br>
 	 * <a href="http://www.exampledepot.com/egs/java.util.zip/CompArray.html">出展</a>
 	 * @param input 元のbyte配列
 	 * @return 圧縮されたbyte配列
@@ -184,7 +184,7 @@ public class NetUtil {
 	 * byte配列を圧縮<br>
 	 * <a href="http://www.exampledepot.com/egs/java.util.zip/CompArray.html">出展</a>
 	 * @param input 元のbyte配列
-	 * @param level 圧縮レベル(0～9)
+	 * @param level 圧縮 level(0～9)
 	 * @return 圧縮されたbyte配列
 	 */
 	public static byte[] compressByteArray(byte[] input, int level) {
@@ -239,7 +239,7 @@ public class NetUtil {
 	}
 
 	/**
-	 * 文字列を圧縮してBase64で符号化(圧縮レベルは9になります)
+	 * 文字列を圧縮してBase64で符号化(圧縮 levelは9になります)
 	 * @param input 圧縮する文字列
 	 * @return 圧縮されてBase64で符号化された文字列
 	 */
@@ -250,7 +250,7 @@ public class NetUtil {
 	/**
 	 * 文字列を圧縮してBase64で符号化
 	 * @param input 圧縮する文字列
-	 * @param level 圧縮レベル(0～9)
+	 * @param level 圧縮 level(0～9)
 	 * @return 圧縮されてBase64で符号化された文字列
 	 */
 	public static String compressString(String input, int level) {

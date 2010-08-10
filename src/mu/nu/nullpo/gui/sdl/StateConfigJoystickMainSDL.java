@@ -121,7 +121,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -165,7 +165,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定ボタン
+		// 決定 button
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			ResourceHolderSDL.soundManager.play("decide");
 
@@ -191,7 +191,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 			}
 		}
 
-		// Cancelボタン
+		// Cancel button
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) {
 			loadConfig(NullpoMinoSDL.propConfig);
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);

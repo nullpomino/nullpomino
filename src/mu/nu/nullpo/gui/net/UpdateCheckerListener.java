@@ -33,12 +33,12 @@ package mu.nu.nullpo.gui.net;
  */
 public interface UpdateCheckerListener {
 	/**
-	 * 更新チェック開始時
+	 * 更新 check 開始時
 	 */
 	public void onUpdateCheckerStart();
 
 	/**
-	 * 更新チェック終了時
+	 * 更新 check 終了時
 	 * @param status 状態(失敗するとSTATUS_ERROR、成功するとSTATUS_COMPLETE)
 	 */
 	public void onUpdateCheckerEnd(int status);

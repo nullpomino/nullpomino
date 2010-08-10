@@ -214,7 +214,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストボックスでマウスボタンを押したときのイベント処理用クラス
+	 * テキストボックスでマウス buttonを押したときのイベント処理用クラス
 	 */
 	protected class KeyConfigMouseEventListener extends MouseAdapter {
 		@Override

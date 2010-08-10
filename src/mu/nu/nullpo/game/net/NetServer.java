@@ -97,18 +97,18 @@ public class NetServer {
 	/** 今のポート number */
 	private int port;
 
-	/** 接続してきたクライアントの合計数 */
+	/** 接続してきたクライアントの合計count */
 	private int playerCount = 0;
 
-	/** 作られたルームの合計数 */
+	/** 作られたルームの合計count */
 	private int roomCount = 0;
 
-	/** マップ選択用乱数 */
+	/** マップ選択用乱count */
 	private Random rand = new Random();
 
 	/**
-	 * メイン関数(CUI)
-	 * @param args 引数
+	 * メイン関count(CUI)
+	 * @param args 引count
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log_server.cfg");
@@ -354,7 +354,7 @@ public class NetServer {
 				pInfo.connected = false;
 				pInfo.ready = false;
 
-				LinkedList<NetRoomInfo> deleteList = new LinkedList<NetRoomInfo>();	// 削除チェック予定リスト
+				LinkedList<NetRoomInfo> deleteList = new LinkedList<NetRoomInfo>();	// 削除 check 予定リスト
 
 				for(NetRoomInfo roomInfo: roomInfoList) {
 					if(roomInfo.playerList.contains(pInfo)) {
@@ -538,7 +538,7 @@ public class NetServer {
 	}
 
 	/**
-	 * ユーザー数更新を全員(オブザーバーとプレイヤー)に伝える
+	 * ユーザーcount更新を全員(オブザーバーとプレイヤー)に伝える
 	 */
 	private void broadcastUserCountToAll() throws IOException {
 		String msg = "observerupdate\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n";
@@ -604,7 +604,7 @@ public class NetServer {
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
-			// Versionチェック
+			// Version check 
 			float serverVer = GameManager.getVersionMajor();
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
@@ -629,7 +629,7 @@ public class NetServer {
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
-			// Versionチェック
+			// Version check 
 			float serverVer = GameManager.getVersionMajor();
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
@@ -656,7 +656,7 @@ public class NetServer {
 				originalName = originalName.replace('!', '?');
 			}
 
-			// プレイヤー名決定(同じ名前の人がいたら後ろに数字をくっつける)
+			// プレイヤー名決定(同じ名前の人がいたら後ろにcount字をくっつける)
 			if(originalName.length() < 1) originalName = "noname";
 			String name = originalName;
 			int nameCount = 0;
@@ -715,7 +715,7 @@ public class NetServer {
 			if(pInfo != null) {
 				String strData = message[2];
 
-				// チェックサム計算
+				// checkサム計算
 				Adler32 checksumObj = new Adler32();
 				checksumObj.update(NetUtil.stringToBytes(strData));
 				long sChecksum = checksumObj.getValue();
@@ -754,7 +754,7 @@ public class NetServer {
 					String strRuleTemp = prop.encode("RuleData " + p.strName);
 					String strRuleData = NetUtil.compressString(strRuleTemp);
 
-					// チェックサム計算
+					// checkサム計算
 					Adler32 checksumObj = new Adler32();
 					checksumObj.update(NetUtil.stringToBytes(strRuleData));
 					long sChecksum = checksumObj.getValue();
@@ -1235,7 +1235,7 @@ public class NetServer {
 	}
 
 	/**
-	 * 全員が準備完了状態かチェックし、条件を満たしていればゲームを開始する
+	 * 全員が準備完了状態か check し、条件を満たしていればゲームを開始する
 	 * @param roomInfo ルーム情報
 	 * @return ゲーム開始したらtrue、しなかったらfalse
 	 */
@@ -1286,7 +1286,7 @@ public class NetServer {
 	}
 
 	/**
-	 * ゲーム終了かどうかチェックし、終了条件を満たしていればルーム内の全員に通知する
+	 * ゲーム終了かどうか check し、終了条件を満たしていればルーム内の全員に通知する
 	 * @param roomInfo ルーム情報
 	 * @return ゲーム終了したらtrue、終了前・すでに終了後ならfalse
 	 */
@@ -1305,7 +1305,7 @@ public class NetServer {
 				if(teamName == null) teamName = "";
 				msg += -1 + "\t" + -1 + "\t" + NetUtil.urlEncode(teamName) + "\t" + isTeamWin;
 
-				// プレイヤーのプレイ中フラグを解除
+				// プレイヤーのプレイ中 flagを解除
 				for(NetPlayerInfo pInfo: roomInfo.playerSeat) {
 					if((pInfo != null) && (pInfo.playing)) {
 						pInfo.resetPlayState();

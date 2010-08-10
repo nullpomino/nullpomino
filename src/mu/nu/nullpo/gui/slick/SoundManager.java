@@ -41,13 +41,13 @@ public class SoundManager {
 	/** Log */
 	static Logger log = Logger.getLogger(SoundManager.class);
 
-	/** 登録できるWAVEファイルの最大数 */
+	/** 登録できるWAVEファイルの最大count */
 	protected int maxClips;
 
 	/** WAVEファイルデータ（名前->データ本体） */
 	protected HashMap<String, Sound> clipMap;
 
-	/** 登録されたWAVEファイル数 */
+	/** 登録されたWAVEファイルcount */
 	protected int counter = 0;
 
 	/**
@@ -59,7 +59,7 @@ public class SoundManager {
 
 	/**
 	 * Constructor
-	 * @param maxClips 登録できるWAVEファイルの最大数
+	 * @param maxClips 登録できるWAVEファイルの最大count
 	 */
 	public SoundManager(int maxClips) {
 		this.maxClips = maxClips;

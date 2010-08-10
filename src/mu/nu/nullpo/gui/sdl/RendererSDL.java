@@ -74,7 +74,7 @@ public class RendererSDL extends EventReceiver {
 	/** 背景表示 */
 	protected boolean showbg;
 
-	/** Lines消去エフェクト表示 */
+	/** Line clearエフェクト表示 */
 	protected boolean showlineeffect;
 
 	/** 重い演出を使う */
@@ -133,8 +133,8 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * ブロックの色IDに応じてSDL用カラー値を取得
-	 * @param colorID ブロックの色ID
+	 * Blockの色IDに応じてSDL用カラー値を取得
+	 * @param colorID Blockの色ID
 	 * @return SDL用カラー値
 	 */
 	public long getColorByID(int colorID) {
@@ -299,7 +299,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * ブロックの画像の幅
+	 * Blockの画像の幅
 	 */
 	@Override
 	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
@@ -307,7 +307,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * ブロックの画像の高さ
+	 * Blockの画像の高さ
 	 */
 	@Override
 	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
@@ -349,7 +349,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * モードの設定ファイルを読み込み
+	 * Mode の設定ファイルを読み込み
 	 */
 	@Override
 	public CustomProperties loadModeConfig() {
@@ -367,7 +367,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * モードの設定ファイルを保存
+	 * Mode の設定ファイルを保存
 	 */
 	@Override
 	public void saveModeConfig(CustomProperties modeConfig) {
@@ -445,7 +445,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 1マスブロックを描画
+	 * 1マスBlockを描画
 	 */
 	@Override
 	public void drawSingleBlock(GameEngine engine, int playerID, int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
@@ -457,12 +457,12 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * ブロックを描画
+	 * Blockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param color 色
 	 * @param skin 模様
-	 * @param bone 骨ブロック
+	 * @param bone 骨Block
 	 * @param darkness 暗さもしくは明るさ
 	 * @param alpha 透明度
 	 * @param scale 拡大率
@@ -525,7 +525,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してブロックを描画
+	 * Blockクラスのインスタンスを使用してBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -536,7 +536,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してブロックを描画（拡大率指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -548,7 +548,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してブロックを描画（拡大率と暗さ指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率と暗さ指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -561,7 +561,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * ブロックピースを描画
+	 * Blockピースを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -572,7 +572,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * ブロックピースを描画（拡大率指定可能）
+	 * Blockピースを描画（拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -584,7 +584,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * ブロックピースを描画（暗さもしくは明るさの指定可能）
+	 * Blockピースを描画（暗さもしくは明るさの指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -605,7 +605,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のブロックピースを描画（Y-coordinateが0以上のブロックだけ表示）
+	 * 現在操作中のBlockピースを描画（Y-coordinateが0以上のBlockだけ表示）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -646,7 +646,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のブロックピースのゴーストを描画
+	 * 現在操作中のBlockピースのゴーストを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -771,7 +771,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * フィールドのブロックを描画
+	 * フィールドのBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -1285,7 +1285,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * ブロックピース移動時の処理
+	 * Blockピース移動時の処理
 	 */
 	@Override
 	public void renderMove(GameEngine engine, int playerID) {
@@ -1311,13 +1311,13 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * ブロックを消す演出を出すときの処理
+	 * Blockを消す演出を出すときの処理
 	 */
 	@Override
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
 		if(showlineeffect && !engine.minidisplay) {
 			int color = blk.getDrawColor();
-			// 通常ブロック
+			// 通常Block
 			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
 				EffectObjectSDL obj =
 					new EffectObjectSDL(1,
@@ -1326,7 +1326,7 @@ public class RendererSDL extends EventReceiver {
 										color);
 				effectlist.add(obj);
 			}
-			// 宝石ブロック
+			// 宝石Block
 			else if(blk.isGemBlock()) {
 				EffectObjectSDL obj =
 					new EffectObjectSDL(2,
@@ -1480,12 +1480,12 @@ public class RendererSDL extends EventReceiver {
 
 			if(obj.effect != 0) emptyflag = false;
 
-			// 通常ブロック
+			// 通常Block
 			if(obj.effect == 1) {
 				obj.anim++;
 				if(obj.anim >= 36) obj.effect = 0;
 			}
-			// 宝石ブロック
+			// 宝石Block
 			if(obj.effect == 2) {
 				obj.anim++;
 				if(obj.anim >= 60) obj.effect = 0;
@@ -1502,7 +1502,7 @@ public class RendererSDL extends EventReceiver {
 		for(int i = 0; i < effectlist.size(); i++) {
 			EffectObjectSDL obj = effectlist.get(i);
 
-			// 通常ブロック
+			// 通常Block
 			if(obj.effect == 1) {
 				int x = obj.x - 40;
 				int y = obj.y - 15;
@@ -1531,7 +1531,7 @@ public class RendererSDL extends EventReceiver {
 					log.debug("SDLException throwed", e);
 				}
 			}
-			// 宝石ブロック
+			// 宝石Block
 			if(obj.effect == 2) {
 				int x = obj.x - 8;
 				int y = obj.y - 8;

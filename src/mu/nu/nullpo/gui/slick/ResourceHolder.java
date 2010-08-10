@@ -48,22 +48,22 @@ public class ResourceHolder {
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolder.class);
 
-	/** 背景の数 */
+	/** 背景のcount */
 	public static final int BACKGROUND_MAX = 20;
 
-	/** Lines消去時に飛び散るブロックの画像数 */
+	/** Line clear時に飛び散るBlockの画像count */
 	public static final int BLOCK_BREAK_MAX = 8;
 
-	/** Lines消去時に飛び散るブロックの画像分割数 */
+	/** Line clear時に飛び散るBlockの画像分割count */
 	public static final int BLOCK_BREAK_SEGMENTS = 2;
 
-	/** 宝石ブロック消去エフェクトの数 */
+	/** 宝石Block消去エフェクトのcount */
 	public static final int PERASE_MAX = 7;
 
-	/** ブロックの画像 */
+	/** Blockの画像 */
 	public static Image imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊ブロックの画像 */
+	/** 特殊Blockの画像 */
 	public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
 	/** 通常のフォント */
@@ -84,10 +84,10 @@ public class ResourceHolder {
 	/** フィールドの背景 */
 	//public static Image imgFieldbg;
 
-	/** Lines消去時に飛び散るブロック */
+	/** Line clear時に飛び散るBlock */
 	public static Image[][] imgBreak;
 
-	/** 宝石ブロック消去エフェクト */
+	/** 宝石Block消去エフェクト */
 	public static Image[] imgPErase;
 
 	/** プレイ中の背景 */

@@ -103,7 +103,7 @@ public class PhysicianMode extends DummyMode {
 	private int gemsClearedChainTotal;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {

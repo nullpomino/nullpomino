@@ -41,7 +41,7 @@ public class EffectObjectSDL {
 	/** Y-coordinate */
 	public int y;
 
-	/** エフェクトのパラメータ（ブロックの色など） */
+	/** エフェクトのパラメータ（Blockの色など） */
 	public int param;
 
 	/** アニメーションカウンタ */
@@ -63,7 +63,7 @@ public class EffectObjectSDL {
 	 * @param effect エフェクト type
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param param エフェクトのパラメータ（ブロックの色など）
+	 * @param param エフェクトのパラメータ（Blockの色など）
 	 */
 	public EffectObjectSDL(int effect, int x, int y, int param) {
 		this.effect = effect;

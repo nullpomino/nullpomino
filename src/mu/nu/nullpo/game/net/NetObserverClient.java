@@ -47,7 +47,7 @@ public class NetObserverClient extends NetBaseClient {
 	/** Number of players */
 	protected volatile int playerCount = 0;
 
-	/** オブザーバー数 */
+	/** オブザーバーcount */
 	protected volatile int observerCount = 0;
 
 	/**
@@ -89,7 +89,7 @@ public class NetObserverClient extends NetBaseClient {
 			observerCount = Integer.parseInt(message[3]);
 			send("observerlogin\t" + GameManager.getVersionMajor() + "\n");
 		}
-		// 人数更新
+		// 人count更新
 		if(message[0].equals("observerupdate")) {
 			//observerupdate\t[PLAYERS]\t[OBSERVERS]
 			playerCount = Integer.parseInt(message[1]);

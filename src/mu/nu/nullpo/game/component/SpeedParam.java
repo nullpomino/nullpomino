@@ -31,7 +31,7 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * ブロックピースの落下速度や出現待ち時間などのデータ
+ * Blockピースの落下速度や出現待ち timeなどのデータ
  */
 public class SpeedParam implements Serializable {
 	/** シリアルVersionID */
@@ -43,19 +43,19 @@ public class SpeedParam implements Serializable {
 	/** 落下速度の分母（gravity==denominatorなら1Gになる） */
 	public int denominator;
 
-	/** 出現待ち時間 */
+	/** 出現待ち time */
 	public int are;
 
-	/** Lines消去後の出現待ち時間 */
+	/** Line clear後の出現待ち time */
 	public int areLine;
 
-	/** Lines消去時間 */
+	/** Line clear time */
 	public int lineDelay;
 
-	/** 固定時間 */
+	/** 固定 time */
 	public int lockDelay;
 
-	/** 横移動時間 */
+	/** 横移動 time */
 	public int das;
 
 	/**

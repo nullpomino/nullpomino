@@ -627,7 +627,7 @@ public class GameEngine {
 	 * @param playerID プレイヤーの number
 	 * @param ruleopt ルール設定
 	 * @param wallkick Wallkickシステム
-	 * @param randomizer ブロックピースの出現順の生成アルゴリズム
+	 * @param randomizer Blockピースの出現順の生成アルゴリズム
 	 */
 	public GameEngine(GameManager owner, int playerID, RuleOptions ruleopt, Wallkick wallkick, Randomizer randomizer) {
 		this(owner,playerID);
@@ -946,8 +946,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * Current Lines消去後AREの値を取得（ルール設定も考慮）
-	 * @return Current Lines消去後ARE
+	 * Current ARE after line clearの値を取得（ルール設定も考慮）
+	 * @return Current ARE after line clear
 	 */
 	public int getARELine() {
 		if((speed.areLine < ruleopt.minARELine) && (ruleopt.minARELine >= 0)) return ruleopt.minARELine;
@@ -956,8 +956,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * Current Lines消去時間の値を取得（ルール設定も考慮）
-	 * @return Current Lines消去時間
+	 * Current Line clear timeの値を取得（ルール設定も考慮）
+	 * @return Current Line clear time
 	 */
 	public int getLineDelay() {
 		if((speed.lineDelay < ruleopt.minLineDelay) && (ruleopt.minLineDelay >= 0)) return ruleopt.minLineDelay;
@@ -966,8 +966,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * Current 固定時間の値を取得（ルール設定も考慮）
-	 * @return Current 固定時間
+	 * Current 固定 timeの値を取得（ルール設定も考慮）
+	 * @return Current 固定 time
 	 */
 	public int getLockDelay() {
 		if((speed.lockDelay < ruleopt.minLockDelay) && (ruleopt.minLockDelay >= 0)) return ruleopt.minLockDelay;
@@ -999,8 +999,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * 現在使用中のブロックスキン numberを取得
-	 * @return ブロックスキン number
+	 * 現在使用中のBlockスキン numberを取得
+	 * @return Blockスキン number
 	 */
 	public int getSkin() {
 		if((ruleopt == null) || (owSkin >= 0)) {
@@ -1010,7 +1010,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * @return Aボタンを押したときに左回転するならfalse、右回転するならtrue
+	 * @return A buttonを押したときに左回転するならfalse、右回転するならtrue
 	 */
 	public boolean isRotateButtonDefaultRight() {
 		if((ruleopt == null) || (owRotateButtonDefaultRight >= 0)) {
@@ -1021,7 +1021,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * 見え／消えロール状態のフィールドを通常状態に戻す
+	 * 見え／消えRoll 状態のフィールドを通常状態に戻す
 	 */
 	public void resetFieldVisible() {
 		if(field != null) {
@@ -1109,8 +1109,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * 移動回数制限を超過しているか判定
-	 * @return 移動回数制限を超過したらtrue
+	 * 移動 count制限を超過しているか判定
+	 * @return 移動 count制限を超過したらtrue
 	 */
 	public boolean isMoveCountExceed() {
 		if(ruleopt.lockresetLimitShareCount == true) {
@@ -1125,8 +1125,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * 回転回数制限を超過しているか判定
-	 * @return 回転回数制限を超過したらtrue
+	 * 回転 count制限を超過しているか判定
+	 * @return 回転 count制限を超過したらtrue
 	 */
 	public boolean isRotateCountExceed() {
 		if(ruleopt.lockresetLimitShareCount == true) {
@@ -1227,7 +1227,7 @@ public class GameEngine {
 	 * Spin判定(全スピンルールのとき用)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece Current ブロックピース
+	 * @param piece Current Blockピース
 	 * @param fld フィールド
 	 */
 	public void setAllSpin(int x, int y, Piece piece, Field fld) {
@@ -1359,9 +1359,9 @@ public class GameEngine {
 	}
 
 	/**
-	 * 回転ボタンを押したあとのピースのDirectionを取得
+	 * 回転 buttonを押したあとのピースのDirectionを取得
 	 * @param move 回転Direction（-1:左 1:右 2:180度）
-	 * @return 回転ボタンを押したあとのピースのDirection
+	 * @return 回転 buttonを押したあとのピースのDirection
 	 */
 	public int getRotateDirection(int move) {
 		int rt = 0 + move;
@@ -1401,7 +1401,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * フィールドのブロックの状態を更新
+	 * フィールドのBlockの状態を更新
 	 */
 	public void fieldUpdate() {
 		if(field != null) {
@@ -1573,7 +1573,7 @@ public class GameEngine {
 		if(gameActive) {
 			// リプレイ関連の処理
 			if(!owner.replayMode || owner.replayRerecord) {
-				// AIのボタン処理
+				// AIの button処理
 				if(ai != null) ai.setControl(this, playerID, ctrl);
 
 				// 入力状態をリプレイに記録
@@ -1585,7 +1585,7 @@ public class GameEngine {
 			replayTimer++;
 		}
 
-		// ボタン入力時間の更新
+		//  button入力 timeの更新
 		ctrl.updateButtonTime();
 
 		// 最初の処理
@@ -1644,7 +1644,7 @@ public class GameEngine {
 			}
 		}
 
-		// フィールドのブロックの状態や統計情報を更新
+		// フィールドのBlockの状態や統計情報を更新
 		fieldUpdate();
 		if((ending == 0) || (staffrollEnableStatistics)) statistics.update();
 
@@ -1661,7 +1661,7 @@ public class GameEngine {
 
 	/**
 	 * 画面描画
-	 * （各モードやイベント処理クラスのイベントを呼び出すだけで、それ以外にGameEngine自身は何もしません）
+	 * （各Mode やイベント処理クラスのイベントを呼び出すだけで、それ以外にGameEngine自身は何もしません）
 	 */
 	public void render() {
 		// 最初の処理
@@ -1742,7 +1742,7 @@ public class GameEngine {
 		}
 		owner.receiver.onSetting(this, playerID);
 
-		// モード側が何もしない場合はReady画面へ移動
+		// Mode側が何もしない場合はReady画面へ移動
 		stat = STAT_READY;
 		resetStatc();
 	}
@@ -1833,9 +1833,9 @@ public class GameEngine {
 			}
 
 			if(!readyDone) {
-				// ボタン入力状態リセット
+				//  button入力状態リセット
 				ctrl.reset();
-				// ゲーム中フラグON
+				// ゲーム中 flagON
 				gameActive = true;
 			}
 		}
@@ -1874,7 +1874,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * ブロックピースの移動処理
+	 * Blockピースの移動処理
 	 */
 	public void statMove() {
 		dasRepeat = false;
@@ -1954,7 +1954,7 @@ public class GameEngine {
 					holdPieceObject.updateConnectData();
 				}
 
-				// 使用した回数+1
+				// 使用した count+1
 				holdUsedCount++;
 				statistics.totalHoldUsed++;
 
@@ -2019,9 +2019,9 @@ public class GameEngine {
 		checkDropContinuousUse();
 
 		boolean softdropUsed = false; // このフレームにSoft dropを使ったらtrue
-		int softdropFallNow = 0; // このフレームのSoft dropで落下した段数
+		int softdropFallNow = 0; // このフレームのSoft dropで落下した段count
 
-		boolean updown = false; // Up下同時押しフラグ
+		boolean updown = false; // Up下同時押し flag
 		if(ctrl.isPress(Controller.BUTTON_UP) && ctrl.isPress(Controller.BUTTON_DOWN)) updown = true;
 
 		if(!dasInstant) {
@@ -2054,9 +2054,9 @@ public class GameEngine {
 				initialRotateContinuousUse = true;
 				playSE("initialrotate");
 			} else if((statc[0] > 0) || (ruleopt.moveFirstFrame == true)) {
-				if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// ロールロール
+				if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// Roll Roll 
 
-				// ボタン入力
+				//  button入力
 				if(ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_C)) move = -1;
 				else if(ctrl.isPush(Controller.BUTTON_B)) move = 1;
 				else if(ctrl.isPush(Controller.BUTTON_E)) move = 2;
@@ -2134,9 +2134,9 @@ public class GameEngine {
 			}
 			initialRotateDirection = 0;
 
-			// ゲームオーバーチェック
+			// ゲームオーバー check 
 			if((statc[0] == 0) && (nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true)) {
-				// ブロックの出現位置を上にずらすことができる場合はそうする
+				// Blockの出現位置を上にずらすことができる場合はそうする
 				for(int i = 0; i < ruleopt.pieceEnterMaxDistanceY; i++) {
 					if(nowPieceObject.big) nowPieceY -= 2;
 					else nowPieceY--;
@@ -2383,7 +2383,7 @@ public class GameEngine {
 				shiftLock = ctrl.getButtonBit() & 3;
 			}
 
-			// 移動＆回転数制限超過
+			// 移動＆回転count制限超過
 			if( (ruleopt.lockresetLimitOver == RuleOptions.LOCKRESET_LIMIT_OVER_INSTANT) && (isMoveCountExceed() || isRotateCountExceed()) ) {
 				instantlock = true;
 			}
@@ -2472,7 +2472,7 @@ public class GameEngine {
 				dasRepeat = false;
 				dasInstant = false;
 
-				// 次の処理を決める(モード側でステータスを弄っている場合は何もしない)
+				// 次の処理を決める(Mode 側でステータスを弄っている場合は何もしない)
 				if((stat == STAT_MOVE) || (versionMajor <= 6.3f)) {
 					resetStatc();
 
@@ -2488,7 +2488,7 @@ public class GameEngine {
 						statc[0] = getLineDelay();
 						statLineClear();
 					} else if( (lineClearing > 0) && ((ruleopt.lockflash <= 0) || (!ruleopt.lockflashBeforeLineClear)) ) {
-						// Lines消去
+						// Line clear
 						stat = STAT_LINECLEAR;
 						statLineClear();
 					} else if( ((getARE() > 0) || (lagARE) || (ruleopt.lockflashBeforeLineClear)) &&
@@ -2526,7 +2526,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * ブロック固定直後の光っているときの処理
+	 * Block固定直後の光っているときの処理
 	 */
 	public void statLockFlash() {
 		// イベント発生
@@ -2548,7 +2548,7 @@ public class GameEngine {
 			resetStatc();
 
 			if(lineClearing > 0) {
-				// Lines消去
+				// Line clear
 				stat = STAT_LINECLEAR;
 				statLineClear();
 			} else {
@@ -2561,7 +2561,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * Lines消去処理
+	 * Line clear処理
 	 */
 	public void statLineClear() {
 		// イベント発生
@@ -2578,7 +2578,7 @@ public class GameEngine {
 
 		// 最初のフレーム
 		if(statc[0] == 0) {
-			// Lines消去フラグを設定
+			// Line clear flagを設定
 			if (clearMode == CLEAR_LINE)
 				lineClearing = field.checkLine();
 			// Set color clear flags
@@ -2590,7 +2590,7 @@ public class GameEngine {
 			else if (clearMode == CLEAR_GEM_COLOR)
 				lineClearing = field.gemColorCheck(colorClearSize, true, garbageColorClear, ignoreHidden);
 
-			// Lines数を決める
+			// Linescountを決める
 			int li = lineClearing;
 			if(big && bighalf)
 				li >>= 1;
@@ -2618,7 +2618,7 @@ public class GameEngine {
 				}
 			}
 
-			// B2Bボーナス
+			// B2B bonus
 			if(b2bEnable) {
 				if((tspin) || (li >= 4)) {
 					b2bcount++;
@@ -2667,7 +2667,7 @@ public class GameEngine {
 			if(owner.mode != null) owner.mode.calcScore(this, playerID, li);
 			owner.receiver.calcScore(this, playerID, li);
 
-			// ブロックを消す演出を出す（まだ実際には消えていない）
+			// Blockを消す演出を出す（まだ実際には消えていない）
 			if (clearMode == CLEAR_LINE) {
 				for(int i = 0; i < field.getHeight(); i++) {
 					if(field.getLineFlag(i)) {
@@ -2694,7 +2694,7 @@ public class GameEngine {
 					}
 				}
 
-			// ブロックを消す
+			// Blockを消す
 			if (clearMode == CLEAR_LINE)
 				field.clearLine();
 			else if (clearMode == CLEAR_COLOR)
@@ -2851,7 +2851,7 @@ public class GameEngine {
 				interruptItemPreviousStat = STAT_MOVE;
 				stat = STAT_INTERRUPTITEM;
 			} else {
-				// ブロックピース移動処理
+				// Blockピース移動処理
 				initialRotate();
 				stat = STAT_MOVE;
 			}
@@ -2917,7 +2917,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * 各ゲームモードが自由に使えるステータスの処理
+	 * 各ゲームMode が自由に使えるステータスの処理
 	 */
 	public void statCustom() {
 		// イベント発生
@@ -3166,7 +3166,7 @@ public class GameEngine {
 	 * プレイ中断効果のあるアイテム処理
 	 */
 	public void statInterruptItem() {
-		boolean contFlag = false;	// 続行フラグ
+		boolean contFlag = false;	// 続行 flag
 
 		switch(interruptItemNumber) {
 		case INTERRUPTITEM_MIRROR:	// ミラー
@@ -3189,7 +3189,7 @@ public class GameEngine {
 		if(statc[0] == 0) {
 			// フィールドをバックアップにコピー
 			interruptItemMirrorField = new Field(field);
-			// フィールドのブロックを全部消す
+			// フィールドのBlockを全部消す
 			field.reset();
 		} else if((statc[0] >= 21) && (statc[0] < 21 + (field.getWidth() * 2)) && (statc[0] % 2 == 0)) {
 			// 反転
@@ -3199,7 +3199,7 @@ public class GameEngine {
 				field.setBlock(field.getWidth() - x - 1, y, interruptItemMirrorField.getBlock(x, y));
 			}
 		} else if(statc[0] < 21 + (field.getWidth() * 2) + 5) {
-			// 待ち時間
+			// 待ち time
 		} else {
 			// 終了
 			statc[0] = 0;

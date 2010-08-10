@@ -88,7 +88,7 @@ public class AvalancheFeverMode extends DummyMode {
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelのレベルに到達するたびに1つ増える） */
+	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
 	private int gravityindex;
 
 	/** Amount of points earned from most recent clear */
@@ -170,7 +170,7 @@ public class AvalancheFeverMode extends DummyMode {
 	private int chainDisplayType;
 	
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -498,7 +498,7 @@ public class AvalancheFeverMode extends DummyMode {
 		if (timeLimitAddDisplay > 0)
 			timeLimitAddDisplay--;
 
-		// 時間Meter
+		//  timeMeter
 		engine.meterValue = (timeLimit * receiver.getMeterMax(engine)) / TIME_LIMIT;
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		if(timeLimit <= 1800) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
@@ -629,7 +629,7 @@ public class AvalancheFeverMode extends DummyMode {
 			}
 		}
 
-		// 時間切れ
+		//  time切れ
 		if((timeLimit <= 0) && (engine.timerActive == true)) {
 			engine.gameActive = false;
 			engine.timerActive = false;

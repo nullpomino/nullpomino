@@ -73,10 +73,10 @@ public class RendererSwing extends EventReceiver {
 	/** フィールド右側にMeterを表示 */
 	protected boolean showmeter;
 
-	/** フィールドのブロックを表示（falseなら枠線だけ表示） */
+	/** フィールドのBlockを表示（falseなら枠線だけ表示） */
 	protected boolean showfieldblockgraphics;
 
-	/** 操作ブロックの絵柄をシンプルにする */
+	/** 操作Blockの絵柄をシンプルにする */
 	protected boolean simpleblock;
 
 	/** ゴーストピースの上にNEXT表示 */
@@ -110,8 +110,8 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * ブロックの色IDに応じてAWT用Colorオブジェクトを作成・取得
-	 * @param colorID ブロックの色ID
+	 * Blockの色IDに応じてAWT用Colorオブジェクトを作成・取得
+	 * @param colorID Blockの色ID
 	 * @return AWT用Colorオブジェクト
 	 */
 	public static Color getColorByID(int colorID) {
@@ -164,7 +164,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * ブロックの画像の幅
+	 * Blockの画像の幅
 	 */
 	@Override
 	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
@@ -172,7 +172,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * ブロックの画像の高さ
+	 * Blockの画像の高さ
 	 */
 	@Override
 	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
@@ -312,7 +312,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * モードの設定ファイルを読み込み
+	 * Mode の設定ファイルを読み込み
 	 */
 	@Override
 	public CustomProperties loadModeConfig() {
@@ -330,7 +330,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * モードの設定ファイルを保存
+	 * Mode の設定ファイルを保存
 	 */
 	@Override
 	public void saveModeConfig(CustomProperties modeConfig) {
@@ -408,7 +408,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * 1マスブロックを描画
+	 * 1マスBlockを描画
 	 */
 	@Override
 	public void drawSingleBlock(GameEngine engine, int playerID, int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
@@ -416,12 +416,12 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * ブロックを描画
+	 * Blockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param color 色
 	 * @param skin 模様
-	 * @param bone 骨ブロック
+	 * @param bone 骨Block
 	 * @param darkness 暗さもしくは明るさ
 	 * @param alpha 透明度
 	 * @param scale 拡大率
@@ -525,7 +525,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してブロックを描画
+	 * Blockクラスのインスタンスを使用してBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -535,7 +535,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してブロックを描画（拡大率指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -546,7 +546,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してブロックを描画（拡大率と暗さ指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率と暗さ指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -558,7 +558,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * ブロックピースを描画
+	 * Blockピースを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -568,7 +568,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * ブロックピースを描画（拡大率指定可能）
+	 * Blockピースを描画（拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -579,7 +579,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * ブロックピースを描画（暗さもしくは明るさの指定可能）
+	 * Blockピースを描画（暗さもしくは明るさの指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -599,7 +599,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のブロックピースを描画（Y-coordinateが0以上のブロックだけ表示）
+	 * 現在操作中のBlockピースを描画（Y-coordinateが0以上のBlockだけ表示）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -638,7 +638,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のブロックピースのゴーストを描画
+	 * 現在操作中のBlockピースのゴーストを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -763,7 +763,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * フィールドのブロックを描画
+	 * フィールドのBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -1191,7 +1191,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * ブロックピース移動時の処理
+	 * Blockピース移動時の処理
 	 */
 	@Override
 	public void renderMove(GameEngine engine, int playerID) {

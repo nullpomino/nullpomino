@@ -84,10 +84,10 @@ public class PhysicianVSMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** 溜まっている邪魔ブロックの数 */
+	/** 溜まっている邪魔Blockのcount */
 	//private int[] garbage;
 
-	/** 送った邪魔ブロックの数 */
+	/** 送った邪魔Blockのcount */
 	//private int[] garbageSent;
 
 	/** Time to display the most recent increase in score */
@@ -99,7 +99,7 @@ public class PhysicianVSMode extends DummyMode {
 	/** 効果音ON/OFF */
 	private boolean[] enableSE;
 
-	/** マップ使用フラグ */
+	/** マップ使用 flag */
 	private boolean[] useMap;
 
 	/** 使用するマップセット number */
@@ -123,7 +123,7 @@ public class PhysicianVSMode extends DummyMode {
 	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
 	private Field[] fldBackup;
 
-	/** マップ選択用乱数 */
+	/** マップ選択用乱count */
 	private Random randMap;
 
 	/** Version */
@@ -160,7 +160,7 @@ public class PhysicianVSMode extends DummyMode {
 	private boolean[] flash;
 
 	/*
-	 * Mode name
+	 * Mode  name
 	 */
 	@Override
 	public String getName() {
@@ -176,7 +176,7 @@ public class PhysicianVSMode extends DummyMode {
 	}
 
 	/*
-	 * Mode initialization
+	 * Mode  initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {

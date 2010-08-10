@@ -83,7 +83,7 @@ public class GameFrame extends JFrame implements Runnable {
 	/** FPS計算用 */
 	protected long prevCalcTime = 0;
 
-	/** フレーム数 */
+	/**  frame count */
 	protected long frameCount = 0;
 
 	/** 最大FPS（設定値） */
@@ -92,7 +92,7 @@ public class GameFrame extends JFrame implements Runnable {
 	/** Current 最大FPS */
 	protected int maxfpsCurrent = 0;
 
-	/** Current 休止時間 */
+	/** Current 休止 time */
 	protected long periodCurrent = 0;
 
 	/** 実際のFPS */
@@ -110,16 +110,16 @@ public class GameFrame extends JFrame implements Runnable {
 	/** ポーズメニューのカーソル位置 */
 	protected int cursor = 0;
 
-	/** 倍速モード */
+	/** 倍速Mode  */
 	protected int fastforward = 0;
 
-	/** スクリーンショット作成フラグ */
+	/** スクリーンショット作成 flag */
 	protected boolean ssflag = false;
 
 	/** スクリーンショット用Image */
 	protected Image ssImage = null;
 
-	/** フレームステップ有効フラグ */
+	/** フレームステップ有効 flag */
 	protected boolean enableframestep = false;
 
 	/** FPS表示 */
@@ -235,11 +235,11 @@ public class GameFrame extends JFrame implements Runnable {
 			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回のフレームの休止時間誤差も引いておく
+			// 前回のフレームの休止 time誤差も引いておく
 			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
 			if(sleepTime > 0) {
-				// 休止時間がとれる場合
+				// 休止 timeがとれる場合
 				if(maxfps > 0) {
 					try {
 						Thread.sleep(sleepTime / 1000000L);
@@ -250,8 +250,8 @@ public class GameFrame extends JFrame implements Runnable {
 				// sleep()の誤差
 				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
 			} else {
-				// 状態更新・レンダリングで時間を使い切ってしまい
-				// 休止時間がとれない場合
+				// 状態更新・レンダリングで timeを使い切ってしまい
+				// 休止 timeがとれない場合
 				overSleepTime = 0L;
 				// 休止なしが16回以上続いたら
 				if(++noDelays >= 16) {
@@ -275,7 +275,7 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 
 	/**
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	protected void gameUpdate() {
 		if(NullpoMinoSwing.gameManager == null) return;
@@ -283,7 +283,7 @@ public class GameFrame extends JFrame implements Runnable {
 		GameKeySwing.gamekey[0].update();
 		GameKeySwing.gamekey[1].update();
 
-		// ポーズボタン
+		// ポーズ button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_PAUSE) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_PAUSE)) {
 			if(!pause) {
 				if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.isGameActive())) {
@@ -378,7 +378,7 @@ public class GameFrame extends JFrame implements Runnable {
 		}
 
 		if(NullpoMinoSwing.gameManager != null) {
-			// リトライボタン
+			// リトライ button
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_RETRY) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_RETRY)) {
 				pause = false;
 				NullpoMinoSwing.gameManager.reset();
@@ -394,14 +394,14 @@ public class GameFrame extends JFrame implements Runnable {
 			}
 		}
 
-		// スクリーンショットボタン
+		// スクリーンショット button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 			ssflag = true;
 		}
 	}
 
 	/**
-	 * ゲーム状態の更新(ネットプレイ用)
+	 * Update game state(ネットプレイ用)
 	 */
 	protected void gameUpdateNet() {
 		if(NullpoMinoSwing.gameManager == null) return;
@@ -421,7 +421,7 @@ public class GameFrame extends JFrame implements Runnable {
 				}
 			}
 
-			// スクリーンショットボタン
+			// スクリーンショット button
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 				ssflag = true;
 			}
@@ -590,7 +590,7 @@ public class GameFrame extends JFrame implements Runnable {
 		if(calcInterval >= 1000000000L) {
 			long timeNow = System.nanoTime();
 
-			// 実際の経過時間を測定
+			// 実際の経過 timeを測定
 			long realElapsedTime = timeNow - prevCalcTime; // 単位: ns
 
 			// FPSを計算

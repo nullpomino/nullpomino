@@ -68,7 +68,7 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム状態の更新
+	 * Update game state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -112,7 +112,7 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 			ResourceHolderSDL.soundManager.play("change");
 		}
 
-		// 決定ボタン
+		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
 			ResourceHolderSDL.soundManager.play("decide");
@@ -149,7 +149,7 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 			}
 		}
 
-		// Cancelボタン
+		// Cancel button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);

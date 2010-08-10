@@ -83,7 +83,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	/** AIの移動間隔 */
 	protected int aiMoveDelay = 0;
 
-	/** AIの思考の待ち時間 */
+	/** AIの思考の待ち time */
 	protected int aiThinkDelay = 0;
 
 	/** AIでスレッドを使う */
@@ -95,10 +95,10 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	/** AIの移動間隔のテキストボックス */
 	protected JTextField txtfldAIMoveDelay;
 
-	/** AIの思考の待ち時間のテキストボックス */
+	/** AIの思考の待ち timeのテキストボックス */
 	protected JTextField txtfldAIThinkDelay;
 
-	/** AIでスレッド使用チェックボックス */
+	/** AIでスレッド使用 check ボックス */
 	protected JCheckBox chkboxAIUseThread;
 
 	/**
@@ -260,13 +260,13 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		txtfldAIThinkDelay = new JTextField(20);
 		panelTxtfldAIThinkDelay.add(txtfldAIThinkDelay, BorderLayout.EAST);
 
-		// AIスレッド使用チェックボックス
+		// AIスレッド使用 check ボックス
 		chkboxAIUseThread = new JCheckBox(NullpoMinoSwing.getUIText("AISelect_CheckboxAIUseThread"));
 		chkboxAIUseThread.setAlignmentX(LEFT_ALIGNMENT);
 		chkboxAIUseThread.setMnemonic('T');
 		this.add(chkboxAIUseThread);
 
-		// ボタン類
+		//  button類
 		JPanel panelButtons = new JPanel();
 		panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.X_AXIS));
 		panelButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -291,10 +291,10 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * ボタンクリック時の処理
+	 *  Called when button clicked
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// AI使わないボタン
+		// AI使わない button
 		if(e.getActionCommand() == "AISelect_NoUse") {
 			listboxAI.clearSelection();
 		}
