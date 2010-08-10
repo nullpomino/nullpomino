@@ -75,14 +75,14 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	/** 最新版のリリース日 */
 	protected JTextField txtfldReleaseDate;
 
-	/** 最新版の download URL */
-	protected JTextField txtfld download URL;
+	/** 最新版のダウンロードURL */
+	protected JTextField txtfldDownloadURL;
 
-	/** 今すぐ更新 check  button */
+	/** 今すぐ更新 check ボタン */
 	protected JButton btnCheckNow;
 
-	/** Download via browser  button */
-	protected JButton btnOpen download URL;
+	/** ブラウザでダウンロードボタン */
+	protected JButton btnOpenDownloadURL;
 
 	/** 更新 check 有効 */
 	protected JCheckBox chkboxEnable;
@@ -154,20 +154,20 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldReleaseDate.setEditable(false);
 		spReleaseDate.add(txtfldReleaseDate, BorderLayout.EAST);
 
-		// *  download URL
-		JPanel sp download URL = new JPanel(new BorderLayout());
-		sp download URL.setAlignmentX(0f);
-		pUpdateInfo.add(sp download URL);
+		// * ダウンロードURL
+		JPanel spDownloadURL = new JPanel(new BorderLayout());
+		spDownloadURL.setAlignmentX(0f);
+		pUpdateInfo.add(spDownloadURL);
 
-		JLabel l download URL = new JLabel(NullpoMinoSwing.getUIText("UpdateCheck_Label_ download URL"));
-		sp download URL.add(l download URL, BorderLayout.WEST);
+		JLabel lDownloadURL = new JLabel(NullpoMinoSwing.getUIText("UpdateCheck_Label_DownloadURL"));
+		spDownloadURL.add(lDownloadURL, BorderLayout.WEST);
 
-		txtfld download URL = new JTextField();
-		txtfld download URL.setPreferredSize(new Dimension(320, 20));
-		txtfld download URL.setEditable(false);
-		sp download URL.add(txtfld download URL, BorderLayout.EAST);
+		txtfldDownloadURL = new JTextField();
+		txtfldDownloadURL.setPreferredSize(new Dimension(320, 20));
+		txtfldDownloadURL.setEditable(false);
+		spDownloadURL.add(txtfldDownloadURL, BorderLayout.EAST);
 
-		// * 今すぐ check  button
+		// * 今すぐ check ボタン
 		btnCheckNow = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_CheckNow"));
 		btnCheckNow.setAlignmentX(0f);
 		btnCheckNow.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
@@ -176,16 +176,16 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnCheckNow.setActionCommand("CheckNow");
 		pUpdateInfo.add(btnCheckNow);
 
-		// * Download via browser  button
-		btnOpen download URL = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_Open download URL"));
-		btnOpen download URL.setAlignmentX(0f);
-		btnOpen download URL.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
-		btnOpen download URL.setMnemonic('D');
-		btnOpen download URL.addActionListener(this);
-		btnOpen download URL.setActionCommand("Open download URL");
-		btnOpen download URL.setEnabled(false);
-		//btnOpen download URL.setVisible(Desktop.isDesktopSupported());
-		pUpdateInfo.add(btnOpen download URL);
+		// * ブラウザでダウンロードボタン
+		btnOpenDownloadURL = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_OpenDownloadURL"));
+		btnOpenDownloadURL.setAlignmentX(0f);
+		btnOpenDownloadURL.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
+		btnOpenDownloadURL.setMnemonic('D');
+		btnOpenDownloadURL.addActionListener(this);
+		btnOpenDownloadURL.setActionCommand("OpenDownloadURL");
+		btnOpenDownloadURL.setEnabled(false);
+		//btnOpenDownloadURL.setVisible(Desktop.isDesktopSupported());
+		pUpdateInfo.add(btnOpenDownloadURL);
 
 		// 設定パネル
 		JPanel pSetting = new JPanel(new BorderLayout());
@@ -228,7 +228,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldStartupMax.setPreferredSize(new Dimension(220, 20));
 		spStartupMax.add(txtfldStartupMax, BorderLayout.EAST);
 
-		// * 保存 button
+		// * 保存ボタン
 		JButton btnSave = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_Save"));
 		btnSave.setAlignmentX(0f);
 		btnSave.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
@@ -237,7 +237,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnSave.setActionCommand("Save");
 		spSetting.add(btnSave);
 
-		// 閉じる button
+		// 閉じるボタン
 		JButton btnClose = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_Close"));
 		btnClose.setAlignmentX(0f);
 		btnClose.setMnemonic('C');
@@ -254,12 +254,12 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		if(UpdateChecker.isCompleted()) {
 			txtfldLatestVersion.setText(UpdateChecker.getLatestVersionFullString());
 			txtfldReleaseDate.setText(UpdateChecker.getStrReleaseDate());
-			txtfld download URL.setText(UpdateChecker.getStr download URL());
+			txtfldDownloadURL.setText(UpdateChecker.getStrDownloadURL());
 
 			if(UpdateChecker.isNewVersionAvailable(GameManager.getVersionMajor(), GameManager.getVersionMinor())) {
 				txtfldLatestVersion.setForeground(Color.red);
 			}
-			btnOpen download URL.setEnabled(true);
+			btnOpenDownloadURL.setEnabled(true);
 		}
 		chkboxEnable.setSelected(NullpoMinoSwing.propGlobal.getProperty("updatechecker.enable", true));
 		txtfldXMLURL.setText(NullpoMinoSwing.propGlobal.getProperty("updatechecker.url", ""));
@@ -267,7 +267,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	}
 
 	/*
-	 *  Called when button clicked
+	 * ボタンクリック時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// 今すぐ更新 check 
@@ -279,9 +279,9 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 				btnCheckNow.setEnabled(false);
 			}
 		}
-		// Download via browser 
-		else if(e.getActionCommand() == "Open download URL") {
-			BareBonesBrowserLaunch.openURL(txtfld download URL.getText());
+		// ブラウザでダウンロード
+		else if(e.getActionCommand() == "OpenDownloadURL") {
+			BareBonesBrowserLaunch.openURL(txtfldDownloadURL.getText());
 		}
 		// 保存
 		else if(e.getActionCommand() == "Save") {
@@ -319,12 +319,12 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 					lStatus.setText(NullpoMinoSwing.getUIText("UpdateCheck_Label_Status_Complete"));
 					txtfldLatestVersion.setText(UpdateChecker.getLatestVersionFullString());
 					txtfldReleaseDate.setText(UpdateChecker.getStrReleaseDate());
-					txtfld download URL.setText(UpdateChecker.getStr download URL());
+					txtfldDownloadURL.setText(UpdateChecker.getStrDownloadURL());
 
 					if(UpdateChecker.isNewVersionAvailable(GameManager.getVersionMajor(), GameManager.getVersionMinor())) {
 						txtfldLatestVersion.setForeground(Color.red);
 					}
-					btnOpen download URL.setEnabled(true);
+					btnOpenDownloadURL.setEnabled(true);
 				}
 			});
 		}

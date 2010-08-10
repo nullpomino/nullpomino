@@ -69,14 +69,14 @@ public class UpdateChecker implements Runnable {
 	/** リリース日 */
 	private static String strReleaseDate = null;
 
-	/**  download URL */
-	private static String str download URL = null;
+	/** ダウンロードURL */
+	private static String strDownloadURL = null;
 
 	/** 更新 check 用スレッド */
 	private static Thread thread = null;
 
 	/**
-	 * XMLを download してVersion numberなどを取得
+	 * XMLをダウンロードしてVersion numberなどを取得
 	 * @return 成功したらtrue
 	 */
 	private static boolean checkUpdate() {
@@ -107,14 +107,14 @@ public class UpdateChecker implements Runnable {
 					log.debug("Release Date:" + strReleaseDate);
 				}
 
-				pat = Pattern.compile("< download URL>.*</ download URL>");
+				pat = Pattern.compile("<DownloadURL>.*</DownloadURL>");
 				matcher = pat.matcher(str);
 				if(matcher.find()) {
 					String tempStr = matcher.group();
-					tempStr = tempStr.replace("< download URL>", "");
-					tempStr = tempStr.replace("</ download URL>", "");
-					str download URL = tempStr;
-					log.debug(" download  URL:" + str download URL);
+					tempStr = tempStr.replace("<DownloadURL>", "");
+					tempStr = tempStr.replace("</DownloadURL>", "");
+					strDownloadURL = tempStr;
+					log.debug("Download URL:" + strDownloadURL);
 				}
 			}
 
@@ -255,11 +255,11 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * 最新版の download 先URLを取得
-	 * @return 最新版の download 先URL
+	 * 最新版のダウンロード先URLを取得
+	 * @return 最新版のダウンロード先URL
 	 */
-	public static String getStr download URL() {
-		return str download URL;
+	public static String getStrDownloadURL() {
+		return strDownloadURL;
 	}
 
 	/**
