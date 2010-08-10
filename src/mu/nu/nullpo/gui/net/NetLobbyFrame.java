@@ -1771,6 +1771,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.ruleLock = propConfig.getProperty("createroom.defaultRuleLock", false);
 				r.tspinEnableType = propConfig.getProperty("createroom.defaultTSpinEnableType", 1);
 				r.spinCheckType = propConfig.getProperty("createroom.defaultSpinCheckType", 0);
+				r.tspinEnableEZ = propConfig.getProperty("createroom.defaultTSpinEnableEZ", false);
 				r.b2b = propConfig.getProperty("createroom.defaultB2B", true);
 				r.combo = propConfig.getProperty("createroom.defaultCombo", true);
 				r.rensaBlock = propConfig.getProperty("createroom.defaultRensaBlock", true);
