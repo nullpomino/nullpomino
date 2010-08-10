@@ -763,6 +763,22 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	}
 
 	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
 	 * Calculate score
 	 */
 	@Override

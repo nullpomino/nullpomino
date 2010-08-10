@@ -45,7 +45,7 @@ import mu.nu.nullpo.util.GeneralUtil;
  */
 public class AvalancheVSFeverMode extends DummyMode {
 	/** Current version */
-	private static final int CURRENT_VERSION = 0;
+	private static final int CURRENT_VERSION = 1;
 
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
@@ -64,6 +64,11 @@ public class AvalancheVSFeverMode extends DummyMode {
 	private static final String[] FEVER_MAPS =
 	{
 		"Fever", "15th", "15thDS", "7", "Compendium"
+	};
+	
+	/** Chain multipliers */
+	private static final int[] CHAIN_POWERS = {
+		4, 10, 18, 21, 29, 46, 76, 113, 150, 223, 259, 266, 313, 364, 398, 432, 468, 504, 540, 576, 612, 648, 684, 720 //Arle
 	};
 
 	/** Number of players */
@@ -843,6 +848,22 @@ public class AvalancheVSFeverMode extends DummyMode {
 	}
 
 	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
 	 * Calculate score
 	 */
 	@Override
@@ -879,12 +900,19 @@ public class AvalancheVSFeverMode extends DummyMode {
 			if (chain == 0)
 				firstExtra = avalanche > engine.colorClearSize;
 			*/
-			if (chain[playerID] == 2)
-				multiplier += 8;
-			else if (chain[playerID] == 3)
-				multiplier += 16;
-			else if (chain[playerID] >= 4)
-				multiplier += 32*(chain[playerID]-3);
+			if (version == 0)
+			{
+				if (chain[playerID] == 2)
+					multiplier += 8;
+				else if (chain[playerID] == 3)
+					multiplier += 16;
+				else if (chain[playerID] >= 4)
+					multiplier += 32*(chain[playerID]-3);
+			}
+			else if (chain[playerID] > CHAIN_POWERS.length)
+				multiplier += CHAIN_POWERS[CHAIN_POWERS.length-1];
+			else
+				multiplier += CHAIN_POWERS[chain[playerID]-1];
 			/*
 			if (firstExtra)
 				multiplier++;

@@ -56,6 +56,11 @@ public class AvalancheFeverMode extends DummyMode {
 		Block.BLOCK_COLOR_YELLOW,
 		Block.BLOCK_COLOR_PURPLE
 	};
+	
+	private static final int[] CHAIN_POWERS = 
+	{
+		4, 10, 18, 22, 30, 48, 80, 120, 160, 240, 280, 288, 342, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800 //Amitie
+	};
 
 	public int[] tableGravityChangeScore =
 	{
@@ -154,6 +159,9 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Number of all clears */
 	private int zenKeshiCount;
 	
+	/** Max chain */
+	private int maxChain;
+	
 	/** List of subsets in selected map */
 	private String[] mapSubsets;
 	
@@ -168,6 +176,12 @@ public class AvalancheFeverMode extends DummyMode {
 	
 	/** Type of chain display */
 	private int chainDisplayType;
+	
+	/** Score before adding zenkeshi bonus and max chain bonus */
+	private int scoreBeforeBonus;
+	
+	/** Zenkeshi bonus and max chain bonus amounts */
+	private int zenKeshiBonus, maxChainBonus;
 	
 	/*
 	 * Mode  name
@@ -198,6 +212,10 @@ public class AvalancheFeverMode extends DummyMode {
 		cleared = false;
 		zenKeshi = false;
 		zenKeshiCount = 0;
+		maxChain = 0;
+		scoreBeforeBonus = 0;
+		zenKeshiBonus = 0;
+		maxChainBonus = 0;
 		
 		timeLimit = TIME_LIMIT;
 		timeLimitAdd = 0;
@@ -503,9 +521,40 @@ public class AvalancheFeverMode extends DummyMode {
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		if(timeLimit <= 1800) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		if(timeLimit <= 900) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		if(timeLimit <= 300) engine.meterColor = GameEngine.METER_COLOR_RED;
+		if(timeLimit <= 
+			300) engine.meterColor = GameEngine.METER_COLOR_RED;
+	}
+	/*
+	 * ゲームオーバー
+	 */
+	@Override
+	public boolean onGameOver(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 0)
+		{
+			scoreBeforeBonus = engine.statistics.score;
+			zenKeshiBonus = ((zenKeshiCount+1)*(zenKeshiCount+2)/2+1)*500;
+			maxChainBonus = maxChain*maxChain*2000;
+			engine.statistics.score += zenKeshiBonus + maxChainBonus;
+		}
+		return false;
 	}
 
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+	
 	/*
 	 * Calculate score
 	 */
@@ -525,28 +574,19 @@ public class AvalancheFeverMode extends DummyMode {
 			}
 
 			chain = engine.chain;
+			if (chain > maxChain)
+				maxChain = chain;
 			chainDisplay = 60;
 			feverChainDisplay = feverChain;
 			engine.playSE("combo" + Math.min(chain, 20));
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
-			/*
-			if (multiplier < 0)
-				multiplier = 0;
-			if (chain == 0)
-				firstExtra = avalanche > engine.colorClearSize;
-			*/
-			if (chain == 2)
-				multiplier += 8;
-			else if (chain == 3)
-				multiplier += 16;
-			else if (chain >= 4)
-				multiplier += 32*(chain-3);
-			/*
-			if (firstExtra)
-				multiplier++;
-			*/
+			
+			if (chain > CHAIN_POWERS.length)
+				multiplier += CHAIN_POWERS[CHAIN_POWERS.length-1];
+			else
+				multiplier += CHAIN_POWERS[chain-1];
 			
 			if (multiplier > 999)
 				multiplier = 999;
@@ -647,21 +687,33 @@ public class AvalancheFeverMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
 		receiver.drawMenuFont(engine, playerID,  0, 3, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID,  0, 4, strScore);
+		String strScoreBefore = String.format("%10d", scoreBeforeBonus);
+		receiver.drawMenuFont(engine, playerID,  0, 4, strScoreBefore, EventReceiver.COLOR_GREEN);
 
 		receiver.drawMenuFont(engine, playerID,  0, 5, "ZENKESHI", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", zenKeshiCount);
-		receiver.drawMenuFont(engine, playerID,  0, 6, strLines);
+		String strZenKeshi = String.format("%10d", zenKeshiCount);
+		receiver.drawMenuFont(engine, playerID,  0, 6, strZenKeshi);
+		String strZenKeshiBonus = "+" + zenKeshiBonus;
+		receiver.drawMenuFont(engine, playerID, 10-strZenKeshiBonus.length(), 7, strZenKeshiBonus, EventReceiver.COLOR_GREEN);
+		
+		receiver.drawMenuFont(engine, playerID,  0, 8, "MAX CHAIN", EventReceiver.COLOR_BLUE);
+		String strMaxChain = String.format("%10d", maxChain);
+		receiver.drawMenuFont(engine, playerID,  0, 9, strMaxChain);
+		String strMaxChainBonus = "+" + maxChainBonus;
+		receiver.drawMenuFont(engine, playerID, 10-strMaxChainBonus.length(), 10, strMaxChainBonus, EventReceiver.COLOR_GREEN);
 
-		receiver.drawMenuFont(engine, playerID,  0, 7, "TIME", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID,  0, 11, "TOTALSCORE", EventReceiver.COLOR_BLUE);
+		String strScore = String.format("%10d", engine.statistics.score);
+		receiver.drawMenuFont(engine, playerID,  0, 12, strScore, EventReceiver.COLOR_RED);
+		
+		receiver.drawMenuFont(engine, playerID,  0, 13, "TIME", EventReceiver.COLOR_BLUE);
 		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 8, strTime);
+		receiver.drawMenuFont(engine, playerID,  0, 14, strTime);
 
 		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 11, "RANK", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 15, "RANK", EventReceiver.COLOR_BLUE);
 			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 12, strRank);
+			receiver.drawMenuFont(engine, playerID,  0, 16, strRank);
 		}
 	}
 

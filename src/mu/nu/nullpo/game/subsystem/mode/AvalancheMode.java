@@ -477,8 +477,22 @@ public class AvalancheMode extends DummyMode {
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 			}
 		}
+	}
 
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
 
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
 	}
 
 	/*
