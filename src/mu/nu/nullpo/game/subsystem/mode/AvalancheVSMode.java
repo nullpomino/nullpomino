@@ -1013,7 +1013,7 @@ public class AvalancheVSMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0,  4, "SHOW CHAIN", EventReceiver.COLOR_DARKBLUE);
 				receiver.drawMenuFont(engine, playerID, 1,  5, CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]], (engine.statc[2] == 29));
 				receiver.drawMenuFont(engine, playerID, 0,  6, "CHAINPOWER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, newChainPower[playerID] ? "NEW" : "CLASSIC", (engine.statc[2] == 30));
+				receiver.drawMenuFont(engine, playerID, 1,  7, newChainPower[playerID] ? "FEVER" : "CLASSIC", (engine.statc[2] == 30));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
 			} else {

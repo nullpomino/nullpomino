@@ -183,6 +183,9 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Zenkeshi bonus and max chain bonus amounts */
 	private int zenKeshiBonus, maxChainBonus;
 	
+	/** Number of boards played */
+	private int boardsPlayed;
+	
 	/*
 	 * Mode  name
 	 */
@@ -216,6 +219,7 @@ public class AvalancheFeverMode extends DummyMode {
 		scoreBeforeBonus = 0;
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
+		boardsPlayed = 0;
 		
 		timeLimit = TIME_LIMIT;
 		timeLimitAdd = 0;
@@ -445,8 +449,8 @@ public class AvalancheFeverMode extends DummyMode {
 					String.valueOf(lastmultiplier) + ")";
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 4, strScore);
-			
-			receiver.drawScoreFont(engine, playerID, 0, 6, "GARBAGE SENT", EventReceiver.COLOR_BLUE);
+
+			receiver.drawScoreFont(engine, playerID, 0, 6, "OJAMA SENT", EventReceiver.COLOR_BLUE);
 			String strSent = String.valueOf(garbageSent);
 			if(garbageAdd > 0) {
 				strSent = strSent + "(+" + String.valueOf(garbageAdd)+ ")";
@@ -464,6 +468,15 @@ public class AvalancheFeverMode extends DummyMode {
 			if (timeStr.length() == 1)
 				timeStr = "0" + timeStr;
 			receiver.drawMenuFont(engine, playerID, 2, 0, timeStr, EventReceiver.COLOR_RED);
+			
+			receiver.drawScoreFont(engine, playerID, 14, 6, "BOARDS", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 14, 7, String.valueOf(boardsPlayed));
+			
+			receiver.drawScoreFont(engine, playerID, 14, 9, "ZENKESHI", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 14, 10, String.valueOf(zenKeshiCount));
+			
+			receiver.drawScoreFont(engine, playerID, 14, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(maxChain));
 			
 			int textHeight = 13;
 			if (engine.field != null)
@@ -524,6 +537,7 @@ public class AvalancheFeverMode extends DummyMode {
 		if(timeLimit <= 
 			300) engine.meterColor = GameEngine.METER_COLOR_RED;
 	}
+
 	/*
 	 * ゲームオーバー
 	 */
@@ -616,6 +630,7 @@ public class AvalancheFeverMode extends DummyMode {
 		int feverChainNow = feverChain;
 		if (cleared)
 		{
+			boardsPlayed++;
 			timeLimitAdd = 0;
 			if (zenKeshi && timeLimit > 0)
 			{
