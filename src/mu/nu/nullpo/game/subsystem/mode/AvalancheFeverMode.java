@@ -546,7 +546,7 @@ public class AvalancheFeverMode extends DummyMode {
 		if(engine.statc[0] == 0)
 		{
 			scoreBeforeBonus = engine.statistics.score;
-			zenKeshiBonus = ((zenKeshiCount+1)*(zenKeshiCount+2)/2+1)*500;
+			zenKeshiBonus = zenKeshiCount*(zenKeshiCount+3)*250;
 			maxChainBonus = maxChain*maxChain*2000;
 			engine.statistics.score += zenKeshiBonus + maxChainBonus;
 		}
