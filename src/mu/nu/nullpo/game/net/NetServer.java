@@ -30,7 +30,9 @@ package mu.nu.nullpo.game.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -158,6 +160,8 @@ public class NetServer {
 		try {
 			log.info("Server version:" + GameManager.getVersionMajor());
 			log.info("Starting server on port " + port);
+			
+			writeServerStatusFile();
 
 			selector = Selector.open();
 			serverChannel = ServerSocketChannel.open();
@@ -544,6 +548,7 @@ public class NetServer {
 		String msg = "observerupdate\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n";
 		broadcast(msg);
 		broadcastObserver(msg);
+		writeServerStatusFile();
 	}
 
 	/**
@@ -1483,4 +1488,20 @@ public class NetServer {
 			broadcastPlayerInfoUpdate(pInfo);
 		}
 	}
+	
+	private void writeServerStatusFile()
+	{
+		if (!propServer.getProperty("netserver.writestatusfile", false))
+				return;
+		
+		try {
+			FileWriter outFile = new FileWriter(propServer.getProperty("netserver.statusfilename", "status.txt"));
+			PrintWriter out = new PrintWriter(outFile);
+			out.println(observerList.size() + "/" + playerInfoMap.size());
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
