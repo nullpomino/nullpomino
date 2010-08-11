@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (c) 2010, NullNoname
     All rights reserved.
 
@@ -241,7 +241,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) change = -1;
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_LEFT)) change = -1;
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_RIGHT)) change = 1;
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_RIGHT)) change = -1;
+		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_RIGHT)) change = 1;
 
 		if(change != 0) {
 			ResourceHolderSDL.soundManager.play("change");
