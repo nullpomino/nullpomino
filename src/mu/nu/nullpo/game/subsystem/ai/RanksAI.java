@@ -103,6 +103,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	public Thread thread;
 
 	private Ranks ranks;
+	private boolean skipNextFrame;
 
 	public class Score{
 		public boolean fourLinesCleared;
@@ -304,47 +305,54 @@ public class RanksAI extends DummyAI implements Runnable {
 
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
+				if (!skipNextFrame){
+					skipNextFrame=true;
+				
+					if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt)  ){
 
-				if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt) ) {
-
-					thinkRequest = true;
-					} else {
-
-					if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
-
-						if(bestRtSub != -1) {
-							bestRt = bestRtSub;
-							bestRtSub = -1;
-						}
-
-						if(bestX != bestXSub) {
-							bestX = bestXSub;
-							bestY = bestYSub;
-						}
-					}
-
-					if(nowX > bestX) {
-
-						if(!ctrl.isPress(Controller.BUTTON_LEFT) || (engine.aiMoveDelay >= 0))
-							input |= Controller.BUTTON_BIT_LEFT;
-					} else if(nowX < bestX) {
-
-						if(!ctrl.isPress(Controller.BUTTON_RIGHT) || (engine.aiMoveDelay >= 0))
-							input |= Controller.BUTTON_BIT_RIGHT;
-					} else if((nowX == bestX) && (rt == bestRt)) {
-
-						if((bestRtSub == -1) && (bestX == bestXSub)) {
-							if(engine.ruleopt.harddropEnable && !ctrl.isPress(Controller.BUTTON_UP))
-								input |= Controller.BUTTON_BIT_UP;
-							else if(engine.ruleopt.softdropEnable || engine.ruleopt.softdropLock)
-								input |= Controller.BUTTON_BIT_DOWN;
+						thinkRequest = true;
+						
 						} else {
-							if(engine.ruleopt.harddropEnable && !engine.ruleopt.harddropLock && !ctrl.isPress(Controller.BUTTON_UP))
-								input |= Controller.BUTTON_BIT_UP;
-							else if(engine.ruleopt.softdropEnable && !engine.ruleopt.softdropLock)
-								input |= Controller.BUTTON_BIT_DOWN;
+
+							if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
+
+								if(bestRtSub != -1) {
+									bestRt = bestRtSub;
+									bestRtSub = -1;
+								}
+
+								if(bestX != bestXSub) {
+									bestX = bestXSub;
+									bestY = bestYSub;
+								}
+							}
+
+							if(nowX > bestX) {
+
+								if(!ctrl.isPress(Controller.BUTTON_LEFT) || (engine.aiMoveDelay >= 0))
+									input |= Controller.BUTTON_BIT_LEFT;
+							} else if(nowX < bestX) {
+
+								if(!ctrl.isPress(Controller.BUTTON_RIGHT) || (engine.aiMoveDelay >= 0))
+									input |= Controller.BUTTON_BIT_RIGHT;
+							} else if((nowX == bestX) && (rt == bestRt)) {
+
+								if((bestRtSub == -1) && (bestX == bestXSub)) {
+									if(engine.ruleopt.harddropEnable && !ctrl.isPress(Controller.BUTTON_UP))
+										input |= Controller.BUTTON_BIT_UP;
+									else if(engine.ruleopt.softdropEnable || engine.ruleopt.softdropLock)
+										input |= Controller.BUTTON_BIT_DOWN;
+								} else {
+									if(engine.ruleopt.harddropEnable && !engine.ruleopt.harddropLock && !ctrl.isPress(Controller.BUTTON_UP))
+										input |= Controller.BUTTON_BIT_UP;
+									else if(engine.ruleopt.softdropEnable && !engine.ruleopt.softdropLock)
+										input |= Controller.BUTTON_BIT_DOWN;
+								}
+							}
 						}
-					}
+				}
+				else {
+					skipNextFrame=false;
 				}
 			}
 
@@ -379,7 +387,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 		Piece pieceHold = engine.holdPieceObject;
 		Piece pieceNext = engine.getNextObject(engine.nextPieceCount);
-		int numPreviews=1;
+		int numPreviews=2;
 
 		Field fld = new Field(engine.field);
 
@@ -397,9 +405,11 @@ public class RanksAI extends DummyAI implements Runnable {
 					//if(!pieceNow.checkCollision(x, y, rt, fld)) {
 
 						score = thinkMain(engine, x, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, maxX,numPreviews);
-						log.debug("MAIN  id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
+						//log.debug("MAIN  id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
 						if(score.compareTo(bestScore)>0) {
 							log.debug("MAIN new best piece !");
+							log.debug("MAIN  id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
+							
 							bestHold = false;
 							bestX = x;
 							bestY = y;
@@ -492,10 +502,10 @@ public class RanksAI extends DummyAI implements Runnable {
 						//if(!pieceNow.checkCollision(x, y, rt, fld)) {
 
 							scoreCurrent = thinkMain(engine, x2, y2, rot, -1, fldcopy, pieceNow, pieceNext, pieceHold, maxX2,numPreviews-1);
-							log.debug("SUB id="+pieceNow.id+" posX="+x2+" rt="+rot+" score "+scoreCurrent);
+							//log.debug("SUB id="+pieceNow.id+" posX="+x2+" rt="+rot+" score "+scoreCurrent);
 
 							if(scoreCurrent.compareTo(bestScore)>0) {
-								log.debug("SUB new best piece !");
+								//log.debug("SUB new best piece !");
 									bestScore=scoreCurrent;
 							}
 
@@ -610,10 +620,12 @@ public class RanksAI extends DummyAI implements Runnable {
 				thinking = true;
 				try {
 					thinkBestPosition(gEngine, gEngine.playerID);
+					
 				} catch (Throwable e) {
 					log.debug("RanksAI: thinkBestPosition Failed", e);
 				}
 				thinking = false;
+				skipNextFrame=false;
 			}
 
 			if(thinkDelay > 0) {

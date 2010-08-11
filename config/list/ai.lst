@@ -4,4 +4,5 @@ net.tetrisconcept.poochy.nullpomino.ai.PoochyBot
 net.tetrisconcept.poochy.nullpomino.ai.PoochyBotNoPrethink
 net.tetrisconcept.poochy.nullpomino.ai.PoochyBotDefensive
 net.tetrisconcept.poochy.nullpomino.ai.PoochyBotDefNoPre
+mu.nu.nullpo.game.subsystem.ai.RanksAI
 
