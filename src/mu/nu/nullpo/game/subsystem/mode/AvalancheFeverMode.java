@@ -492,21 +492,24 @@ public class AvalancheFeverMode extends DummyMode {
 				timeStr = "0" + timeStr;
 			receiver.drawMenuFont(engine, playerID, 2, 0, timeStr, EventReceiver.COLOR_RED);
 			
-			receiver.drawScoreFont(engine, playerID, 14, 6, "BOARDS", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 7, String.valueOf(boardsPlayed));
+			receiver.drawScoreFont(engine, playerID, 11, 6, "BOARDS", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 7, String.valueOf(boardsPlayed));
 			
-			receiver.drawScoreFont(engine, playerID, 14, 9, "ZENKESHI", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 10, String.valueOf(zenKeshiCount));
+			receiver.drawScoreFont(engine, playerID, 11, 9, "ZENKESHI", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 10, String.valueOf(zenKeshiCount));
 			
-			receiver.drawScoreFont(engine, playerID, 14, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(maxChain));
+			receiver.drawScoreFont(engine, playerID, 11, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 13, String.valueOf(maxChain));
 
-			receiver.drawScoreFont(engine, playerID, 14, 15, "OJAMA SENT", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 15, "OJAMA SENT", EventReceiver.COLOR_BLUE);
 			String strSent = String.valueOf(garbageSent);
 			if(garbageAdd > 0) {
 				strSent = strSent + "(+" + String.valueOf(garbageAdd)+ ")";
 			}
-			receiver.drawScoreFont(engine, playerID, 14, 16, strSent);
+			receiver.drawScoreFont(engine, playerID, 11, 16, strSent);
+			
+			receiver.drawScoreFont(engine, playerID, 11, 18, "CLEARED", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 19, String.valueOf(blocksCleared));
 			
 			int textHeight = 13;
 			if (engine.field != null)
@@ -656,7 +659,7 @@ public class AvalancheFeverMode extends DummyMode {
 			engine.statistics.scoreFromLineClear += score;
 			engine.statistics.score += score;
 
-			garbageAdd += (score+119)/120;
+			garbageAdd += ((avalanche*10*multiplier)+119)/120;
 			
 			setSpeed(engine);
 		}
