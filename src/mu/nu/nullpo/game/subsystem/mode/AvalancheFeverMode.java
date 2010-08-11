@@ -186,6 +186,18 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Number of boards played */
 	private int boardsPlayed;
 	
+	/** Blocks cleared */
+	private int blocksCleared;
+	
+	/** Current level */
+	private int level;
+	
+	/** Blocks blocksCleared needed to reach next level */
+	private int toNextLevel;
+	
+	/** Level at start of chain */
+	private int chainLevelMultiplier;
+	
 	/*
 	 * Mode  name
 	 */
@@ -220,6 +232,7 @@ public class AvalancheFeverMode extends DummyMode {
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
 		boardsPlayed = 0;
+		blocksCleared = 0;
 		
 		timeLimit = TIME_LIMIT;
 		timeLimitAdd = 0;
@@ -295,6 +308,19 @@ public class AvalancheFeverMode extends DummyMode {
 			if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
 			if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
+			
+			if (numColors == 3) level = 1;
+			else if (numColors == 4) level = 5;
+			else if (numColors == 5) level = 10;
+			chainLevelMultiplier = level;
+			toNextLevel = 15;
+			
+			zenKeshiCount = 0;
+			maxChain = 0;
+			scoreBeforeBonus = 0;
+			zenKeshiBonus = 0;
+			maxChainBonus = 0;
+			blocksCleared = 0;
 		}
 		return false;
 	}
@@ -449,20 +475,17 @@ public class AvalancheFeverMode extends DummyMode {
 					String.valueOf(lastmultiplier) + ")";
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 4, strScore);
-
-			receiver.drawScoreFont(engine, playerID, 0, 6, "OJAMA SENT", EventReceiver.COLOR_BLUE);
-			String strSent = String.valueOf(garbageSent);
-			if(garbageAdd > 0) {
-				strSent = strSent + "(+" + String.valueOf(garbageAdd)+ ")";
-			}
-			receiver.drawScoreFont(engine, playerID, 0, 7, strSent);
 			
-			receiver.drawScoreFont(engine, playerID, 0, 9, "LIMIT TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 10, GeneralUtil.getTime(timeLimit));
+			receiver.drawScoreFont(engine, playerID, 0, 6, "LEVEL", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(level));
+			
+			receiver.drawScoreFont(engine, playerID, 0, 9, "TIME", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 10, GeneralUtil.getTime(engine.statistics.time));
+			
+			receiver.drawScoreFont(engine, playerID, 0, 12, "LIMIT TIME", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(timeLimit));
 			if (timeLimitAddDisplay > 0)
-				receiver.drawScoreFont(engine, playerID, 0, 11, "(+" + (timeLimitAdd/60) + " SEC.)");
-			receiver.drawScoreFont(engine, playerID, 0, 13, "TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 14, GeneralUtil.getTime(engine.statistics.time));
+				receiver.drawScoreFont(engine, playerID, 0, 14, "(+" + (timeLimitAdd/60) + " SEC.)");
 			
 			String timeStr = String.valueOf(timeLimit/60);
 			if (timeStr.length() == 1)
@@ -477,6 +500,13 @@ public class AvalancheFeverMode extends DummyMode {
 			
 			receiver.drawScoreFont(engine, playerID, 14, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(maxChain));
+
+			receiver.drawScoreFont(engine, playerID, 14, 15, "OJAMA SENT", EventReceiver.COLOR_BLUE);
+			String strSent = String.valueOf(garbageSent);
+			if(garbageAdd > 0) {
+				strSent = strSent + "(+" + String.valueOf(garbageAdd)+ ")";
+			}
+			receiver.drawScoreFont(engine, playerID, 0, 16, strSent);
 			
 			int textHeight = 13;
 			if (engine.field != null)
@@ -588,8 +618,20 @@ public class AvalancheFeverMode extends DummyMode {
 			}
 
 			chain = engine.chain;
+			if (chain == 1)
+				chainLevelMultiplier = level;
 			if (chain > maxChain)
 				maxChain = chain;
+			blocksCleared += avalanche;
+			toNextLevel -= avalanche;
+			if (toNextLevel <= 0)
+			{
+				toNextLevel = 15;
+				level++;
+			}
+			
+			pts *= chainLevelMultiplier;
+			
 			chainDisplay = 60;
 			feverChainDisplay = feverChain;
 			engine.playSE("combo" + Math.min(chain, 20));
@@ -717,7 +759,7 @@ public class AvalancheFeverMode extends DummyMode {
 		String strMaxChainBonus = "+" + maxChainBonus;
 		receiver.drawMenuFont(engine, playerID, 10-strMaxChainBonus.length(), 10, strMaxChainBonus, EventReceiver.COLOR_GREEN);
 
-		receiver.drawMenuFont(engine, playerID,  0, 11, "TOTALSCORE", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID,  0, 11, "TOTAL", EventReceiver.COLOR_BLUE);
 		String strScore = String.format("%10d", engine.statistics.score);
 		receiver.drawMenuFont(engine, playerID,  0, 12, strScore, EventReceiver.COLOR_RED);
 		
