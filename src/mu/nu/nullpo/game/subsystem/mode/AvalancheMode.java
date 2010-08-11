@@ -417,7 +417,7 @@ public class AvalancheMode extends DummyMode {
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
 				if (gametype == 0) {
-					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE  TIME", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE      TIME", EventReceiver.COLOR_BLUE);
 				} else if (gametype == 1) {
 					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE", EventReceiver.COLOR_BLUE);
 				} else if (gametype == 2) {
@@ -428,7 +428,7 @@ public class AvalancheMode extends DummyMode {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
 					if (gametype == 0) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 10, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 14, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
 					} else if (gametype == 1) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
 					} else if (gametype == 2) {
@@ -581,7 +581,7 @@ public class AvalancheMode extends DummyMode {
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 				zenKeshi = true;
-				engine.statistics.score += 2100;
+				//engine.statistics.score += 2100;
 			}
 			else
 				zenKeshi = false;

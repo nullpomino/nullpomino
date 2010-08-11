@@ -457,12 +457,12 @@ public class AvalancheFeverMode extends DummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE    TIME", EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE      TIME", EventReceiver.COLOR_BLUE);
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
 					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[numColors-3][mapSet][i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 12, 4 + i, GeneralUtil.getTime(rankingTime[numColors-3][mapSet][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 14, 4 + i, GeneralUtil.getTime(rankingTime[numColors-3][mapSet][i]), (i == rankingRank));
 				}
 			}
 		} else {
