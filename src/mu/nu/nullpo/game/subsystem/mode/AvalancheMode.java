@@ -457,8 +457,8 @@ public class AvalancheMode extends DummyMode {
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 10, strSent);
 			
-			receiver.drawScoreFont(engine, playerID, 0, 13, "TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 14, GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
 			
 			receiver.drawScoreFont(engine, playerID, 14, 6, "CLEARED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 14, 7, String.valueOf(blocksCleared));

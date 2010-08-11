@@ -506,7 +506,7 @@ public class AvalancheFeverMode extends DummyMode {
 			if(garbageAdd > 0) {
 				strSent = strSent + "(+" + String.valueOf(garbageAdd)+ ")";
 			}
-			receiver.drawScoreFont(engine, playerID, 0, 16, strSent);
+			receiver.drawScoreFont(engine, playerID, 14, 16, strSent);
 			
 			int textHeight = 13;
 			if (engine.field != null)
