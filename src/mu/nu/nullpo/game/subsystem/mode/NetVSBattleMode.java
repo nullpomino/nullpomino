@@ -2230,9 +2230,9 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					int secondAdd = 0;
 					if((lastb2b[playerID]) && (currentRoomInfo.b2bChunk)){ //Add a separate garbage entry if the separate b2b option is enabled.
 						if((lastevent[playerID] == EVENT_TSPIN_TRIPLE) && (currentRoomInfo.tspinEnableType != 2)) //Case for TST with All Spin disabled
-							secondAdd = 2;
+							secondAdd = 2 * GARBAGE_DENOMINATOR;
 						else
-							secondAdd = 1;
+							secondAdd = 1 * GARBAGE_DENOMINATOR;
 					}
 					
 					GarbageEntry garbageEntry = new GarbageEntry(pts - secondAdd, playerID, uid);
