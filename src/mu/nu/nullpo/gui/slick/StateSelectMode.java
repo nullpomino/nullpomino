@@ -31,30 +31,21 @@ package mu.nu.nullpo.gui.slick;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * Mode 選択画面のステート
  */
-public class StateSelectMode extends BasicGameState {
+public class StateSelectMode extends DummyMenuScrollState {
 	/** このステートのID */
 	public static final int ID = 3;
 
 	/** 1画面に表示する最大Mode count */
 	public static final int PAGE_HEIGHT = 25;
-
-	/** Mode  nameの配列 */
-	protected String[] modenames;
-
-	/** カーソル位置 */
-	protected int cursor = 0;
-
-	/** スクリーンショット撮影 flag */
-	protected boolean ssflag = false;
-
-	/** ID number of entry at top of currently displayed section */
-	protected int minentry = 0;
+	
+	public StateSelectMode() {
+		pageHeight = PAGE_HEIGHT;
+	}
 
 	/*
 	 * このステートのIDを取得
@@ -69,10 +60,11 @@ public class StateSelectMode extends BasicGameState {
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		String lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode", null);
-		modenames = NullpoMinoSlick.modeManager.getModeNames(false);
+		list = NullpoMinoSlick.modeManager.getModeNames(false);
+		maxCursor = list.length-1;
 		cursor = getIDbyName(lastmode);
 		if(cursor < 0) cursor = 0;
-		if(cursor > modenames.length - 1) cursor = 0;
+		if(cursor > list.length - 1) cursor = 0;
 	}
 
 	/**
@@ -81,10 +73,10 @@ public class StateSelectMode extends BasicGameState {
 	 * @return ID (-1 if not found)
 	 */
 	protected int getIDbyName(String name) {
-		if((name == null) || (modenames == null)) return -1;
+		if((name == null) || (list == null)) return -1;
 
-		for(int i = 0; i < modenames.length; i++) {
-			if(name.equals(modenames[i])) {
+		for(int i = 0; i < list.length; i++) {
+			if(name.equals(list[i])) {
 				return i;
 			}
 		}
@@ -92,126 +84,25 @@ public class StateSelectMode extends BasicGameState {
 		return -1;
 	}
 
-	/*
-	 * 画面描画
-	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
-		// 背景
-		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
-
-		// Menu
-		if (cursor >= modenames.length)
-			cursor = 0;
-		if (cursor < minentry)
-			minentry = cursor;
-		int maxentry = minentry + PAGE_HEIGHT - 1;
-		if (cursor >= minentry + PAGE_HEIGHT - 1)
-		{
-			maxentry = cursor;
-			minentry = cursor - PAGE_HEIGHT + 1;
-		}
-		
-		NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + modenames.length + ")",
+	@Override
+	public void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
+		NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
 				NormalFont.COLOR_ORANGE);
-
-		SlickUtil.drawMenuList(graphics, PAGE_HEIGHT, modenames, cursor, minentry, maxentry);
-		
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
-		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, graphics);
-			ssflag = false;
-		}
-
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
-
-	/*
-	 * Update game state
-	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
-		// キー入力状態を更新
-		GameKey.gamekey[0].update(container.getInput());
-		
-		// Mouse
-		MouseInput.mouseInput.update(container.getInput());
-		boolean clicked = MouseInput.mouseInput.isMouseClicked();
-		boolean mouseConfirm = false;
-		int x = MouseInput.mouseInput.getMouseX() >> 4;
-		int y = MouseInput.mouseInput.getMouseY() >> 4;
-		if (x == SlickUtil.SB_TEXT_X && (clicked || MouseInput.mouseInput.isMenuRepeatLeft()))
-		{
-			int maxentry = minentry + PAGE_HEIGHT - 1;
-			if (y == 3 && minentry > 0)
-			{
-				//Scroll up
-				minentry--;
-				maxentry--;
-				if (cursor > maxentry)
-					cursor = maxentry;
-			}
-			else if (y == 2 + PAGE_HEIGHT && maxentry < modenames.length-1)
-			{
-				//Down arrow
-				minentry++;
-				if (cursor < minentry)
-					cursor = minentry;
-			}
-		}
-		else if (clicked && x < SlickUtil.SB_TEXT_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
-		{
-			int newCursor = y - 3 + minentry;
-			if (newCursor == cursor)
-				mouseConfirm = true;
-			else
-			{
-				ResourceHolder.soundManager.play("cursor");
-				cursor = newCursor;
-			}
-		}
-		
-		// カーソル移動
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-	    if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
-			cursor--;
-			if(cursor < 0) cursor = modenames.length - 1;
-			ResourceHolder.soundManager.play("cursor");
-		}
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-	    if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {	
-	        cursor++;
-			if(cursor > modenames.length - 1) cursor = 0;
-			ResourceHolder.soundManager.play("cursor");
-		}
-
-		// 決定 button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-	    if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
-			ResourceHolder.soundManager.play("decide");
-			NullpoMinoSlick.propGlobal.setProperty("name.mode", modenames[cursor]);
-			NullpoMinoSlick.saveConfig();
-			NullpoMinoSlick.stateInGame.startNewGame();
-			game.enterState(StateInGame.ID);
-		}
-
-		// Cancel button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
-			game.enterState(StateTitle.ID);
-		// スクリーンショット button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// 終了 button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+	
+	@Override
+	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
+		ResourceHolder.soundManager.play("decide");
+		NullpoMinoSlick.propGlobal.setProperty("name.mode", list[cursor]);
+		NullpoMinoSlick.saveConfig();
+		NullpoMinoSlick.stateInGame.startNewGame();
+		game.enterState(StateInGame.ID);
+		return false;
+	}
+	
+	@Override
+	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
+		game.enterState(StateTitle.ID);
+		return false;
 	}
 }

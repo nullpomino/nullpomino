@@ -31,24 +31,32 @@ package mu.nu.nullpo.gui.slick;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * 設定画面のステート
  */
-public class StateConfigMainMenu extends BasicGameState {
+public class StateConfigMainMenu extends DummyMenuChooseState {
 	/** このステートのID */
 	public static final int ID = 5;
-
-	/** カーソル位置 */
-	protected int cursor = 0;
+	
+	/** UI Text identifier Strings */
+	private static final String[] UI_TEXT = {
+		"ConfigMainMenu_General",
+		"ConfigMainMenu_Rule",
+		"ConfigMainMenu_GameTuning",
+		"ConfigMainMenu_AI",
+		"ConfigMainMenu_Keyboard",
+		"ConfigMainMenu_Joystick"
+	};
 
 	/** プレイヤー number */
 	protected int player = 0;
-
-	/** スクリーンショット撮影 flag */
-	protected boolean ssflag = false;
+	
+	public StateConfigMainMenu () {
+		maxCursor = 5;
+		minChoiceY = 3;
+	}
 
 	/*
 	 * このステートのIDを取得
@@ -61,12 +69,14 @@ public class StateConfigMainMenu extends BasicGameState {
 	/*
 	 * ステートのInitialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
 	 * 画面描画
 	 */
+	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// 背景
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
@@ -83,126 +93,55 @@ public class StateConfigMainMenu extends BasicGameState {
 		NormalFont.printFontGrid(2, 7, "[KEYBOARD SETTING]:" + (player + 1) + "P", (cursor == 4));
 		NormalFont.printFontGrid(2, 8, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 5));
 
-		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigMainMenu_General"));
-		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigMainMenu_Rule"));
-		if(cursor == 2) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigMainMenu_GameTuning"));
-		if(cursor == 3) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigMainMenu_AI"));
-		if(cursor == 4) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigMainMenu_Keyboard"));
-		if(cursor == 5) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigMainMenu_Joystick"));
+		NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
-		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
-			ssflag = false;
-		}
-
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+		super.render(container, game, g);
 	}
+	
+	@Override
+	protected void onChange(GameContainer container, StateBasedGame game, int delta, int change) {
+		player += change;
+		if(player < 0) player = 1;
+		if(player > 1) player = 0;
+		ResourceHolder.soundManager.play("change");
+	}
+	
+	@Override
+	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
+		ResourceHolder.soundManager.play("decide");
 
-	/*
-	 * Update game state
-	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
-		// TTFフォント描画
-		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
-
-		// キー入力状態を更新
-		GameKey.gamekey[0].update(container.getInput());
-		// Mouse
-		boolean mouseConfirm = false;
-		MouseInput.mouseInput.update(container.getInput());
-		if (MouseInput.mouseInput.isMouseClicked())
-		{
-			int y = MouseInput.mouseInput.getMouseY() >> 4;
-			int newCursor = y - 3;
-			if (newCursor == cursor)
-				mouseConfirm = true;
-			else if (newCursor >= 0 && newCursor <= 5)
-			{
-				ResourceHolder.soundManager.play("cursor");
-				cursor = newCursor;
-			}
+		switch (cursor) {
+		case 0:
+			game.enterState(StateConfigGeneral.ID);
+			break;
+		case 1:
+			NullpoMinoSlick.stateConfigRuleSelect.player = player;
+			game.enterState(StateConfigRuleSelect.ID);
+			break;
+		case 2:
+			NullpoMinoSlick.stateConfigGameTuning.player = player;
+			game.enterState(StateConfigGameTuning.ID);
+			break;
+		case 3:
+			NullpoMinoSlick.stateConfigAISelect.player = player;
+			game.enterState(StateConfigAISelect.ID);
+			break;
+		case 4:
+			NullpoMinoSlick.stateConfigKeyboard.player = player;
+			game.enterState(StateConfigKeyboard.ID);
+			break;
+		case 5:
+			NullpoMinoSlick.stateConfigJoystickMain.player = player;
+			game.enterState(StateConfigJoystickMain.ID);
+			break;
 		}
 		
-		// カーソル移動
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
-			cursor--;
-			if(cursor < 0) cursor = 5;
-			ResourceHolder.soundManager.play("cursor");
-		}
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
-			cursor++;
-			if(cursor > 5) cursor = 0;
-			ResourceHolder.soundManager.play("cursor");
-		}
-
-		// プレイヤー number変更
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) {
-			player--;
-			if(player < 0) player = 1;
-			ResourceHolder.soundManager.play("change");
-		}
-		// if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) {
-			player++;
-			if(player > 1) player = 0;
-			ResourceHolder.soundManager.play("change");
-		}
-
-		// 決定 button
-		// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
-			ResourceHolder.soundManager.play("decide");
-
-			switch (cursor) {
-			case 0:
-				game.enterState(StateConfigGeneral.ID);
-				break;
-			case 1:
-				NullpoMinoSlick.stateConfigRuleSelect.player = player;
-				game.enterState(StateConfigRuleSelect.ID);
-				break;
-			case 2:
-				NullpoMinoSlick.stateConfigGameTuning.player = player;
-				game.enterState(StateConfigGameTuning.ID);
-				break;
-			case 3:
-				NullpoMinoSlick.stateConfigAISelect.player = player;
-				game.enterState(StateConfigAISelect.ID);
-				break;
-			case 4:
-				NullpoMinoSlick.stateConfigKeyboard.player = player;
-				game.enterState(StateConfigKeyboard.ID);
-				break;
-			case 5:
-				NullpoMinoSlick.stateConfigJoystickMain.player = player;
-				game.enterState(StateConfigJoystickMain.ID);
-				break;
-			}
-		}
-
-		// Cancel button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
-			game.enterState(StateTitle.ID);
-		// スクリーンショット button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// 終了 button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+		return false;
+	}
+	
+	@Override
+	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
+		game.enterState(StateTitle.ID);
+		return false;
 	}
 }

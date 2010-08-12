@@ -41,13 +41,12 @@ import org.apache.log4j.Logger;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * リプレイ選択画面のステート
  */
-public class StateReplaySelect extends BasicGameState {
+public class StateReplaySelect extends DummyMenuScrollState {
 	/** このステートのID */
 	public static final int ID = 4;
 
@@ -57,9 +56,6 @@ public class StateReplaySelect extends BasicGameState {
 	/** Log */
 	static Logger log = Logger.getLogger(StateReplaySelect.class);
 
-	/** リプレイ一覧 */
-	protected String[] replaylist;
-
 	/** Mode  name */
 	protected String[] modenameList;
 
@@ -68,15 +64,12 @@ public class StateReplaySelect extends BasicGameState {
 
 	/** Scoreなどの情報 */
 	protected Statistics[] statsList;
-
-	/** カーソル位置 */
-	protected int cursor = 0;
-
-	/** スクリーンショット撮影 flag */
-	protected boolean ssflag = false;
-
-	/** ID number of file at top of currently displayed section */
-	protected int minentry = 0;
+	
+	public StateReplaySelect () {
+		pageHeight = PAGE_HEIGHT;
+		nullError = "REPLAY DIRECTORY NOT FOUND";
+		emptyError = "NO REPLAY FILE";
+	}
 
 	/*
 	 * このステートのIDを取得
@@ -97,7 +90,8 @@ public class StateReplaySelect extends BasicGameState {
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-		replaylist = getReplayFileList();
+		list = getReplayFileList();
+		maxCursor = list.length-1;
 		setReplayRuleAndModeList();
 	}
 
@@ -123,21 +117,21 @@ public class StateReplaySelect extends BasicGameState {
 	 * リプレイの詳細を設定
 	 */
 	protected void setReplayRuleAndModeList() {
-		if(replaylist == null) return;
+		if(list == null) return;
 
-		modenameList = new String[replaylist.length];
-		rulenameList = new String[replaylist.length];
-		statsList = new Statistics[replaylist.length];
+		modenameList = new String[list.length];
+		rulenameList = new String[list.length];
+		statsList = new Statistics[list.length];
 
-		for(int i = 0; i < replaylist.length; i++) {
+		for(int i = 0; i < list.length; i++) {
 			CustomProperties prop = new CustomProperties();
 
 			try {
-				FileInputStream in = new FileInputStream(NullpoMinoSlick.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + replaylist[i]);
+				FileInputStream in = new FileInputStream(NullpoMinoSlick.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + list[i]);
 				prop.load(in);
 				in.close();
 			} catch (IOException e) {
-				log.error("Failed to load replay file (" + replaylist[i] + ")", e);
+				log.error("Failed to load replay file (" + list[i] + ")", e);
 			}
 
 			modenameList[i] = prop.getProperty("name.mode", "");
@@ -147,162 +141,52 @@ public class StateReplaySelect extends BasicGameState {
 			statsList[i].readProperty(prop, 0);
 		}
 	}
+	
+	@Override
+	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
+		String title = "SELECT REPLAY FILE";
+		title += " (" + (cursor + 1) + "/" + (list.length) + ")";
+		NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
 
-	/*
-	 * 画面描画
-	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
-		// 背景
-		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
-
-		// Menu
-		if(replaylist == null) {
-			NormalFont.printFontGrid(1, 1, "REPLAY DIRECTORY NOT FOUND", NormalFont.COLOR_RED);
-		} else if(replaylist.length == 0) {
-			NormalFont.printFontGrid(1, 1, "NO REPLAY FILE", NormalFont.COLOR_RED);
-		} else {
-			if (cursor >= replaylist.length)
-				cursor = 0;
-			if (cursor < minentry)
-				minentry = cursor;
-			int maxentry = minentry + PAGE_HEIGHT - 1;
-			if (cursor >= maxentry)
-			{
-				maxentry = cursor;
-				minentry = maxentry - PAGE_HEIGHT + 1;
-			}
-			
-			String title = "SELECT REPLAY FILE";
-			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
-			NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
-
-			NormalFont.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFont.COLOR_CYAN);
-			NormalFont.printFontGrid(1, 25,
-										"SCORE:" + statsList[cursor].score + " LINE:" + statsList[cursor].lines
-										, NormalFont.COLOR_CYAN);
-			NormalFont.printFontGrid(1, 26,
-										"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
-										" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
-										, NormalFont.COLOR_CYAN);
-			/*
-			NormalFont.printFontGrid(1, 27,
-										"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
-										, NormalFont.COLOR_CYAN);
-			*/
-			
-			SlickUtil.drawMenuList(graphics, PAGE_HEIGHT, replaylist, cursor, minentry, maxentry);
-		}
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
-		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, graphics);
-			ssflag = false;
-		}
-
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+		NormalFont.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFont.COLOR_CYAN);
+		NormalFont.printFontGrid(1, 25,
+									"SCORE:" + statsList[cursor].score + " LINE:" + statsList[cursor].lines
+									, NormalFont.COLOR_CYAN);
+		NormalFont.printFontGrid(1, 26,
+									"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
+									" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
+									, NormalFont.COLOR_CYAN);
+		/*
+		NormalFont.printFontGrid(1, 27,
+									"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
+									, NormalFont.COLOR_CYAN);
+		*/
 	}
+	
+	@Override
+	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
+		ResourceHolder.soundManager.play("decide");
 
-	/*
-	 * Update game state
-	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
+		CustomProperties prop = new CustomProperties();
+
+		try {
+			FileInputStream in = new FileInputStream(NullpoMinoSlick.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + list[cursor]);
+			prop.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.error("Failed to load replay file from " + list[cursor], e);
+			return true;
 		}
 
-		// キー入力状態を更新
-		GameKey.gamekey[0].update(container.getInput());
+		NullpoMinoSlick.stateInGame.startReplayGame(prop);
 
-		// Mouse
-		MouseInput.mouseInput.update(container.getInput());
-		boolean clicked = MouseInput.mouseInput.isMouseClicked();
-		boolean mouseConfirm = false;
-		int x = MouseInput.mouseInput.getMouseX() >> 4;
-		int y = MouseInput.mouseInput.getMouseY() >> 4;
-		if (x == SlickUtil.SB_TEXT_X && (clicked || MouseInput.mouseInput.isMenuRepeatLeft()))
-		{
-			int maxentry = minentry + PAGE_HEIGHT - 1;
-			if (y == 3 && minentry > 0)
-			{
-				//Scroll up
-				minentry--;
-				maxentry--;
-				if (cursor > maxentry)
-					cursor = maxentry;
-			}
-			else if (y == 2 + PAGE_HEIGHT && maxentry < replaylist.length-1)
-			{
-				//Down arrow
-				minentry++;
-				if (cursor < minentry)
-					cursor = minentry;
-			}
-		}
-		else if (clicked && x < SlickUtil.SB_TEXT_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
-		{
-			int newCursor = y - 3 + minentry;
-			if (newCursor == cursor)
-				mouseConfirm = true;
-			else
-			{
-				ResourceHolder.soundManager.play("cursor");
-				cursor = newCursor;
-			}
-		}
-		
-		if((replaylist != null) && (replaylist.length > 0)) {
-			// カーソル移動
-			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
-				cursor--;
-				if(cursor < 0) cursor = replaylist.length - 1;
-				ResourceHolder.soundManager.play("cursor");
-			}
-			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
-				cursor++;
-				if(cursor > replaylist.length - 1) cursor = 0;
-				ResourceHolder.soundManager.play("cursor");
-			}
-
-			// 決定 button
-			//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
-				ResourceHolder.soundManager.play("decide");
-
-				CustomProperties prop = new CustomProperties();
-
-				try {
-					FileInputStream in = new FileInputStream(NullpoMinoSlick.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + replaylist[cursor]);
-					prop.load(in);
-					in.close();
-				} catch (IOException e) {
-					log.error("Failed to load replay file from " + replaylist[cursor], e);
-					return;
-				}
-
-				NullpoMinoSlick.stateInGame.startReplayGame(prop);
-
-				game.enterState(StateInGame.ID);
-			}
-		}
-
-		// Cancel button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked())
-			game.enterState(StateTitle.ID);
-
-		// スクリーンショット button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// 終了 button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+		game.enterState(StateInGame.ID);
+		return false;
+	}
+	
+	@Override
+	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
+		game.enterState(StateTitle.ID);
+		return false;
 	}
 }
