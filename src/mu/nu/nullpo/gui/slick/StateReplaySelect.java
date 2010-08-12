@@ -219,41 +219,39 @@ public class StateReplaySelect extends BasicGameState {
 		GameKey.gamekey[0].update(container.getInput());
 
 		// Mouse
-		boolean mouseConfirm = false;
 		MouseInput.mouseInput.update(container.getInput());
-		if (MouseInput.mouseInput.isMouseClicked())
+		boolean clicked = MouseInput.mouseInput.isMouseClicked();
+		boolean mouseConfirm = false;
+		int x = MouseInput.mouseInput.getMouseX() >> 4;
+		int y = MouseInput.mouseInput.getMouseY() >> 4;
+		if (x == SlickUtil.SB_TEXT_X && (clicked || MouseInput.mouseInput.isMenuRepeatLeft()))
 		{
-			int x = MouseInput.mouseInput.getMouseX() >> 4;
-			int y = MouseInput.mouseInput.getMouseY() >> 4;
-			if (x < SlickUtil.SB_TEXT_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
+			int maxentry = minentry + PAGE_HEIGHT - 1;
+			if (y == 3 && minentry > 0)
 			{
-				int newCursor = y - 3 + minentry;
-				if (newCursor == cursor)
-					mouseConfirm = true;
-				else
-				{
-					ResourceHolder.soundManager.play("cursor");
-					cursor = newCursor;
-				}
+				//Scroll up
+				minentry--;
+				maxentry--;
+				if (cursor > maxentry)
+					cursor = maxentry;
 			}
-			else if (x == SlickUtil.SB_TEXT_X)
+			else if (y == 2 + PAGE_HEIGHT && maxentry < replaylist.length-1)
 			{
-				int maxentry = minentry + PAGE_HEIGHT - 1;
-				if (y == 3 && minentry > 0)
-				{
-					//Scroll up
-					minentry--;
-					maxentry--;
-					if (cursor > maxentry)
-						cursor = maxentry;
-				}
-				else if (y == 2 + PAGE_HEIGHT && maxentry < replaylist.length-1)
-				{
-					//Down arrow
-					minentry++;
-					if (cursor < minentry)
-						cursor = minentry;
-				}
+				//Down arrow
+				minentry++;
+				if (cursor < minentry)
+					cursor = minentry;
+			}
+		}
+		else if (clicked && x < SlickUtil.SB_TEXT_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
+		{
+			int newCursor = y - 3 + minentry;
+			if (newCursor == cursor)
+				mouseConfirm = true;
+			else
+			{
+				ResourceHolder.soundManager.play("cursor");
+				cursor = newCursor;
 			}
 		}
 		

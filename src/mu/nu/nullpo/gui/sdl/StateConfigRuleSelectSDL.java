@@ -44,6 +44,9 @@ import sdljava.video.SDLSurface;
 public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	/** 1画面に表示する最大ファイルcount */
 	public static final int PAGE_HEIGHT = 20;
+	
+	/** x-coordinate of scroll arrows */
+	public static final int SCROLL_ARROW_X = 38;
 
 	/** プレイヤーID */
 	public int player = 0;
@@ -70,7 +73,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	protected int cursor = 0;
 
 	/** ID number of entry at top of currently displayed section */
-	protected int minfile = 0;
+	protected int minentry = 0;
 
 	/**
 	 * ルールファイル一覧を取得
@@ -148,21 +151,24 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 			if (cursor >= strFileNameList.length)
 				cursor = 0;
 			
-			if (cursor < minfile)
-				minfile = cursor;
-			int maxfile = minfile + PAGE_HEIGHT - 1;
-			if (cursor >= maxfile)
+			if (cursor < minentry)
+				minentry = cursor;
+			int maxentry = minentry + PAGE_HEIGHT - 1;
+			if (cursor >= maxentry)
 			{
-				maxfile = cursor;
-				minfile = maxfile - PAGE_HEIGHT + 1;
+				maxentry = cursor;
+				minentry = maxentry - PAGE_HEIGHT + 1;
 			}
-			if (maxfile >= strFileNameList.length)
-				maxfile = strFileNameList.length-1;
+			if (maxentry >= strFileNameList.length)
+				maxentry = strFileNameList.length-1;
 			
 			String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (strFileNameList.length) + ")";
 			NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
+			
+			NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 3, "k", NormalFontSDL.COLOR_BLUE);
+			NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 2 + PAGE_HEIGHT, "n", NormalFontSDL.COLOR_BLUE);
 
-			for(int i = minfile, y = 0; i <= maxfile; i++, y++) {
+			for(int i = minentry, y = 0; i <= maxentry; i++, y++) {
 				if(i < strFileNameList.length) {
 					NormalFontSDL.printFontGrid(2, 3 + y, strFileNameList[i].toUpperCase(), (cursor == i));
 					if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
@@ -188,29 +194,42 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		if((strFileNameList != null) && (strFileNameList.length > 0)) {
-			/*
 			// Mouse
-			int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
-			
 			MouseInputSDL.mouseInput.update();
-			
-			if (mouseOldY != MouseInputSDL.mouseInput.getMouseY()) {
-				int oldcursor=cursor;
-				if (cursor<PAGE_HEIGHT) {
-					if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(Math.min(PAGE_HEIGHT+1,strFileNameList.length-1)*16))) {
-						cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
-					}
-				} else {
-					if (MouseInputSDL.mouseInput.getMouseY()<48) {
-						cursor=PAGE_HEIGHT-1;
-					}
-					else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(strFileNameList.length-PAGE_HEIGHT-1)*16)) {
-						cursor=PAGE_HEIGHT+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
-					}
+			boolean clicked = MouseInputSDL.mouseInput.isMouseClicked();
+			boolean mouseConfirm = false;
+			int x = MouseInputSDL.mouseInput.getMouseX() >> 4;
+			int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
+			if (x == SCROLL_ARROW_X && (clicked || MouseInputSDL.mouseInput.isMenuRepeatLeft()))
+			{
+				int maxentry = minentry + PAGE_HEIGHT - 1;
+				if (y == 3 && minentry > 0)
+				{
+					//Scroll up
+					minentry--;
+					maxentry--;
+					if (cursor > maxentry)
+						cursor = maxentry;
 				}
-				if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
+				else if (y == 2 + PAGE_HEIGHT && maxentry < strFileNameList.length-1)
+				{
+					//Down arrow
+					minentry++;
+					if (cursor < minentry)
+						cursor = minentry;
+				}
 			}
-			*/
+			else if (clicked && x < SCROLL_ARROW_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
+			{
+				int newCursor = y - 3 + minentry;
+				if (newCursor == cursor)
+					mouseConfirm = true;
+				else
+				{
+					ResourceHolderSDL.soundManager.play("cursor");
+					cursor = newCursor;
+				}
+			}
 			
 			// カーソル移動
 			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
@@ -228,7 +247,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 
 			// 決定 button
 			// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
+			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
 				ResourceHolderSDL.soundManager.play("decide");
 				NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
 				NullpoMinoSDL.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);

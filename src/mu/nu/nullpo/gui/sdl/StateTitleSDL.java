@@ -30,8 +30,6 @@ package mu.nu.nullpo.gui.sdl;
 
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.gui.net.UpdateChecker;
-import mu.nu.nullpo.gui.slick.MouseInput;
-import mu.nu.nullpo.gui.slick.ResourceHolder;
 
 import sdljava.SDLException;
 //import sdljava.event.MouseState;
@@ -122,15 +120,15 @@ public class StateTitleSDL extends BaseStateSDL {
 		// Mouse
 		boolean mouseConfirm = false;
 		MouseInputSDL.mouseInput.update();
-		if (MouseInput.mouseInput.isMouseClicked())
+		if (MouseInputSDL.mouseInput.isMouseClicked())
 		{
-			int y = MouseInput.mouseInput.getMouseY() >> 4;
+			int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
 			int newCursor = y - 4;
 			if (newCursor == cursor)
 				mouseConfirm = true;
 			else if (newCursor >= 0 && newCursor <= 4)
 			{
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSDL.soundManager.play("cursor");
 				cursor = newCursor;
 			}
 		}

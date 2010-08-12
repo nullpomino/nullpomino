@@ -39,6 +39,9 @@ import sdljava.video.SDLSurface;
 public class StateSelectModeSDL extends BaseStateSDL {
 	/** 1画面に表示する最大Mode count */
 	public static final int PAGE_HEIGHT = 25;
+	
+	/** x-coordinate of scroll arrows */
+	public static final int SCROLL_ARROW_X = 38;
 
 	/** Mode  nameの配列 */
 	protected String[] modenames;
@@ -47,7 +50,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	protected int cursor = 0;
 
 	/** ID number of entry at top of currently displayed section */
-	protected int minmode = 0;
+	protected int minentry = 0;
 
 	/**
 	 * Constructor
@@ -87,21 +90,24 @@ public class StateSelectModeSDL extends BaseStateSDL {
 		if (cursor >= modenames.length)
 			cursor = 0;
 		
-		if (cursor < minmode)
-			minmode = cursor;
-		int maxfile = minmode + PAGE_HEIGHT - 1;
-		if (cursor >= maxfile)
+		if (cursor < minentry)
+			minentry = cursor;
+		int maxentry = minentry + PAGE_HEIGHT - 1;
+		if (cursor >= maxentry)
 		{
-			maxfile = cursor;
-			minmode = maxfile - PAGE_HEIGHT + 1;
+			maxentry = cursor;
+			minentry = maxentry - PAGE_HEIGHT + 1;
 		}
-		if (maxfile >= modenames.length)
-			maxfile = modenames.length-1;
+		if (maxentry >= modenames.length)
+			maxentry = modenames.length-1;
 
 		NormalFontSDL.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + modenames.length + ")",
 									NormalFontSDL.COLOR_ORANGE);
+		
+		NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 3, "k", NormalFontSDL.COLOR_BLUE);
+		NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 2 + PAGE_HEIGHT, "n", NormalFontSDL.COLOR_BLUE);
 
-		for(int i = minmode, y = 0; i <= maxfile; i++, y++) {
+		for(int i = minentry, y = 0; i <= maxentry; i++, y++) {
 			if(i < modenames.length) {
 				NormalFontSDL.printFontGrid(2, 3 + y, modenames[i].toUpperCase(), (cursor == i));
 				if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
@@ -114,29 +120,42 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
-		/*
 		// Mouse
-		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
-		
 		MouseInputSDL.mouseInput.update();
-		
-		if (mouseOldY != MouseInputSDL.mouseInput.getMouseY()) {
-			int oldcursor=cursor;
-			if (cursor<PAGE_HEIGHT) {
-				if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(PAGE_HEIGHT+1)*16)) {
-					cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
-				}
-			} else {
-				if (MouseInputSDL.mouseInput.getMouseY()<48) {
-					cursor=PAGE_HEIGHT-1;
-				}
-				else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(modenames.length-PAGE_HEIGHT-1)*16)) {
-					cursor=PAGE_HEIGHT+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
-				}
+		boolean clicked = MouseInputSDL.mouseInput.isMouseClicked();
+		boolean mouseConfirm = false;
+		int x = MouseInputSDL.mouseInput.getMouseX() >> 4;
+		int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
+		if (x == SCROLL_ARROW_X && (clicked || MouseInputSDL.mouseInput.isMenuRepeatLeft()))
+		{
+			int maxentry = minentry + PAGE_HEIGHT - 1;
+			if (y == 3 && minentry > 0)
+			{
+				//Scroll up
+				minentry--;
+				maxentry--;
+				if (cursor > maxentry)
+					cursor = maxentry;
 			}
-			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
+			else if (y == 2 + PAGE_HEIGHT && maxentry < modenames.length-1)
+			{
+				//Down arrow
+				minentry++;
+				if (cursor < minentry)
+					cursor = minentry;
+			}
 		}
-		*/
+		else if (clicked && x < SCROLL_ARROW_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
+		{
+			int newCursor = y - 3 + minentry;
+			if (newCursor == cursor)
+				mouseConfirm = true;
+			else
+			{
+				ResourceHolderSDL.soundManager.play("cursor");
+				cursor = newCursor;
+			}
+		}
 		
 		// カーソル移動
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
@@ -154,7 +173,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 
 		// 決定 button
 		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || MouseInputSDL.mouseInput.isMouseClicked()) {
+		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
 			ResourceHolderSDL.soundManager.play("decide");
 			NullpoMinoSDL.propGlobal.setProperty("name.mode", modenames[cursor]);
 			NullpoMinoSDL.saveConfig();
