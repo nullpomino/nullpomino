@@ -48,7 +48,7 @@ public class StateConfigRuleSelect extends BasicGameState {
 	public static final int ID = 7;
 
 	/** 1画面に表示する最大ファイルcount */
-	public static final int MAX_FILE_IN_ONE_PAGE = 20;
+	public static final int PAGE_HEIGHT = 20;
 
 	/** プレイヤーID */
 	public int player = 0;
@@ -78,7 +78,7 @@ public class StateConfigRuleSelect extends BasicGameState {
 	protected boolean ssflag = false;
 
 	/** ID number of entry at top of currently displayed section */
-	protected int minfile = 0;
+	protected int minentry = 0;
 
 	/*
 	 * このステートのIDを取得
@@ -158,9 +158,9 @@ public class StateConfigRuleSelect extends BasicGameState {
 	/*
 	 * 画面描画
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
 		// 背景
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
 		if(strFileNameList == null) {
@@ -170,34 +170,24 @@ public class StateConfigRuleSelect extends BasicGameState {
 		} else {
 			if (cursor >= strFileNameList.length)
 				cursor = 0;
-			
-			if (cursor < minfile)
-				minfile = cursor;
-			int maxfile = minfile + MAX_FILE_IN_ONE_PAGE - 1;
-			if (cursor >= maxfile)
+			if (cursor < minentry)
+				minentry = cursor;
+			int maxentry = minentry + PAGE_HEIGHT - 1;
+			if (cursor >= maxentry)
 			{
-				maxfile = cursor;
-				minfile = maxfile - MAX_FILE_IN_ONE_PAGE + 1;
+				maxentry = cursor;
+				minentry = maxentry - PAGE_HEIGHT + 1;
 			}
-			if (maxfile >= strFileNameList.length)
-				maxfile = strFileNameList.length-1;
 			
 			String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (strFileNameList.length) + ")";
 			NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
-
-			NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
-
-			for(int i = minfile, y = 0; i <= maxfile; i++, y++) {
-				if(i < strFileNameList.length) {
-					NormalFont.printFontGrid(2, 3 + y, strFileNameList[i].toUpperCase(), (cursor == i));
-					if(cursor == i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
-				}
-			}
 
 			NormalFont.printFontGrid(1, 26, "FILE:" + strFileNameList[cursor].toUpperCase(), NormalFont.COLOR_CYAN);
 			NormalFont.printFontGrid(1, 27, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFont.COLOR_BLUE);
 
 			NormalFont.printFontGrid(1, 28, "A:OK", NormalFont.COLOR_GREEN);
+			
+			SlickUtil.drawMenuList(graphics, PAGE_HEIGHT, strFileNameList, cursor, minentry, maxentry);
 		}
 
 		if(firstSetupMode) {
@@ -212,7 +202,7 @@ public class StateConfigRuleSelect extends BasicGameState {
 		NullpoMinoSlick.drawObserverClient();
 		// スクリーンショット
 		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
+			NullpoMinoSlick.saveScreenShot(container, graphics);
 			ssflag = false;
 		}
 
@@ -239,17 +229,17 @@ public class StateConfigRuleSelect extends BasicGameState {
 		
 		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
 			int oldcursor=cursor;
-			if (cursor<MAX_FILE_IN_ONE_PAGE){
-				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,strFileNameList.length-1)*16)))
+			if (cursor<PAGE_HEIGHT){
+				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(PAGE_HEIGHT+1,strFileNameList.length-1)*16)))
 			       cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
 			else{
 				if (MouseInput.mouseInput.getMouseY()<48){
-					cursor=MAX_FILE_IN_ONE_PAGE-1;
+					cursor=PAGE_HEIGHT-1;
 				}
-				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(strFileNameList.length-MAX_FILE_IN_ONE_PAGE-1)*16))
+				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(strFileNameList.length-PAGE_HEIGHT-1)*16))
 					
-				   cursor=MAX_FILE_IN_ONE_PAGE+(MouseInput.mouseInput.getMouseY()-48)/16;
+				   cursor=PAGE_HEIGHT+(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
 			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
 		}

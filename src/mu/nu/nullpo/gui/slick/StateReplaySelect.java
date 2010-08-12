@@ -52,7 +52,7 @@ public class StateReplaySelect extends BasicGameState {
 	public static final int ID = 4;
 
 	/** 1画面に表示する最大ファイルcount */
-	public static final int MAX_FILE_IN_ONE_PAGE = 20;
+	public static final int PAGE_HEIGHT = 20;
 
 	/** Log */
 	static Logger log = Logger.getLogger(StateReplaySelect.class);
@@ -76,7 +76,7 @@ public class StateReplaySelect extends BasicGameState {
 	protected boolean ssflag = false;
 
 	/** ID number of file at top of currently displayed section */
-	protected int minfile = 0;
+	protected int minentry = 0;
 
 	/*
 	 * このステートのIDを取得
@@ -151,9 +151,9 @@ public class StateReplaySelect extends BasicGameState {
 	/*
 	 * 画面描画
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
 		// 背景
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
 		if(replaylist == null) {
@@ -163,29 +163,18 @@ public class StateReplaySelect extends BasicGameState {
 		} else {
 			if (cursor >= replaylist.length)
 				cursor = 0;
-			
-			if (cursor < minfile)
-				minfile = cursor;
-			int maxfile = minfile + MAX_FILE_IN_ONE_PAGE - 1;
-			if (cursor >= maxfile)
+			if (cursor < minentry)
+				minentry = cursor;
+			int maxentry = minentry + PAGE_HEIGHT - 1;
+			if (cursor >= maxentry)
 			{
-				maxfile = cursor;
-				minfile = maxfile - MAX_FILE_IN_ONE_PAGE + 1;
+				maxentry = cursor;
+				minentry = maxentry - PAGE_HEIGHT + 1;
 			}
-			if (maxfile >= replaylist.length)
-				maxfile = replaylist.length-1;
-				
+			
 			String title = "SELECT REPLAY FILE";
 			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
-
 			NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
-
-			for(int i = minfile, y = 0; i <= maxfile; i++, y++) {
-				if(i < replaylist.length) {
-					NormalFont.printFontGrid(2, 3 + y, replaylist[i].toUpperCase(), (cursor == i));
-					if(cursor == i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
-				}
-			}
 
 			NormalFont.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFont.COLOR_CYAN);
 			NormalFont.printFontGrid(1, 25,
@@ -200,6 +189,8 @@ public class StateReplaySelect extends BasicGameState {
 										"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
 										, NormalFont.COLOR_CYAN);
 			*/
+			
+			SlickUtil.drawMenuList(graphics, PAGE_HEIGHT, replaylist, cursor, minentry, maxentry);
 		}
 
 		// FPS
@@ -208,7 +199,7 @@ public class StateReplaySelect extends BasicGameState {
 		NullpoMinoSlick.drawObserverClient();
 		// スクリーンショット
 		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
+			NullpoMinoSlick.saveScreenShot(container, graphics);
 			ssflag = false;
 		}
 
@@ -234,17 +225,17 @@ public class StateReplaySelect extends BasicGameState {
 		MouseInput.mouseInput.update(container.getInput());
 		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
 			int oldcursor=cursor;
-			if (cursor<MAX_FILE_IN_ONE_PAGE){
-				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,replaylist.length-1)*16)))
+			if (cursor<PAGE_HEIGHT){
+				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(Math.min(PAGE_HEIGHT+1,replaylist.length-1)*16)))
 			       cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
 			else{
 				if (MouseInput.mouseInput.getMouseY()<48){
-					cursor=MAX_FILE_IN_ONE_PAGE-1;
+					cursor=PAGE_HEIGHT-1;
 				}
-				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(replaylist.length-MAX_FILE_IN_ONE_PAGE-1)*16))
+				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(replaylist.length-PAGE_HEIGHT-1)*16))
 					
-				   cursor=MAX_FILE_IN_ONE_PAGE+(MouseInput.mouseInput.getMouseY()-48)/16;
+				   cursor=PAGE_HEIGHT+(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
 			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
 		}
