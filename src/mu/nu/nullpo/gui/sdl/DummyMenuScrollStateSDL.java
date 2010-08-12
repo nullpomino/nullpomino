@@ -3,7 +3,6 @@ package mu.nu.nullpo.gui.sdl;
 import sdljava.SDLException;
 import sdljava.video.SDLRect;
 import sdljava.video.SDLSurface;
-import sdljavax.gfx.SDLGfx;
 
 /**
  * Dummy class for menus with a scroll bar
@@ -34,11 +33,18 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 	
 	/** Error messages for null or empty list */
 	protected String nullError, emptyError;
+
+	/** Y-coordinates of dark sections of scroll bar */
+	protected int pUpMinY, pUpMaxY, pDownMinY, pDownMaxY;
 	
 	public DummyMenuScrollStateSDL () {
 		minentry = 0;
 		nullError = "";
 		emptyError = "";
+		pDownMinY = 0;
+		pDownMaxY = 0;
+		pUpMinY = 0;
+		pUpMaxY = 0;
 	}
 
 	/*
@@ -82,11 +88,12 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		boolean clicked = MouseInputSDL.mouseInput.isMouseClicked();
 		int x = MouseInputSDL.mouseInput.getMouseX() >> 4;
 		int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
-		if (x == SB_TEXT_X && (clicked || MouseInputSDL.mouseInput.isMenuRepeatLeft()))
+		if (x == SB_TEXT_X && (clicked || MouseInputSDL.mouseInput.isMenuRepeatLeft()) && y >= 3 && y <= 2 + pageHeight)
 		{
 			int maxentry = minentry + pageHeight - 1;
 			if (y == 3 && minentry > 0)
 			{
+				ResourceHolderSDL.soundManager.play("cursor");
 				//Scroll up
 				minentry--;
 				maxentry--;
@@ -95,10 +102,19 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 			}
 			else if (y == 2 + pageHeight && maxentry < list.length-1)
 			{
+				ResourceHolderSDL.soundManager.play("cursor");
 				//Down arrow
 				minentry++;
 				if (cursor < minentry)
 					cursor = minentry;
+			}
+			else if (y > 3 && y < 2 + pageHeight)
+			{
+				int pixelY = MouseInputSDL.mouseInput.getMouseY();
+				if (pixelY >= pUpMinY && pixelY < pUpMaxY)
+					pageUp();
+				else if (pixelY >= pDownMinY && pixelY < pDownMaxY)
+					pageDown();
 			}
 		}
 		else if (clicked && x < SB_TEXT_X-1 && y >= 3 && y <= 2 + pageHeight)
@@ -153,5 +169,50 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		}
 		screen.fillRect(new SDLRect(SB_MIN_X+LINE_WIDTH, SB_MIN_Y+LINE_WIDTH, insideWidth, insideHeight), SB_BACK_COLOR);
 		screen.fillRect(new SDLRect(SB_MIN_X+LINE_WIDTH, SB_MIN_Y+LINE_WIDTH+fillMinY, insideWidth, fillHeight), SB_FILL_COLOR);
+
+		//Update coordinates
+		pUpMinY = SB_MIN_Y+LINE_WIDTH;
+		pUpMaxY = pUpMinY+fillMinY;
+		pDownMinY = pUpMaxY+fillHeight;
+		pDownMaxY = SB_MIN_Y+LINE_WIDTH+insideHeight;
+	}
+
+	@Override
+	protected void onChange(int change) {
+		if (change == 1) pageDown();
+		else if (change == -1) pageUp();
+	}
+
+	protected void pageDown() {
+		ResourceHolderSDL.soundManager.play("cursor");
+		int max = maxCursor - pageHeight + 1;
+		if (minentry >= max)
+			cursor = maxCursor;
+		else
+		{
+			cursor += pageHeight;
+			minentry += pageHeight;
+			if (minentry > max)
+			{
+				cursor -= (minentry - max);
+				minentry = max;
+			}
+		}
+	}
+
+	protected void pageUp() {
+		ResourceHolderSDL.soundManager.play("cursor");
+		if (minentry == 0)
+			cursor = 0;
+		else
+		{
+			cursor -= pageHeight;
+			minentry -= pageHeight;
+			if (minentry < 0)
+			{
+				cursor -= minentry;
+				minentry = 0;
+			}
+		}
 	}
 }

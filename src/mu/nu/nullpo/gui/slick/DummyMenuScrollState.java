@@ -36,17 +36,24 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	
 	/** Error messages for null or empty list */
 	protected String nullError, emptyError;
+
+	/** Y-coordinates of dark sections of scroll bar */
+	protected int pUpMinY, pUpMaxY, pDownMinY, pDownMaxY;
 	
 	public DummyMenuScrollState () {
 		minentry = 0;
 		nullError = "";
 		emptyError = "";
+		pDownMinY = 0;
+		pDownMaxY = 0;
+		pUpMinY = 0;
+		pUpMaxY = 0;
 	}
-	@Override
 
 	/*
 	 * 画面描画
 	 */
+	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
 		// 背景
 		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
@@ -84,11 +91,12 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 		boolean clicked = MouseInput.mouseInput.isMouseClicked();
 		int x = MouseInput.mouseInput.getMouseX() >> 4;
 		int y = MouseInput.mouseInput.getMouseY() >> 4;
-		if (x == SB_TEXT_X && (clicked || MouseInput.mouseInput.isMenuRepeatLeft()))
+		if (x == SB_TEXT_X && (clicked || MouseInput.mouseInput.isMenuRepeatLeft()) && y >= 3 && y <= 2 + pageHeight)
 		{
 			int maxentry = minentry + pageHeight - 1;
 			if (y == 3 && minentry > 0)
 			{
+				ResourceHolder.soundManager.play("cursor");
 				//Scroll up
 				minentry--;
 				maxentry--;
@@ -97,10 +105,19 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 			}
 			else if (y == 2 + pageHeight && maxentry < list.length-1)
 			{
+				ResourceHolder.soundManager.play("cursor");
 				//Down arrow
 				minentry++;
 				if (cursor < minentry)
 					cursor = minentry;
+			}
+			else if (y > 3 && y < 2 + pageHeight)
+			{
+				int pixelY = MouseInput.mouseInput.getMouseY();
+				if (pixelY >= pUpMinY && pixelY < pUpMaxY)
+					pageUp();
+				else if (pixelY >= pDownMinY && pixelY < pDownMaxY)
+					pageDown();
 			}
 		}
 		else if (clicked && x < SB_TEXT_X-1 && y >= 3 && y <= 2 + pageHeight)
@@ -156,6 +173,50 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 		graphics.setColor(SB_FILL_COLOR);
 		graphics.fillRect(SB_MIN_X+LINE_WIDTH, SB_MIN_Y+LINE_WIDTH+fillMinY, insideWidth, fillHeight);
 		graphics.setColor(Color.white);
+
+		//Update coordinates
+		pUpMinY = SB_MIN_Y+LINE_WIDTH;
+		pUpMaxY = pUpMinY+fillMinY;
+		pDownMinY = pUpMaxY+fillHeight;
+		pDownMaxY = SB_MIN_Y+LINE_WIDTH+insideHeight;
 	}
 
+	@Override
+	protected void onChange(GameContainer container, StateBasedGame game, int delta, int change) {
+		if (change == 1) pageDown();
+		else if (change == -1) pageUp();
+	}
+
+	protected void pageDown() {
+		ResourceHolder.soundManager.play("cursor");
+		int max = maxCursor - pageHeight + 1;
+		if (minentry >= max)
+			cursor = maxCursor;
+		else
+		{
+			cursor += pageHeight;
+			minentry += pageHeight;
+			if (minentry > max)
+			{
+				cursor -= (minentry - max);
+				minentry = max;
+			}
+		}
+	}
+
+	protected void pageUp() {
+		ResourceHolder.soundManager.play("cursor");
+		if (minentry == 0)
+			cursor = 0;
+		else
+		{
+			cursor -= pageHeight;
+			minentry -= pageHeight;
+			if (minentry < 0)
+			{
+				cursor -= minentry;
+				minentry = 0;
+			}
+		}
+	}
 }
