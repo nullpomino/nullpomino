@@ -249,42 +249,27 @@ public class NullpoMinoSDL {
 		GameKeySDL.gamekey[1].loadConfig(propConfig);
 		MouseInputSDL.initalizeMouseInput();
 
-		log.debug("Finished key initialization.");
-
 		// ステートのInitialization
-		try {
 		currentState = -1;
 		gameStates = new BaseStateSDL[STATE_MAX];
 		gameStates[STATE_TITLE] = new StateTitleSDL();
 		gameStates[STATE_CONFIG_MAINMENU] = new StateConfigMainMenuSDL();
-		log.debug("Checkpoint 1");
 		gameStates[STATE_CONFIG_RULESELECT] = new StateConfigRuleSelectSDL();
-		log.debug("Checkpoint 2");
 		gameStates[STATE_CONFIG_GENERAL] = new StateConfigGeneralSDL();
-		log.debug("Checkpoint 3");
 		gameStates[STATE_CONFIG_KEYBOARD] = new StateConfigKeyboardSDL();
-		log.debug("Checkpoint 4");
 		gameStates[STATE_CONFIG_JOYSTICK_BUTTON] = new StateConfigJoystickButtonSDL();
-		log.debug("Checkpoint 5");
 		gameStates[STATE_SELECTMODE] = new StateSelectModeSDL();
 		gameStates[STATE_INGAME] = new StateInGameSDL();
 		gameStates[STATE_REPLAYSELECT] = new StateReplaySelectSDL();
 		gameStates[STATE_CONFIG_AISELECT] = new StateConfigAISelectSDL();
-		log.debug("Checkpoint 6");
 		gameStates[STATE_NETGAME] = new StateNetGameSDL();
 		gameStates[STATE_CONFIG_JOYSTICK_MAIN] = new StateConfigJoystickMainSDL();
 		gameStates[STATE_CONFIG_JOYSTICK_TEST] = new StateConfigJoystickTestSDL();
 		gameStates[STATE_CONFIG_GAMETUNING] = new StateConfigGameTuningSDL();
 
-		} catch (Throwable e) {
-			log.fatal("Uncaught Exception", e);
-		}
-		log.debug("Finished state initialization.");
-
 		// SDLのInitializationと開始
 		try {
 			init();
-			log.debug("Finished SDL initialization.");
 			run();
 		} catch (Throwable e) {
 			log.fatal("Uncaught Exception", e);
