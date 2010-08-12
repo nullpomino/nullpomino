@@ -33,8 +33,8 @@ public class SlickUtil {
 
 		int sbHeight = 16*(pageHeight - 2) - (LINE_WIDTH << 1);
 		//Draw scroll bar
-		NormalFont.printFontGrid(38, 3, "k", SB_TEXT_COLOR);
-		NormalFont.printFontGrid(38, 3 + pageHeight - 1, "n", SB_TEXT_COLOR);
+		NormalFont.printFontGrid(SB_TEXT_X, 3, "k", SB_TEXT_COLOR);
+		NormalFont.printFontGrid(SB_TEXT_X, 2 + pageHeight, "n", SB_TEXT_COLOR);
 		//Draw shadow
 		graphics.setColor(SB_SHADOW_COLOR);
 		graphics.fillRect(SB_MIN_X+SB_WIDTH, SB_MIN_Y+LINE_WIDTH, LINE_WIDTH, sbHeight);

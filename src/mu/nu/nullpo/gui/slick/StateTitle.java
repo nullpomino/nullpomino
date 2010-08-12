@@ -171,21 +171,23 @@ public class StateTitle extends BasicGameState {
 
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
-		
+
 		// Mouse
-		/*
-		int mouseOldY = MouseInput.mouseInput.getMouseY();
-		
+		boolean mouseConfirm = false;
 		MouseInput.mouseInput.update(container.getInput());
-		
-		if (mouseOldY != MouseInput.mouseInput.getMouseY() && (MouseInput.mouseInput.getMouseY()>=64) && 
-				(MouseInput.mouseInput.getMouseY()<64+5*16)){
-			int oldcursor=cursor;
-			cursor=(MouseInput.mouseInput.getMouseY()-64)/16;
-			if (cursor!=oldcursor)
-			ResourceHolder.soundManager.play("cursor");
+		if (MouseInput.mouseInput.isMouseClicked())
+		{
+			int y = MouseInput.mouseInput.getMouseY() >> 4;
+			int newCursor = y - 4;
+			if (newCursor == cursor)
+				mouseConfirm = true;
+			else if (newCursor >= 0 && newCursor <= 4)
+			{
+				ResourceHolder.soundManager.play("cursor");
+				cursor = newCursor;
+			}
 		}
-		*/
+		
 		// カーソル移動
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
@@ -203,7 +205,7 @@ public class StateTitle extends BasicGameState {
 
 		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
 			ResourceHolder.soundManager.play("decide");
 
 			switch(cursor) {

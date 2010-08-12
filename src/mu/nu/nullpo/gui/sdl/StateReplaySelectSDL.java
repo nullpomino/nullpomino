@@ -52,7 +52,7 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	static Logger log = Logger.getLogger(StateReplaySelectSDL.class);
 
 	/** 1画面に表示する最大ファイルcount */
-	public static final int MAX_FILE_IN_ONE_PAGE = 20;
+	public static final int PAGE_HEIGHT = 20;
 
 	/** リプレイ一覧 */
 	protected String[] replaylist;
@@ -145,11 +145,11 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 			
 			if (cursor < minfile)
 				minfile = cursor;
-			int maxfile = minfile + MAX_FILE_IN_ONE_PAGE - 1;
+			int maxfile = minfile + PAGE_HEIGHT - 1;
 			if (cursor >= maxfile)
 			{
 				maxfile = cursor;
-				minfile = maxfile - MAX_FILE_IN_ONE_PAGE + 1;
+				minfile = maxfile - PAGE_HEIGHT + 1;
 			}
 			if (maxfile >= replaylist.length)
 				maxfile = replaylist.length-1;
@@ -196,16 +196,16 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 			
 			if (mouseOldY != MouseInputSDL.mouseInput.getMouseY()) {
 				int oldcursor=cursor;
-				if (cursor<MAX_FILE_IN_ONE_PAGE) {
-					if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(Math.min(MAX_FILE_IN_ONE_PAGE+1,replaylist.length-1)*16))) {
+				if (cursor<PAGE_HEIGHT) {
+					if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(Math.min(PAGE_HEIGHT+1,replaylist.length-1)*16))) {
 						cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 					}
 				} else {
 					if (MouseInputSDL.mouseInput.getMouseY()<48) {
-						cursor=MAX_FILE_IN_ONE_PAGE-1;
+						cursor=PAGE_HEIGHT-1;
 					}
-					else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(replaylist.length-MAX_FILE_IN_ONE_PAGE-1)*16)) {
-						cursor=MAX_FILE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+					else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(replaylist.length-PAGE_HEIGHT-1)*16)) {
+						cursor=PAGE_HEIGHT+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 					}
 				}
 				if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");

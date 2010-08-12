@@ -38,7 +38,7 @@ import sdljava.video.SDLSurface;
  */
 public class StateSelectModeSDL extends BaseStateSDL {
 	/** 1画面に表示する最大Mode count */
-	public static final int MAX_MODE_IN_ONE_PAGE = 25;
+	public static final int PAGE_HEIGHT = 25;
 
 	/** Mode  nameの配列 */
 	protected String[] modenames;
@@ -89,11 +89,11 @@ public class StateSelectModeSDL extends BaseStateSDL {
 		
 		if (cursor < minmode)
 			minmode = cursor;
-		int maxfile = minmode + MAX_MODE_IN_ONE_PAGE - 1;
+		int maxfile = minmode + PAGE_HEIGHT - 1;
 		if (cursor >= maxfile)
 		{
 			maxfile = cursor;
-			minmode = maxfile - MAX_MODE_IN_ONE_PAGE + 1;
+			minmode = maxfile - PAGE_HEIGHT + 1;
 		}
 		if (maxfile >= modenames.length)
 			maxfile = modenames.length-1;
@@ -122,16 +122,16 @@ public class StateSelectModeSDL extends BaseStateSDL {
 		
 		if (mouseOldY != MouseInputSDL.mouseInput.getMouseY()) {
 			int oldcursor=cursor;
-			if (cursor<MAX_MODE_IN_ONE_PAGE) {
-				if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(MAX_MODE_IN_ONE_PAGE+1)*16)) {
+			if (cursor<PAGE_HEIGHT) {
+				if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(PAGE_HEIGHT+1)*16)) {
 					cursor=(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 				}
 			} else {
 				if (MouseInputSDL.mouseInput.getMouseY()<48) {
-					cursor=MAX_MODE_IN_ONE_PAGE-1;
+					cursor=PAGE_HEIGHT-1;
 				}
-				else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(modenames.length-MAX_MODE_IN_ONE_PAGE-1)*16)) {
-					cursor=MAX_MODE_IN_ONE_PAGE+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
+				else if ((MouseInputSDL.mouseInput.getMouseY()>=48) && (MouseInputSDL.mouseInput.getMouseY()<64+(modenames.length-PAGE_HEIGHT-1)*16)) {
+					cursor=PAGE_HEIGHT+(MouseInputSDL.mouseInput.getMouseY()-48)/16;
 				}
 			}
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");

@@ -140,29 +140,45 @@ public class StateSelectMode extends BasicGameState {
 
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
-		/*
+		
 		// Mouse
-		int mouseOldY = MouseInput.mouseInput.getMouseY();
-		
+		boolean mouseConfirm = false;
 		MouseInput.mouseInput.update(container.getInput());
-		
-		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
-			int oldcursor=cursor;
-			if (cursor<PAGE_HEIGHT){
-				if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(PAGE_HEIGHT+1)*16))
-			       cursor=(MouseInput.mouseInput.getMouseY()-48)/16;
-			}
-			else{
-				if (MouseInput.mouseInput.getMouseY()<48){
-					cursor=PAGE_HEIGHT-1;
+		if (MouseInput.mouseInput.isMouseClicked())
+		{
+			int x = MouseInput.mouseInput.getMouseX() >> 4;
+			int y = MouseInput.mouseInput.getMouseY() >> 4;
+			if (x < SlickUtil.SB_TEXT_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
+			{
+				int newCursor = y - 3 + minentry;
+				if (newCursor == cursor)
+					mouseConfirm = true;
+				else
+				{
+					ResourceHolder.soundManager.play("cursor");
+					cursor = newCursor;
 				}
-				else if ((MouseInput.mouseInput.getMouseY()>=48) && (MouseInput.mouseInput.getMouseY()<64+(modenames.length-PAGE_HEIGHT-1)*16))
-					
-				   cursor=PAGE_HEIGHT+(MouseInput.mouseInput.getMouseY()-48)/16;
 			}
-			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
+			else if (x == SlickUtil.SB_TEXT_X)
+			{
+				int maxentry = minentry + PAGE_HEIGHT - 1;
+				if (y == 3 && minentry > 0)
+				{
+					//Scroll up
+					minentry--;
+					maxentry--;
+					if (cursor > maxentry)
+						cursor = maxentry;
+				}
+				else if (y == 2 + PAGE_HEIGHT && maxentry < modenames.length-1)
+				{
+					//Down arrow
+					minentry++;
+					if (cursor < minentry)
+						cursor = minentry;
+				}
+			}
 		}
-		*/
 		
 		// カーソル移動
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
@@ -180,7 +196,7 @@ public class StateSelectMode extends BasicGameState {
 
 		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-	    if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || MouseInput.mouseInput.isMouseClicked()) {
+	    if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
 			ResourceHolder.soundManager.play("decide");
 			NullpoMinoSlick.propGlobal.setProperty("name.mode", modenames[cursor]);
 			NullpoMinoSlick.saveConfig();
