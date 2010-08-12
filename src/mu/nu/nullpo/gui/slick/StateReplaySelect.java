@@ -219,12 +219,10 @@ public class StateReplaySelect extends BasicGameState {
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
-		GameKey.gamekey[0].update(container.getInput());
 		// Mouse
 		int mouseOldY = MouseInput.mouseInput.getMouseY();
 		
 		MouseInput.mouseInput.update(container.getInput());
-		
 		if (mouseOldY != MouseInput.mouseInput.getMouseY()) {
 			int oldcursor=cursor;
 			if (cursor<MAX_FILE_IN_ONE_PAGE){
@@ -241,7 +239,6 @@ public class StateReplaySelect extends BasicGameState {
 			}
 			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
 		}
-		
 		
 		if((replaylist != null) && (replaylist.length > 0)) {
 			// カーソル移動
