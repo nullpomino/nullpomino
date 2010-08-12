@@ -24,7 +24,7 @@ public abstract class LimitedHistoryRandomizer extends Randomizer {
 	}
 	
 	public int next() {
-		if (firstPiece && pieces != new int[] {Piece.PIECE_O, Piece.PIECE_Z, Piece.PIECE_S}) {
+		if (firstPiece && !isPieceSZOOnly()) {
 			do {
 				id = r.nextInt(pieces.length);
 			} while (pieces[id] == Piece.PIECE_O || pieces[id] == Piece.PIECE_Z || pieces[id] == Piece.PIECE_S);

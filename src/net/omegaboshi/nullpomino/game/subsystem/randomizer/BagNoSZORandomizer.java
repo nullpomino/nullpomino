@@ -25,13 +25,5 @@ public class BagNoSZORandomizer extends BagRandomizer {
 		}
 	}
 	
-	private boolean isPieceSZOOnly()
-	{
-		for (int i=0; i<pieces.length; i++) {
-			if (pieces[i] != Piece.PIECE_O && pieces[i] != Piece.PIECE_Z && pieces[i] != Piece.PIECE_S)
-				return false;
-		}
-		
-		return true;
-	}
+	
 }
