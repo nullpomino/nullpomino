@@ -34,5 +34,4 @@ public class MouseInput extends MouseInputDummy {
 			mousePressed[2] = 0;
 		}
 	}
-
 }

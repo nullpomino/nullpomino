@@ -69,6 +69,8 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	
 	public StateConfigRuleSelect() {
 		pageHeight = PAGE_HEIGHT;
+		nullError = "RULE DIRECTORY NOT FOUND";
+		emptyError = "NO RULE FILE";
 	}
 
 	/*
