@@ -188,6 +188,7 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		if((replaylist != null) && (replaylist.length > 0)) {
+			/*
 			// Mouse
 			int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
 			
@@ -209,6 +210,7 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 				}
 				if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 			}
+			*/
 			
 			// カーソル移動
 			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
