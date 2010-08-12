@@ -173,6 +173,7 @@ public class StateTitle extends BasicGameState {
 		GameKey.gamekey[0].update(container.getInput());
 		
 		// Mouse
+		/*
 		int mouseOldY = MouseInput.mouseInput.getMouseY();
 		
 		MouseInput.mouseInput.update(container.getInput());
@@ -184,6 +185,7 @@ public class StateTitle extends BasicGameState {
 			if (cursor!=oldcursor)
 			ResourceHolder.soundManager.play("cursor");
 		}
+		*/
 		// カーソル移動
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {

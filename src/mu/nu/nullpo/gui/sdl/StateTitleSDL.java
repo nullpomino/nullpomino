@@ -118,6 +118,7 @@ public class StateTitleSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		// Mouse
+		/*
 		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
 		
 		MouseInputSDL.mouseInput.update();
@@ -128,6 +129,7 @@ public class StateTitleSDL extends BaseStateSDL {
 			cursor=(MouseInputSDL.mouseInput.getMouseY()-64)/16;
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 		}
+		*/
 		
 		// カーソル移動
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
