@@ -47,18 +47,12 @@ import sdljava.video.SDLSurface;
 /**
  * リプレイ選択画面のステート
  */
-public class StateReplaySelectSDL extends BaseStateSDL {
+public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateReplaySelectSDL.class);
 
 	/** 1画面に表示する最大ファイルcount */
 	public static final int PAGE_HEIGHT = 20;
-	
-	/** x-coordinate of scroll arrows */
-	public static final int SCROLL_ARROW_X = 38;
-
-	/** リプレイ一覧 */
-	protected String[] replaylist;
 
 	/** Mode  name */
 	protected String[] modenameList;
@@ -68,19 +62,20 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 
 	/** Scoreなどの情報 */
 	protected Statistics[] statsList;
-
-	/** カーソル位置 */
-	protected int cursor = 0;
-
-	/** ID number of file at top of currently displayed section */
-	protected int minentry = 0;
+	
+	public StateReplaySelectSDL () {
+		pageHeight = PAGE_HEIGHT;
+		nullError = "REPLAY DIRECTORY NOT FOUND";
+		emptyError = "NO REPLAY FILE";
+	}
 
 	/*
 	 * このステートに入ったときの処理
 	 */
 	@Override
 	public void enter() throws SDLException {
-		replaylist = getReplayFileList();
+		list = getReplayFileList();
+		maxCursor = list.length-1;
 		setReplayRuleAndModeList();
 	}
 
@@ -106,21 +101,21 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	 * リプレイの詳細を設定
 	 */
 	protected void setReplayRuleAndModeList() {
-		if(replaylist == null) return;
+		if(list == null) return;
 
-		modenameList = new String[replaylist.length];
-		rulenameList = new String[replaylist.length];
-		statsList = new Statistics[replaylist.length];
+		modenameList = new String[list.length];
+		rulenameList = new String[list.length];
+		statsList = new Statistics[list.length];
 
-		for(int i = 0; i < replaylist.length; i++) {
+		for(int i = 0; i < list.length; i++) {
 			CustomProperties prop = new CustomProperties();
 
 			try {
-				FileInputStream in = new FileInputStream(NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + replaylist[i]);
+				FileInputStream in = new FileInputStream(NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + list[i]);
 				prop.load(in);
 				in.close();
 			} catch (IOException e) {
-				log.warn("Failed to load replay file from " + replaylist[i], e);
+				log.warn("Failed to load replay file from " + list[i], e);
 			}
 
 			modenameList[i] = prop.getProperty("name.mode", "");
@@ -135,143 +130,53 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 	 * 画面描画
 	 */
 	@Override
-	public void render(SDLSurface screen) throws SDLException {
-		ResourceHolderSDL.imgMenu.blitSurface(screen);
+	protected void onRenderSuccess(SDLSurface screen) throws SDLException {
+		String title = "SELECT REPLAY FILE";
+		title += " (" + (cursor + 1) + "/" + (list.length) + ")";
 
-		if(replaylist == null) {
-			NormalFontSDL.printFontGrid(1, 1, "REPLAY DIRECTORY NOT FOUND", NormalFontSDL.COLOR_RED);
-		} else if(replaylist.length == 0) {
-			NormalFontSDL.printFontGrid(1, 1, "NO REPLAY FILE", NormalFontSDL.COLOR_RED);
-		} else {
-			if (cursor >= replaylist.length)
-				cursor = 0;
-			
-			if (cursor < minentry)
-				minentry = cursor;
-			int maxentry = minentry + PAGE_HEIGHT - 1;
-			if (cursor >= maxentry)
-			{
-				maxentry = cursor;
-				minentry = maxentry - PAGE_HEIGHT + 1;
-			}
-			if (maxentry >= replaylist.length)
-				maxentry = replaylist.length-1;
-				
-			String title = "SELECT REPLAY FILE";
-			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
+		NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
 
-			NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
-			
-			NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 3, "k", NormalFontSDL.COLOR_BLUE);
-			NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 2 + PAGE_HEIGHT, "n", NormalFontSDL.COLOR_BLUE);
-
-			for(int i = minentry, y = 0; i <= maxentry; i++, y++) {
-				if(i < replaylist.length) {
-					NormalFontSDL.printFontGrid(2, 3 + y, replaylist[i].toUpperCase(), (cursor == i));
-					if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
-				}
-			}
-
-			NormalFontSDL.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFontSDL.COLOR_CYAN);
-			NormalFontSDL.printFontGrid(1, 25,
-										"SCORE:" + statsList[cursor].score + " LINE:" + statsList[cursor].lines
-										, NormalFontSDL.COLOR_CYAN);
-			NormalFontSDL.printFontGrid(1, 26,
-										"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
-										" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
-										, NormalFontSDL.COLOR_CYAN);
-			/*
-			NormalFontSDL.printFontGrid(1, 27,
-										"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
-										, NormalFontSDL.COLOR_CYAN);
-			*/
-		}
+		NormalFontSDL.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFontSDL.COLOR_CYAN);
+		NormalFontSDL.printFontGrid(1, 25,
+									"SCORE:" + statsList[cursor].score + " LINE:" + statsList[cursor].lines
+									, NormalFontSDL.COLOR_CYAN);
+		NormalFontSDL.printFontGrid(1, 26,
+									"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
+									" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
+									, NormalFontSDL.COLOR_CYAN);
+		/*
+		NormalFontSDL.printFontGrid(1, 27,
+									"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
+									, NormalFontSDL.COLOR_CYAN);
+		*/
 	}
-
-	/*
-	 * Update game state
-	 */
+	
 	@Override
-	public void update() throws SDLException {
-		if((replaylist != null) && (replaylist.length > 0)) {
-			// Mouse
-			MouseInputSDL.mouseInput.update();
-			boolean clicked = MouseInputSDL.mouseInput.isMouseClicked();
-			boolean mouseConfirm = false;
-			int x = MouseInputSDL.mouseInput.getMouseX() >> 4;
-			int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
-			if (x == SCROLL_ARROW_X && (clicked || MouseInputSDL.mouseInput.isMenuRepeatLeft()))
-			{
-				int maxentry = minentry + PAGE_HEIGHT - 1;
-				if (y == 3 && minentry > 0)
-				{
-					//Scroll up
-					minentry--;
-					maxentry--;
-					if (cursor > maxentry)
-						cursor = maxentry;
-				}
-				else if (y == 2 + PAGE_HEIGHT && maxentry < replaylist.length-1)
-				{
-					//Down arrow
-					minentry++;
-					if (cursor < minentry)
-						cursor = minentry;
-				}
-			}
-			else if (clicked && x < SCROLL_ARROW_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
-			{
-				int newCursor = y - 3 + minentry;
-				if (newCursor == cursor)
-					mouseConfirm = true;
-				else
-				{
-					ResourceHolderSDL.soundManager.play("cursor");
-					cursor = newCursor;
-				}
-			}
-			
-			// カーソル移動
-			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
-			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
-				cursor--;
-				if(cursor < 0) cursor = replaylist.length - 1;
-				ResourceHolderSDL.soundManager.play("cursor");
-			}
-			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
-			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
-				cursor++;
-				if(cursor > replaylist.length - 1) cursor = 0;
-				ResourceHolderSDL.soundManager.play("cursor");
-			}
+	protected boolean onDecide() throws SDLException {
+		ResourceHolderSDL.soundManager.play("decide");
 
-			// 決定 button
-			// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
-				ResourceHolderSDL.soundManager.play("decide");
+		CustomProperties prop = new CustomProperties();
 
-				CustomProperties prop = new CustomProperties();
-
-				try {
-					FileInputStream in = new FileInputStream(NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + replaylist[cursor]);
-					prop.load(in);
-					in.close();
-				} catch (IOException e) {
-					log.error("Failed to load replay file from " + replaylist[cursor], e);
-					return;
-				}
-
-				StateInGameSDL s = (StateInGameSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_INGAME];
-				s.startReplayGame(prop);
-
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_INGAME);
-			}
+		try {
+			FileInputStream in = new FileInputStream(NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay") + "/" + list[cursor]);
+			prop.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.error("Failed to load replay file from " + list[cursor], e);
+			return true;
 		}
 
-		// Cancel button
-		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
-			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-		}
+		StateInGameSDL s = (StateInGameSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_INGAME];
+		s.startReplayGame(prop);
+
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_INGAME);
+		
+		return false;
+	}
+	
+	@Override
+	protected boolean onCancel() throws SDLException {
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		return false;
 	}
 }

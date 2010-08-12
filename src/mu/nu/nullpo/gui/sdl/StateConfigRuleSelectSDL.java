@@ -41,21 +41,15 @@ import sdljava.video.SDLSurface;
 /**
  * ルール選択画面のステート
  */
-public class StateConfigRuleSelectSDL extends BaseStateSDL {
+public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	/** 1画面に表示する最大ファイルcount */
 	public static final int PAGE_HEIGHT = 20;
-	
-	/** x-coordinate of scroll arrows */
-	public static final int SCROLL_ARROW_X = 38;
 
 	/** プレイヤーID */
 	public int player = 0;
 
 	/** 初期設定Mode  */
 	protected boolean firstSetupMode;
-
-	/** ファイル名 */
-	protected String[] strFileNameList;
 
 	/** ファイルパス一覧 */
 	protected String[] strFilePathList;
@@ -68,12 +62,12 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 
 	/** Current Rule name */
 	protected String strCurrentRuleName;
-
-	/** カーソル位置 */
-	protected int cursor = 0;
-
-	/** ID number of entry at top of currently displayed section */
-	protected int minentry = 0;
+	
+	public StateConfigRuleSelectSDL() {
+		pageHeight = PAGE_HEIGHT;
+		nullError = "RULE DIRECTORY NOT FOUND";
+		emptyError = "NO RULE FILE";
+	}
 
 	/**
 	 * ルールファイル一覧を取得
@@ -97,17 +91,17 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	 * 詳細情報を更新
 	 */
 	protected void updateDetails() {
-		strFilePathList = new String[strFileNameList.length];
-		strRuleNameList = new String[strFileNameList.length];
+		strFilePathList = new String[list.length];
+		strRuleNameList = new String[list.length];
 
-		for(int i = 0; i < strFileNameList.length; i++) {
-			File file = new File("config/rule/" + strFileNameList[i]);
+		for(int i = 0; i < list.length; i++) {
+			File file = new File("config/rule/" + list[i]);
 			strFilePathList[i] = file.getPath();
 
 			CustomProperties prop = new CustomProperties();
 
 			try {
-				FileInputStream in = new FileInputStream("config/rule/" + strFileNameList[i]);
+				FileInputStream in = new FileInputStream("config/rule/" + list[i]);
 				prop.load(in);
 				in.close();
 				strRuleNameList[i] = prop.getProperty("0.ruleopt.strRuleName", "");
@@ -124,13 +118,14 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	public void enter() throws SDLException {
 		firstSetupMode = NullpoMinoSDL.propConfig.getProperty("option.firstSetupMode", true);
 
-		strFileNameList = getRuleFileList();
+		list = getRuleFileList();
+		maxCursor = list.length-1;
 		updateDetails();
 
 		strCurrentFileName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulefile", "");
 		strCurrentRuleName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulename", "");
-		for(int i = 0; i < strFileNameList.length; i++) {
-			if(strCurrentFileName.equals(strFileNameList[i])) {
+		for(int i = 0; i < list.length; i++) {
+			if(strCurrentFileName.equals(list[i])) {
 				cursor = i;
 			}
 		}
@@ -140,144 +135,54 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	 * 描画
 	 */
 	@Override
-	public void render(SDLSurface screen) throws SDLException {
-		ResourceHolderSDL.imgMenu.blitSurface(screen);
+	protected void onRenderSuccess(SDLSurface screen) throws SDLException {
+		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
+		NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
 
-		if(strFileNameList == null) {
-			NormalFontSDL.printFontGrid(1, 1, "RULE DIRECTORY NOT FOUND", NormalFontSDL.COLOR_RED);
-		} else if(strFileNameList.length <= 0) {
-			NormalFontSDL.printFontGrid(1, 1, "NO RULE FILE", NormalFontSDL.COLOR_RED);
-		} else {
-			if (cursor >= strFileNameList.length)
-				cursor = 0;
-			
-			if (cursor < minentry)
-				minentry = cursor;
-			int maxentry = minentry + PAGE_HEIGHT - 1;
-			if (cursor >= maxentry)
-			{
-				maxentry = cursor;
-				minentry = maxentry - PAGE_HEIGHT + 1;
-			}
-			if (maxentry >= strFileNameList.length)
-				maxentry = strFileNameList.length-1;
-			
-			String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (strFileNameList.length) + ")";
-			NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
-			
-			NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 3, "k", NormalFontSDL.COLOR_BLUE);
-			NormalFontSDL.printFontGrid(SCROLL_ARROW_X, 2 + PAGE_HEIGHT, "n", NormalFontSDL.COLOR_BLUE);
+		NormalFontSDL.printFontGrid(1, 26, "FILE:" + list[cursor].toUpperCase(), NormalFontSDL.COLOR_CYAN);
+		NormalFontSDL.printFontGrid(1, 27, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
 
-			for(int i = minentry, y = 0; i <= maxentry; i++, y++) {
-				if(i < strFileNameList.length) {
-					NormalFontSDL.printFontGrid(2, 3 + y, strFileNameList[i].toUpperCase(), (cursor == i));
-					if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
-				}
-			}
-
-			NormalFontSDL.printFontGrid(1, 26, "FILE:" + strFileNameList[cursor].toUpperCase(), NormalFontSDL.COLOR_CYAN);
-			NormalFontSDL.printFontGrid(1, 27, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
-
-			NormalFontSDL.printFontGrid(1, 28, "A:OK", NormalFontSDL.COLOR_GREEN);
-		}
-
-		if(firstSetupMode) {
-			NormalFontSDL.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
-		} else {
-			NormalFontSDL.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
-		}
+		NormalFontSDL.printFontGrid(1, 28, "A:OK", NormalFontSDL.COLOR_GREEN);
 	}
 
-	/*
-	 * 内部状態の更新
-	 */
 	@Override
-	public void update() throws SDLException {
-		if((strFileNameList != null) && (strFileNameList.length > 0)) {
-			// Mouse
-			MouseInputSDL.mouseInput.update();
-			boolean clicked = MouseInputSDL.mouseInput.isMouseClicked();
-			boolean mouseConfirm = false;
-			int x = MouseInputSDL.mouseInput.getMouseX() >> 4;
-			int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
-			if (x == SCROLL_ARROW_X && (clicked || MouseInputSDL.mouseInput.isMenuRepeatLeft()))
-			{
-				int maxentry = minentry + PAGE_HEIGHT - 1;
-				if (y == 3 && minentry > 0)
-				{
-					//Scroll up
-					minentry--;
-					maxentry--;
-					if (cursor > maxentry)
-						cursor = maxentry;
-				}
-				else if (y == 2 + PAGE_HEIGHT && maxentry < strFileNameList.length-1)
-				{
-					//Down arrow
-					minentry++;
-					if (cursor < minentry)
-						cursor = minentry;
-				}
-			}
-			else if (clicked && x < SCROLL_ARROW_X-1 && y >= 3 && y <= 2 + PAGE_HEIGHT)
-			{
-				int newCursor = y - 3 + minentry;
-				if (newCursor == cursor)
-					mouseConfirm = true;
-				else
-				{
-					ResourceHolderSDL.soundManager.play("cursor");
-					cursor = newCursor;
-				}
-			}
-			
-			// カーソル移動
-			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
-			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
-				cursor--;
-				if(cursor < 0) cursor = strFileNameList.length - 1;
-				ResourceHolderSDL.soundManager.play("cursor");
-			}
-			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
-			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
-				cursor++;
-				if(cursor > strFileNameList.length - 1) cursor = 0;
-				ResourceHolderSDL.soundManager.play("cursor");
-			}
-
-			// 決定 button
-			// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
-				ResourceHolderSDL.soundManager.play("decide");
-				NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
-				NullpoMinoSDL.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
-				NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", strFileNameList[cursor]);
-				NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", strRuleNameList[cursor]);
-				NullpoMinoSDL.saveConfig();
-				if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-				else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-				return;
-			}
-		}
-
-		// デフォルトルールに設定
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_D)) {
-			ResourceHolderSDL.soundManager.play("decide");
-			NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rule", "");
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", "");
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", "");
-			NullpoMinoSDL.saveConfig();
-			if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-			else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-			return;
-		}
-
-		// Cancel button
-		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B) && !firstSetupMode) {
-		if((GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) && !firstSetupMode) {
-			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-			return;
-		}
+	public void render(SDLSurface screen) throws SDLException {
+		if(firstSetupMode)
+			NormalFontSDL.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
+		else
+			NormalFontSDL.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
+		super.render(screen);
+	}
+	
+	@Override
+	protected boolean onDecide() throws SDLException {
+		ResourceHolderSDL.soundManager.play("decide");
+		NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
+		NullpoMinoSDL.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
+		NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", list[cursor]);
+		NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", strRuleNameList[cursor]);
+		NullpoMinoSDL.saveConfig();
+		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+		else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		return true;
+	}
+	
+	@Override
+	protected boolean onCancel() throws SDLException {
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+		return true;
+	}
+	
+	@Override
+	protected boolean onPushButtonD() throws SDLException {
+		ResourceHolderSDL.soundManager.play("decide");
+		NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
+		NullpoMinoSDL.propGlobal.setProperty(player + ".rule", "");
+		NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", "");
+		NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", "");
+		NullpoMinoSDL.saveConfig();
+		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+		else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		return true;
 	}
 }

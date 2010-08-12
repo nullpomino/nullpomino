@@ -40,12 +40,22 @@ import sdljava.video.SDLVideo;
 /**
  * タイトル画面のステート
  */
-public class StateTitleSDL extends BaseStateSDL {
-	/** カーソル位置 */
-	protected int cursor = 0;
+public class StateTitleSDL extends DummyMenuChooseStateSDL {
+	/** Strings for menu choices */
+	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "CONFIG", "EXIT"};
+	
+	/** UI Text identifier Strings */
+	private static final String[] UI_TEXT = {
+        "Title_Start", "Title_Replay", "Title_NetPlay", "Title_Config", "Title_Exit"
+	};
 
 	/** 新Versionの check 済みならtrue */
 	protected boolean isNewVersionChecked = false;
+	
+	public StateTitleSDL () {
+		maxCursor = 4;
+		minChoiceY = 4;
+	}
 
 	/*
 	 * このステートに入ったときの処理
@@ -93,82 +103,38 @@ public class StateTitleSDL extends BaseStateSDL {
 
 		NormalFontSDL.printFontGrid(1, 4 + cursor, "b", NormalFontSDL.COLOR_RED);
 
-		NormalFontSDL.printFontGrid(2, 4, "START", (cursor == 0));
-		NormalFontSDL.printFontGrid(2, 5, "REPLAY", (cursor == 1));
-		NormalFontSDL.printFontGrid(2, 6, "NETPLAY", (cursor == 2));
-		NormalFontSDL.printFontGrid(2, 7, "CONFIG", (cursor == 3));
-		NormalFontSDL.printFontGrid(2, 8, "EXIT", (cursor == 4));
+		renderChoices(2, 4, CHOICES);
 
-		if(cursor == 0) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("Title_Start"));
-		if(cursor == 1) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("Title_Replay"));
-		if(cursor == 2) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("Title_NetPlay"));
-		if(cursor == 3) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("Title_Config"));
-		if(cursor == 4) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("Title_Exit"));
-
+		NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
+		
 		if(UpdateChecker.isNewVersionAvailable(GameManager.getVersionMajor(), GameManager.getVersionMinor())) {
 			String strTemp = String.format(NullpoMinoSDL.getUIText("Title_NewVersion"),
 					UpdateChecker.getLatestVersionFullString(), UpdateChecker.getStrReleaseDate());
 			NormalFontSDL.printTTFFont(16, 416, strTemp);
 		}
 	}
-
-	/*
-	 * Update game state
-	 */
+	
 	@Override
-	public void update() throws SDLException {
-		// Mouse
-		boolean mouseConfirm = false;
-		MouseInputSDL.mouseInput.update();
-		if (MouseInputSDL.mouseInput.isMouseClicked())
-		{
-			int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
-			int newCursor = y - 4;
-			if (newCursor == cursor)
-				mouseConfirm = true;
-			else if (newCursor >= 0 && newCursor <= 4)
-			{
-				ResourceHolderSDL.soundManager.play("cursor");
-				cursor = newCursor;
-			}
-		}
-		
-		// カーソル移動
-		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
-			cursor--;
-			if(cursor < 0) cursor = 4;
-			ResourceHolderSDL.soundManager.play("cursor");
-		}
-		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
-			cursor++;
-			if(cursor > 4) cursor = 0;
-			ResourceHolderSDL.soundManager.play("cursor");
-		}
+	protected boolean onDecide () throws SDLException {
+		ResourceHolderSDL.soundManager.play("decide");
 
-		// 決定 button
-		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
-			ResourceHolderSDL.soundManager.play("decide");
-
-			switch(cursor) {
-			case 0:
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_SELECTMODE);
-				break;
-			case 1:
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_REPLAYSELECT);
-				break;
-			case 2:
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_NETGAME);
-				break;
-			case 3:
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-				break;
-			case 4:
-				NullpoMinoSDL.enterState(-1);
-				break;
-			}
+		switch(cursor) {
+		case 0:
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_SELECTMODE);
+			break;
+		case 1:
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_REPLAYSELECT);
+			break;
+		case 2:
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_NETGAME);
+			break;
+		case 3:
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+			break;
+		case 4:
+			NullpoMinoSDL.enterState(-1);
+			break;
 		}
+		return false;
 	}
 }

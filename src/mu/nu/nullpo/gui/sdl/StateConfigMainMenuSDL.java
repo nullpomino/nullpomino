@@ -34,12 +34,14 @@ import sdljava.video.SDLSurface;
 /**
  * 設定画面のステート
  */
-public class StateConfigMainMenuSDL extends BaseStateSDL {
-	/** カーソル位置 */
-	protected int cursor = 0;
-
+public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 	/** プレイヤー number */
 	protected int player = 0;
+	
+	public StateConfigMainMenuSDL () {
+		maxCursor = 5;
+		minChoiceY = 3;
+	}
 
 	/*
 	 * 画面描画
@@ -66,97 +68,55 @@ public class StateConfigMainMenuSDL extends BaseStateSDL {
 		if(cursor == 4) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Keyboard"));
 		if(cursor == 5) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Joystick"));
 	}
-
-	/*
-	 * Update game state
-	 */
+	
 	@Override
-	public void update() throws SDLException {
-		// Mouse
-		boolean mouseConfirm = false;
-		MouseInputSDL.mouseInput.update();
-		if (MouseInputSDL.mouseInput.isMouseClicked())
-		{
-			int y = MouseInputSDL.mouseInput.getMouseY() >> 4;
-			int newCursor = y - 3;
-			if (newCursor == cursor)
-				mouseConfirm = true;
-			else if (newCursor >= 0 && newCursor <= 5)
-			{
-				ResourceHolderSDL.soundManager.play("cursor");
-				cursor = newCursor;
-			}
-		}
-		
-		// カーソル移動
-		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
-			cursor--;
-			if(cursor < 0) cursor = 5;
-			ResourceHolderSDL.soundManager.play("cursor");
-		}
-		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
-			cursor++;
-			if(cursor > 5) cursor = 0;
-			ResourceHolderSDL.soundManager.play("cursor");
-		}
+	protected void onChange(int change) {
+		player += change;
+		if(player < 0) player = 1;
+		if(player > 1) player = 0;
+		ResourceHolderSDL.soundManager.play("change");
+	}
+	
+	@Override
+	protected boolean onDecide() throws SDLException {
+		ResourceHolderSDL.soundManager.play("decide");
 
-		// プレイヤー number変更
-		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) {
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_LEFT)) {
-			player--;
-			if(player < 0) player = 1;
-			ResourceHolderSDL.soundManager.play("change");
+		switch(cursor) {
+		case 0:
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_GENERAL);
+			break;
+		case 1:
+			StateConfigRuleSelectSDL stateR = (StateConfigRuleSelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_RULESELECT];
+			stateR.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESELECT);
+			break;
+		case 2:
+			StateConfigGameTuningSDL stateT = (StateConfigGameTuningSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_GAMETUNING];
+			stateT.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_GAMETUNING);
+			break;
+		case 3:
+			StateConfigAISelectSDL stateA = (StateConfigAISelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_AISELECT];
+			stateA.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_AISELECT);
+			break;
+		case 4:
+			StateConfigKeyboardSDL stateK = (StateConfigKeyboardSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_KEYBOARD];
+			stateK.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD);
+			break;
+		case 5:
+			StateConfigJoystickMainSDL stateJ = (StateConfigJoystickMainSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN];
+			stateJ.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN);
+			break;
 		}
-		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_RIGHT)) {
-		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_RIGHT)) {
-			player++;
-			if(player > 1) player = 0;
-			ResourceHolderSDL.soundManager.play("change");
-		}
-
-		// 決定 button
-		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
-			ResourceHolderSDL.soundManager.play("decide");
-
-			switch(cursor) {
-			case 0:
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_GENERAL);
-				break;
-			case 1:
-				StateConfigRuleSelectSDL stateR = (StateConfigRuleSelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_RULESELECT];
-				stateR.player = player;
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESELECT);
-				break;
-			case 2:
-				StateConfigGameTuningSDL stateT = (StateConfigGameTuningSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_GAMETUNING];
-				stateT.player = player;
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_GAMETUNING);
-				break;
-			case 3:
-				StateConfigAISelectSDL stateA = (StateConfigAISelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_AISELECT];
-				stateA.player = player;
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_AISELECT);
-				break;
-			case 4:
-				StateConfigKeyboardSDL stateK = (StateConfigKeyboardSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_KEYBOARD];
-				stateK.player = player;
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD);
-				break;
-			case 5:
-				StateConfigJoystickMainSDL stateJ = (StateConfigJoystickMainSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN];
-				stateJ.player = player;
-				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN);
-				break;
-			}
-		}
-
-		// Cancel button
-		// if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B)) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_CANCEL) || MouseInputSDL.mouseInput.isMouseRightClicked()) {
-			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-		}
+		return false;
+	}
+	
+	@Override
+	protected boolean onCancel() throws SDLException {
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+		return false;
 	}
 }
