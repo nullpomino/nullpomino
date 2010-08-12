@@ -1,7 +1,9 @@
 package mu.nu.nullpo.gui.sdl;
 
 import sdljava.SDLException;
+import sdljava.video.SDLRect;
 import sdljava.video.SDLSurface;
+import sdljavax.gfx.SDLGfx;
 
 /**
  * Dummy class for menus with a scroll bar
@@ -15,6 +17,11 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		LINE_WIDTH = 2,
 		SB_WIDTH = 14;
 	
+	/** Scroll bar colors */
+	protected static final int SB_SHADOW_COLOR = 0x0C4E9C,
+		SB_BORDER_COLOR = 0x3496FC,
+		SB_FILL_COLOR = 0xFFFFFF,
+		SB_BACK_COLOR = 0;
 
 	/** ID number of file at top of currently displayed section */
 	protected int minentry;
@@ -58,7 +65,7 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 				maxentry = cursor;
 				minentry = maxentry - pageHeight + 1;
 			}
-			drawMenuList();
+			drawMenuList(screen);
 			onRenderSuccess(screen);
 		}
 
@@ -108,7 +115,7 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		return false;
 	}
 	
-	public void drawMenuList () throws SDLException
+	public void drawMenuList (SDLSurface screen) throws SDLException
 	{
 		int maxentry = minentry + pageHeight - 1;
 		if (maxentry >= list.length)
@@ -124,6 +131,27 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		//Draw scroll bar
 		NormalFontSDL.printFontGrid(SB_TEXT_X, 3, "k", SB_TEXT_COLOR);
 		NormalFontSDL.printFontGrid(SB_TEXT_X, 2 + pageHeight, "n", SB_TEXT_COLOR);
-	}
 
+		int sbHeight = 16*(pageHeight - 2) - (LINE_WIDTH << 1);
+		//Draw scroll bar
+		NormalFontSDL.printFontGrid(SB_TEXT_X, 3, "k", SB_TEXT_COLOR);
+		NormalFontSDL.printFontGrid(SB_TEXT_X, 2 + pageHeight, "n", SB_TEXT_COLOR);
+		//Draw shadow
+		screen.fillRect(new SDLRect(SB_MIN_X+SB_WIDTH, SB_MIN_Y+LINE_WIDTH, LINE_WIDTH, sbHeight), SB_SHADOW_COLOR);
+		screen.fillRect(new SDLRect(SB_MIN_X+LINE_WIDTH, SB_MIN_Y+sbHeight, SB_WIDTH, LINE_WIDTH), SB_SHADOW_COLOR);
+		//Draw border
+		screen.fillRect(new SDLRect(SB_MIN_X, SB_MIN_Y, SB_WIDTH, sbHeight), SB_BORDER_COLOR);
+		//Draw inside
+		int insideHeight = sbHeight-(LINE_WIDTH << 1);
+		int insideWidth = SB_WIDTH-(LINE_WIDTH << 1);
+		int fillMinY = ((insideHeight*minentry)/list.length);
+		int fillHeight = (((maxentry-minentry+1)*insideHeight+list.length-1)/list.length);
+		if (fillHeight < LINE_WIDTH)
+		{
+			fillHeight = LINE_WIDTH;
+			fillMinY = (((insideHeight-fillHeight+1)*minentry)/(list.length-pageHeight+1));
+		}
+		screen.fillRect(new SDLRect(SB_MIN_X+LINE_WIDTH, SB_MIN_Y+LINE_WIDTH, insideWidth, insideHeight), SB_BACK_COLOR);
+		screen.fillRect(new SDLRect(SB_MIN_X+LINE_WIDTH, SB_MIN_Y+LINE_WIDTH+fillMinY, insideWidth, fillHeight), SB_FILL_COLOR);
+	}
 }
