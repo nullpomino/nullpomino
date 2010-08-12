@@ -29,6 +29,7 @@
 package mu.nu.nullpo.gui.sdl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -537,6 +538,15 @@ public class NullpoMinoSDL {
 				currentTime.get(Calendar.MINUTE), currentTime.get(Calendar.SECOND)
 		);
 		log.info("Saving screenshot to " + filename);
+		
+		File ssfolder = new File(dir);
+		if (!ssfolder.exists()) {
+			if (ssfolder.mkdir()) {
+				log.info("Created replay folder: " + dir);
+			} else {
+				log.info("Couldn't create replay folder at "+ dir);
+			}
+		}
 
 		// ファイルに保存
 		SDLVideo.getVideoSurface().saveBMP(filename);
