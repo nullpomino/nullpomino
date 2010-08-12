@@ -34,8 +34,8 @@ import java.io.FilenameFilter;
 
 import mu.nu.nullpo.util.CustomProperties;
 import sdljava.SDLException;
-import sdljava.event.MouseState;
-import sdljava.event.SDLEvent;
+//import sdljava.event.MouseState;
+//import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 
 /**
@@ -68,6 +68,9 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 
 	/** カーソル位置 */
 	protected int cursor = 0;
+
+	/** ID number of entry at top of currently displayed section */
+	protected int minfile = 0;
 
 	/**
 	 * ルールファイル一覧を取得
@@ -142,19 +145,27 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 		} else if(strFileNameList.length <= 0) {
 			NormalFontSDL.printFontGrid(1, 1, "NO RULE FILE", NormalFontSDL.COLOR_RED);
 		} else {
+			if (cursor >= strFileNameList.length)
+				cursor = 0;
+			
+			if (cursor < minfile)
+				minfile = cursor;
+			int maxfile = minfile + MAX_FILE_IN_ONE_PAGE - 1;
+			if (cursor >= maxfile)
+			{
+				maxfile = cursor;
+				minfile = maxfile - MAX_FILE_IN_ONE_PAGE + 1;
+			}
+			if (maxfile >= strFileNameList.length)
+				maxfile = strFileNameList.length-1;
+			
 			String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (strFileNameList.length) + ")";
 			NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
 
-			int maxfile = strFileNameList.length;
-			if(maxfile > MAX_FILE_IN_ONE_PAGE) maxfile = MAX_FILE_IN_ONE_PAGE;
-			int y = 0;
-			int num = (cursor / MAX_FILE_IN_ONE_PAGE) * MAX_FILE_IN_ONE_PAGE;
-
-			for(int i = 0; i < maxfile; i++) {
-				if(num + i < strFileNameList.length) {
-					NormalFontSDL.printFontGrid(2, 3 + y, strRuleNameList[num + i].toUpperCase(), (cursor == num + i));
-					if(cursor == num + i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
-					y++;
+			for(int i = minfile, y = 0; i <= maxfile; i++, y++) {
+				if(i < strFileNameList.length) {
+					NormalFontSDL.printFontGrid(2, 3 + y, strFileNameList[i].toUpperCase(), (cursor == i));
+					if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
 				}
 			}
 
@@ -177,6 +188,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		if((strFileNameList != null) && (strFileNameList.length > 0)) {
+			/*
 			// Mouse
 			int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
 			
@@ -198,6 +210,7 @@ public class StateConfigRuleSelectSDL extends BaseStateSDL {
 				}
 				if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 			}
+			*/
 			
 			// カーソル移動
 			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {

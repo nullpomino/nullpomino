@@ -29,8 +29,8 @@
 package mu.nu.nullpo.gui.sdl;
 
 import sdljava.SDLException;
-import sdljava.event.MouseState;
-import sdljava.event.SDLEvent;
+//import sdljava.event.MouseState;
+//import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 
 /**
@@ -45,6 +45,9 @@ public class StateSelectModeSDL extends BaseStateSDL {
 
 	/** カーソル位置 */
 	protected int cursor = 0;
+
+	/** ID number of entry at top of currently displayed section */
+	protected int minmode = 0;
 
 	/**
 	 * Constructor
@@ -81,20 +84,27 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	public void render(SDLSurface screen) throws SDLException {
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
-		NormalFontSDL.printFontGrid(1, 1,
-									"MODE SELECT (" + (cursor + 1) + "/" + modenames.length + ")",
+		if (cursor >= modenames.length)
+			cursor = 0;
+		
+		if (cursor < minmode)
+			minmode = cursor;
+		int maxfile = minmode + MAX_MODE_IN_ONE_PAGE - 1;
+		if (cursor >= maxfile)
+		{
+			maxfile = cursor;
+			minmode = maxfile - MAX_MODE_IN_ONE_PAGE + 1;
+		}
+		if (maxfile >= modenames.length)
+			maxfile = modenames.length-1;
+
+		NormalFontSDL.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + modenames.length + ")",
 									NormalFontSDL.COLOR_ORANGE);
 
-		int maxmode = modenames.length;
-		if(maxmode > MAX_MODE_IN_ONE_PAGE) maxmode = MAX_MODE_IN_ONE_PAGE;
-		int y = 0;
-		int num = (cursor / MAX_MODE_IN_ONE_PAGE) * MAX_MODE_IN_ONE_PAGE;
-
-		for(int i = 0; i < maxmode; i++) {
-			if(num + i < modenames.length) {
-				NormalFontSDL.printFontGrid(2, 3 + y, modenames[num + i], (cursor == num + i));
-				if(cursor == num + i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
-				y++;
+		for(int i = minmode, y = 0; i <= maxfile; i++, y++) {
+			if(i < modenames.length) {
+				NormalFontSDL.printFontGrid(2, 3 + y, modenames[i].toUpperCase(), (cursor == i));
+				if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
 			}
 		}
 	}
@@ -104,6 +114,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
+		/*
 		// Mouse
 		int mouseOldY = MouseInputSDL.mouseInput.getMouseY();
 		
@@ -125,6 +136,7 @@ public class StateSelectModeSDL extends BaseStateSDL {
 			}
 			if (cursor!=oldcursor) ResourceHolderSDL.soundManager.play("cursor");
 		}
+		*/
 		
 		// カーソル移動
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {

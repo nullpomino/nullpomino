@@ -53,6 +53,9 @@ public class StateSelectMode extends BasicGameState {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
+	/** ID number of entry at top of currently displayed section */
+	protected int minmode = 0;
+
 	/*
 	 * このステートのIDを取得
 	 */
@@ -97,20 +100,27 @@ public class StateSelectMode extends BasicGameState {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1,
-									"MODE SELECT (" + (cursor + 1) + "/" + modenames.length + ")",
-									NormalFont.COLOR_ORANGE);
-
-		int maxmode = modenames.length;
-		if(maxmode > MAX_MODE_IN_ONE_PAGE) maxmode = MAX_MODE_IN_ONE_PAGE;
-		int y = 0;
-		int num = (cursor / MAX_MODE_IN_ONE_PAGE) * MAX_MODE_IN_ONE_PAGE;
-
-		for(int i = 0; i < maxmode; i++) {
-			if(num + i < modenames.length) {
-				NormalFont.printFontGrid(2, 3 + y, modenames[num + i], (cursor == num + i));
-				if(cursor == num + i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
-				y++;
+		if (cursor >= modenames.length)
+			cursor = 0;
+		
+		if (cursor < minmode)
+			minmode = cursor;
+		int maxfile = minmode + MAX_MODE_IN_ONE_PAGE - 1;
+		if (cursor >= maxfile)
+		{
+			maxfile = cursor;
+			minmode = maxfile - MAX_MODE_IN_ONE_PAGE + 1;
+		}
+		if (maxfile >= modenames.length)
+			maxfile = modenames.length-1;
+		
+		NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + modenames.length + ")",
+				NormalFont.COLOR_ORANGE);
+		
+		for(int i = minmode, y = 0; i <= maxfile; i++, y++) {
+			if(i < modenames.length) {
+				NormalFont.printFontGrid(2, 3 + y, modenames[i].toUpperCase(), (cursor == i));
+				if(cursor == i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
 			}
 		}
 
@@ -138,6 +148,7 @@ public class StateSelectMode extends BasicGameState {
 
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
+		/*
 		// Mouse
 		int mouseOldY = MouseInput.mouseInput.getMouseY();
 		
@@ -159,6 +170,7 @@ public class StateSelectMode extends BasicGameState {
 			}
 			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
 		}
+		*/
 		
 		// カーソル移動
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {

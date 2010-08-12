@@ -34,15 +34,14 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import mu.nu.nullpo.game.component.Statistics;
-import mu.nu.nullpo.gui.slick.NormalFont;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 import org.apache.log4j.Logger;
 
 import sdljava.SDLException;
-import sdljava.event.MouseState;
-import sdljava.event.SDLEvent;
+//import sdljava.event.MouseState;
+//import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 
 /**

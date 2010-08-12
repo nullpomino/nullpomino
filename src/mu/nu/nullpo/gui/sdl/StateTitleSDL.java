@@ -32,8 +32,8 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.gui.net.UpdateChecker;
 
 import sdljava.SDLException;
-import sdljava.event.MouseState;
-import sdljava.event.SDLEvent;
+//import sdljava.event.MouseState;
+//import sdljava.event.SDLEvent;
 import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 

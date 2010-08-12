@@ -75,7 +75,7 @@ public class StateReplaySelect extends BasicGameState {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** カーソル位置 */
+	/** ID number of file at top of currently displayed section */
 	protected int minfile = 0;
 
 	/*
@@ -163,7 +163,6 @@ public class StateReplaySelect extends BasicGameState {
 		} else {
 			if (cursor >= replaylist.length)
 				cursor = 0;
-			
 			
 			if (cursor < minfile)
 				minfile = cursor;
