@@ -75,6 +75,9 @@ public class StateReplaySelect extends BasicGameState {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
+	/** カーソル位置 */
+	protected int minfile = 0;
+
 	/*
 	 * このステートのIDを取得
 	 */
@@ -161,21 +164,27 @@ public class StateReplaySelect extends BasicGameState {
 			if (cursor >= replaylist.length)
 				cursor = 0;
 			
+			
+			if (cursor < minfile)
+				minfile = cursor;
+			int maxfile = minfile + MAX_FILE_IN_ONE_PAGE - 1;
+			if (cursor >= maxfile)
+			{
+				maxfile = cursor;
+				minfile = maxfile - MAX_FILE_IN_ONE_PAGE + 1;
+			}
+			if (maxfile >= replaylist.length)
+				maxfile = replaylist.length-1;
+				
 			String title = "SELECT REPLAY FILE";
 			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
 
 			NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
 
-			int maxfile = replaylist.length;
-			if(maxfile > MAX_FILE_IN_ONE_PAGE) maxfile = MAX_FILE_IN_ONE_PAGE;
-			int y = 0;
-			int num = (cursor / MAX_FILE_IN_ONE_PAGE) * MAX_FILE_IN_ONE_PAGE;
-
-			for(int i = 0; i < maxfile; i++) {
-				if(num + i < replaylist.length) {
-					NormalFont.printFontGrid(2, 3 + y, replaylist[num + i].toUpperCase(), (cursor == num + i));
-					if(cursor == num + i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
-					y++;
+			for(int i = minfile, y = 0; i <= maxfile; i++, y++) {
+				if(i < replaylist.length) {
+					NormalFont.printFontGrid(2, 3 + y, replaylist[i].toUpperCase(), (cursor == i));
+					if(cursor == i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
 				}
 			}
 
@@ -219,6 +228,7 @@ public class StateReplaySelect extends BasicGameState {
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
+		/*
 		// Mouse
 		int mouseOldY = MouseInput.mouseInput.getMouseY();
 		
@@ -239,6 +249,7 @@ public class StateReplaySelect extends BasicGameState {
 			}
 			if (cursor!=oldcursor) ResourceHolder.soundManager.play("cursor");
 		}
+		*/
 		
 		if((replaylist != null) && (replaylist.length > 0)) {
 			// カーソル移動

@@ -34,6 +34,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import mu.nu.nullpo.game.component.Statistics;
+import mu.nu.nullpo.gui.slick.NormalFont;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -68,6 +69,9 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 
 	/** カーソル位置 */
 	protected int cursor = 0;
+
+	/** ID number of file at top of currently displayed section */
+	protected int minfile = 0;
 
 	/*
 	 * このステートに入ったときの処理
@@ -140,21 +144,26 @@ public class StateReplaySelectSDL extends BaseStateSDL {
 			if (cursor >= replaylist.length)
 				cursor = 0;
 			
+			if (cursor < minfile)
+				minfile = cursor;
+			int maxfile = minfile + MAX_FILE_IN_ONE_PAGE - 1;
+			if (cursor >= maxfile)
+			{
+				maxfile = cursor;
+				minfile = maxfile - MAX_FILE_IN_ONE_PAGE + 1;
+			}
+			if (maxfile >= replaylist.length)
+				maxfile = replaylist.length-1;
+				
 			String title = "SELECT REPLAY FILE";
 			title += " (" + (cursor + 1) + "/" + (replaylist.length) + ")";
 
 			NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
 
-			int maxfile = replaylist.length;
-			if(maxfile > MAX_FILE_IN_ONE_PAGE) maxfile = MAX_FILE_IN_ONE_PAGE;
-			int y = 0;
-			int num = (cursor / MAX_FILE_IN_ONE_PAGE) * MAX_FILE_IN_ONE_PAGE;
-
-			for(int i = 0; i < maxfile; i++) {
-				if(num + i < replaylist.length) {
-					NormalFontSDL.printFontGrid(2, 3 + y, replaylist[num + i].toUpperCase(), (cursor == num + i));
-					if(cursor == num + i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
-					y++;
+			for(int i = minfile, y = 0; i <= maxfile; i++, y++) {
+				if(i < replaylist.length) {
+					NormalFontSDL.printFontGrid(2, 3 + y, replaylist[i].toUpperCase(), (cursor == i));
+					if(cursor == i) NormalFontSDL.printFontGrid(1, 3 + y, "b", NormalFontSDL.COLOR_RED);
 				}
 			}
 
