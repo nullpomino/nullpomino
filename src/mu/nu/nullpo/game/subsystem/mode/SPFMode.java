@@ -896,8 +896,8 @@ public class SPFMode extends DummyMode {
 			}
 		}
 		else if (engine.statc[0] == 1 && diamondPower[playerID] > 0)
-				for (int x = 24; x < engine.nextPieceArraySize; x += 25)
-					engine.nextPieceArrayObject[x].block[1].color = DIAMOND_COLOR;
+			for (int x = 24; x < engine.nextPieceArraySize; x += 25)
+				engine.nextPieceArrayObject[x].block[1].color = DIAMOND_COLOR;
 		return false;
 	}
 
