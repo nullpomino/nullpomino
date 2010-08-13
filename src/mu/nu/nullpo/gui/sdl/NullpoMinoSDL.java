@@ -538,13 +538,13 @@ public class NullpoMinoSDL {
 				currentTime.get(Calendar.MINUTE), currentTime.get(Calendar.SECOND)
 		);
 		log.info("Saving screenshot to " + filename);
-		
+
 		File ssfolder = new File(dir);
 		if (!ssfolder.exists()) {
 			if (ssfolder.mkdir()) {
-				log.info("Created replay folder: " + dir);
+				log.info("Created screenshot folder: " + dir);
 			} else {
-				log.info("Couldn't create replay folder at "+ dir);
+				log.info("Couldn't create screenshot folder at "+ dir);
 			}
 		}
 

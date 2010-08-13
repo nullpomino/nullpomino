@@ -349,12 +349,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 			File ssfolder = new File(dir);
 			if (!ssfolder.exists()) {
 				if (ssfolder.mkdir()) {
-					log.info("Created replay folder: " + dir);
+					log.info("Created screenshot folder: " + dir);
 				} else {
-					log.info("Couldn't create replay folder at "+ dir);
+					log.info("Couldn't create screenshot folder at "+ dir);
 				}
 			}
-			
+
 			int screenWidth = container.getWidth();
 			int screenHeight = container.getHeight();
 

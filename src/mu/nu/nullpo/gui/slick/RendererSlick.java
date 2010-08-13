@@ -56,7 +56,7 @@ public class RendererSlick extends EventReceiver {
 	static Logger log = Logger.getLogger(RendererSlick.class);
 
 	/** フィールドの表示位置(1人・2人のとき) */
-	public static final int[] FIELD_OFFSET_X = {32, 440, 440, 440, 440, 440},
+	public static final int[] FIELD_OFFSET_X = {32, 432, 432, 432, 432, 432},
 							  FIELD_OFFSET_Y = {32, 32, 32, 32, 32, 32};
 
 	/** フィールドの表示位置(3人以上のとき) */
@@ -1053,9 +1053,9 @@ public class RendererSlick extends EventReceiver {
 
 					if(piece != null) {
 						if(showmeter)
-							drawPiece(x + 177, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+							drawPiece(x + 176, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
 						else
-							drawPiece(x + 169, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
+							drawPiece(x + 168, y + (i * 40) + 88 - ((piece.getMaximumBlockY() + 1) * 8), piece, 0.5f);
 					}
 				}
 			}

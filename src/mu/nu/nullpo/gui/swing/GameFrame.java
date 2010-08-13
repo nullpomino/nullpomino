@@ -620,10 +620,10 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 
 	/**
-	 * スクリーンショットを保存
+	 * Save a screen shot
 	 */
 	protected void saveScreenShot() {
-		// ファイル名を決める
+		// Create filename
 		String dir = NullpoMinoSwing.propGlobal.getProperty("custom.screenshot.directory", "ss");
 		GregorianCalendar currentTime = new GregorianCalendar();
 		int month = currentTime.get(Calendar.MONTH) + 1;
@@ -634,7 +634,17 @@ public class GameFrame extends JFrame implements Runnable {
 		);
 		log.info("Saving screenshot to " + filename);
 
-		// ファイルに保存
+		// Create ss folder if not exist
+		File ssfolder = new File(dir);
+		if (!ssfolder.exists()) {
+			if (ssfolder.mkdir()) {
+				log.info("Created screenshot folder: " + dir);
+			} else {
+				log.info("Couldn't create screenshot folder at "+ dir);
+			}
+		}
+
+		// Write
 		try {
 			javax.imageio.ImageIO.write((RenderedImage)ssImage, "PNG", new File(filename));
 		} catch (Exception e) {
