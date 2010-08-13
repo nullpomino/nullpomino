@@ -267,50 +267,77 @@ private int getRankPiece(int [] surface, int [] surfaceDecodedWork ,int piece){
 	return bestRank;
 }
 
+public boolean surfaceFitsPiece(int [] surface,int piece, int rotation, int x){
+	boolean fits=true;
+
+    for (int x1=0;x1<(PIECES_WIDTHS[piece][rotation]-1);x1++){
+	     
+	   if (surface[x+x1]!=PIECES_LOWESTS[piece][rotation][x1]-PIECES_LOWESTS[piece][rotation][x1+1]){
+		   fits=false;
+         break;
+     }
+    }
+	return fits;
+}
+
+public boolean surfaceAddPossible(int []surfaceDecodedWork, int piece, int rotation, int x){
+	  boolean addPossible=true;
+	  if ( x>0){
+		   surfaceDecodedWork[x-1]+=PIECES_HEIGHTS[piece][rotation][0];
+		  if (surfaceDecodedWork[x-1]>maxJump){
+			  
+			  surfaceDecodedWork[x-1]=maxJump;
+			  addPossible=false;
+		  }
+		  else if (surfaceDecodedWork[x-1]<-maxJump){
+			  surfaceDecodedWork[x-1]=-maxJump;
+			  addPossible=false;
+			  
+		  }
+		  
+		  
+		  
+	  }
+	  if (addPossible){
+		  for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
+			  surfaceDecodedWork[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1];
+			  if (surfaceDecodedWork[x+x1]>maxJump){
+				  surfaceDecodedWork[x+x1]=maxJump;
+				  addPossible=false;
+				  
+			  }
+			  else if(surfaceDecodedWork[x+x1]<-maxJump) {
+				  surfaceDecodedWork[x+x1]=-maxJump;
+				  addPossible=false;
+				  
+			  }
+		  }
+	  }
+	  if (addPossible && x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
+		  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]-=PIECES_HEIGHTS[piece][rotation][PIECES_WIDTHS[piece][rotation]-1];
+		  if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]>maxJump){
+			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=maxJump;
+			  addPossible=false;
+			  
+		  }
+		  else if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]<-maxJump){
+			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=-maxJump;
+			  addPossible=false;
+			  
+		  }
+	  }
+	  return addPossible;
+}
 
 private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int piece, int rotation){
 	
 	int bestRank=0;	
 	
 	for (int x=0;x<(stackWidth-(PIECES_WIDTHS[piece][rotation]-1));x++){
-		boolean fits=true;
-
-	      for (int x1=0;x1<(PIECES_WIDTHS[piece][rotation]-1);x1++){
-		     
-		   if (surfaceDecodedWork[x+x1]!=PIECES_LOWESTS[piece][rotation][x1]-PIECES_LOWESTS[piece][rotation][x1+1]){
-			   fits=false;
-	           break;
-	       }
-	      }
+		boolean fits=surfaceFitsPiece(surfaceDecodedWork,piece,rotation,x);
 	     
 	      if (fits){
-	    	  boolean addPossible=true;
-	    	  if ( x>0){
-	    		   surfaceDecodedWork[x-1]+=PIECES_HEIGHTS[piece][rotation][0];
-	    		  if (Math.abs(surfaceDecodedWork[x-1])>maxJump){
-	    			  
-	    			  addPossible=false;
-	    		  }
-	    		  
-	    		  
-	    		  
-	    	  }
-	    	  if (addPossible){
-	    		  for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
-	    			  surfaceDecodedWork[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1];
-	    			  if (Math.abs(surfaceDecodedWork[x+x1])>maxJump){
-	    				  addPossible=false;
-	    				  break;
-	    			  }
-	    		  }
-	    	  }
-	    	  if (addPossible && x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
-	    		  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]-=PIECES_HEIGHTS[piece][rotation][PIECES_WIDTHS[piece][rotation]-1];
-	    		  if (Math.abs(surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)])>maxJump){
-    				  addPossible=false;
-    				  
-    			  }
-	    	  }
+	    	  boolean addPossible=surfaceAddPossible(surfaceDecodedWork,piece,rotation,x);
 	    	  if (addPossible){
 	    		  int newSurface=0;
 	    		  int factor=1;
