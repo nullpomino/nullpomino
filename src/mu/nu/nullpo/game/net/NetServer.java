@@ -160,7 +160,7 @@ public class NetServer {
 		try {
 			log.info("Server version:" + GameManager.getVersionMajor());
 			log.info("Starting server on port " + port);
-			
+
 			writeServerStatusFile();
 
 			selector = Selector.open();
@@ -609,7 +609,7 @@ public class NetServer {
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
-			// Version check 
+			// Version check
 			float serverVer = GameManager.getVersionMajor();
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
@@ -634,7 +634,7 @@ public class NetServer {
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
-			// Version check 
+			// Version check
 			float serverVer = GameManager.getVersionMajor();
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
@@ -771,11 +771,21 @@ public class NetServer {
 			}
 			return;
 		}
-		// チャットメッセージ
+		// Lobby chat
+		if(message[0].equals("lobbychat")) {
+			//lobbychat\t[MESSAGE]
+
+			if(pInfo != null) {
+				broadcast("lobbychat\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + message[1] + "\n");
+				log.info("LobbyChat Name:" + pInfo.strName + " Msg:" + NetUtil.urlDecode(message[1]));
+			}
+			return;
+		}
+		// Room chat
 		if(message[0].equals("chat")) {
 			//chat\t[MESSAGE]
 
-			if(pInfo != null) {
+			if((pInfo != null) && (pInfo.roomID != -1)) {
 				broadcast("chat\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + message[1] + "\n", pInfo.roomID);
 				log.info("RoomID:" + pInfo.roomID + " Name:" + pInfo.strName + " Msg:" + NetUtil.urlDecode(message[1]));
 			}
@@ -835,7 +845,7 @@ public class NetServer {
 				roomInfo.spinCheckType = Integer.parseInt(message[27]);
 				roomInfo.tspinEnableEZ = Boolean.parseBoolean(message[28]);
 				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
-				
+
 				roomInfo.roomID = roomCount;
 
 				roomCount++;
@@ -1488,12 +1498,12 @@ public class NetServer {
 			broadcastPlayerInfoUpdate(pInfo);
 		}
 	}
-	
+
 	private void writeServerStatusFile()
 	{
 		if (!propServer.getProperty("netserver.writestatusfile", false))
 				return;
-		
+
 		try {
 			FileWriter outFile = new FileWriter(propServer.getProperty("netserver.statusfilename", "status.txt"));
 			PrintWriter out = new PrintWriter(outFile);
