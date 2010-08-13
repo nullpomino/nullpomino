@@ -323,12 +323,34 @@ public class Piece implements Serializable {
 	/**
 	 * Sets the items of the blocks individually; allows one piece to have
 	 * different item settings for each block
-	 * @param item Array with each cell specifying a color of a block
+	 * @param item Array with each element specifying a color of a block
 	 */
 	public void setItem(int[] item) {
 		int length = Math.min(block.length, item.length);
 		for(int i = 0; i < length; i++) {
 			block[i].item = item[i];
+		}
+	}
+
+	/**
+	 * Sets all blocks' hard count
+	 * @param hard Hard count
+	 */
+	public void setHard(int hard) {
+		for(int i = 0; i < block.length; i++) {
+			block[i].hard = hard;
+		}
+	}
+	
+	/**
+	 * Sets the hard counts of the blocks individually; allows one piece to have
+	 * different hard count settings for each block
+	 * @param hard Array with each element specifying a hard count of a block
+	 */
+	public void setHard(int[] hard) {
+		int length = Math.min(block.length, hard.length);
+		for(int i = 0; i < length; i++) {
+			block[i].hard = hard[i];
 		}
 	}
 

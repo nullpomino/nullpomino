@@ -785,7 +785,10 @@ public class Field implements Serializable {
 					if (b == null)
 						continue;
 					if (b.hard > 0)
+					{
 						b.hard--;
+						setLineFlag(i, false);
+					}
 					else
 						setBlockColor(j, i, Block.BLOCK_COLOR_NONE);
 				}
@@ -3002,7 +3005,7 @@ public class Field implements Serializable {
 				if (getBlockEmpty(x, y))
 					garbageDropPlace(x, y, false, 0); //TODO: Set color
 				else
-					setBlock(x, y, new Block());
+					setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 			}
 	}
 	
