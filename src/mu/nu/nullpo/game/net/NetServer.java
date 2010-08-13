@@ -1504,10 +1504,19 @@ public class NetServer {
 		if (!propServer.getProperty("netserver.writestatusfile", false))
 				return;
 
+		String status = propServer.getProperty("netserver.statusformat",
+				"$observers/$players");
+		
+		status = status.replaceAll("\\$version", Float.toString(GameManager.VERSION_MAJOR));
+		status = status.replaceAll("\\$observers", Integer.toString(observerList.size()));
+		status = status.replaceAll("\\$players", Integer.toString(playerInfoMap.size()));
+		status = status.replaceAll("\\$clients", Integer.toString(observerList.size() + playerInfoMap.size()));
+		status = status.replaceAll("\\$rooms", Integer.toString(roomInfoList.size()));
+		
 		try {
 			FileWriter outFile = new FileWriter(propServer.getProperty("netserver.statusfilename", "status.txt"));
 			PrintWriter out = new PrintWriter(outFile);
-			out.println(observerList.size() + "/" + playerInfoMap.size());
+			out.println(status);
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
