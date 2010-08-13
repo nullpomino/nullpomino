@@ -44,23 +44,22 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
-	
+
 	/** Max cursor value */
 	protected int maxCursor;
-	
+
 	/** Top choice's y-coordinate */
 	protected int minChoiceY;
-	
+
 	/** Set to false to ignore mouse input */
 	protected boolean mouseEnabled;
-	
+
 	public DummyMenuChooseState () {
 		maxCursor = -1;
 		minChoiceY = 3;
 		mouseEnabled = true;
 	}
 
-	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 
 		// FPS
@@ -76,7 +75,6 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
-	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException
 	{
 		if(!container.hasFocus()) {
@@ -86,7 +84,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
-		
+
 		// キー入力状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
@@ -94,7 +92,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 		boolean mouseConfirm = false;
 		if (mouseEnabled)
 			mouseConfirm = updateMouseInput(container.getInput());
-		
+
 		if (maxCursor >= 0) {
 			// カーソル移動
 			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
@@ -109,21 +107,21 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 				if(cursor > maxCursor) cursor = 0;
 				ResourceHolder.soundManager.play("cursor");
 			}
-	
+
 			int change = 0;
 			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) change = -1;
 			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) change = 1;
-	
+
 			if(change != 0)
 				onChange(container, game, delta, change);
-	
+
 			// 決定 button
 			// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
 				if (onDecide(container, game, delta))
 					return;
 			}
-			
+
 		}
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_D)) {
 			if (onPushButtonD(container, game, delta));
@@ -136,7 +134,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 			if (onCancel(container, game, delta));
 				return;
 		}
-		
+
 		// スクリーンショット button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
@@ -163,12 +161,12 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 		}
 		return false;
 	}
-	
+
 	protected void renderChoices(int x, String[] choices)
 	{
 		renderChoices(x, minChoiceY, choices);
 	}
-	
+
 	protected void renderChoices(int x, int y, String[] choices)
 	{
 		NormalFont.printFontGrid(x-1, y+cursor, "b", NormalFont.COLOR_RED);
@@ -189,7 +187,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		return false;
 	}
-	
+
 	/**
 	 * Called on a cancel operation (right click or cancel button).
 	 * @return True to skip all further update processing, false otherwise.
@@ -197,7 +195,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		return false;
 	}
-	
+
 	/**
 	 * Called when D button is pushed.
 	 * Currently, this is the only one needed; methods for other buttons can be added if needed.

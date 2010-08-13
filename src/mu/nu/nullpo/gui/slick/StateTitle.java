@@ -44,10 +44,10 @@ import org.newdawn.slick.state.StateBasedGame;
 public class StateTitle extends DummyMenuChooseState {
 	/** このステートのID */
 	public static final int ID = 1;
-	
+
 	/** Strings for menu choices */
 	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "CONFIG", "EXIT"};
-	
+
 	/** UI Text identifier Strings */
 	private static final String[] UI_TEXT = {
         "Title_Start", "Title_Replay", "Title_NetPlay", "Title_Config", "Title_Exit"
@@ -58,7 +58,7 @@ public class StateTitle extends DummyMenuChooseState {
 
 	/** 新Versionの check 済みならtrue */
 	protected boolean isNewVersionChecked = false;
-	
+
 	public StateTitle () {
 		maxCursor = 4;
 		minChoiceY = 4;
@@ -75,7 +75,6 @@ public class StateTitle extends DummyMenuChooseState {
 	/*
 	 * ステートのInitialization
 	 */
-	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
@@ -95,7 +94,7 @@ public class StateTitle extends DummyMenuChooseState {
 			((AppGameContainer) container).setUpdateOnlyWhenVisible(true);
 		}
 
-		// 新Version check 
+		// 新Version check
 		if(!isNewVersionChecked && NullpoMinoSlick.propGlobal.getProperty("updatechecker.enable", true)) {
 			isNewVersionChecked = true;
 
@@ -128,7 +127,7 @@ public class StateTitle extends DummyMenuChooseState {
 		// Menu
 		NormalFont.printFontGrid(1, 1, "NULLPOMINO", NormalFont.COLOR_ORANGE);
 		NormalFont.printFontGrid(1, 2, "VERSION " + GameManager.getVersionString(), NormalFont.COLOR_ORANGE);
-		
+
 		renderChoices(2, 4, CHOICES);
 
 		NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
@@ -141,7 +140,7 @@ public class StateTitle extends DummyMenuChooseState {
 
 		super.render(container, game, g);
 	}
-	
+
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
@@ -163,7 +162,7 @@ public class StateTitle extends DummyMenuChooseState {
 			container.exit();
 			break;
 		}
-		
+
 		return false;
 	}
 }

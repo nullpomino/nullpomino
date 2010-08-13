@@ -39,7 +39,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class StateConfigMainMenu extends DummyMenuChooseState {
 	/** このステートのID */
 	public static final int ID = 5;
-	
+
 	/** UI Text identifier Strings */
 	private static final String[] UI_TEXT = {
 		"ConfigMainMenu_General",
@@ -52,7 +52,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 
 	/** プレイヤー number */
 	protected int player = 0;
-	
+
 	public StateConfigMainMenu () {
 		maxCursor = 5;
 		minChoiceY = 3;
@@ -69,7 +69,6 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	/*
 	 * ステートのInitialization
 	 */
-	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
@@ -97,7 +96,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 
 		super.render(container, game, g);
 	}
-	
+
 	@Override
 	protected void onChange(GameContainer container, StateBasedGame game, int delta, int change) {
 		player += change;
@@ -105,7 +104,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		if(player > 1) player = 0;
 		ResourceHolder.soundManager.play("change");
 	}
-	
+
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
@@ -135,10 +134,10 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 			game.enterState(StateConfigJoystickMain.ID);
 			break;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		game.enterState(StateTitle.ID);
