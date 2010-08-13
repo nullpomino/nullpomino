@@ -56,7 +56,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
- * NET-VS-BATTLEMode 
+ * NET-VS-BATTLEMode
  */
 public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	/** Log */
@@ -188,7 +188,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	private boolean garbageChangePerAttack;
 
 	private int lastHole = -1;
-	
+
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	private int hurryupSeconds;
 
@@ -735,7 +735,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					}
 				}
 
-				// 練習Mode 
+				// 練習Mode
 				if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 					engine.playSE("decide");
 					startPractice(engine);
@@ -827,7 +827,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 			engine.spinCheckType = currentRoomInfo.spinCheckType;
 			engine.tspinEnableEZ = currentRoomInfo.tspinEnableEZ;
-			
+
 			if(currentRoomInfo.tspinEnableType == 0) {
 				engine.tspinEnable = false;
 				engine.useAllSpinBonus = false;
@@ -1085,7 +1085,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			if(hole == -1) {
 				hole = engine.random.nextInt(engine.field.getWidth());
 			}
-			
+
 			while(!garbageEntries.isEmpty()) {
 				GarbageEntry garbageEntry = garbageEntries.poll();
 				smallGarbageCount += garbageEntry.lines % GARBAGE_DENOMINATOR;
@@ -1128,7 +1128,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 				if(smallGarbageCount / GARBAGE_DENOMINATOR > 0) {
 					lastAttackerUID = -1;
-					
+
 					if(garbageChangePerAttack == true){
 						if(engine.random.nextInt(100) < garbagePercent) {
 							hole = engine.random.nextInt(engine.field.getWidth());
@@ -1158,7 +1158,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					garbageEntries.add(smallGarbageEntry);
 				}
 			}
-			
+
 			lastHole = hole;
 		}
 
@@ -1369,7 +1369,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 		}
 
-		// 練習Mode 
+		// 練習Mode
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive)) {
 			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120) || (lastcombo[playerID] < 2)) {
 				if(isPractice)
@@ -1696,7 +1696,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			resetFlags();
 			owner.reset();
 		}
-		// 練習Mode 
+		// 練習Mode
 		if(engine.ctrl.isPush(Controller.BUTTON_F) && (playerID == 0)) {
 			engine.playSE("decide");
 			startPractice(engine);
@@ -2216,7 +2216,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 			// 攻撃
 			if(message[3].equals("attack")) {
-				int pts = Integer.parseInt(message[4]);				
+				int pts = Integer.parseInt(message[4]);
 				lastevent[playerID] = Integer.parseInt(message[5]);
 				lastb2b[playerID] = Boolean.parseBoolean(message[6]);
 				lastcombo[playerID] = Integer.parseInt(message[7]);
@@ -2234,15 +2234,15 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 						else
 							secondAdd = 1 * GARBAGE_DENOMINATOR;
 					}
-					
+
 					GarbageEntry garbageEntry = new GarbageEntry(pts - secondAdd, playerID, uid);
 					garbageEntries.add(garbageEntry);
-					
+
 					if(secondAdd > 0){
 						garbageEntry = new GarbageEntry(secondAdd, playerID, uid);
 						garbageEntries.add(garbageEntry);
 					}
-					
+
 					garbage[0] = getTotalGarbageLines();
 					if(garbage[0] >= 4*GARBAGE_DENOMINATOR) owner.engine[0].playSE("danger");
 					netLobby.netPlayerClient.send("game\tgarbageupdate\t" + garbage[0] + "\n");
@@ -2304,6 +2304,12 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		resetFlags();
 		owner.reset();
 
+		isReady = new boolean[MAX_PLAYERS];
+		if(currentRoomInfo != null) {
+			currentRoomInfo.delete();
+			currentRoomInfo = null;
+		}
+
 		playerSeatNumber = client.getYourPlayerInfo().seatID;
 		currentRoomID = client.getYourPlayerInfo().roomID;
 		currentRoomInfo = roomInfo;
@@ -2345,6 +2351,13 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			}
 
 			isNewcomer = roomInfo.playing;
+
+			// Revert rules
+			if(!rulelockFlag) {
+				owner.engine[0].ruleopt.copy(netLobby.ruleOpt);
+				owner.engine[0].randomizer = GeneralUtil.loadRandomizer(owner.engine[0].ruleopt.strRandomizer);
+				owner.engine[0].wallkick = GeneralUtil.loadWallkick(owner.engine[0].ruleopt.strWallkick);
+			}
 		}
 
 		numGames = 0;
@@ -2400,7 +2413,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			owner.engine[i].enableSE = false;
 		}
 
-		// ルールを自分のものに戻す
+		// Revert rules
 		owner.engine[0].ruleopt.copy(netLobby.ruleOpt);
 		owner.engine[0].randomizer = GeneralUtil.loadRandomizer(owner.engine[0].ruleopt.strRandomizer);
 		owner.engine[0].wallkick = GeneralUtil.loadWallkick(owner.engine[0].ruleopt.strWallkick);
