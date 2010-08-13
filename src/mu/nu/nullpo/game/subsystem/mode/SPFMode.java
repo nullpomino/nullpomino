@@ -87,8 +87,6 @@ public class SPFMode extends DummyMode {
 	};
 	
 	private static final int DIAMOND_COLOR = Block.BLOCK_COLOR_GEM_RAINBOW;
-	
-	private static final int[] BONUS_BLOCK_COLORS = {DIAMOND_COLOR};
 
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
@@ -856,11 +854,9 @@ public class SPFMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = BLOCK_COLORS.length;
-			engine.bonusBlockFrequency = diamondPower[playerID] == 0 ? 0 : 25;
-			engine.bonusBlockSize = 1;
-			engine.bonusBlockColors = BONUS_BLOCK_COLORS;
 			engine.rainbowAnimate = (playerID == 0);
 			engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
+			
 			
 			dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
 			attackMultiplier[playerID] = DROP_PATTERNS_ATTACK_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]];
@@ -899,7 +895,9 @@ public class SPFMode extends DummyMode {
 				engine.field.reset();
 			}
 		}
-
+		else if (engine.statc[0] == 1 && diamondPower[playerID] > 0)
+				for (int x = 24; x < engine.nextPieceArraySize; x += 25)
+					engine.nextPieceArrayObject[x].block[1].color = DIAMOND_COLOR;
 		return false;
 	}
 
