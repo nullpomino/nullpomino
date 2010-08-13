@@ -82,6 +82,8 @@ public class Block implements Serializable {
 	public static final int BLOCK_ITEM_NONE = 0,
 							BLOCK_ITEM_RANDOM = 1;
 
+	public static final int MAX_ITEM = 1;
+
 	/** 通常のBlockの色の最大count */
 	public static final int BLOCK_COLOR_COUNT = 9;
 
