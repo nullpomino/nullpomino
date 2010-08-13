@@ -251,7 +251,11 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 	/** チーム名 */
 	private String[] playerTeams;
+	
+	private boolean[] playerTeamsIsTank;
 
+	private boolean isTank;
+	
 	/** ゲームが続いてる間true、開始前や全員完全に終わるとfalse */
 	private boolean isNetGameActive;
 
@@ -476,6 +480,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		isReady = new boolean[MAX_PLAYERS];
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
+		playerTeamsIsTank = new boolean[MAX_PLAYERS];
 		scgettime = new int[MAX_PLAYERS];
 		lastevent = new int[MAX_PLAYERS];
 		lastb2b = new boolean[MAX_PLAYERS];
@@ -494,6 +499,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	 * いろいろリセット
 	 */
 	private void resetFlags() {
+		isTank = false;
 		isPractice = false;
 		allPlayerSeatNumbers = new int[MAX_PLAYERS];
 		isPlayerExist = new boolean[MAX_PLAYERS];
@@ -668,6 +674,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		garbage[playerID] = 0;
 		garbageSent[playerID] = 0;
 
+		playerTeamsIsTank[playerID] = true;
+		
 		if(playerID == 0) {
 			prevPieceID = Piece.PIECE_NONE;
 			prevPieceX = 0;
@@ -693,6 +701,19 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		}
 	}
 
+	@Override
+	public void onFirst(GameEngine engine, int playerID) {
+		if( (!isPractice) && (isNetGameActive) ){
+			if(engine.ctrl.isPush(Controller.BUTTON_F)) {
+				if((!playerTeamsIsTank[0]) || (!isTank)) {
+					playerTeamsIsTank[0] = true;
+					isTank = true;
+					netLobby.netPlayerClient.send("game\ttank\n");			
+				}
+			}
+		}
+	}
+	
 	/*
 	 * Called at settings screen
 	 */
@@ -1096,7 +1117,11 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					lastAttackerUID = garbageEntry.uid;
 					if(garbageChangePerAttack == true){
 						if(engine.random.nextInt(100) < garbagePercent) {
-							hole = engine.random.nextInt(engine.field.getWidth());
+							newHole = engine.random.nextInt(engine.field.getWidth() - 1);
+							if(newHole >= hole) {
+								newHole++;
+							}
+							hole = newHole;
 						}
 						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
 								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
@@ -1131,7 +1156,11 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 					if(garbageChangePerAttack == true){
 						if(engine.random.nextInt(100) < garbagePercent) {
-							hole = engine.random.nextInt(engine.field.getWidth());
+							newHole = engine.random.nextInt(engine.field.getWidth() - 1);
+							if(newHole >= hole) {
+								newHole++;
+							}
+							hole = newHole;
 						}
 						engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
 								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
@@ -2214,6 +2243,19 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 					owner.engine[0].statc[0] = owner.engine[0].goEnd;
 				}
 			}
+			if(message[3].equals("tank")){
+				String teamName = playerTeams[playerID];
+				for(int i = 0; i < MAX_PLAYERS; i++ ){
+					if((isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
+						if(i != playerID) {
+							playerTeamsIsTank[i] = false;
+						}
+					}
+
+				}
+				isTank = true;
+				playerTeamsIsTank[playerID] = true;
+			}
 			// 攻撃
 			if(message[3].equals("attack")) {
 				int pts = Integer.parseInt(message[4]);
@@ -2225,7 +2267,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				scgettime[playerID] = 0;
 
 				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (pts > 0) && (!isPractice) && (!isNewcomer) &&
-				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || !playerTeams[0].equalsIgnoreCase(playerTeams[playerID])) )
+				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || (!playerTeams[0].equalsIgnoreCase(playerTeams[playerID]))) &&
+				    (playerTeamsIsTank[0]) )
 				{
 					int secondAdd = 0;
 					if((lastb2b[playerID]) && (currentRoomInfo.b2bChunk)){ //Add a separate garbage entry if the separate b2b option is enabled.
