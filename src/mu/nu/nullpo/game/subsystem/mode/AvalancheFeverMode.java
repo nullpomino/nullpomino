@@ -808,7 +808,7 @@ public class AvalancheFeverMode extends DummyMode {
 	private void loadSetting(CustomProperties prop) {
 		mapSet = prop.getProperty("avalanchefever.gametype", 0);
 		outlinetype = prop.getProperty("avalanchefever.outlinetype", 0);
-		numColors = prop.getProperty("avalanchefever.numcolors", 5);
+		numColors = prop.getProperty("avalanchefever.numcolors", 4);
 		version = prop.getProperty("avalanchefever.version", 0);
 		chainDisplayType = prop.getProperty("avalanchefever.chainDisplayType", 1);
 	}
