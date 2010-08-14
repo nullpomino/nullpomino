@@ -36,7 +36,7 @@ import mu.nu.nullpo.game.component.WallkickResult;
 /**
  * AvalancheWallkick
  */
-public class AvalancheWallkick implements Wallkick {
+public class AvalancheClassicWallkick implements Wallkick {
 	/*
 	 * Wallkick
 	 */
@@ -44,14 +44,27 @@ public class AvalancheWallkick implements Wallkick {
 		int check = 1;
 		if(piece.big) check = 2;
 		
-		if(rtNew == Piece.DIRECTION_LEFT || !piece.checkCollision(x, y, rtNew, field))
+		if(!piece.checkCollision(x, y, rtNew, field))
 			return null;
-		if(!piece.checkCollision(x, y - check, rtNew, field))
-			return new WallkickResult(0, -1*check, rtNew);
-		else if (rtNew == Piece.DIRECTION_UP && !piece.checkCollision(x - check, y, rtNew, field))
-			return new WallkickResult(-1*check, 0, rtNew);
-		else if (rtNew == Piece.DIRECTION_DOWN && !piece.checkCollision(x + check, y, rtNew, field))
-			return new WallkickResult(check, 0, rtNew);
+		switch(rtNew)
+		{
+			case Piece.DIRECTION_UP:
+				if(!piece.checkCollision(x - check, y, rtNew, field))
+					return new WallkickResult(-1*check, 0, rtNew);
+			break;
+			case Piece.DIRECTION_RIGHT:
+				if(!piece.checkCollision(x, y - check, rtNew, field))
+					return new WallkickResult(0, -1*check, rtNew);
+			break;
+			case Piece.DIRECTION_DOWN:
+				if(!piece.checkCollision(x + check, y, rtNew, field))
+					return new WallkickResult(check, 0, rtNew);
+			break;
+			case Piece.DIRECTION_LEFT:
+				if(!piece.checkCollision(x, y + check, rtNew, field))
+					return new WallkickResult(0, check, rtNew);
+			break;
+		}
 		return null;
 	}
 }
