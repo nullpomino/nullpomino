@@ -558,23 +558,8 @@ public class GemManiaMode extends DummyMode {
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// エディットメニュー メイン画面
 		if(editModeScreen == 1) {
-			// Up
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 4;
-				engine.playSE("cursor");
-			}
-			// Down
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 4) engine.statc[2] = 0;
-				engine.playSE("cursor");
-			}
-
 			// Configuration changes
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
+			int change = updateCursor(engine, 4);
 
 			if(change != 0) {
 				engine.playSE("change");

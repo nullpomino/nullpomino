@@ -184,23 +184,8 @@ public class SquareMode extends DummyMode {
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// Main menu
 		if(engine.owner.replayMode == false) {
-			// Up
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 4;
-				engine.playSE("cursor");
-			}
-			// Down
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 4) engine.statc[2] = 0;
-				engine.playSE("cursor");
-			}
-
-			// Change settings (Left/Right)
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
+			// Configuration changes
+			int change = updateCursor(engine, 4);
 
 			if(change != 0) {
 				engine.playSE("change");

@@ -253,23 +253,8 @@ public class RetroMarathonMode extends DummyMode {
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// Menu
 		if(engine.owner.replayMode == false) {
-			// Check for UP button, when pressed it will move cursor up.
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 3;
-				receiver.playSE("cursor");
-			}
-			// Check for DOWN button, when pressed it will move cursor down.
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 3) engine.statc[2] = 0;
-				receiver.playSE("cursor");
-			}
-
-			// Check for LEFT/RIGHT keys
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
+			// Configuration changes
+			int change = updateCursor(engine, 3);
 
 			if(change != 0) {
 				receiver.playSE("change");

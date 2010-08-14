@@ -29,6 +29,8 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
 import mu.nu.nullpo.game.component.Block;
+import mu.nu.nullpo.game.component.Controller;
+import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
@@ -185,5 +187,40 @@ public class DummyMode implements GameMode {
 	}
 
 	public void netplayUnload(Object obj){
+	}
+	
+	protected int updateCursor (GameEngine engine, int maxCursor) {
+		// Up
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
+			engine.statc[2]--;
+			if(engine.statc[2] < 0) engine.statc[2] = maxCursor;
+			engine.playSE("cursor");
+		}
+		// Down
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
+			engine.statc[2]++;
+			if(engine.statc[2] > maxCursor) engine.statc[2] = 0;
+			engine.playSE("cursor");
+		}
+
+		// Configuration changes
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) return -1;
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) return 1;
+		return 0;
+	}
+
+	
+	protected void drawMenu (GameEngine engine, int playerID, EventReceiver receiver,
+			int y, int color, int statc, String... str) {
+		for (int i = 0; i < str.length; i++)
+		{
+			if ((i&1) == 0)
+				receiver.drawMenuFont(engine, playerID, 0, y+i, str[i], color);
+			else
+			{
+				receiver.drawMenuFont(engine, playerID, 0, y+i, str[i], (engine.statc[2] == statc));
+				statc++;
+			}
+		}
 	}
 }

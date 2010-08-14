@@ -546,23 +546,8 @@ public class GradeMania2Mode extends DummyMode {
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// Menu
 		if(engine.owner.replayMode == false) {
-			// Up
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 5;
-				engine.playSE("cursor");
-			}
-			// Down
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 5) engine.statc[2] = 0;
-				engine.playSE("cursor");
-			}
-
 			// Configuration changes
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
+			int change = updateCursor(engine, 5);
 
 			if(change != 0) {
 				engine.playSE("change");
