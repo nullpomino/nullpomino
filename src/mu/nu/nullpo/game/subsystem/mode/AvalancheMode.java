@@ -47,6 +47,12 @@ public class AvalancheMode extends DummyMode {
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
 	
+	/** Enabled piece types */
+	private static final int[] CHAIN_POWERS_FEVERTYPE = 
+	{
+		4, 12, 24, 32, 48, 96, 160, 240, 320, 400, 500, 600, 700, 800, 900, 999
+	};
+	
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
 	{
@@ -57,21 +63,11 @@ public class AvalancheMode extends DummyMode {
 		Block.BLOCK_COLOR_PURPLE
 	};
 
-	public int[] tableGravityChangeScore =
-	{
-		15000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 250000, 400000, Integer.MAX_VALUE
-	};
-
-	public int[] tableGravityValue =
-	{
-		1, 2, 3, 4, 6, 8, 10, 20, 30, 60, 120, 180, 300, -1
-	};
-
 	/** Number of ranking records */
 	private static final int RANKING_MAX = 10;
 
 	/** Number of ranking types */
-	private static final int RANKING_TYPE = 3;
+	private static final int RANKING_TYPE = 7;
 
 	/** Name of game types */
 	private static final String[] GAMETYPE_NAME = {"MARATHON","ULTRA","SPRINT"};
@@ -79,20 +75,23 @@ public class AvalancheMode extends DummyMode {
 	/** Number of game types */
 	private static final int GAMETYPE_MAX = 3;
 
+	/** Name of score types */
+	private static final String[] SCORETYPE_NAME = {"CLASSIC", "FEVER"};
+
+	/** Number of score types */
+	private static final int SCORETYPE_MAX = 2;
+
 	/** Max time in Ultra */
 	private static final int ULTRA_MAX_TIME = 10800;
 
 	/** Max score in Sprint */
-	private static final int SPRINT_MAX_SCORE = 15000;
+	private static final int[] SPRINT_MAX_SCORE = {15000, 20000, 100000, 175000, 350000};
 
 	/** GameManager object (Manages entire game status) */
 	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
-
-	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
-	private int gravityindex;
 
 	/** Amount of points earned from most recent clear */
 	private int lastscore, lastmultiplier;
@@ -113,10 +112,10 @@ public class AvalancheMode extends DummyMode {
 	private int rankingRank;
 
 	/** Rankings' line counts */
-	private int[][] rankingScore;
+	private int[][][][] rankingScore;
 
 	/** Rankings' times */
-	private int[][] rankingTime;
+	private int[][][][] rankingTime;
 	
 	/** Flag for all clear */
 	private boolean zenKeshi;
@@ -165,6 +164,13 @@ public class AvalancheMode extends DummyMode {
 	
 	/** Blocks blocksCleared needed to reach next level */
 	private int toNextLevel;
+	
+	/** True for classic scoring, false for 15th scoring algorithm */
+	private int scoreType;
+	
+	/** Sprint target score */
+	private int sprintTarget;
+	
 
 	/*
 	 * Mode  name
@@ -205,9 +211,12 @@ public class AvalancheMode extends DummyMode {
 		level = 5;
 		toNextLevel = 15;
 
+		scoreType = 0;
+		sprintTarget = 0;
+
 		rankingRank = -1;
-		rankingScore = new int[RANKING_TYPE][RANKING_MAX];
-		rankingTime = new int[RANKING_TYPE][RANKING_MAX];
+		rankingScore = new int[SCORETYPE_MAX][3][RANKING_TYPE][RANKING_MAX];
+		rankingTime = new int[SCORETYPE_MAX][3][RANKING_TYPE][RANKING_MAX];
 
 		if(owner.replayMode == false) {
 			loadSetting(owner.modeConfig);
@@ -242,17 +251,12 @@ public class AvalancheMode extends DummyMode {
 	 * @param engine GameEngine
 	 */
 	public void setSpeed(GameEngine engine) {
+		engine.speed.gravity = 1;
 		if (gametype == 0) {
-			int speedlv = engine.statistics.score;
-			if (speedlv < 0) speedlv = 0;
-			if (speedlv > 5000) speedlv = 5000;
-
-			while(speedlv >= tableGravityChangeScore[gravityindex]) gravityindex++;
-			engine.speed.gravity = tableGravityValue[gravityindex];
+			engine.speed.denominator = Math.max(41-level, 2);
 		} else {
-			engine.speed.gravity = 1;
+			engine.speed.denominator = 40;
 		}
-		engine.speed.denominator = 256;
 	}
 
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -289,13 +293,15 @@ public class AvalancheMode extends DummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 5;
+				if(engine.statc[2] < 0) engine.statc[2] = 7;
+				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]--;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 5) engine.statc[2] = 0;
+				if(engine.statc[2] > 7) engine.statc[2] = 0;
+				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]++;
 				engine.playSE("cursor");
 			}
 
@@ -315,22 +321,32 @@ public class AvalancheMode extends DummyMode {
 					if(gametype > GAMETYPE_MAX - 1) gametype = 0;
 					break;
 				case 1:
+					sprintTarget += change;
+					if(sprintTarget < 0) sprintTarget = SPRINT_MAX_SCORE.length-1;
+					if(sprintTarget >= SPRINT_MAX_SCORE.length) sprintTarget = 0;
+					break;
+				case 2:
+					scoreType += change;
+					if(scoreType < 0) scoreType = SCORETYPE_MAX-1;
+					if(scoreType >= SCORETYPE_MAX) scoreType = 0;
+					break;
+				case 3:
 					outlinetype += change;
 					if(outlinetype < 0) outlinetype = 2;
 					if(outlinetype > 2) outlinetype = 0;
 					break;
-				case 2:
+				case 4:
 					numColors += change;
 					if(numColors < 3) numColors = 5;
 					if(numColors > 5) numColors = 3;
 					break;
-				case 3:
+				case 5:
 					dangerColumnDouble = !dangerColumnDouble;
 					break;
-				case 4:
+				case 6:
 					dangerColumnShowX = !dangerColumnShowX;
 					break;
-				case 5:
+				case 7:
 					showChains = !showChains;
 				}
 			}
@@ -372,20 +388,27 @@ public class AvalancheMode extends DummyMode {
 
 		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "OUTLINE", EventReceiver.COLOR_BLUE);
+		if (gametype == 2)
+		{
+			receiver.drawMenuFont(engine, playerID, 0, 2, "TARGET", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(SPRINT_MAX_SCORE[sprintTarget]), (engine.statc[2] == 1));
+		}
+		receiver.drawMenuFont(engine, playerID, 0, 4, "SCORE TYPE", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 5, SCORETYPE_NAME[scoreType], (engine.statc[2] == 2));
+		receiver.drawMenuFont(engine, playerID, 0, 6, "OUTLINE", EventReceiver.COLOR_BLUE);
 		String strOutline = "";
 		if(outlinetype == 0) strOutline = "NORMAL";
 		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
-		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "COLORS", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(numColors), (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "X COLUMN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, dangerColumnDouble ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 3));
-		receiver.drawMenuFont(engine, playerID, 0, 8, "X SHOW", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(dangerColumnShowX), (engine.statc[2] == 4));
-		receiver.drawMenuFont(engine, playerID, 0, 10, "SHOW CHAIN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(showChains), (engine.statc[2] == 5));
+		receiver.drawMenuFont(engine, playerID, 1, 7, strOutline, (engine.statc[2] == 3));
+		receiver.drawMenuFont(engine, playerID, 0, 8, "COLORS", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 9, String.valueOf(numColors), (engine.statc[2] == 4));
+		receiver.drawMenuFont(engine, playerID, 0, 10, "X COLUMN", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 11, dangerColumnDouble ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 5));
+		receiver.drawMenuFont(engine, playerID, 0, 12, "X SHOW", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(dangerColumnShowX), (engine.statc[2] == 6));
+		receiver.drawMenuFont(engine, playerID, 0, 14, "SHOW CHAIN", EventReceiver.COLOR_BLUE);
+		receiver.drawMenuFont(engine, playerID, 1, 15, GeneralUtil.getONorOFF(showChains), (engine.statc[2] == 7));
 	}
 
 	/*
@@ -412,7 +435,11 @@ public class AvalancheMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		receiver.drawScoreFont(engine, playerID, 0, 0, "AVALANCHE ("+GAMETYPE_NAME[gametype]+")", EventReceiver.COLOR_DARKBLUE);
+		String modeStr = GAMETYPE_NAME[gametype];
+		if (gametype == 2)
+			modeStr = modeStr + " " + (SPRINT_MAX_SCORE[sprintTarget]/1000) + "K";
+		receiver.drawScoreFont(engine, playerID, 0, 0, "AVALANCHE (" + modeStr + ")", EventReceiver.COLOR_DARKBLUE);
+		receiver.drawScoreFont(engine, playerID, 0, 1, "("+SCORETYPE_NAME[scoreType] + " " + numColors + " COLORS)", EventReceiver.COLOR_DARKBLUE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
@@ -427,12 +454,12 @@ public class AvalancheMode extends DummyMode {
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
 					if (gametype == 0) {
-						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 14, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[scoreType][numColors-3][gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 14, 4 + i, GeneralUtil.getTime(rankingTime[scoreType][numColors-3][gametype][i]), (i == rankingRank));
 					} else if (gametype == 1) {
-						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[scoreType][numColors-3][gametype][i]), (i == rankingRank));
 					} else if (gametype == 2) {
-						receiver.drawScoreFont(engine, playerID, 3, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 3, 4 + i, GeneralUtil.getTime(rankingTime[scoreType][numColors-3][gametype][i]), (i == rankingRank));
 					}
 				}
 			}
@@ -510,16 +537,16 @@ public class AvalancheMode extends DummyMode {
 				return;
 			}
 		} else if (gametype == 2) {
-			int remainScore = SPRINT_MAX_SCORE - engine.statistics.score;
+			int remainScore = SPRINT_MAX_SCORE[sprintTarget] - engine.statistics.score;
 			if(engine.timerActive == false) remainScore = 0;
-			engine.meterValue = (remainScore * receiver.getMeterMax(engine)) / SPRINT_MAX_SCORE;
+			engine.meterValue = (remainScore * receiver.getMeterMax(engine)) / SPRINT_MAX_SCORE[sprintTarget];
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainScore <= 50) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainScore <= 30) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainScore <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			// ゴール
-			if((engine.statistics.score >= SPRINT_MAX_SCORE) && (engine.timerActive == true)) {
+			if((engine.statistics.score >= SPRINT_MAX_SCORE[sprintTarget]) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;
 				engine.resetStatc();
@@ -533,7 +560,7 @@ public class AvalancheMode extends DummyMode {
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
-		if(engine.statc[0] == 0)
+		if(engine.statc[0] == 0 && gametype != 2)
 		{
 			scoreBeforeBonus = engine.statistics.score;
 			if (numColors >= 5)
@@ -586,34 +613,36 @@ public class AvalancheMode extends DummyMode {
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 				zenKeshi = true;
+				zenKeshiCount++;
 				//engine.statistics.score += 2100;
 			}
 			else
 				zenKeshi = false;
 
 			chain = engine.chain;
+			if (chain > maxChain)
+				maxChain = chain;
 			chainDisplay = 60;
 			engine.playSE("combo" + Math.min(chain, 20));
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
-			/*
-			if (multiplier < 0)
-				multiplier = 0;
-			if (chain == 0)
-				firstExtra = avalanche > engine.colorClearSize;
-			*/
-			if (chain == 2)
-				multiplier += 8;
-			else if (chain == 3)
-				multiplier += 16;
-			else if (chain >= 4)
-				multiplier += 32*(chain-3);
-			/*
-			if (firstExtra)
-				multiplier++;
-			*/
-			
+
+			if (scoreType == 0)
+			{
+				if (chain == 2)
+					multiplier += 8;
+				else if (chain == 3)
+					multiplier += 16;
+				else if (chain >= 4)
+					multiplier += 32*(chain-3);
+			}
+			else if (chain > CHAIN_POWERS_FEVERTYPE.length)
+				multiplier += CHAIN_POWERS_FEVERTYPE[CHAIN_POWERS_FEVERTYPE.length-1];
+			else
+				multiplier += CHAIN_POWERS_FEVERTYPE[chain-1];
+					
+				
 			if (multiplier > 999)
 				multiplier = 999;
 			if (multiplier < 1)
@@ -658,34 +687,52 @@ public class AvalancheMode extends DummyMode {
 	public void renderResult(GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
-		receiver.drawMenuFont(engine, playerID,  0, 3, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScoreBefore = String.format("%10d", scoreBeforeBonus);
-		receiver.drawMenuFont(engine, playerID,  0, 4, strScoreBefore, EventReceiver.COLOR_GREEN);
+		if (gametype == 2)
+		{
+			receiver.drawMenuFont(engine, playerID,  0, 3, "TIME", EventReceiver.COLOR_BLUE);
+			String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawMenuFont(engine, playerID,  0, 4, strTime);
+			receiver.drawMenuFont(engine, playerID,  0, 5, "SCORE", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 6, String.valueOf(engine.statistics.score));
+			receiver.drawMenuFont(engine, playerID,  0, 7, "ZENKESHI", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 8, String.format("%10d", zenKeshiCount));
+			receiver.drawMenuFont(engine, playerID,  0, 9, "MAX CHAIN", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 10, String.format("%10d", maxChain));
+			if(rankingRank != -1) {
+				receiver.drawMenuFont(engine, playerID,  0, 11, "RANK", EventReceiver.COLOR_BLUE);
+				String strRank = String.format("%10d", rankingRank + 1);
+				receiver.drawMenuFont(engine, playerID,  0, 12, strRank);
+			}
+		}
+		else
+		{
+			receiver.drawMenuFont(engine, playerID,  0, 3, "SCORE", EventReceiver.COLOR_BLUE);
+			String strScoreBefore = String.format("%10d", scoreBeforeBonus);
+			receiver.drawMenuFont(engine, playerID,  0, 4, strScoreBefore, EventReceiver.COLOR_GREEN);
+	
+			receiver.drawMenuFont(engine, playerID,  0, 5, "ZENKESHI", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 6, String.format("%10d", zenKeshiCount));
+			String strZenKeshiBonus = "+" + zenKeshiBonus;
+			receiver.drawMenuFont(engine, playerID, 10-strZenKeshiBonus.length(), 7, strZenKeshiBonus, EventReceiver.COLOR_GREEN);
+			
+			receiver.drawMenuFont(engine, playerID,  0, 8, "MAX CHAIN", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID,  0, 9, String.format("%10d", maxChain));
+			String strMaxChainBonus = "+" + maxChainBonus;
+			receiver.drawMenuFont(engine, playerID, 10-strMaxChainBonus.length(), 10, strMaxChainBonus, EventReceiver.COLOR_GREEN);
+	
+			receiver.drawMenuFont(engine, playerID,  0, 11, "TOTAL", EventReceiver.COLOR_BLUE);
+			String strScore = String.format("%10d", engine.statistics.score);
+			receiver.drawMenuFont(engine, playerID,  0, 12, strScore, EventReceiver.COLOR_RED);
+			
+			receiver.drawMenuFont(engine, playerID,  0, 13, "TIME", EventReceiver.COLOR_BLUE);
+			String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawMenuFont(engine, playerID,  0, 14, strTime);
 
-		receiver.drawMenuFont(engine, playerID,  0, 5, "ZENKESHI", EventReceiver.COLOR_BLUE);
-		String strZenKeshi = String.format("%10d", zenKeshiCount);
-		receiver.drawMenuFont(engine, playerID,  0, 6, strZenKeshi);
-		String strZenKeshiBonus = "+" + zenKeshiBonus;
-		receiver.drawMenuFont(engine, playerID, 10-strZenKeshiBonus.length(), 7, strZenKeshiBonus, EventReceiver.COLOR_GREEN);
-		
-		receiver.drawMenuFont(engine, playerID,  0, 8, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-		String strMaxChain = String.format("%10d", maxChain);
-		receiver.drawMenuFont(engine, playerID,  0, 9, strMaxChain);
-		String strMaxChainBonus = "+" + maxChainBonus;
-		receiver.drawMenuFont(engine, playerID, 10-strMaxChainBonus.length(), 10, strMaxChainBonus, EventReceiver.COLOR_GREEN);
-
-		receiver.drawMenuFont(engine, playerID,  0, 11, "TOTAL", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID,  0, 12, strScore, EventReceiver.COLOR_RED);
-		
-		receiver.drawMenuFont(engine, playerID,  0, 13, "TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 14, strTime);
-
-		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 15, "RANK", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 16, strRank);
+			if(rankingRank != -1) {
+				receiver.drawMenuFont(engine, playerID,  0, 15, "RANK", EventReceiver.COLOR_BLUE);
+				String strRank = String.format("%10d", rankingRank + 1);
+				receiver.drawMenuFont(engine, playerID,  0, 16, strRank);
+			}
 		}
 	}
 
@@ -698,7 +745,7 @@ public class AvalancheMode extends DummyMode {
 
 		// Update rankings
 		if((owner.replayMode == false) && (engine.ai == null)) {
-			updateRanking(engine.statistics.score, engine.statistics.time, gametype);
+			updateRanking(engine.statistics.score, engine.statistics.time, gametype, scoreType, numColors);
 
 			if(rankingRank != -1) {
 				saveRanking(owner.modeConfig, engine.ruleopt.strRuleName);
@@ -713,8 +760,10 @@ public class AvalancheMode extends DummyMode {
 	 */
 	private void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("avalanche.gametype", 0);
+		sprintTarget = prop.getProperty("avalanche.sprintTarget", 0);
+		scoreType = prop.getProperty("avalanche.scoreType", 0);
 		outlinetype = prop.getProperty("avalanche.outlinetype", 0);
-		numColors = prop.getProperty("avalanche.numcolors", 5);
+		numColors = prop.getProperty("avalanche.numcolors", 4);
 		version = prop.getProperty("avalanche.version", 0);
 		dangerColumnDouble = prop.getProperty("avalanche.dangerColumnDouble", false);
 		dangerColumnShowX = prop.getProperty("avalanche.dangerColumnShowX", false);
@@ -727,6 +776,8 @@ public class AvalancheMode extends DummyMode {
 	 */
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("avalanche.gametype", gametype);
+		prop.setProperty("avalanche.sprintTarget", sprintTarget);
+		prop.setProperty("avalanche.scoreType", scoreType);
 		prop.setProperty("avalanche.outlinetype", outlinetype);
 		prop.setProperty("avalanche.numcolors", numColors);
 		prop.setProperty("avalanche.version", version);
@@ -743,10 +794,14 @@ public class AvalancheMode extends DummyMode {
 	private void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
-				rankingScore[j][i] = prop.getProperty("avalanche.ranking." + ruleName + "." + numColors +
-						"colors." + j + ".score." + i, 0);
-				rankingTime[j][i] = prop.getProperty("avalanche.ranking." + ruleName + "." + numColors +
-						"colors." + j + ".time." + i, -1);
+				for(int colors = 3; colors <= 5; colors++) {
+					for(int sctype = 0; sctype < SCORETYPE_MAX; sctype++) {
+						rankingScore[sctype][colors-3][j][i] = prop.getProperty("avalanche.ranking." + ruleName +
+								".scoretype" + sctype + "." + colors + "colors." + j + ".score." + i, 0);
+						rankingTime[sctype][colors-3][j][i] = prop.getProperty("avalanche.ranking." + ruleName +
+								".scoretype" + sctype + "." + colors + "colors." + j + ".time." + i, -1);
+					}
+				}
 			}
 		}
 	}
@@ -759,10 +814,14 @@ public class AvalancheMode extends DummyMode {
 	private void saveRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
-				prop.setProperty("avalanche.ranking." + ruleName + "." + numColors + "colors." +
-						j + ".score." + i, rankingScore[j][i]);
-				prop.setProperty("avalanche.ranking." + ruleName + "." + numColors + "colors." +
-						j + ".time." + i, rankingTime[j][i]);
+				for(int colors = 3; colors <= 5; colors++) {
+					for(int sctype = 0; sctype < SCORETYPE_MAX; sctype++) {
+						prop.setProperty("avalanche.ranking." + ruleName + ".scoretype" + sctype +
+								"." + colors + "colors." + j + ".score." + i, rankingScore[sctype][colors-3][j][i]);
+						prop.setProperty("avalanche.ranking." + ruleName + ".scoretype" + sctype + 
+								"." + colors + "colors." + j + ".time." + i, rankingTime[sctype][colors-3][j][i]);
+					}
+				}
 			}
 		}
 	}
@@ -773,19 +832,19 @@ public class AvalancheMode extends DummyMode {
 	 * @param li Lines
 	 * @param time Time
 	 */
-	private void updateRanking(int sc, int time, int type) {
-		rankingRank = checkRanking(sc, time, type);
+	private void updateRanking(int sc, int time, int type, int sctype, int colors) {
+		rankingRank = checkRanking(sc, time, type, sctype, colors);
 
 		if(rankingRank != -1) {
 			// Shift down ranking entries
 			for(int i = RANKING_MAX - 1; i > rankingRank; i--) {
-				rankingScore[type][i] = rankingScore[type][i - 1];
-				rankingTime[type][i] = rankingTime[type][i - 1];
+				rankingScore[sctype][colors-3][type][i] = rankingScore[sctype][colors-3][type][i - 1];
+				rankingTime[sctype][colors-3][type][i] = rankingTime[sctype][colors-3][type][i - 1];
 			}
 
 			// Add new data
-			rankingScore[type][rankingRank] = sc;
-			rankingTime[type][rankingRank] = time;
+			rankingScore[sctype][colors-3][type][rankingRank] = sc;
+			rankingTime[sctype][colors-3][type][rankingRank] = time;
 		}
 	}
 
@@ -795,22 +854,22 @@ public class AvalancheMode extends DummyMode {
 	 * @param time Time
 	 * @return Position (-1 if unranked)
 	 */
-	private int checkRanking(int sc, int time, int type) {
-		if (gametype == 2 && sc < SPRINT_MAX_SCORE)
+	private int checkRanking(int sc, int time, int type, int sctype, int colors) {
+		if (type == 2 && sc < SPRINT_MAX_SCORE[sprintTarget])
 			return -1;
 		for(int i = 0; i < RANKING_MAX; i++) {
-			if (gametype == 0) {
-				if(sc > rankingScore[type][i]) {
+			if (type == 0) {
+				if(sc > rankingScore[sctype][colors-3][type][i]) {
 					return i;
-				} else if((sc == rankingScore[type][i]) && (time < rankingTime[type][i])) {
-					return i;
-				}
-			} else if (gametype == 1) {
-				if(sc > rankingScore[type][i]) {
+				} else if((sc == rankingScore[sctype][colors-3][type][i]) && (time < rankingTime[sctype][colors-3][type][i])) {
 					return i;
 				}
-			} else if (gametype == 2) {
-				if(time < rankingTime[type][i] || (rankingTime[type][i] < 0)) {
+			} else if (type == 1) {
+				if(sc > rankingScore[sctype][colors-3][type][i]) {
+					return i;
+				}
+			} else if (type == 2) {
+				if(time < rankingTime[sctype][colors-3][type+sprintTarget][i] || (rankingTime[sctype][colors-3][type+sprintTarget][i] < 0)) {
 					return i;
 				}
 			}
