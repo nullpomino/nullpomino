@@ -72,6 +72,7 @@ import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
+import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.gui.net.NetLobbyListener;
@@ -344,7 +345,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 		setVisible(true);
 
-		// 新Version check 
+		// 新Version check
 		if(propGlobal.getProperty("updatechecker.enable", true)) {
 			int startupCount = propGlobal.getProperty("updatechecker.startupCount", 0);
 			int startupMax = propGlobal.getProperty("updatechecker.startupMax", 5);
@@ -871,75 +872,94 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * ネットプレイ開始処理
 	 */
 	public void startNetPlayGame() {
-		// gameManagerInitialization
+		// gameManager Initialization
 		rendererSwing = new RendererSwing();
 		gameManager = new GameManager(rendererSwing);
 
-		// Mode
-		String modeName = "NET-VS-BATTLE";
-		GameMode modeObj = modeManager.getMode(modeName);
-		if(modeObj == null) {
-			log.error("Couldn't find mode:" + modeName);
-		} else {
-			gameManager.mode = modeObj;
-		}
-
-		gameManager.init();
-
-		// チューニング設定
-		gameManager.engine[0].owRotateButtonDefaultRight = propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1);
-		gameManager.engine[0].owSkin = propGlobal.getProperty(0 + ".tuning.owSkin", -1);
-		gameManager.engine[0].owMinDAS = propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
-		gameManager.engine[0].owMaxDAS = propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);
-		gameManager.engine[0].owDasDelay = propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
-
-		// ルール
-		RuleOptions ruleopt = null;
-		String rulename = propGlobal.getProperty(0 + ".rule", "");
-
-		if((rulename != null) && (rulename.length() > 0)) {
-			log.debug("Load rule options from " + rulename);
-			ruleopt = GeneralUtil.loadRule(rulename);
-		} else {
-			log.debug("Load rule options from setting file");
-			ruleopt = new RuleOptions();
-			ruleopt.readProperty(propGlobal, 0);
-		}
-		gameManager.engine[0].ruleopt = ruleopt;
-
-		// NEXT順生成アルゴリズム
-		if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
-			Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
-			gameManager.engine[0].randomizer = randomizerObject;
-		}
-
-		// Wallkick
-		if((ruleopt.strWallkick != null) && (ruleopt.strWallkick.length() > 0)) {
-			Wallkick wallkickObject = GeneralUtil.loadWallkick(ruleopt.strWallkick);
-			gameManager.engine[0].wallkick = wallkickObject;
-		}
-
-		// AI
-		String aiName = propGlobal.getProperty(0 + ".ai", "");
-		if(aiName.length() > 0) {
-			AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
-			gameManager.engine[0].ai = aiObj;
-			gameManager.engine[0].aiMoveDelay = propGlobal.getProperty(0 + ".aiMoveDelay", 0);
-			gameManager.engine[0].aiThinkDelay = propGlobal.getProperty(0 + ".aiThinkDelay", 0);
-			gameManager.engine[0].aiUseThread = propGlobal.getProperty(0 + ".aiUseThread", true);
-		}
-
-		// Initialization for each player
-		for(int i = 0; i < gameManager.getPlayers(); i++) {
-			gameManager.engine[i].init();
-		}
-
-		// ロビーInitialization
+		// Lobby Initialization
 		netLobby = new NetLobbyFrame();
 		netLobby.addListener(this);
-		gameManager.mode.netplayInit(netLobby);
+
+		// Mode initialization
+		enterNewMode(null);
+
+		// Lobby start
 		netLobby.init();
 		netLobby.setVisible(true);
+	}
+
+	/**
+	 * Enter to a new mode in netplay
+	 * @param modeName Mode name
+	 */
+	public void enterNewMode(String modeName) {
+		GameMode previousMode = gameManager.mode;
+		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSwing.modeManager.getMode(modeName);
+
+		if(newModeTemp == null) {
+			log.error("Cannot find a mode:" + modeName);
+		} else if(newModeTemp instanceof NetDummyMode) {
+			log.info("Enter new mode:" + newModeTemp.getName());
+			if(gameFrame != null) gameFrame.stopFrames = 60;
+
+			NetDummyMode newMode = (NetDummyMode)newModeTemp;
+
+			if(previousMode != null) previousMode.netplayUnload(netLobby);
+			gameManager.mode = newMode;
+			gameManager.init();
+
+			// Tuning
+			gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1);
+			gameManager.engine[0].owSkin = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owSkin", -1);
+			gameManager.engine[0].owMinDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
+			gameManager.engine[0].owMaxDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);
+			gameManager.engine[0].owDasDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
+
+			// Rule
+			RuleOptions ruleopt = null;
+			String rulename = NullpoMinoSwing.propGlobal.getProperty(0 + ".rule", "");
+
+			if((rulename != null) && (rulename.length() > 0)) {
+				log.info("Load rule options from " + rulename);
+				ruleopt = GeneralUtil.loadRule(rulename);
+			} else {
+				log.info("Load rule options from setting file");
+				ruleopt = new RuleOptions();
+				ruleopt.readProperty(NullpoMinoSwing.propGlobal, 0);
+			}
+			gameManager.engine[0].ruleopt = ruleopt;
+
+			// Randomizer
+			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
+				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
+				gameManager.engine[0].randomizer = randomizerObject;
+			}
+
+			// Wallkick
+			if((ruleopt.strWallkick != null) && (ruleopt.strWallkick.length() > 0)) {
+				Wallkick wallkickObject = GeneralUtil.loadWallkick(ruleopt.strWallkick);
+				gameManager.engine[0].wallkick = wallkickObject;
+			}
+
+			// AI
+			String aiName = NullpoMinoSwing.propGlobal.getProperty(0 + ".ai", "");
+			if(aiName.length() > 0) {
+				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				gameManager.engine[0].ai = aiObj;
+				gameManager.engine[0].aiMoveDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiMoveDelay", 0);
+				gameManager.engine[0].aiThinkDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiThinkDelay", 0);
+				gameManager.engine[0].aiUseThread = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiUseThread", true);
+			}
+
+			// Initialization for each player
+			for(int i = 0; i < gameManager.getPlayers(); i++) {
+				gameManager.engine[i].init();
+			}
+
+			newMode.netplayInit(netLobby);
+		} else {
+			log.error("This mode does not support netplay:" + modeName);
+		}
 	}
 
 	/**
@@ -1014,9 +1034,11 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		enterNewMode(roomInfo.strMode);
 	}
 
 	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client) {
+		enterNewMode(null);
 	}
 
 	public void onUpdateCheckerStart() {

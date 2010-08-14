@@ -791,6 +791,42 @@ public class NetServer {
 			}
 			return;
 		}
+		// Single player room
+		if(message[0].equals("singleroomcreate")) {
+			//singleroomcreate\t[roomName]\t[mode]
+			if((pInfo != null) && (pInfo.roomID == -1)) {
+				NetRoomInfo roomInfo = new NetRoomInfo();
+
+				roomInfo.singleplayer = true;
+				roomInfo.strMode = NetUtil.urlDecode(message[2]);
+
+				roomInfo.strName = NetUtil.urlDecode(message[1]);
+				if(roomInfo.strName.length() < 1) roomInfo.strName = "Single:" + roomInfo.strMode;
+
+				roomInfo.maxPlayers = 1;
+				roomInfo.ruleName = pInfo.ruleOpt.strRuleName;
+				roomInfo.ruleOpt = new RuleOptions(pInfo.ruleOpt);
+
+				roomInfo.roomID = roomCount;
+
+				roomCount++;
+				if(roomCount == -1) roomCount = 0;
+
+				roomInfoList.add(roomInfo);
+
+				pInfo.roomID = roomInfo.roomID;
+				pInfo.resetPlayState();
+
+				roomInfo.playerList.add(pInfo);
+				pInfo.seatID = roomInfo.joinSeat(pInfo);
+
+				broadcastPlayerInfoUpdate(pInfo);
+				broadcastRoomInfoUpdate(roomInfo, "roomcreate");
+				send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t0\t-1\n");
+
+				log.info("NewSingleRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName);
+			}
+		}
 		// ルーム作成
 		if(message[0].equals("roomcreate")) {
 			/*
@@ -800,7 +836,8 @@ public class NetServer {
 				msg += integerLineDelay + "\t" + integerLockDelay + "\t" + integerDAS + "\t" + rulelock + "\t";
 				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
-				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\n";
+				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
+				msg += strMode + "\n";
 			 */
 			if((pInfo != null) && (pInfo.roomID == -1)) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
@@ -845,6 +882,7 @@ public class NetServer {
 				roomInfo.spinCheckType = Integer.parseInt(message[27]);
 				roomInfo.tspinEnableEZ = Boolean.parseBoolean(message[28]);
 				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
+				roomInfo.strMode = NetUtil.urlDecode(message[30]);
 
 				roomInfo.roomID = roomCount;
 
@@ -868,7 +906,7 @@ public class NetServer {
 				}
 
 				log.info("NewRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName + " RuleLock:" + roomInfo.ruleLock +
-						 " Map:" + roomInfo.useMap);
+						 " Map:" + roomInfo.useMap + " Mode:" + roomInfo.strMode);
 			}
 			return;
 		}
@@ -970,7 +1008,7 @@ public class NetServer {
 					newRoom.playerList.add(pInfo);
 
 					pInfo.seatID = -1;
-					if(!watch) {
+					if(!watch && !newRoom.singleplayer) {
 						pInfo.seatID = newRoom.joinSeat(pInfo);
 
 						if(pInfo.seatID == -1) {
@@ -1034,43 +1072,57 @@ public class NetServer {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
 				boolean watch = Boolean.parseBoolean(message[1]);
 
-				if(watch) {
-					// 観戦のみ
-					int prevSeatID = pInfo.seatID;
-					roomInfo.exitSeat(pInfo);
-					roomInfo.exitQueue(pInfo);
-					pInfo.ready = false;
-					pInfo.seatID = -1;
-					pInfo.queueID = -1;
-					//send(client, "changestatus\twatchonly\t-1\n");
-					broadcast("changestatus\twatchonly\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + prevSeatID + "\n",
-							  pInfo.roomID);
-
-					joinAllQueuePlayers(roomInfo);	// 順番待ちの人を入れる
-				} else {
-					// 参戦
-					if(roomInfo.canJoinSeat()) {
-						pInfo.seatID = roomInfo.joinSeat(pInfo);
-						pInfo.queueID = -1;
+				if(!roomInfo.singleplayer) {
+					if(watch) {
+						// 観戦のみ
+						int prevSeatID = pInfo.seatID;
+						roomInfo.exitSeat(pInfo);
+						roomInfo.exitQueue(pInfo);
 						pInfo.ready = false;
-						//send(client, "changestatus\tjoinseat\t" + pInfo.seatID + "\n");
-						broadcast("changestatus\tjoinseat\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.seatID + "\n",
-								  pInfo.roomID);
-					} else {
 						pInfo.seatID = -1;
-						pInfo.queueID = roomInfo.joinQueue(pInfo);
-						pInfo.ready = false;
-						//send(client, "changestatus\tjoinqueue\t" + pInfo.queueID + "\n");
-						broadcast("changestatus\tjoinqueue\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.queueID + "\n",
+						pInfo.queueID = -1;
+						//send(client, "changestatus\twatchonly\t-1\n");
+						broadcast("changestatus\twatchonly\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + prevSeatID + "\n",
 								  pInfo.roomID);
-					}
-				}
 
-				broadcastPlayerInfoUpdate(pInfo);
-				if(!gameStartIfPossible(roomInfo)) {
-					autoStartTimerCheck(roomInfo);
+						joinAllQueuePlayers(roomInfo);	// 順番待ちの人を入れる
+					} else {
+						// 参戦
+						if(roomInfo.canJoinSeat()) {
+							pInfo.seatID = roomInfo.joinSeat(pInfo);
+							pInfo.queueID = -1;
+							pInfo.ready = false;
+							//send(client, "changestatus\tjoinseat\t" + pInfo.seatID + "\n");
+							broadcast("changestatus\tjoinseat\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.seatID + "\n",
+									  pInfo.roomID);
+						} else {
+							pInfo.seatID = -1;
+							pInfo.queueID = roomInfo.joinQueue(pInfo);
+							pInfo.ready = false;
+							//send(client, "changestatus\tjoinqueue\t" + pInfo.queueID + "\n");
+							broadcast("changestatus\tjoinqueue\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.queueID + "\n",
+									  pInfo.roomID);
+						}
+					}
+					broadcastPlayerInfoUpdate(pInfo);
+					if(!gameStartIfPossible(roomInfo)) {
+						autoStartTimerCheck(roomInfo);
+					}
+					broadcastRoomInfoUpdate(roomInfo);
 				}
-				broadcastRoomInfoUpdate(roomInfo);
+			}
+		}
+		// Start game (Single player)
+		if(message[0].equals("start1p")) {
+			if(pInfo != null) {
+				log.info("Starting single player game");
+
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+				int seat = roomInfo.getPlayerSeatNumber(pInfo);
+
+				if((seat != -1) && (roomInfo.singleplayer)) {
+					gameStart(roomInfo);
+				}
 			}
 		}
 		// 準備完了状態の変更
@@ -1080,7 +1132,7 @@ public class NetServer {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
 				int seat = roomInfo.getPlayerSeatNumber(pInfo);
 
-				if(seat != -1) {
+				if((seat != -1) && (!roomInfo.singleplayer)) {
 					pInfo.ready = Boolean.parseBoolean(message[1]);
 					broadcastPlayerInfoUpdate(pInfo);
 
@@ -1099,7 +1151,7 @@ public class NetServer {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
 				int seat = roomInfo.getPlayerSeatNumber(pInfo);
 
-				if((seat != -1) && (roomInfo.autoStartActive)) {
+				if((seat != -1) && (roomInfo.autoStartActive) && (!roomInfo.singleplayer)) {
 					if(roomInfo.autoStartTNET2) {
 						// 準備完了でないプレイヤーを観戦状態にする
 						LinkedList<NetPlayerInfo> pList = new LinkedList<NetPlayerInfo>();
@@ -1506,13 +1558,13 @@ public class NetServer {
 
 		String status = propServer.getProperty("netserver.statusformat",
 				"$observers/$players");
-		
+
 		status = status.replaceAll("\\$version", Float.toString(GameManager.VERSION_MAJOR));
 		status = status.replaceAll("\\$observers", Integer.toString(observerList.size()));
 		status = status.replaceAll("\\$players", Integer.toString(playerInfoMap.size()));
 		status = status.replaceAll("\\$clients", Integer.toString(observerList.size() + playerInfoMap.size()));
 		status = status.replaceAll("\\$rooms", Integer.toString(roomInfoList.size()));
-		
+
 		try {
 			FileWriter outFile = new FileWriter(propServer.getProperty("netserver.statusfilename", "status.txt"));
 			PrintWriter out = new PrintWriter(outFile);

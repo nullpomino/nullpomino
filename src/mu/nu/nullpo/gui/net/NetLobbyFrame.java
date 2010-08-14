@@ -95,6 +95,7 @@ import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
+import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -147,6 +148,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** イベント受け取りインターフェース */
 	protected LinkedList<NetLobbyListener> listeners = new LinkedList<NetLobbyListener>();
+
+	/** Current game mode (act as special NetLobbyListener) */
+	protected NetDummyMode netDummyMode;
 
 	/** ロビー設定保存用Property file */
 	protected CustomProperties propConfig;
@@ -491,6 +495,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					l.netlobbyOnInit(this);
 			}
 		}
+		if(netDummyMode != null) {
+			netDummyMode.netlobbyOnInit(this);
+		}
 	}
 
 	/**
@@ -659,7 +666,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListQuickStart.addActionListener(this);
 		btnRoomListQuickStart.setActionCommand("Lobby_QuickStart");
 		btnRoomListQuickStart.setMnemonic('Q');
-		btnRoomListQuickStart.setVisible(false);
+		//btnRoomListQuickStart.setVisible(false);
 		subpanelRoomListButtons.add(btnRoomListQuickStart);
 
 		// ***** ルーム作成 button
@@ -2147,6 +2154,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 			listeners = null;
 		}
+		if(netDummyMode != null) {
+			netDummyMode.netlobbyOnExit(this);
+			netDummyMode = null;
+		}
 
 		this.dispose();
 	}
@@ -2326,6 +2337,18 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// クイックスタート
 		if(e.getActionCommand() == "Lobby_QuickStart") {
 			// TODO:クイックスタート
+			//singleroomcreate\t[roomName]\t[mode]
+			try {
+				txtpaneRoomChatLog.setText("");
+				setRoomButtonsEnabled(false);
+				tabLobbyAndRoom.setEnabledAt(1, true);
+				tabLobbyAndRoom.setSelectedIndex(1);
+				changeCurrentScreenCard(SCREENCARD_LOBBY);
+
+				netPlayerClient.send("singleroomcreate\t" + "\t" + NetUtil.urlEncode("LINE RACE") + "\n");
+			} catch (Exception e2) {
+				log.error("", e2);
+			}
 		}
 		// ルーム作成
 		if(e.getActionCommand() == "Lobby_RoomCreate") {
@@ -2506,7 +2529,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg += counter + "\t" + bravo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
-				msg += spinCheckType + "\t" + tspinEnableEZ + "\t"  + b2bChunk + "\n";
+				msg += spinCheckType + "\t" + tspinEnableEZ + "\t"  + b2bChunk + "\t";
+				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\n";
 
 				txtpaneRoomChatLog.setText("");
 				setRoomButtonsEnabled(false);
@@ -2605,6 +2629,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			for(NetLobbyListener l: listeners) {
 				l.netlobbyOnLoginOK(this, netPlayerClient);
 			}
+			if(netDummyMode != null) netDummyMode.netlobbyOnLoginOK(this, netPlayerClient);
+
 			setLobbyButtonsEnabled(1);
 		}
 		// ルールデータ送信失敗
@@ -2799,6 +2825,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				for(NetLobbyListener l: listeners) {
 					l.netlobbyOnRoomJoin(this, netPlayerClient, roomInfo);
 				}
+				if(netDummyMode != null) netDummyMode.netlobbyOnRoomJoin(this, netPlayerClient, roomInfo);
 			} else {
 				addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_RoomJoin_Lobby"), Color.blue);
 
@@ -2814,6 +2841,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				for(NetLobbyListener l: listeners) {
 					l.netlobbyOnRoomLeave(this, netPlayerClient);
 				}
+				if(netDummyMode != null) netDummyMode.netlobbyOnRoomLeave(this, netPlayerClient);
 			}
 		}
 		// ルーム入室失敗
@@ -2964,6 +2992,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				l.netlobbyOnMessage(this, netPlayerClient, message);
 			}
 		}
+		if(netDummyMode != null) netDummyMode.netlobbyOnMessage(this, netPlayerClient, message);
 	}
 
 	/*
@@ -2994,23 +3023,40 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				}
 			}
 		}
+		if(netDummyMode != null) netDummyMode.netlobbyOnDisconnect(this, netPlayerClient, ex);
 	}
 
 	/**
-	 * 新しいNetLobbyListenerを追加
-	 * @param l 追加するNetLobbyListener
+	 * Add an new NetLobbyListener, but don't add NetDummyMode!
+	 * @param l A NetLobbyListener to add
 	 */
 	public void addListener(NetLobbyListener l) {
 		listeners.add(l);
 	}
 
 	/**
-	 * 指定したNetLobbyListenerを削除
-	 * @param l 削除するNetLobbyListener
-	 * @return 実際に削除されたらtrue、もともと追加されてなかったらfalse
+	 * Remove a NetLobbyListener from the listeners list
+	 * @param l NetLobbyListener to remove
+	 * @return true if removed, false if not found or already removed
 	 */
 	public boolean removeListener(NetLobbyListener l) {
 		return listeners.remove(l);
+	}
+
+	/**
+	 * Set new game mode
+	 * @param m Mode
+	 */
+	public void setNetDummyMode(NetDummyMode m) {
+		netDummyMode = m;
+	}
+
+	/**
+	 * Get current game mode
+	 * @return Current game mode
+	 */
+	public NetDummyMode getNetDummyMode() {
+		return netDummyMode;
 	}
 
 	/**

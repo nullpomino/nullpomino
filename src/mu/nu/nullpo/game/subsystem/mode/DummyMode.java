@@ -34,7 +34,7 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 
 /**
- * ダミーのゲームMode 
+ * ダミーのゲームMode
  */
 public class DummyMode implements GameMode {
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
@@ -182,5 +182,8 @@ public class DummyMode implements GameMode {
 	}
 
 	public void netplayInit(Object obj) {
+	}
+
+	public void netplayUnload(Object obj){
 	}
 }

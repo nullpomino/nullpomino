@@ -361,4 +361,10 @@ public interface GameMode {
 	 * @param obj 任意のオブジェクト(今のところNetLobbyFrame)
 	 */
 	public void netplayInit(Object obj);
+
+	/**
+	 * When the mode unloads during netplay (Called when mode change happens)
+	 * @param obj Any object (Currently NetLobbyFrame)
+	 */
+	public void netplayUnload(Object obj);
 }

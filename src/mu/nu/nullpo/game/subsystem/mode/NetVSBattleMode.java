@@ -50,7 +50,6 @@ import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
-import mu.nu.nullpo.gui.net.NetLobbyListener;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
@@ -58,7 +57,7 @@ import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 /**
  * NET-VS-BATTLEMode
  */
-public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
+public class NetVSBattleMode extends NetDummyMode {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetVSBattleMode.class);
 
@@ -159,14 +158,8 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 	private static int GARBAGE_DENOMINATOR = 60; // can be divided by 2,3,4,5
 
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
-
-	/** ロビー画面 */
-	private NetLobbyFrame netLobby;
 
 	/** ルームID */
 	private int currentRoomID;
@@ -251,11 +244,11 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 
 	/** チーム名 */
 	private String[] playerTeams;
-	
+
 	private boolean[] playerTeamsIsTank;
 
 	private boolean isTank;
-	
+
 	/** ゲームが続いてる間true、開始前や全員完全に終わるとfalse */
 	private boolean isNetGameActive;
 
@@ -442,20 +435,6 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	@Override
 	public boolean isNetplayMode() {
 		return true;
-	}
-
-	/*
-	 * ネットプレイ準備
-	 */
-	@Override
-	public void netplayInit(Object obj) {
-		if(obj instanceof NetLobbyFrame) {
-			netLobby = (NetLobbyFrame)obj;
-			netLobby.ruleOpt = new RuleOptions(owner.engine[0].ruleopt);
-			netLobby.addListener(this);
-		} else {
-			log.error("netplayInit: obj != NetLobbyFrame");
-		}
 	}
 
 	/*
@@ -675,7 +654,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		garbageSent[playerID] = 0;
 
 		playerTeamsIsTank[playerID] = true;
-		
+
 		if(playerID == 0) {
 			prevPieceID = Piece.PIECE_NONE;
 			prevPieceX = 0;
@@ -708,12 +687,12 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 				if((!playerTeamsIsTank[0]) || (!isTank)) {
 					playerTeamsIsTank[0] = true;
 					isTank = true;
-					netLobby.netPlayerClient.send("game\ttank\n");			
+					netLobby.netPlayerClient.send("game\ttank\n");
 				}
 			}
 		}
 	}
-	
+
 	/*
 	 * Called at settings screen
 	 */
@@ -726,7 +705,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 			engine.minidisplay = false;
 			engine.enableSE = true;
 
-			if(netLobby.netPlayerClient != null) {
+			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
 				if(!isReadyChangePending) {
 					// 準備完了ON
 					if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
@@ -779,7 +758,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(netLobby.netPlayerClient == null) return;
+		if((netLobby == null) || (netLobby.netPlayerClient == null)) return;
 		if(engine.isVisible == false) return;
 
 		if((currentRoomInfo != null) && (!currentRoomInfo.playing)) {
@@ -1315,7 +1294,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		// Number of players
-		if((playerID == getPlayers() - 1) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected()) &&
+		if((playerID == getPlayers() - 1) && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected()) &&
 		   (!owner.engine[1].isVisible || owner.engine[1].minidisplay || !isNetGameActive))
 		{
 			if(currentRoomID != -1) {
@@ -1333,7 +1312,7 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		}
 
 		// 全体Number of players
-		if((playerID == getPlayers() - 1) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
+		if((playerID == getPlayers() - 1) && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
 			int fontcolor = EventReceiver.COLOR_BLUE;
 			if(netLobby.netPlayerClient.getObserverCount() > 0) fontcolor = EventReceiver.COLOR_GREEN;
 			if(netLobby.netPlayerClient.getPlayerCount() > 1) fontcolor = EventReceiver.COLOR_RED;
@@ -1806,19 +1785,10 @@ public class NetVSBattleMode extends DummyMode implements NetLobbyListener {
 		}
 	}
 
-	public void netlobbyOnLoginOK(NetLobbyFrame lobby, NetPlayerClient client) {
-	}
-
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
 		for(int i = 0; i < getPlayers(); i++) {
 			owner.engine[i].stat = GameEngine.STAT_NOTHING;
 		}
-	}
-
-	public void netlobbyOnExit(NetLobbyFrame lobby) {
-	}
-
-	public void netlobbyOnInit(NetLobbyFrame lobby) {
 	}
 
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {

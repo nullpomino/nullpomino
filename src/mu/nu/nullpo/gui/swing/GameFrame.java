@@ -128,6 +128,9 @@ public class GameFrame extends JFrame implements Runnable {
 	/** ネットプレイならtrue */
 	public boolean isNetPlay = false;
 
+	/** Number of frames to stop NPE logging in netplay (to deal with threading issue) */
+	public int stopFrames = 0;
+
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
@@ -420,11 +423,14 @@ public class GameFrame extends JFrame implements Runnable {
 					return;
 				}
 			}
+			if(stopFrames > 0) stopFrames--;
 
 			// スクリーンショット button
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 				ssflag = true;
 			}
+		} catch (NullPointerException e) {
+			if(stopFrames <= 0) log.error("update NPE", e);
 		} catch (Exception e) {
 			log.error("update fail", e);
 		}
@@ -550,6 +556,8 @@ public class GameFrame extends JFrame implements Runnable {
 			NormalFontSwing.graphics = (Graphics2D) g;
 			NullpoMinoSwing.gameManager.receiver.setGraphics(g);
 			NullpoMinoSwing.gameManager.renderAll();
+		} catch (NullPointerException e) {
+			if(stopFrames <= 0) log.error("update NPE", e);
 		} catch (Exception e) {
 			log.error("render fail", e);
 		}

@@ -34,56 +34,56 @@ import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 
 /**
- * ロビー画面のイベント処理をするインターフェース
+ * Lobby event interface (also used by netplay modes)
  */
 public interface NetLobbyListener {
 	/**
-	 * Initialization完了
+	 * Initialization Completed
 	 * @param lobby NetLobbyFrame
 	 */
 	public void netlobbyOnInit(NetLobbyFrame lobby);
 
 	/**
-	 * ログイン完了
+	 * Login completed
 	 * @param lobby NetLobbyFrame
 	 * @param client NetClient
 	 */
 	public void netlobbyOnLoginOK(NetLobbyFrame lobby, NetPlayerClient client);
 
 	/**
-	 * ルームに入ったとき
+	 * When you enter a room
 	 * @param lobby NetLobbyFrame
 	 * @param client NetClient
-	 * @param roomInfo ルーム情報
+	 * @param roomInfo NetRoomInfo
 	 */
 	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo);
 
 	/**
-	 * ルームを出てロビーに戻ったとき
+	 * When you returned to lobby
 	 * @param lobby NetLobbyFrame
 	 * @param client NetClient
 	 */
 	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client);
 
 	/**
-	 * 切断されたとき
+	 * When disconnected
 	 * @param lobby NetLobbyFrame
 	 * @param client NetClient
-	 * @param ex 切断原因となった例外(不明な場合と正常終了の場合はnull)
+	 * @param ex A Throwable that caused disconnection (null if unknown or normal termination)
 	 */
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex);
 
 	/**
-	 * メッセージ受信
+	 * Message received
 	 * @param lobby NetLobbyFrame
 	 * @param client NetClient
-	 * @param message 受信したメッセージ(タブ区切り済み)
-	 * @throws IOException 何かエラーがあったとき
+	 * @param message Message (Already sepatated by tabs)
+	 * @throws IOException When something bad occurs
 	 */
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException;
 
 	/**
-	 * ロビー画面を閉じたとき
+	 * When the lobby window is closed
 	 * @param lobby NetLobbyFrame
 	 */
 	public void netlobbyOnExit(NetLobbyFrame lobby);

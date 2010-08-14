@@ -38,6 +38,7 @@ import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
+import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.gui.net.NetLobbyListener;
@@ -75,6 +76,9 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** AppGameContainer（これを使ってタイトルバーを変える） */
 	protected AppGameContainer appContainer = null;
 
+	/** Number of frames to stop NPE logging (to deal with threading issue) */
+	protected int stopFrames = 0;
+
 	/*
 	 * このステートのIDを取得
 	 */
@@ -103,74 +107,18 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		appContainer.setAlwaysRender(true);
 		appContainer.setUpdateOnlyWhenVisible(false);
 
-		// gameManagerInitialization
+		// gameManager initialization
 		gameManager = new GameManager(new RendererSlick());
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
 
-		// Mode
-		String modeName = "NET-VS-BATTLE";
-		GameMode modeObj = NullpoMinoSlick.modeManager.getMode(modeName);
-		if(modeObj == null) {
-			log.error("Couldn't find mode:" + modeName);
-		} else {
-			appContainer.setTitle("NullpoMino - " + modeName);
-			gameManager.mode = modeObj;
-		}
-
-		gameManager.init();
-
-		// チューニング設定
-		gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1);
-		gameManager.engine[0].owSkin = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owSkin", -1);
-		gameManager.engine[0].owMinDAS = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
-		gameManager.engine[0].owMaxDAS = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);
-		gameManager.engine[0].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
-
-		// ルール
-		RuleOptions ruleopt = null;
-		String rulename = NullpoMinoSlick.propGlobal.getProperty(0 + ".rule", "");
-
-		if((rulename != null) && (rulename.length() > 0)) {
-			log.info("Load rule options from " + rulename);
-			ruleopt = GeneralUtil.loadRule(rulename);
-		} else {
-			log.info("Load rule options from setting file");
-			ruleopt = new RuleOptions();
-			ruleopt.readProperty(NullpoMinoSlick.propGlobal, 0);
-		}
-		gameManager.engine[0].ruleopt = ruleopt;
-
-		// NEXT順生成アルゴリズム
-		if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
-			Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
-			gameManager.engine[0].randomizer = randomizerObject;
-		}
-
-		// Wallkick
-		if((ruleopt.strWallkick != null) && (ruleopt.strWallkick.length() > 0)) {
-			Wallkick wallkickObject = GeneralUtil.loadWallkick(ruleopt.strWallkick);
-			gameManager.engine[0].wallkick = wallkickObject;
-		}
-
-		// AI
-		String aiName = NullpoMinoSlick.propGlobal.getProperty(0 + ".ai", "");
-		if(aiName.length() > 0) {
-			AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
-			gameManager.engine[0].ai = aiObj;
-			gameManager.engine[0].aiMoveDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiMoveDelay", 0);
-			gameManager.engine[0].aiThinkDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiThinkDelay", 0);
-			gameManager.engine[0].aiUseThread = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiUseThread", true);
-		}
-
-		// Initialization for each player
-		for(int i = 0; i < gameManager.getPlayers(); i++) {
-			gameManager.engine[i].init();
-		}
-
-		// ロビーInitialization
+		// Lobby initialization
 		netLobby = new NetLobbyFrame();
 		netLobby.addListener(this);
-		gameManager.mode.netplayInit(netLobby);
+
+		// Mode initialization
+		enterNewMode(null);
+
+		// Lobby start
 		netLobby.init();
 		netLobby.setVisible(true);
 	}
@@ -201,7 +149,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		try {
 			// ゲーム画面
-			if(gameManager != null) {
+			if((gameManager != null) && (gameManager.mode != null)) {
 				gameManager.renderAll();
 			}
 
@@ -214,6 +162,8 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			}
 
 			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
+		} catch (NullPointerException e) {
+			if(stopFrames <= 0) log.error("render NPE", e);
 		} catch (Exception e) {
 			log.error("render fail", e);
 		}
@@ -230,7 +180,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			// キー入力状態を更新
 			GameKey.gamekey[0].update(container.getInput());
 
-			if(gameManager != null) {
+			if((gameManager != null) && (gameManager.mode != null)) {
 				// BGM
 				if(ResourceHolder.bgmPlaying != gameManager.bgmStatus.bgm) {
 					ResourceHolder.bgmStart(gameManager.bgmStatus.bgm);
@@ -247,7 +197,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			}
 
 			// ゲームの処理を実行
-			if(gameManager != null) {
+			if((gameManager != null) && (gameManager.mode != null)) {
 				GameKey.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
 				gameManager.updateAll();
 
@@ -257,14 +207,93 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 					return;
 				}
 			}
+			if(stopFrames > 0) {
+				stopFrames--;
+			}
 
 			// スクリーンショット button
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 				ssflag = true;
 
 			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
+		} catch (NullPointerException e) {
+			if(stopFrames <= 0) log.error("update NPE", e);
 		} catch (Exception e) {
 			log.error("update fail", e);
+		}
+	}
+
+	/**
+	 * Enter to a new mode
+	 * @param modeName Mode name
+	 */
+	private void enterNewMode(String modeName) {
+		GameMode previousMode = gameManager.mode;
+		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSlick.modeManager.getMode(modeName);
+
+		if(newModeTemp == null) {
+			log.error("Cannot find a mode:" + modeName);
+		} else if(newModeTemp instanceof NetDummyMode) {
+			log.info("Enter new mode:" + newModeTemp.getName());
+			stopFrames = 60;
+
+			NetDummyMode newMode = (NetDummyMode)newModeTemp;
+
+			if(previousMode != null) previousMode.netplayUnload(netLobby);
+			gameManager.mode = newMode;
+			gameManager.init();
+
+			// Tuning
+			gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1);
+			gameManager.engine[0].owSkin = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owSkin", -1);
+			gameManager.engine[0].owMinDAS = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
+			gameManager.engine[0].owMaxDAS = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);
+			gameManager.engine[0].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
+
+			// Rule
+			RuleOptions ruleopt = null;
+			String rulename = NullpoMinoSlick.propGlobal.getProperty(0 + ".rule", "");
+
+			if((rulename != null) && (rulename.length() > 0)) {
+				log.info("Load rule options from " + rulename);
+				ruleopt = GeneralUtil.loadRule(rulename);
+			} else {
+				log.info("Load rule options from setting file");
+				ruleopt = new RuleOptions();
+				ruleopt.readProperty(NullpoMinoSlick.propGlobal, 0);
+			}
+			gameManager.engine[0].ruleopt = ruleopt;
+
+			// Randomizer
+			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
+				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
+				gameManager.engine[0].randomizer = randomizerObject;
+			}
+
+			// Wallkick
+			if((ruleopt.strWallkick != null) && (ruleopt.strWallkick.length() > 0)) {
+				Wallkick wallkickObject = GeneralUtil.loadWallkick(ruleopt.strWallkick);
+				gameManager.engine[0].wallkick = wallkickObject;
+			}
+
+			// AI
+			String aiName = NullpoMinoSlick.propGlobal.getProperty(0 + ".ai", "");
+			if(aiName.length() > 0) {
+				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				gameManager.engine[0].ai = aiObj;
+				gameManager.engine[0].aiMoveDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiMoveDelay", 0);
+				gameManager.engine[0].aiThinkDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiThinkDelay", 0);
+				gameManager.engine[0].aiUseThread = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiUseThread", true);
+			}
+
+			// Initialization for each player
+			for(int i = 0; i < gameManager.getPlayers(); i++) {
+				gameManager.engine[i].init();
+			}
+
+			newMode.netplayInit(netLobby);
+		} else {
+			log.error("This mode does not support netplay:" + modeName);
 		}
 	}
 
@@ -272,7 +301,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	public void netlobbyOnExit(NetLobbyFrame lobby) {
-		if(gameManager != null) {
+		if((gameManager != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
 			gameManager.engine[0].quitflag = true;
 		}
 	}
@@ -287,8 +316,10 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		enterNewMode(roomInfo.strMode);
 	}
 
 	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client) {
+		enterNewMode(null);
 	}
 }

@@ -84,22 +84,22 @@ public class NetRoomInfo implements Serializable {
 
 	/** Allow EZ-spins in spinCheckType 2 */
 	public boolean tspinEnableEZ = false;
-	
+
 	/** Flag for enabling B2B */
 	public boolean b2b = true;
-	
+
    /** b2b adds as a separate garbage chunk */
    public boolean b2bChunk;
 
 	/** Flag for enabling combos */
 	public boolean combo = true;
-	
+
 	/** Allow Rensa/Combo Block */
    public boolean rensaBlock = true;
-   
+
    /** Allow garbage countering */
    public boolean counter = true;
-   
+
    /** Enable bravo bonus */
    public boolean bravo = true;
 
@@ -141,10 +141,10 @@ public class NetRoomInfo implements Serializable {
 
 	/** Rate of change of garbage holes */
 	public int garbagePercent = 100;
-	
+
 	/** Hole change style (false=line true=attack)*/
 	public boolean garbageChangePerAttack = true;
-	
+
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	public int hurryupSeconds = -1;
 
@@ -168,6 +168,12 @@ public class NetRoomInfo implements Serializable {
 
 	/** 新しい断片的邪魔Blockシステムを使う */
 	public boolean useFractionalGarbage = false;
+
+	/** Mode name */
+	public String strMode = "";
+
+	/** Single player flag */
+	public boolean singleplayer = false;
 
 	/** マップリスト */
 	public LinkedList<String> mapList = new LinkedList<String>();
@@ -267,6 +273,8 @@ public class NetRoomInfo implements Serializable {
 		useFractionalGarbage = n.useFractionalGarbage;
 		garbageChangePerAttack = n.garbageChangePerAttack;
 		garbagePercent = n.garbagePercent;
+		strMode = n.strMode;
+		singleplayer = n.singleplayer;
 
 		mapList.clear();
 		mapList.addAll(n.mapList);
@@ -282,7 +290,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列からデータ代入(プレイヤーリスト除く)
-	 * @param rdata Stringの配列(String[27])
+	 * @param rdata Stringの配列(String[37])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -320,6 +328,8 @@ public class NetRoomInfo implements Serializable {
 		spinCheckType = Integer.parseInt(rdata[32]);
 		tspinEnableEZ = Boolean.parseBoolean(rdata[33]);
 		b2bChunk = Boolean.parseBoolean(rdata[34]);
+		strMode = NetUtil.urlDecode(rdata[35]);
+		singleplayer = Boolean.parseBoolean(rdata[36]);
 	}
 
 	/**
@@ -332,10 +342,10 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(プレイヤーリスト除く)
-	 * @return Stringの配列(String[29])
+	 * @return Stringの配列(String[37])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[35];
+		String[] rdata = new String[37];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -371,6 +381,8 @@ public class NetRoomInfo implements Serializable {
 		rdata[32] = Integer.toString(spinCheckType);
 		rdata[33] = Boolean.toString(tspinEnableEZ);
 		rdata[34] = Boolean.toString(b2bChunk);
+		rdata[35] = NetUtil.urlEncode(strMode);
+		rdata[36] = Boolean.toString(singleplayer);
 		return rdata;
 	}
 
