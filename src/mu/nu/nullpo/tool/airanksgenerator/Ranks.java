@@ -275,7 +275,7 @@ public boolean surfaceFitsPiece(int [] surface,int piece, int rotation, int x){
 	   if (surface[x+x1]!=PIECES_LOWESTS[piece][rotation][x1]-PIECES_LOWESTS[piece][rotation][x1+1]){
 		   fits=false;
          break;
-     }
+         }
     }
 	return fits;
 }

@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
@@ -108,6 +109,7 @@ public class RanksAI extends DummyAI implements Runnable {
     private int currentHeightMin;
     private int currentHeightMax;
     private static int THRESHOLD_FORCE_4LINES=10;
+    private static int MAX_PREVIEWS=2;
     
 	public class Score{
 		
@@ -350,7 +352,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		int nowY = engine.nowPieceY;
 
 		Piece pieceHold = engine.holdPieceObject;
-		int numPreviews=2;
+		int numPreviews=MAX_PREVIEWS;
 		
 		currentHeightMin=engine.field.getHeight();
 		currentHeightMax=0;
@@ -382,7 +384,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 		Field fld = new Field(engine.field);
 
-			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
+			for(int rt = 0; rt < Ranks.PIECES_NUM_ROTATIONS[pieceNow.id]; rt++) {
 				boolean isVerticalIPiece=(pieceNow.id==Piece.PIECE_I && ((rt==1)||(rt==3)));
 				int minX=0-pieceNow.dataOffsetX[rt]-Ranks.PIECES_LEFTMOSTS[pieceNow.id][rt];
 				int maxX=minX+ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow.id][rt];
@@ -396,7 +398,7 @@ public class RanksAI extends DummyAI implements Runnable {
 						score = thinkMain(engine, x,  rt,  surface, pieceNow, pieceHold, numPreviews,false,false);
 						log.debug("MAIN  id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
 						if(score.compareTo(bestScore)>0) {
-							log.debug("MAIN new best piece !");
+							//log.debug("MAIN new best piece !");
 							log.debug("MAIN  id="+pieceNow.id+" posX="+x+" rt="+rt+" score:"+score);
 							
 							bestHold = false;
@@ -420,7 +422,6 @@ public class RanksAI extends DummyAI implements Runnable {
 					log.debug("MAIN (4 Lines) id="+pieceNow.id+" posX="+(maxX+1)+" rt="+rt+" score:"+score);
 					if(score.compareTo(bestScore)>0) {
 						log.debug("MAIN (4 Lines) new best piece !");
-						log.debug("MAIN  id="+pieceNow.id+" posX="+(maxX+1)+" rt="+rt+" score:"+score);
 						
 						bestHold = false;
 						bestX = maxX+1;
@@ -437,12 +438,15 @@ public class RanksAI extends DummyAI implements Runnable {
 		  }
 
 			//ranks.surfaceAddPossible(surface, pieceNow.id, bestRt, bestX+Ranks.PIECES_LEFTMOSTS[pieceNow.id][bestRt]+pieceNow.dataOffsetX[bestRt]);
-
+		if (bestScore.rankStacking==0)
+			threadRunning=false;
 		thinkLastPieceNo++;
 
-		//System.out.println("X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestPts);
+		log.debug("X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestScore);
 	}
 
+
+	
 	/**
 	 * Main think routine
 	 * @param engine GameEngine
@@ -460,26 +464,27 @@ public class RanksAI extends DummyAI implements Runnable {
 		Score score=new Score();
 		boolean fourLines=isFourLines;
 		boolean cliffCreated=isCliff;
-		
+		log.debug("piece id : " +piece.id+" rot : "+rt+" x :"+x+" surface :"+Arrays.toString(surface));
 		boolean isVerticalI=(piece.id==Piece.PIECE_I && ((rt==1)||(rt==3))&&(x+Ranks.PIECES_LEFTMOSTS[piece.id][rt]+piece.dataOffsetX[rt])==9);
 		if (isVerticalI)
 			fourLines=true;
 		if (isVerticalI || ranks.surfaceFitsPiece(surface, piece.id, rt, x+Ranks.PIECES_LEFTMOSTS[piece.id][rt]+piece.dataOffsetX[rt])){
+			log.debug("PASSED ! 4 lines? :"+ isVerticalI);
 			int [] surfaceWork =surface.clone();
 			if (!isVerticalI){
-			if (ranks.surfaceAddPossible(surfaceWork,piece.id,rt,x+Ranks.PIECES_LEFTMOSTS[piece.id][rt]+piece.dataOffsetX[rt])){
+				if (ranks.surfaceAddPossible(surfaceWork,piece.id,rt,x+Ranks.PIECES_LEFTMOSTS[piece.id][rt]+piece.dataOffsetX[rt])){
 				
 				
-			}
-			else {
-				cliffCreated =true;
+				}
+				else {
+					cliffCreated =true;
 				
-			}
+				}
 			}
 			if (numPreviews>0){
 				Score bestScore=new Score();
 			    Score scoreCurrent;
-				Piece pieceNow = engine.getNextObject(engine.nextPieceCount+numPreviews-1);		
+				Piece pieceNow = engine.getNextObject(engine.nextPieceCount+MAX_PREVIEWS-numPreviews);		
 				Piece pieceHold = engine.holdPieceObject;
 				
 				//if(pieceHold == null) {
@@ -488,7 +493,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				//Field fldcopy = new Field(fld);
                 //int [] surfaceWork2=surfaceWork.clone();
 
-					for(int rt2 = 0; rt2 < Piece.DIRECTION_COUNT; rt2++) {
+					for(int rt2 = 0; rt2 < Ranks.PIECES_NUM_ROTATIONS[pieceNow.id]; rt2++) {
 						boolean isVerticalI2=(pieceNow.id==Piece.PIECE_I && ((rt2==1)||(rt2==3)));
 						int minX2=0-pieceNow.dataOffsetX[rt2]-Ranks.PIECES_LEFTMOSTS[pieceNow.id][rt2];
 						int maxX2=minX2+ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow.id][rt2];
@@ -515,7 +520,7 @@ public class RanksAI extends DummyAI implements Runnable {
 						if (pieceNow.id==Piece.PIECE_I && ((rt2==1)||(rt2==3)) && currentHeightMin>=4){
 							
 							scoreCurrent = thinkMain(engine, maxX2+1,  rt2,  surfaceWork, pieceNow, pieceHold, numPreviews-1,cliffCreated,true);
-							log.debug("SUB  id="+pieceNow.id+" posX="+(maxX2+1)+" rt="+rt2+" score:"+scoreCurrent);
+							log.debug("SUB (4 Lines)"+ numPreviews+" id="+pieceNow.id+" posX="+(maxX2+1)+" rt="+rt2+" score:"+scoreCurrent);
 							if(scoreCurrent.compareTo(bestScore)>0) {
 								log.debug("SUB new best piece !");
 							;
