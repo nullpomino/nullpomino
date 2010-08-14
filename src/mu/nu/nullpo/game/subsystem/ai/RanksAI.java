@@ -108,7 +108,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	private int [] surface;
     private int currentHeightMin;
     private int currentHeightMax;
-    private static int THRESHOLD_FORCE_4LINES=10;
+    private static int THRESHOLD_FORCE_4LINES=12;
     private static int MAX_PREVIEWS=2;
     
 	public class Score{
@@ -383,7 +383,23 @@ public class RanksAI extends DummyAI implements Runnable {
 
 
 		Field fld = new Field(engine.field);
+			if (pieceNow.id==Piece.PIECE_I &&currentHeightMax>=THRESHOLD_FORCE_4LINES && currentHeightMin>=4){
+				int rt=1;
+				int minX=0-pieceNow.dataOffsetX[rt]-Ranks.PIECES_LEFTMOSTS[pieceNow.id][rt];
+				int maxX=minX+ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow.id][rt];
+				int x=maxX+1;
+				int y = pieceNow.getBottom(x, nowY, rt, fld);
+				bestHold = false;
+				bestX = maxX+1;
+				bestY = y;
+				bestRt = rt;
+				bestXSub = maxX+1;
+				bestYSub = y;
+				bestRtSub = -1;
+				bestScore.rankStacking=Integer.MAX_VALUE;
 
+			}
+			else {
 			for(int rt = 0; rt < Ranks.PIECES_NUM_ROTATIONS[pieceNow.id]; rt++) {
 				boolean isVerticalIPiece=(pieceNow.id==Piece.PIECE_I && ((rt==1)||(rt==3)));
 				int minX=0-pieceNow.dataOffsetX[rt]-Ranks.PIECES_LEFTMOSTS[pieceNow.id][rt];
@@ -436,6 +452,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 
 		  }
+		}
 
 			//ranks.surfaceAddPossible(surface, pieceNow.id, bestRt, bestX+Ranks.PIECES_LEFTMOSTS[pieceNow.id][bestRt]+pieceNow.dataOffsetX[bestRt]);
 		if (bestScore.rankStacking==0)
@@ -491,7 +508,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				//	holdEmpty = true;
 				//}
 				//Field fldcopy = new Field(fld);
-                //int [] surfaceWork2=surfaceWork.clone();
+                int [] surfaceWork2=surfaceWork.clone();
 
 					for(int rt2 = 0; rt2 < Ranks.PIECES_NUM_ROTATIONS[pieceNow.id]; rt2++) {
 						boolean isVerticalI2=(pieceNow.id==Piece.PIECE_I && ((rt2==1)||(rt2==3)));
@@ -529,6 +546,9 @@ public class RanksAI extends DummyAI implements Runnable {
 						}
 
 					}
+					/*int scorenum=ranks.getRankValue(ranks.encode(surfaceWork2));
+					if (scorenum>bestScore.rankStacking)
+						bestScore.rankStacking=scorenum;*/
 					return bestScore;
 			}
 			else {

@@ -298,7 +298,7 @@ public boolean surfaceAddPossible(int []surfaceDecodedWork, int piece, int rotat
 		  
 		  
 	  }
-	  if (addPossible){
+	  
 		  for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
 			  surfaceDecodedWork[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1];
 			  if (surfaceDecodedWork[x+x1]>maxJump){
@@ -312,8 +312,8 @@ public boolean surfaceAddPossible(int []surfaceDecodedWork, int piece, int rotat
 				  
 			  }
 		  }
-	  }
-	  if (addPossible && x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
+	  
+	  if ( x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
 		  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]-=PIECES_HEIGHTS[piece][rotation][PIECES_WIDTHS[piece][rotation]-1];
 		  if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]>maxJump){
 			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=maxJump;
