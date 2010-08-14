@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * COMBO RACE mode by awake 20100729
+ * COMBO RACE mode
  */
 public class ComboRaceMode extends DummyMode {
 	/** Current version */
@@ -67,7 +67,7 @@ public class ComboRaceMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE_MINI = 9;
 	
 	/** Number of starting shapes */
-	private static final int SHAPETYPE_MAX = 7;
+	private static final int SHAPETYPE_MAX = 9;
 
 	/** Names of starting shapes */
 	private static final String[] SHAPE_NAME_TABLE = {
@@ -78,17 +78,21 @@ public class ComboRaceMode extends DummyMode {
 		"RIGHT S",
 		"LEFT S",
 		"RIGHT Z",
+		"LEFT J",
+		"RIGHT L",
 	};
 	
 	/** Starting shape table */
 	private static final int[][] SHAPE_TABLE = {
-		{0,0,0,0,0,0,0,0},
-		{1,1,1,0,0,0,0,0},
-		{0,1,1,1,0,0,0,0},
-		{1,1,0,0,1,0,0,0},
-		{0,0,1,1,0,0,0,1},
-		{1,0,0,0,1,1,0,0},
-		{0,0,1,1,0,0,0,1}		
+		{0,0,0,0,0,0,0,0,0,0,0,0},
+		{1,1,1,0,0,0,0,0,0,0,0,0},
+		{0,1,1,1,0,0,0,0,0,0,0,0},
+		{1,1,0,0,1,0,0,0,0,0,0,0},
+		{0,0,1,1,0,0,0,1,0,0,0,0},
+		{1,0,0,0,1,1,0,0,0,0,0,0},
+		{0,0,0,1,0,0,1,1,0,0,0,0},
+		{1,0,0,0,1,0,0,0,1,0,0,0},
+		{0,0,0,1,0,0,0,1,0,0,0,1}
 	};
 	
 	/** Starting shape colour */
@@ -99,7 +103,9 @@ public class ComboRaceMode extends DummyMode {
 		Block.BLOCK_COLOR_RED,
 		Block.BLOCK_COLOR_GREEN,
 		Block.BLOCK_COLOR_GREEN,
-		Block.BLOCK_COLOR_RED
+		Block.BLOCK_COLOR_RED,
+		Block.BLOCK_COLOR_BLUE,
+		Block.BLOCK_COLOR_ORANGE
 	};
 	
 	/** Stack colour order */
@@ -440,7 +446,7 @@ public class ComboRaceMode extends DummyMode {
 			
 			receiver.drawMenuFont(engine, playerID, 0, 0, "GOAL", EventReceiver.COLOR_BLUE);
 			receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(GOAL_TABLE[goaltype]), (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "STARTSHAPE", EventReceiver.COLOR_BLUE);
+			receiver.drawMenuFont(engine, playerID, 0, 2, "STARTSHAPE", (comboWidth == 4), EventReceiver.COLOR_WHITE, EventReceiver.COLOR_BLUE);
 			receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(SHAPE_NAME_TABLE[shapetype]), (engine.statc[2] == 1));
 			receiver.drawMenuFont(engine, playerID, 0, 4, "COLUMN", EventReceiver.COLOR_BLUE);
 			receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(comboColumn), (engine.statc[2] == 2));
@@ -543,7 +549,7 @@ public class ComboRaceMode extends DummyMode {
 		
 		// insert starting shape
 		if(comboWidth == 4) {
-			for(int i = 0; i < 8; i++) {
+			for(int i = 0; i < 12; i++) {
 				if(SHAPE_TABLE[shapetype][i] == 1) {
 					engine.field.setBlock(i%4 + comboColumn - 1, h - 1 - i/4,new Block(SHAPE_COLOUR_TABLE[shapetype],engine.getSkin(),
 							Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_GARBAGE));
