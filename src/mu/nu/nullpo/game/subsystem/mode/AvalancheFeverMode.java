@@ -635,7 +635,8 @@ public class AvalancheFeverMode extends DummyMode {
 			if (toNextLevel <= 0)
 			{
 				toNextLevel = 15;
-				level++;
+				if (level < 99)
+					level++;
 			}
 			
 			pts *= chainLevelMultiplier;
