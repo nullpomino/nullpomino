@@ -1344,7 +1344,7 @@ public class AvalancheVSMode extends DummyMode {
 		if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_FEVER)
 		{
 			if (feverTime[playerID] > 0)
-				feverTime[playerID] += 300;
+				feverTime[playerID] = Math.min(feverTime[playerID]+300, feverTimeMax[playerID]*60);
 			if (inFever[playerID] || feverPoints[playerID] >= feverThreshold[playerID])
 			{
 				feverChain[playerID] += 2;
@@ -1359,30 +1359,20 @@ public class AvalancheVSMode extends DummyMode {
 		//Reset Fever board if necessary
 		if (inFever[playerID] && cleared[playerID])
 		{
-			int chainShort = feverChainNow - engine.chain;
-			if (chainShort <= 0)
-			{
+			int newFeverChain = Math.max(engine.chain+1, feverChainNow-2);
+			if (newFeverChain > feverChainNow)
 				engine.playSE("cool");
-				if (feverChain[playerID] < feverChainMax[playerID])
-					feverChain[playerID]++;
-			}
-			else if(chainShort == 2)
-			{
+			else if (newFeverChain < feverChainNow)
 				engine.playSE("regret");
-				feverChain[playerID]--;
-			}
-			else if (chainShort > 2)
-			{
-				engine.playSE("regret");
-				feverChain[playerID]-=2;
-			}
+			feverChain[playerID] += newFeverChain-feverChainNow;
 			if (feverChain[playerID] < feverChainMin[playerID])
 				feverChain[playerID] = feverChainMin[playerID];
+			if (feverChain[playerID] > feverChainMax[playerID])
+				feverChain[playerID] = feverChainMax[playerID];
 			if (feverTime[playerID] > 0)
 			{
-				int addTime = (engine.chain-2)*30;
-				if (addTime > 0)
-					feverTime[playerID] += addTime;
+				if (engine.chain > 2)
+					feverTime[playerID] += (engine.chain-2)*30;
 				loadFeverMap(engine, playerID, feverChain[playerID]);
 			}
 		}
@@ -1403,8 +1393,8 @@ public class AvalancheVSMode extends DummyMode {
 		}
 		//Drop garbage if needed.
 		int ojamaNow = inFever[playerID] ? ojamaFever[playerID] : ojama[playerID];
-		if (ojamaNow > 0 && !ojamaDrop[playerID] &&
-				(!cleared[playerID] || ojamaCounterMode[playerID] != OJAMA_COUNTER_FEVER))
+		if (ojamaNow > 0 && !ojamaDrop[playerID] && (!cleared[playerID] ||
+				(!inFever[playerID] && ojamaCounterMode[playerID] != OJAMA_COUNTER_FEVER)))
 		{
 			ojamaDrop[playerID] = true;
 			int drop = Math.min(ojamaNow, maxAttack[playerID]);

@@ -657,51 +657,35 @@ public class AvalancheFeverMode extends DummyMode {
 			garbageAdd = 0;
 		}
 		
-		int feverChainNow = feverChain;
 		if (cleared)
 		{
 			boardsPlayed++;
 			timeLimitAdd = 0;
-			if (zenKeshi && timeLimit > 0)
+			int newFeverChain = Math.max(engine.chain+1, feverChain-2);
+			if (newFeverChain > feverChain)
+				engine.playSE("cool");
+			else if (newFeverChain < feverChain)
+				engine.playSE("regret");
+			feverChain = newFeverChain;
+			if (zenKeshi)
 			{
-				if (timeLimit > 0)
-					timeLimitAdd += 180;
+				timeLimitAdd += 180;
 				feverChain += 2;
-				if (feverChain > feverChainMax)
-					feverChain = feverChainMax;
 			}
+			if (feverChain < feverChainMin)
+				feverChain = feverChainMin;
+			if (feverChain > feverChainMax)
+				feverChain = feverChainMax;
 			if (timeLimit > 0)
 			{
-				int addTime = (engine.chain-2)*60;
-				if (addTime > 0)
-					timeLimitAdd += addTime;
+				timeLimitAdd += Math.max(0, (engine.chain-2)*60);
 				if (timeLimitAdd > 0)
 				{
 					timeLimit += timeLimitAdd;
 					timeLimitAddDisplay = 120;
 				}
-			}
-			int chainShort = feverChainNow - engine.chain;
-			if (chainShort <= 0)
-			{
-				engine.playSE("cool");
-				if (feverChain < feverChainMax)
-					feverChain++;
-			}
-			else if(chainShort == 2)
-			{
-				engine.playSE("regret");
-				feverChain--;
-			}
-			else if (chainShort > 2)
-			{
-				engine.playSE("regret");
-				feverChain-=2;
-			}
-			if (feverChain < feverChainMin)
-				feverChain = feverChainMin;
-			if (timeLimit > 0)
 				loadFeverMap(engine, playerID, feverChain);
+			}
 		}
 		else if (engine.field != null)
 		{

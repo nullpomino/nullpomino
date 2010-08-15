@@ -905,12 +905,6 @@ public class AvalancheVSFeverMode extends DummyMode {
 					ojama[playerID] -= delta;
 					ojamaNew -= delta;
 				}
-				if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
-				{
-					int delta = Math.min(ojamaAdd[playerID], ojamaNew);
-					ojamaAdd[playerID] -= delta;
-					ojamaNew -= delta;
-				}
 				if (ojamaNew > 0)
 					ojamaAdd[enemyID] += ojamaNew;
 			}
@@ -927,41 +921,29 @@ public class AvalancheVSFeverMode extends DummyMode {
 			ojamaFever[enemyID] += ojamaAdd[enemyID];
 			ojamaAdd[enemyID] = 0;
 		}
-		int feverChainNow = feverChain[playerID];
-		if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_FEVER)
-		{
-			feverChain[playerID] += 2;
-			if (feverChain[playerID] > feverChainMax[playerID])
-				feverChain[playerID] = feverChainMax[playerID];
-			zenKeshi[playerID] = false;
-			zenKeshiDisplay[playerID] = 120;
-		}
 		//Reset Fever board if necessary
 		if (cleared[playerID])
 		{
-			int chainShort = feverChainNow - engine.chain;
-			if (chainShort <= 0)
-			{
+			int newFeverChain = Math.max(engine.chain+1, feverChain[playerID]-2);
+			if (newFeverChain > feverChain[playerID])
 				engine.playSE("cool");
-				if (feverChain[playerID] < feverChainMax[playerID])
-					feverChain[playerID]++;
-			}
-			else if(chainShort == 2)
-			{
+			else if (newFeverChain < feverChain[playerID])
 				engine.playSE("regret");
-				feverChain[playerID]--;
-			}
-			else if (chainShort > 2)
+			feverChain[playerID] = newFeverChain;
+			if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_FEVER)
 			{
-				engine.playSE("regret");
-				feverChain[playerID]-=2;
+				feverChain[playerID] += 2;
+				zenKeshi[playerID] = false;
+				zenKeshiDisplay[playerID] = 120;
 			}
 			if (feverChain[playerID] < feverChainMin[playerID])
 				feverChain[playerID] = feverChainMin[playerID];
+			if (feverChain[playerID] > feverChainMax[playerID])
+				feverChain[playerID] = feverChainMax[playerID];
 			loadFeverMap(engine, playerID, feverChain[playerID]);
 		}
 		//Drop garbage if needed.
-		if (ojamaFever[playerID] > 0 && !ojamaDrop[playerID])
+		if (ojamaFever[playerID] > 0 && !ojamaDrop[playerID] && !cleared[playerID])
 		{
 			ojamaDrop[playerID] = true;
 			int drop = Math.min(ojamaFever[playerID], maxAttack[playerID]);
