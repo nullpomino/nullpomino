@@ -33,8 +33,10 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.BGMStatus;
+import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
+import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
@@ -101,6 +103,12 @@ public class LineRaceMode extends NetDummyMode {
 	/** NET: Number of spectators */
 	private int netNumSpectators;
 
+	/** NET: Previous piece informations */
+	private int netPrevPieceID, netPrevPieceX, netPrevPieceY, netPrevPieceDir;
+
+	/** NET: The skin player using */
+	private int netPlayerSkin;
+
 	/*
 	 * Mode name
 	 */
@@ -149,6 +157,17 @@ public class LineRaceMode extends NetDummyMode {
 
 		engine.framecolor = GameEngine.FRAME_COLOR_RED;
 
+		netPrevPieceID = Piece.PIECE_NONE;
+		netPrevPieceX = 0;
+		netPrevPieceY = 0;
+		netPrevPieceDir = 0;
+		netPlayerSkin = 0;
+
+		if(netIsWatch) {
+			engine.isNextVisible = false;
+			engine.isHoldVisible = false;
+		}
+
 		if(engine.owner.replayMode == false) {
 			presetNumber = engine.owner.modeConfig.getProperty("linerace.presetNumber", 0);
 			loadPreset(engine, engine.owner.modeConfig, -1);
@@ -160,7 +179,7 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/**
-	 * Presetを読み込み
+	 * Load options from a preset
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 * @param preset Preset number
@@ -179,7 +198,7 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/**
-	 * Presetを保存
+	 * Save options to a preset
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 * @param preset Preset number
@@ -299,16 +318,11 @@ public class LineRaceMode extends NetDummyMode {
 
 				// NET: Signal options change
 				if(netIsNetPlay && (netNumSpectators > 0)) {
-					String msg = "game\toption\t";
-					msg += engine.speed.gravity + "\t" + engine.speed.denominator + "\t" + engine.speed.are + "\t";
-					msg += engine.speed.areLine + "\t" + engine.speed.lineDelay + "\t" + engine.speed.lockDelay + "\t";
-					msg += engine.speed.das + "\t" + bgmno + "\t" + big + "\t" + goaltype + "\t" + presetNumber;
-					msg += "\n";
-					netLobby.netPlayerClient.send(msg);
+					netSendOptions(engine);
 				}
 			}
 
-			// 決定
+			// Confirm
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (!netIsWatch)) {
 				engine.playSE("decide");
 
@@ -349,7 +363,7 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/*
-	 * 設定画面の描画
+	 * Render settings screen
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
@@ -373,7 +387,7 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理
+	 * This function will be called before the game actually begins (after Ready&Go screen disappears)
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -389,11 +403,37 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// NET: Send field
+		// NET: Send field, next, and stats
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) &&
-		   (playerID == 0) && (netIsNetPlay) && (!netIsWatch))
+		   (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0))
 		{
 			netSendField(engine);
+			netSendStats(engine);
+		}
+		// NET: Send piece movement
+		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (engine.nowPieceObject != null) && (netNumSpectators > 0))
+		{
+			if( ((engine.nowPieceObject == null) && (netPrevPieceID != Piece.PIECE_NONE)) || (engine.manualLock) )
+			{
+				netPrevPieceID = Piece.PIECE_NONE;
+				netLobby.netPlayerClient.send("game\tpiece\t" + netPrevPieceID + "\t" + netPrevPieceX + "\t" + netPrevPieceY + "\t" +
+						netPrevPieceDir + "\t" + 0 + "\t" + engine.getSkin() + "\n");
+				netSendNextAndHold(engine);
+			}
+			else if((engine.nowPieceObject.id != netPrevPieceID) || (engine.nowPieceX != netPrevPieceX) ||
+					(engine.nowPieceY != netPrevPieceY) || (engine.nowPieceObject.direction != netPrevPieceDir))
+			{
+				netPrevPieceID = engine.nowPieceObject.id;
+				netPrevPieceX = engine.nowPieceX;
+				netPrevPieceY = engine.nowPieceY;
+				netPrevPieceDir = engine.nowPieceObject.direction;
+
+				int x = netPrevPieceX + engine.nowPieceObject.dataOffsetX[netPrevPieceDir];
+				int y = netPrevPieceY + engine.nowPieceObject.dataOffsetY[netPrevPieceDir];
+				netLobby.netPlayerClient.send("game\tpiece\t" + netPrevPieceID + "\t" + x + "\t" + y + "\t" + netPrevPieceDir + "\t" +
+								engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[netPrevPieceID] + "\t" + engine.getSkin() + "\n");
+				netSendNextAndHold(engine);
+			}
 		}
 		// NET: Stop game in watch mode
 		if(netIsWatch) {
@@ -408,8 +448,10 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
-		if((engine.ending == 0) && (playerID == 0) && (netIsNetPlay) && (!netIsWatch)) {
+		// NET: Send field and stats
+		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
 			netSendField(engine);
+			netSendStats(engine);
 		}
 	}
 
@@ -418,8 +460,24 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onLineClear(GameEngine engine, int playerID) {
-		if((engine.statc[0] == 1) && (engine.ending == 0) && (playerID == 0) && (netIsNetPlay) && (!netIsWatch)) {
+		// NET: Send field and stats
+		if((engine.statc[0] == 1) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
 			netSendField(engine);
+			netSendStats(engine);
+		}
+		return false;
+	}
+
+	/*
+	 * ARE
+	 */
+	@Override
+	public boolean onARE(GameEngine engine, int playerID) {
+		// NET: Send field, next, and stats
+		if((engine.statc[0] == 0) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
+			netSendField(engine);
+			netSendNextAndHold(engine);
+			netSendStats(engine);
 		}
 		return false;
 	}
@@ -468,13 +526,13 @@ public class LineRaceMode extends NetDummyMode {
 		}
 
 		if(netIsNetPlay) {
-			receiver.drawDirectFont(engine, 0, 503, 302, "SPECTATORS", EventReceiver.COLOR_CYAN, 0.5f);
-			receiver.drawDirectFont(engine, 0, 503, 310, "" + netNumSpectators, EventReceiver.COLOR_WHITE, 0.5f);
+			receiver.drawScoreFont(engine, playerID, 0, 18, "SPECTATORS", EventReceiver.COLOR_CYAN);
+			receiver.drawScoreFont(engine, playerID, 0, 19, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
 
 			if(netIsWatch) {
-				receiver.drawDirectFont(engine, 0, 503, 318, "WATCH", EventReceiver.COLOR_GREEN, 0.5f);
+				receiver.drawScoreFont(engine, playerID, 0, 20, "WATCH", EventReceiver.COLOR_GREEN);
 			} else {
-				receiver.drawDirectFont(engine, 0, 503, 318, "PLAY", EventReceiver.COLOR_RED, 0.5f);
+				receiver.drawScoreFont(engine, playerID, 0, 20, "PLAY", EventReceiver.COLOR_RED);
 			}
 		}
 	}
@@ -496,14 +554,18 @@ public class LineRaceMode extends NetDummyMode {
 			engine.playSE("bravo");
 		}
 
-		// ゴール
+		// Game completed
 		if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
 			engine.ending = 1;
 			engine.timerActive = false;
 			engine.gameActive = false;
 
 			if(netIsNetPlay && !netIsWatch) {
-				netSendField(engine);
+				if(netNumSpectators > 0) {
+					netSendField(engine);
+					netSendNextAndHold(engine);
+					netSendStats(engine);
+				}
 				netLobby.netPlayerClient.send("game\tending\n");
 			}
 		} else if(engine.statistics.lines >= GOAL_TABLE[goaltype] - 5) {
@@ -519,7 +581,11 @@ public class LineRaceMode extends NetDummyMode {
 		if(netIsNetPlay){
 			if(!netIsWatch) {
 				if(engine.statc[0] == 0) {
-					netSendField(engine);
+					if(netNumSpectators > 0) {
+						netSendField(engine);
+						netSendNextAndHold(engine);
+						netSendStats(engine);
+					}
 					netLobby.netPlayerClient.send("dead\t-1\n");
 				}
 			} else {
@@ -597,14 +663,15 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/*
-	 * リプレイ保存
+	 * Save replay file
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		savePreset(engine, engine.owner.replayProp, -1);
 
 		// Update rankings
-		if((owner.replayMode == false) && (engine.statistics.lines >= GOAL_TABLE[goaltype]) && (big == false) && (engine.ai == null)) {
+		if((!owner.replayMode) && (engine.statistics.lines >= GOAL_TABLE[goaltype]) && (!big) && (engine.ai == null) && (!netIsWatch))
+		{
 			updateRanking(engine.statistics.time, engine.statistics.totalPieceLocked, engine.statistics.pps);
 
 			if(rankingRank != -1) {
@@ -647,7 +714,7 @@ public class LineRaceMode extends NetDummyMode {
 	/**
 	 * Update rankings
 	 * @param time Time
-	 * @param piece ピースcount
+	 * @param piece Piece count
 	 */
 	private void updateRanking(int time, int piece, float pps) {
 		rankingRank = checkRanking(time, piece, pps);
@@ -670,7 +737,7 @@ public class LineRaceMode extends NetDummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param time Time
-	 * @param piece ピースcount
+	 * @param piece Piece count
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int time, int piece, float pps) {
@@ -709,8 +776,6 @@ public class LineRaceMode extends NetDummyMode {
 	 * @param engine GameEngine
 	 */
 	private void netSendField(GameEngine engine) {
-		if(netNumSpectators < 1) return;
-
 		String strSrcFieldData = engine.field.fieldToString();
 		int nocompSize = strSrcFieldData.length();
 
@@ -723,12 +788,68 @@ public class LineRaceMode extends NetDummyMode {
 			strFieldData = strCompFieldData;
 			isCompressed = true;
 		}
-		//log.debug("nocompSize:" + nocompSize + " compSize:" + compSize + " isCompressed:" + isCompressed);
 
-		String msg = "game\tfield\t" + engine.statistics.lines + "\t" + goaltype + "\t";
-		msg += engine.getSkin() + "\t" + engine.field.getHighestGarbageBlockY() + "\t";
+		String msg = "game\tfield\t";
+		msg += engine.getSkin() + "\t";
 		msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
 		msg += strFieldData + "\t" + isCompressed + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send various in-game stats (as well as goaltype)
+	 * @param engine GameEngine
+	 */
+	private void netSendStats(GameEngine engine) {
+		String msg = "game\tstats\t";
+		msg += engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
+		msg += engine.statistics.time + "\t" + engine.statistics.lpm + "\t";
+		msg += engine.statistics.pps + "\t" + rankingRank + "\t" + goaltype;
+		msg += "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send next and hold piece informations to all spectators
+	 * @param engine GameEngine
+	 */
+	private void netSendNextAndHold(GameEngine engine) {
+		int holdID = Piece.PIECE_NONE;
+		int holdDirection = Piece.DIRECTION_UP;
+		int holdColor = Block.BLOCK_COLOR_GRAY;
+		if(engine.holdPieceObject != null) {
+			holdID = engine.holdPieceObject.id;
+			holdDirection = engine.holdPieceObject.direction;
+			holdColor = engine.ruleopt.pieceColor[engine.holdPieceObject.id];
+		}
+
+		String msg = "game\tnext\t" + engine.ruleopt.nextDisplay + "\t" + engine.holdDisable + "\t";
+
+		for(int i = -1; i < engine.ruleopt.nextDisplay; i++) {
+			if(i < 0) {
+				msg += holdID + ";" + holdDirection + ";" + holdColor;
+			} else {
+				Piece nextObj = engine.getNextObject(engine.nextPieceCount + i);
+				msg += nextObj.id + ";" + nextObj.direction + ";" + engine.ruleopt.pieceColor[nextObj.id];
+			}
+
+			if(i < engine.ruleopt.nextDisplay - 1) msg += "\t";
+		}
+
+		msg += "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send game options to all spectators
+	 * @param engine GameEngine
+	 */
+	private void netSendOptions(GameEngine engine) {
+		String msg = "game\toption\t";
+		msg += engine.speed.gravity + "\t" + engine.speed.denominator + "\t" + engine.speed.are + "\t";
+		msg += engine.speed.areLine + "\t" + engine.speed.lineDelay + "\t" + engine.speed.lockDelay + "\t";
+		msg += engine.speed.das + "\t" + bgmno + "\t" + big + "\t" + goaltype + "\t" + presetNumber;
+		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -778,8 +899,10 @@ public class LineRaceMode extends NetDummyMode {
 			log.debug("NET: Dead");
 
 			if(netIsWatch) {
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[0].resetStatc();
+				if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[0].stat != GameEngine.STAT_RESULT)) {
+					owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+					owner.engine[0].resetStatc();
+				}
 			}
 		}
 		// Game messages
@@ -814,32 +937,112 @@ public class LineRaceMode extends NetDummyMode {
 				}
 				// Field
 				if(message[3].equals("field")) {
-					if(message.length > 7) {
+					if(message.length > 5) {
 						engine.nowPieceObject = null;
 						engine.holdDisable = false;
 						if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
-						engine.statistics.lines = Integer.parseInt(message[4]);
-						goaltype = Integer.parseInt(message[5]);
-						int skin = Integer.parseInt(message[6]);
-						int highestGarbageY = Integer.parseInt(message[7]);
-						int highestWallY = Integer.parseInt(message[8]);
-						if(message.length > 10) {
-							String strFieldData = message[9];
-							boolean isCompressed = Boolean.parseBoolean(message[10]);
+						int skin = Integer.parseInt(message[4]);
+						int highestWallY = Integer.parseInt(message[5]);
+						netPlayerSkin = skin;
+						if(message.length > 7) {
+							String strFieldData = message[6];
+							boolean isCompressed = Boolean.parseBoolean(message[7]);
 							if(isCompressed) {
 								strFieldData = NetUtil.decompressString(strFieldData);
 							}
-							engine.field.stringToField(strFieldData, skin, highestGarbageY, highestWallY);
+							engine.field.stringToField(strFieldData, skin, highestWallY, highestWallY);
 						} else {
 							engine.field.reset();
 						}
-
-						int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
-						engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
-						if(remainLines <= 30) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-						if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-						if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
 					}
+				}
+				// Stats
+				if(message[3].equals("stats")) {
+					engine.statistics.lines = Integer.parseInt(message[4]);
+					engine.statistics.totalPieceLocked = Integer.parseInt(message[5]);
+					engine.statistics.time = Integer.parseInt(message[6]);
+					engine.statistics.lpm = Float.parseFloat(message[7]);
+					engine.statistics.pps = Float.parseFloat(message[8]);
+					rankingRank = Integer.parseInt(message[9]);
+					goaltype = Integer.parseInt(message[10]);
+
+					// Update meter
+					int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
+					engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
+					if(remainLines <= 30) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+					if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+					if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
+				}
+				// Current Piece
+				if(message[3].equals("piece")) {
+					int id = Integer.parseInt(message[4]);
+
+					if(id >= 0) {
+						int pieceX = Integer.parseInt(message[5]);
+						int pieceY = Integer.parseInt(message[6]);
+						int pieceDir = Integer.parseInt(message[7]);
+						//int pieceBottomY = Integer.parseInt(message[8]);
+						int pieceColor = Integer.parseInt(message[9]);
+						int pieceSkin = Integer.parseInt(message[10]);
+
+						engine.nowPieceObject = new Piece(id);
+						engine.nowPieceObject.direction = pieceDir;
+						engine.nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+						engine.nowPieceObject.setColor(pieceColor);
+						engine.nowPieceObject.setSkin(pieceSkin);
+						engine.nowPieceX = pieceX;
+						engine.nowPieceY = pieceY;
+						//engine.nowPieceBottomY = pieceBottomY;
+						engine.nowPieceObject.updateConnectData();
+						engine.nowPieceBottomY =
+							engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
+
+						if(engine.stat != GameEngine.STAT_EXCELLENT) {
+							engine.stat = GameEngine.STAT_MOVE;
+							engine.statc[0] = 2;
+						}
+
+						netPlayerSkin = pieceSkin;
+					} else {
+						engine.nowPieceObject = null;
+					}
+				}
+				// Next and Hold
+				if(message[3].equals("next")) {
+					int maxNext = Integer.parseInt(message[4]);
+					engine.ruleopt.nextDisplay = maxNext;
+					engine.holdDisable = Boolean.parseBoolean(message[5]);
+
+					for(int i = 0; i < maxNext + 1; i++) {
+						if(i + 6 < message.length) {
+							String[] strPieceData = message[i + 6].split(";");
+							int pieceID = Integer.parseInt(strPieceData[0]);
+							int pieceDirection = Integer.parseInt(strPieceData[1]);
+							int pieceColor = Integer.parseInt(strPieceData[2]);
+
+							if(i == 0) {
+								if(pieceID == Piece.PIECE_NONE) {
+									engine.holdPieceObject = null;
+								} else {
+									engine.holdPieceObject = new Piece(pieceID);
+									engine.holdPieceObject.direction = pieceDirection;
+									engine.holdPieceObject.setColor(pieceColor);
+									engine.holdPieceObject.setSkin(netPlayerSkin);
+								}
+							} else {
+								if((engine.nextPieceArrayObject == null) || (engine.nextPieceArrayObject.length < maxNext)) {
+									engine.nextPieceArrayObject = new Piece[maxNext];
+								}
+								engine.nextPieceArrayObject[i - 1] = new Piece(pieceID);
+								engine.nextPieceArrayObject[i - 1].direction = pieceDirection;
+								engine.nextPieceArrayObject[i - 1].setColor(pieceColor);
+								engine.nextPieceArrayObject[i - 1].setSkin(netPlayerSkin);
+							}
+						}
+					}
+
+					engine.isNextVisible = true;
+					engine.isHoldVisible = true;
 				}
 				// Ending
 				if(message[3].equals("ending")) {

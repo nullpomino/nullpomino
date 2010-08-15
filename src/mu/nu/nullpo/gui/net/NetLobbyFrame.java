@@ -2801,6 +2801,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					addSystemChatLogLater(txtpaneRoomChatLog, strTemp, Color.blue);
 					setRoomJoinButtonVisible(false);
 				}
+				if(netPlayerClient.getRoomInfo(roomID).singleplayer) {
+					btnRoomButtonsJoin.setVisible(false);
+					btnRoomButtonsSitOut.setVisible(false);
+				}
+
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						setRoomButtonsEnabled(true);
