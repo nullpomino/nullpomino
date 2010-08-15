@@ -216,9 +216,13 @@ public class DummyMode implements GameMode {
 		{
 			if ((i&1) == 0)
 				receiver.drawMenuFont(engine, playerID, 0, y+i, str[i], color);
-			else
+			else if (engine.statc[2] == statc && !engine.owner.replayMode)
 			{
-				receiver.drawMenuFont(engine, playerID, 0, y+i, str[i], (engine.statc[2] == statc));
+				receiver.drawMenuFont(engine, playerID, 0, y+i, "b" + str[i], true);
+				statc++;
+			}
+			else {
+				receiver.drawMenuFont(engine, playerID, 1, y+i, str[i]);
 				statc++;
 			}
 		}

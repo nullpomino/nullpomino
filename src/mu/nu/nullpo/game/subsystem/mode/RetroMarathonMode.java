@@ -314,18 +314,11 @@ public class RetroMarathonMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "LEVEL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 3, LEVEL_NAME[startlevel], (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "HEIGHT", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(startheight), (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "BIG", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(big), (engine.statc[2] == 3));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"GAME TYPE", GAMETYPE_NAME[gametype],
+				"LEVEL", LEVEL_NAME[startlevel],
+				"HEIGHT", String.valueOf(startheight),
+				"BIG", GeneralUtil.getONorOFF(big));
 	}
 	
 	public boolean onReady(GameEngine engine, int playerID) {

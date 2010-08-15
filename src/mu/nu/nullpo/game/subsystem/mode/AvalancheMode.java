@@ -382,33 +382,26 @@ public class AvalancheMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"GAME TYPE", GAMETYPE_NAME[gametype]);
 		if (gametype == 2)
 		{
-			receiver.drawMenuFont(engine, playerID, 0, 2, "TARGET", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(SPRINT_MAX_SCORE[sprintTarget]), (engine.statc[2] == 1));
+			drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE, 1,
+					"TARGET", String.valueOf(SPRINT_MAX_SCORE[sprintTarget]));
 		}
-		receiver.drawMenuFont(engine, playerID, 0, 4, "SCORE TYPE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, SCORETYPE_NAME[scoreType], (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "OUTLINE", EventReceiver.COLOR_BLUE);
+		
 		String strOutline = "";
 		if(outlinetype == 0) strOutline = "NORMAL";
 		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
-		receiver.drawMenuFont(engine, playerID, 1, 7, strOutline, (engine.statc[2] == 3));
-		receiver.drawMenuFont(engine, playerID, 0, 8, "COLORS", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 9, String.valueOf(numColors), (engine.statc[2] == 4));
-		receiver.drawMenuFont(engine, playerID, 0, 10, "X COLUMN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 11, dangerColumnDouble ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 5));
-		receiver.drawMenuFont(engine, playerID, 0, 12, "X SHOW", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(dangerColumnShowX), (engine.statc[2] == 6));
-		receiver.drawMenuFont(engine, playerID, 0, 14, "SHOW CHAIN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 15, GeneralUtil.getONorOFF(showChains), (engine.statc[2] == 7));
+		
+		drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE, 2,
+				"SCORE TYPE", SCORETYPE_NAME[scoreType],
+				"OUTLINE", strOutline,
+				"COLORS", String.valueOf(numColors),
+				"X COLUMN", dangerColumnDouble ? "3 AND 4" : "3 ONLY",
+				"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX),
+				"SHOW CHAIN", GeneralUtil.getONorOFF(showChains));
 	}
 
 	/*

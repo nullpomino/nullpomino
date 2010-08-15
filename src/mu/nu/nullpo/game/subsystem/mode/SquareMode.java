@@ -248,32 +248,24 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "OUTLINE", EventReceiver.COLOR_BLUE);
 		String strOutline = "";
 		if(outlinetype == 0) strOutline = "NORMAL";
 		if(outlinetype == 1) strOutline = "CONNECT";
 		if(outlinetype == 2) strOutline = "NONE";
-		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "AVALANCHE", EventReceiver.COLOR_BLUE);
 		String strTSpinEnable = "";
 		if(tspinEnableType == 0) strTSpinEnable = "OFF";
 		if(tspinEnableType == 1) strTSpinEnable = "T-ONLY";
 		if(tspinEnableType == 2) strTSpinEnable = "ALL";
-		receiver.drawMenuFont(engine, playerID, 1, 5, strTSpinEnable, (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "AVALANCHE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, tntAvalanche ? "TNT" : "WORLDS", (engine.statc[2] == 3));
-		receiver.drawMenuFont(engine, playerID, 0, 8, "GRAYOUT", EventReceiver.COLOR_BLUE);
 		String grayoutStr = "";
 		if(grayoutEnable == 0) grayoutStr = "OFF";
 		if(grayoutEnable == 1) grayoutStr = "SPIN ONLY";
 		if(grayoutEnable == 2) grayoutStr = "ALL";
-		receiver.drawMenuFont(engine, playerID, 1, 9, grayoutStr, (engine.statc[2] == 4));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"GAME TYPE", GAMETYPE_NAME[gametype],
+				"OUTLINE", strOutline,
+				"AVALANCHE", strTSpinEnable,
+				"AVALANCHE", tntAvalanche ? "TNT" : "WORLDS",
+				"GRAYOUT", grayoutStr);
 	}
 
 	/*

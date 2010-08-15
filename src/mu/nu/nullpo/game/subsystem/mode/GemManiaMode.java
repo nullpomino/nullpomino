@@ -814,63 +814,40 @@ public class GemManiaMode extends DummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(editModeScreen == 1) {
-			// エディットメニュー メイン画面
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "STAGE EDIT", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 1, "[PUSH A]", (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "LOAD STAGE", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 3, "[" + getStageName(startstage) + "]", (engine.statc[2] == 1));
-			receiver.drawMenuFont(engine, playerID, 0, 4, "SAVE STAGE", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 5, "[" + getStageName(startstage) + "]", (engine.statc[2] == 2));
-			receiver.drawMenuFont(engine, playerID, 0, 6, "LOAD", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 7, "[SET " + stageset + "]", (engine.statc[2] == 3));
-			receiver.drawMenuFont(engine, playerID, 0, 8, "SAVE", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 9, "[SET " + stageset + "]", (engine.statc[2] == 4));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 0,
+					"STAGE EDIT", "[PUSH A]",
+					"LOAD STAGE", "[" + getStageName(startstage) + "]",
+					"SAVE STAGE", "[" + getStageName(startstage) + "]",
+					"LOAD", "[SET " + stageset + "]",
+					"SAVE", "[SET " + stageset + "]");
 
 			receiver.drawMenuFont(engine, playerID, 0, 19, "EXIT-> D+E", EventReceiver.COLOR_ORANGE);
 		} else if(editModeScreen == 2) {
 			// エディットメニュー ステージ画面
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "MAP EDIT", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 1, "[PUSH A]", (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "STAGE TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 3, GeneralUtil.getTime(stagetimeStart), (engine.statc[2] == 1));
-			receiver.drawMenuFont(engine, playerID, 0, 4, "LIMIT TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getTime(limittimeStart), (engine.statc[2] == 2));
-			receiver.drawMenuFont(engine, playerID, 0, 6, "BGM", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 7, ""+stagebgm, (engine.statc[2] == 3));
-			receiver.drawMenuFont(engine, playerID, 0, 8, "MIRROR", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 9, (gimmickMirror == 0) ? "OFF" : String.valueOf(gimmickMirror), (engine.statc[2] == 4));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 0,
+					"MAP EDIT", "[PUSH A]",
+					"STAGE TIME", GeneralUtil.getTime(stagetimeStart),
+					"LIMIT TIME", GeneralUtil.getTime(limittimeStart),
+					"BGM", String.valueOf(stagebgm),
+					"MIRROR", (gimmickMirror == 0) ? "OFF" : String.valueOf(gimmickMirror));
 		} else {
 			// 普通のメニュー
 			if(engine.owner.replayMode == false) {
-				receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
 				receiver.drawMenuFont(engine, playerID, 0, 19, "D:EDIT", EventReceiver.COLOR_ORANGE);
 			}
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "STAGE NO.", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 1, getStageName(startstage), (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "STAGE SET", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 3, (stageset < 0) ? "DEFAULT" : "EDIT "+stageset, (engine.statc[2] == 1));
-			receiver.drawMenuFont(engine, playerID, 0, 4, "FULL GHOST", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(alwaysghost), (engine.statc[2] == 2));
-			receiver.drawMenuFont(engine, playerID, 0, 6, "20G MODE", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(always20g), (engine.statc[2] == 3));
-			receiver.drawMenuFont(engine, playerID, 0, 8, "LVSTOPSE", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(lvstopse), (engine.statc[2] == 4));
-			receiver.drawMenuFont(engine, playerID, 0, 10, "SHOW STIME", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(showsectiontime), (engine.statc[2] == 5));
-			receiver.drawMenuFont(engine, playerID, 0, 12, "RANDOM", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(randomnext), (engine.statc[2] == 6));
-			receiver.drawMenuFont(engine, playerID, 0, 14, "TRAINING", EventReceiver.COLOR_PINK);
 			String strTrainingType = "OFF";
 			if(trainingType == 1) strTrainingType = "ON";
 			if(trainingType == 2) strTrainingType = "ON+RESET";
-			receiver.drawMenuFont(engine, playerID, 1, 15, strTrainingType, (engine.statc[2] == 7));
-			receiver.drawMenuFont(engine, playerID, 0, 16, "NEXT COUNT", EventReceiver.COLOR_PINK);
-			receiver.drawMenuFont(engine, playerID, 1, 17, ""+startnextc, (engine.statc[2] == 8));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 0,
+					"STAGE NO.", getStageName(startstage),
+					"STAGE SET", (stageset < 0) ? "DEFAULT" : "EDIT "+stageset,
+					"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
+					"20G MODE", GeneralUtil.getONorOFF(always20g),
+					"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse), 
+					"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
+					"RANDOM", GeneralUtil.getONorOFF(randomnext),
+					"TRAINING", strTrainingType,
+					"NEXT COUNT", String.valueOf(startnextc));
 		}
 	}
 

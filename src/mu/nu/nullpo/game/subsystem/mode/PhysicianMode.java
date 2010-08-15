@@ -219,14 +219,9 @@ public class PhysicianMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "GEMS", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(hoverBlocks), (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "SPEED", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 3, SPEED_NAME[speed], (engine.statc[2] == 1));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"GEMS", String.valueOf(hoverBlocks),
+				"SPEED", SPEED_NAME[speed]);
 	}
 
 	/*

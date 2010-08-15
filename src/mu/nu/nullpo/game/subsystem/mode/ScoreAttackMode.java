@@ -361,20 +361,12 @@ public class ScoreAttackMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "LEVEL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(startlevel * 100), (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "FULL GHOST", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 3, GeneralUtil.getONorOFF(alwaysghost), (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "20G MODE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(always20g), (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "SHOW STIME", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(showsectiontime), (engine.statc[2] == 3));
-		receiver.drawMenuFont(engine, playerID, 0, 8, "BIG", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(big), (engine.statc[2] == 4));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"LEVEL", String.valueOf(startlevel * 100),
+				"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
+				"20G MODE", GeneralUtil.getONorOFF(always20g),
+				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
+				"BIG",  GeneralUtil.getONorOFF(big));
 	}
 
 	/**

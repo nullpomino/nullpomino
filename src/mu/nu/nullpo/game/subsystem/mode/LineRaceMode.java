@@ -354,39 +354,21 @@ public class LineRaceMode extends NetDummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[2] < 10) {
-			if(!owner.replayMode) {
-				receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-			}
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "GRAVITY", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "G-MAX", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
-			receiver.drawMenuFont(engine, playerID, 0, 4, "ARE", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(engine.speed.are), (engine.statc[2] == 2));
-			receiver.drawMenuFont(engine, playerID, 0, 6, "ARE LINE", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 7, String.valueOf(engine.speed.areLine), (engine.statc[2] == 3));
-			receiver.drawMenuFont(engine, playerID, 0, 8, "LINE DELAY", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 9, String.valueOf(engine.speed.lineDelay), (engine.statc[2] == 4));
-			receiver.drawMenuFont(engine, playerID, 0, 10, "LOCK DELAY", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(engine.speed.lockDelay), (engine.statc[2] == 5));
-			receiver.drawMenuFont(engine, playerID, 0, 12, "DAS", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(engine.speed.das), (engine.statc[2] == 6));
-			receiver.drawMenuFont(engine, playerID, 0, 14, "BGM", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(bgmno), (engine.statc[2] == 7));
-			receiver.drawMenuFont(engine, playerID, 0, 16, "BIG", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getONorOFF(big), (engine.statc[2] == 8));
-			receiver.drawMenuFont(engine, playerID, 0, 18, "GOAL", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 19, String.valueOf(GOAL_TABLE[goaltype]), (engine.statc[2] == 9));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+					"GRAVITY", String.valueOf(engine.speed.gravity),
+					"G-MAX", String.valueOf(engine.speed.denominator),
+					"ARE", String.valueOf(engine.speed.are),
+					"ARE LINE", String.valueOf(engine.speed.areLine),
+					"LINE DELAY", String.valueOf(engine.speed.lineDelay),
+					"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
+					"DAS", String.valueOf(engine.speed.das),
+					"BGM", String.valueOf(bgmno),
+					"BIG",  GeneralUtil.getONorOFF(big),
+					"GOAL", String.valueOf(GOAL_TABLE[goaltype]));
 		} else {
-			if(!owner.replayMode) {
-				receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 10) * 2) + 1, "b", EventReceiver.COLOR_RED);
-			}
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "LOAD", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(presetNumber), (engine.statc[2] == 10));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "SAVE", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(presetNumber), (engine.statc[2] == 11));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 10,
+					"LOAD", String.valueOf(presetNumber),
+					"SAVE", String.valueOf(presetNumber));
 		}
 	}
 

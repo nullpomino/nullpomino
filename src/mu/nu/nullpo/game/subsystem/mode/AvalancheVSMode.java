@@ -609,7 +609,7 @@ public class AvalancheVSMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 37);
+			int change = updateCursor(engine, 38);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -905,127 +905,67 @@ public class AvalancheVSMode extends DummyMode {
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
 			if(engine.statc[2] < 9) {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "GRAVITY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0 && !owner.replayMode));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "G-MAX", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "ARE", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(engine.speed.are), (engine.statc[2] == 2));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "ARE LINE", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(engine.speed.areLine), (engine.statc[2] == 3));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "LINE DELAY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(engine.speed.lineDelay), (engine.statc[2] == 4));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "LOCK DELAY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(engine.speed.lockDelay), (engine.statc[2] == 5));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "DAS", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(engine.speed.das), (engine.statc[2] == 6));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "FALL DELAY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(engine.cascadeDelay), (engine.statc[2] == 7));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "CLEAR DELAY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(engine.cascadeClearDelay), (engine.statc[2] == 8));
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
+						"GRAVITY", String.valueOf(engine.speed.gravity),
+						"G-MAX", String.valueOf(engine.speed.denominator),
+						"ARE", String.valueOf(engine.speed.are),
+						"ARE LINE", String.valueOf(engine.speed.areLine),
+						"LINE DELAY", String.valueOf(engine.speed.lineDelay),
+						"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
+						"DAS", String.valueOf(engine.speed.das),
+						"FALL DELAY", String.valueOf(engine.cascadeDelay),
+						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "COUNTER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
-						(engine.statc[2] == 9 && !owner.replayMode));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAX ATTACK", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(maxAttack[playerID]), (engine.statc[2] == 10));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "COLORS", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(numColors[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "MIN CHAIN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(rensaShibari[playerID]), (engine.statc[2] == 12));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "OJAMA RATE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(ojamaRate[playerID]), (engine.statc[2] == 13));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-				                      (engine.statc[2] == 14));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "HARD OJAMA", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(ojamaHard[playerID]), (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "X COLUMN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY", (engine.statc[2] == 16));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "X SHOW", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getONorOFF(dangerColumnShowX[playerID]), (engine.statc[2] == 17));
-
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
+						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
+						"MAX ATTACK", String.valueOf(maxAttack[playerID]),
+						"COLORS", String.valueOf(numColors[playerID]),
+						"MIN CHAIN", String.valueOf(rensaShibari[playerID]),
+						"OJAMA RATE", String.valueOf(ojamaRate[playerID]),
+						"HURRYUP", (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
+						"HARD OJAMA", String.valueOf(ojamaHard[playerID]),
+						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
+						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
+				
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 27) {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 18) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "FEVER", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS",
-				                      (engine.statc[2] == 18) && !owner.replayMode);
-				receiver.drawMenuFont(engine, playerID, 0,  2, "F-MIN TIME", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1,  3, feverTimeMin[playerID] + "SEC", (engine.statc[2] == 19));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "F-MAX TIME", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1,  5, feverTimeMax[playerID] + "SEC", (engine.statc[2] == 20));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "F-MAP SET", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1,  7, FEVER_MAPS[feverMapSet[playerID]].toUpperCase(), (engine.statc[2] == 21));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "F-DISPLAY", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1,  9, feverShowMeter[playerID] ? "METER" : "COUNT", (engine.statc[2] == 22));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "F-ADDPOINT", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1, 11, FEVER_POINT_CRITERIA_NAMES[feverPointCriteria[playerID]], (engine.statc[2] == 23));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "F-ADDTIME", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1, 13, FEVER_TIME_CRITERIA_NAMES[feverTimeCriteria[playerID]], (engine.statc[2] == 24));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "F-POWER", EventReceiver.COLOR_PURPLE);
-				receiver.drawMenuFont(engine, playerID, 1, 15, (feverPower[playerID] * 10) + "%", (engine.statc[2] == 25));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "ZENKESHI", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]], (engine.statc[2] == 26));
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
+						"FEVER", (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS",
+						"F-MIN TIME", feverTimeMin[playerID] + "SEC",
+						"F-MAX TIME", feverTimeMax[playerID] + "SEC",
+						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase(),
+						"F-DISPLAY", feverShowMeter[playerID] ? "METER" : "COUNT",
+						"F-ADDPOINT", FEVER_POINT_CRITERIA_NAMES[feverPointCriteria[playerID]],
+						"F-ADDTIME", FEVER_TIME_CRITERIA_NAMES[feverTimeCriteria[playerID]],
+						"F-POWER", (feverPower[playerID] * 10) + "%");
+				drawMenu(engine, playerID, receiver, 16, EventReceiver.COLOR_CYAN, 26,
+						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 31) {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 27) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-				receiver.drawMenuFont(engine, playerID, 0,  0, "SIDE METER", EventReceiver.COLOR_DARKBLUE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, (ojamaMeter[playerID] || feverThreshold[playerID] == 0) ? "OJAMA" : "FEVER",
-						(engine.statc[2] == 27 && !owner.replayMode));
-				receiver.drawMenuFont(engine, playerID, 0,  2, "OUTLINE", EventReceiver.COLOR_DARKBLUE);
-				receiver.drawMenuFont(engine, playerID, 1,  3, OUTLINE_TYPE_NAMES[outlineType[playerID]], (engine.statc[2] == 28));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "SHOW CHAIN", EventReceiver.COLOR_DARKBLUE);
-				receiver.drawMenuFont(engine, playerID, 1,  5, CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]], (engine.statc[2] == 29));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "CHAINPOWER", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, newChainPower[playerID] ? "FEVER" : "CLASSIC", (engine.statc[2] == 30));
-
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_DARKBLUE, 27,
+						"SIDE METER", (ojamaMeter[playerID] || feverThreshold[playerID] == 0) ? "OJAMA" : "FEVER",
+						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
+						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]]);
+				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_CYAN, 30,
+						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
 			} else {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 31) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "USE MAP", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(useMap[playerID]),
-						(engine.statc[2] == 31) && !owner.replayMode);
-				receiver.drawMenuFont(engine, playerID, 0,  2, "MAP SET", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(mapSet[playerID]), (engine.statc[2] == 32));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "MAP NO.", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1,  5, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-									  (engine.statc[2] == 33));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "BIG", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1,  7, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 34));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "BGM", EventReceiver.COLOR_DARKBLUE);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(bgmno), (engine.statc[2] == 35));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "SE", EventReceiver.COLOR_DARKBLUE);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 36));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "LOAD", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 37));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "SAVE", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 38));
-
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 31,
+						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
+						"MAP SET", String.valueOf(mapSet[playerID]),
+						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
+						"BIG", GeneralUtil.getONorOFF(big[playerID]));
+				
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 35,
+						"BGM", String.valueOf(bgmno),
+						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 37,
+						"LOAD", String.valueOf(presetNumber[playerID]),
+						"SAVE", String.valueOf(presetNumber[playerID]));
+				
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 5/5", EventReceiver.COLOR_YELLOW);
 			}
 		} else {

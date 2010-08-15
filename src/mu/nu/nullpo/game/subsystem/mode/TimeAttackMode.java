@@ -545,17 +545,11 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-		receiver.drawMenuFont(engine, playerID, 0, 0, "DIFFICULTY", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "LEVEL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(startlevel + 1), (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "SHOW STIME", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(showsectiontime), (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "BIG", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(big), (engine.statc[2] == 3));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"DIFFICULTY", GAMETYPE_NAME[gametype],
+				"LEVEL", String.valueOf(startlevel),
+				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
+				"BIG",  GeneralUtil.getONorOFF(big));
 	}
 
 	/**

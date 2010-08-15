@@ -286,13 +286,6 @@ public class MarathonMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "LEVEL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(startlevel + 1), (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "SPIN BONUS", EventReceiver.COLOR_BLUE);
 		String strTSpinEnable = "";
 		if(version >= 2) {
 			if(tspinEnableType == 0) strTSpinEnable = "OFF";
@@ -301,19 +294,14 @@ public class MarathonMode extends DummyMode {
 		} else {
 			strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
 		}
-		receiver.drawMenuFont(engine, playerID, 1, 3, strTSpinEnable, (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "EZ SPIN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(enableTSpinKick), (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "B2B", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(enableB2B), (engine.statc[2] == 3));
-		receiver.drawMenuFont(engine, playerID, 0, 8, "COMBO", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 9, GeneralUtil.getONorOFF(enableCombo), (engine.statc[2] == 4));
-		receiver.drawMenuFont(engine, playerID, 0, 10, "GOAL", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 11,
-							  (gametype == 2) ? "ENDLESS" : tableGameClearLines[gametype] + " LINES",
-							  (engine.statc[2] == 5) );
-		receiver.drawMenuFont(engine, playerID, 0, 12, "BIG", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 13, GeneralUtil.getONorOFF(big), (engine.statc[2] == 6));
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"LEVEL", String.valueOf(startlevel + 1),
+				"SPIN BONUS", strTSpinEnable, 
+				"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+				"B2B", GeneralUtil.getONorOFF(enableB2B),
+				"COMBO",  GeneralUtil.getONorOFF(enableCombo),
+				"GOAL",  (gametype == 2) ? "ENDLESS" : tableGameClearLines[gametype] + " LINES",
+				"BIG", GeneralUtil.getONorOFF(big));
 	}
 
 	/*

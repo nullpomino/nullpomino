@@ -394,22 +394,16 @@ public class AvalancheFeverMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 0, "MAP SET", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, FEVER_MAPS[mapSet].toUpperCase(), (engine.statc[2] == 0));
-		receiver.drawMenuFont(engine, playerID, 0, 2, "OUTLINE", EventReceiver.COLOR_BLUE);
 		String strOutline = "";
 		if(outlinetype == 0) strOutline = "NORMAL";
 		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
-		receiver.drawMenuFont(engine, playerID, 1, 3, strOutline, (engine.statc[2] == 1));
-		receiver.drawMenuFont(engine, playerID, 0, 4, "COLORS", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(numColors), (engine.statc[2] == 2));
-		receiver.drawMenuFont(engine, playerID, 0, 6, "SHOW CHAIN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 7, CHAIN_DISPLAY_NAMES[chainDisplayType], (engine.statc[2] == 3));
+		
+		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+				"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),
+				"OUTLINE", strOutline,
+				"COLORS", String.valueOf(numColors),
+				"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType]);
 	}
 
 	/*

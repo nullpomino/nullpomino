@@ -681,44 +681,18 @@ public class VSBattleMode extends DummyMode {
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
 			if(engine.statc[2] < 9) {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "GRAVITY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0) && !owner.replayMode);
-				receiver.drawMenuFont(engine, playerID, 0,  2, "G-MAX", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "ARE", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  5, String.valueOf(engine.speed.are), (engine.statc[2] == 2));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "ARE LINE", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(engine.speed.areLine), (engine.statc[2] == 3));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "LINE DELAY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(engine.speed.lineDelay), (engine.statc[2] == 4));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "LOCK DELAY", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(engine.speed.lockDelay), (engine.statc[2] == 5));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "DAS", EventReceiver.COLOR_ORANGE);
-				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(engine.speed.das), (engine.statc[2] == 6));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "LOAD", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 7));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "SAVE", EventReceiver.COLOR_GREEN);
-				receiver.drawMenuFont(engine, playerID, 1, 17, String.valueOf(presetNumber[playerID]), (engine.statc[2] == 8));
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
+						"GRAVITY", String.valueOf(engine.speed.gravity),
+						"G-MAX", String.valueOf(engine.speed.denominator),
+						"ARE", String.valueOf(engine.speed.are),
+						"ARE LINE", String.valueOf(engine.speed.areLine),
+						"LINE DELAY", String.valueOf(engine.speed.lineDelay),
+						"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
+						"DAS", String.valueOf(engine.speed.das));
+				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 7,
+						"LOAD", String.valueOf(presetNumber[playerID]),
+						"SAVE", String.valueOf(presetNumber[playerID]));
 			} else if(engine.statc[2] < 19) {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 9) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "GARBAGE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GARBAGE_TYPE_STRING[garbageType[playerID]], (engine.statc[2] == 9) && !owner.replayMode);
-				receiver.drawMenuFont(engine, playerID, 0,  2, "CHANGERATE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, garbagePercent[playerID] + "%", (engine.statc[2] == 10));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "COUNTERING", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, GeneralUtil.getONorOFF(garbageCounter[playerID]), (engine.statc[2] == 11));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "BLOCKING", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, GeneralUtil.getONorOFF(garbageBlocking[playerID]), (engine.statc[2] == 12));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "SPIN BONUS", EventReceiver.COLOR_CYAN);
 				String strTSpinEnable = "";
 				if(version >= 4) {
 					if(tspinEnableType[playerID] == 0) strTSpinEnable = "OFF";
@@ -727,45 +701,33 @@ public class VSBattleMode extends DummyMode {
 				} else {
 					strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin[playerID]);
 				}
-				receiver.drawMenuFont(engine, playerID, 1,  9, strTSpinEnable, (engine.statc[2] == 13));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "KICK SPIN", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(enableTSpinKick[playerID]), (engine.statc[2] == 14));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "SPIN TYPE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, (spinCheckType[playerID] == 0) ? "4POINT" : "IMMOBILE", (engine.statc[2] == 15));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "EZIMMOBILE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, GeneralUtil.getONorOFF(tspinEnableEZ[playerID]), (engine.statc[2] == 16));
-				receiver.drawMenuFont(engine, playerID, 0, 16, "B2B", EventReceiver.COLOR_CYAN);
 				String strB2BType = "";
 				if(b2bType[playerID] == 0) strB2BType = "OFF";
 				if(b2bType[playerID] == 1) strB2BType = "ON";
 				if(b2bType[playerID] == 2) strB2BType = "SEPARATE";
-				receiver.drawMenuFont(engine, playerID, 1, 17, strB2BType, (engine.statc[2] == 17));
-				receiver.drawMenuFont(engine, playerID, 0, 18, "COMBO", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 19, GeneralUtil.getONorOFF(enableCombo[playerID]), (engine.statc[2] == 18));
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
+						"GARBAGE", GARBAGE_TYPE_STRING[garbageType[playerID]],
+						"CHANGERATE", garbagePercent[playerID] + "%",
+						"COUNTERING", GeneralUtil.getONorOFF(garbageCounter[playerID]),
+						"BLOCKING", GeneralUtil.getONorOFF(garbageBlocking[playerID]),
+						"SPIN BONUS", strTSpinEnable,
+						"KICK SPIN", GeneralUtil.getONorOFF(enableTSpinKick[playerID]),
+						"SPIN TYPE", (spinCheckType[playerID] == 0) ? "4POINT" : "IMMOBILE",
+						"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ[playerID]),
+						"B2B", strB2BType,
+						"COMBO",  GeneralUtil.getONorOFF(enableCombo[playerID]));
 			} else {
-				if(owner.replayMode == false) {
-					receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 19) * 2) + 1, "b",
-										  (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE);
-				}
-
-				receiver.drawMenuFont(engine, playerID, 0,  0, "BIG", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  1, GeneralUtil.getONorOFF(big[playerID]), (engine.statc[2] == 19) && !owner.replayMode);
-				receiver.drawMenuFont(engine, playerID, 0,  2, "SE", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  3, GeneralUtil.getONorOFF(enableSE[playerID]), (engine.statc[2] == 20));
-				receiver.drawMenuFont(engine, playerID, 0,  4, "HURRYUP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  5, (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-				                      (engine.statc[2] == 21));
-				receiver.drawMenuFont(engine, playerID, 0,  6, "INTERVAL", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1,  7, String.valueOf(hurryupInterval[playerID]), (engine.statc[2] == 22));
-				receiver.drawMenuFont(engine, playerID, 0,  8, "BGM", EventReceiver.COLOR_PINK);
-				receiver.drawMenuFont(engine, playerID, 1,  9, String.valueOf(bgmno), (engine.statc[2] == 23));
-				receiver.drawMenuFont(engine, playerID, 0, 10, "USE MAP", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 11, GeneralUtil.getONorOFF(useMap[playerID]), (engine.statc[2] == 24));
-				receiver.drawMenuFont(engine, playerID, 0, 12, "MAP SET", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(mapSet[playerID]), (engine.statc[2] == 25));
-				receiver.drawMenuFont(engine, playerID, 0, 14, "MAP NO.", EventReceiver.COLOR_CYAN);
-				receiver.drawMenuFont(engine, playerID, 1, 15, (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-									  (engine.statc[2] == 26));
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 19,
+						"BIG", GeneralUtil.getONorOFF(big[playerID]),
+						"SE", GeneralUtil.getONorOFF(enableSE[playerID]),
+						"HURRYUP", (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
+						"INTERVAL", String.valueOf(hurryupInterval[playerID]));
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_PINK, 23,
+						"BGM", String.valueOf(bgmno));
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 24,
+						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
+						"MAP SET", String.valueOf(mapSet[playerID]),
+						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1));
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);

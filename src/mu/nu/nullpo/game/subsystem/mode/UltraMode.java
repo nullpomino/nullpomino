@@ -356,36 +356,18 @@ public class UltraMode extends DummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[2] < 10) {
-			if(owner.replayMode == false) {
-				receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
-			}
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "GRAVITY", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 1, String.valueOf(engine.speed.gravity), (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "G-MAX", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 3, String.valueOf(engine.speed.denominator), (engine.statc[2] == 1));
-			receiver.drawMenuFont(engine, playerID, 0, 4, "ARE", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 5, String.valueOf(engine.speed.are), (engine.statc[2] == 2));
-			receiver.drawMenuFont(engine, playerID, 0, 6, "ARE LINE", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 7, String.valueOf(engine.speed.areLine), (engine.statc[2] == 3));
-			receiver.drawMenuFont(engine, playerID, 0, 8, "LINE DELAY", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 9, String.valueOf(engine.speed.lineDelay), (engine.statc[2] == 4));
-			receiver.drawMenuFont(engine, playerID, 0, 10, "LOCK DELAY", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(engine.speed.lockDelay), (engine.statc[2] == 5));
-			receiver.drawMenuFont(engine, playerID, 0, 12, "DAS", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 13, String.valueOf(engine.speed.das), (engine.statc[2] == 6));
-			receiver.drawMenuFont(engine, playerID, 0, 14, "BGM", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 15, String.valueOf(bgmno), (engine.statc[2] == 7));
-			receiver.drawMenuFont(engine, playerID, 0, 16, "BIG", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getONorOFF(big), (engine.statc[2] == 8));
-			receiver.drawMenuFont(engine, playerID, 0, 18, "GOAL", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 19, (goaltype + 1) + "MIN", (engine.statc[2] == 9));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+					"GRAVITY", String.valueOf(engine.speed.gravity),
+					"G-MAX", String.valueOf(engine.speed.denominator),
+					"ARE", String.valueOf(engine.speed.are),
+					"ARE LINE", String.valueOf(engine.speed.areLine),
+					"LINE DELAY", String.valueOf(engine.speed.lineDelay),
+					"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
+					"DAS", String.valueOf(engine.speed.das),
+					"BGM", String.valueOf(bgmno),
+					"BIG",  GeneralUtil.getONorOFF(big),
+					"GOAL", (goaltype + 1) + "MIN");
 		} else {
-			if(owner.replayMode == false) {
-				receiver.drawMenuFont(engine, playerID, 0, ((engine.statc[2] - 10) * 2) + 1, "b", EventReceiver.COLOR_RED);
-			}
-
-			receiver.drawMenuFont(engine, playerID, 0, 0, "SPIN BONUS", EventReceiver.COLOR_BLUE);
 			String strTSpinEnable = "";
 			if(version >= 1) {
 				if(tspinEnableType == 0) strTSpinEnable = "OFF";
@@ -394,17 +376,14 @@ public class UltraMode extends DummyMode {
 			} else {
 				strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
 			}
-			receiver.drawMenuFont(engine, playerID, 1, 1, strTSpinEnable, (engine.statc[2] == 10));
-			receiver.drawMenuFont(engine, playerID, 0, 2, "EZ SPIN", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 3, GeneralUtil.getONorOFF(enableTSpinKick), (engine.statc[2] == 11));
-			receiver.drawMenuFont(engine, playerID, 0, 4, "B2B", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(enableB2B), (engine.statc[2] == 12));
-			receiver.drawMenuFont(engine, playerID, 0, 6, "COMBO", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 7, GeneralUtil.getONorOFF(enableCombo), (engine.statc[2] == 13));
-			receiver.drawMenuFont(engine, playerID, 0, 8, "LOAD", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 9, String.valueOf(presetNumber), (engine.statc[2] == 14));
-			receiver.drawMenuFont(engine, playerID, 0, 10, "SAVE", EventReceiver.COLOR_GREEN);
-			receiver.drawMenuFont(engine, playerID, 1, 11, String.valueOf(presetNumber), (engine.statc[2] == 15));
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 10,
+					"SPIN BONUS", strTSpinEnable, 
+					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"B2B", GeneralUtil.getONorOFF(enableB2B),
+					"COMBO",  GeneralUtil.getONorOFF(enableCombo));
+			drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_GREEN, 14,
+					"LOAD", String.valueOf(presetNumber),
+					"SAVE", String.valueOf(presetNumber));
 		}
 	}
 
