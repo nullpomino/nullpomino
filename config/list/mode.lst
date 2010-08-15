@@ -9,7 +9,7 @@ mu.nu.nullpo.game.subsystem.mode.UltraMode
 mu.nu.nullpo.game.subsystem.mode.TechnicianMode
 mu.nu.nullpo.game.subsystem.mode.SquareMode
 mu.nu.nullpo.game.subsystem.mode.RetroMarathonMode
-net.twentysixfourteen.nullpomino.game.subsystem.mode.RetroMasteryMode
+mu.nu.nullpo.game.subsystem.mode.RetroMasteryMode
 mu.nu.nullpo.game.subsystem.mode.RetroManiaMode
 mu.nu.nullpo.game.subsystem.mode.GradeManiaMode
 mu.nu.nullpo.game.subsystem.mode.GradeMania2Mode
