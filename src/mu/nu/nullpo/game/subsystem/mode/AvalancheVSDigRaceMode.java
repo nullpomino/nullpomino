@@ -516,10 +516,8 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 240)
+			if(engine.statc[3] >= 180)
 				engine.statc[4] = 1;
-			else if(engine.statc[3] >= 180)
-				engine.statc[2] = 27;
 			else if(engine.statc[3] >= 120)
 				engine.statc[2] = 18;
 			else if(engine.statc[3] >= 60)
