@@ -91,7 +91,7 @@ public class Ranks implements Serializable{
 		{{1,1,1},{2},{1,1,1},{2}},     //I3
 		{{1,1},{1,0},{0,1},{1,1}}      //L3
 	};
-public static final float DAMPFING_FACTOR=(float) 0.85;
+public static final float DAMPING_FACTOR=(float) 0.85;
 private int [] ranks;
 
 
@@ -250,7 +250,7 @@ private int getRank(int [] surface,int [] surfaceDecodedWork){
 		sum+=(getRankPiece(surface,surfaceDecodedWork,p)/Piece.PIECE_STANDARD_COUNT);
 	}
 	int result=0;
-	result=(int) ((1-DAMPFING_FACTOR)*Integer.MAX_VALUE/Piece.PIECE_STANDARD_COUNT+DAMPFING_FACTOR*(sum));
+	result=(int) ((1-DAMPING_FACTOR)*Integer.MAX_VALUE/Piece.PIECE_STANDARD_COUNT+DAMPING_FACTOR*(sum));
 	if (result<0)
 		result=0;
 	return result;
@@ -298,35 +298,69 @@ public boolean surfaceAddPossible(int []surfaceDecodedWork, int piece, int rotat
 		  
 		  
 	  }
+	  if (addPossible){
 	  
 		  for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
 			  surfaceDecodedWork[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1];
 			  if (surfaceDecodedWork[x+x1]>maxJump){
 				  surfaceDecodedWork[x+x1]=maxJump;
+				  
 				  addPossible=false;
+				  break;
 				  
 			  }
 			  else if(surfaceDecodedWork[x+x1]<-maxJump) {
 				  surfaceDecodedWork[x+x1]=-maxJump;
+				  
 				  addPossible=false;
+				  break;
 				  
 			  }
 		  }
+	  }
 	  
-	  if ( x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
+	  if ( addPossible && x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
 		  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]-=PIECES_HEIGHTS[piece][rotation][PIECES_WIDTHS[piece][rotation]-1];
 		  if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]>maxJump){
 			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=maxJump;
+			 
 			  addPossible=false;
 			  
 		  }
-		  else if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]<-maxJump){
+		  else if ( surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]<-maxJump){
 			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=-maxJump;
 			  addPossible=false;
 			  
 		  }
 	  }
 	  return addPossible;
+}
+
+public void addToHeights(int [] heights,int piece,int rotation,int x){
+	for (int x1=0;x1<PIECES_WIDTHS[piece][rotation];x1++){
+		heights[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1];
+	}
+	
+}
+
+public int [] heightsToSurface(int [] heights){
+	
+	int [] surface= new int[stackWidth-1];
+	for (int i=0;i<stackWidth-1;i++){
+        int diff=heights[i+1]-heights[i];
+        if (diff>maxJump){
+                
+                       
+                 diff=maxJump;
+        }
+        if (diff<-maxJump){
+                
+                diff=-maxJump;
+        }
+        surface[i]=diff;
+	}
+	return surface;
+	
 }
 
 private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int piece, int rotation){
