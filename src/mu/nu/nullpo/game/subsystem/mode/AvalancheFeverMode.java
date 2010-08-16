@@ -62,16 +62,6 @@ public class AvalancheFeverMode extends DummyMode {
 		4, 10, 18, 22, 30, 48, 80, 120, 160, 240, 280, 288, 342, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800 //Amitie
 	};
 
-	public int[] tableGravityChangeScore =
-	{
-		15000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 250000, 400000, Integer.MAX_VALUE
-	};
-
-	public int[] tableGravityValue =
-	{
-		1, 2, 3, 4, 6, 8, 10, 20, 30, 60, 120, 180, 300, -1
-	};
-
 	/** Fever map files list */
 	private static final String[] FEVER_MAPS = 
 	{
@@ -92,9 +82,6 @@ public class AvalancheFeverMode extends DummyMode {
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
-
-	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
-	private int gravityindex;
 
 	/** Amount of points earned from most recent clear */
 	private int lastscore, lastmultiplier;
@@ -282,17 +269,8 @@ public class AvalancheFeverMode extends DummyMode {
 	 * @param engine GameEngine
 	 */
 	public void setSpeed(GameEngine engine) {
-		if (mapSet == 0) {
-			int speedlv = engine.statistics.score;
-			if (speedlv < 0) speedlv = 0;
-			if (speedlv > 5000) speedlv = 5000;
-
-			while(speedlv >= tableGravityChangeScore[gravityindex]) gravityindex++;
-			engine.speed.gravity = tableGravityValue[gravityindex];
-		} else {
-			engine.speed.gravity = 1;
-		}
-		engine.speed.denominator = 256;
+		engine.speed.gravity = 1;
+		engine.speed.denominator = Math.max(41-level, 2);
 	}
 
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -465,11 +443,9 @@ public class AvalancheFeverMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(timeLimit));
 			if (timeLimitAddDisplay > 0)
 				receiver.drawScoreFont(engine, playerID, 0, 14, "(+" + (timeLimitAdd/60) + " SEC.)");
-			
-			String timeStr = String.valueOf(timeLimit/60);
-			if (timeStr.length() == 1)
-				timeStr = "0" + timeStr;
-			receiver.drawMenuFont(engine, playerID, 2, 0, timeStr, EventReceiver.COLOR_RED);
+
+			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%2d",(timeLimit+59)/60),
+					timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
 			
 			receiver.drawScoreFont(engine, playerID, 11, 6, "BOARDS", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 7, String.valueOf(boardsPlayed));
@@ -533,9 +509,11 @@ public class AvalancheFeverMode extends DummyMode {
 				zenKeshiDisplay--;
 			if (timeLimit > 0)
 			{
-				if (timeLimit == 1)
-					engine.playSE("levelstop");
 				timeLimit--;
+				if((timeLimit > 0) && (timeLimit <= 360) && (timeLimit % 60 == 0))
+					engine.playSE("countdown");
+				else if (timeLimit == 0)
+					engine.playSE("levelstop");
 			}
 		}
 		if (timeLimitAddDisplay > 0)
@@ -662,20 +640,20 @@ public class AvalancheFeverMode extends DummyMode {
 			boardsPlayed++;
 			timeLimitAdd = 0;
 			int newFeverChain = Math.max(engine.chain+1, feverChain-2);
+			if (zenKeshi)
+			{
+				timeLimitAdd += 180;
+				newFeverChain += 2;
+			}
+			if (newFeverChain < feverChainMin)
+				newFeverChain = feverChainMin;
+			if (newFeverChain > feverChainMax)
+				newFeverChain = feverChainMax;
 			if (newFeverChain > feverChain)
 				engine.playSE("cool");
 			else if (newFeverChain < feverChain)
 				engine.playSE("regret");
 			feverChain = newFeverChain;
-			if (zenKeshi)
-			{
-				timeLimitAdd += 180;
-				feverChain += 2;
-			}
-			if (feverChain < feverChainMin)
-				feverChain = feverChainMin;
-			if (feverChain > feverChainMax)
-				feverChain = feverChainMax;
 			if (timeLimit > 0)
 			{
 				timeLimitAdd += Math.max(0, (engine.chain-2)*60);

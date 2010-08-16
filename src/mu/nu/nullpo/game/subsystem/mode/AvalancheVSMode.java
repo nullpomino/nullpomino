@@ -1045,9 +1045,6 @@ public class AvalancheVSMode extends DummyMode {
 		engine.useAllSpinBonus = false;
 	}
 
-	/*
-	 * Render score
-	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		// ステータス表示
@@ -1136,12 +1133,8 @@ public class AvalancheVSMode extends DummyMode {
 			receiver.drawMenuFont(engine, playerID, 0, 20, GeneralUtil.getTime(feverTime[playerID]), inFever[playerID]);
 		}
 		if (inFever[playerID])
-		{
-			String feverTimeStr = String.valueOf(feverTime[playerID]/60);
-			if (feverTimeStr.length() == 1)
-				feverTimeStr = "0" + feverTimeStr;
-			receiver.drawMenuFont(engine, playerID, 2, 0, feverTimeStr, EventReceiver.COLOR_RED);
-		}
+			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%2d",(feverTime[playerID]+59)/60),
+					feverTime[playerID] < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
 		else if (dangerColumnShowX[playerID])
 			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "XX" : "X", EventReceiver.COLOR_RED);
 		if (ojamaHard[playerID] > 0 && engine.field != null)
@@ -1152,6 +1145,7 @@ public class AvalancheVSMode extends DummyMode {
 					if (hard > 0)
 						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
 				}
+
 
 		int textHeight = 13;
 		if (engine.field != null)
@@ -1359,16 +1353,15 @@ public class AvalancheVSMode extends DummyMode {
 		//Reset Fever board if necessary
 		if (inFever[playerID] && cleared[playerID])
 		{
-			int newFeverChain = Math.max(engine.chain+1, feverChainNow-2);
-			if (newFeverChain > feverChainNow)
-				engine.playSE("cool");
-			else if (newFeverChain < feverChainNow)
-				engine.playSE("regret");
-			feverChain[playerID] += newFeverChain-feverChainNow;
+			feverChain[playerID] += Math.max(engine.chain+1-feverChainNow, -2);
 			if (feverChain[playerID] < feverChainMin[playerID])
 				feverChain[playerID] = feverChainMin[playerID];
 			if (feverChain[playerID] > feverChainMax[playerID])
 				feverChain[playerID] = feverChainMax[playerID];
+			if (feverChain[playerID] > feverChainNow)
+				engine.playSE("cool");
+			else if (feverChain[playerID] < feverChainNow)
+				engine.playSE("regret");
 			if (feverTime[playerID] > 0)
 			{
 				if (engine.chain > 2)
@@ -1459,9 +1452,11 @@ public class AvalancheVSMode extends DummyMode {
 
 		if (inFever[playerID] && feverTime[playerID] > 0 && engine.timerActive)
 		{
-			if (feverTime[playerID] == 1)
-				engine.playSE("levelstop");
 			feverTime[playerID]--;
+			if((feverTime[playerID] > 0) && (feverTime[playerID] <= 360) && (feverTime[playerID] % 60 == 0))
+				engine.playSE("countdown");
+			else if (feverTime[playerID] == 0)
+				engine.playSE("levelstop");
 		}
 		int width = 1;
 		if (engine.field != null)
@@ -1505,28 +1500,30 @@ public class AvalancheVSMode extends DummyMode {
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
+			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
+			if(p1Lose && p2Lose) {
 				// 引き分け
 				winnerID = -1;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p2Lose && !p1Lose) {
 				// 1P勝利
 				winnerID = 0;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
 				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
-				owner.engine[0].resetStatc();
-				owner.engine[0].statc[1] = 1;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p1Lose && !p2Lose) {
 				// 2P勝利
 				winnerID = 1;
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+			}
+			if (p1Lose || p2Lose) {
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
+				owner.engine[0].statc[1] = 1;
 				owner.engine[1].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}

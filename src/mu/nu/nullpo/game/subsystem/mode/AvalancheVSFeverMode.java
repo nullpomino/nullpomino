@@ -1010,28 +1010,30 @@ public class AvalancheVSFeverMode extends DummyMode {
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
+			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
+			if(p1Lose && p2Lose) {
 				// 引き分け
 				winnerID = -1;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p2Lose && !p1Lose) {
 				// 1P勝利
 				winnerID = 0;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
 				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
-				owner.engine[0].resetStatc();
-				owner.engine[0].statc[1] = 1;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p1Lose && !p2Lose) {
 				// 2P勝利
 				winnerID = 1;
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+			}
+			if (p1Lose || p2Lose) {
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
+				owner.engine[0].statc[1] = 1;
 				owner.engine[1].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}

@@ -2847,7 +2847,7 @@ public class Field implements Serializable {
 			return false;
 		b.color = color;
 		b.setAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, true);
-		b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+		b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 		b.setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, true);
 		b.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 		b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
