@@ -319,7 +319,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		int playerID = engine.playerID;
 		bgmno = prop.getProperty("avalanchevsfever.bgmno", 0);
 		enableSE[playerID] = prop.getProperty("avalanchevsfever.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
+		hurryupSeconds[playerID] = prop.getProperty("avalanchevsfever.hurryupSeconds.p" + playerID, 192);
 		presetNumber[playerID] = prop.getProperty("avalanchevsfever.presetNumber.p" + playerID, 0);
 		maxAttack[playerID] = prop.getProperty("avalanchevsfever.maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevsfever.numColors.p" + playerID, 4);
@@ -344,7 +344,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		int playerID = engine.playerID;
 		prop.setProperty("avalanchevsfever.bgmno", bgmno);
 		prop.setProperty("avalanchevsfever.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
+		prop.setProperty("avalanchevsfever.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
 		prop.setProperty("avalanchevsfever.presetNumber.p" + playerID, presetNumber[playerID]);
 		prop.setProperty("avalanchevsfever.maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("avalanchevsfever.numColors.p" + playerID, numColors[playerID]);

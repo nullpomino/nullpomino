@@ -441,7 +441,7 @@ public class AvalancheVSMode extends DummyMode {
 		ojamaCounterMode[playerID] = prop.getProperty("avalanchevs.ojamaCounterMode", OJAMA_COUNTER_ON);
 		big[playerID] = prop.getProperty("avalanchevs.big.p" + playerID, false);
 		enableSE[playerID] = prop.getProperty("avalanchevs.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
+		hurryupSeconds[playerID] = prop.getProperty("avalanchevs.hurryupSeconds.p" + playerID, 192);
 		useMap[playerID] = prop.getProperty("avalanchevs.useMap.p" + playerID, false);
 		mapSet[playerID] = prop.getProperty("avalanchevs.mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("avalanchevs.mapNumber.p" + playerID, -1);
@@ -479,7 +479,7 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.ojamaCounterMode", ojamaCounterMode[playerID]);
 		prop.setProperty("avalanchevs.big.p" + playerID, big[playerID]);
 		prop.setProperty("avalanchevs.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
+		prop.setProperty("avalanchevs.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
 		prop.setProperty("avalanchevs.useMap.p" + playerID, useMap[playerID]);
 		prop.setProperty("avalanchevs.mapSet.p" + playerID, mapSet[playerID]);
 		prop.setProperty("avalanchevs.mapNumber.p" + playerID, mapNumber[playerID]);

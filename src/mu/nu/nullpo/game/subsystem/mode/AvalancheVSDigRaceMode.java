@@ -63,6 +63,12 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
 
+	/** Ojama counter setting constants */
+	private static final int OJAMA_COUNTER_OFF = 0, OJAMA_COUNTER_ON = 1, OJAMA_COUNTER_FEVER = 2;
+
+	/** Names of ojama counter settings */
+	private static final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
+
 	/** Names of outline settings */
 	private static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
 
@@ -81,6 +87,9 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
+
+	/** Rule settings for countering ojama not yet dropped */
+	private int[] ojamaCounterMode;
 
 	/** 溜まっている邪魔Blockのcount */
 	private int[] ojama;
@@ -184,6 +193,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		owner = manager;
 		receiver = owner.receiver;
 
+		ojamaCounterMode = new int[MAX_PLAYERS];
 		ojama = new int[MAX_PLAYERS];
 		ojamaSent = new int[MAX_PLAYERS];
 
@@ -261,7 +271,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		int playerID = engine.playerID;
 		bgmno = prop.getProperty("avalanchevsdigrace.bgmno", 0);
 		enableSE[playerID] = prop.getProperty("avalanchevsdigrace.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("vsbattle.hurryupSeconds.p" + playerID, 192);
+		hurryupSeconds[playerID] = prop.getProperty("avalanchevsdigrace.hurryupSeconds.p" + playerID, 192);
 		presetNumber[playerID] = prop.getProperty("avalanchevsdigrace.presetNumber.p" + playerID, 0);
 		maxAttack[playerID] = prop.getProperty("avalanchevsdigrace.maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevsdigrace.numColors.p" + playerID, 4);
@@ -284,7 +294,8 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		int playerID = engine.playerID;
 		prop.setProperty("avalanchevsdigrace.bgmno", bgmno);
 		prop.setProperty("avalanchevsdigrace.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("vsbattle.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
+		prop.setProperty("avalanchevsdigrace.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
+		prop.setProperty("avalanchevsdigrace.ojamaCounterMode", ojamaCounterMode[playerID]);
 		prop.setProperty("avalanchevsdigrace.presetNumber.p" + playerID, presetNumber[playerID]);
 		prop.setProperty("avalanchevsdigrace.maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("avalanchevsdigrace.numColors.p" + playerID, numColors[playerID]);
@@ -347,7 +358,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 23);
+			int change = updateCursor(engine, 24);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -404,9 +415,9 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 					if(engine.cascadeClearDelay > 99) engine.cascadeClearDelay = 0;
 					break;
 				case 9:
-					handicapRows[playerID] += change;
-					if(handicapRows[playerID] < 0) handicapRows[playerID] = 11;
-					if(handicapRows[playerID] > 11) handicapRows[playerID] = 0;
+					ojamaCounterMode[playerID] += change;
+					if(ojamaCounterMode[playerID] < 0) ojamaCounterMode[playerID] = 2;
+					if(ojamaCounterMode[playerID] > 2) ojamaCounterMode[playerID] = 0;
 					break;
 				case 10:
 					if (m >= 10) maxAttack[playerID] += change*10;
@@ -448,25 +459,30 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 					dangerColumnShowX[playerID] = !dangerColumnShowX[playerID];
 					break;
 				case 18:
+					handicapRows[playerID] += change;
+					if(handicapRows[playerID] < 0) handicapRows[playerID] = 11;
+					if(handicapRows[playerID] > 11) handicapRows[playerID] = 0;
+					break;
+				case 19:
 					outlineType[playerID] += change;
 					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
 					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
 					break;
-				case 19:
+				case 20:
 					chainDisplayType[playerID] += change;
 					if(chainDisplayType[playerID] < 0) chainDisplayType[playerID] = 3;
 					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
 					break;
-				case 20:
+				case 21:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 21:
+				case 22:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 22:
 				case 23:
+				case 24:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -545,9 +561,8 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/3", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_DARKBLUE, 9,
-						"ROWS", String.valueOf(handicapRows[playerID]));
-				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_CYAN, 10,
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
+						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
 						"MAX ATTACK", String.valueOf(maxAttack[playerID]),
 						"COLORS", String.valueOf(numColors[playerID]),
 						"MIN CHAIN", String.valueOf(rensaShibari[playerID]),
@@ -559,13 +574,15 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/3", EventReceiver.COLOR_YELLOW);
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_DARKBLUE, 18,
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
+						"ROWS", String.valueOf(handicapRows[playerID]));
+				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_DARKBLUE, 19,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
 						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]]);
-				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_PINK, 20,
+				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_PINK, 21,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_GREEN, 22,
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_GREEN, 23,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
@@ -787,17 +804,20 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 				ojamaSent[playerID] += ojamaNew;
 
 				//Counter ojama
-				if (ojama[playerID] > 0 && ojamaNew > 0)
+				if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
 				{
-					int delta = Math.min(ojama[playerID], ojamaNew);
-					ojama[playerID] -= delta;
-					ojamaNew -= delta;
-				}
-				if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
-				{
-					int delta = Math.min(ojamaAdd[playerID], ojamaNew);
-					ojamaAdd[playerID] -= delta;
-					ojamaNew -= delta;
+					if (ojama[playerID] > 0 && ojamaNew > 0)
+					{
+						int delta = Math.min(ojama[playerID], ojamaNew);
+						ojama[playerID] -= delta;
+						ojamaNew -= delta;
+					}
+					if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
+					{
+						int delta = Math.min(ojamaAdd[playerID], ojamaNew);
+						ojamaAdd[playerID] -= delta;
+						ojamaNew -= delta;
+					}
 				}
 				if (ojamaNew > 0)
 					ojamaAdd[enemyID] += ojamaNew;
@@ -816,7 +836,8 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			ojamaAdd[enemyID] = 0;
 		}
 		//Drop garbage if needed.
-		if (ojama[playerID] > 0 && !ojamaDrop[playerID])
+		if (ojama[playerID] > 0 && !ojamaDrop[playerID] && (!cleared[playerID] ||
+				(ojamaCounterMode[playerID] != OJAMA_COUNTER_FEVER)))
 		{
 			ojamaDrop[playerID] = true;
 			int drop = Math.min(ojama[playerID], maxAttack[playerID]);
