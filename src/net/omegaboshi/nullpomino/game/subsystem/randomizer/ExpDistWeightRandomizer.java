@@ -1,8 +1,8 @@
 package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
+import mu.nu.nullpo.game.component.Piece;
+
 public class ExpDistWeightRandomizer extends DistanceWeightRandomizer {
-	
-	int[] initWeights = {3, 4, 2, 1, 3, 4, 1, 2, 2, 2, 2};
 	
 	public ExpDistWeightRandomizer() {
 		super();
@@ -13,11 +13,14 @@ public class ExpDistWeightRandomizer extends DistanceWeightRandomizer {
 	}
 	
 	public int getWeight(int i) {
-		return 1 << (weights[i] - 1);
+		if (weights[i] == 0) {
+			return 0;
+		} else {
+			return 1 << (weights[i] - 1);
+		}
 	}
 	
 	public boolean isAtDistanceLimit(int i) {
 		return i > 25;
 	}
-
 }
