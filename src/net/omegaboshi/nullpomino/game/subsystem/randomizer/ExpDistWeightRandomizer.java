@@ -1,7 +1,5 @@
 package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
-import mu.nu.nullpo.game.component.Piece;
-
 public class ExpDistWeightRandomizer extends DistanceWeightRandomizer {
 	
 	public ExpDistWeightRandomizer() {
