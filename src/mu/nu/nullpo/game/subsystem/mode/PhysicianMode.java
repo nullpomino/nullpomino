@@ -69,6 +69,14 @@ public class PhysicianMode extends DummyMode {
 	/** Names of speed settings */
 	private static final String[] SPEED_NAME = {"LOW", "MED", "HI"};
 
+	/** Colors for speed settings */
+	private static final int[] SPEED_COLOR =
+	{
+		EventReceiver.COLOR_BLUE,
+		EventReceiver.COLOR_YELLOW,
+		EventReceiver.COLOR_RED
+	};
+
 	/** GameManager object (Manages entire game status) */
 	private GameManager owner;
 
@@ -279,14 +287,17 @@ public class PhysicianMode extends DummyMode {
 							yellow++;
 					}
 				receiver.drawScoreFont(engine, playerID, 0, 8, "(");
-				receiver.drawScoreFont(engine, playerID, 1, 8, String.valueOf(red), EventReceiver.COLOR_RED);
-				receiver.drawScoreFont(engine, playerID, 4, 8, String.valueOf(yellow), EventReceiver.COLOR_YELLOW);
-				receiver.drawScoreFont(engine, playerID, 7, 8, String.valueOf(blue), EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 1, 8, String.format("%2d", red), EventReceiver.COLOR_RED);
+				receiver.drawScoreFont(engine, playerID, 4, 8, String.format("%2d", yellow), EventReceiver.COLOR_YELLOW);
+				receiver.drawScoreFont(engine, playerID, 7, 8, String.format("%2d", blue), EventReceiver.COLOR_BLUE);
 				receiver.drawScoreFont(engine, playerID, 9, 8, ")");
 			}
 
-			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawScoreFont(engine, playerID, 0, 10, "SPEED", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 11, SPEED_NAME[speed], SPEED_COLOR[speed]);
+			
+			receiver.drawScoreFont(engine, playerID, 0, 13, "TIME", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 14, GeneralUtil.getTime(engine.statistics.time));
 		}
 	}
 

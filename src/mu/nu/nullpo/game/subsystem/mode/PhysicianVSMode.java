@@ -72,6 +72,14 @@ public class PhysicianVSMode extends DummyMode {
 	/** Names of speed settings */
 	private static final String[] SPEED_NAME = {"LOW", "MED", "HI"};
 
+	/** Colors for speed settings */
+	private static final int[] SPEED_COLOR =
+	{
+		EventReceiver.COLOR_BLUE,
+		EventReceiver.COLOR_YELLOW,
+		EventReceiver.COLOR_RED
+	};
+
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
 
@@ -667,8 +675,10 @@ public class PhysicianVSMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, 3, 4, String.valueOf(rest[1]), (rest[1] <= (flash[playerID] ? 1 : 3)));
 
 			receiver.drawScoreFont(engine, playerID, -1, 6, "SPEED", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 7, "1P: " + SPEED_NAME[speed[0]], EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1, 8, "2P: " + SPEED_NAME[speed[1]], EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, -1, 7, "1P:", EventReceiver.COLOR_RED);
+			receiver.drawScoreFont(engine, playerID,  3, 7, SPEED_NAME[speed[0]], SPEED_COLOR[speed[0]]);
+			receiver.drawScoreFont(engine, playerID, -1, 8, "2P:", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID,  3, 8, SPEED_NAME[speed[1]], SPEED_COLOR[speed[1]]);
 
 			receiver.drawScoreFont(engine, playerID, -1, 10, "SCORE", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: " + String.valueOf(score[0]), EventReceiver.COLOR_RED);
