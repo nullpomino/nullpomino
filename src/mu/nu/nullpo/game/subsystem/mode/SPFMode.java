@@ -92,7 +92,7 @@ public class SPFMode extends DummyMode {
 	private static final int MAX_PLAYERS = 2;
 	
 	/** Names of drop map sets */
-	private static final String[] DROP_SET_NAMES = {"CLASSIC", "REMIX", "SWORD", "S-MIRROR"};
+	private static final String[] DROP_SET_NAMES = {"CLASSIC", "REMIX", "SWORD", "S-MIRROR", "AVALANCHE", "A-MIRROR"};
 	
 	private static final int[][][][] DROP_PATTERNS = {
 		{
@@ -158,19 +158,41 @@ public class SPFMode extends DummyMode {
 			{{7,7,5,5,5}, {2,7,7,7,5}, {5,2,2,2,2}, {5,4,4,4,4}, {4,7,7,7,5}, {7,7,5,5,5}},
 			{{5,5,4}, {5,5,5}, {7,7,7}, {7,7,7}, {2,2,2}, {2,2,4}},
 			{{5,5,5,5}, {5,4,4,5}, {4,5,7,2}, {2,7,5,4}, {7,2,2,7}, {7,7,7,7}}
+		},
+		{
+			{{5,4,4,5,5}, {2,5,5,2,2}, {4,2,2,4,4}, {7,4,4,7,7}, {5,7,7,5,5}, {2,5,5,2,2}},
+			{{2,7,7,7,2}, {5,2,2,2,5}, {5,4,4,4,5}, {4,5,5,5,4}, {4,7,7,7,4}, {7,2,2,2,7}},
+			{{2,2,5,5,5}, {5,7,7,2,2}, {7,7,2,2,5}, {5,4,4,7,7}, {4,4,7,7,5}, {5,5,5,4,4}},
+			{{7,2,2,5,5}, {4,4,5,5,2}, {4,7,7,2,2}, {7,7,4,4,5}, {5,4,4,7,7}, {2,2,7,7,4}},
+			{{7,2,7,2,2}, {7,4,7,7,2}, {5,4,4,7,4}, {5,5,4,5,4}, {2,5,2,5,5}, {2,7,2,2,4}},
+			{{5,5,4,2,2}, {5,4,4,2,7}, {4,2,2,7,7}, {4,2,7,5,5}, {2,7,7,5,4}, {7,5,5,4,4}},
+			{{7,7,4,7,7}, {5,5,7,5,5}, {2,2,5,2,2}, {4,4,2,4,4}},
+			{{4,4,2,2,5}, {2,2,5,5,7}, {5,5,7,7,4}, {7,7,4,4,2}},
+			{{5,5,5,2,4}, {7,7,7,5,2}, {4,4,4,7,5}, {2,2,2,4,7}},
+			{{4,4,4,5,7}, {2,2,2,7,4}, {5,5,5,4,2}, {7,7,7,2,5}},
+			{{4,2,5,5,5}, {7,4,2,2,2}, {5,7,4,4,4}, {2,5,7,7,7}}
+		},
+		{
+			{{2,5,5,2,2}, {5,7,7,5,5}, {7,4,4,7,7}, {4,2,2,4,4}, {2,5,5,2,2}, {5,4,4,5,5}},
+			{{7,2,2,2,7}, {4,7,7,7,4}, {4,5,5,5,4}, {5,4,4,4,5}, {5,2,2,2,5}, {2,7,7,7,2}},
+			{{5,5,5,4,4}, {4,4,7,7,5}, {5,4,4,7,7}, {7,7,2,2,5}, {5,7,7,2,2}, {2,2,5,5,5}},
+			{{2,2,7,7,4}, {5,4,4,7,7}, {7,7,4,4,5}, {4,7,7,2,2}, {4,4,5,5,2}, {7,2,2,5,5}},
+			{{2,7,2,2,4}, {2,5,2,5,5}, {5,5,4,5,4}, {5,4,4,7,4}, {7,4,7,7,2}, {7,2,7,2,2}},
+			{{7,5,5,4,4}, {2,7,7,5,4}, {4,2,7,5,5}, {4,2,2,7,7}, {5,4,4,2,7}, {5,5,4,2,2}},
+			{{5,5,7,5,5}, {7,7,4,7,7}, {4,4,2,4,4}, {2,2,5,2,2}},
+			{{2,2,5,5,7}, {4,4,2,2,5}, {7,7,4,4,2}, {5,5,7,7,4}},
+			{{7,7,7,5,2}, {5,5,5,2,4}, {2,2,2,4,7}, {4,4,4,7,5}},
+			{{2,2,2,7,4}, {4,4,4,5,7}, {7,7,7,2,5}, {5,5,5,4,2}},
+			{{7,4,2,2,2}, {4,2,5,5,5}, {2,5,7,7,7}, {5,7,4,4,4}}
 		}
 	};
 	private static final double[][] DROP_PATTERNS_ATTACK_MULTIPLIERS = {
 		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.7, 0.7, 1.0},
-		{1.0, 1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.85, 1.0},
-		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
+		{1.0, 1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.85, 1.0}
 	};
 	private static final double[][] DROP_PATTERNS_DEFEND_MULTIPLIERS = {
 		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.2, 1.0, 1.0},
-		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
+		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.2, 1.0, 1.0}
 	};
 	
 	/** Names of rainbow power settings */
@@ -658,8 +680,8 @@ public class SPFMode extends DummyMode {
 					break;
 				case 17:
 					dropSet[playerID] += change;
-					if(dropSet[playerID] < 0) dropSet[playerID] = 3;
-					if(dropSet[playerID] > 3) dropSet[playerID] = 0;
+					if(dropSet[playerID] < 0) dropSet[playerID] = DROP_PATTERNS.length-1;
+					if(dropSet[playerID] >= DROP_PATTERNS.length) dropSet[playerID] = 0;
 					if(dropMap[playerID] >= DROP_PATTERNS[dropSet[playerID]].length) dropMap[playerID] = 0;
 					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 					break;
@@ -782,14 +804,14 @@ public class SPFMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/3", EventReceiver.COLOR_YELLOW);
 			} else {
 				receiver.drawMenuFont(engine, playerID, 0,  0, "ATTACK", EventReceiver.COLOR_CYAN);
-				int multiplier = (int) (100 * DROP_PATTERNS_ATTACK_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]]);
+				int multiplier = (int) (100 * getAttackMultiplier(dropSet[playerID], dropMap[playerID]));
 				if (multiplier >= 100)
 					receiver.drawMenuFont(engine, playerID, 2,  1, multiplier + "%",
 							multiplier == 100 ? EventReceiver.COLOR_YELLOW : EventReceiver.COLOR_GREEN);
 				else
 					receiver.drawMenuFont(engine, playerID, 3,  1, multiplier + "%", EventReceiver.COLOR_RED);
 				receiver.drawMenuFont(engine, playerID, 0,  2, "DEFEND", EventReceiver.COLOR_CYAN);
-				multiplier = (int) (100 * DROP_PATTERNS_DEFEND_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]]);
+				multiplier = (int) (100 * getDefendMultiplier(dropSet[playerID], dropMap[playerID]));
 				if (multiplier >= 100)
 					receiver.drawMenuFont(engine, playerID, 2,  3, multiplier + "%",
 							multiplier == 100 ? EventReceiver.COLOR_YELLOW : EventReceiver.COLOR_RED);
@@ -808,6 +830,22 @@ public class SPFMode extends DummyMode {
 		}
 	}
 
+	public static double getAttackMultiplier(int set, int map)
+	{
+		try {
+			return DROP_PATTERNS_ATTACK_MULTIPLIERS[set][map];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return 1.0;
+		}
+	}
+	public static double getDefendMultiplier(int set, int map)
+	{
+		try {
+			return DROP_PATTERNS_DEFEND_MULTIPLIERS[set][map];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return 1.0;
+		}
+	}
 	/*
 	 * Readyの時のInitialization処理（Initialization前）
 	 */
@@ -820,8 +858,8 @@ public class SPFMode extends DummyMode {
 			
 			
 			dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
-			attackMultiplier[playerID] = DROP_PATTERNS_ATTACK_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]];
-			defendMultiplier[playerID] = DROP_PATTERNS_DEFEND_MULTIPLIERS[dropSet[playerID]][dropMap[playerID]];
+			attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
+			defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
 			
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
