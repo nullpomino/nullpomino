@@ -272,6 +272,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		bgmno = prop.getProperty("avalanchevsdigrace.bgmno", 0);
 		enableSE[playerID] = prop.getProperty("avalanchevsdigrace.enableSE.p" + playerID, true);
 		hurryupSeconds[playerID] = prop.getProperty("avalanchevsdigrace.hurryupSeconds.p" + playerID, 192);
+		ojamaCounterMode[playerID] = prop.getProperty("avalanchevsdigrace.ojamaCounterMode", OJAMA_COUNTER_ON);
 		presetNumber[playerID] = prop.getProperty("avalanchevsdigrace.presetNumber.p" + playerID, 0);
 		maxAttack[playerID] = prop.getProperty("avalanchevsdigrace.maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevsdigrace.numColors.p" + playerID, 4);

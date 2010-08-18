@@ -162,6 +162,9 @@ public class Block implements Serializable {
 	/** Number of extra clears required before block is erased */
 	public int hard;
 	
+	/** Counter for blocks that count down before some effect occurs */
+	public int countdown;
+	
 	/** Color-shift phase for rainbow blocks */
 	public static int rainbowPhase = 0;
 	
@@ -232,6 +235,7 @@ public class Block implements Serializable {
 		pieceNum = -1;
 		item = 0;
 		hard = 0;
+		countdown = 0;
 		secondaryColor = 0;
 		bonusValue = 0;
 	}
@@ -249,6 +253,8 @@ public class Block implements Serializable {
 		alpha = b.alpha;
 		pieceNum = b.pieceNum;
 		item = b.item;
+		hard = b.hard;
+		countdown = b.countdown;
 		secondaryColor = b.secondaryColor;
 		bonusValue = b.bonusValue;
 	}

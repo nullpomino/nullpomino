@@ -2440,11 +2440,19 @@ public class Field implements Serializable {
 		return total;
 	}
 
-
-	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard) {
-		garbageDrop(engine, drop, big, hard, -1);
+	public void garbageDrop(GameEngine engine, int drop, boolean big) {
+		garbageDrop(engine, drop, big, 0, 0, -1, Block.BLOCK_COLOR_GRAY);
 	}
-	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard, int avoidColumn) {
+	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard) {
+		garbageDrop(engine, drop, big, hard, 0, -1, Block.BLOCK_COLOR_GRAY);
+	}
+	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard, int countdown) {
+		garbageDrop(engine, drop, big, hard, countdown, -1, Block.BLOCK_COLOR_GRAY);
+	}
+	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard, int countdown, int avoidColumn) {
+		garbageDrop(engine, drop, big, hard, countdown, avoidColumn, Block.BLOCK_COLOR_GRAY);
+	}
+	public void garbageDrop(GameEngine engine, int drop, boolean big, int hard, int countdown, int avoidColumn, int color) {
 		int y = -1 * hidden_height;
 		int actualWidth = width;
 		if (big)
@@ -2454,7 +2462,7 @@ public class Field implements Serializable {
 		{
 			drop -= actualWidth;
 			for (int x = 0; x < actualWidth; x+=bigMove)
-				garbageDropPlace(x, y, big, hard);
+				garbageDropPlace(x, y, big, hard, color, countdown);
 			y+=bigMove;
 		}
 		if (drop == 0)
@@ -2494,15 +2502,18 @@ public class Field implements Serializable {
 
 		for (int x = 0; x < actualWidth; x++)
 			if (placeBlock[x])
-				garbageDropPlace(x*bigMove, y, big, hard);
+				garbageDropPlace(x*bigMove, y, big, hard, color, countdown);
 	}
 	
 	public boolean garbageDropPlace (int x, int y, boolean big, int hard)
 	{
-		return garbageDropPlace(x, y, big, hard, Block.BLOCK_COLOR_GRAY);
+		return garbageDropPlace(x, y, big, hard, Block.BLOCK_COLOR_GRAY, 0);
 	}
-	
 	public boolean garbageDropPlace (int x, int y, boolean big, int hard, int color)
+	{
+		return garbageDropPlace(x, y, big, hard, color, 0);
+	}
+	public boolean garbageDropPlace (int x, int y, boolean big, int hard, int color, int countdown)
 	{
 		Block b = getBlock(x, y);
 		if (b == null)
@@ -2526,6 +2537,7 @@ public class Field implements Serializable {
 			b.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
 			b.hard = hard;
 			b.secondaryColor = 0;
+			b.countdown = countdown;
 			return true;
 		}
 		return false;

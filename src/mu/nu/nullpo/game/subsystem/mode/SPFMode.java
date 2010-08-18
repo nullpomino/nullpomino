@@ -239,8 +239,8 @@ public class SPFMode extends DummyMode {
 	/** Score */
 	private int[] score;
 	
-	/** Settings for hard ojama blocks */
-	private int[] ojamaHard;
+	/** Settings for starting countdown for ojama blocks */
+	private int[] ojamaCountdown;
 
 	/** Hurryup開始までの秒count(0でHurryupなし) */
 	private int[] hurryupSeconds;
@@ -270,7 +270,7 @@ public class SPFMode extends DummyMode {
 	private int[] lastSquareCheck;
 	
 	/** Flag set when counters have been decremented */
-	private boolean[] hardDecremented;
+	private boolean[] countdownDecremented;
 	
 	/*
 	 * Mode  name
@@ -315,7 +315,7 @@ public class SPFMode extends DummyMode {
 
 		lastscore = new int[MAX_PLAYERS];
 		score = new int[MAX_PLAYERS];
-		ojamaHard = new int[MAX_PLAYERS];
+		ojamaCountdown = new int[MAX_PLAYERS];
 
 		zenKeshiDisplay = new int[MAX_PLAYERS];
 		techBonusDisplay = new int[MAX_PLAYERS];
@@ -327,7 +327,7 @@ public class SPFMode extends DummyMode {
 		defendMultiplier = new double[MAX_PLAYERS];
 		diamondPower = new int[MAX_PLAYERS];
 		lastSquareCheck = new int[MAX_PLAYERS];
-		hardDecremented = new boolean[MAX_PLAYERS];
+		countdownDecremented = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -379,7 +379,7 @@ public class SPFMode extends DummyMode {
 		mapSet[playerID] = prop.getProperty("spfvs.mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("spfvs.mapNumber.p" + playerID, -1);
 		presetNumber[playerID] = prop.getProperty("spfvs.presetNumber.p" + playerID, 0);
-		ojamaHard[playerID] = prop.getProperty("spfvs.ojamaHard.p" + playerID, 5);
+		ojamaCountdown[playerID] = prop.getProperty("spfvs.ojamaHard.p" + playerID, 5);
 		dropSet[playerID] = prop.getProperty("spfvs.dropSet.p" + playerID, 0);
 		dropMap[playerID] = prop.getProperty("spfvs.dropMap.p" + playerID, 0);
 		diamondPower[playerID] = prop.getProperty("spfvs.rainbowPower.p" + playerID, 2);
@@ -400,7 +400,7 @@ public class SPFMode extends DummyMode {
 		prop.setProperty("spfvs.mapSet.p" + playerID, mapSet[playerID]);
 		prop.setProperty("spfvs.mapNumber.p" + playerID, mapNumber[playerID]);
 		prop.setProperty("spfvs.presetNumber.p" + playerID, presetNumber[playerID]);
-		prop.setProperty("spfvs.ojamaHard.p" + playerID, ojamaHard[playerID]);
+		prop.setProperty("spfvs.ojamaHard.p" + playerID, ojamaCountdown[playerID]);
 		prop.setProperty("spfvs.dropSet.p" + playerID, dropSet[playerID]);
 		prop.setProperty("spfvs.dropMap.p" + playerID, dropMap[playerID]);
 		prop.setProperty("spfvs.rainbowPower.p" + playerID, diamondPower[playerID]);
@@ -508,7 +508,7 @@ public class SPFMode extends DummyMode {
 		zenKeshiDisplay[playerID] = 0;
 		techBonusDisplay[playerID] = 0;
 		lastSquareCheck[playerID] = -1;
-		hardDecremented[playerID] = true;
+		countdownDecremented[playerID] = true;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
@@ -647,9 +647,9 @@ public class SPFMode extends DummyMode {
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
 				case 15:
-					ojamaHard[playerID] += change;
-					if(ojamaHard[playerID] < 1) ojamaHard[playerID] = 9;
-					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 1;
+					ojamaCountdown[playerID] += change;
+					if(ojamaCountdown[playerID] < 1) ojamaCountdown[playerID] = 9;
+					if(ojamaCountdown[playerID] > 9) ojamaCountdown[playerID] = 1;
 					break;
 				case 16:
 					diamondPower[playerID] += change;
@@ -774,7 +774,7 @@ public class SPFMode extends DummyMode {
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]),
 						"HURRYUP", (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-						"COUNTER", String.valueOf(ojamaHard[playerID]));
+						"COUNTDOWN", String.valueOf(ojamaCountdown[playerID]));
 				receiver.drawMenuFont(engine, playerID, 0, 14, "RAINBOW", EventReceiver.COLOR_CYAN);
 				drawMenu(engine, playerID, receiver, 15, EventReceiver.COLOR_CYAN, 16,
 						"GEM POWER", RAINBOW_POWER_NAMES[diamondPower[playerID]]);
@@ -918,12 +918,12 @@ public class SPFMode extends DummyMode {
 		
 		Block b;
 		int blockColor, textColor;
-		if (ojamaHard[playerID] > 0 && engine.field != null)
+		if (engine.field != null)
 			for (int x = 0; x < engine.field.getWidth(); x++)
 				for (int y = 0; y < engine.field.getHeight(); y++)
 				{
 					b = engine.field.getBlock(x, y);
-					if (!b.isEmpty() && b.hard > 0)
+					if (!b.isEmpty() && b.countdown > 0)
 					{
 						blockColor = b.secondaryColor;
 						textColor = EventReceiver.COLOR_WHITE;
@@ -935,14 +935,14 @@ public class SPFMode extends DummyMode {
 							textColor = EventReceiver.COLOR_RED;
 						else if (blockColor == Block.BLOCK_COLOR_YELLOW)
 							textColor = EventReceiver.COLOR_YELLOW;
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.hard), textColor);
+						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.countdown), textColor);
 					}
 				}
 	}
 	
 	@Override
 	public boolean onMove (GameEngine engine, int playerID) {
-		hardDecremented[playerID] = false;
+		countdownDecremented[playerID] = false;
 		return false;
 	}
 	
@@ -1033,7 +1033,6 @@ public class SPFMode extends DummyMode {
 				{
 					add /= 2.0;
 					b.secondaryColor = 0;
-					b.hard = 0;
 				}
 				receiver.blockBreak(engine, playerID, x, y, b);
 				engine.field.setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
@@ -1077,16 +1076,16 @@ public class SPFMode extends DummyMode {
 	}
 	
 	public void checkAll(GameEngine engine, int playerID) {
-		boolean recheck = checkHardDecrement(engine, playerID);
+		boolean recheck = checkCountdown(engine, playerID);
 		if (recheck)
 			log.debug("Converted garbage blocks to regular blocks. Rechecking squares.");
 		checkSquares(engine, playerID, recheck);
 	}
 	
-	public boolean checkHardDecrement (GameEngine engine, int playerID) {
-		if (hardDecremented[playerID])
+	public boolean checkCountdown (GameEngine engine, int playerID) {
+		if (countdownDecremented[playerID])
 			return false;
-		hardDecremented[playerID] = true;
+		countdownDecremented[playerID] = true;
 		boolean result = false;
 		for (int y = (engine.field.getHiddenHeight() * -1); y < engine.field.getHeight(); y++)
 			for (int x = 0; x < engine.field.getWidth(); x++)
@@ -1094,11 +1093,11 @@ public class SPFMode extends DummyMode {
 				Block b = engine.field.getBlock(x, y);
 				if (b == null)
 					continue;
-				if (b.hard > 1)
-					b.hard--;
-				else if (b.hard == 1)
+				if (b.countdown > 1)
+					b.countdown--;
+				else if (b.countdown == 1)
 				{
-					b.hard = 0;
+					b.countdown = 0;
 					b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 					b.color = b.secondaryColor;
 					result = true;
@@ -1372,7 +1371,7 @@ public class SPFMode extends DummyMode {
 			int drop = Math.min(ojama[playerID], width * dropRows);
 			ojama[playerID] -= drop;
 			//engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID], 3);
-			engine.field.garbageDrop(engine, drop, false, ojamaHard[playerID], 3);
+			engine.field.garbageDrop(engine, drop, false, 0, ojamaCountdown[playerID], 3);
 			engine.field.setAllSkin(engine.getSkin());
 			int patternCol = 0;
 			for (int x = 0; x < engine.field.getWidth(); x++)
