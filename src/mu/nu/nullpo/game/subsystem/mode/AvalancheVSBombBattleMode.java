@@ -771,7 +771,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						"FALL DELAY", String.valueOf(engine.cascadeDelay),
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/5", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
@@ -784,7 +784,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 				
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 24) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 18,
 						"COUNTDOWN", String.valueOf(ojamaCountdown[playerID]),
@@ -798,7 +798,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 23,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 				
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 24,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
@@ -812,7 +812,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 				
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 5/5", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/4", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
