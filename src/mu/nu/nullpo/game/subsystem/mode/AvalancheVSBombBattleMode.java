@@ -722,7 +722,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 			if(engine.statc[3] >= 240)
 				engine.statc[4] = 1;
 			else if(engine.statc[3] >= 180)
-				engine.statc[2] = 27;
+				engine.statc[2] = 24;
 			else if(engine.statc[3] >= 120)
 				engine.statc[2] = 18;
 			else if(engine.statc[3] >= 60)

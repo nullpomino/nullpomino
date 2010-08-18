@@ -856,7 +856,6 @@ public class SPFMode extends DummyMode {
 			engine.rainbowAnimate = (playerID == 0);
 			engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
 			
-			
 			dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
 			attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
 			defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
