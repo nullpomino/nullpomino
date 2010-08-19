@@ -541,6 +541,9 @@ public class LineRaceMode extends NetDummyMode {
 			} else {
 				receiver.drawScoreFont(engine, playerID, 0, 20, "PLAY", EventReceiver.COLOR_RED);
 			}
+
+			// All number of players
+			if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
 		}
 	}
 

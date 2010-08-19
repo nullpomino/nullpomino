@@ -3,6 +3,7 @@ package mu.nu.nullpo.game.subsystem.mode;
 import java.io.IOException;
 
 import mu.nu.nullpo.game.component.RuleOptions;
+import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameEngine;
@@ -68,6 +69,14 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		engine.isVisible = false;
 	}
 
+	/**
+	 * Render something such as HUD. NetDummyMode will render the number of players to bottom-right of the screen.
+	 */
+	@Override
+	public void renderLast(GameEngine engine, int playerID) {
+		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
+	}
+
 	public void netlobbyOnInit(NetLobbyFrame lobby) {
 	}
 
@@ -87,5 +96,21 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	}
 
 	public void netlobbyOnExit(NetLobbyFrame lobby) {
+	}
+
+	/**
+	 * Draw number of players to bottom-right of screen.
+	 * This subroutine uses "netLobby" and "owner" variables.
+	 * @param engine GameEngine
+	 */
+	protected void netDrawAllPlayersCount(GameEngine engine) {
+		if((netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
+			int fontcolor = EventReceiver.COLOR_BLUE;
+			if(netLobby.netPlayerClient.getObserverCount() > 0) fontcolor = EventReceiver.COLOR_GREEN;
+			if(netLobby.netPlayerClient.getPlayerCount() > 1) fontcolor = EventReceiver.COLOR_RED;
+			String strObserverInfo = String.format("%d/%d", netLobby.netPlayerClient.getObserverCount(), netLobby.netPlayerClient.getPlayerCount());
+			String strObserverString = String.format("%40s", strObserverInfo);
+			owner.receiver.drawDirectFont(engine, 0, 0, 480-16, strObserverString, fontcolor);
+		}
 	}
 }

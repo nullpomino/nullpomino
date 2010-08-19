@@ -1311,15 +1311,8 @@ public class NetVSBattleMode extends NetDummyMode {
 			receiver.drawDirectFont(engine, 0, 503, 366, "" + netLobby.netPlayerClient.getRoomInfoList().size(), EventReceiver.COLOR_WHITE, 0.5f);
 		}
 
-		// 全体Number of players
-		if((playerID == getPlayers() - 1) && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
-			int fontcolor = EventReceiver.COLOR_BLUE;
-			if(netLobby.netPlayerClient.getObserverCount() > 0) fontcolor = EventReceiver.COLOR_GREEN;
-			if(netLobby.netPlayerClient.getPlayerCount() > 1) fontcolor = EventReceiver.COLOR_RED;
-			String strObserverInfo = String.format("%d/%d", netLobby.netPlayerClient.getObserverCount(), netLobby.netPlayerClient.getPlayerCount());
-			String strObserverString = String.format("%40s", strObserverInfo);
-			receiver.drawDirectFont(engine, 0, 0, 480-16, strObserverString, fontcolor);
-		}
+		// All number of players
+		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
 
 		// 経過 time
 		if((playerID == 0) && (currentRoomID != -1)) {

@@ -103,77 +103,77 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
- * ロビー画面のフレーム
+ * NullpoMino NetLobby
  */
 public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageListener {
-	/** シリアルVersionID */
+	/** Serial Version ID */
 	private static final long serialVersionUID = 1L;
 
-	/** ルーム一覧 tableのカラム名(翻訳前) */
+	/** Room-table column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] ROOMTABLE_COLUMNNAMES = {
 		"RoomTable_ID", "RoomTable_Name", "RoomTable_RuleName", "RoomTable_Status", "RoomTable_Players", "RoomTable_Spectators"
 	};
 
-	/** ゲーム結果 tableのカラム名(翻訳前) */
+	/** End-of-game statistics column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] STATTABLE_COLUMNNAMES = {
 		"StatTable_Rank", "StatTable_Name",
 		"StatTable_Attack", "StatTable_APM", "StatTable_Lines", "StatTable_LPM", "StatTable_Piece", "StatTable_PPS", "StatTable_Time",
 		"StatTable_KO", "StatTable_Wins", "StatTable_Games"
 	};
 
-	/** スピン bonus設定の表示名 */
+	/** Spin bonus names */
 	public static final String[] COMBOBOX_SPINBONUS_NAMES = {"CreateRoom_TSpin_Disable", "CreateRoom_TSpin_TOnly", "CreateRoom_TSpin_All"};
 
 	/** Names for spin check types */
 	public static final String[] COMBOBOX_SPINCHECKTYPE_NAMES = {"CreateRoom_SpinCheck_4Point", "CreateRoom_SpinCheck_Immobile"};
 
-	/** 各画面カードの定count */
+	/** Constants for each screen-card */
 	public static final int SCREENCARD_SERVERSELECT = 0,
 							SCREENCARD_LOBBY = 1,
-							SCREENCARD_ROOM = 2,
-							SCREENCARD_SERVERADD = 3,
-							SCREENCARD_CREATEROOM = 4;
+							SCREENCARD_SERVERADD = 2,
+							SCREENCARD_CREATEROOM = 3,
+							SCREENCARD_CREATEROOM1P = 4;
 
-	/** 各画面カードの名前 */
-	public static final String[] SCREENCARD_NAMES = {"ServerSelect", "Lobby", "Room", "ServerAdd", "CreateRoom"};
+	/** Names for each screen-card */
+	public static final String[] SCREENCARD_NAMES = {"ServerSelect", "Lobby", "ServerAdd", "CreateRoom", "CreateRoom1P"};
 
 	/** Log */
 	static final Logger log = Logger.getLogger(NetLobbyFrame.class);
 
-	/** クライアント */
+	/** NetPlayerClient */
 	public NetPlayerClient netPlayerClient;
 
-	/** ルールデータ */
+	/** Rule data */
 	public RuleOptions ruleOpt;
 
-	/** イベント受け取りインターフェース */
+	/** Event listeners */
 	protected LinkedList<NetLobbyListener> listeners = new LinkedList<NetLobbyListener>();
 
 	/** Current game mode (act as special NetLobbyListener) */
 	protected NetDummyMode netDummyMode;
 
-	/** ロビー設定保存用Property file */
+	/** Property file for lobby settings */
 	protected CustomProperties propConfig;
 
-	/** Swing版の設定保存用Property file */
+	/** Property file for swing settings */
 	protected CustomProperties propSwingConfig;
 
-	/** オブザーバー機能用Property file */
+	/** Property file for observer ("Watch") settings */
 	protected CustomProperties propObserver;
 
 	/** Default language file */
 	protected CustomProperties propLangDefault;
 
-	/** UI翻訳用Property file */
+	/** Property file for GUI translations */
 	protected CustomProperties propLang;
 
-	/** Current 画面カードの number */
+	/** Current screen-card number */
 	protected int currentScreenCardNumber;
 
-	/** 現在詳細を閲覧中のルームID */
+	/** Current room ID (for View Detail) */
 	protected int currentViewDetailRoomID = -1;
 
-	/** 設定バックアップ用NetRoomInfo */
+	/** NetRoomInfo for settings backup */
 	protected NetRoomInfo backupRoomInfo;
 
 	/** PrintWriter for lobby log */
@@ -182,25 +182,25 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** PrintWriter for room log */
 	protected PrintWriter writerRoomLog;
 
-	/** メイン画面のレイアウトマネージャ */
+	/** Layout manager for main screen */
 	protected CardLayout contentPaneCardLayout;
 
-	/** 名前入力欄 */
+	/** Text field of player name (Server select screen) */
 	protected JTextField txtfldPlayerName;
 
-	/** チーム名入力欄(サーバー選択画面) */
+	/** Text field of team name (Server select screen) */
 	protected JTextField txtfldPlayerTeam;
 
-	/** サーバー選択リストボックス */
+	/** Listbox for servers (Server select screen) */
 	protected JList listboxServerList;
 
-	/** サーバー選択リストボックスのデータ */
+	/** Listbox data for servers (Server select screen) */
 	protected DefaultListModel listmodelServerList;
 
-	/** 接続 button(サーバー選択画面) */
+	/** Connect button (Server select screen) */
 	protected JButton btnServerConnect;
 
-	/** 上下を分ける仕切り線(ロビー) */
+	/** JSplitPane (Lobby screen) */
 	protected JSplitPane splitLobby;
 
 	/** ロビー画面上部のレイアウトマネージャ */
@@ -209,16 +209,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ロビー画面上部のパネル */
 	protected JPanel subpanelRoomListTopBar;
 
-	/** クイックスタート button(ロビー) */
+	/** クイックスタート button(Lobby screen) */
 	protected JButton btnRoomListQuickStart;
 
-	/** ルーム作成 button(ロビー) */
+	/** ルーム作成 button(Lobby screen) */
 	protected JButton btnRoomListRoomCreate;
 
-	/** チーム変更 button(ロビー) */
+	/** Create Room 1P (Lobby screen) */
+	protected JButton btnRoomListRoomCreate1P;
+
+	/** チーム変更 button(Lobby screen) */
 	protected JButton btnRoomListTeamChange;
 
-	/** チーム名入力欄(ロビー) */
+	/** チーム名入力欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
 
 	/** ルーム一覧 table */
@@ -230,34 +233,37 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ルーム一覧 tableのデータ */
 	protected DefaultTableModel tablemodelRoomList;
 
-	/** チャットログとプレイヤーリストの仕切り線(ロビー) */
+	/** チャットログとプレイヤーリストの仕切り線(Lobby screen) */
 	protected JSplitPane splitLobbyChat;
 
-	/** チャットログ(ロビー) */
+	/** チャットログ(Lobby screen) */
 	protected JTextPane txtpaneLobbyChatLog;
 
-	/** プレイヤーリスト(ロビー) */
+	/** プレイヤーリスト(Lobby screen) */
 	protected JList listboxLobbyChatPlayerList;
 
-	/** プレイヤーリスト(ロビー)のデータ */
+	/** プレイヤーリスト(Lobby screen)のデータ */
 	protected DefaultListModel listmodelLobbyChatPlayerList;
 
-	/** チャット入力欄(ロビー) */
+	/** チャット入力欄(Lobby screen) */
 	protected JTextField txtfldLobbyChatInput;
 
-	/** チャット送信 button(ロビー) */
+	/** チャット送信 button(Lobby screen) */
 	protected JButton btnLobbyChatSend;
 
-	/** 参戦 button(ルーム) */
+	/** 参戦 button(Room screen) */
 	protected JButton btnRoomButtonsJoin;
 
-	/** 離脱 button(ルーム) */
+	/** 離脱 button(Room screen) */
 	protected JButton btnRoomButtonsSitOut;
 
-	/** チーム変更 button(ルーム) */
+	/** チーム変更 button(Room screen) */
 	protected JButton btnRoomButtonsTeamChange;
 
-	/** 上下を分ける仕切り線(ルーム) */
+	/** View Settings button (Room screen) */
+	protected JButton btnRoomButtonsViewSetting;
+
+	/** 上下を分ける仕切り線(Room screen) */
 	protected JSplitPane splitRoom;
 
 	/** ルーム画面上部のレイアウトマネージャ */
@@ -275,94 +281,94 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ゲーム結果 tableのデータ */
 	protected DefaultTableModel tablemodelGameStat;
 
-	/** チャットログとプレイヤーリストの仕切り線(ルーム) */
+	/** チャットログとプレイヤーリストの仕切り線(Room screen) */
 	protected JSplitPane splitRoomChat;
 
-	/** チャットログ(ルーム) */
+	/** チャットログ(Room screen) */
 	protected JTextPane txtpaneRoomChatLog;
 
-	/** プレイヤーリスト(ルーム) */
+	/** プレイヤーリスト(Room screen) */
 	protected JList listboxRoomChatPlayerList;
 
-	/** プレイヤーリスト(ルーム)のデータ */
+	/** プレイヤーリスト(Room screen)のデータ */
 	protected DefaultListModel listmodelRoomChatPlayerList;
 
 	/** 同じ部屋のプレイヤー情報 */
 	protected LinkedList<NetPlayerInfo> sameRoomPlayerInfoList;
 
-	/** チャット入力欄(ルーム) */
+	/** チャット入力欄(Room screen) */
 	protected JTextField txtfldRoomChatInput;
 
-	/** チャット送信 button(ルーム) */
+	/** チャット送信 button(Room screen) */
 	protected JButton btnRoomChatSend;
 
-	/** チーム名入力欄(ルーム) */
+	/** チーム名入力欄(Room screen) */
 	protected JTextField txtfldRoomTeam;
 
-	/** ホスト名入力欄(サーバー追加画面) */
+	/** ホスト名入力欄(Server add screen) */
 	protected JTextField txtfldServerAddHost;
 
-	/** OK button(サーバー追加画面) */
+	/** OK button(Server add screen) */
 	protected JButton btnServerAddOK;
 
-	/** ルーム名(ルーム作成画面) */
+	/** ルーム名(Create room screen) */
 	protected JTextField txtfldCreateRoomName;
 
-	/** 参加人count(ルーム作成画面) */
+	/** 参加人count(Create room screen) */
 	protected JSpinner spinnerCreateRoomMaxPlayers;
 
-	/** 自動開始前の待機 time(ルーム作成画面) */
+	/** 自動開始前の待機 time(Create room screen) */
 	protected JSpinner spinnerCreateRoomAutoStartSeconds;
 
-	/** 落下速度・分子(ルーム作成画面) */
+	/** 落下速度・分子(Create room screen) */
 	protected JSpinner spinnerCreateRoomGravity;
 
-	/** 落下速度・分母(ルーム作成画面) */
+	/** 落下速度・分母(Create room screen) */
 	protected JSpinner spinnerCreateRoomDenominator;
 
-	/** ARE(ルーム作成画面) */
+	/** ARE(Create room screen) */
 	protected JSpinner spinnerCreateRoomARE;
 
-	/** ARE after line clear(ルーム作成画面) */
+	/** ARE after line clear(Create room screen) */
 	protected JSpinner spinnerCreateRoomARELine;
 
-	/** Line clear time(ルーム作成画面) */
+	/** Line clear time(Create room screen) */
 	protected JSpinner spinnerCreateRoomLineDelay;
 
-	/** 固定 time(ルーム作成画面) */
+	/** 固定 time(Create room screen) */
 	protected JSpinner spinnerCreateRoomLockDelay;
 
-	/** 横溜め(ルーム作成画面) */
+	/** 横溜め(Create room screen) */
 	protected JSpinner spinnerCreateRoomDAS;
 
-	/** Hurryup開始までの秒count(ルーム作成画面) */
+	/** Hurryup開始までの秒count(Create room screen) */
 	protected JSpinner spinnerCreateRoomHurryupSeconds;
 
-	/** Hurryup後に何回Blockを置くたびに床をせり上げるか(ルーム作成画面) */
+	/** Hurryup後に何回Blockを置くたびに床をせり上げるか(Create room screen) */
 	protected JSpinner spinnerCreateRoomHurryupInterval;
 
-	/** マップセットID(ルーム作成画面) */
+	/** マップセットID(Create room screen) */
 	protected JSpinner spinnerCreateRoomMapSetID;
 
 	/** Rate of change of garbage holes */
 	protected JSpinner spinnerCreateRoomGarbagePercent;
 
-	/** マップ有効(ルーム作成画面) */
+	/** マップ有効(Create room screen) */
 	protected JCheckBox chkboxCreateRoomUseMap;
 
-	/** 全員のルール固定(ルーム作成画面) */
+	/** 全員のルール固定(Create room screen) */
 	protected JCheckBox chkboxCreateRoomRuleLock;
 
-	/** スピン bonusタイプ(ルーム作成画面) */
+	/** スピン bonusタイプ(Create room screen) */
 	protected JComboBox comboboxCreateRoomTSpinEnableType;
 
 	/** Spin recognition type (4-point, immobile, etc.) */
 	protected JComboBox comboboxCreateRoomSpinCheckType;
 
-	/** Flag for enabling B2B(ルーム作成画面) */
+	/** Flag for enabling B2B(Create room screen) */
 	protected JCheckBox chkboxCreateRoomB2B;
 
-	/** Flag for enabling combos(ルーム作成画面) */
+	/** Flag for enabling combos(Create room screen) */
 	protected JCheckBox chkboxCreateRoomCombo;
 
 	/** Allow Rensa/Combo Block */
@@ -377,7 +383,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Allow EZ spins */
 	protected JCheckBox chkboxCreateRoomTSpinEnableEZ;
 
-	/** 3人以上生きている場合に攻撃力を減らす(ルーム作成画面) */
+	/** 3人以上生きている場合に攻撃力を減らす(Create room screen) */
 	protected JCheckBox chkboxCreateRoomReduceLineSend;
 
 	/** Set garbage type */
@@ -386,26 +392,38 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** B2B chunk type */
 	protected JCheckBox chkboxCreateRoomB2BChunk;
 
-	/** 断片的邪魔Blockシステムを使う(ルーム作成画面) */
+	/** 断片的邪魔Blockシステムを使う(Create room screen) */
 	protected JCheckBox chkboxCreateRoomUseFractionalGarbage;
 
-	/** TNET2タイプの自動スタートタイマーを使う(ルーム作成画面) */
+	/** TNET2タイプの自動スタートタイマーを使う(Create room screen) */
 	protected JCheckBox chkboxCreateRoomAutoStartTNET2;
 
-	/** 誰かCancelしたらタイマー無効化(ルーム作成画面) */
+	/** 誰かCancelしたらタイマー無効化(Create room screen) */
 	protected JCheckBox chkboxCreateRoomDisableTimerAfterSomeoneCancelled;
 
-	/** OK button(ルーム作成画面) */
+	/** OK button(Create room screen) */
 	protected JButton btnCreateRoomOK;
 
-	/** 参戦 button(ルーム作成画面) */
+	/** 参戦 button(Create room screen) */
 	protected JButton btnCreateRoomJoin;
 
-	/** 観戦 button(ルーム作成画面) */
+	/** 観戦 button(Create room screen) */
 	protected JButton btnCreateRoomWatch;
 
 	/** Cancel Button (Create room screen) */
 	protected JButton btnCreateRoomCancel;
+
+	/** Game mode listbox (Create room 1P screen) */
+	protected JList listboxCreateRoom1PModeList;
+
+	/** Game mode list data (Create room 1P screen) */
+	protected DefaultListModel listmodelCreateRoom1PModeList;
+
+	/** OK button (Create room 1P screen) */
+	protected JButton btnCreateRoom1POK;
+
+	/** Cancel button (Create room 1P screen) */
+	protected JButton btnCreateRoom1PCancel;
 
 	/** Lobby/Room Tab */
 	protected JTabbedPane tabLobbyAndRoom;
@@ -501,7 +519,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * 画面のInitialization
+	 * GUI Initialization
 	 */
 	protected void initUI() {
 		contentPaneCardLayout = new CardLayout();
@@ -511,12 +529,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		initLobbyUI();
 		initServerAddUI();
 		initCreateRoomUI();
+		initCreateRoom1PUI();
 
 		changeCurrentScreenCard(SCREENCARD_SERVERSELECT);
 	}
 
 	/**
-	 * サーバー選択画面のInitialization
+	 * Server select screen initialization
 	 */
 	protected void initServerSelectUI() {
 		// サーバー選択と名前入力画面
@@ -629,7 +648,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ロビー画面のInitialization
+	 * Lobby screen initialization
 	 */
 	protected void initLobbyUI() {
 		tabLobbyAndRoom = new JTabbedPane();
@@ -666,7 +685,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListQuickStart.addActionListener(this);
 		btnRoomListQuickStart.setActionCommand("Lobby_QuickStart");
 		btnRoomListQuickStart.setMnemonic('Q');
-		//btnRoomListQuickStart.setVisible(false);
+		btnRoomListQuickStart.setVisible(false);
 		subpanelRoomListButtons.add(btnRoomListQuickStart);
 
 		// ***** ルーム作成 button
@@ -675,6 +694,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate.setActionCommand("Lobby_RoomCreate");
 		btnRoomListRoomCreate.setMnemonic('C');
 		subpanelRoomListButtons.add(btnRoomListRoomCreate);
+
+		// ***** Create Room (1P) button
+		btnRoomListRoomCreate1P = new JButton(getUIText("Lobby_RoomCreate1P"));
+		btnRoomListRoomCreate1P.addActionListener(this);
+		btnRoomListRoomCreate1P.setActionCommand("Lobby_RoomCreate1P");
+		btnRoomListRoomCreate1P.setMnemonic('1');
+		subpanelRoomListButtons.add(btnRoomListRoomCreate1P);
 
 		// ***** チーム変更 button
 		btnRoomListTeamChange = new JButton(getUIText("Lobby_TeamChange"));
@@ -752,7 +778,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		splitLobbyChat.setDividerLocation(propConfig.getProperty("lobby.splitLobbyChat.location", 350));
 		subpanelLobbyChat.add(splitLobbyChat, BorderLayout.CENTER);
 
-		// **** チャットログ(ロビー)
+		// **** チャットログ(Lobby screen)
 		txtpaneLobbyChatLog = new JTextPane();
 		txtpaneLobbyChatLog.setComponentPopupMenu(new LogPopupMenu(txtpaneLobbyChatLog));
 		txtpaneLobbyChatLog.addKeyListener(new LogKeyAdapter());
@@ -760,7 +786,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spTxtpaneLobbyChatLog.setMinimumSize(new Dimension(0,0));
 		splitLobbyChat.setLeftComponent(spTxtpaneLobbyChatLog);
 
-		// **** プレイヤーリスト(ロビー)
+		// **** プレイヤーリスト(Lobby screen)
 		listmodelLobbyChatPlayerList = new DefaultListModel();
 		listboxLobbyChatPlayerList = new JList(listmodelLobbyChatPlayerList);
 		listboxLobbyChatPlayerList.setComponentPopupMenu(new ListBoxPopupMenu(listboxLobbyChatPlayerList));
@@ -768,16 +794,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spListboxLobbyChatPlayerList.setMinimumSize(new Dimension(0, 0));
 		splitLobbyChat.setRightComponent(spListboxLobbyChatPlayerList);
 
-		// *** チャット入力欄パネル(ロビー)
+		// *** チャット入力欄パネル(Lobby screen)
 		JPanel subpanelLobbyChatInputArea = new JPanel(new BorderLayout());
 		subpanelLobbyChat.add(subpanelLobbyChatInputArea, BorderLayout.SOUTH);
 
-		// **** チャット入力欄(ロビー)
+		// **** チャット入力欄(Lobby screen)
 		txtfldLobbyChatInput = new JTextField();
 		txtfldLobbyChatInput.setComponentPopupMenu(new TextComponentPopupMenu(txtfldLobbyChatInput));
 		subpanelLobbyChatInputArea.add(txtfldLobbyChatInput, BorderLayout.CENTER);
 
-		// **** チャット送信 button(ロビー)
+		// **** チャット送信 button(Lobby screen)
 		btnLobbyChatSend = new JButton(getUIText("Lobby_ChatSend"));
 		btnLobbyChatSend.addActionListener(this);
 		btnLobbyChatSend.setActionCommand("Lobby_ChatSend");
@@ -867,11 +893,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelRoomTeamButtons.add(btnRoomTeamCancel);
 
 		// ***** 設定確認 button
-		JButton btnRoomButtonViewSetting = new JButton(getUIText("Room_ViewSetting"));
-		btnRoomButtonViewSetting.addActionListener(this);
-		btnRoomButtonViewSetting.setActionCommand("Room_ViewSetting");
-		btnRoomButtonViewSetting.setMnemonic('V');
-		subpanelRoomButtons.add(btnRoomButtonViewSetting);
+		btnRoomButtonsViewSetting = new JButton(getUIText("Room_ViewSetting"));
+		btnRoomButtonsViewSetting.addActionListener(this);
+		btnRoomButtonsViewSetting.setActionCommand("Room_ViewSetting");
+		btnRoomButtonsViewSetting.setMnemonic('V');
+		subpanelRoomButtons.add(btnRoomButtonsViewSetting);
 
 		// *** ゲーム結果一覧 table
 		strGameStatTableColumnNames = new String[STATTABLE_COLUMNNAMES.length];
@@ -907,12 +933,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelRoomChat.setMinimumSize(new Dimension(0,0));
 		splitRoom.setBottomComponent(subpanelRoomChat);
 
-		// *** チャットログとプレイヤーリストの仕切り線(ルーム)
+		// *** チャットログとプレイヤーリストの仕切り線(Room screen)
 		splitRoomChat = new JSplitPane();
 		splitRoomChat.setDividerLocation(propConfig.getProperty("room.splitRoomChat.location", 350));
 		subpanelRoomChat.add(splitRoomChat, BorderLayout.CENTER);
 
-		// **** チャットログ(ルーム)
+		// **** チャットログ(Room screen)
 		txtpaneRoomChatLog = new JTextPane();
 		txtpaneRoomChatLog.setComponentPopupMenu(new LogPopupMenu(txtpaneRoomChatLog));
 		txtpaneRoomChatLog.addKeyListener(new LogKeyAdapter());
@@ -920,7 +946,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spTxtpaneRoomChatLog.setMinimumSize(new Dimension(0,0));
 		splitRoomChat.setLeftComponent(spTxtpaneRoomChatLog);
 
-		// **** プレイヤーリスト(ルーム)
+		// **** プレイヤーリスト(Room screen)
 		sameRoomPlayerInfoList = new LinkedList<NetPlayerInfo>();
 		listmodelRoomChatPlayerList = new DefaultListModel();
 		listboxRoomChatPlayerList = new JList(listmodelRoomChatPlayerList);
@@ -929,16 +955,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spListboxRoomChatPlayerList.setMinimumSize(new Dimension(0,0));
 		splitRoomChat.setRightComponent(spListboxRoomChatPlayerList);
 
-		// *** チャット入力欄パネル(ルーム)
+		// *** チャット入力欄パネル(Room screen)
 		JPanel subpanelRoomChatInputArea = new JPanel(new BorderLayout());
 		subpanelRoomChat.add(subpanelRoomChatInputArea, BorderLayout.SOUTH);
 
-		// **** チャット入力欄(ルーム)
+		// **** チャット入力欄(Room screen)
 		txtfldRoomChatInput = new JTextField();
 		txtfldRoomChatInput.setComponentPopupMenu(new TextComponentPopupMenu(txtfldRoomChatInput));
 		subpanelRoomChatInputArea.add(txtfldRoomChatInput, BorderLayout.CENTER);
 
-		// **** チャット送信 button(ルーム)
+		// **** チャット送信 button(Room screen)
 		btnRoomChatSend = new JButton(getUIText("Room_ChatSend"));
 		btnRoomChatSend.addActionListener(this);
 		btnRoomChatSend.setActionCommand("Room_ChatSend");
@@ -947,7 +973,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * サーバー追加画面のInitialization
+	 * Server-add screen initialization
 	 */
 	protected void initServerAddUI() {
 		// サーバー追加画面
@@ -995,7 +1021,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム作成画面のInitialization
+	 * Create room scren initialization
 	 */
 	protected void initCreateRoomUI() {
 		// ルーム作成画面
@@ -1443,6 +1469,51 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
+	 * Create room (1P) screen initialization
+	 */
+	protected void initCreateRoom1PUI() {
+		// Main panel for Create room 1P
+		JPanel mainpanelCreateRoom1P = new JPanel(new BorderLayout());
+		this.getContentPane().add(mainpanelCreateRoom1P, SCREENCARD_NAMES[SCREENCARD_CREATEROOM1P]);
+
+		// * "Game Mode:" label
+		JLabel lCreateRoom1P = new JLabel(getUIText("CreateRoom1P_Label"));
+		mainpanelCreateRoom1P.add(lCreateRoom1P, BorderLayout.NORTH);
+
+		// * Game mode listbox
+		listmodelCreateRoom1PModeList = new DefaultListModel();
+		loadListToDefaultListModel(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
+
+		listboxCreateRoom1PModeList = new JList(listmodelCreateRoom1PModeList);
+		listboxCreateRoom1PModeList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PModeList.value", ""), true);
+
+		JScrollPane spCreateRoom1PModeList = new JScrollPane(listboxCreateRoom1PModeList);
+
+		mainpanelCreateRoom1P.add(spCreateRoom1PModeList, BorderLayout.CENTER);
+
+		// * Buttons panel
+		JPanel subpanelButtons = new JPanel();
+		subpanelButtons.setLayout(new BoxLayout(subpanelButtons, BoxLayout.X_AXIS));
+		mainpanelCreateRoom1P.add(subpanelButtons, BorderLayout.SOUTH);
+
+		// ** OK button
+		btnCreateRoom1POK = new JButton(getUIText("CreateRoom1P_OK"));
+		btnCreateRoom1POK.addActionListener(this);
+		btnCreateRoom1POK.setActionCommand("CreateRoom1P_OK");
+		btnCreateRoom1POK.setMnemonic('O');
+		btnCreateRoom1POK.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRoom1POK.getMaximumSize().height));
+		subpanelButtons.add(btnCreateRoom1POK);
+
+		// ** Cancel button
+		btnCreateRoom1PCancel = new JButton(getUIText("CreateRoom1P_Cancel"));
+		btnCreateRoom1PCancel.addActionListener(this);
+		btnCreateRoom1PCancel.setActionCommand("CreateRoom1P_Cancel");
+		btnCreateRoom1PCancel.setMnemonic('C');
+		btnCreateRoom1PCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRoom1PCancel.getMaximumSize().height));
+		subpanelButtons.add(btnCreateRoom1PCancel);
+	}
+
+	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
 	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
@@ -1483,6 +1554,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				defaultButton = btnCreateRoomOK;
 			else
 				defaultButton = btnCreateRoomCancel;
+			break;
+		case SCREENCARD_CREATEROOM1P:
+			defaultButton = btnCreateRoom1POK;
 			break;
 		}
 		this.getRootPane().setDefaultButton(defaultButton);
@@ -1692,12 +1766,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ロビー画面の buttonの有効状態を変更
+	 * Set enabled state of lobby buttons
 	 * @param mode 0=Disable all 1=Full Lobby 2=Inside Room
 	 */
 	public void setLobbyButtonsEnabled(int mode) {
 		btnRoomListQuickStart.setEnabled((mode == 1));
 		btnRoomListRoomCreate.setEnabled((mode == 1));
+		btnRoomListRoomCreate1P.setEnabled((mode == 1));
 		btnRoomListTeamChange.setEnabled((mode >= 1));
 		btnLobbyChatSend.setEnabled((mode >= 1));
 		txtfldLobbyChatInput.setEnabled((mode >= 1));
@@ -1711,6 +1786,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsTeamChange.setEnabled(b);
 		btnRoomButtonsJoin.setEnabled(b);
 		btnRoomButtonsSitOut.setEnabled(b);
+		btnRoomButtonsViewSetting.setEnabled(b);
 		btnRoomChatSend.setEnabled(b);
 		txtfldRoomChatInput.setEnabled(b);
 	}
@@ -2111,6 +2187,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultMapSetID", (Integer)spinnerCreateRoomMapSetID.getValue());
 		}
 
+		Object listboxCreateRoom1PModeListSelectedValue = listboxCreateRoom1PModeList.getSelectedValue();
+		if((listboxCreateRoom1PModeListSelectedValue != null) && (listboxCreateRoom1PModeListSelectedValue instanceof String)) {
+			propConfig.setProperty("createroom1p.listboxCreateRoom1PModeList.value", (String)listboxCreateRoom1PModeListSelectedValue);
+		} else {
+			propConfig.setProperty("createroom1p.listboxCreateRoom1PModeList.value", "");
+		}
+
 		try {
 			FileOutputStream out = new FileOutputStream("config/setting/netlobby.cfg");
 			propConfig.store(out, "NullpoMino NetLobby Config");
@@ -2337,18 +2420,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// クイックスタート
 		if(e.getActionCommand() == "Lobby_QuickStart") {
 			// TODO:クイックスタート
-			//singleroomcreate\t[roomName]\t[mode]
-			try {
-				txtpaneRoomChatLog.setText("");
-				setRoomButtonsEnabled(false);
-				tabLobbyAndRoom.setEnabledAt(1, true);
-				tabLobbyAndRoom.setSelectedIndex(1);
-				changeCurrentScreenCard(SCREENCARD_LOBBY);
-
-				netPlayerClient.send("singleroomcreate\t" + "\t" + NetUtil.urlEncode("LINE RACE") + "\n");
-			} catch (Exception e2) {
-				log.error("", e2);
-			}
+		}
+		// Create Room 1P
+		if(e.getActionCommand() == "Lobby_RoomCreate1P") {
+			changeCurrentScreenCard(SCREENCARD_CREATEROOM1P);
 		}
 		// ルーム作成
 		if(e.getActionCommand() == "Lobby_RoomCreate") {
@@ -2356,7 +2431,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			setCreateRoomUIType(false, null);
 			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
 		}
-		// チーム変更(ロビー)
+		// チーム変更(Lobby screen)
 		if(e.getActionCommand() == "Lobby_TeamChange") {
 			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
 				txtfldRoomListTeam.setText(netPlayerClient.getYourPlayerInfo().strTeam);
@@ -2394,14 +2469,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				}
 			}
 		}
-		// チーム変更OK(ロビー)
+		// チーム変更OK(Lobby screen)
 		if(e.getActionCommand() == "Lobby_TeamChange_OK") {
 			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
 				netPlayerClient.send("changeteam\t" + NetUtil.urlEncode(txtfldRoomListTeam.getText()) + "\n");
 				roomListTopBarCardLayout.first(subpanelRoomListTopBar);
 			}
 		}
-		// チーム変更Cancel(ロビー)
+		// チーム変更Cancel(Lobby screen)
 		if(e.getActionCommand() == "Lobby_TeamChange_Cancel") {
 			roomListTopBarCardLayout.first(subpanelRoomListTopBar);
 		}
@@ -2421,25 +2496,25 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			netPlayerClient.send("changestatus\ttrue\n");
 			btnRoomButtonsSitOut.setEnabled(false);
 		}
-		// チーム変更(ルーム)
+		// チーム変更(Room screen)
 		if(e.getActionCommand() == "Room_TeamChange") {
 			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
 				txtfldRoomTeam.setText(netPlayerClient.getYourPlayerInfo().strTeam);
 				roomTopBarCardLayout.next(subpanelRoomTopBar);
 			}
 		}
-		// チーム変更OK(ルーム)
+		// チーム変更OK(Room screen)
 		if(e.getActionCommand() == "Room_TeamChange_OK") {
 			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
 				netPlayerClient.send("changeteam\t" + NetUtil.urlEncode(txtfldRoomTeam.getText()) + "\n");
 				roomTopBarCardLayout.first(subpanelRoomTopBar);
 			}
 		}
-		// チーム変更Cancel(ルーム)
+		// チーム変更Cancel(Room screen)
 		if(e.getActionCommand() == "Room_TeamChange_Cancel") {
 			roomTopBarCardLayout.first(subpanelRoomTopBar);
 		}
-		// ルール確認(ルーム)
+		// ルール確認(Room screen)
 		if(e.getActionCommand() == "Room_ViewSetting") {
 			viewRoomDetail(netPlayerClient.getYourPlayerInfo().roomID);
 		}
@@ -2553,6 +2628,27 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// ルーム作成画面でのCancel button
 		if(e.getActionCommand() == "CreateRoom_Cancel") {
+			changeCurrentScreenCard(SCREENCARD_LOBBY);
+		}
+		// OK button (Create Room 1P)
+		if(e.getActionCommand() == "CreateRoom1P_OK") {
+			//singleroomcreate\t[roomName]\t[mode]
+			try {
+				if(listboxCreateRoom1PModeList.getSelectedIndex() != -1) {
+					String strMode = (String)listboxCreateRoom1PModeList.getSelectedValue();
+					txtpaneRoomChatLog.setText("");
+					setRoomButtonsEnabled(false);
+					tabLobbyAndRoom.setEnabledAt(1, true);
+					tabLobbyAndRoom.setSelectedIndex(1);
+					changeCurrentScreenCard(SCREENCARD_LOBBY);
+					netPlayerClient.send("singleroomcreate\t" + "\t" + NetUtil.urlEncode(strMode) + "\n");
+				}
+			} catch (Exception e2) {
+				log.error("Error on CreateRoom1P_OK", e2);
+			}
+		}
+		// Cancel button (Create Room 1P)
+		if(e.getActionCommand() == "CreateRoom1P_Cancel") {
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
 	}
@@ -2801,9 +2897,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					addSystemChatLogLater(txtpaneRoomChatLog, strTemp, Color.blue);
 					setRoomJoinButtonVisible(false);
 				}
+
 				if(netPlayerClient.getRoomInfo(roomID).singleplayer) {
 					btnRoomButtonsJoin.setVisible(false);
 					btnRoomButtonsSitOut.setVisible(false);
+					btnRoomButtonsViewSetting.setVisible(false);
+				} else {
+					btnRoomButtonsViewSetting.setVisible(true);
 				}
 
 				SwingUtilities.invokeLater(new Runnable() {
