@@ -327,8 +327,15 @@ public class LineRaceMode extends NetDummyMode {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 10) {
+					// Load preset
 					loadPreset(engine, owner.modeConfig, presetNumber);
+
+					// NET: Signal options change
+					if(netIsNetPlay && (netNumSpectators > 0)) {
+						netSendOptions(engine);
+					}
 				} else if(engine.statc[2] == 11) {
+					// Save preset
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -614,7 +621,10 @@ public class LineRaceMode extends NetDummyMode {
 			// Retry
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && !netIsWatch) {
 				engine.playSE("decide");
-				if(netNumSpectators > 0) netLobby.netPlayerClient.send("game\tretry\n");
+				if(netNumSpectators > 0) {
+					netLobby.netPlayerClient.send("game\tretry\n");
+					netSendOptions(engine);
+				}
 				owner.reset();
 			}
 
@@ -804,7 +814,8 @@ public class LineRaceMode extends NetDummyMode {
 		String msg = "game\tstats\t";
 		msg += engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
 		msg += engine.statistics.time + "\t" + engine.statistics.lpm + "\t";
-		msg += engine.statistics.pps + "\t" + rankingRank + "\t" + goaltype;
+		msg += engine.statistics.pps + "\t" + rankingRank + "\t" + goaltype + "\t";
+		msg += engine.gameActive + "\t" + engine.timerActive;
 		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
@@ -890,6 +901,7 @@ public class LineRaceMode extends NetDummyMode {
 			log.debug("NET: Game started");
 
 			if(netIsWatch) {
+				owner.reset();
 				owner.engine[0].stat = GameEngine.STAT_READY;
 				owner.engine[0].resetStatc();
 			}
@@ -933,7 +945,6 @@ public class LineRaceMode extends NetDummyMode {
 					big = Boolean.parseBoolean(message[12]);
 					goaltype = Integer.parseInt(message[13]);
 					presetNumber = Integer.parseInt(message[14]);
-					engine.playSE("change");
 				}
 				// Field
 				if(message[3].equals("field")) {
@@ -965,6 +976,8 @@ public class LineRaceMode extends NetDummyMode {
 					engine.statistics.pps = Float.parseFloat(message[8]);
 					rankingRank = Integer.parseInt(message[9]);
 					goaltype = Integer.parseInt(message[10]);
+					engine.gameActive = Boolean.parseBoolean(message[11]);
+					engine.timerActive = Boolean.parseBoolean(message[12]);
 
 					// Update meter
 					int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
@@ -997,7 +1010,11 @@ public class LineRaceMode extends NetDummyMode {
 						engine.nowPieceBottomY =
 							engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
 
-						if(engine.stat != GameEngine.STAT_EXCELLENT) {
+						if((engine.stat != GameEngine.STAT_EXCELLENT) && (engine.stat != GameEngine.STAT_GAMEOVER) &&
+						   (engine.stat != GameEngine.STAT_RESULT))
+						{
+							engine.gameActive = true;
+							engine.timerActive = true;
 							engine.stat = GameEngine.STAT_MOVE;
 							engine.statc[0] = 2;
 						}
@@ -1054,6 +1071,9 @@ public class LineRaceMode extends NetDummyMode {
 				}
 				// Retry
 				if(message[3].equals("retry")) {
+					engine.ending = 0;
+					engine.timerActive = false;
+					engine.gameActive = false;
 					engine.stat = GameEngine.STAT_SETTING;
 					engine.resetStatc();
 					engine.playSE("decide");
