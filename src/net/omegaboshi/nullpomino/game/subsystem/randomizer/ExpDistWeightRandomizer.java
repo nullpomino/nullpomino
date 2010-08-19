@@ -19,6 +19,6 @@ public class ExpDistWeightRandomizer extends DistanceWeightRandomizer {
 	}
 	
 	public boolean isAtDistanceLimit(int i) {
-		return i > 25;
+		return weights[i] > 25;
 	}
 }
