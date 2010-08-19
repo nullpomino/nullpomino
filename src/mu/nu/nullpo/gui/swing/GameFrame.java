@@ -389,8 +389,8 @@ public class GameFrame extends JFrame implements Runnable {
 
 			// タイトルに戻る
 			if(NullpoMinoSwing.gameManager.getQuitFlag() ||
-			   GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_GIVEUP) ||
-			   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_GIVEUP))
+			   GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_QUIT) ||
+			   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_QUIT))
 			{
 				shutdown();
 				return;
@@ -688,6 +688,7 @@ public class GameFrame extends JFrame implements Runnable {
 			for(int playerID = 0; playerID < GameKeySwing.gamekey.length; playerID++) {
 				for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
 					if(keyCode == GameKeySwing.gamekey[playerID].keymap[i]) {
+						log.debug("KeyCode:" + keyCode + " pressed:" + pressed + " button:" + i);
 						GameKeySwing.gamekey[playerID].setPressState(i, pressed);
 					}
 				}
