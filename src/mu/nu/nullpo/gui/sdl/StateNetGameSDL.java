@@ -63,8 +63,8 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	/** ロビー画面 */
 	public NetLobbyFrame netLobby;
 
-	/** Number of frames to stop NPE logging (to deal with threading issue) */
-	protected int stopFrames = 0;
+	/** Mode name to enter (null=Exit) */
+	protected String strModeToEnter = "";
 
 	/*
 	 * このステートに入ったときの処理
@@ -127,7 +127,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				gameManager.renderAll();
 			}
 		} catch (NullPointerException e) {
-			if(stopFrames <= 0) log.error("render NPE", e);
+			log.error("render NPE", e);
 		} catch (Exception e) {
 			log.error("render fail", e);
 		}
@@ -166,9 +166,16 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				}
 			}
 
-			if(stopFrames > 0) stopFrames--;
+			// Enter to new mode
+			if(strModeToEnter == null) {
+				enterNewMode(null);
+				strModeToEnter = "";
+			} else if(strModeToEnter.length() > 0) {
+				enterNewMode(strModeToEnter);
+				strModeToEnter = "";
+			}
 		} catch (NullPointerException e) {
-			if(stopFrames <= 0) log.error("update NPE", e);
+			log.error("update NPE", e);
 		} catch (Exception e) {
 			log.error("update fail", e);
 		}
@@ -186,9 +193,9 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			log.error("Cannot find a mode:" + modeName);
 		} else if(newModeTemp instanceof NetDummyMode) {
 			log.info("Enter new mode:" + newModeTemp.getName());
-			stopFrames = 60;
 
 			NetDummyMode newMode = (NetDummyMode)newModeTemp;
+			SDLVideo.wmSetCaption("NullpoMino - " + newMode.getName(), null);
 
 			if(previousMode != null) previousMode.netplayUnload(netLobby);
 			gameManager.mode = newMode;
@@ -267,10 +274,12 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	}
 
 	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		enterNewMode(roomInfo.strMode);
+		//enterNewMode(roomInfo.strMode);
+		strModeToEnter = roomInfo.strMode;
 	}
 
 	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client) {
-		enterNewMode(null);
+		//enterNewMode(null);
+		strModeToEnter = null;
 	}
 }

@@ -496,6 +496,110 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
+	 * Netplay Initialization
+	 */
+	@Override
+	public void netplayInit(Object obj) {
+		super.netplayInit(obj);
+		log.debug("netplayInit");
+
+		if(obj instanceof NetLobbyFrame) {
+			onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
+		}
+	}
+
+	/**
+	 * When you join the room
+	 * @param lobby NetLobbyFrame
+	 * @param client NetPlayerClient
+	 * @param roomInfo NetRoomInfo
+	 */
+	private void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		log.debug("onJoin");
+
+		resetFlags();
+		owner.reset();
+
+		isReady = new boolean[MAX_PLAYERS];
+		if(currentRoomInfo != null) {
+			currentRoomInfo.delete();
+			currentRoomInfo = null;
+		}
+
+		playerSeatNumber = client.getYourPlayerInfo().seatID;
+		currentRoomID = client.getYourPlayerInfo().roomID;
+		currentRoomInfo = roomInfo;
+		autoStartActive = false;
+
+		if(roomInfo == null) numMaxPlayers = 0;
+		else numMaxPlayers = roomInfo.maxPlayers;
+
+		if(roomInfo != null) {
+			rulelockFlag = roomInfo.ruleLock;
+			reduceLineSend = roomInfo.reduceLineSend;
+			hurryupSeconds = roomInfo.hurryupSeconds;
+			hurryupInterval = roomInfo.hurryupInterval;
+			useFractionalGarbage = roomInfo.useFractionalGarbage;
+			garbagePercent = roomInfo.garbagePercent;
+			garbageChangePerAttack = roomInfo.garbageChangePerAttack;
+
+			for(int i = 0; i < getPlayers(); i++) {
+				owner.engine[i].speed.gravity = roomInfo.gravity;
+				owner.engine[i].speed.denominator = roomInfo.denominator;
+				owner.engine[i].speed.are = roomInfo.are;
+				owner.engine[i].speed.areLine = roomInfo.areLine;
+				owner.engine[i].speed.lineDelay = roomInfo.lineDelay;
+				owner.engine[i].speed.lockDelay = roomInfo.lockDelay;
+				owner.engine[i].speed.das = roomInfo.das;
+				owner.engine[i].b2bEnable = roomInfo.b2b;
+				owner.engine[i].comboType = (roomInfo.combo) ? GameEngine.COMBO_TYPE_NORMAL : GameEngine.COMBO_TYPE_DISABLE;
+
+				if(roomInfo.tspinEnableType == 0) {
+					owner.engine[i].tspinEnable = false;
+					owner.engine[i].useAllSpinBonus = false;
+				} else if(roomInfo.tspinEnableType == 1) {
+					owner.engine[i].tspinEnable = true;
+					owner.engine[i].useAllSpinBonus = false;
+				} else if(roomInfo.tspinEnableType == 2) {
+					owner.engine[i].tspinEnable = true;
+					owner.engine[i].useAllSpinBonus = true;
+				}
+			}
+
+			isNewcomer = roomInfo.playing;
+
+			// Revert rules
+			if(!rulelockFlag) {
+				owner.engine[0].ruleopt.copy(netLobby.ruleOpt);
+				owner.engine[0].randomizer = GeneralUtil.loadRandomizer(owner.engine[0].ruleopt.strRandomizer);
+				owner.engine[0].wallkick = GeneralUtil.loadWallkick(owner.engine[0].ruleopt.strWallkick);
+			}
+		}
+
+		numGames = 0;
+		numWins = 0;
+
+		for(int i = 0; i < getPlayers(); i++) {
+			owner.engine[i].enableSE = false;
+			if(i >= numMaxPlayers) {
+				owner.engine[i].isVisible = false;
+			} else {
+				owner.engine[i].isVisible = true;
+			}
+		}
+		if(playerSeatNumber >= 0) {
+			owner.engine[0].minidisplay = false;
+			owner.engine[0].enableSE = true;
+		} else {
+			owner.engine[0].minidisplay = true;
+			owner.engine[0].enableSE = false;
+		}
+
+		updatePlayerExist();
+		updatePlayerNames();
+	}
+
+	/**
 	 * Update player names
 	 */
 	private void updatePlayerNames() {
@@ -2304,125 +2408,6 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 		}
-	}
-
-	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		resetFlags();
-		owner.reset();
-
-		isReady = new boolean[MAX_PLAYERS];
-		if(currentRoomInfo != null) {
-			currentRoomInfo.delete();
-			currentRoomInfo = null;
-		}
-
-		playerSeatNumber = client.getYourPlayerInfo().seatID;
-		currentRoomID = client.getYourPlayerInfo().roomID;
-		currentRoomInfo = roomInfo;
-		autoStartActive = false;
-
-		if(roomInfo == null) numMaxPlayers = 0;
-		else numMaxPlayers = roomInfo.maxPlayers;
-
-		if(roomInfo != null) {
-			rulelockFlag = roomInfo.ruleLock;
-			reduceLineSend = roomInfo.reduceLineSend;
-			hurryupSeconds = roomInfo.hurryupSeconds;
-			hurryupInterval = roomInfo.hurryupInterval;
-			useFractionalGarbage = roomInfo.useFractionalGarbage;
-			garbagePercent = roomInfo.garbagePercent;
-			garbageChangePerAttack = roomInfo.garbageChangePerAttack;
-
-			for(int i = 0; i < getPlayers(); i++) {
-				owner.engine[i].speed.gravity = roomInfo.gravity;
-				owner.engine[i].speed.denominator = roomInfo.denominator;
-				owner.engine[i].speed.are = roomInfo.are;
-				owner.engine[i].speed.areLine = roomInfo.areLine;
-				owner.engine[i].speed.lineDelay = roomInfo.lineDelay;
-				owner.engine[i].speed.lockDelay = roomInfo.lockDelay;
-				owner.engine[i].speed.das = roomInfo.das;
-				owner.engine[i].b2bEnable = roomInfo.b2b;
-				owner.engine[i].comboType = (roomInfo.combo) ? GameEngine.COMBO_TYPE_NORMAL : GameEngine.COMBO_TYPE_DISABLE;
-
-				if(roomInfo.tspinEnableType == 0) {
-					owner.engine[i].tspinEnable = false;
-					owner.engine[i].useAllSpinBonus = false;
-				} else if(roomInfo.tspinEnableType == 1) {
-					owner.engine[i].tspinEnable = true;
-					owner.engine[i].useAllSpinBonus = false;
-				} else if(roomInfo.tspinEnableType == 2) {
-					owner.engine[i].tspinEnable = true;
-					owner.engine[i].useAllSpinBonus = true;
-				}
-			}
-
-			isNewcomer = roomInfo.playing;
-
-			// Revert rules
-			if(!rulelockFlag) {
-				owner.engine[0].ruleopt.copy(netLobby.ruleOpt);
-				owner.engine[0].randomizer = GeneralUtil.loadRandomizer(owner.engine[0].ruleopt.strRandomizer);
-				owner.engine[0].wallkick = GeneralUtil.loadWallkick(owner.engine[0].ruleopt.strWallkick);
-			}
-		}
-
-		numGames = 0;
-		numWins = 0;
-
-		for(int i = 0; i < getPlayers(); i++) {
-			owner.engine[i].enableSE = false;
-			if(i >= numMaxPlayers) {
-				owner.engine[i].isVisible = false;
-			} else {
-				owner.engine[i].isVisible = true;
-			}
-		}
-		if(playerSeatNumber >= 0) {
-			owner.engine[0].minidisplay = false;
-			owner.engine[0].enableSE = true;
-		} else {
-			owner.engine[0].minidisplay = true;
-			owner.engine[0].enableSE = false;
-		}
-
-		updatePlayerExist();
-		updatePlayerNames();
-	}
-
-	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client) {
-		resetFlags();
-		owner.reset();
-
-		isReady = new boolean[MAX_PLAYERS];
-		playerSeatNumber = -1;
-		currentRoomID = -1;
-		if(currentRoomInfo != null) {
-			currentRoomInfo.delete();
-			currentRoomInfo = null;
-		}
-		autoStartActive = false;
-		numMaxPlayers = 0;
-		numGames = 0;
-		numWins = 0;
-		rulelockFlag = false;
-		reduceLineSend = false;
-		hurryupSeconds = -1;
-		hurryupInterval = 5;
-		useFractionalGarbage = false;
-		garbagePercent = 100;
-		garbageChangePerAttack = true;
-		mapList.clear();
-
-		for(int i = 0; i < getPlayers(); i++) {
-			owner.engine[i].isVisible = false;
-			owner.engine[i].minidisplay = true;
-			owner.engine[i].enableSE = false;
-		}
-
-		// Revert rules
-		owner.engine[0].ruleopt.copy(netLobby.ruleOpt);
-		owner.engine[0].randomizer = GeneralUtil.loadRandomizer(owner.engine[0].ruleopt.strRandomizer);
-		owner.engine[0].wallkick = GeneralUtil.loadWallkick(owner.engine[0].ruleopt.strWallkick);
 	}
 
 	/**

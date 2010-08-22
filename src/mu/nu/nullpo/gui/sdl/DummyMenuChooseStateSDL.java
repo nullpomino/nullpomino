@@ -40,16 +40,16 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
-	
+
 	/** Max cursor value */
 	protected int maxCursor;
-	
+
 	/** Top choice's y-coordinate */
 	protected int minChoiceY;
-	
+
 	/** Set to false to ignore mouse input */
 	protected boolean mouseEnabled;
-	
+
 	public DummyMenuChooseStateSDL () {
 		maxCursor = -1;
 		minChoiceY = 3;
@@ -67,9 +67,9 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 		boolean mouseConfirm = false;
 		if (mouseEnabled)
 			mouseConfirm = updateMouseInput();
-		
+
 		if (maxCursor >= 0) {
-			
+
 			// カーソル移動
 			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
@@ -83,21 +83,21 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 				if(cursor > maxCursor) cursor = 0;
 				ResourceHolderSDL.soundManager.play("cursor");
 			}
-	
+
 			int change = 0;
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_LEFT)) change = -1;
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_RIGHT)) change = 1;
-	
+
 			if(change != 0)
 				onChange(change);
-	
+
 			// 決定 button
 			// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_NAV_SELECT) || mouseConfirm) {
 				if (onDecide())
 					return;
 			}
-			
+
 		}
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_D)) {
 			if (onPushButtonD());
@@ -129,12 +129,12 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 		}
 		return false;
 	}
-	
+
 	protected void renderChoices(int x, String[] choices) throws SDLException
 	{
 		renderChoices(x, minChoiceY, choices);
 	}
-	
+
 	protected void renderChoices(int x, int y, String[] choices) throws SDLException
 	{
 		NormalFontSDL.printFontGrid(x-1, y+cursor, "b", NormalFontSDL.COLOR_RED);
@@ -144,6 +144,7 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 
 	/**
 	 * Called when left or right is pressed.
+	 * @throws SDLException When something bad happens.
 	 */
 	protected void onChange(int change) throws SDLException {
 	}
@@ -151,23 +152,26 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 	/**
 	 * Called on a decide operation (left click on highlighted entry or select button).
 	 * @return True to skip all further update processing, false otherwise.
+	 * @throws SDLException When something bad happens.
 	 */
 	protected boolean onDecide() throws SDLException {
 		return false;
 	}
-	
+
 	/**
 	 * Called on a cancel operation (right click or cancel button).
 	 * @return True to skip all further update processing, false otherwise.
+	 * @throws SDLException When something bad happens.
 	 */
 	protected boolean onCancel() throws SDLException {
 		return false;
 	}
-	
+
 	/**
 	 * Called when D button is pushed.
 	 * Currently, this is the only one needed; methods for other buttons can be added if needed.
 	 * @return True to skip all further update processing, false otherwise.
+	 * @throws SDLException When something bad happens.
 	 */
 	protected boolean onPushButtonD() throws SDLException {
 		return false;

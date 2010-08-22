@@ -900,9 +900,9 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			log.error("Cannot find a mode:" + modeName);
 		} else if(newModeTemp instanceof NetDummyMode) {
 			log.info("Enter new mode:" + newModeTemp.getName());
-			if(gameFrame != null) gameFrame.stopFrames = 60;
 
 			NetDummyMode newMode = (NetDummyMode)newModeTemp;
+			if(gameFrame != null) gameFrame.setTitle(getUIText("Title_Game") + " - " + newMode.getName());
 
 			if(previousMode != null) previousMode.netplayUnload(netLobby);
 			gameManager.mode = newMode;
@@ -1034,11 +1034,13 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		enterNewMode(roomInfo.strMode);
+		//enterNewMode(roomInfo.strMode);
+		if(gameFrame != null) gameFrame.strModeToEnter = roomInfo.strMode;
 	}
 
 	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client) {
-		enterNewMode(null);
+		//enterNewMode(null);
+		if(gameFrame != null) gameFrame.strModeToEnter = null;
 	}
 
 	public void onUpdateCheckerStart() {

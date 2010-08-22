@@ -123,6 +123,8 @@ public class LineRaceMode extends NetDummyMode {
 	@Override
 	public void modeInit(GameManager manager) {
 		super.modeInit(manager);
+		log.debug("modeInit");
+
 		netIsNetPlay = false;
 		netIsWatch = false;
 		netNumSpectators = 0;
@@ -132,9 +134,15 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Netplay Initialization
 	 */
 	@Override
-	public void netlobbyOnInit(NetLobbyFrame lobby) {
-		super.netlobbyOnInit(lobby);
+	public void netplayInit(Object obj) {
+		super.netplayInit(obj);
+		log.debug("netplayInit");
+
+		netCurrentRoomInfo = netLobby.netPlayerClient.getCurrentRoomInfo();
 		netIsNetPlay = true;
+		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
+		netNumSpectators = 0;
+		netUpdatePlayerExist();
 	}
 
 	/*
@@ -142,6 +150,8 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
+		log.debug("playerInit");
+
 		owner = engine.owner;
 		receiver = engine.owner.receiver;
 
@@ -865,19 +875,6 @@ public class LineRaceMode extends NetDummyMode {
 		msg += engine.speed.das + "\t" + bgmno + "\t" + big + "\t" + goaltype + "\t" + presetNumber;
 		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
-	}
-
-	/*
-	 * NET: When you enter a room
-	 */
-	@Override
-	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		super.netlobbyOnRoomJoin(lobby, client, roomInfo);
-		netCurrentRoomInfo = roomInfo;
-		netIsNetPlay = true;
-		netIsWatch = (client.getYourPlayerInfo().seatID == -1);
-		netNumSpectators = 0;
-		netUpdatePlayerExist();
 	}
 
 	/*

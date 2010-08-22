@@ -77,24 +77,45 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
 	}
 
+	/**
+	 * Initialization Completed (Never called)
+	 */
 	public void netlobbyOnInit(NetLobbyFrame lobby) {
 	}
 
+	/**
+	 * Login completed (Never called)
+	 */
 	public void netlobbyOnLoginOK(NetLobbyFrame lobby, NetPlayerClient client) {
 	}
 
+	/**
+	 * When you enter a room (Never called)
+	 */
 	public void netlobbyOnRoomJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
 	}
 
+	/**
+	 * When you returned to lobby (Never called)
+	 */
 	public void netlobbyOnRoomLeave(NetLobbyFrame lobby, NetPlayerClient client) {
 	}
 
+	/*
+	 * When disconnected
+	 */
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
 	}
 
+	/*
+	 * Message received
+	 */
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
 	}
 
+	/*
+	 * When the lobby window is closed
+	 */
 	public void netlobbyOnExit(NetLobbyFrame lobby) {
 	}
 

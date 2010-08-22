@@ -15,7 +15,7 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		SB_MIN_Y = 65,
 		LINE_WIDTH = 2,
 		SB_WIDTH = 14;
-	
+
 	/** Scroll bar colors */
 	protected static final int SB_SHADOW_COLOR = 0x0C4E9C,
 		SB_BORDER_COLOR = 0x3496FC,
@@ -30,13 +30,13 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 
 	/** List of entries */
 	protected String[] list;
-	
+
 	/** Error messages for null or empty list */
 	protected String nullError, emptyError;
 
 	/** Y-coordinates of dark sections of scroll bar */
 	protected int pUpMinY, pUpMaxY, pDownMinY, pDownMaxY;
-	
+
 	public DummyMenuScrollStateSDL () {
 		minentry = 0;
 		nullError = "";
@@ -78,9 +78,14 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		super.render(screen);
 	}
 
+	/**
+	 * Called when render completes
+	 * @param screen SDLSurface
+	 * @throws SDLException When something bad happens
+	 */
 	protected void onRenderSuccess (SDLSurface screen) throws SDLException {
 	}
-	
+
 	@Override
 	public boolean updateMouseInput () throws SDLException {
 		// Mouse
@@ -130,7 +135,7 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 		}
 		return false;
 	}
-	
+
 	public void drawMenuList (SDLSurface screen) throws SDLException
 	{
 		int maxentry = minentry + pageHeight - 1;

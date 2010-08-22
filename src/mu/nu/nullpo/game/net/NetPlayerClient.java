@@ -325,6 +325,20 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
+	 * @return Current room ID
+	 */
+	public int getCurrentRoomID() {
+		return getYourPlayerInfo().roomID;
+	}
+
+	/**
+	 * @return Current room info
+	 */
+	public NetRoomInfo getCurrentRoomInfo() {
+		return getRoomInfo(getCurrentRoomID());
+	}
+
+	/**
 	 * @return サーバーVersion
 	 */
 	public float getServerVersion() {

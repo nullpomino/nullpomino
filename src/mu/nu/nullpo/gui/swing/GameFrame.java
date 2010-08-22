@@ -128,8 +128,8 @@ public class GameFrame extends JFrame implements Runnable {
 	/** ネットプレイならtrue */
 	public boolean isNetPlay = false;
 
-	/** Number of frames to stop NPE logging in netplay (to deal with threading issue) */
-	public int stopFrames = 0;
+	/** Mode name to enter (null=Exit) */
+	public String strModeToEnter = "";
 
 	/**
 	 * Constructor
@@ -423,14 +423,22 @@ public class GameFrame extends JFrame implements Runnable {
 					return;
 				}
 			}
-			if(stopFrames > 0) stopFrames--;
 
 			// スクリーンショット button
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 				ssflag = true;
 			}
+
+			// Enter to new mode
+			if(strModeToEnter == null) {
+				owner.enterNewMode(null);
+				strModeToEnter = "";
+			} else if (strModeToEnter.length() > 0) {
+				owner.enterNewMode(strModeToEnter);
+				strModeToEnter = "";
+			}
 		} catch (NullPointerException e) {
-			if(stopFrames <= 0) log.error("update NPE", e);
+			log.error("update NPE", e);
 		} catch (Exception e) {
 			log.error("update fail", e);
 		}
@@ -557,7 +565,7 @@ public class GameFrame extends JFrame implements Runnable {
 			NullpoMinoSwing.gameManager.receiver.setGraphics(g);
 			NullpoMinoSwing.gameManager.renderAll();
 		} catch (NullPointerException e) {
-			if(stopFrames <= 0) log.error("update NPE", e);
+			log.error("update NPE", e);
 		} catch (Exception e) {
 			log.error("render fail", e);
 		}
@@ -688,7 +696,7 @@ public class GameFrame extends JFrame implements Runnable {
 			for(int playerID = 0; playerID < GameKeySwing.gamekey.length; playerID++) {
 				for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
 					if(keyCode == GameKeySwing.gamekey[playerID].keymap[i]) {
-						log.debug("KeyCode:" + keyCode + " pressed:" + pressed + " button:" + i);
+						//log.debug("KeyCode:" + keyCode + " pressed:" + pressed + " button:" + i);
 						GameKeySwing.gamekey[playerID].setPressState(i, pressed);
 					}
 				}
