@@ -419,14 +419,14 @@ public class Sequencer extends JFrame implements ActionListener {
 	}
 
 	public void generate() {
-		Class<Randomizer> randomizerClass;
+		Class<?> randomizerClass;
 		Randomizer randomizerObject;
 
 		String name = vectorRandomizer.get(comboboxRandomizer.getSelectedIndex());
 
 		try {
-			randomizerClass = (Class<Randomizer>) Class.forName(name);
-			randomizerObject = randomizerClass.newInstance();
+			randomizerClass = Class.forName(name);
+			randomizerObject = (Randomizer) randomizerClass.newInstance();
 			randomizerObject.setState(nextPieceEnable, getLongTextField(txtfldSeed));
 			sequence = new int[getIntTextField(txtfldSeqLength)];
 			for (int i = 0; i < getIntTextField(txtfldSeqOffset); i++) {

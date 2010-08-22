@@ -190,12 +190,12 @@ public class ModeManager {
 			String name = prop.getProperty(String.valueOf(count), null);
 			if(name == null) return;
 
-			Class<GameMode> modeClass;
+			Class<?> modeClass;
 			GameMode modeObject;
 
 			try {
-				modeClass = (Class<GameMode>) Class.forName(name);
-				modeObject = modeClass.newInstance();
+				modeClass = Class.forName(name);
+				modeObject = (GameMode) modeClass.newInstance();
 				modelist.add(modeObject);
 			} catch(ClassNotFoundException e) {
 				log.warn("Mode class " + name + " not found", e);
@@ -225,12 +225,12 @@ public class ModeManager {
 			if(name.length() == 0) return;
 
 			if(!name.startsWith("#")) {
-				Class<GameMode> modeClass;
+				Class<?> modeClass;
 				GameMode modeObject;
 
 				try {
-					modeClass = (Class<GameMode>) Class.forName(name);
-					modeObject = modeClass.newInstance();
+					modeClass = Class.forName(name);
+					modeObject = (GameMode) modeClass.newInstance();
 					modelist.add(modeObject);
 				} catch(ClassNotFoundException e) {
 					log.warn("Mode class " + name + " not found", e);

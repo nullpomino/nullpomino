@@ -145,13 +145,13 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		String[] aiName = new String[aiPath.length];
 
 		for(int i = 0; i < aiPath.length; i++) {
-			Class<AIPlayer> aiClass;
+			Class<?> aiClass;
 			AIPlayer aiObj;
 			aiName[i] = "(INVALID)";
 
 			try {
-				aiClass = (Class<AIPlayer>) Class.forName(aiPath[i]);
-				aiObj = aiClass.newInstance();
+				aiClass = Class.forName(aiPath[i]);
+				aiObj = (AIPlayer) aiClass.newInstance();
 				aiName[i] = aiObj.getName();
 			} catch(ClassNotFoundException e) {
 				log.warn("AI class " + aiPath[i] + " not found", e);

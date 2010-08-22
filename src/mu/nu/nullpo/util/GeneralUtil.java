@@ -178,12 +178,12 @@ public class GeneralUtil {
 	 * @return NEXT順生成アルゴリズムのオブジェクト（読み込み失敗したらnull）
 	 */
 	public static Randomizer loadRandomizer(String filename) {
-		Class<Randomizer> randomizerClass = null;
+		Class<?> randomizerClass = null;
 		Randomizer randomizerObject = null;
 
 		try {
-			randomizerClass = (Class<Randomizer>) Class.forName(filename);
-			randomizerObject = randomizerClass.newInstance();
+			randomizerClass = Class.forName(filename);
+			randomizerObject = (Randomizer) randomizerClass.newInstance();
 		} catch (Exception e) {
 			log.warn("Failed to load Randomizer from " + filename, e);
 		}
@@ -197,12 +197,12 @@ public class GeneralUtil {
 	 * @return Wallkickアルゴリズムのオブジェクト（読み込み失敗したらnull）
 	 */
 	public static Wallkick loadWallkick(String filename) {
-		Class<Wallkick> wallkickClass = null;
+		Class<?> wallkickClass = null;
 		Wallkick wallkickObject = null;
 
 		try {
-			wallkickClass = (Class<Wallkick>) Class.forName(filename);
-			wallkickObject = wallkickClass.newInstance();
+			wallkickClass = Class.forName(filename);
+			wallkickObject = (Wallkick) wallkickClass.newInstance();
 		} catch (Exception e) {
 			log.warn("Failed to load Wallkick from " + filename, e);
 		}
@@ -216,12 +216,12 @@ public class GeneralUtil {
 	 * @return AIのオブジェクト（読み込み失敗したらnull）
 	 */
 	public static AIPlayer loadAIPlayer(String filename) {
-		Class<AIPlayer> aiClass = null;
+		Class<?> aiClass = null;
 		AIPlayer aiObject = null;
 
 		try {
-			aiClass = (Class<AIPlayer>) Class.forName(filename);
-			aiObject = aiClass.newInstance();
+			aiClass = Class.forName(filename);
+			aiObject = (AIPlayer) aiClass.newInstance();
 		} catch (Exception e) {
 			log.warn("Failed to load AIPlayer from " + filename, e);
 		}
