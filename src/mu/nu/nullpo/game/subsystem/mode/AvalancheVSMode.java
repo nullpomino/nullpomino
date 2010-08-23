@@ -305,6 +305,9 @@ public class AvalancheVSMode extends DummyMode {
 	
 	/** True to use new (Fever) chain powers */
 	private boolean[] newChainPower;
+	
+	/** True to use slower falling animations, false to use faster */
+	private boolean[] cascadeSlow;
 
 	/*
 	 * Mode  name
@@ -390,6 +393,7 @@ public class AvalancheVSMode extends DummyMode {
 		feverTimeCriteria = new int[MAX_PLAYERS];
 		feverPower = new int[MAX_PLAYERS];
 		newChainPower = new boolean[MAX_PLAYERS];
+		cascadeSlow = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -466,6 +470,7 @@ public class AvalancheVSMode extends DummyMode {
 		feverTimeCriteria[playerID] = prop.getProperty("avalanchevs.feverTimeCriteria.p" + playerID, 0);
 		feverPower[playerID] = prop.getProperty("avalanchevs.feverPower.p" + playerID, 10);
 		newChainPower[playerID] = prop.getProperty("avalanchevs.newChainPower.p" + playerID, false);
+		cascadeSlow[playerID] = prop.getProperty("avalanchevs.cascadeSlow.p" + playerID, false);
 	}
 
 	/**
@@ -504,6 +509,7 @@ public class AvalancheVSMode extends DummyMode {
 		prop.setProperty("avalanchevs.feverTimeCriteria.p" + playerID, feverTimeCriteria[playerID]);
 		prop.setProperty("avalanchevs.feverPower.p" + playerID, feverPower[playerID]);
 		prop.setProperty("avalanchevs.newChainPower.p" + playerID, newChainPower[playerID]);
+		prop.setProperty("avalanchevs.cascadeSlow.p" + playerID, cascadeSlow[playerID]);
 	}
 
 	/**
@@ -611,7 +617,7 @@ public class AvalancheVSMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 38);
+			int change = updateCursor(engine, 39);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -773,9 +779,12 @@ public class AvalancheVSMode extends DummyMode {
 					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
 					break;
 				case 30:
-					newChainPower[playerID] = !newChainPower[playerID];
+					cascadeSlow[playerID] = !cascadeSlow[playerID];
 					break;
 				case 31:
+					newChainPower[playerID] = !newChainPower[playerID];
+					break;
+				case 32:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -783,7 +792,7 @@ public class AvalancheVSMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 32:
+				case 33:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -792,7 +801,7 @@ public class AvalancheVSMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 33:
+				case 34:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -802,20 +811,20 @@ public class AvalancheVSMode extends DummyMode {
 						mapNumber[playerID] = -1;
 					}
 					break;
-				case 34:
+				case 35:
 					//big[playerID] = !big[playerID];
 					big[playerID] = false;
 					break;
-				case 35:
+				case 36:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 36:
+				case 37:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 37:
 				case 38:
+				case 39:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -946,25 +955,25 @@ public class AvalancheVSMode extends DummyMode {
 						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 31) {
+			} else if(engine.statc[2] < 32) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_DARKBLUE, 27,
 						"SIDE METER", (ojamaMeter[playerID] || feverThreshold[playerID] == 0) ? "OJAMA" : "FEVER",
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
-						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]]);
-				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_CYAN, 30,
+						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
+						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_CYAN, 31,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 31,
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 32,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 						"BIG", GeneralUtil.getONorOFF(big[playerID]));
-				
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 35,
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 36,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 37,
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 38,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 				
@@ -982,6 +991,7 @@ public class AvalancheVSMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
+			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;

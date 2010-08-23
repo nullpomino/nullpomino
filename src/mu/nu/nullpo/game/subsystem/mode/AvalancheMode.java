@@ -171,6 +171,9 @@ public class AvalancheMode extends DummyMode {
 	/** Sprint target score */
 	private int sprintTarget;
 	
+	/** True to use slower falling animations, false to use faster */
+	private boolean cascadeSlow;
+	
 
 	/*
 	 * Mode  name
@@ -231,7 +234,6 @@ public class AvalancheMode extends DummyMode {
 		engine.garbageColorClear = true;
 		engine.colorClearSize = 4;
 		engine.ignoreHidden = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE_SLOW;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
 		engine.randomBlockColor = true;
@@ -263,6 +265,7 @@ public class AvalancheMode extends DummyMode {
 		if(engine.statc[0] == 0)
 		{
 			engine.numColors = numColors;
+			engine.lineGravityType = cascadeSlow ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 
 			if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			else if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
@@ -293,14 +296,14 @@ public class AvalancheMode extends DummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 7;
+				if(engine.statc[2] < 0) engine.statc[2] = 8;
 				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]--;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 7) engine.statc[2] = 0;
+				if(engine.statc[2] > 8) engine.statc[2] = 0;
 				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]++;
 				engine.playSE("cursor");
 			}
@@ -348,6 +351,9 @@ public class AvalancheMode extends DummyMode {
 					break;
 				case 7:
 					showChains = !showChains;
+					break;
+				case 8:
+					cascadeSlow = !cascadeSlow;
 				}
 			}
 
@@ -401,7 +407,8 @@ public class AvalancheMode extends DummyMode {
 				"COLORS", String.valueOf(numColors),
 				"X COLUMN", dangerColumnDouble ? "3 AND 4" : "3 ONLY",
 				"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX),
-				"SHOW CHAIN", GeneralUtil.getONorOFF(showChains));
+				"SHOW CHAIN", GeneralUtil.getONorOFF(showChains),
+				"FALL ANIM", cascadeSlow ?  "FEVER" : "CLASSIC");
 	}
 
 	/*
@@ -761,6 +768,7 @@ public class AvalancheMode extends DummyMode {
 		dangerColumnDouble = prop.getProperty("avalanche.dangerColumnDouble", false);
 		dangerColumnShowX = prop.getProperty("avalanche.dangerColumnShowX", false);
 		showChains = prop.getProperty("avalanche.showChains", true);
+		cascadeSlow = prop.getProperty("avalanche.cascadeSlow", false);
 	}
 
 	/**
@@ -777,6 +785,7 @@ public class AvalancheMode extends DummyMode {
 		prop.setProperty("avalanche.dangerColumnDouble", dangerColumnDouble);
 		prop.setProperty("avalanche.dangerColumnShowX", dangerColumnShowX);
 		prop.setProperty("avalanche.showChains", showChains);
+		prop.setProperty("avalanche.cascadeSlow", cascadeSlow);
 	}
 
 	/**

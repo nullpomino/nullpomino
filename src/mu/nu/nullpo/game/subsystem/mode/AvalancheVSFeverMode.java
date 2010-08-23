@@ -206,6 +206,9 @@ public class AvalancheVSFeverMode extends DummyMode {
 
 	/** Fever chain count when last chain hit occurred */
 	private int[] feverChainDisplay;
+	
+	/** True to use slower falling animations, false to use faster */
+	private boolean[] cascadeSlow;
 
 	/*
 	 * Mode  name
@@ -270,6 +273,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		chainDisplayType = new int[MAX_PLAYERS];
 		ojamaHandicap = new int[MAX_PLAYERS];
 		feverChainDisplay = new int[MAX_PLAYERS];
+		cascadeSlow = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -333,6 +337,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		dangerColumnShowX[playerID] = prop.getProperty("avalanchevsfever.dangerColumnShowX.p" + playerID, false);
 		chainDisplayType[playerID] = prop.getProperty("avalanchevsfever.chainDisplayType.p" + playerID, 1);
 		ojamaHandicap[playerID] = prop.getProperty("avalanchevsfever.ojamaHandicap.p" + playerID, 270);
+		cascadeSlow[playerID] = prop.getProperty("avalanchevsfever.cascadeSlow.p" + playerID, false);
 	}
 
 	/**
@@ -358,6 +363,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		prop.setProperty("avalanchevsfever.dangerColumnShowX.p" + playerID, dangerColumnShowX[playerID]);
 		prop.setProperty("avalanchevsfever.ojamaHandicap.p" + playerID, ojamaHandicap[playerID]);
 		prop.setProperty("avalanchevsfever.chainDisplayType.p" + playerID, chainDisplayType[playerID]);
+		prop.setProperty("avalanchevsfever.cascadeSlow.p" + playerID, cascadeSlow[playerID]);
 	}
 
 	/*
@@ -413,7 +419,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 25);
+			int change = updateCursor(engine, 26);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -534,15 +540,18 @@ public class AvalancheVSFeverMode extends DummyMode {
 					if(chainDisplayType[playerID] > 4) chainDisplayType[playerID] = 0;
 					break;
 				case 22:
+					cascadeSlow[playerID] = !cascadeSlow[playerID];
+					break;
+				case 23:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 23:
+				case 24:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 24:
 				case 25:
+				case 26:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -648,11 +657,12 @@ public class AvalancheVSFeverMode extends DummyMode {
 						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
 				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_DARKBLUE, 20,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
-						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]]);
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_PINK, 22,
+						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
+						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_PINK, 23,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 24,
+				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 25,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 				
@@ -670,6 +680,7 @@ public class AvalancheVSFeverMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
+			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;

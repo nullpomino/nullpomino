@@ -231,6 +231,9 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 
 	/** Settings for starting countdown for ojama blocks */
 	private int[] ojamaCountdown;
+	
+	/** True to use slower falling animations, false to use faster */
+	private boolean[] cascadeSlow;
 
 	/*
 	 * Mode  name
@@ -300,6 +303,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 		chainDisplay = new int[MAX_PLAYERS];
 		chainDisplayType = new int[MAX_PLAYERS];
 		newChainPower = new boolean[MAX_PLAYERS];
+		cascadeSlow = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -369,6 +373,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 		chainDisplayType[playerID] = prop.getProperty("avalanchevsbombbattle.chainDisplayType.p" + playerID, 1);
 		newChainPower[playerID] = prop.getProperty("avalanchevsbombbattle.newChainPower.p" + playerID, false);
 		ojamaCountdown[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaCountdown.p" + playerID, 5);
+		cascadeSlow[playerID] = prop.getProperty("avalanchevsbombbattle.cascadeSlow.p" + playerID, false);
 	}
 
 	/**
@@ -400,6 +405,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 		prop.setProperty("avalanchevsbombbattle.chainDisplayType.p" + playerID, chainDisplayType[playerID]);
 		prop.setProperty("avalanchevsbombbattle.newChainPower.p" + playerID, newChainPower[playerID]);
 		prop.setProperty("avalanchevsbombbattle.ojamaCountdown.p" + playerID, ojamaCountdown[playerID]);
+		prop.setProperty("avalanchevsbombbattle.cascadeSlow.p" + playerID, cascadeSlow[playerID]);
 	}
 
 	/**
@@ -502,7 +508,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 31);
+			int change = updateCursor(engine, 32);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -628,9 +634,12 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
 					break;
 				case 23:
-					newChainPower[playerID] = !newChainPower[playerID];
+					cascadeSlow[playerID] = !cascadeSlow[playerID];
 					break;
 				case 24:
+					newChainPower[playerID] = !newChainPower[playerID];
+					break;
+				case 25:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -638,7 +647,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 25:
+				case 26:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -647,7 +656,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 26:
+				case 27:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -657,20 +666,20 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						mapNumber[playerID] = -1;
 					}
 					break;
-				case 27:
+				case 28:
 					//big[playerID] = !big[playerID];
 					big[playerID] = false;
 					break;
-				case 28:
+				case 29:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 29:
+				case 30:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 30:
 				case 31:
+				case 32:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -785,7 +794,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 				
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 24) {
+			} else if(engine.statc[2] < 25) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 18,
 						"COUNTDOWN", String.valueOf(ojamaCountdown[playerID]),
 						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
@@ -794,21 +803,22 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
 				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_DARKBLUE, 21,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
-						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]]);
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 23,
+						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
+						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_CYAN, 24,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 				
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 24,
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 25,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 						"BIG", GeneralUtil.getONorOFF(big[playerID]));
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 28,
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 29,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 30,
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 31,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 				
@@ -826,6 +836,7 @@ public class AvalancheVSBombBattleMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
+			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;

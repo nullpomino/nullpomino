@@ -168,6 +168,9 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 
 	/** Ojama handicap to start with */
 	private int[] handicapRows;
+	
+	/** True to use slower falling animations, false to use faster */
+	private boolean[] cascadeSlow;
 
 	/*
 	 * Mode  name
@@ -222,6 +225,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		chainDisplay = new int[MAX_PLAYERS];
 		chainDisplayType = new int[MAX_PLAYERS];
 		handicapRows = new int[MAX_PLAYERS];
+		cascadeSlow = new boolean[MAX_PLAYERS];
 
 		winnerID = -1;
 	}
@@ -284,6 +288,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		dangerColumnShowX[playerID] = prop.getProperty("avalanchevsdigrace.dangerColumnShowX.p" + playerID, false);
 		chainDisplayType[playerID] = prop.getProperty("avalanchevsdigrace.chainDisplayType.p" + playerID, 1);
 		handicapRows[playerID] = prop.getProperty("avalanchevsdigrace.ojamaHandicap.p" + playerID, 6);
+		cascadeSlow[playerID] = prop.getProperty("avalanchevsdigrace.cascadeSlow.p" + playerID, false);
 	}
 
 	/**
@@ -308,6 +313,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		prop.setProperty("avalanchevsdigrace.dangerColumnShowX.p" + playerID, dangerColumnShowX[playerID]);
 		prop.setProperty("avalanchevsdigrace.ojamaHandicap.p" + playerID, handicapRows[playerID]);
 		prop.setProperty("avalanchevsdigrace.chainDisplayType.p" + playerID, chainDisplayType[playerID]);
+		prop.setProperty("avalanchevsdigrace.cascadeSlow.p" + playerID, cascadeSlow[playerID]);
 	}
 
 	/*
@@ -359,7 +365,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 24);
+			int change = updateCursor(engine, 25);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -475,15 +481,18 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
 					break;
 				case 21:
+					cascadeSlow[playerID] = !cascadeSlow[playerID];
+					break;
+				case 22:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 22:
+				case 23:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 23:
 				case 24:
+				case 25:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -577,11 +586,12 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 						"ROWS", String.valueOf(handicapRows[playerID]));
 				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_DARKBLUE, 19,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
-						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]]);
-				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_PINK, 21,
+						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
+						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_PINK, 22,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_GREEN, 23,
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 24,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
@@ -599,6 +609,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
+			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 			engine.rainbowAnimate = true;
 
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
