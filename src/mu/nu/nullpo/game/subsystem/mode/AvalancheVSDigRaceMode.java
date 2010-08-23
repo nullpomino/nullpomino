@@ -33,7 +33,6 @@ import java.util.Random;
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
-import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -43,134 +42,15 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * AVALANCHE VS DIG RACE mode (Release Candidate 1)
  */
-public class AvalancheVSDigRaceMode extends DummyMode {
+public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-
-	/** Enabled piece types */
-	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-
-	/** Block colors */
-	private static final int[] BLOCK_COLORS =
-	{
-		Block.BLOCK_COLOR_RED,
-		Block.BLOCK_COLOR_GREEN,
-		Block.BLOCK_COLOR_BLUE,
-		Block.BLOCK_COLOR_YELLOW,
-		Block.BLOCK_COLOR_PURPLE
-	};
-
-	/** Number of players */
-	private static final int MAX_PLAYERS = 2;
-
-	/** Ojama counter setting constants */
-	private static final int OJAMA_COUNTER_OFF = 0, OJAMA_COUNTER_ON = 1, OJAMA_COUNTER_FEVER = 2;
-
-	/** Names of ojama counter settings */
-	private static final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
-
-	/** Names of outline settings */
-	private static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
-
-	/** Names of chain display settings */
-	private static final String[] CHAIN_DISPLAY_NAMES = {"OFF", "YELLOW", "PLAYER", "SIZE"};
-
-	/** Constants for chain display settings */
-	private static final int CHAIN_DISPLAY_NONE = 0, /*CHAIN_DISPLAY_YELLOW = 1,*/
-		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3;
-
-	/** Each player's frame color */
-	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
-	/** Rule settings for countering ojama not yet dropped */
-	private int[] ojamaCounterMode;
-
-	/** 溜まっている邪魔Blockのcount */
-	private int[] ojama;
-
-	/** 送った邪魔Blockのcount */
-	private int[] ojamaSent;
-
-	/** Time to display the most recent increase in score */
-	private int[] scgettime;
-
-	/** 使用するBGM */
-	private int bgmno;
-
-	/** 効果音ON/OFF */
-	private boolean[] enableSE;
-
-	/** Last preset number used */
-	private int[] presetNumber;
-
-	/** 勝者 */
-	private int winnerID;
 
 	/** Version */
 	private int version;
 
-	/** Amount of points earned from most recent clear */
-	private int[] lastscore, lastmultiplier;
-
-	/** Amount of ojama added in current chain */
-	private int[] ojamaAdd;
-
-	/** Score */
-	private int[] score;
-
-	/** Max amount of ojama dropped at once */
-	private int[] maxAttack;
-
-	/** Number of colors to use */
-	private int[] numColors;
-
-	/** Minimum chain count needed to send ojama */
-	private int[] rensaShibari;
-
-	/** Denominator for score-to-ojama conversion */
-	private int[] ojamaRate;
-
-	/** Settings for hard ojama blocks */
-	private int[] ojamaHard;
-
-	/** Hurryup開始までの秒count(0でHurryupなし) */
-	private int[] hurryupSeconds;
-
-	/** Set to true when last drop resulted in a clear */
-	private boolean[] cleared;
-
-	/** Set to true when dropping ojama blocks */
-	private boolean[] ojamaDrop;
-
-	/** Selected outline type */
-	private int[] outlineType;
-
-	/** If true, both columns 3 and 4 are danger columns */
-	private boolean[] dangerColumnDouble;
-
-	/** If true, red X's appear at tops of danger columns */
-	private boolean[] dangerColumnShowX;
-
-	/** Last chain hit number */
-	private int[] chain;
-
-	/** Time to display last chain */
-	private int[] chainDisplay;
-
-	/** Type of chain display */
-	private int[] chainDisplayType;
-
 	/** Ojama handicap to start with */
 	private int[] handicapRows;
-	
-	/** True to use slower falling animations, false to use faster */
-	private boolean[] cascadeSlow;
 
 	/*
 	 * Mode  name
@@ -193,77 +73,8 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
-		owner = manager;
-		receiver = owner.receiver;
-
-		ojamaCounterMode = new int[MAX_PLAYERS];
-		ojama = new int[MAX_PLAYERS];
-		ojamaSent = new int[MAX_PLAYERS];
-
-		scgettime = new int[MAX_PLAYERS];
-		bgmno = 0;
-		enableSE = new boolean[MAX_PLAYERS];
-		hurryupSeconds = new int[MAX_PLAYERS];
-		presetNumber = new int[MAX_PLAYERS];
-
-		lastscore = new int[MAX_PLAYERS];
-		lastmultiplier = new int[MAX_PLAYERS];
-		ojamaAdd = new int[MAX_PLAYERS];
-		score = new int[MAX_PLAYERS];
-		numColors = new int[MAX_PLAYERS];
-		maxAttack = new int[MAX_PLAYERS];
-		rensaShibari = new int[MAX_PLAYERS];
-		ojamaRate = new int[MAX_PLAYERS];
-		ojamaHard = new int[MAX_PLAYERS];
-
-		cleared = new boolean[MAX_PLAYERS];
-		ojamaDrop = new boolean[MAX_PLAYERS];
-		outlineType = new int[MAX_PLAYERS];
-		dangerColumnDouble = new boolean[MAX_PLAYERS];
-		dangerColumnShowX = new boolean[MAX_PLAYERS];
-		chain = new int[MAX_PLAYERS];
-		chainDisplay = new int[MAX_PLAYERS];
-		chainDisplayType = new int[MAX_PLAYERS];
+		super.modeInit(manager);
 		handicapRows = new int[MAX_PLAYERS];
-		cascadeSlow = new boolean[MAX_PLAYERS];
-
-		winnerID = -1;
-	}
-
-	/**
-	 * Read speed presets
-	 * @param engine GameEngine
-	 * @param prop Property file to read from
-	 * @param preset Preset number
-	 */
-	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
-		engine.speed.gravity = prop.getProperty("avalanchevsdigrace.gravity." + preset, 4);
-		engine.speed.denominator = prop.getProperty("avalanchevsdigrace.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("avalanchevsdigrace.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("avalanchevsdigrace.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("avalanchevsdigrace.lineDelay." + preset, 10);
-		engine.speed.lockDelay = prop.getProperty("avalanchevsdigrace.lockDelay." + preset, 60);
-		engine.speed.das = prop.getProperty("avalanchevsdigrace.das." + preset, 14);
-		engine.cascadeDelay = prop.getProperty("avalanchevsdigrace.fallDelay." + preset, 1);
-		engine.cascadeClearDelay = prop.getProperty("avalanchevsdigrace.clearDelay." + preset, 10);
-	}
-
-	/**
-	 * Save speed presets
-	 * @param engine GameEngine
-	 * @param prop Property file to save to
-	 * @param preset Preset number
-	 */
-	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
-		prop.setProperty("avalanchevsdigrace.gravity." + preset, engine.speed.gravity);
-		prop.setProperty("avalanchevsdigrace.denominator." + preset, engine.speed.denominator);
-		prop.setProperty("avalanchevsdigrace.are." + preset, engine.speed.are);
-		prop.setProperty("avalanchevsdigrace.areLine." + preset, engine.speed.areLine);
-		prop.setProperty("avalanchevsdigrace.lineDelay." + preset, engine.speed.lineDelay);
-		prop.setProperty("avalanchevsdigrace.lockDelay." + preset, engine.speed.lockDelay);
-		prop.setProperty("avalanchevsdigrace.das." + preset, engine.speed.das);
-		prop.setProperty("avalanchevsdigrace.fallDelay." + preset, engine.cascadeDelay);
-		prop.setProperty("avalanchevsdigrace.clearDelay." + preset, engine.cascadeClearDelay);
 	}
 
 	/**
@@ -272,23 +83,11 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	 * @param prop Property file to read from
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
+		super.loadOtherSetting(engine, prop, "digrace");
 		int playerID = engine.playerID;
-		bgmno = prop.getProperty("avalanchevsdigrace.bgmno", 0);
-		enableSE[playerID] = prop.getProperty("avalanchevsdigrace.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("avalanchevsdigrace.hurryupSeconds.p" + playerID, 192);
-		ojamaCounterMode[playerID] = prop.getProperty("avalanchevsdigrace.ojamaCounterMode", OJAMA_COUNTER_ON);
-		presetNumber[playerID] = prop.getProperty("avalanchevsdigrace.presetNumber.p" + playerID, 0);
-		maxAttack[playerID] = prop.getProperty("avalanchevsdigrace.maxAttack.p" + playerID, 30);
-		numColors[playerID] = prop.getProperty("avalanchevsdigrace.numColors.p" + playerID, 4);
-		rensaShibari[playerID] = prop.getProperty("avalanchevsdigrace.rensaShibari.p" + playerID, 1);
 		ojamaRate[playerID] = prop.getProperty("avalanchevsdigrace.ojamaRate.p" + playerID, 420);
 		ojamaHard[playerID] = prop.getProperty("avalanchevsdigrace.ojamaHard.p" + playerID, 0);
-		outlineType[playerID] = prop.getProperty("avalanchevsdigrace.outlineType.p" + playerID, 1);
-		dangerColumnDouble[playerID] = prop.getProperty("avalanchevsdigrace.dangerColumnDouble.p" + playerID, false);
-		dangerColumnShowX[playerID] = prop.getProperty("avalanchevsdigrace.dangerColumnShowX.p" + playerID, false);
-		chainDisplayType[playerID] = prop.getProperty("avalanchevsdigrace.chainDisplayType.p" + playerID, 1);
 		handicapRows[playerID] = prop.getProperty("avalanchevsdigrace.ojamaHandicap.p" + playerID, 6);
-		cascadeSlow[playerID] = prop.getProperty("avalanchevsdigrace.cascadeSlow.p" + playerID, false);
 	}
 
 	/**
@@ -297,23 +96,9 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	 * @param prop Property file to save to
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
+		super.saveOtherSetting(engine, prop, "digrace");
 		int playerID = engine.playerID;
-		prop.setProperty("avalanchevsdigrace.bgmno", bgmno);
-		prop.setProperty("avalanchevsdigrace.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("avalanchevsdigrace.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
-		prop.setProperty("avalanchevsdigrace.ojamaCounterMode", ojamaCounterMode[playerID]);
-		prop.setProperty("avalanchevsdigrace.presetNumber.p" + playerID, presetNumber[playerID]);
-		prop.setProperty("avalanchevsdigrace.maxAttack.p" + playerID, maxAttack[playerID]);
-		prop.setProperty("avalanchevsdigrace.numColors.p" + playerID, numColors[playerID]);
-		prop.setProperty("avalanchevsdigrace.rensaShibari.p" + playerID, rensaShibari[playerID]);
-		prop.setProperty("avalanchevsdigrace.ojamaRate.p" + playerID, ojamaRate[playerID]);
-		prop.setProperty("avalanchevsdigrace.ojamaHard.p" + playerID, ojamaHard[playerID]);
-		prop.setProperty("avalanchevsdigrace.outlineType.p" + playerID, outlineType[playerID]);
-		prop.setProperty("avalanchevsdigrace.dangerColumnDouble.p" + playerID, dangerColumnDouble[playerID]);
-		prop.setProperty("avalanchevsdigrace.dangerColumnShowX.p" + playerID, dangerColumnShowX[playerID]);
 		prop.setProperty("avalanchevsdigrace.ojamaHandicap.p" + playerID, handicapRows[playerID]);
-		prop.setProperty("avalanchevsdigrace.chainDisplayType.p" + playerID, chainDisplayType[playerID]);
-		prop.setProperty("avalanchevsdigrace.cascadeSlow.p" + playerID, cascadeSlow[playerID]);
 	}
 
 	/*
@@ -321,38 +106,16 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		if(playerID == 1) {
-			engine.randSeed = owner.engine[0].randSeed;
-			engine.random = new Random(owner.engine[0].randSeed);
-		}
-
-		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
-		engine.clearMode = GameEngine.CLEAR_COLOR;
-		engine.garbageColorClear = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
-		for(int i = 0; i < Piece.PIECE_COUNT; i++)
-			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
-		engine.blockColors = BLOCK_COLORS;
-		engine.randomBlockColor = true;
-		engine.connectBlocks = false;
-
-		ojama[playerID] = 0;
-		ojamaAdd[playerID] = 0;
-		ojamaSent[playerID] = 0;
-		score[playerID] = 0;
-		scgettime[playerID] = 0;
-		cleared[playerID] = false;
-		ojamaDrop[playerID] = false;
-		chain[playerID] = 0;
-		chainDisplay[playerID] = 0;
+		super.playerInit(engine, playerID);
+		useMap[playerID] = false;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
-			loadPreset(engine, engine.owner.modeConfig, -1 - playerID);
+			loadPreset(engine, engine.owner.modeConfig, -1 - playerID, "digrace");
 			version = CURRENT_VERSION;
 		} else {
 			loadOtherSetting(engine, engine.owner.replayProp);
-			loadPreset(engine, engine.owner.replayProp, -1 - playerID);
+			loadPreset(engine, engine.owner.replayProp, -1 - playerID, "digrace");
 			version = owner.replayProp.getProperty("avalanchevsdigrace.version", 0);
 		}
 	}
@@ -365,7 +128,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 25);
+			int change = updateCursor(engine, 26);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -484,15 +247,18 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 					cascadeSlow[playerID] = !cascadeSlow[playerID];
 					break;
 				case 22:
+					newChainPower[playerID] = !newChainPower[playerID];
+					break;
+				case 23:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 23:
+				case 24:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 24:
 				case 25:
+				case 26:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -504,14 +270,14 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 22) {
-					loadPreset(engine, owner.modeConfig, presetNumber[playerID]);
-				} else if(engine.statc[2] == 23) {
-					savePreset(engine, owner.modeConfig, presetNumber[playerID]);
+				if(engine.statc[2] == 25) {
+					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
+				} else if(engine.statc[2] == 26) {
+					savePreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
 					saveOtherSetting(engine, owner.modeConfig);
-					savePreset(engine, owner.modeConfig, -1 - playerID);
+					savePreset(engine, owner.modeConfig, -1 - playerID, "digrace");
 					receiver.saveModeConfig(owner.modeConfig);
 					engine.statc[4] = 1;
 				}
@@ -588,10 +354,12 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
 						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_PINK, 22,
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_CYAN, 22,
+						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_PINK, 23,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 24,
+				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 25,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
@@ -628,17 +396,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.b2bEnable = false;
-		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.big = false;
-		engine.enableSE = enableSE[playerID];
-		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
-		engine.colorClearSize = 4;
-		engine.ignoreHidden = true;
-
-		engine.tspinAllowKick = false;
-		engine.tspinEnable = false;
-		engine.useAllSpinBonus = false;
+		super.startGame(engine, playerID);
 
 		engine.createFieldIfNeeded();
 		int y = engine.field.getHeight()-1;
@@ -738,105 +496,6 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		}
 	}
 
-	/*
-	 * Hard dropしたときの処理
-	 */
-	@Override
-	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
-		engine.statistics.score += fall;
-	}
-
-	/*
-	 * Hard dropしたときの処理
-	 */
-	@Override
-	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
-		engine.statistics.score += fall;
-	}
-
-	/*
-	 * Calculate score
-	 */
-	@Override
-	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		int enemyID = 0;
-		if(playerID == 0) enemyID = 1;
-
-		// Line clear bonus
-		int pts = avalanche*10;
-		int ojamaNew = 0;
-		if (avalanche > 0) {
-			cleared[playerID] = true;
-
-			chain[playerID] = engine.chain;
-			chainDisplay[playerID] = 60;
-			engine.playSE("combo" + Math.min(chain[playerID], 20));
-			int multiplier = engine.field.colorClearExtraCount;
-			if (engine.field.colorsCleared > 1)
-				multiplier += (engine.field.colorsCleared-1)*2;
-			/*
-			if (multiplier < 0)
-				multiplier = 0;
-			if (chain == 0)
-				firstExtra = avalanche > engine.colorClearSize;
-			*/
-			if (chain[playerID] == 2)
-				multiplier += 8;
-			else if (chain[playerID] == 3)
-				multiplier += 16;
-			else if (chain[playerID] >= 4)
-				multiplier += 32*(chain[playerID]-3);
-			/*
-			if (firstExtra)
-				multiplier++;
-			*/
-
-			if (multiplier > 999)
-				multiplier = 999;
-			if (multiplier < 1)
-				multiplier = 1;
-
-			lastscore[playerID] = pts;
-			lastmultiplier[playerID] = multiplier;
-			scgettime[playerID] = 25;
-			int ptsTotal = pts*multiplier;
-			score[playerID] += ptsTotal;
-
-			if (chain[playerID] >= rensaShibari[playerID])
-			{
-				//Add ojama
-				int rate = ojamaRate[playerID];
-				if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
-					rate >>= engine.statistics.time / (hurryupSeconds[playerID] * 60);
-				if (rate <= 0)
-					rate = 1;
-				ojamaNew += (ptsTotal+rate-1)/rate;
-				ojamaSent[playerID] += ojamaNew;
-
-				//Counter ojama
-				if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
-				{
-					if (ojama[playerID] > 0 && ojamaNew > 0)
-					{
-						int delta = Math.min(ojama[playerID], ojamaNew);
-						ojama[playerID] -= delta;
-						ojamaNew -= delta;
-					}
-					if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
-					{
-						int delta = Math.min(ojamaAdd[playerID], ojamaNew);
-						ojamaAdd[playerID] -= delta;
-						ojamaNew -= delta;
-					}
-				}
-				if (ojamaNew > 0)
-					ojamaAdd[enemyID] += ojamaNew;
-			}
-		}
-		else if (!engine.field.canCascade())
-			cleared[playerID] = false;
-	}
-
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
@@ -878,20 +537,7 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		if (chainDisplay[playerID] > 0)
 			chainDisplay[playerID]--;
 
-		int width = 1;
-		if (engine.field != null)
-			width = engine.field.getWidth();
-		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
-		// せり上がりMeter
-		int value = ojama[playerID] * blockHeight / width;
-		if(ojama[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
-		else if(ojama[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		else if(ojama[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
-		if (value > engine.meterValue)
-			engine.meterValue++;
-		else if (value < engine.meterValue)
-			engine.meterValue--;
+		updateOjamaMeter(engine, playerID);
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
@@ -929,64 +575,13 @@ public class AvalancheVSDigRaceMode extends DummyMode {
 		}
 	}
 
-	@Override
-	public boolean onMove (GameEngine engine, int playerID) {
-		cleared[playerID] = false;
-		ojamaDrop[playerID] = false;
-		return false;
-	}
-
-	/*
-	 * Render results screen
-	 */
-	@Override
-	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 0, 1, "RESULT", EventReceiver.COLOR_ORANGE);
-		if(winnerID == -1) {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "DRAW", EventReceiver.COLOR_GREEN);
-		} else if(winnerID == playerID) {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "WIN!", EventReceiver.COLOR_YELLOW);
-		} else {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "LOSE", EventReceiver.COLOR_WHITE);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 3, "ATTACK", EventReceiver.COLOR_ORANGE);
-		String strScore = String.format("%10d", ojamaSent[playerID]);
-		receiver.drawMenuFont(engine, playerID, 0, 4, strScore);
-
-		receiver.drawMenuFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_ORANGE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID, 0, 6, strLines);
-
-		receiver.drawMenuFont(engine, playerID, 0, 7, "PIECE", EventReceiver.COLOR_ORANGE);
-		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-		receiver.drawMenuFont(engine, playerID, 0, 8, strPiece);
-
-		receiver.drawMenuFont(engine, playerID, 0, 9, "ATTACK/MIN", EventReceiver.COLOR_ORANGE);
-		float apm = (float)(ojamaSent[playerID] * 3600) / (float)(engine.statistics.time);
-		String strAPM = String.format("%10g", apm);
-		receiver.drawMenuFont(engine, playerID, 0, 10, strAPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 11, "LINE/MIN", EventReceiver.COLOR_ORANGE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID, 0, 12, strLPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 13, "PIECE/SEC", EventReceiver.COLOR_ORANGE);
-		String strPPS = String.format("%10g", engine.statistics.pps);
-		receiver.drawMenuFont(engine, playerID, 0, 14, strPPS);
-
-		receiver.drawMenuFont(engine, playerID, 0, 15, "TIME", EventReceiver.COLOR_ORANGE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(owner.engine[0].statistics.time));
-		receiver.drawMenuFont(engine, playerID, 0, 16, strTime);
-	}
-
 	/*
 	 * Called when saving replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		saveOtherSetting(engine, owner.replayProp);
-		savePreset(engine, owner.replayProp, -1 - playerID);
+		savePreset(engine, owner.replayProp, -1 - playerID, "digrace");
 
 		owner.replayProp.setProperty("avalanchevsdigrace.version", version);
 	}

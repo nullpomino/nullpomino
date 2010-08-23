@@ -1,0 +1,814 @@
+/*
+    Copyright (c) 2010, NullNoname
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of NullNoname nor the names of its
+          contributors may be used to endorse or promote products derived from
+          this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+*/
+package mu.nu.nullpo.game.subsystem.mode;
+
+import java.util.Random;
+
+import mu.nu.nullpo.game.component.BGMStatus;
+import mu.nu.nullpo.game.component.Block;
+import mu.nu.nullpo.game.component.Field;
+import mu.nu.nullpo.game.component.Piece;
+import mu.nu.nullpo.game.event.EventReceiver;
+import mu.nu.nullpo.game.play.GameEngine;
+import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.util.CustomProperties;
+import mu.nu.nullpo.util.GeneralUtil;
+
+/**
+ * AVALANCHE VS DUMMY mode
+ */
+public abstract class AvalancheVSDummyMode extends DummyMode {
+	/** Enabled piece types */
+	public static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
+
+	/** Block colors */
+	public static final int[] BLOCK_COLORS =
+	{
+		Block.BLOCK_COLOR_RED,
+		Block.BLOCK_COLOR_GREEN,
+		Block.BLOCK_COLOR_BLUE,
+		Block.BLOCK_COLOR_YELLOW,
+		Block.BLOCK_COLOR_PURPLE
+	};
+
+	/** Fever map files list */
+	public static final String[] FEVER_MAPS =
+	{
+		"Fever", "15th", "15thDS", "7", "Compendium"
+	};
+
+	/** Chain multipliers */
+	public static final int[] CHAIN_POWERS = {
+		4, 12, 24, 33, 50, 101, 169, 254, 341, 428, 538, 648, 763, 876, 990, 999 //Arle
+	};
+
+	/** Number of players */
+	public static final int MAX_PLAYERS = 2;
+
+	/** Ojama counter setting constants */
+	public static final int OJAMA_COUNTER_OFF = 0, OJAMA_COUNTER_ON = 1, OJAMA_COUNTER_FEVER = 2;
+
+	/** Names of ojama counter settings */
+	public static final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
+
+	/** Zenkeshi setting constants */
+	public static final int ZENKESHI_MODE_OFF = 0, ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
+
+	/** Names of zenkeshi settings */
+	public static final String[] ZENKESHI_TYPE_NAMES = {"OFF", "ON", "FEVER"};
+
+	/** Names of outline settings */
+	public static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
+
+	/** Names of chain display settings */
+	public static final String[] CHAIN_DISPLAY_NAMES = {"OFF", "YELLOW", "PLAYER", "SIZE"};
+
+	/** Constants for chain display settings */
+	public static final int CHAIN_DISPLAY_NONE = 0, CHAIN_DISPLAY_YELLOW = 1,
+		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3;
+	
+	/** Each player's frame color */
+	public static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
+
+	/** GameManager that owns this mode */
+	protected GameManager owner;
+
+	/** Drawing and event handling EventReceiver */
+	protected EventReceiver receiver;
+
+	/** Rule settings for countering ojama not yet dropped */
+	protected int[] ojamaCounterMode;
+
+	/** 溜まっている邪魔Blockのcount */
+	protected int[] ojama;
+
+	/** 送った邪魔Blockのcount */
+	protected int[] ojamaSent;
+
+	/** Time to display the most recent increase in score */
+	protected int[] scgettime;
+
+	/** 使用するBGM */
+	protected int bgmno;
+
+	/** Big */
+	protected boolean[] big;
+
+	/** 効果音ON/OFF */
+	protected boolean[] enableSE;
+
+	/** マップ使用 flag */
+	protected boolean[] useMap;
+
+	/** 使用するマップセット number */
+	protected int[] mapSet;
+
+	/** マップ number(-1でランダム) */
+	protected int[] mapNumber;
+
+	/** Last preset number used */
+	protected int[] presetNumber;
+
+	/** 勝者 */
+	protected int winnerID;
+
+	/** マップセットのProperty file */
+	protected CustomProperties[] propMap;
+
+	/** 最大マップ number */
+	protected int[] mapMaxNo;
+
+	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
+	protected Field[] fldBackup;
+
+	/** マップ選択用乱count */
+	protected Random randMap;
+
+	/** Flag for all clear */
+	protected boolean[] zenKeshi;
+
+	/** Amount of points earned from most recent clear */
+	protected int[] lastscore, lastmultiplier;
+
+	/** Amount of ojama added in current chain */
+	protected int[] ojamaAdd;
+
+	/** Score */
+	protected int[] score;
+
+	/** Max amount of ojama dropped at once */
+	protected int[] maxAttack;
+
+	/** Number of colors to use */
+	protected int[] numColors;
+
+	/** Minimum chain count needed to send ojama */
+	protected int[] rensaShibari;
+
+	/** Denominator for score-to-ojama conversion */
+	protected int[] ojamaRate;
+
+	/** Settings for hard ojama blocks */
+	protected int[] ojamaHard;
+
+	/** Hurryup開始までの秒count(0でHurryupなし) */
+	protected int[] hurryupSeconds;
+
+	/** Set to true when last drop resulted in a clear */
+	protected boolean[] cleared;
+
+	/** Set to true when dropping ojama blocks */
+	protected boolean[] ojamaDrop;
+
+	/** Time to display "ZENKESHI!" */
+	protected int[] zenKeshiDisplay;
+
+	/** Zenkeshi reward type */
+	protected int[] zenKeshiType;
+
+	/** Selected outline type */
+	protected int[] outlineType;
+
+	/** If true, both columns 3 and 4 are danger columns */
+	protected boolean[] dangerColumnDouble;
+
+	/** If true, red X's appear at tops of danger columns */
+	protected boolean[] dangerColumnShowX;
+
+	/** Last chain hit number */
+	protected int[] chain;
+
+	/** Time to display last chain */
+	protected int[] chainDisplay;
+
+	/** Type of chain display */
+	protected int[] chainDisplayType;
+	
+	/** True to use new (Fever) chain powers */
+	protected boolean[] newChainPower;
+
+	/** True to use slower falling animations, false to use faster */
+	protected boolean[] cascadeSlow;
+
+	/*
+	 * Mode  name
+	 */
+	@Override
+	public String getName() {
+		return "AVALANCHE VS DUMMY";
+	}
+
+	/*
+	 * Number of players
+	 */
+	@Override
+	public int getPlayers() {
+		return MAX_PLAYERS;
+	}
+
+	/*
+	 * Mode  initialization
+	 */
+	@Override
+	public void modeInit(GameManager manager) {
+		owner = manager;
+		receiver = owner.receiver;
+
+		ojamaCounterMode = new int[MAX_PLAYERS];
+		ojama = new int[MAX_PLAYERS];
+		ojamaSent = new int[MAX_PLAYERS];
+
+		scgettime = new int[MAX_PLAYERS];
+		bgmno = 0;
+		big = new boolean[MAX_PLAYERS];
+		enableSE = new boolean[MAX_PLAYERS];
+		hurryupSeconds = new int[MAX_PLAYERS];
+		useMap = new boolean[MAX_PLAYERS];
+		mapSet = new int[MAX_PLAYERS];
+		mapNumber = new int[MAX_PLAYERS];
+		presetNumber = new int[MAX_PLAYERS];
+		propMap = new CustomProperties[MAX_PLAYERS];
+		mapMaxNo = new int[MAX_PLAYERS];
+		fldBackup = new Field[MAX_PLAYERS];
+		randMap = new Random();
+
+		zenKeshi = new boolean[MAX_PLAYERS];
+		lastscore = new int[MAX_PLAYERS];
+		lastmultiplier = new int[MAX_PLAYERS];
+		ojamaAdd = new int[MAX_PLAYERS];
+		score = new int[MAX_PLAYERS];
+		numColors = new int[MAX_PLAYERS];
+		maxAttack = new int[MAX_PLAYERS];
+		rensaShibari = new int[MAX_PLAYERS];
+		ojamaRate = new int[MAX_PLAYERS];
+		ojamaHard = new int[MAX_PLAYERS];
+
+		cleared = new boolean[MAX_PLAYERS];
+		ojamaDrop = new boolean[MAX_PLAYERS];
+		zenKeshiDisplay = new int[MAX_PLAYERS];
+		zenKeshiType = new int[MAX_PLAYERS];
+		outlineType = new int[MAX_PLAYERS];
+		dangerColumnDouble = new boolean[MAX_PLAYERS];
+		dangerColumnShowX = new boolean[MAX_PLAYERS];
+		chain = new int[MAX_PLAYERS];
+		chainDisplay = new int[MAX_PLAYERS];
+		chainDisplayType = new int[MAX_PLAYERS];
+		newChainPower = new boolean[MAX_PLAYERS];
+		cascadeSlow = new boolean[MAX_PLAYERS];
+
+		winnerID = -1;
+	}
+
+	/**
+	 * Read speed presets
+	 * @param engine GameEngine
+	 * @param prop Property file to read from
+	 * @param preset Preset number
+	 */
+	protected void loadPreset(GameEngine engine, CustomProperties prop, int preset, String name) {
+		engine.speed.gravity = prop.getProperty("avalanchevs" + name + ".gravity." + preset, 4);
+		engine.speed.denominator = prop.getProperty("avalanchevs" + name + ".denominator." + preset, 256);
+		engine.speed.are = prop.getProperty("avalanchevs" + name + ".are." + preset, 30);
+		engine.speed.areLine = prop.getProperty("avalanchevs" + name + ".areLine." + preset, 30);
+		engine.speed.lineDelay = prop.getProperty("avalanchevs" + name + ".lineDelay." + preset, 10);
+		engine.speed.lockDelay = prop.getProperty("avalanchevs" + name + ".lockDelay." + preset, 60);
+		engine.speed.das = prop.getProperty("avalanchevs" + name + ".das." + preset, 14);
+		engine.cascadeDelay = prop.getProperty("avalanchevs" + name + ".fallDelay." + preset, 1);
+		engine.cascadeClearDelay = prop.getProperty("avalanchevs" + name + ".clearDelay." + preset, 10);
+	}
+
+	/**
+	 * Save speed presets
+	 * @param engine GameEngine
+	 * @param prop Property file to save to
+	 * @param preset Preset number
+	 */
+	protected void savePreset(GameEngine engine, CustomProperties prop, int preset, String name) {
+		prop.setProperty("avalanchevs" + name + ".gravity." + preset, engine.speed.gravity);
+		prop.setProperty("avalanchevs" + name + ".denominator." + preset, engine.speed.denominator);
+		prop.setProperty("avalanchevs" + name + ".are." + preset, engine.speed.are);
+		prop.setProperty("avalanchevs" + name + ".areLine." + preset, engine.speed.areLine);
+		prop.setProperty("avalanchevs" + name + ".lineDelay." + preset, engine.speed.lineDelay);
+		prop.setProperty("avalanchevs" + name + ".lockDelay." + preset, engine.speed.lockDelay);
+		prop.setProperty("avalanchevs" + name + ".das." + preset, engine.speed.das);
+		prop.setProperty("avalanchevs" + name + ".fallDelay." + preset, engine.cascadeDelay);
+		prop.setProperty("avalanchevs" + name + ".clearDelay." + preset, engine.cascadeClearDelay);
+	}
+
+	/**
+	 * スピード以外の設定を読み込み
+	 * Note: Subclasses need to load ojamaRate and ojamaHard, since default values vary.
+	 * @param engine GameEngine
+	 * @param prop Property file to read from
+	 */
+	protected void loadOtherSetting(GameEngine engine, CustomProperties prop, String name) {
+		int playerID = engine.playerID;
+		bgmno = prop.getProperty("avalanchevs" + name + ".bgmno", 0);
+		ojamaCounterMode[playerID] = prop.getProperty("avalanchevs" + name + ".ojamaCounterMode", OJAMA_COUNTER_ON);
+		big[playerID] = prop.getProperty("avalanchevs" + name + ".big.p" + playerID, false);
+		enableSE[playerID] = prop.getProperty("avalanchevs" + name + ".enableSE.p" + playerID, true);
+		hurryupSeconds[playerID] = prop.getProperty("avalanchevs" + name + ".hurryupSeconds.p" + playerID, 192);
+		useMap[playerID] = prop.getProperty("avalanchevs" + name + ".useMap.p" + playerID, false);
+		mapSet[playerID] = prop.getProperty("avalanchevs" + name + ".mapSet.p" + playerID, 0);
+		mapNumber[playerID] = prop.getProperty("avalanchevs" + name + ".mapNumber.p" + playerID, -1);
+		presetNumber[playerID] = prop.getProperty("avalanchevs" + name + ".presetNumber.p" + playerID, 0);
+		maxAttack[playerID] = prop.getProperty("avalanchevs" + name + ".maxAttack.p" + playerID, 30);
+		numColors[playerID] = prop.getProperty("avalanchevs" + name + ".numColors.p" + playerID, 5);
+		rensaShibari[playerID] = prop.getProperty("avalanchevs" + name + ".rensaShibari.p" + playerID, 1);
+		zenKeshiType[playerID] = prop.getProperty("avalanchevs" + name + ".zenKeshiType.p" + playerID, 1);
+		outlineType[playerID] = prop.getProperty("avalanchevs" + name + ".outlineType.p" + playerID, 1);
+		dangerColumnDouble[playerID] = prop.getProperty("avalanchevs" + name + ".dangerColumnDouble.p" + playerID, false);
+		dangerColumnShowX[playerID] = prop.getProperty("avalanchevs" + name + ".dangerColumnShowX.p" + playerID, false);
+		chainDisplayType[playerID] = prop.getProperty("avalanchevs" + name + ".chainDisplayType.p" + playerID, 1);
+		newChainPower[playerID] = prop.getProperty("avalanchevs" + name + ".newChainPower.p" + playerID, false);
+		cascadeSlow[playerID] = prop.getProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, false);
+	}
+
+	/**
+	 * スピード以外の設定を保存
+	 * @param engine GameEngine
+	 * @param prop Property file to save to
+	 */
+	protected void saveOtherSetting(GameEngine engine, CustomProperties prop, String name) {
+		int playerID = engine.playerID;
+		prop.setProperty("avalanchevs" + name + ".bgmno", bgmno);
+		prop.setProperty("avalanchevs" + name + ".ojamaCounterMode", ojamaCounterMode[playerID]);
+		prop.setProperty("avalanchevs" + name + ".big.p" + playerID, big[playerID]);
+		prop.setProperty("avalanchevs" + name + ".enableSE.p" + playerID, enableSE[playerID]);
+		prop.setProperty("avalanchevs" + name + ".hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
+		prop.setProperty("avalanchevs" + name + ".useMap.p" + playerID, useMap[playerID]);
+		prop.setProperty("avalanchevs" + name + ".mapSet.p" + playerID, mapSet[playerID]);
+		prop.setProperty("avalanchevs" + name + ".mapNumber.p" + playerID, mapNumber[playerID]);
+		prop.setProperty("avalanchevs" + name + ".presetNumber.p" + playerID, presetNumber[playerID]);
+		prop.setProperty("avalanchevs" + name + ".maxAttack.p" + playerID, maxAttack[playerID]);
+		prop.setProperty("avalanchevs" + name + ".numColors.p" + playerID, numColors[playerID]);
+		prop.setProperty("avalanchevs" + name + ".rensaShibari.p" + playerID, rensaShibari[playerID]);
+		prop.setProperty("avalanchevs" + name + ".ojamaRate.p" + playerID, ojamaRate[playerID]);
+		prop.setProperty("avalanchevs" + name + ".ojamaHard.p" + playerID, ojamaHard[playerID]);
+		prop.setProperty("avalanchevs" + name + ".zenKeshiType.p" + playerID, zenKeshiType[playerID]);
+		prop.setProperty("avalanchevs" + name + ".outlineType.p" + playerID, outlineType[playerID]);
+		prop.setProperty("avalanchevs" + name + ".dangerColumnDouble.p" + playerID, dangerColumnDouble[playerID]);
+		prop.setProperty("avalanchevs" + name + ".dangerColumnShowX.p" + playerID, dangerColumnShowX[playerID]);
+		prop.setProperty("avalanchevs" + name + ".chainDisplayType.p" + playerID, chainDisplayType[playerID]);
+		prop.setProperty("avalanchevs" + name + ".newChainPower.p" + playerID, newChainPower[playerID]);
+		prop.setProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, cascadeSlow[playerID]);
+	}
+
+	/**
+	 * マップ読み込み
+	 * @param field フィールド
+	 * @param prop Property file to read from
+	 * @param preset 任意のID
+	 */
+	protected void loadMap(Field field, CustomProperties prop, int id) {
+		field.reset();
+		//field.readProperty(prop, id);
+		field.stringToField(prop.getProperty("map." + id, ""));
+		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
+		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_SELFPLACED, false);
+	}
+
+	/**
+	 * マップ保存
+	 * @param field フィールド
+	 * @param prop Property file to save to
+	 * @param id 任意のID
+	 */
+	protected void saveMap(Field field, CustomProperties prop, int id) {
+		//field.writeProperty(prop, id);
+		prop.setProperty("map." + id, field.fieldToString());
+	}
+
+	/**
+	 * プレビュー用にマップを読み込み
+	 * @param engine GameEngine
+	 * @param playerID プレイヤー number
+	 * @param id マップID
+	 * @param forceReload trueにするとマップファイルを強制再読み込み
+	 */
+	protected void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
+		if((propMap[playerID] == null) || (forceReload)) {
+			mapMaxNo[playerID] = 0;
+			propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
+		}
+
+		if((propMap[playerID] == null) && (engine.field != null)) {
+			engine.field.reset();
+		} else if(propMap[playerID] != null) {
+			mapMaxNo[playerID] = propMap[playerID].getProperty("map.maxMapNumber", 0);
+			engine.createFieldIfNeeded();
+			loadMap(engine.field, propMap[playerID], id);
+			engine.field.setAllSkin(engine.getSkin());
+		}
+	}
+
+	/*
+	 * Initialization for each player
+	 */
+	@Override
+	public void playerInit(GameEngine engine, int playerID) {
+		if(playerID == 1) {
+			engine.randSeed = owner.engine[0].randSeed;
+			engine.random = new Random(owner.engine[0].randSeed);
+		}
+
+		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
+		engine.clearMode = GameEngine.CLEAR_COLOR;
+		engine.garbageColorClear = true;
+		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		for(int i = 0; i < Piece.PIECE_COUNT; i++)
+			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
+		engine.blockColors = BLOCK_COLORS;
+		engine.randomBlockColor = true;
+		engine.connectBlocks = false;
+
+		ojama[playerID] = 0;
+		ojamaAdd[playerID] = 0;
+		ojamaSent[playerID] = 0;
+		score[playerID] = 0;
+		zenKeshi[playerID] = false;
+		scgettime[playerID] = 0;
+		cleared[playerID] = false;
+		ojamaDrop[playerID] = false;
+		zenKeshiDisplay[playerID] = 0;
+		chain[playerID] = 0;
+		chainDisplay[playerID] = 0;
+	}
+
+	/*
+	 * Readyの時のInitialization処理（Initialization前）
+	 */
+	@Override
+	public boolean onReady(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 0)
+			return readyInit(engine, playerID);
+		return false;
+	}
+
+	public boolean readyInit(GameEngine engine, int playerID) {
+		engine.numColors = numColors[playerID];
+		engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
+
+		if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
+		if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
+		if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
+
+		// マップ読み込み・リプレイ保存用にバックアップ
+		if(useMap[playerID]) {
+			if(owner.replayMode) {
+				engine.createFieldIfNeeded();
+				loadMap(engine.field, owner.replayProp, playerID);
+				engine.field.setAllSkin(engine.getSkin());
+			} else {
+				if(propMap[playerID] == null) {
+					propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
+				}
+
+				if(propMap[playerID] != null) {
+					engine.createFieldIfNeeded();
+
+					if(mapNumber[playerID] < 0) {
+						if((playerID == 1) && (useMap[0]) && (mapNumber[0] < 0)) {
+							engine.field.copy(owner.engine[0].field);
+						} else {
+							int no = (mapMaxNo[playerID] < 1) ? 0 : randMap.nextInt(mapMaxNo[playerID]);
+							loadMap(engine.field, propMap[playerID], no);
+						}
+					} else {
+						loadMap(engine.field, propMap[playerID], mapNumber[playerID]);
+					}
+
+					engine.field.setAllSkin(engine.getSkin());
+					fldBackup[playerID] = new Field(engine.field);
+				}
+			}
+		} else if(engine.field != null) {
+			engine.field.reset();
+		}
+		return false;
+	}
+
+	/*
+	 * ゲーム開始時の処理
+	 */
+	@Override
+	public void startGame(GameEngine engine, int playerID) {
+		engine.b2bEnable = false;
+		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
+		engine.big = big[playerID];
+		engine.enableSE = enableSE[playerID];
+		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
+		engine.colorClearSize = big[playerID] ? 12 : 4;
+		engine.ignoreHidden = true;
+
+		engine.tspinAllowKick = false;
+		engine.tspinEnable = false;
+		engine.useAllSpinBonus = false;
+	}
+
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
+	 * Hard dropしたときの処理
+	 */
+	@Override
+	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
+		engine.statistics.score += fall;
+	}
+
+	/*
+	 * Calculate score
+	 */
+	@Override
+	public void calcScore(GameEngine engine, int playerID, int avalanche) {
+		if (big[playerID])
+			avalanche >>= 2;
+
+		if (avalanche > 0) {
+			cleared[playerID] = true;
+
+			chain[playerID] = engine.chain;
+			chainDisplay[playerID] = 60;
+			engine.playSE("combo" + Math.min(chain[playerID], 20));
+			onClear(engine, playerID);
+
+			int pts = calcPts(engine, playerID, avalanche);
+			
+			int multiplier = engine.field.colorClearExtraCount;
+			if (big[playerID])
+				multiplier >>= 2;
+			if (engine.field.colorsCleared > 1)
+				multiplier += (engine.field.colorsCleared-1)*2;
+
+			multiplier += calcChainMultiplier(engine, playerID, chain[playerID]);
+
+			if (multiplier > 999)
+				multiplier = 999;
+			if (multiplier < 1)
+				multiplier = 1;
+
+			lastscore[playerID] = pts;
+			lastmultiplier[playerID] = multiplier;
+			scgettime[playerID] = 25;
+			int ptsTotal = pts*multiplier;
+			score[playerID] += ptsTotal;
+
+			if (chain[playerID] >= rensaShibari[playerID])
+				addOjama(engine, playerID, ptsTotal);
+			
+			if (engine.field.isEmpty()) {
+				engine.playSE("bravo");
+				zenKeshi[playerID] = true;
+				engine.statistics.score += 2100;
+				score[playerID] += 2100;
+			}
+			else
+				zenKeshi[playerID] = false;
+		}
+		else if (!engine.field.canCascade())
+			cleared[playerID] = false;
+	}
+	
+	protected int calcPts (GameEngine engine, int playerID, int avalanche) {
+		return avalanche*10;
+	}
+	
+	protected int calcChainMultiplier(GameEngine engine, int playerID, int chain) {
+		if (newChainPower[playerID])
+			return calcChainNewPower(engine, playerID, chain);
+		else
+			return calcChainClassicPower(engine, playerID, chain);
+	}
+
+	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {
+		if (chain > CHAIN_POWERS.length)
+			return CHAIN_POWERS[CHAIN_POWERS.length-1];
+		else
+			return CHAIN_POWERS[chain-1];
+	}
+	
+	protected int calcChainClassicPower(GameEngine engine, int playerID, int chain) {
+		if (chain == 2)
+			return 8;
+		else if (chain == 3)
+			return 16;
+		else if (chain >= 4)
+			return 32*(chain-3);
+		else
+			return 0;
+	}
+	
+	protected void onClear(GameEngine engine, int playerID) {
+	}
+
+	protected void addOjama(GameEngine engine, int playerID, int pts) {
+		int enemyID = 0;
+		if(playerID == 0) enemyID = 1;
+
+		int ojamaNew = 0;
+		if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_ON)
+			ojamaNew += 30;
+		//Add ojama
+		int rate = ojamaRate[playerID];
+		if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
+			rate >>= engine.statistics.time / (hurryupSeconds[playerID] * 60);
+		if (rate <= 0)
+			rate = 1;
+		ojamaNew += (pts+rate-1)/rate;
+		ojamaSent[playerID] += ojamaNew;
+
+		if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
+		{
+			//Counter ojama
+			if (ojama[playerID] > 0 && ojamaNew > 0)
+			{
+				int delta = Math.min(ojama[playerID], ojamaNew);
+				ojama[playerID] -= delta;
+				ojamaNew -= delta;
+			}
+			if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
+			{
+				int delta = Math.min(ojamaAdd[playerID], ojamaNew);
+				ojamaAdd[playerID] -= delta;
+				ojamaNew -= delta;
+			}
+		}
+		if (ojamaNew > 0)
+			ojamaAdd[enemyID] += ojamaNew;
+	}
+
+	public abstract boolean lineClearEnd(GameEngine engine, int playerID);
+	
+	/**
+	 * Check for game over
+	 */
+	protected void gameOverCheck(GameEngine engine, int playerID) {
+		if (engine.field == null)
+			return;
+		if (!engine.field.getBlockEmpty(2, 0) ||
+				(dangerColumnDouble[playerID] && !engine.field.getBlockEmpty(3, 0)))
+			engine.stat = GameEngine.STAT_GAMEOVER;
+	}
+
+	protected void loadFeverMap(GameEngine engine, int playerID, int chain, CustomProperties propFeverMap,
+			String[] feverMapSubsets) {
+		engine.createFieldIfNeeded();
+		engine.field.reset();
+		engine.field.stringToField(propFeverMap.getProperty(
+				feverMapSubsets[engine.random.nextInt(feverMapSubsets.length)] +
+				"." + numColors[playerID] + "colors." + chain + "chain"));
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
+		engine.field.setAllSkin(engine.getSkin());
+		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], engine.random);
+	}
+
+	/*
+	 * Called after every frame
+	 */
+	@Override
+	public void onLast(GameEngine engine, int playerID) {
+		if (scgettime[playerID] > 0)
+			scgettime[playerID]--;
+		if (zenKeshiDisplay[playerID] > 0)
+			zenKeshiDisplay[playerID]--;
+		if (chainDisplay[playerID] > 0)
+			chainDisplay[playerID]--;
+
+		// 決着
+		if((playerID == 1) && (owner.engine[0].gameActive)) {
+			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
+			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
+			if(p1Lose && p2Lose) {
+				// 引き分け
+				winnerID = -1;
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p2Lose && !p1Lose) {
+				// 1P勝利
+				winnerID = 0;
+				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+			} else if(p1Lose && !p2Lose) {
+				// 2P勝利
+				winnerID = 1;
+				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+			}
+			if (p1Lose || p2Lose) {
+				owner.engine[0].gameActive = false;
+				owner.engine[1].gameActive = false;
+				owner.engine[0].resetStatc();
+				owner.engine[1].resetStatc();
+				owner.engine[0].statc[1] = 1;
+				owner.engine[1].statc[1] = 1;
+				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+			}
+		}
+	}
+
+	@Override
+	public boolean onMove (GameEngine engine, int playerID) {
+		cleared[playerID] = false;
+		ojamaDrop[playerID] = false;
+		return false;
+	}
+	
+	protected void updateOjamaMeter (GameEngine engine, int playerID) {
+		int width = 6;
+		if (engine.field != null)
+			width = engine.field.getWidth();
+		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
+		// せり上がりMeter
+		int value = ojama[playerID] * blockHeight / width;
+		if(ojama[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
+		else if(ojama[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+		else if(ojama[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
+		if (value > engine.meterValue)
+			engine.meterValue++;
+		else if (value < engine.meterValue)
+			engine.meterValue--;
+	}
+
+	/*
+	 * Render results screen
+	 */
+	@Override
+	public void renderResult(GameEngine engine, int playerID) {
+		receiver.drawMenuFont(engine, playerID, 0, 1, "RESULT", EventReceiver.COLOR_ORANGE);
+		if(winnerID == -1) {
+			receiver.drawMenuFont(engine, playerID, 6, 2, "DRAW", EventReceiver.COLOR_GREEN);
+		} else if(winnerID == playerID) {
+			receiver.drawMenuFont(engine, playerID, 6, 2, "WIN!", EventReceiver.COLOR_YELLOW);
+		} else {
+			receiver.drawMenuFont(engine, playerID, 6, 2, "LOSE", EventReceiver.COLOR_WHITE);
+		}
+
+		receiver.drawMenuFont(engine, playerID, 0, 3, "ATTACK", EventReceiver.COLOR_ORANGE);
+		String strScore = String.format("%10d", ojamaSent[playerID]);
+		receiver.drawMenuFont(engine, playerID, 0, 4, strScore);
+
+		receiver.drawMenuFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_ORANGE);
+		String strLines = String.format("%10d", engine.statistics.lines);
+		receiver.drawMenuFont(engine, playerID, 0, 6, strLines);
+
+		receiver.drawMenuFont(engine, playerID, 0, 7, "PIECE", EventReceiver.COLOR_ORANGE);
+		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
+		receiver.drawMenuFont(engine, playerID, 0, 8, strPiece);
+
+		receiver.drawMenuFont(engine, playerID, 0, 9, "ATTACK/MIN", EventReceiver.COLOR_ORANGE);
+		float apm = (float)(ojamaSent[playerID] * 3600) / (float)(engine.statistics.time);
+		String strAPM = String.format("%10g", apm);
+		receiver.drawMenuFont(engine, playerID, 0, 10, strAPM);
+
+		receiver.drawMenuFont(engine, playerID, 0, 11, "LINE/MIN", EventReceiver.COLOR_ORANGE);
+		String strLPM = String.format("%10g", engine.statistics.lpm);
+		receiver.drawMenuFont(engine, playerID, 0, 12, strLPM);
+
+		receiver.drawMenuFont(engine, playerID, 0, 13, "PIECE/SEC", EventReceiver.COLOR_ORANGE);
+		String strPPS = String.format("%10g", engine.statistics.pps);
+		receiver.drawMenuFont(engine, playerID, 0, 14, strPPS);
+
+		receiver.drawMenuFont(engine, playerID, 0, 15, "TIME", EventReceiver.COLOR_ORANGE);
+		String strTime = String.format("%10s", GeneralUtil.getTime(owner.engine[0].statistics.time));
+		receiver.drawMenuFont(engine, playerID, 0, 16, strTime);
+	}
+}

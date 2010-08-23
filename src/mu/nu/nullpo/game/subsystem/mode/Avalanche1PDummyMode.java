@@ -36,7 +36,7 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * AVALANCHE mode (Release Candidate 1)
+ * AVALANCHE DUMMY mode
  */
 public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** Enabled piece types */
