@@ -61,14 +61,6 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Number of players
-	 */
-	@Override
-	public int getPlayers() {
-		return MAX_PLAYERS;
-	}
-
-	/*
 	 * Mode  initialization
 	 */
 	@Override
@@ -108,6 +100,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	public void playerInit(GameEngine engine, int playerID) {
 		super.playerInit(engine, playerID);
 		useMap[playerID] = false;
+		feverMapSet[playerID] = -1;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);

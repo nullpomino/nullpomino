@@ -103,20 +103,8 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	/** Set to true when opponent starts chain while in Fever Mode */
 	private boolean[] ojamaAddToFever;
 
-	/** Selected fever map set file */
-	private int[] feverMapSet;
-
-	/** Selected fever map set file's subset list */
-	private String[][] feverMapSubsets;
-
-	/** Fever map CustomProperties */
-	private CustomProperties[] propFeverMap;
-
 	/** Chain levels for Fever Mode */
 	private int[] feverChain;
-
-	/** Chain level boundaries for Fever Mode */
-	private int[] feverChainMin, feverChainMax;
 
 	/** Criteria to add a fever point */
 	private int[] feverPointCriteria;
@@ -156,12 +144,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		feverBackupField = new Field[MAX_PLAYERS];
 		ojamaFever = new int[MAX_PLAYERS];
 		ojamaAddToFever = new boolean[MAX_PLAYERS];
-		feverMapSet = new int[MAX_PLAYERS];
-		propFeverMap = new CustomProperties[MAX_PLAYERS];
 		feverChain = new int[MAX_PLAYERS];
-		feverChainMin = new int[MAX_PLAYERS];
-		feverChainMax = new int[MAX_PLAYERS];
-		feverMapSubsets = new String[MAX_PLAYERS][];
 		feverShowMeter = new boolean[MAX_PLAYERS];
 		ojamaMeter = new boolean[MAX_PLAYERS];
 		feverPointCriteria = new int[MAX_PLAYERS];
@@ -182,7 +165,6 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		feverThreshold[playerID] = prop.getProperty("avalanchevs.feverThreshold.p" + playerID, 0);
 		feverTimeMin[playerID] = prop.getProperty("avalanchevs.feverTimeMin.p" + playerID, 15);
 		feverTimeMax[playerID] = prop.getProperty("avalanchevs.feverTimeMax.p" + playerID, 30);
-		feverMapSet[playerID] = prop.getProperty("avalanchevs.feverMapSet.p" + playerID, 0);
 		feverShowMeter[playerID] = prop.getProperty("avalanchevs.feverShowMeter.p" + playerID, true);
 		ojamaMeter[playerID] = prop.getProperty("avalanchevs.ojamaMeter.p" + playerID, true);
 		feverPointCriteria[playerID] = prop.getProperty("avalanchevs.feverPointCriteria.p" + playerID, 0);
@@ -201,7 +183,6 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		prop.setProperty("avalanchevs.feverThreshold.p" + playerID, feverThreshold[playerID]);
 		prop.setProperty("avalanchevs.feverTimeMin.p" + playerID, feverTimeMin[playerID]);
 		prop.setProperty("avalanchevs.feverTimeMax.p" + playerID, feverTimeMax[playerID]);
-		prop.setProperty("avalanchevs.feverMapSet.p" + playerID, feverMapSet[playerID]);
 		prop.setProperty("avalanchevs.feverShowMeter.p" + playerID, feverShowMeter[playerID]);
 		prop.setProperty("avalanchevs.ojamaMeter.p" + playerID, ojamaMeter[playerID]);
 		prop.setProperty("avalanchevs.feverPointCriteria.p" + playerID, feverPointCriteria[playerID]);
@@ -521,17 +502,6 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		return true;
 	}
 
-	private void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {
-		if((propFeverMap[playerID] == null) || (forceReload)) {
-			propFeverMap[playerID] = receiver.loadProperties("config/map/avalanche/" +
-					FEVER_MAPS[id] + ".map");
-			feverChainMin[playerID] = propFeverMap[playerID].getProperty("minChain", 3);
-			feverChainMax[playerID] = propFeverMap[playerID].getProperty("maxChain", 15);
-			String subsets = propFeverMap[playerID].getProperty("sets");
-			feverMapSubsets[playerID] = subsets.split(",");
-		}
-	}
-
 	/*
 	 * 設定画面の描画
 	 */
@@ -612,10 +582,10 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {
+		super.readyInit(engine, playerID);
 		if(feverThreshold[playerID] == 0) ojamaMeter[playerID] = true;
 		feverTime[playerID] = feverTimeMin[playerID] * 60;
 		feverChain[playerID] = 5;
-		loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
 		return false;
 	}
 
@@ -912,10 +882,6 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 				engine.meterValue = 0;
 		}
 		return false;
-	}
-
-	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
-		super.loadFeverMap(engine, playerID, chain, propFeverMap[playerID], feverMapSubsets[playerID]);
 	}
 
 	/*

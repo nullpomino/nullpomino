@@ -56,20 +56,8 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	/** Second ojama counter for Fever Mode */
 	private int[] ojamaHandicapLeft;
 
-	/** Selected fever map set file */
-	private int[] feverMapSet;
-
-	/** Selected fever map set file's subset list */
-	private String[][] feverMapSubsets;
-
-	/** Fever map CustomProperties */
-	private CustomProperties[] propFeverMap;
-
 	/** Chain levels for Fever Mode */
 	private int[] feverChain;
-
-	/** Chain level boundaries for Fever Mode */
-	private int[] feverChainMin, feverChainMax;
 
 	/** Ojama handicap to start with */
 	private int[] ojamaHandicap;
@@ -86,26 +74,13 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Number of players
-	 */
-	@Override
-	public int getPlayers() {
-		return MAX_PLAYERS;
-	}
-
-	/*
 	 * Mode  initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
 		super.modeInit(manager);
 		ojamaHandicapLeft = new int[MAX_PLAYERS];
-		feverMapSet = new int[MAX_PLAYERS];
-		propFeverMap = new CustomProperties[MAX_PLAYERS];
 		feverChain = new int[MAX_PLAYERS];
-		feverChainMin = new int[MAX_PLAYERS];
-		feverChainMax = new int[MAX_PLAYERS];
-		feverMapSubsets = new String[MAX_PLAYERS][];
 		ojamaHandicap = new int[MAX_PLAYERS];
 		feverChainDisplay = new int[MAX_PLAYERS];
 	}
@@ -120,7 +95,6 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		int playerID = engine.playerID;
 		ojamaRate[playerID] = prop.getProperty("avalanchevsfever.ojamaRate.p" + playerID, 120);
 		ojamaHard[playerID] = prop.getProperty("avalanchevsfever.ojamaHard.p" + playerID, 0);
-		feverMapSet[playerID] = prop.getProperty("avalanchevsfever.feverMapSet.p" + playerID, 0);
 		ojamaHandicap[playerID] = prop.getProperty("avalanchevsfever.ojamaHandicap.p" + playerID, 270);
 	}
 
@@ -132,7 +106,6 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		super.saveOtherSetting(engine, prop, "fever");
 		int playerID = engine.playerID;
-		prop.setProperty("avalanchevsfever.feverMapSet.p" + playerID, feverMapSet[playerID]);
 		prop.setProperty("avalanchevsfever.ojamaHandicap.p" + playerID, ojamaHandicap[playerID]);
 	}
 
@@ -358,17 +331,6 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		}
 
 		return true;
-	}
-
-	private void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {
-		if((propFeverMap[playerID] == null) || (forceReload)) {
-			propFeverMap[playerID] = receiver.loadProperties("config/map/avalanche/" +
-					FEVER_MAPS[id] + ".map");
-			feverChainMin[playerID] = propFeverMap[playerID].getProperty("minChain", 3);
-			feverChainMax[playerID] = propFeverMap[playerID].getProperty("maxChain", 15);
-			String subsets = propFeverMap[playerID].getProperty("sets");
-			feverMapSubsets[playerID] = subsets.split(",");
-		}
 	}
 
 	/*
@@ -632,10 +594,6 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		//Check for game over
 		gameOverCheck(engine, playerID);
 		return false;
-	}
-
-	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
-		super.loadFeverMap(engine, playerID, chain, propFeverMap[playerID], feverMapSubsets[playerID]);
 	}
 
 	/*

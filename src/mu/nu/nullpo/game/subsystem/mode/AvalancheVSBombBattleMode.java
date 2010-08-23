@@ -47,15 +47,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 	/** Version */
 	private int version;
 
-	/** Selected fever map set file */
-	private int[] feverMapSet;
-
-	/** Selected fever map set file's subset list */
-	private String[][] feverMapSubsets;
-
-	/** Fever map CustomProperties */
-	private CustomProperties[] propFeverMap;
-
 	/** True to use new (Fever) chain powers */
 	private boolean[] newChainPower;
 
@@ -71,14 +62,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Number of players
-	 */
-	@Override
-	public int getPlayers() {
-		return MAX_PLAYERS;
-	}
-
-	/*
 	 * Mode  initialization
 	 */
 	@Override
@@ -86,10 +69,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		super.modeInit(manager);
 		
 		ojamaCountdown = new int[MAX_PLAYERS];
-		
-		feverMapSet = new int[MAX_PLAYERS];
-		propFeverMap = new CustomProperties[MAX_PLAYERS];
-		feverMapSubsets = new String[MAX_PLAYERS][];
 		newChainPower = new boolean[MAX_PLAYERS];
 	}
 
@@ -103,7 +82,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		int playerID = engine.playerID;
 		ojamaRate[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaRate.p" + playerID, 60);
 		ojamaHard[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaHard.p" + playerID, 0);
-		feverMapSet[playerID] = prop.getProperty("avalanchevsbombbattle.feverMapSet.p" + playerID, 0);
 		newChainPower[playerID] = prop.getProperty("avalanchevsbombbattle.newChainPower.p" + playerID, false);
 		ojamaCountdown[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaCountdown.p" + playerID, 5);
 	}
@@ -116,7 +94,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
 		super.saveOtherSetting(engine, prop, "bombbattle");
 		int playerID = engine.playerID;
-		prop.setProperty("avalanchevsbombbattle.feverMapSet.p" + playerID, feverMapSet[playerID]);
 		prop.setProperty("avalanchevsbombbattle.newChainPower.p" + playerID, newChainPower[playerID]);
 		prop.setProperty("avalanchevsbombbattle.ojamaCountdown.p" + playerID, ojamaCountdown[playerID]);
 	}
@@ -391,15 +368,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		return true;
 	}
 
-	private void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {
-		if((propFeverMap[playerID] == null) || (forceReload)) {
-			propFeverMap[playerID] = receiver.loadProperties("config/map/avalanche/" +
-					FEVER_MAPS[id] + ".map");
-			String subsets = propFeverMap[playerID].getProperty("sets");
-			feverMapSubsets[playerID] = subsets.split(",");
-		}
-	}
-
 	/*
 	 * 設定画面の描画
 	 */
@@ -465,16 +433,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
 		}
-	}
-
-	/*
-	 * Readyの時のInitialization処理（Initialization前）
-	 */
-	@Override
-	public boolean readyInit(GameEngine engine, int playerID) {
-		super.readyInit(engine, playerID);
-		loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
-		return false;
 	}
 
 	@Override
@@ -615,10 +573,6 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 				b2.hard = ojamaHard[playerID];
 				owner.receiver.blockBreak(engine, playerID, x2, y2, b2);
 			}
-	}
-
-	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
-		super.loadFeverMap(engine, playerID, chain, propFeverMap[playerID], feverMapSubsets[playerID]);
 	}
 
 	/*

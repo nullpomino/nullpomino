@@ -192,6 +192,18 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Zenkeshi reward type */
 	protected int[] zenKeshiType;
 
+	/** Selected fever map set file */
+	protected int[] feverMapSet;
+
+	/** Selected fever map set file's subset list */
+	protected String[][] feverMapSubsets;
+
+	/** Fever map CustomProperties */
+	protected CustomProperties[] propFeverMap;
+
+	/** Chain level boundaries for Fever Mode */
+	protected int[] feverChainMin, feverChainMax;
+
 	/** Selected outline type */
 	protected int[] outlineType;
 
@@ -282,6 +294,12 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		newChainPower = new boolean[MAX_PLAYERS];
 		cascadeSlow = new boolean[MAX_PLAYERS];
 
+		feverMapSet = new int[MAX_PLAYERS];
+		propFeverMap = new CustomProperties[MAX_PLAYERS];
+		feverMapSubsets = new String[MAX_PLAYERS][];
+		feverChainMin = new int[MAX_PLAYERS];
+		feverChainMax = new int[MAX_PLAYERS];
+
 		winnerID = -1;
 	}
 
@@ -337,6 +355,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		useMap[playerID] = prop.getProperty("avalanchevs" + name + ".useMap.p" + playerID, false);
 		mapSet[playerID] = prop.getProperty("avalanchevs" + name + ".mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("avalanchevs" + name + ".mapNumber.p" + playerID, -1);
+		feverMapSet[playerID] = prop.getProperty("avalanchevs" + name + ".feverMapSet.p" + playerID, 0);
 		presetNumber[playerID] = prop.getProperty("avalanchevs" + name + ".presetNumber.p" + playerID, 0);
 		maxAttack[playerID] = prop.getProperty("avalanchevs" + name + ".maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevs" + name + ".numColors.p" + playerID, 5);
@@ -365,6 +384,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		prop.setProperty("avalanchevs" + name + ".useMap.p" + playerID, useMap[playerID]);
 		prop.setProperty("avalanchevs" + name + ".mapSet.p" + playerID, mapSet[playerID]);
 		prop.setProperty("avalanchevs" + name + ".mapNumber.p" + playerID, mapNumber[playerID]);
+		prop.setProperty("avalanchevs" + name + ".feverMapSet.p" + playerID, feverMapSet[playerID]);
 		prop.setProperty("avalanchevs" + name + ".presetNumber.p" + playerID, presetNumber[playerID]);
 		prop.setProperty("avalanchevs" + name + ".maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("avalanchevs" + name + ".numColors.p" + playerID, numColors[playerID]);
@@ -429,6 +449,17 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		}
 	}
 
+	protected void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {
+		if((propFeverMap[playerID] == null) || (forceReload)) {
+			propFeverMap[playerID] = receiver.loadProperties("config/map/avalanche/" +
+					FEVER_MAPS[id] + ".map");
+			feverChainMin[playerID] = propFeverMap[playerID].getProperty("minChain", 3);
+			feverChainMax[playerID] = propFeverMap[playerID].getProperty("maxChain", 15);
+			String subsets = propFeverMap[playerID].getProperty("sets");
+			feverMapSubsets[playerID] = subsets.split(",");
+		}
+	}
+
 	/*
 	 * Initialization for each player
 	 */
@@ -480,6 +511,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
 		if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 
+		if (feverMapSet[playerID] > 0 && feverMapSet[playerID] < FEVER_MAPS.length)
+			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
 		// マップ読み込み・リプレイ保存用にバックアップ
 		if(useMap[playerID]) {
 			if(owner.replayMode) {
@@ -647,7 +680,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			rate >>= engine.statistics.time / (hurryupSeconds[playerID] * 60);
 		if (rate <= 0)
 			rate = 1;
-		ojamaNew += (pts+rate-1)/rate;
+		ojamaNew += ptsToOjama(engine, playerID, pts, rate);
 		ojamaSent[playerID] += ojamaNew;
 
 		if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
@@ -669,6 +702,11 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		if (ojamaNew > 0)
 			ojamaAdd[enemyID] += ojamaNew;
 	}
+	
+	protected int ptsToOjama(GameEngine engine, int playerID, int pts, int rate)
+	{
+		return (pts+rate-1)/rate;
+	}
 
 	public abstract boolean lineClearEnd(GameEngine engine, int playerID);
 	
@@ -683,13 +721,12 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			engine.stat = GameEngine.STAT_GAMEOVER;
 	}
 
-	protected void loadFeverMap(GameEngine engine, int playerID, int chain, CustomProperties propFeverMap,
-			String[] feverMapSubsets) {
+	protected void loadFeverMap(GameEngine engine, int playerID, int chain) {
 		engine.createFieldIfNeeded();
 		engine.field.reset();
-		engine.field.stringToField(propFeverMap.getProperty(
-				feverMapSubsets[engine.random.nextInt(feverMapSubsets.length)] +
-				"." + numColors[playerID] + "colors." + chain + "chain"));
+		engine.field.stringToField(propFeverMap[playerID].getProperty(
+				feverMapSubsets[playerID][engine.random.nextInt(feverMapSubsets[playerID].length)] +
+				"." + 4 + "colors." + chain + "chain"));
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
@@ -697,7 +734,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 		engine.field.setAllSkin(engine.getSkin());
-		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], engine.random);
+		engine.field.shuffleColors(BLOCK_COLORS, 4, engine.random);
 	}
 
 	/*
