@@ -2110,6 +2110,13 @@ public class Field implements Serializable {
 				}
 		return total;
 	}
+
+	public boolean doCascadeGravity(int type) {
+		if (type == GameEngine.LINE_GRAVITY_CASCADE_SLOW)
+			return doCascadeSlow();
+		else
+			return doCascadeGravity();
+	}
 	
 	/**
 	 * Main routine for cascade gravity.
@@ -2177,6 +2184,70 @@ public class Field implements Serializable {
 			setLineFlag(i, false);
 		}
 		*/
+
+		return result;
+	}
+	
+	/**
+	 * Routine for cascade gravity which checks from the top down for a slower fall animation.
+	 * @return <code>true</code> if something falls. <code>false</code> if nothing falls.
+	 */
+	public boolean doCascadeSlow() {
+		boolean result = false;
+
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, false);
+
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			for(int j = 0; j < width; j++) {
+				Block blk = getBlock(j, i);
+
+				if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY)) {
+					boolean fall = true;
+					checkBlockLink(j, i);
+
+					for(int k = (getHeightWithoutHurryupFloor() - 1); k >= (hidden_height * -1); k--) {
+						for(int l = 0; l < width; l++) {
+							Block bTemp = getBlock(l, k);
+
+							if( (bTemp != null) && !bTemp.isEmpty() &&
+								bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) && !bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL) )
+							{
+								Block bBelow = getBlock(l, k + 1);
+
+								if( (getCoordAttribute(l, k + 1) == COORD_WALL) ||
+									((bBelow != null) && !bBelow.isEmpty() && !bBelow.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK)) )
+								{
+									fall = false;
+								}
+							}
+						}
+					}
+
+					if(fall) {
+						result = true;
+						for(int k = (getHeightWithoutHurryupFloor() - 1); k >= (hidden_height * -1); k--) {
+							for(int l = 0; l < width; l++) {
+								Block bTemp = getBlock(l, k);
+								Block bBelow = getBlock(l, k + 1);
+
+								if( (getCoordAttribute(l, k + 1) != COORD_WALL) &&
+								    (bTemp != null) && !bTemp.isEmpty() && (bBelow != null) && bBelow.isEmpty() &&
+								    bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) && !bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL) )
+								{
+									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, true);
+									setBlock(l, k + 1, bTemp);
+									setBlock(l, k, new Block());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, false);
 
 		return result;
 	}

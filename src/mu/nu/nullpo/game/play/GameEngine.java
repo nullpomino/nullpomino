@@ -112,7 +112,7 @@ public class GameEngine {
 							INTERRUPTITEM_MIRROR = 1;
 
 	/** Line gravity types */
-	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1;
+	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1, LINE_GRAVITY_CASCADE_SLOW = 2;
 
 	/** Clear mode settings */
 	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2, CLEAR_GEM_COLOR = 3;
@@ -2460,7 +2460,8 @@ public class GameEngine {
 						// 画面外に置いて死亡
 						stat = STAT_GAMEOVER;
 						if((ending == 2) && (staffrollNoDeath)) stat = STAT_NOTHING;
-					} else if (lineGravityType == LINE_GRAVITY_CASCADE && !connectBlocks) {
+					} else if ((lineGravityType == LINE_GRAVITY_CASCADE || lineGravityType == LINE_GRAVITY_CASCADE_SLOW)
+							&& !connectBlocks) {
 						stat = STAT_LINECLEAR;
 						statc[0] = getLineDelay();
 						statLineClear();
@@ -2709,11 +2710,11 @@ public class GameEngine {
 		// 次のステータス
 		if(statc[0] >= getLineDelay()) {
 			// Cascade
-			if(lineGravityType == LINE_GRAVITY_CASCADE) {
+			if((lineGravityType == LINE_GRAVITY_CASCADE || lineGravityType == LINE_GRAVITY_CASCADE_SLOW)) {
 				if (statc[6] < getCascadeDelay()) {
 					statc[6]++;
 					return;
-				} else if(field.doCascadeGravity()) {
+				} else if(field.doCascadeGravity(lineGravityType)) {
 					statc[6] = 0;
 					return;
 				} else if (statc[6] < getCascadeClearDelay()) {

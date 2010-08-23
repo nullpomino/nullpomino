@@ -231,7 +231,7 @@ public class AvalancheMode extends DummyMode {
 		engine.garbageColorClear = true;
 		engine.colorClearSize = 4;
 		engine.ignoreHidden = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE_SLOW;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
 		engine.randomBlockColor = true;

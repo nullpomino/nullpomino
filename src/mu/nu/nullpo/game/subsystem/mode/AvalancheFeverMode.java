@@ -65,7 +65,7 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Fever map files list */
 	private static final String[] FEVER_MAPS = 
 	{
-		"Fever", "15th", "15thDS", "7"
+		"Fever", "15th", "15thDS", "7", "Poochy7"
 	};
 
 	/** Names of chain display settings */
@@ -249,7 +249,7 @@ public class AvalancheFeverMode extends DummyMode {
 		engine.garbageColorClear = true;
 		engine.colorClearSize = 4;
 		engine.ignoreHidden = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE_SLOW;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
 		engine.randomBlockColor = true;
@@ -322,6 +322,7 @@ public class AvalancheFeverMode extends DummyMode {
 					mapSet += change;
 					if(mapSet < 0) mapSet = FEVER_MAPS.length - 1;
 					if(mapSet > FEVER_MAPS.length - 1) mapSet = 0;
+					if (mapSet == 4) numColors = 3;
 					break;
 				case 1:
 					outlinetype += change;

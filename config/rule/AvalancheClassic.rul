@@ -1,6 +1,6 @@
 #NullpoMino RuleData
-#Sat Aug 14 14:01:38 CDT 2010
-0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.AvalancheWallkick
+#Sun Aug 22 20:00:36 CDT 2010
+0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.AvalancheClassicWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
 0.ruleopt.pieceSpawnX.8.1=0
