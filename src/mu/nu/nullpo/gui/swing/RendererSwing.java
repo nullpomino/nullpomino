@@ -556,6 +556,11 @@ public class RendererSwing extends EventReceiver {
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
 	}
+	
+	protected void drawBlockForceVisible(int x, int y, Block blk, float scale) {
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness,
+				(0.5f*blk.alpha)+0.5f, scale);
+	}
 
 	/**
 	 * Blockピースを描画
@@ -798,8 +803,12 @@ public class RendererSwing extends EventReceiver {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
 								  blk.darkness, blk.alpha, small ? 0.5f : 1.0f);
-					} else if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE) && showfieldblockgraphics) {
-						drawBlock(x2, y2, blk, small ? 0.5f : 1.0f);
+					} else if (showfieldblockgraphics) {
+						if (engine.owner.replayMode && engine.owner.replayShowInvisible) {
+							drawBlockForceVisible(x2, y2, blk, small ? 0.5f : 1.0f);
+						} else if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
+							drawBlock(x2, y2, blk, small ? 0.5f : 1.0f);
+						}
 					} else {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
 						graphics.drawImage(ResourceHolderSwing.imgFieldbg, x2, y2, x2+blksize, y2+blksize, sx, 0, sx+16, 16, null);

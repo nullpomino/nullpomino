@@ -247,13 +247,13 @@ public class StateInGameSDL extends BaseStateSDL {
 					NormalFontSDL.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
 			}
 
+			int offsetX = RendererSDL.FIELD_OFFSET_X[0];
+			int offsetY = RendererSDL.FIELD_OFFSET_Y[0];
 			// 早送り
-			if(fastforward != 0) {
-				int offsetX = RendererSDL.FIELD_OFFSET_X[0];
-				int offsetY = RendererSDL.FIELD_OFFSET_Y[0];
-
+			if(fastforward != 0)
 				NormalFontSDL.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFontSDL.COLOR_ORANGE);
-			}
+			if(gameManager.replayShowInvisible)
+				NormalFontSDL.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFontSDL.COLOR_ORANGE);
 		}
 	}
 
@@ -343,6 +343,12 @@ public class StateInGameSDL extends BaseStateSDL {
 			// リプレイ追記
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_D)) {
 				gameManager.replayRerecord = true;
+				ResourceHolderSDL.soundManager.play("tspin1");
+				cursor = 0;
+			}
+			// リプレイ追記
+			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_E)) {
+				gameManager.replayShowInvisible = !gameManager.replayShowInvisible;
 				ResourceHolderSDL.soundManager.play("tspin1");
 				cursor = 0;
 			}

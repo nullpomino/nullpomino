@@ -272,13 +272,13 @@ public class StateInGame extends BasicGameState {
 					NormalFont.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
 			}
 
+			int offsetX = RendererSlick.FIELD_OFFSET_X[0];
+			int offsetY = RendererSlick.FIELD_OFFSET_Y[0];
 			// 早送り
-			if(fastforward != 0) {
-				int offsetX = RendererSlick.FIELD_OFFSET_X[0];
-				int offsetY = RendererSlick.FIELD_OFFSET_Y[0];
-
+			if(fastforward != 0)
 				NormalFont.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFont.COLOR_ORANGE);
-			}
+			if(gameManager.replayShowInvisible)
+				NormalFont.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFont.COLOR_ORANGE);
 		}
 
 		// FPS
@@ -391,6 +391,12 @@ public class StateInGame extends BasicGameState {
 			// リプレイ追記
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_D)) {
 				gameManager.replayRerecord = true;
+				ResourceHolder.soundManager.play("tspin1");
+				cursor = 0;
+			}
+			// リプレイ追記
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_E)) {
+				gameManager.replayShowInvisible = !gameManager.replayShowInvisible;
 				ResourceHolder.soundManager.play("tspin1");
 				cursor = 0;
 			}

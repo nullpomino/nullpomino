@@ -491,6 +491,11 @@ public class RendererSlick extends EventReceiver {
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
 	}
+	
+	protected void drawBlockForceVisible(int x, int y, Block blk, float scale) {
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness,
+				(0.5f*blk.alpha)+0.5f, scale);
+	}
 
 	/**
 	 * Blockピースを描画
@@ -746,6 +751,8 @@ public class RendererSlick extends EventReceiver {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
 								  blk.darkness, blk.alpha, small ? 0.5f : 1.0f);
+					} else if (engine.owner.replayMode && engine.owner.replayShowInvisible) {
+						drawBlockForceVisible(x2, y2, blk, small ? 0.5f : 1.0f);
 					} else if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
 						drawBlock(x2, y2, blk, small ? 0.5f : 1.0f);
 					}

@@ -79,6 +79,9 @@ public class GameManager {
 	/** GameEngine: This is where the most action takes place */
 	public GameEngine[] engine;
 
+	/** true to show invisible blocks in replay */
+	public boolean replayShowInvisible;
+
 	/**
 	 * Get major version
 	 * @return Major version

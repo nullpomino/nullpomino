@@ -361,6 +361,11 @@ public class GameFrame extends JFrame implements Runnable {
 				NullpoMinoSwing.gameManager.replayRerecord = true;
 				cursor = 0;
 			}
+			// Show invisible blocks in replay
+			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_E)) {
+				NullpoMinoSwing.gameManager.replayShowInvisible = !NullpoMinoSwing.gameManager.replayShowInvisible;
+				cursor = 0;
+			}
 		} else {
 			fastforward = 0;
 		}
@@ -490,12 +495,13 @@ public class GameFrame extends JFrame implements Runnable {
 				NormalFontSwing.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
 		}
 
+		int offsetX = RendererSwing.FIELD_OFFSET_X[0];
+		int offsetY = RendererSwing.FIELD_OFFSET_Y[0];
 		// 早送り
-		if(fastforward != 0) {
-			int offsetX = RendererSwing.FIELD_OFFSET_X[0];
-			int offsetY = RendererSwing.FIELD_OFFSET_Y[0];
+		if(fastforward != 0)
 			NormalFontSwing.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFontSwing.COLOR_ORANGE);
-		}
+		if(NullpoMinoSwing.gameManager.replayShowInvisible)
+			NormalFontSwing.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFontSwing.COLOR_ORANGE);
 
 		// FPS表示
 		if(showfps) {
