@@ -30,42 +30,21 @@ package mu.nu.nullpo.game.subsystem.mode;
 
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
-import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * AVALANCHE FEVER MARATHON mode (Release Candidate 1)
+ * AVALANCHE FEVER MARATHON mode (Release Candidate 2)
  */
-public class AvalancheFeverMode extends DummyMode {
+public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
-	/** Enabled piece types */
-	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
-	/** Block colors */
-	private static final int[] BLOCK_COLORS =
-	{
-		Block.BLOCK_COLOR_RED,
-		Block.BLOCK_COLOR_GREEN,
-		Block.BLOCK_COLOR_BLUE,
-		Block.BLOCK_COLOR_YELLOW,
-		Block.BLOCK_COLOR_PURPLE
-	};
 	
 	private static final int[] CHAIN_POWERS = 
 	{
 		4, 10, 18, 22, 30, 48, 80, 120, 160, 240, 280, 288, 342, 400, 440, 480, 520, 560, 600, 640, 680, 720, 760, 800 //Amitie
-	};
-
-	/** Fever map files list */
-	private static final String[] FEVER_MAPS = 
-	{
-		"Fever", "15th", "15thDS", "7", "Poochy7"
 	};
 
 	/** Names of chain display settings */
@@ -77,23 +56,8 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Time limit */
 	private static final int TIME_LIMIT = 3600;
 
-	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
-
-	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
-
-	/** Amount of points earned from most recent clear */
-	private int lastscore, lastmultiplier;
-
-	/** Elapsed time from last line clear (lastscore is displayed to screen until this reaches to 120) */
-	private int scgettime;
-
 	/** Selected game type */
 	private int mapSet;
-
-	/** Outline type */
-	private int outlinetype;
 
 	/** Version number */
 	private int version;
@@ -109,16 +73,7 @@ public class AvalancheFeverMode extends DummyMode {
 	
 	/** Flag for all clear */
 	private int zenKeshiDisplay;
-	
-	/** Flag set to true if first group in the chain is larger minimum size */
-	//private boolean firstExtra;
-	
-	/** Amount of garbage sent */
-	private int garbageSent, garbageAdd;
-	
-	/** Number of colors to use */
-	private int numColors;
-	
+
 	/** Time limit left */
 	private int timeLimit;
 	
@@ -140,23 +95,8 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Flag set to true when last piece caused a clear */
 	private boolean cleared;
 	
-	/** Flag for all-clears */
-	private boolean zenKeshi;
-	
-	/** Number of all clears */
-	private int zenKeshiCount;
-	
-	/** Max chain */
-	private int maxChain;
-	
 	/** List of subsets in selected map */
 	private String[] mapSubsets;
-	
-	/** Last chain hit number */
-	private int chain;
-	
-	/** Time to display last chain */
-	private int chainDisplay;
 	
 	/** Fever chain count when last chain hit occurred */
 	private int feverChainDisplay;
@@ -164,23 +104,8 @@ public class AvalancheFeverMode extends DummyMode {
 	/** Type of chain display */
 	private int chainDisplayType;
 	
-	/** Score before adding zenkeshi bonus and max chain bonus */
-	private int scoreBeforeBonus;
-	
-	/** Zenkeshi bonus and max chain bonus amounts */
-	private int zenKeshiBonus, maxChainBonus;
-	
 	/** Number of boards played */
 	private int boardsPlayed;
-	
-	/** Blocks cleared */
-	private int blocksCleared;
-	
-	/** Current level */
-	private int level;
-	
-	/** Blocks blocksCleared needed to reach next level */
-	private int toNextLevel;
 	
 	/** Level at start of chain */
 	private int chainLevelMultiplier;
@@ -190,7 +115,7 @@ public class AvalancheFeverMode extends DummyMode {
 	 */
 	@Override
 	public String getName() {
-		return "AVALANCHE 1P FEVER MARATHON (RC1)";
+		return "AVALANCHE 1P FEVER MARATHON (RC2)";
 	}
 
 	/*
@@ -198,35 +123,16 @@ public class AvalancheFeverMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
-		lastscore = 0;
-		lastmultiplier = 0;
-		scgettime = 0;
-
-		outlinetype = 0;
-		
-		zenKeshiDisplay = 0;
-		garbageSent = 0;
-		garbageAdd = 0;
-		//firstExtra = false;
+		super.playerInit(engine, playerID);
 		
 		cleared = false;
 		zenKeshi = false;
-		zenKeshiCount = 0;
-		maxChain = 0;
-		scoreBeforeBonus = 0;
-		zenKeshiBonus = 0;
-		maxChainBonus = 0;
 		boardsPlayed = 0;
-		blocksCleared = 0;
 		
 		timeLimit = TIME_LIMIT;
 		timeLimitAdd = 0;
 		timeLimitAddDisplay = 0;
 		
-		chain = 0;
-		chainDisplay = 0;
 		feverChainDisplay = 0;
 		chainDisplayType = 0;
 		
@@ -243,63 +149,17 @@ public class AvalancheFeverMode extends DummyMode {
 		} else {
 			loadSetting(owner.replayProp);
 		}
-
-		engine.framecolor = GameEngine.FRAME_COLOR_PURPLE;
-		engine.clearMode = GameEngine.CLEAR_COLOR;
-		engine.garbageColorClear = true;
-		engine.colorClearSize = 4;
-		engine.ignoreHidden = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE_SLOW;
-		for(int i = 0; i < Piece.PIECE_COUNT; i++)
-			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
-		engine.randomBlockColor = true;
-		engine.blockColors = BLOCK_COLORS;
-		engine.connectBlocks = false;
-		engine.cascadeDelay = 1;
-		engine.cascadeClearDelay = 10;
-		/*
-		engine.fieldWidth = 6;
-		engine.fieldHeight = 12;
-		engine.fieldHiddenHeight = 2;
-		*/
 	}
 
-	/**
-	 * Set the gravity rate
-	 * @param engine GameEngine
-	 */
-	public void setSpeed(GameEngine engine) {
-		engine.speed.gravity = 1;
-		engine.speed.denominator = Math.max(41-level, 2);
-	}
-
-	public boolean onReady(GameEngine engine, int playerID) {
-		if(engine.statc[0] == 0)
-		{
-			loadMapSetFever(engine, playerID, mapSet, true);
-			engine.numColors = numColors;
-			loadFeverMap(engine, playerID, feverChain);
-			timeLimit = TIME_LIMIT;
-			timeLimitAdd = 0;
-			timeLimitAddDisplay = 0;
-
-			if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
-			if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
-			if(outlinetype == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
-			
-			if (numColors == 3) level = 1;
-			else if (numColors == 4) level = 5;
-			else if (numColors == 5) level = 10;
-			chainLevelMultiplier = level;
-			toNextLevel = 15;
-			
-			zenKeshiCount = 0;
-			maxChain = 0;
-			scoreBeforeBonus = 0;
-			zenKeshiBonus = 0;
-			maxChainBonus = 0;
-			blocksCleared = 0;
-		}
+	public boolean readyInit (GameEngine engine, int playerID) {
+		cascadeSlow = true;
+		super.readyInit(engine, playerID);
+		loadMapSetFever(engine, playerID, mapSet, true);
+		loadFeverMap(engine, playerID, feverChain);
+		timeLimit = TIME_LIMIT;
+		timeLimitAdd = 0;
+		timeLimitAddDisplay = 0;
+		chainLevelMultiplier = level;
 		return false;
 	}
 	
@@ -383,25 +243,6 @@ public class AvalancheFeverMode extends DummyMode {
 				"OUTLINE", strOutline,
 				"COLORS", String.valueOf(numColors),
 				"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType]);
-	}
-
-	/*
-	 * Called for initialization during "Ready" screen
-	 */
-	@Override
-	public void startGame(GameEngine engine, int playerID) {
-		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-
-		engine.tspinEnable = false;
-		engine.useAllSpinBonus = false;
-		engine.tspinAllowKick = false;
-
-		engine.speed.are = 30;
-		engine.speed.areLine = 30;
-		engine.speed.das = 10;
-		engine.speed.lockDelay = 60;
-
-		setSpeed(engine);
 	}
 
 	/*
@@ -525,108 +366,26 @@ public class AvalancheFeverMode extends DummyMode {
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		if(timeLimit <= 1800) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		if(timeLimit <= 900) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		if(timeLimit <= 
-			300) engine.meterColor = GameEngine.METER_COLOR_RED;
-	}
-
-	/*
-	 * ゲームオーバー
-	 */
-	@Override
-	public boolean onGameOver(GameEngine engine, int playerID) {
-		if(engine.statc[0] == 0)
-		{
-			scoreBeforeBonus = engine.statistics.score;
-			if (numColors >= 5)
-				zenKeshiBonus = zenKeshiCount*zenKeshiCount*1000;
-			else if (numColors == 4)
-				zenKeshiBonus = zenKeshiCount*(zenKeshiCount+1)*500;
-			else
-				zenKeshiBonus = zenKeshiCount*(zenKeshiCount+3)*250;
-			maxChainBonus = maxChain*maxChain*2000;
-			engine.statistics.score += zenKeshiBonus + maxChainBonus;
-		}
-		return false;
-	}
-
-	/*
-	 * Hard dropしたときの処理
-	 */
-	@Override
-	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
-		engine.statistics.score += fall;
-	}
-
-	/*
-	 * Hard dropしたときの処理
-	 */
-	@Override
-	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
-		engine.statistics.score += fall;
+		if(timeLimit <= 300) engine.meterColor = GameEngine.METER_COLOR_RED;
 	}
 	
-	/*
-	 * Calculate score
-	 */
-	@Override
-	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		// Line clear bonus
-		int pts = avalanche*10;
-
-		if (avalanche > 0) {
-			cleared = true;
-			if (engine.field.isEmpty()) {
-				engine.playSE("bravo");
-				zenKeshi = true;
-				zenKeshiDisplay = 120;
-				zenKeshiCount++;
-				// engine.statistics.score += 2100;
-			}
-
-			chain = engine.chain;
-			if (chain == 1)
-				chainLevelMultiplier = level;
-			if (chain > maxChain)
-				maxChain = chain;
-			blocksCleared += avalanche;
-			toNextLevel -= avalanche;
-			if (toNextLevel <= 0)
-			{
-				toNextLevel = 15;
-				if (level < 99)
-					level++;
-			}
-			
-			pts *= chainLevelMultiplier;
-			
-			chainDisplay = 60;
-			feverChainDisplay = feverChain;
-			engine.playSE("combo" + Math.min(chain, 20));
-			int multiplier = engine.field.colorClearExtraCount;
-			if (engine.field.colorsCleared > 1)
-				multiplier += (engine.field.colorsCleared-1)*2;
-			
-			if (chain > CHAIN_POWERS.length)
-				multiplier += CHAIN_POWERS[CHAIN_POWERS.length-1];
-			else
-				multiplier += CHAIN_POWERS[chain-1];
-			
-			if (multiplier > 999)
-				multiplier = 999;
-			if (multiplier < 1)
-				multiplier = 1;
-			
-			lastscore = pts;
-			lastmultiplier = multiplier;
-			scgettime = 120;
-			int score = pts*multiplier;
-			engine.statistics.scoreFromLineClear += score;
-			engine.statistics.score += score;
-
-			garbageAdd += ((avalanche*10*multiplier)+119)/120;
-			
-			setSpeed(engine);
-		}
+	protected int calcPts (int avalanche) {
+		return avalanche*chainLevelMultiplier*10;
+	}
+	
+	protected int calcChainMultiplier(int chain) {
+		if (chain > CHAIN_POWERS.length)
+			return CHAIN_POWERS[CHAIN_POWERS.length-1];
+		else
+			return CHAIN_POWERS[chain-1];
+	}
+	
+	protected void onClear (GameEngine engine, int playerID) {
+		chainDisplay = 60;
+		cleared = true;
+		feverChainDisplay = feverChain;
+		if (chain == 1)
+			chainLevelMultiplier = level;
 	}
 
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
@@ -644,6 +403,7 @@ public class AvalancheFeverMode extends DummyMode {
 			if (zenKeshi)
 			{
 				timeLimitAdd += 180;
+				zenKeshiDisplay = 120;
 				newFeverChain += 2;
 			}
 			if (newFeverChain < feverChainMin)
