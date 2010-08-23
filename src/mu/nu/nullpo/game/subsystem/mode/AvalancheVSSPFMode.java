@@ -28,13 +28,9 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
-import java.util.Random;
-
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
-import mu.nu.nullpo.game.component.Field;
-import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -44,12 +40,9 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * AVALANCHE-SPF VS-BATTLE mode (Release Candidate 1)
  */
-public class AvalancheVSSPFMode extends DummyMode {
+public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-
-	/** Enabled piece types */
-	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
 
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
@@ -58,17 +51,6 @@ public class AvalancheVSSPFMode extends DummyMode {
 		Block.BLOCK_COLOR_GREEN,
 		Block.BLOCK_COLOR_BLUE,
 		Block.BLOCK_COLOR_YELLOW
-	};
-
-	/** Fever map files list */
-	private static final String[] FEVER_MAPS =
-	{
-		"Fever", "15th", "15thDS", "7", "Compendium"
-	};
-
-	/** Chain multipliers */
-	private static final int[] CHAIN_POWERS = {
-		4, 12, 24, 33, 50, 101, 169, 254, 341, 428, 538, 648, 763, 876, 990, 999 //Arle
 	};
 	
 	/** Names of drop map sets */
@@ -175,156 +157,8 @@ public class AvalancheVSSPFMode extends DummyMode {
 		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.2, 1.0, 1.0}
 	};
 
-	/** Number of players */
-	private static final int MAX_PLAYERS = 2;
-
-	/** Ojama counter setting constants */
-	private static final int OJAMA_COUNTER_OFF = 0, OJAMA_COUNTER_ON = 1, OJAMA_COUNTER_FEVER = 2;
-
-	/** Names of ojama counter settings */
-	private static final String[] OJAMA_COUNTER_STRING = {"OFF", "ON", "FEVER"};
-
-	/** Zenkeshi setting constants */
-	private static final int /*ZENKESHI_MODE_OFF = 0,*/ ZENKESHI_MODE_ON = 1, ZENKESHI_MODE_FEVER = 2;
-
-	/** Names of zenkeshi settings */
-	private static final String[] ZENKESHI_TYPE_NAMES = {"OFF", "ON", "FEVER"};
-
-	/** Names of outline settings */
-	private static final String[] OUTLINE_TYPE_NAMES = {"NORMAL", "COLOR", "NONE"};
-
-	/** Names of chain display settings */
-	private static final String[] CHAIN_DISPLAY_NAMES = {"OFF", "YELLOW", "PLAYER", "SIZE"};
-
-	/** Constants for chain display settings */
-	private static final int CHAIN_DISPLAY_NONE = 0, /*CHAIN_DISPLAY_YELLOW = 1,*/
-		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3;
-
-	/** Each player's frame color */
-	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
-	/** Rule settings for countering ojama not yet dropped */
-	private int[] ojamaCounterMode;
-
-	/** 溜まっている邪魔Blockのcount */
-	private int[] ojama;
-
-	/** 送った邪魔Blockのcount */
-	private int[] ojamaSent;
-
-	/** Time to display the most recent increase in score */
-	private int[] scgettime;
-
-	/** 使用するBGM */
-	private int bgmno;
-
-	/** Big */
-	private boolean[] big;
-
-	/** 効果音ON/OFF */
-	private boolean[] enableSE;
-
-	/** マップ使用 flag */
-	private boolean[] useMap;
-
-	/** 使用するマップセット number */
-	private int[] mapSet;
-
-	/** マップ number(-1でランダム) */
-	private int[] mapNumber;
-
-	/** Last preset number used */
-	private int[] presetNumber;
-
-	/** 勝者 */
-	private int winnerID;
-
-	/** マップセットのProperty file */
-	private CustomProperties[] propMap;
-
-	/** 最大マップ number */
-	private int[] mapMaxNo;
-
-	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
-	private Field[] fldBackup;
-
-	/** マップ選択用乱count */
-	private Random randMap;
-
 	/** Version */
 	private int version;
-
-	/** Flag for all clear */
-	private boolean[] zenKeshi;
-
-	/** Amount of points earned from most recent clear */
-	private int[] lastscore, lastmultiplier;
-
-	/** Amount of ojama added in current chain */
-	private int[] ojamaAdd;
-
-	/** Score */
-	private int[] score;
-
-	/** Max amount of ojama dropped at once */
-	private int[] maxAttack;
-
-	/** Minimum chain count needed to send ojama */
-	private int[] rensaShibari;
-
-	/** Denominator for score-to-ojama conversion */
-	private int[] ojamaRate;
-
-	/** Hurryup開始までの秒count(0でHurryupなし) */
-	private int[] hurryupSeconds;
-
-	/** Set to true when last drop resulted in a clear */
-	private boolean[] cleared;
-
-	/** Set to true when dropping ojama blocks */
-	private boolean[] ojamaDrop;
-
-	/** Selected fever map set file */
-	private int[] feverMapSet;
-
-	/** Selected fever map set file's subset list */
-	private String[][] feverMapSubsets;
-
-	/** Time to display "ZENKESHI!" */
-	private int[] zenKeshiDisplay;
-
-	/** Zenkeshi reward type */
-	private int[] zenKeshiType;
-
-	/** Fever map CustomProperties */
-	private CustomProperties[] propFeverMap;
-
-	/** Selected outline type */
-	private int[] outlineType;
-
-	/** If true, both columns 3 and 4 are danger columns */
-	private boolean[] dangerColumnDouble;
-
-	/** If true, red X's appear at tops of danger columns */
-	private boolean[] dangerColumnShowX;
-
-	/** Last chain hit number */
-	private int[] chain;
-
-	/** Time to display last chain */
-	private int[] chainDisplay;
-
-	/** Type of chain display */
-	private int[] chainDisplayType;
-	
-	/** True to use new (Fever) chain powers */
-	private boolean[] newChainPower;
 
 	/** Settings for starting countdown for ojama blocks */
 	private int[] ojamaCountdown;
@@ -343,9 +177,6 @@ public class AvalancheVSSPFMode extends DummyMode {
 	
 	/** Flag set when counters have been decremented */
 	private boolean[] countdownDecremented;
-	
-	/** True to use slower falling animations, false to use faster */
-	private boolean[] cascadeSlow;
 
 	/*
 	 * Mode  name
@@ -356,109 +187,18 @@ public class AvalancheVSSPFMode extends DummyMode {
 	}
 
 	/*
-	 * Number of players
-	 */
-	@Override
-	public int getPlayers() {
-		return MAX_PLAYERS;
-	}
-
-	/*
 	 * Mode  initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
-		owner = manager;
-		receiver = owner.receiver;
-
-		ojamaCounterMode = new int[MAX_PLAYERS];
-		ojama = new int[MAX_PLAYERS];
-		ojamaSent = new int[MAX_PLAYERS];
-
-		scgettime = new int[MAX_PLAYERS];
-		bgmno = 0;
-		big = new boolean[MAX_PLAYERS];
-		enableSE = new boolean[MAX_PLAYERS];
-		hurryupSeconds = new int[MAX_PLAYERS];
-		useMap = new boolean[MAX_PLAYERS];
-		mapSet = new int[MAX_PLAYERS];
-		mapNumber = new int[MAX_PLAYERS];
-		presetNumber = new int[MAX_PLAYERS];
-		propMap = new CustomProperties[MAX_PLAYERS];
-		mapMaxNo = new int[MAX_PLAYERS];
-		fldBackup = new Field[MAX_PLAYERS];
-		randMap = new Random();
-
-		zenKeshi = new boolean[MAX_PLAYERS];
-		lastscore = new int[MAX_PLAYERS];
-		lastmultiplier = new int[MAX_PLAYERS];
-		ojamaAdd = new int[MAX_PLAYERS];
-		score = new int[MAX_PLAYERS];
-		maxAttack = new int[MAX_PLAYERS];
-		rensaShibari = new int[MAX_PLAYERS];
-		ojamaRate = new int[MAX_PLAYERS];
+		super.modeInit(manager);
 		ojamaCountdown = new int[MAX_PLAYERS];
-
-		cleared = new boolean[MAX_PLAYERS];
-		ojamaDrop = new boolean[MAX_PLAYERS];
-		feverMapSet = new int[MAX_PLAYERS];
-		zenKeshiDisplay = new int[MAX_PLAYERS];
-		zenKeshiType = new int[MAX_PLAYERS];
-		propFeverMap = new CustomProperties[MAX_PLAYERS];
-		feverMapSubsets = new String[MAX_PLAYERS][];
-		outlineType = new int[MAX_PLAYERS];
-		dangerColumnDouble = new boolean[MAX_PLAYERS];
-		dangerColumnShowX = new boolean[MAX_PLAYERS];
-		chain = new int[MAX_PLAYERS];
-		chainDisplay = new int[MAX_PLAYERS];
-		chainDisplayType = new int[MAX_PLAYERS];
-		newChainPower = new boolean[MAX_PLAYERS];
-
 		dropSet = new int[MAX_PLAYERS];
 		dropMap = new int[MAX_PLAYERS];
 		dropPattern = new int[MAX_PLAYERS][][];
 		attackMultiplier = new double[MAX_PLAYERS];
 		defendMultiplier = new double[MAX_PLAYERS];
 		countdownDecremented = new boolean[MAX_PLAYERS];
-		cascadeSlow = new boolean[MAX_PLAYERS];
-
-		winnerID = -1;
-	}
-
-	/**
-	 * Read speed presets
-	 * @param engine GameEngine
-	 * @param prop Property file to read from
-	 * @param preset Preset number
-	 */
-	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
-		engine.speed.gravity = prop.getProperty("avalanchevsspf.gravity." + preset, 4);
-		engine.speed.denominator = prop.getProperty("avalanchevsspf.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("avalanchevsspf.are." + preset, 30);
-		engine.speed.areLine = prop.getProperty("avalanchevsspf.areLine." + preset, 30);
-		engine.speed.lineDelay = prop.getProperty("avalanchevsspf.lineDelay." + preset, 10);
-		engine.speed.lockDelay = prop.getProperty("avalanchevsspf.lockDelay." + preset, 60);
-		engine.speed.das = prop.getProperty("avalanchevsspf.das." + preset, 14);
-		engine.cascadeDelay = prop.getProperty("avalanchevsspf.fallDelay." + preset, 1);
-		engine.cascadeClearDelay = prop.getProperty("avalanchevsspf.clearDelay." + preset, 10);
-	}
-
-	/**
-	 * Save speed presets
-	 * @param engine GameEngine
-	 * @param prop Property file to save to
-	 * @param preset Preset number
-	 */
-	private void savePreset(GameEngine engine, CustomProperties prop, int preset) {
-		prop.setProperty("avalanchevsspf.gravity." + preset, engine.speed.gravity);
-		prop.setProperty("avalanchevsspf.denominator." + preset, engine.speed.denominator);
-		prop.setProperty("avalanchevsspf.are." + preset, engine.speed.are);
-		prop.setProperty("avalanchevsspf.areLine." + preset, engine.speed.areLine);
-		prop.setProperty("avalanchevsspf.lineDelay." + preset, engine.speed.lineDelay);
-		prop.setProperty("avalanchevsspf.lockDelay." + preset, engine.speed.lockDelay);
-		prop.setProperty("avalanchevsspf.das." + preset, engine.speed.das);
-		prop.setProperty("avalanchevsspf.fallDelay." + preset, engine.cascadeDelay);
-		prop.setProperty("avalanchevsspf.clearDelay." + preset, engine.cascadeClearDelay);
 	}
 
 	/**
@@ -467,30 +207,13 @@ public class AvalancheVSSPFMode extends DummyMode {
 	 * @param prop Property file to read from
 	 */
 	private void loadOtherSetting(GameEngine engine, CustomProperties prop) {
+		super.loadOtherSetting(engine, prop, "spf");
 		int playerID = engine.playerID;
-		bgmno = prop.getProperty("avalanchevsspf.bgmno", 0);
-		ojamaCounterMode[playerID] = prop.getProperty("avalanchevsspf.ojamaCounterMode", OJAMA_COUNTER_ON);
-		big[playerID] = prop.getProperty("avalanchevsspf.big.p" + playerID, false);
-		enableSE[playerID] = prop.getProperty("avalanchevsspf.enableSE.p" + playerID, true);
-		hurryupSeconds[playerID] = prop.getProperty("avalanchevsspf.hurryupSeconds.p" + playerID, 192);
-		useMap[playerID] = prop.getProperty("avalanchevsspf.useMap.p" + playerID, false);
-		mapSet[playerID] = prop.getProperty("avalanchevsspf.mapSet.p" + playerID, 0);
-		mapNumber[playerID] = prop.getProperty("avalanchevsspf.mapNumber.p" + playerID, -1);
-		presetNumber[playerID] = prop.getProperty("avalanchevsspf.presetNumber.p" + playerID, 0);
-		maxAttack[playerID] = prop.getProperty("avalanchevsspf.maxAttack.p" + playerID, 30);
-		rensaShibari[playerID] = prop.getProperty("avalanchevsspf.rensaShibari.p" + playerID, 1);
+		ojamaHard[playerID] = 4;
 		ojamaRate[playerID] = prop.getProperty("avalanchevsspf.ojamaRate.p" + playerID, 120);
-		feverMapSet[playerID] = prop.getProperty("avalanchevsspf.feverMapSet.p" + playerID, 0);
-		zenKeshiType[playerID] = prop.getProperty("avalanchevsspf.zenKeshiType.p" + playerID, 1);
-		outlineType[playerID] = prop.getProperty("avalanchevsspf.outlineType.p" + playerID, 1);
-		dangerColumnDouble[playerID] = prop.getProperty("avalanchevsspf.dangerColumnDouble.p" + playerID, false);
-		dangerColumnShowX[playerID] = prop.getProperty("avalanchevsspf.dangerColumnShowX.p" + playerID, false);
-		chainDisplayType[playerID] = prop.getProperty("avalanchevsspf.chainDisplayType.p" + playerID, 1);
-		newChainPower[playerID] = prop.getProperty("avalanchevsspf.newChainPower.p" + playerID, false);
 		ojamaCountdown[playerID] = prop.getProperty("avalanchevsspf.ojamaCountdown.p" + playerID, 3);
 		dropSet[playerID] = prop.getProperty("avalanchevsspf.dropSet.p" + playerID, 4);
 		dropMap[playerID] = prop.getProperty("avalanchevsspf.dropMap.p" + playerID, 0);
-		cascadeSlow[playerID] = prop.getProperty("avalanchevsspf.cascadeSlow.p" + playerID, false);
 	}
 
 	/**
@@ -499,56 +222,11 @@ public class AvalancheVSSPFMode extends DummyMode {
 	 * @param prop Property file to save to
 	 */
 	private void saveOtherSetting(GameEngine engine, CustomProperties prop) {
+		super.saveOtherSetting(engine, prop, "spf");
 		int playerID = engine.playerID;
-		prop.setProperty("avalanchevsspf.bgmno", bgmno);
-		prop.setProperty("avalanchevsspf.ojamaCounterMode", ojamaCounterMode[playerID]);
-		prop.setProperty("avalanchevsspf.big.p" + playerID, big[playerID]);
-		prop.setProperty("avalanchevsspf.enableSE.p" + playerID, enableSE[playerID]);
-		prop.setProperty("avalanchevsspf.hurryupSeconds.p" + playerID, hurryupSeconds[playerID]);
-		prop.setProperty("avalanchevsspf.useMap.p" + playerID, useMap[playerID]);
-		prop.setProperty("avalanchevsspf.mapSet.p" + playerID, mapSet[playerID]);
-		prop.setProperty("avalanchevsspf.mapNumber.p" + playerID, mapNumber[playerID]);
-		prop.setProperty("avalanchevsspf.presetNumber.p" + playerID, presetNumber[playerID]);
-		prop.setProperty("avalanchevsspf.maxAttack.p" + playerID, maxAttack[playerID]);
-		prop.setProperty("avalanchevsspf.rensaShibari.p" + playerID, rensaShibari[playerID]);
-		prop.setProperty("avalanchevsspf.ojamaRate.p" + playerID, ojamaRate[playerID]);
-		prop.setProperty("avalanchevsspf.feverMapSet.p" + playerID, feverMapSet[playerID]);
-		prop.setProperty("avalanchevsspf.zenKeshiType.p" + playerID, zenKeshiType[playerID]);
-		prop.setProperty("avalanchevsspf.outlineType.p" + playerID, outlineType[playerID]);
-		prop.setProperty("avalanchevsspf.dangerColumnDouble.p" + playerID, dangerColumnDouble[playerID]);
-		prop.setProperty("avalanchevsspf.dangerColumnShowX.p" + playerID, dangerColumnShowX[playerID]);
-		prop.setProperty("avalanchevsspf.chainDisplayType.p" + playerID, chainDisplayType[playerID]);
-		prop.setProperty("avalanchevsspf.newChainPower.p" + playerID, newChainPower[playerID]);
 		prop.setProperty("avalanchevsspf.ojamaCountdown.p" + playerID, ojamaCountdown[playerID]);
 		prop.setProperty("avalanchevsspf.dropSet.p" + playerID, dropSet[playerID]);
 		prop.setProperty("avalanchevsspf.dropMap.p" + playerID, dropMap[playerID]);
-		prop.setProperty("avalanchevsspf.cascadeSlow.p" + playerID, cascadeSlow[playerID]);
-	}
-
-	/**
-	 * マップ読み込み
-	 * @param field フィールド
-	 * @param prop Property file to read from
-	 * @param preset 任意のID
-	 */
-	private void loadMap(Field field, CustomProperties prop, int id) {
-		field.reset();
-		//field.readProperty(prop, id);
-		field.stringToField(prop.getProperty("map." + id, ""));
-		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
-		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
-		field.setAllAttribute(Block.BLOCK_ATTRIBUTE_SELFPLACED, false);
-	}
-
-	/**
-	 * マップ保存
-	 * @param field フィールド
-	 * @param prop Property file to save to
-	 * @param id 任意のID
-	 */
-	private void saveMap(Field field, CustomProperties prop, int id) {
-		//field.writeProperty(prop, id);
-		prop.setProperty("map." + id, field.fieldToString());
 	}
 
 	private void loadDropMapPreview(GameEngine engine, int playerID, int[][] pattern) {
@@ -576,69 +254,23 @@ public class AvalancheVSSPFMode extends DummyMode {
 		}
 	}
 
-	/**
-	 * プレビュー用にマップを読み込み
-	 * @param engine GameEngine
-	 * @param playerID プレイヤー number
-	 * @param id マップID
-	 * @param forceReload trueにするとマップファイルを強制再読み込み
-	 */
-	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
-		if((propMap[playerID] == null) || (forceReload)) {
-			mapMaxNo[playerID] = 0;
-			propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
-		}
-
-		if((propMap[playerID] == null) && (engine.field != null)) {
-			engine.field.reset();
-		} else if(propMap[playerID] != null) {
-			mapMaxNo[playerID] = propMap[playerID].getProperty("map.maxMapNumber", 0);
-			engine.createFieldIfNeeded();
-			loadMap(engine.field, propMap[playerID], id);
-			engine.field.setAllSkin(engine.getSkin());
-		}
-	}
-
 	/*
 	 * Initialization for each player
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		if(playerID == 1) {
-			engine.randSeed = owner.engine[0].randSeed;
-			engine.random = new Random(owner.engine[0].randSeed);
-		}
-
-		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
-		engine.clearMode = GameEngine.CLEAR_COLOR;
-		engine.garbageColorClear = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
-		for(int i = 0; i < Piece.PIECE_COUNT; i++)
-			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
-		engine.blockColors = BLOCK_COLORS;
-		engine.randomBlockColor = true;
-		engine.connectBlocks = false;
-
-		ojama[playerID] = 0;
-		ojamaAdd[playerID] = 0;
-		ojamaSent[playerID] = 0;
-		score[playerID] = 0;
-		zenKeshi[playerID] = false;
-		scgettime[playerID] = 0;
-		cleared[playerID] = false;
-		ojamaDrop[playerID] = false;
-		zenKeshiDisplay[playerID] = 0;
-		chain[playerID] = 0;
-		chainDisplay[playerID] = 0;
+		super.playerInit(engine, playerID);
+		numColors[playerID] = 4;
+		ojamaHard[playerID] = 4;
 		countdownDecremented[playerID] = true;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
-			loadPreset(engine, engine.owner.modeConfig, -1 - playerID);
+			loadPreset(engine, engine.owner.modeConfig, -1 - playerID, "spf");
 			version = CURRENT_VERSION;
 		} else {
 			loadOtherSetting(engine, engine.owner.replayProp);
-			loadPreset(engine, engine.owner.replayProp, -1 - playerID);
+			loadPreset(engine, engine.owner.replayProp, -1 - playerID, "spf");
 			version = owner.replayProp.getProperty("avalanchevs.version", 0);
 		}
 	}
@@ -863,14 +495,14 @@ public class AvalancheVSSPFMode extends DummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 36) {
-					loadPreset(engine, owner.modeConfig, presetNumber[playerID]);
-				} else if(engine.statc[2] == 37) {
-					savePreset(engine, owner.modeConfig, presetNumber[playerID]);
+				if(engine.statc[2] == 29) {
+					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "spf");
+				} else if(engine.statc[2] == 30) {
+					savePreset(engine, owner.modeConfig, presetNumber[playerID], "spf");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
 					saveOtherSetting(engine, owner.modeConfig);
-					savePreset(engine, owner.modeConfig, -1 - playerID);
+					savePreset(engine, owner.modeConfig, -1 - playerID, "spf");
 					receiver.saveModeConfig(owner.modeConfig);
 					engine.statc[4] = 1;
 				}
@@ -932,13 +564,12 @@ public class AvalancheVSSPFMode extends DummyMode {
 		return true;
 	}
 
-	private void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {
-		if((propFeverMap[playerID] == null) || (forceReload)) {
-			propFeverMap[playerID] = receiver.loadProperties("config/map/avalanche/" +
-					FEVER_MAPS[id] + ".map");
-			String subsets = propFeverMap[playerID].getProperty("sets");
-			feverMapSubsets[playerID] = subsets.split(",");
-		}
+	@Override
+	public boolean onMove (GameEngine engine, int playerID) {
+		cleared[playerID] = false;
+		ojamaDrop[playerID] = false;
+		countdownDecremented[playerID] = false;
+		return false;
 	}
 
 	/*
@@ -1049,73 +680,14 @@ public class AvalancheVSSPFMode extends DummyMode {
 	 * Readyの時のInitialization処理（Initialization前）
 	 */
 	@Override
-	public boolean onReady(GameEngine engine, int playerID) {
-		if(engine.statc[0] == 0) {
-			engine.numColors = 4;
-			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
-
-			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
-			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
-			if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
-			
-			dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
-			attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
-			defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
-
-			// マップ読み込み・リプレイ保存用にバックアップ
-			if(useMap[playerID]) {
-				if(owner.replayMode) {
-					engine.createFieldIfNeeded();
-					loadMap(engine.field, owner.replayProp, playerID);
-					engine.field.setAllSkin(engine.getSkin());
-				} else {
-					if(propMap[playerID] == null) {
-						propMap[playerID] = receiver.loadProperties("config/map/avalanche/" + mapSet[playerID] + ".map");
-					}
-
-					if(propMap[playerID] != null) {
-						engine.createFieldIfNeeded();
-
-						if(mapNumber[playerID] < 0) {
-							if((playerID == 1) && (useMap[0]) && (mapNumber[0] < 0)) {
-								engine.field.copy(owner.engine[0].field);
-							} else {
-								int no = (mapMaxNo[playerID] < 1) ? 0 : randMap.nextInt(mapMaxNo[playerID]);
-								loadMap(engine.field, propMap[playerID], no);
-							}
-						} else {
-							loadMap(engine.field, propMap[playerID], mapNumber[playerID]);
-						}
-
-						engine.field.setAllSkin(engine.getSkin());
-						fldBackup[playerID] = new Field(engine.field);
-					}
-				}
-			} else if(engine.field != null) {
-				engine.field.reset();
-			}
-			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
-		}
-
+	public boolean readyInit(GameEngine engine, int playerID) {
+		super.readyInit(engine, playerID);
+		engine.blockColors = BLOCK_COLORS;
+		engine.numColors = 4;
+		dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
+		attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
+		defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
 		return false;
-	}
-
-	/*
-	 * ゲーム開始時の処理
-	 */
-	@Override
-	public void startGame(GameEngine engine, int playerID) {
-		engine.b2bEnable = false;
-		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.big = big[playerID];
-		engine.enableSE = enableSE[playerID];
-		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
-		engine.colorClearSize = big[playerID] ? 12 : 4;
-		engine.ignoreHidden = true;
-
-		engine.tspinAllowKick = false;
-		engine.tspinEnable = false;
-		engine.useAllSpinBonus = false;
 	}
 
 	@Override
@@ -1201,127 +773,12 @@ public class AvalancheVSSPFMode extends DummyMode {
 					}
 				}
 	}
-	/*
-	 * Hard dropしたときの処理
-	 */
-	@Override
-	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
-		engine.statistics.score += fall;
-	}
 
-	/*
-	 * Hard dropしたときの処理
-	 */
-	@Override
-	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {
-		engine.statistics.score += fall;
-	}
-
-	/*
-	 * Calculate score
-	 */
-	@Override
-	public void calcScore(GameEngine engine, int playerID, int avalanche) {
+	protected int ptsToOjama(GameEngine engine, int playerID, int pts, int rate)
+	{
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-
-		
-		if (big[playerID])
-			avalanche >>= 2;
-		// Line clear bonus
-		int pts = avalanche*10;
-		int ojamaNew = 0;
-		if (avalanche > 0) {
-			cleared[playerID] = true;
-			if (zenKeshi[playerID] && zenKeshiType[playerID] == ZENKESHI_MODE_ON)
-				ojamaNew += 30;
-			if (engine.field.isEmpty()) {
-				engine.playSE("bravo");
-				zenKeshi[playerID] = true;
-				engine.statistics.score += 2100;
-				score[playerID] += 2100;
-			}
-			else
-				zenKeshi[playerID] = false;
-
-			chain[playerID] = engine.chain;
-			chainDisplay[playerID] = 60;
-			engine.playSE("combo" + Math.min(chain[playerID], 20));
-			int multiplier = engine.field.colorClearExtraCount;
-			if (big[playerID])
-				multiplier >>= 2;
-			if (engine.field.colorsCleared > 1)
-				multiplier += (engine.field.colorsCleared-1)*2;
-			/*
-			if (multiplier < 0)
-				multiplier = 0;
-			if (chain == 0)
-				firstExtra = avalanche > engine.colorClearSize;
-			*/
-			if (!newChainPower[playerID])
-			{
-				if (chain[playerID] == 2)
-					multiplier += 8;
-				else if (chain[playerID] == 3)
-					multiplier += 16;
-				else if (chain[playerID] >= 4)
-					multiplier += 32*(chain[playerID]-3);
-			}
-			else
-			{
-				if (chain[playerID] > CHAIN_POWERS.length)
-					multiplier += CHAIN_POWERS[CHAIN_POWERS.length-1];
-				else
-					multiplier += CHAIN_POWERS[chain[playerID]-1];
-			}
-			/*
-			if (firstExtra)
-				multiplier++;
-			*/
-
-			if (multiplier > 999)
-				multiplier = 999;
-			if (multiplier < 1)
-				multiplier = 1;
-
-			lastscore[playerID] = pts;
-			lastmultiplier[playerID] = multiplier;
-			scgettime[playerID] = 25;
-			int ptsTotal = pts*multiplier;
-			score[playerID] += ptsTotal;
-
-			if (chain[playerID] >= rensaShibari[playerID])
-			{
-				//Add ojama
-				int rate = ojamaRate[playerID];
-				if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
-					rate >>= engine.statistics.time / (hurryupSeconds[playerID] * 60);
-				if (rate <= 0)
-					rate = 1;
-				ojamaNew += ((int) (ptsTotal * attackMultiplier[playerID] * defendMultiplier[enemyID])+rate-1)/rate;
-				ojamaSent[playerID] += ojamaNew;
-
-				if (ojamaCounterMode[playerID] != OJAMA_COUNTER_OFF)
-				{
-					if (ojama[playerID] > 0 && ojamaNew > 0)
-					{
-						int delta = Math.min(ojama[playerID], ojamaNew);
-						ojama[playerID] -= delta;
-						ojamaNew -= delta;
-					}
-					if (ojamaAdd[playerID] > 0 && ojamaNew > 0)
-					{
-						int delta = Math.min(ojamaAdd[playerID], ojamaNew);
-						ojamaAdd[playerID] -= delta;
-						ojamaNew -= delta;
-					}
-				}
-				if (ojamaNew > 0)
-					ojamaAdd[enemyID] += ojamaNew;
-			}
-		}
-		else if (!engine.field.canCascade())
-			cleared[playerID] = false;
+		return ((int) (pts * attackMultiplier[playerID] * defendMultiplier[enemyID])+rate-1)/rate;
 	}
 
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
@@ -1422,140 +879,13 @@ public class AvalancheVSSPFMode extends DummyMode {
 		return false;
 	}
 
-	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
-		engine.createFieldIfNeeded();
-		engine.field.reset();
-		engine.field.stringToField(propFeverMap[playerID].getProperty(
-				feverMapSubsets[playerID][engine.random.nextInt(feverMapSubsets[playerID].length)] +
-				"." + 4 + "colors." + chain + "chain"));
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
-		engine.field.setAllSkin(engine.getSkin());
-		engine.field.shuffleColors(BLOCK_COLORS, 4, engine.random);
-	}
-
-	/*
-	 * Called after every frame
-	 */
-	@Override
-	public void onLast(GameEngine engine, int playerID) {
-		if (scgettime[playerID] > 0)
-			scgettime[playerID]--;
-		if (zenKeshiDisplay[playerID] > 0)
-			zenKeshiDisplay[playerID]--;
-		if (chainDisplay[playerID] > 0)
-			chainDisplay[playerID]--;
-
-		int width = 6;
-		if (engine.field != null)
-			width = engine.field.getWidth()*6;
-		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
-		// せり上がりMeter
-		int value = ojama[playerID] * blockHeight / width;
-		if(ojama[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
-		else if(ojama[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-		else if(ojama[playerID] >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
-		if (value > engine.meterValue)
-			engine.meterValue++;
-		else if (value < engine.meterValue)
-			engine.meterValue--;
-
-		// 決着
-		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
-			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
-			if(p1Lose && p2Lose) {
-				// 引き分け
-				winnerID = -1;
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
-			} else if(p2Lose && !p1Lose) {
-				// 1P勝利
-				winnerID = 0;
-				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
-				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
-			} else if(p1Lose && !p2Lose) {
-				// 2P勝利
-				winnerID = 1;
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
-			}
-			if (p1Lose || p2Lose) {
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
-				owner.engine[0].resetStatc();
-				owner.engine[1].resetStatc();
-				owner.engine[0].statc[1] = 1;
-				owner.engine[1].statc[1] = 1;
-				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			}
-		}
-	}
-
-	@Override
-	public boolean onMove (GameEngine engine, int playerID) {
-		cleared[playerID] = false;
-		ojamaDrop[playerID] = false;
-		countdownDecremented[playerID] = false;
-		return false;
-	}
-
-	/*
-	 * Render results screen
-	 */
-	@Override
-	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 0, 1, "RESULT", EventReceiver.COLOR_ORANGE);
-		if(winnerID == -1) {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "DRAW", EventReceiver.COLOR_GREEN);
-		} else if(winnerID == playerID) {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "WIN!", EventReceiver.COLOR_YELLOW);
-		} else {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "LOSE", EventReceiver.COLOR_WHITE);
-		}
-
-		receiver.drawMenuFont(engine, playerID, 0, 3, "ATTACK", EventReceiver.COLOR_ORANGE);
-		String strScore = String.format("%10d", ojamaSent[playerID]);
-		receiver.drawMenuFont(engine, playerID, 0, 4, strScore);
-
-		receiver.drawMenuFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_ORANGE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID, 0, 6, strLines);
-
-		receiver.drawMenuFont(engine, playerID, 0, 7, "PIECE", EventReceiver.COLOR_ORANGE);
-		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-		receiver.drawMenuFont(engine, playerID, 0, 8, strPiece);
-
-		receiver.drawMenuFont(engine, playerID, 0, 9, "ATTACK/MIN", EventReceiver.COLOR_ORANGE);
-		float apm = (float)(ojamaSent[playerID] * 3600) / (float)(engine.statistics.time);
-		String strAPM = String.format("%10g", apm);
-		receiver.drawMenuFont(engine, playerID, 0, 10, strAPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 11, "LINE/MIN", EventReceiver.COLOR_ORANGE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID, 0, 12, strLPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 13, "PIECE/SEC", EventReceiver.COLOR_ORANGE);
-		String strPPS = String.format("%10g", engine.statistics.pps);
-		receiver.drawMenuFont(engine, playerID, 0, 14, strPPS);
-
-		receiver.drawMenuFont(engine, playerID, 0, 15, "TIME", EventReceiver.COLOR_ORANGE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(owner.engine[0].statistics.time));
-		receiver.drawMenuFont(engine, playerID, 0, 16, strTime);
-	}
-
 	/*
 	 * Called when saving replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		saveOtherSetting(engine, owner.replayProp);
-		savePreset(engine, owner.replayProp, -1 - playerID);
+		savePreset(engine, owner.replayProp, -1 - playerID, "spf");
 
 		if(useMap[playerID] && (fldBackup[playerID] != null)) {
 			saveMap(fldBackup[playerID], owner.replayProp, playerID);
