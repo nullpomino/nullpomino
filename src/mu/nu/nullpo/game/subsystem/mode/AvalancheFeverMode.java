@@ -296,7 +296,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 10, String.valueOf(zenKeshiCount));
 			
 			receiver.drawScoreFont(engine, playerID, 11, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 11, 13, String.valueOf(maxChain));
+			receiver.drawScoreFont(engine, playerID, 11, 13, String.valueOf(engine.statistics.maxChain));
 
 			receiver.drawScoreFont(engine, playerID, 11, 15, "OJAMA SENT", EventReceiver.COLOR_BLUE);
 			String strSent = String.valueOf(garbageSent);
@@ -465,7 +465,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		receiver.drawMenuFont(engine, playerID, 10-strZenKeshiBonus.length(), 7, strZenKeshiBonus, EventReceiver.COLOR_GREEN);
 		
 		receiver.drawMenuFont(engine, playerID,  0, 8, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-		String strMaxChain = String.format("%10d", maxChain);
+		String strMaxChain = String.format("%10d", engine.statistics.maxChain);
 		receiver.drawMenuFont(engine, playerID,  0, 9, strMaxChain);
 		String strMaxChainBonus = "+" + maxChainBonus;
 		receiver.drawMenuFont(engine, playerID, 10-strMaxChainBonus.length(), 10, strMaxChainBonus, EventReceiver.COLOR_GREEN);

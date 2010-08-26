@@ -337,7 +337,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 14, 10, String.valueOf(zenKeshiCount));
 			
 			receiver.drawScoreFont(engine, playerID, 14, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(maxChain));
+			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(engine.statistics.maxChain));
 			
 			if (dangerColumnShowX)
 				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "XX" : "X", EventReceiver.COLOR_RED);
@@ -454,7 +454,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			receiver.drawMenuFont(engine, playerID,  0, 7, "ZENKESHI", EventReceiver.COLOR_BLUE);
 			receiver.drawMenuFont(engine, playerID,  0, 8, String.format("%10d", zenKeshiCount));
 			receiver.drawMenuFont(engine, playerID,  0, 9, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID,  0, 10, String.format("%10d", maxChain));
+			receiver.drawMenuFont(engine, playerID,  0, 10, String.format("%10d", engine.statistics.maxChain));
 			if(rankingRank != -1) {
 				receiver.drawMenuFont(engine, playerID,  0, 11, "RANK", EventReceiver.COLOR_BLUE);
 				String strRank = String.format("%10d", rankingRank + 1);

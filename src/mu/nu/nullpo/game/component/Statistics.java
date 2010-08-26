@@ -197,9 +197,9 @@ public class Statistics implements Serializable {
 		totalB2BTSpin = 0;
 		totalHoldUsed = 0;
 		maxCombo = 0;
-		spl = 0f;
-		spm = 0f;
-		sps = 0f;
+		spl = 0.0;
+		spm = 0.0;
+		sps = 0.0;
 		lpm = 0f;
 		lps = 0f;
 		ppm = 0f;
@@ -259,12 +259,12 @@ public class Statistics implements Serializable {
 			spl = (double)(score) / (double)(lines);
 		}
 		if(time > 0) {
-			spm = (double)(score * 3600) / (double)(time);
-			sps = (double)(score * 60) / (double)(time);
-			lpm = (float)(lines * 3600) / (float)(time);
-			lps = (float)(lines * 60) / (float)(time);
-			ppm = (float)(totalPieceLocked * 3600) / (float)(time);
-			pps = (float)(totalPieceLocked * 60) / (float)(time);
+			spm = (double)(score * 3600.0) / (double)(time);
+			sps = (double)(score * 60.0) / (double)(time);
+			lpm = (float)(lines * 3600f) / (float)(time);
+			lps = (float)(lines * 60f) / (float)(time);
+			ppm = (float)(totalPieceLocked * 3600f) / (float)(time);
+			pps = (float)(totalPieceLocked * 60f) / (float)(time);
 		}
 	}
 

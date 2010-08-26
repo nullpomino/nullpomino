@@ -97,9 +97,6 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** Number of all clears */
 	protected int zenKeshiCount;
 	
-	/** Max chain */
-	protected int maxChain;
-	
 	/** Score before adding zenkeshi bonus and max chain bonus */
 	protected int scoreBeforeBonus;
 	
@@ -157,7 +154,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		//firstExtra = false;
 		
 		zenKeshiCount = 0;
-		maxChain = 0;
+		engine.statistics.maxChain = 0;
 		scoreBeforeBonus = 0;
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
@@ -216,7 +213,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		toNextLevel = blocksPerLevel;
 		
 		zenKeshiCount = 0;
-		maxChain = 0;
+		engine.statistics.maxChain = 0;
 		scoreBeforeBonus = 0;
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
@@ -273,7 +270,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 			zenKeshiBonus = zenKeshiCount*(zenKeshiCount+1)*500;
 		else
 			zenKeshiBonus = zenKeshiCount*(zenKeshiCount+3)*250;
-		maxChainBonus = maxChain*maxChain*2000;
+		maxChainBonus = engine.statistics.maxChain*engine.statistics.maxChain*2000;
 		engine.statistics.score += zenKeshiBonus + maxChainBonus;
 	}
 
@@ -312,8 +309,8 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 				zenKeshi = false;
 
 			chain = engine.chain;
-			if (chain > maxChain)
-				maxChain = chain;
+			if (chain > engine.statistics.maxChain)
+				engine.statistics.maxChain = chain;
 			onClear(engine, playerID);
 			engine.playSE("combo" + Math.min(chain, 20));
 			
@@ -396,7 +393,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID, 10-strZenKeshiBonus.length(), 7, strZenKeshiBonus, EventReceiver.COLOR_GREEN);
 		
 		receiver.drawMenuFont(engine, playerID,  0, 8, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID,  0, 9, String.format("%10d", maxChain));
+		receiver.drawMenuFont(engine, playerID,  0, 9, String.format("%10d", engine.statistics.maxChain));
 		String strMaxChainBonus = "+" + maxChainBonus;
 		receiver.drawMenuFont(engine, playerID, 10-strMaxChainBonus.length(), 10, strMaxChainBonus, EventReceiver.COLOR_GREEN);
 
