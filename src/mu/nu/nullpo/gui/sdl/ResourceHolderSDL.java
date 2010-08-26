@@ -63,8 +63,8 @@ public class ResourceHolderSDL {
 	/** Blockの画像 */
 	public static SDLSurface imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊Blockの画像 */
-	public static SDLSurface imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
+	/** 特殊Blockの画像 - old */
+	//public static SDLSurface imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
 	/** 通常のフォント */
 	public static SDLSurface imgFont, imgFontSmall;
@@ -120,9 +120,11 @@ public class ResourceHolderSDL {
 		imgBlock = loadImage(skindir + "/graphics/block.png");
 		imgBlockSmall = loadImage(skindir + "/graphics/block_small.png");
 		imgBlockBig = loadImage(skindir + "/graphics/block_big.png");
-		imgSpBlock = loadImage(skindir + "/graphics/block_sp.png");
-		imgSpBlockSmall = loadImage(skindir + "/graphics/block_sp_small.png");
-		imgSpBlockBig = loadImage(skindir + "/graphics/block_sp_big.png");
+		/* old special blocks
+		 * imgSpBlock = loadImage(skindir + "/graphics/block_sp.png");
+		 * imgSpBlockSmall = loadImage(skindir + "/graphics/block_sp_small.png");
+		 * imgSpBlockBig = loadImage(skindir + "/graphics/block_sp_big.png");
+		 */
 		imgFont = loadImage(skindir + "/graphics/font.png");
 		imgFontSmall = loadImage(skindir + "/graphics/font_small.png");
 		imgSprite = loadImage(skindir + "/graphics/sprite.png");

@@ -433,24 +433,21 @@ public class RendererSwing extends EventReceiver {
 		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
 
 		int size = 16;
-		Image img = isSpecialBlocks ? ResourceHolderSwing.imgSpBlock : ResourceHolderSwing.imgBlock;
+		Image img = ResourceHolderSwing.imgBlock;
 		if(scale == 0.5f) {
 			size = 8;
-			img = isSpecialBlocks ? ResourceHolderSwing.imgSpBlockSmall : ResourceHolderSwing.imgBlockSmall;
+			img = ResourceHolderSwing.imgBlockSmall;
 		}
 		if(scale == 2.0f) {
 			size = 32;
-			img = isSpecialBlocks ? ResourceHolderSwing.imgSpBlockBig : ResourceHolderSwing.imgBlockBig;
+			img = ResourceHolderSwing.imgBlockBig;
 		}
 
 		int sx = color * size;
 		if(bone) sx += 9 * size;
 		int sy = skin * size;
 
-		if(isSpecialBlocks) {
-			sx = (color - Block.BLOCK_COLOR_COUNT) * size;
-			sy = 0;
-		}
+		if(isSpecialBlocks) sx = ((color - Block.BLOCK_COLOR_COUNT) + 18) * size;
 
 		int imageWidth = img.getWidth(null);
 		if((sx >= imageWidth) && (imageWidth != -1)) sx = 0;

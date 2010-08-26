@@ -51,8 +51,8 @@ public class ResourceHolderSwing {
 	/** Blockの画像 */
 	public static Image imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊Blockの画像 */
-	public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
+	/** 特殊Blockの画像 - old */
+	//public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
 	/** 通常のフォント */
 	public static Image imgFont, imgFontSmall;
@@ -79,9 +79,11 @@ public class ResourceHolderSwing {
 		imgBlock = loadImage(getURL(skindir + "/graphics/block.png"));
 		imgBlockSmall = loadImage(getURL(skindir + "/graphics/block_small.png"));
 		imgBlockBig = loadImage(getURL(skindir + "/graphics/block_big.png"));
-		imgSpBlock = loadImage(getURL(skindir + "/graphics/block_sp.png"));
-		imgSpBlockSmall = loadImage(getURL(skindir + "/graphics/block_sp_small.png"));
-		imgSpBlockBig = loadImage(getURL(skindir + "/graphics/block_sp_big.png"));
+		/* old special blocks
+		 * imgSpBlock = loadImage(getURL(skindir + "/graphics/block_sp.png"));
+		 * imgSpBlockSmall = loadImage(getURL(skindir + "/graphics/block_sp_small.png"));
+		 * imgSpBlockBig = loadImage(getURL(skindir + "/graphics/block_sp_big.png"));
+		 */
 		imgFont = loadImage(getURL(skindir + "/graphics/font.png"));
 		imgFontSmall = loadImage(getURL(skindir + "/graphics/font_small.png"));
 		imgFrame = loadImage(getURL(skindir + "/graphics/frame.png"));

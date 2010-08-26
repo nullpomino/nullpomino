@@ -419,24 +419,21 @@ public class RendererSlick extends EventReceiver {
 		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
 
 		int size = 16;
-		Image img = isSpecialBlocks ? ResourceHolder.imgSpBlock : ResourceHolder.imgBlock;
+		Image img = ResourceHolder.imgBlock;
 		if(scale == 0.5f) {
 			size = 8;
-			img = isSpecialBlocks ? ResourceHolder.imgSpBlockSmall : ResourceHolder.imgBlockSmall;
+			img = ResourceHolder.imgBlockSmall;
 		}
 		if(scale == 2.0f) {
 			size = 32;
-			img = isSpecialBlocks ? ResourceHolder.imgSpBlockBig : ResourceHolder.imgBlockBig;
+			img = ResourceHolder.imgBlockBig;
 		}
 
 		int sx = color * size;
 		if(bone) sx += 9 * size;
 		int sy = skin * size;
 
-		if(isSpecialBlocks) {
-			sx = (color - Block.BLOCK_COLOR_COUNT) * size;
-			sy = 0;
-		}
+		if(isSpecialBlocks) sx = ((color - Block.BLOCK_COLOR_COUNT) + 18) * size;
 
 		int imageWidth = img.getWidth();
 		if((sx >= imageWidth) && (imageWidth != -1)) sx = 0;
