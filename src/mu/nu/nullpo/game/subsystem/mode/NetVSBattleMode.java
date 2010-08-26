@@ -1843,33 +1843,14 @@ public class NetVSBattleMode extends NetDummyMode {
 			receiver.drawMenuFont(engine, playerID, 0, 1, "PRACTICE", EventReceiver.COLOR_PINK);
 		}
 
-		receiver.drawMenuFont(engine, playerID, 0, 3, "ATTACK", EventReceiver.COLOR_ORANGE);
-		String strScore = String.format("%10g", (float)garbageSent[playerID] / GARBAGE_DENOMINATOR);
-		receiver.drawMenuFont(engine, playerID, 0, 4, strScore);
-
-		receiver.drawMenuFont(engine, playerID, 0, 5, "LINE", EventReceiver.COLOR_ORANGE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID, 0, 6, strLines);
-
-		receiver.drawMenuFont(engine, playerID, 0, 7, "PIECE", EventReceiver.COLOR_ORANGE);
-		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-		receiver.drawMenuFont(engine, playerID, 0, 8, strPiece);
-
-		receiver.drawMenuFont(engine, playerID, 0, 9, "ATTACK/MIN", EventReceiver.COLOR_ORANGE);
-		String strAPM = String.format("%10g", playerAPM);
-		receiver.drawMenuFont(engine, playerID, 0, 10, strAPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 11, "LINE/MIN", EventReceiver.COLOR_ORANGE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID, 0, 12, strLPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 13, "PIECE/SEC", EventReceiver.COLOR_ORANGE);
-		String strPPS = String.format("%10g", engine.statistics.pps);
-		receiver.drawMenuFont(engine, playerID, 0, 14, strPPS);
-
-		receiver.drawMenuFont(engine, playerID, 0, 15, "TIME", EventReceiver.COLOR_ORANGE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID, 0, 16, strTime);
+		drawResult(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,
+				"ATTACK", String.format("%10g", (float)garbageSent[playerID] / GARBAGE_DENOMINATOR),
+				"LINE", String.format("%10d", engine.statistics.lines),
+				"PIECE", String.format("%10d", engine.statistics.totalPieceLocked),
+				"ATTACK/MIN", String.format("%10g", playerAPM), 
+				"LINE/MIN", String.format("%10g", engine.statistics.lpm),
+				"PIECE/SEC", String.format("%10g", engine.statistics.pps),
+				"TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time)));
 
 		if(!isNetGameActive && (playerSeatNumber >= 0) && (playerID == 0)) {
 			receiver.drawMenuFont(engine, playerID, 2, 18, "PUSH A", EventReceiver.COLOR_RED);

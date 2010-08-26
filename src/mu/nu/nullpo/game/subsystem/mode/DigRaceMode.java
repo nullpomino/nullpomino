@@ -407,31 +407,9 @@ public class DigRaceMode extends DummyMode {
 	public void renderResult(GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
-		receiver.drawMenuFont(engine, playerID,  0, 3, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID,  0, 4, strLines);
-
-		receiver.drawMenuFont(engine, playerID,  0, 5, "PIECE", EventReceiver.COLOR_BLUE);
-		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-		receiver.drawMenuFont(engine, playerID,  0, 6, strPiece);
-
-		receiver.drawMenuFont(engine, playerID,  0, 7, "TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 8, strTime);
-
-		receiver.drawMenuFont(engine, playerID,  0, 9, "LINE/MIN", EventReceiver.COLOR_BLUE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID,  0, 10, strLPM);
-
-		receiver.drawMenuFont(engine, playerID,  0, 11, "PIECE/SEC", EventReceiver.COLOR_BLUE);
-		String strPPS = String.format("%10g", engine.statistics.pps);
-		receiver.drawMenuFont(engine, playerID,  0, 12, strPPS);
-
-		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 13, "RANK", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 14, strRank);
-		}
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
+				STAT_LINES, STAT_PIECE, STAT_TIME, STAT_LPM, STAT_PPS);
+		drawResultRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 
 	/*

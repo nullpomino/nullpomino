@@ -669,43 +669,9 @@ public class ScoreRaceMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 0, 0, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID, 0, 1, strScore);
-
-		receiver.drawMenuFont(engine, playerID, 0, 2, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID, 0, 3, strLines);
-
-		receiver.drawMenuFont(engine, playerID, 0, 4, "TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID, 0, 5, strTime);
-
-		receiver.drawMenuFont(engine, playerID, 0, 6, "PIECE", EventReceiver.COLOR_BLUE);
-		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-		receiver.drawMenuFont(engine, playerID, 0, 7, strPiece);
-
-		receiver.drawMenuFont(engine, playerID, 0, 8, "SCORE/LINE", EventReceiver.COLOR_BLUE);
-		String strSPL = String.format("%10g", engine.statistics.spl);
-		receiver.drawMenuFont(engine, playerID, 0, 9, strSPL);
-
-		receiver.drawMenuFont(engine, playerID, 0, 10, "SCORE/MIN", EventReceiver.COLOR_BLUE);
-		String strSPM = String.format("%10g", engine.statistics.spm);
-		receiver.drawMenuFont(engine, playerID, 0, 11, strSPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 12, "LINE/MIN", EventReceiver.COLOR_BLUE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID, 0, 13, strLPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 14, "PIECE/SEC", EventReceiver.COLOR_BLUE);
-		String strPPS = String.format("%10g", engine.statistics.pps);
-		receiver.drawMenuFont(engine, playerID, 0, 15, strPPS);
-
-		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 16, "RANK", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 17, strRank);
-		}
+		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
+				STAT_SCORE, STAT_LINES, STAT_TIME, STAT_PIECE, STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
+		drawResultRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 
 	/*

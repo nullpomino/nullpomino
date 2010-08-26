@@ -976,33 +976,12 @@ public class PhantomManiaMode extends DummyMode {
 			String strGrade = String.format("%10s", tableGradeName[grade]);
 			receiver.drawMenuFont(engine, playerID, 0, 3, strGrade, gcolor);
 
-			receiver.drawMenuFont(engine, playerID, 0, 4, "SCORE", EventReceiver.COLOR_BLUE);
-			String strScore = String.format("%10d", engine.statistics.score);
-			receiver.drawMenuFont(engine, playerID, 0, 5, strScore);
-
-			receiver.drawMenuFont(engine, playerID, 0, 6, "LINE", EventReceiver.COLOR_BLUE);
-			String strLines = String.format("%10d", engine.statistics.lines);
-			receiver.drawMenuFont(engine, playerID, 0, 7, strLines);
-
-			receiver.drawMenuFont(engine, playerID, 0, 8, "LEVEL", EventReceiver.COLOR_BLUE);
-			String strLevel = String.format("%10d", engine.statistics.level);
-			receiver.drawMenuFont(engine, playerID, 0, 9, strLevel);
-
-			receiver.drawMenuFont(engine, playerID, 0, 10, "TIME", EventReceiver.COLOR_BLUE);
-			String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-			receiver.drawMenuFont(engine, playerID, 0, 11, strTime);
-
-			if(rankingRank != -1) {
-				receiver.drawMenuFont(engine, playerID, 0, 12, "RANK", EventReceiver.COLOR_BLUE);
-				String strRank = String.format("%10d", rankingRank + 1);
-				receiver.drawMenuFont(engine, playerID, 0, 13, strRank);
-			}
-
-			if(secretGrade > 4)
-			{
-				receiver.drawMenuFont(engine, playerID,  0, 15, "S. GRADE", EventReceiver.COLOR_BLUE);
-				String strRank = String.format("%10s", tableSecretGradeName[secretGrade-1]);
-				receiver.drawMenuFont(engine, playerID,  0, 16, strRank);
+			drawResultStats(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE,
+					STAT_SCORE, STAT_LINES, STAT_LEVEL_MANIA, STAT_TIME);
+			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
+			if(secretGrade > 4) {
+				drawResult(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE,
+						"S. GRADE", String.format("%10s", tableSecretGradeName[secretGrade-1]));
 			}
 		} else if(engine.statc[1] == 1) {
 			receiver.drawMenuFont(engine, playerID, 0, 2, "SECTION", EventReceiver.COLOR_BLUE);
@@ -1026,21 +1005,8 @@ public class PhantomManiaMode extends DummyMode {
 			if(medalRO >= 1) receiver.drawMenuFont(engine, playerID, 5, 5, "SK", getMedalFontColor(medalRO));
 			if(medalCO >= 1) receiver.drawMenuFont(engine, playerID, 8, 5, "CO", getMedalFontColor(medalCO));
 
-			receiver.drawMenuFont(engine, playerID, 0, 6, "LINE/MIN", EventReceiver.COLOR_BLUE);
-			String strLPM = String.format("%10g", engine.statistics.lpm);
-			receiver.drawMenuFont(engine, playerID, 0, 7, strLPM);
-
-			receiver.drawMenuFont(engine, playerID, 0, 8, "SCORE/MIN", EventReceiver.COLOR_BLUE);
-			String strSPM = String.format("%10g", engine.statistics.spm);
-			receiver.drawMenuFont(engine, playerID, 0, 9, strSPM);
-
-			receiver.drawMenuFont(engine, playerID, 0, 10, "PIECE", EventReceiver.COLOR_BLUE);
-			String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-			receiver.drawMenuFont(engine, playerID, 0, 11, strPiece);
-
-			receiver.drawMenuFont(engine, playerID, 0, 12, "PIECE/SEC", EventReceiver.COLOR_BLUE);
-			String strPPS = String.format("%10g", engine.statistics.pps);
-			receiver.drawMenuFont(engine, playerID, 0, 13, strPPS);
+			drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
+					STAT_LPM, STAT_SPM, STAT_PIECE, STAT_PPS);
 		}
 	}
 

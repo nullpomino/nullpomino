@@ -850,31 +850,9 @@ public class TimeAttackMode extends DummyMode {
 			String strLines = String.format("%10d", norm);
 			receiver.drawMenuFont(engine, playerID,  0, 3, strLines, gcolor);
 
-			receiver.drawMenuFont(engine, playerID,  0, 4, "LEVEL", EventReceiver.COLOR_BLUE);
-			String strLevel = String.format("%10d", engine.statistics.level + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 5, strLevel);
-
-			receiver.drawMenuFont(engine, playerID,  0, 6, "TIME", EventReceiver.COLOR_BLUE);
-			String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-			receiver.drawMenuFont(engine, playerID,  0, 7, strTime);
-
-			receiver.drawMenuFont(engine, playerID,  0, 8, "PIECE", EventReceiver.COLOR_BLUE);
-			String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-			receiver.drawMenuFont(engine, playerID,  0, 9, strPiece);
-
-			receiver.drawMenuFont(engine, playerID, 0, 10, "LINE/MIN", EventReceiver.COLOR_BLUE);
-			String strLPM = String.format("%10g", engine.statistics.lpm);
-			receiver.drawMenuFont(engine, playerID, 0, 11, strLPM);
-
-			receiver.drawMenuFont(engine, playerID, 0, 12, "PIECE/SEC", EventReceiver.COLOR_BLUE);
-			String strPPS = String.format("%10g", engine.statistics.pps);
-			receiver.drawMenuFont(engine, playerID, 0, 13, strPPS);
-
-			if(rankingRank != -1) {
-				receiver.drawMenuFont(engine, playerID, 0, 14, "RANK", EventReceiver.COLOR_BLUE);
-				String strRank = String.format("%10d", rankingRank + 1);
-				receiver.drawMenuFont(engine, playerID, 0, 15, strRank);
-			}
+			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
+					STAT_LEVEL, STAT_TIME, STAT_LPM, STAT_PPS);
+			drawResultRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, rankingRank);
 		} else if(engine.statc[1] == 1) {
 			receiver.drawMenuFont(engine, playerID, 0, 2, "SECTION", EventReceiver.COLOR_BLUE);
 

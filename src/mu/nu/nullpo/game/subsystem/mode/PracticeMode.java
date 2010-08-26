@@ -1428,38 +1428,11 @@ public class PracticeMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID,  0, 0, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID,  0, 1, strScore);
-
-		receiver.drawMenuFont(engine, playerID,  0, 2, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID,  0, 3, strLines);
-
-		receiver.drawMenuFont(engine, playerID,  0, 4, "LEVEL", EventReceiver.COLOR_BLUE);
-		String strLevel = String.format("%10d", engine.statistics.level + engine.statistics.levelDispAdd);
-		receiver.drawMenuFont(engine, playerID,  0, 5, strLevel);
-
-		receiver.drawMenuFont(engine, playerID,  0, 6, "TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 7, strTime);
-
-		receiver.drawMenuFont(engine, playerID,  0, 8, "SCORE/LINE", EventReceiver.COLOR_BLUE);
-		String strSPL = String.format("%10g", engine.statistics.spl);
-		receiver.drawMenuFont(engine, playerID,  0, 9, strSPL);
-
-		receiver.drawMenuFont(engine, playerID,  0, 10, "SCORE/MIN", EventReceiver.COLOR_BLUE);
-		String strSPM = String.format("%10g", engine.statistics.spm);
-		receiver.drawMenuFont(engine, playerID,  0, 11, strSPM);
-
-		receiver.drawMenuFont(engine, playerID,  0, 12, "LINE/MIN", EventReceiver.COLOR_BLUE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID,  0, 13, strLPM);
-
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
+				STAT_SCORE, STAT_LINES, STAT_LEVEL_ADD_DISP, STAT_TIME, STAT_SPL, STAT_SPM, STAT_LPM);
 		if(secretGrade > 0) {
-			receiver.drawMenuFont(engine, playerID, 0, 14, "S. GRADE", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10s", tableSecretGradeName[secretGrade-1]);
-			receiver.drawMenuFont(engine, playerID, 0, 15, strRank);
+			drawResult(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE,
+					"S. GRADE", String.format("%10s", tableSecretGradeName[secretGrade-1]));
 		}
 	}
 

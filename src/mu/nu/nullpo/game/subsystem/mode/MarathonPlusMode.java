@@ -738,49 +738,20 @@ public class MarathonPlusMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID,  0, 0, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID,  0, 1, strScore);
-
-		receiver.drawMenuFont(engine, playerID,  0, 2, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID,  0, 3, strLines);
-
+		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, STAT_SCORE, STAT_LINES);
 		if(engine.statistics.level >= 20) {
-			receiver.drawMenuFont(engine, playerID,  0, 4, "BONUS LINE", EventReceiver.COLOR_BLUE);
-			String strBonusLines = String.format("%10d", bonusLines);
-			receiver.drawMenuFont(engine, playerID,  0, 5, strBonusLines);
+			drawResult(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
+					"BONUS LINE", String.format("%10d", bonusLines));
 		} else {
-			receiver.drawMenuFont(engine, playerID,  0, 4, "LEVEL", EventReceiver.COLOR_BLUE);
-			String strLevel = String.format("%10d", engine.statistics.level + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 5, strLevel);
+			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE, STAT_LEVEL);
 		}
+		drawResult(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
+				"TOTAL TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time)),
+				"LV20- TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time - bonusTime)),
+				"BONUS TIME", String.format("%10s", GeneralUtil.getTime(bonusTime)));
 
-		receiver.drawMenuFont(engine, playerID,  0, 6, "TOTAL TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 7, strTime);
-
-		receiver.drawMenuFont(engine, playerID,  0, 8, "LV20- TIME", EventReceiver.COLOR_BLUE);
-		String strSub20Time = String.format("%10s", GeneralUtil.getTime(engine.statistics.time - bonusTime));
-		receiver.drawMenuFont(engine, playerID,  0, 9, strSub20Time);
-
-		receiver.drawMenuFont(engine, playerID,  0, 10, "BONUS TIME", EventReceiver.COLOR_BLUE);
-		String strBonusTime = String.format("%10s", GeneralUtil.getTime(bonusTime));
-		receiver.drawMenuFont(engine, playerID,  0, 11, strBonusTime);
-
-		receiver.drawMenuFont(engine, playerID,  0, 12, "SCORE/LINE", EventReceiver.COLOR_BLUE);
-		String strSPL = String.format("%10g", engine.statistics.spl);
-		receiver.drawMenuFont(engine, playerID,  0, 13, strSPL);
-
-		receiver.drawMenuFont(engine, playerID,  0, 14, "LINE/MIN", EventReceiver.COLOR_BLUE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID,  0, 15, strLPM);
-
-		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 16, "RANK", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 17, strRank);
-		}
+		drawResultStats(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, STAT_SPL, STAT_LPM);
+		drawResultRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 
 	/*

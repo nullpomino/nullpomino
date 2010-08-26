@@ -445,27 +445,9 @@ public class RetroManiaMode extends DummyMode {
 	public void renderResult(GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
-		receiver.drawMenuFont(engine, playerID,  0, 3, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID,  0, 4, strScore);
-
-		receiver.drawMenuFont(engine, playerID,  0, 5, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID,  0, 6, strLines);
-
-		receiver.drawMenuFont(engine, playerID,  0, 7, "LEVEL", EventReceiver.COLOR_BLUE);
-		String strLevel = String.format("%10d", engine.statistics.level + 1);
-		receiver.drawMenuFont(engine, playerID,  0, 8, strLevel);
-
-		receiver.drawMenuFont(engine, playerID,  0, 9, "TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 10, strTime);
-
-		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 11, "RANK", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 12, strRank);
-		}
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
+				STAT_SCORE, STAT_LINES, STAT_LEVEL, STAT_TIME);
+		drawResultRank(engine, playerID, receiver, 11, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 
 	/**

@@ -701,41 +701,20 @@ public class UltraMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 0, 0, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID, 0, 1, strScore);
+		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, STAT_SCORE);
 		if(rankingRank[0] != -1) {
 			String strRank = String.format("RANK %d", rankingRank[0] + 1);
 			receiver.drawMenuFont(engine, playerID, 4, 2, strRank, EventReceiver.COLOR_ORANGE);
 		}
 
-		receiver.drawMenuFont(engine, playerID, 0, 3, "LINE", EventReceiver.COLOR_BLUE);
-		String strLines = String.format("%10d", engine.statistics.lines);
-		receiver.drawMenuFont(engine, playerID, 0, 4, strLines);
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE, STAT_LINES);
 		if(rankingRank[1] != -1) {
 			String strRank = String.format("RANK %d", rankingRank[1] + 1);
 			receiver.drawMenuFont(engine, playerID, 4, 5, strRank, EventReceiver.COLOR_ORANGE);
 		}
 
-		receiver.drawMenuFont(engine, playerID,  0, 6, "PIECE", EventReceiver.COLOR_BLUE);
-		String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-		receiver.drawMenuFont(engine, playerID,  0, 7, strPiece);
-
-		receiver.drawMenuFont(engine, playerID, 0, 8, "SCORE/LINE", EventReceiver.COLOR_BLUE);
-		String strSPL = String.format("%10g", engine.statistics.spl);
-		receiver.drawMenuFont(engine, playerID, 0, 9, strSPL);
-
-		receiver.drawMenuFont(engine, playerID, 0, 10, "SCORE/MIN", EventReceiver.COLOR_BLUE);
-		String strSPM = String.format("%10g", engine.statistics.spm);
-		receiver.drawMenuFont(engine, playerID, 0, 11, strSPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 12, "LINE/MIN", EventReceiver.COLOR_BLUE);
-		String strLPM = String.format("%10g", engine.statistics.lpm);
-		receiver.drawMenuFont(engine, playerID, 0, 13, strLPM);
-
-		receiver.drawMenuFont(engine, playerID, 0, 14, "PIECE/SEC", EventReceiver.COLOR_BLUE);
-		String strPPS = String.format("%10g", engine.statistics.pps);
-		receiver.drawMenuFont(engine, playerID, 0, 15, strPPS);
+		drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
+				STAT_PIECE, STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
 	}
 
 	/*

@@ -1544,27 +1544,11 @@ public class GemManiaMode extends DummyMode {
 			String strStage = String.format("%10s", getStageName(stage));
 			receiver.drawMenuFont(engine, playerID,  0, 3, strStage, gcolor);
 
-			receiver.drawMenuFont(engine, playerID,  0, 4, "CLEAR", EventReceiver.COLOR_PINK);
-			String strClear = String.format("%9d%%", clearper);
-			receiver.drawMenuFont(engine, playerID,  0, 5, strClear);
-
-			receiver.drawMenuFont(engine, playerID,  0, 6, "LINE", EventReceiver.COLOR_PINK);
-			String strLines = String.format("%10d", engine.statistics.lines);
-			receiver.drawMenuFont(engine, playerID,  0, 7, strLines);
-
-			receiver.drawMenuFont(engine, playerID,  0, 8, "PIECE", EventReceiver.COLOR_PINK);
-			String strPiece = String.format("%10d", engine.statistics.totalPieceLocked);
-			receiver.drawMenuFont(engine, playerID,  0, 9, strPiece);
-
-			receiver.drawMenuFont(engine, playerID,  0, 10, "TIME", EventReceiver.COLOR_PINK);
-			String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-			receiver.drawMenuFont(engine, playerID,  0, 11, strTime);
-
-			if(rankingRank != -1) {
-				receiver.drawMenuFont(engine, playerID, 0, 12, "RANK", EventReceiver.COLOR_PINK);
-				String strRank = String.format("%10d", rankingRank + 1);
-				receiver.drawMenuFont(engine, playerID, 0, 13, strRank);
-			}
+			drawResult(engine, playerID, receiver, 4, EventReceiver.COLOR_PINK,
+					"CLEAR", String.format("%9d%%", clearper));
+			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_PINK,
+					STAT_LINES, STAT_PIECE, STAT_TIME);
+			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_PINK, rankingRank);
 		} else if(engine.statc[1] == 1) {
 			receiver.drawMenuFont(engine, playerID, 0, 2, "SECTION1/2", EventReceiver.COLOR_PINK);
 

@@ -823,7 +823,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		drawResult(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,
 				"ATTACK", String.format("%10d", ojamaSent[playerID]),
 				"CLEARED", String.format("%10d", engine.statistics.lines),
-				"MAX CHAIN", String.format("%10d", engine.statistics.lines),
+				"MAX CHAIN", String.format("%10d", engine.statistics.maxChain),
 				"PIECE", String.format("%10d", engine.statistics.totalPieceLocked),
 				"ATTACK/MIN", String.format("%10g", apm), 
 				"PIECE/SEC", String.format("%10g", engine.statistics.pps),

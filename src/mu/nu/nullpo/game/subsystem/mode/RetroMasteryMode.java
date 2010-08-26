@@ -496,9 +496,7 @@ public class RetroMasteryMode extends DummyMode {
 	public void renderResult(GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
-		receiver.drawMenuFont(engine, playerID,  0, 3, "SCORE", EventReceiver.COLOR_BLUE);
-		String strScore = String.format("%10d", engine.statistics.score);
-		receiver.drawMenuFont(engine, playerID,  0, 4, strScore);
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE, STAT_SCORE);
 
 		receiver.drawMenuFont(engine, playerID,  0, 5, "LINES", EventReceiver.COLOR_BLUE);
 		String strLines = String.format("%10d", loons);
@@ -506,23 +504,11 @@ public class RetroMasteryMode extends DummyMode {
 		String strFour = String.format("%10s", String.format("+%d", engine.statistics.totalFour));
 		receiver.drawMenuFont(engine, playerID,  0, 7, strFour);
 
-		receiver.drawMenuFont(engine, playerID,  0, 8, "LEVEL", EventReceiver.COLOR_BLUE);
-		String strLevel = String.format("%10s", String.format("%02d", engine.statistics.level));
-		receiver.drawMenuFont(engine, playerID,  0, 9, strLevel);
-
-		receiver.drawMenuFont(engine, playerID,  0, 10, "TIME", EventReceiver.COLOR_BLUE);
-		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
-		receiver.drawMenuFont(engine, playerID,  0, 11, strTime);
-
-		receiver.drawMenuFont(engine, playerID,  0, 12, "EFFICIENCY", EventReceiver.COLOR_BLUE);
-		String strEff = String.format("%5.3f", efficiency);
-		receiver.drawMenuFont(engine, playerID,  5, 13, strEff);
-
-		if(rankingRank != -1) {
-			receiver.drawMenuFont(engine, playerID,  0, 14, "RANK", EventReceiver.COLOR_BLUE);
-			String strRank = String.format("%10d", rankingRank + 1);
-			receiver.drawMenuFont(engine, playerID,  0, 15, strRank);
-		}
+		drawResultStats(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE,
+				STAT_LEVEL, STAT_TIME);
+		drawResult(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE,
+				"EFFICIENCY", String.format("%5.3f", efficiency));
+		drawResultRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 
 	/**
