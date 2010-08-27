@@ -1,5 +1,4 @@
 #NullpoMino RuleData
-#Sun Aug 22 20:00:21 CDT 2010
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.AvalancheWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -45,14 +44,14 @@
 0.ruleopt.pieceOffsetY.6.0=1
 0.ruleopt.areCancelRotate=false
 0.ruleopt.rotateInitialLimit=false
-0.ruleopt.lockresetRotate=false
+0.ruleopt.lockresetRotate=true
 0.ruleopt.pieceOffsetY.2.3=0
 0.ruleopt.pieceOffsetY.2.2=0
 0.ruleopt.pieceOffsetY.2.1=0
 0.ruleopt.pieceOffsetY.2.0=0
 0.ruleopt.holdInitialLimit=false
 0.ruleopt.harddropLimit=true
-0.ruleopt.lockresetLimitRotate=-1
+0.ruleopt.lockresetLimitRotate=8
 0.ruleopt.nextDisplay=2
 0.ruleopt.pieceOffsetX.10.3=0
 0.ruleopt.pieceOffsetX.10.2=0
@@ -237,7 +236,7 @@
 0.ruleopt.pieceOffsetX.8.2=-1
 0.ruleopt.pieceOffsetX.8.1=-1
 0.ruleopt.pieceOffsetX.8.0=0
-0.ruleopt.rotateMaxUpwardWallkick=1
+0.ruleopt.rotateMaxUpwardWallkick=-1
 0.ruleopt.pieceOffsetX.4.3=0
 0.ruleopt.pieceOffsetX.4.2=0
 0.ruleopt.pieceOffsetX.4.1=0
@@ -260,7 +259,7 @@
 0.ruleopt.rotateButtonAllowDouble=true
 0.ruleopt.pieceSpawnY.9.3=0
 0.ruleopt.pieceSpawnY.9.2=0
-0.ruleopt.lockresetLimitShareCount=true
+0.ruleopt.lockresetLimitShareCount=false
 0.ruleopt.pieceSpawnY.9.1=0
 0.ruleopt.pieceSpawnY.9.0=0
 0.ruleopt.pieceSpawnY.5.3=0
@@ -273,7 +272,7 @@
 0.ruleopt.pieceSpawnY.1.0=0
 0.ruleopt.shiftLockEnable=false
 0.ruleopt.pieceDefaultDirection.10=2
-0.ruleopt.lockresetLimitOver=0
+0.ruleopt.lockresetLimitOver=1
 0.ruleopt.fieldHiddenHeight=1
 0.ruleopt.pieceSpawnX.9.3=0
 0.ruleopt.pieceSpawnX.9.2=0
@@ -331,7 +330,7 @@
 0.ruleopt.pieceOffsetX.7.1=0
 0.ruleopt.pieceOffsetX.7.0=0
 0.ruleopt.pieceOffsetX.3.3=1
-0.ruleopt.dasDelay=1
+0.ruleopt.dasDelay=2
 0.ruleopt.pieceOffsetX.3.2=0
 0.ruleopt.pieceOffsetX.3.1=0
 0.ruleopt.pieceOffsetX.3.0=0

@@ -48,6 +48,16 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		4, 12, 24, 32, 48, 96, 160, 240, 320, 400, 500, 600, 700, 800, 900, 999
 	};
 	
+	public int[] tableSpeedChangeLevel =
+	{
+		80, 90, 96, 97, Integer.MAX_VALUE
+	};
+
+	public int[] tableSpeedValue =
+	{
+		30, 45, 120, 480, -1
+	};
+	
 	/** Block colors */
 	public static final int[] BLOCK_COLORS =
 	{
@@ -63,6 +73,8 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	{
 		"Fever", "15th", "15thDS", "7", "Poochy7"
 	};
+	
+	public static final int DAS = 10;
 
 	/** GameManager object (Manages entire game status) */
 	protected GameManager owner;
@@ -109,7 +121,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** Current level */
 	protected int level;
 	
-	/** Current level */
+	/** Maximum level */
 	protected int maxLevel;
 	
 	/** Blocks cleared needed to reach next level */
@@ -120,9 +132,12 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	
 	/** True to use slower falling animations, false to use faster */
 	protected boolean cascadeSlow;
-	
+
 	/** 1 ojama is generated per this many points. */
 	protected int ojamaRate;
+
+	/** Index of current speed value in table */
+	protected int speedIndex;
 
 	public Avalanche1PDummyMode()
 	{
@@ -150,6 +165,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		lastmultiplier = 0;
 		scgettime = 0;
 
+		speedIndex = 0;
 		outlinetype = 0;
 		
 		zenKeshi = false;
@@ -193,8 +209,15 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	 * @param engine GameEngine
 	 */
 	public void setSpeed(GameEngine engine) {
-		engine.speed.gravity = 1;
-		engine.speed.denominator = Math.max(41-level, 2);
+		if (level <= 40) {
+			engine.speed.gravity = 1;
+			engine.speed.denominator = Math.max(43 - level - ((level % 10) << 1), 2);
+		} else {
+			engine.speed.denominator = 60;
+			while (level >= tableSpeedChangeLevel[speedIndex])
+				speedIndex++;
+			engine.speed.gravity = tableSpeedValue[speedIndex];
+		}
 	}
 
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -239,10 +262,17 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 
 		engine.speed.are = 30;
 		engine.speed.areLine = 30;
-		engine.speed.das = 10;
+		engine.speed.das = DAS;
 		engine.speed.lockDelay = 60;
 
 		setSpeed(engine);
+	}
+	
+	@Override
+	public boolean onARE(GameEngine engine, int playerID) {
+		if (engine.dasCount > 0 && engine.dasCount < DAS)
+			engine.dasCount = DAS;
+		return false;
 	}
 
 	/*
