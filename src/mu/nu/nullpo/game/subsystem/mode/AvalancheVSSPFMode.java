@@ -177,6 +177,9 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 	
 	/** Flag set when counters have been decremented */
 	private boolean[] countdownDecremented;
+	
+	/** Flag set when cleared ojama have been turned into normal blocks */
+	private boolean[] ojamaChecked;
 
 	/*
 	 * Mode  name
@@ -199,6 +202,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		attackMultiplier = new double[MAX_PLAYERS];
 		defendMultiplier = new double[MAX_PLAYERS];
 		countdownDecremented = new boolean[MAX_PLAYERS];
+		ojamaChecked = new boolean[MAX_PLAYERS];
 	}
 
 	/**
@@ -263,6 +267,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		numColors[playerID] = 4;
 		ojamaHard[playerID] = 4;
 		countdownDecremented[playerID] = true;
+		ojamaChecked[playerID] = false;
 
 		if(engine.owner.replayMode == false) {
 			loadOtherSetting(engine, engine.owner.modeConfig);
@@ -572,6 +577,11 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		return false;
 	}
 
+	@Override
+	public void onClear (GameEngine engine, int playerID) {
+		ojamaChecked[playerID] = false;
+	}
+
 	/*
 	 * 設定画面の描画
 	 */
@@ -774,13 +784,37 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 				}
 	}
 
+	@Override
 	protected int ptsToOjama(GameEngine engine, int playerID, int pts, int rate)
 	{
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 		return ((int) (pts * attackMultiplier[playerID] * defendMultiplier[enemyID])+rate-1)/rate;
 	}
+	
+	@Override
+	public boolean onLineClear(GameEngine engine, int playerID) {
+		if (engine.field == null || ojamaChecked[playerID])
+			return false;
+		
+		ojamaChecked[playerID] = true;
+		//Turn cleared ojama into normal blocks
+		for (int x = 0; x < engine.field.getWidth(); x++)
+			for (int y = (-1* engine.field.getHiddenHeight()); y < engine.field.getHeight(); y++)
+			{
+				Block b = engine.field.getBlock(x, y);
+				if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) && b.hard < 4)
+				{
+					b.hard = 0;
+					b.color = b.secondaryColor;
+					b.countdown = 0;
+					b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
+				}
+			}
+		return false;
+	}
 
+	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
@@ -799,23 +833,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		if (engine.field == null)
 			return false;
 		
-		//Turn cleared ojama into normal blocks
 		boolean result = false;
-		for (int x = 0; x < engine.field.getWidth(); x++)
-			for (int y = (-1* engine.field.getHiddenHeight()); y < engine.field.getHeight(); y++)
-			{
-				Block b = engine.field.getBlock(x, y);
-				if (b.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) && b.hard < 4)
-				{
-					b.hard = 0;
-					b.color = b.secondaryColor;
-					b.countdown = 0;
-					b.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
-					result = true;
-				}
-			}
-		if (result)
-			return true;
 		//Decrement countdowns
 		if (!countdownDecremented[playerID])
 		{
