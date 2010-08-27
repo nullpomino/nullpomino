@@ -1428,7 +1428,7 @@ public class PracticeMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
+		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
 				STAT_SCORE, STAT_LINES, STAT_LEVEL_ADD_DISP, STAT_TIME, STAT_SPL, STAT_SPM, STAT_LPM);
 		if(secretGrade > 0) {
 			drawResult(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE,

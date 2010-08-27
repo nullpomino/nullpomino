@@ -976,7 +976,7 @@ public class PhantomManiaMode extends DummyMode {
 			String strGrade = String.format("%10s", tableGradeName[grade]);
 			receiver.drawMenuFont(engine, playerID, 0, 3, strGrade, gcolor);
 
-			drawResultStats(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE,
+			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
 					STAT_SCORE, STAT_LINES, STAT_LEVEL_MANIA, STAT_TIME);
 			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 			if(secretGrade > 4) {

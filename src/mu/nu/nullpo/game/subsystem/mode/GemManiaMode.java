@@ -1546,7 +1546,7 @@ public class GemManiaMode extends DummyMode {
 
 			drawResult(engine, playerID, receiver, 4, EventReceiver.COLOR_PINK,
 					"CLEAR", String.format("%9d%%", clearper));
-			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_PINK,
+			drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_PINK,
 					STAT_LINES, STAT_PIECE, STAT_TIME);
 			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_PINK, rankingRank);
 		} else if(engine.statc[1] == 1) {

@@ -1231,7 +1231,7 @@ public class VSBattleMode extends DummyMode {
 				STAT_LINES, STAT_PIECE);
 		drawResult(engine, playerID, receiver, 9, EventReceiver.COLOR_ORANGE,
 				"ATTACK/MIN", String.format("%10g", apm));
-		drawResultStats(engine, playerID, receiver, 11, EventReceiver.COLOR_BLUE,
+		drawResultStats(engine, playerID, receiver, 11, EventReceiver.COLOR_ORANGE,
 				STAT_LPM, STAT_PPS, STAT_TIME);
 	}
 
