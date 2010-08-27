@@ -726,7 +726,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.field.reset();
 		engine.field.stringToField(propFeverMap[playerID].getProperty(
 				feverMapSubsets[playerID][engine.random.nextInt(feverMapSubsets[playerID].length)] +
-				"." + 4 + "colors." + chain + "chain"));
+				"." + numColors[playerID] + "colors." + chain + "chain"));
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
@@ -734,7 +734,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 		engine.field.setAllSkin(engine.getSkin());
-		engine.field.shuffleColors(BLOCK_COLORS, 4, engine.random);
+		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], new Random(engine.random.nextLong()));
 	}
 
 	/*
@@ -803,6 +803,46 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			engine.meterValue++;
 		else if (value < engine.meterValue)
 			engine.meterValue--;
+	}
+
+	@Override
+	public void renderLast (GameEngine engine, int playerID) {
+		if (!owner.engine[playerID].gameActive)
+			return;
+		
+
+		int textHeight = 13;
+		if (engine.field != null)
+			textHeight = engine.field.getHeight()+1;
+		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
+			receiver.drawMenuFont(engine, playerID, chain[playerID] > 9 ? 0 : 1, textHeight,
+					chain[playerID] + " CHAIN!", getChainColor(playerID));
+		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
+			receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+	}
+	
+	protected int getChainColor (int playerID) {
+		if (chainDisplayType[playerID] == CHAIN_DISPLAY_PLAYER)
+			return (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		else if (chainDisplayType[playerID] == CHAIN_DISPLAY_SIZE)
+			return chain[playerID] >= rensaShibari[playerID] ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
+		else
+			return EventReceiver.COLOR_YELLOW;
+	}
+	
+	protected void drawX (GameEngine engine, int playerID) {
+		receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED);
+	}
+
+	protected void drawHardOjama (GameEngine engine, int playerID) {
+		if (engine.field != null)
+			for (int x = 0; x < engine.field.getWidth(); x++)
+				for (int y = 0; y < engine.field.getHeight(); y++)
+				{
+					int hard = engine.field.getBlock(x, y).hard;
+					if (hard > 0)
+						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
+				}
 	}
 
 	/*

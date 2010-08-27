@@ -340,7 +340,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(engine.statistics.maxChain));
 			
 			if (dangerColumnShowX)
-				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "XX" : "X", EventReceiver.COLOR_RED);
+				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
 
 			int textHeight = 13;
 			if (engine.field != null)

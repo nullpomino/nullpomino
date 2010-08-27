@@ -465,41 +465,29 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 
 		if (!owner.engine[playerID].gameActive)
 			return;
-		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
 		if (dangerColumnShowX[playerID])
-			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "XX" : "X", EventReceiver.COLOR_RED);
-		if (ojamaHard[playerID] > 0 && engine.field != null)
-			for (int x = 0; x < engine.field.getWidth(); x++)
-				for (int y = 0; y < engine.field.getHeight(); y++)
-				{
-					int hard = engine.field.getBlock(x, y).hard;
-					if (hard > 0)
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
-				}
-
-		int textHeight = 13;
-		if (engine.field != null)
-			textHeight = engine.field.getHeight()+1;
-		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
+			drawX(engine, playerID);
+		if (ojamaHard[playerID] > 0)
+			drawHardOjama(engine, playerID);
+		
+		super.renderLast(engine, playerID);
+	}
+	
+	@Override
+	protected int getChainColor (int playerID) {
+		if (chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE)
 		{
-			int color = EventReceiver.COLOR_YELLOW;
-			if (chainDisplayType[playerID] == CHAIN_DISPLAY_PLAYER)
-				color = playerColor;
-			else if (chainDisplayType[playerID] == CHAIN_DISPLAY_SIZE)
-				color = chain[playerID] >= rensaShibari[playerID] ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
-			else if (chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE)
-			{
-				if (chain[playerID] >= feverChainDisplay[playerID])
-					color = EventReceiver.COLOR_GREEN;
-				else if (chain[playerID] == feverChainDisplay[playerID]-2)
-					color = EventReceiver.COLOR_ORANGE;
-				else if (chain[playerID] < feverChainDisplay[playerID]-2)
-					color = EventReceiver.COLOR_RED;
-			}
-			receiver.drawMenuFont(engine, playerID, chain[playerID] > 9 ? 0 : 1, textHeight, chain[playerID] + " CHAIN!", color);
+			if (chain[playerID] >= feverChainDisplay[playerID])
+				return EventReceiver.COLOR_GREEN;
+			else if (chain[playerID] == feverChainDisplay[playerID]-2)
+				return EventReceiver.COLOR_ORANGE;
+			else if (chain[playerID] < feverChainDisplay[playerID]-2)
+				return EventReceiver.COLOR_RED;
+			else
+				return EventReceiver.COLOR_YELLOW;
 		}
-		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
-			receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+		else
+			return super.getChainColor(playerID);
 	}
 
 	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {

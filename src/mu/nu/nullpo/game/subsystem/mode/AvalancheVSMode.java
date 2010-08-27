@@ -680,30 +680,12 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%2d",(feverTime[playerID]+59)/60),
 					feverTime[playerID] < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
 		else if (dangerColumnShowX[playerID])
-			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "XX" : "X", EventReceiver.COLOR_RED);
-		if (ojamaHard[playerID] > 0 && engine.field != null)
-			for (int x = 0; x < engine.field.getWidth(); x++)
-				for (int y = 0; y < engine.field.getHeight(); y++)
-				{
-					int hard = engine.field.getBlock(x, y).hard;
-					if (hard > 0)
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
-				}
+			drawX(engine, playerID);
+		if (ojamaHard[playerID] > 0)
+			drawHardOjama(engine, playerID);
+		
+		super.renderLast(engine, playerID);
 
-		int textHeight = 13;
-		if (engine.field != null)
-			textHeight = engine.field.getHeight()+1;
-		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
-		{
-			int color = EventReceiver.COLOR_YELLOW;
-			if (chainDisplayType[playerID] == CHAIN_DISPLAY_PLAYER)
-				color = playerColor;
-			else if (chainDisplayType[playerID] == CHAIN_DISPLAY_SIZE)
-				color = chain[playerID] >= rensaShibari[playerID] ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
-			receiver.drawMenuFont(engine, playerID, chain[playerID] > 9 ? 0 : 1, textHeight, chain[playerID] + " CHAIN!", color);
-		}
-		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
-			receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 	}
 
 	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {

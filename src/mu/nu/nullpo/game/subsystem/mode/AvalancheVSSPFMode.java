@@ -741,24 +741,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 
 		if (!owner.engine[playerID].gameActive)
 			return;
-		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
-		if (dangerColumnShowX[playerID])
-			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "XX" : "X", EventReceiver.COLOR_RED);
-
-		int textHeight = 13;
-		if (engine.field != null)
-			textHeight = engine.field.getHeight()+1;
-		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
-		{
-			int color = EventReceiver.COLOR_YELLOW;
-			if (chainDisplayType[playerID] == CHAIN_DISPLAY_PLAYER)
-				color = playerColor;
-			else if (chainDisplayType[playerID] == CHAIN_DISPLAY_SIZE)
-				color = chain[playerID] >= rensaShibari[playerID] ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
-			receiver.drawMenuFont(engine, playerID, chain[playerID] > 9 ? 0 : 1, textHeight, chain[playerID] + " CHAIN!", color);
-		}
-		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
-			receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+		super.renderLast(engine, playerID);
 		
 		Block b;
 		int blockColor, textColor;
