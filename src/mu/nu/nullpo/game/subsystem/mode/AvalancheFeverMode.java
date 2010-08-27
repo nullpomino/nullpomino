@@ -182,7 +182,6 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					mapSet += change;
 					if(mapSet < 0) mapSet = FEVER_MAPS.length - 1;
 					if(mapSet > FEVER_MAPS.length - 1) mapSet = 0;
-					if (mapSet == 4) numColors = 3;
 					break;
 				case 1:
 					outlinetype += change;
@@ -200,6 +199,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					if(chainDisplayType > 2) chainDisplayType = 0;
 					break;
 				}
+				if (mapSet == 4) numColors = 3;
 			}
 
 			// 決定
