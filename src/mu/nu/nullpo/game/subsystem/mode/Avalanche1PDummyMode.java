@@ -120,11 +120,15 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	
 	/** True to use slower falling animations, false to use faster */
 	protected boolean cascadeSlow;
+	
+	/** 1 ojama is generated per this many points. */
+	protected int ojamaRate;
 
 	public Avalanche1PDummyMode()
 	{
 		blocksPerLevel = 15;
 		maxLevel = 99;
+		ojamaRate = 120;
 	}
 
 	/*
@@ -342,10 +346,15 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 			engine.statistics.scoreFromLineClear += score;
 			engine.statistics.score += score;
 
-			garbageAdd += (score+119)/120;
+			garbageAdd += calcOjama(score, avalanche, pts, multiplier);
 			
 			setSpeed(engine);
 		}
+	}
+	
+	protected int calcOjama(int score, int avalanche, int pts, int multiplier)
+	{
+		return (score+ojamaRate-1)/ojamaRate;
 	}
 	
 	protected int calcPts (int avalanche) {

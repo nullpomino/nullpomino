@@ -368,7 +368,12 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if(timeLimit <= 900) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(timeLimit <= 300) engine.meterColor = GameEngine.METER_COLOR_RED;
 	}
-	
+
+	protected int calcOjama(int score, int avalanche, int pts, int multiplier)
+	{
+		return ((avalanche*10*multiplier)+ojamaRate-1)/ojamaRate;
+	}
+
 	protected int calcPts (int avalanche) {
 		return avalanche*chainLevelMultiplier*10;
 	}
