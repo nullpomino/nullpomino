@@ -425,39 +425,16 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
 
-			receiver.drawScoreFont(engine, playerID, -1,  2, "OJAMA", EventReceiver.COLOR_PURPLE);
-			String ojamaStr1P = String.valueOf(ojama[0]);
-			if (ojamaAdd[0] > 0)
-				ojamaStr1P = ojamaStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
-			String ojamaStr2P = String.valueOf(ojama[1]);
-			if (ojamaAdd[1] > 0)
-				ojamaStr2P = ojamaStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
-			receiver.drawScoreFont(engine, playerID, -1,  3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID,  3,  3, ojamaStr1P, (ojama[0] > 0));
-			receiver.drawScoreFont(engine, playerID, -1,  4, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID,  3,  4, ojamaStr2P, (ojama[1] > 0));
+			drawOjama(engine, playerID, -1, 2, EventReceiver.COLOR_PURPLE);
+
 			receiver.drawScoreFont(engine, playerID, -1,  5, "HANDICAP", EventReceiver.COLOR_PURPLE);
 			receiver.drawScoreFont(engine, playerID, -1,  6, "1P:", EventReceiver.COLOR_RED);
 			receiver.drawScoreFont(engine, playerID,  3,  6, String.valueOf(ojamaHandicapLeft[0]), (ojamaHandicapLeft[0] == 0));
 			receiver.drawScoreFont(engine, playerID, -1,  7, "2P:", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID,  3,  7, String.valueOf(ojamaHandicapLeft[1]), (ojamaHandicapLeft[1] == 0));
 
-			receiver.drawScoreFont(engine, playerID, -1,  9, "ATTACK", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 10, "1P: " + String.valueOf(ojamaSent[0]), EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1, 11, "2P: " + String.valueOf(ojamaSent[1]), EventReceiver.COLOR_BLUE);
-
-			receiver.drawScoreFont(engine, playerID, -1, 13, "SCORE", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1, 14, "1P: ", EventReceiver.COLOR_RED);
-			if (scgettime[0] > 0 && lastscore[0] > 0 && lastmultiplier[0] > 0)
-				receiver.drawScoreFont(engine, playerID, 3, 14, "+" + lastscore[0] + "X" + lastmultiplier[0], EventReceiver.COLOR_RED);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 14, String.valueOf(score[0]), EventReceiver.COLOR_RED);
-
-			receiver.drawScoreFont(engine, playerID, -1, 15, "2P: ", EventReceiver.COLOR_BLUE);
-			if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
-				receiver.drawScoreFont(engine, playerID, 3, 15, "+" + lastscore[1] + "X" + lastmultiplier[1], EventReceiver.COLOR_BLUE);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 15, String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
+			drawAttack(engine, playerID, -1, 9, EventReceiver.COLOR_GREEN);
+			drawScores(engine, playerID, -1, 13, EventReceiver.COLOR_PURPLE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 17, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 18, GeneralUtil.getTime(engine.statistics.time));

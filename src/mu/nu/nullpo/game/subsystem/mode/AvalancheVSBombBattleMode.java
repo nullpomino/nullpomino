@@ -451,22 +451,8 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 			if (ojamaAdd[1] > 0)
 				receiver.drawScoreFont(engine, playerID,  1,  6, "(+" + ojamaAdd[1]/6 + " " + ojamaAdd[1]%6 + "/6" + ")", (ojamaAdd[1] > 0));
 			
-			receiver.drawScoreFont(engine, playerID, -1,  8, "ATTACK", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1,  9, "1P: " + String.valueOf(ojamaSent[0]), EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1, 10, "2P: " + String.valueOf(ojamaSent[1]), EventReceiver.COLOR_BLUE);
-
-			receiver.drawScoreFont(engine, playerID, -1, 12, "SCORE", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1, 13, "1P: ", EventReceiver.COLOR_RED);
-			if (scgettime[0] > 0 && lastscore[0] > 0 && lastmultiplier[0] > 0)
-				receiver.drawScoreFont(engine, playerID, 3, 13, "+" + lastscore[0] + "X" + lastmultiplier[0], EventReceiver.COLOR_RED);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 13, String.valueOf(score[0]), EventReceiver.COLOR_RED);
-
-			receiver.drawScoreFont(engine, playerID, -1, 14, "2P: ", EventReceiver.COLOR_BLUE);
-			if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
-				receiver.drawScoreFont(engine, playerID, 3, 14, "+" + lastscore[1] + "X" + lastmultiplier[1], EventReceiver.COLOR_BLUE);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 14, String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
+			drawAttack(engine, playerID, -1, 8, EventReceiver.COLOR_GREEN);
+			drawScores(engine, playerID, -1, 12, EventReceiver.COLOR_PURPLE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 16, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 17, GeneralUtil.getTime(engine.statistics.time));

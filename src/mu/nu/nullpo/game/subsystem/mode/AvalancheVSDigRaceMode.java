@@ -428,34 +428,9 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
 
-			receiver.drawScoreFont(engine, playerID, -1,  2, "OJAMA", EventReceiver.COLOR_PURPLE);
-			String ojamaFeverStr1P = String.valueOf(ojama[0]);
-			if (ojamaAdd[0] > 0)
-				ojamaFeverStr1P = ojamaFeverStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
-			String ojamaFeverStr2P = String.valueOf(ojama[1]);
-			if (ojamaAdd[1] > 0)
-				ojamaFeverStr2P = ojamaFeverStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
-			receiver.drawScoreFont(engine, playerID, -1,  3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID,  3,  3, ojamaFeverStr1P, (ojama[0] > 0));
-			receiver.drawScoreFont(engine, playerID, -1,  4, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID,  3,  4, ojamaFeverStr2P, (ojama[1] > 0));
-
-			receiver.drawScoreFont(engine, playerID, -1,  6, "ATTACK", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1,  7, "1P: " + String.valueOf(ojamaSent[0]), EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, -1,  8, "2P: " + String.valueOf(ojamaSent[1]), EventReceiver.COLOR_BLUE);
-
-			receiver.drawScoreFont(engine, playerID, -1, 10, "SCORE", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1, 11, "1P: ", EventReceiver.COLOR_RED);
-			if (scgettime[0] > 0 && lastscore[0] > 0 && lastmultiplier[0] > 0)
-				receiver.drawScoreFont(engine, playerID, 3, 11, "+" + lastscore[0] + "X" + lastmultiplier[0], EventReceiver.COLOR_RED);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 11, String.valueOf(score[0]), EventReceiver.COLOR_RED);
-
-			receiver.drawScoreFont(engine, playerID, -1, 12, "2P: ", EventReceiver.COLOR_BLUE);
-			if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
-				receiver.drawScoreFont(engine, playerID, 3, 12, "+" + lastscore[1] + "X" + lastmultiplier[1], EventReceiver.COLOR_BLUE);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 12, String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
+			drawOjama(engine, playerID, -1, 2, EventReceiver.COLOR_PURPLE);
+			drawAttack(engine, playerID, -1, 6, EventReceiver.COLOR_GREEN);
+			drawScores(engine, playerID, -1, 10, EventReceiver.COLOR_PURPLE);
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));

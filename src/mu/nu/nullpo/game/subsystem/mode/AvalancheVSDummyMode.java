@@ -809,7 +809,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	public void renderLast (GameEngine engine, int playerID) {
 		if (!owner.engine[playerID].gameActive)
 			return;
-		
 
 		int textHeight = 13;
 		if (engine.field != null)
@@ -843,6 +842,44 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 					if (hard > 0)
 						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
 				}
+	}
+
+	protected void drawScores (GameEngine engine, int playerID, int x, int y, int headerColor) {
+		receiver.drawScoreFont(engine, playerID, x, y, "SCORE", headerColor);
+		y++;
+		receiver.drawScoreFont(engine, playerID, x, y, "1P: ", EventReceiver.COLOR_RED);
+		if (scgettime[0] > 0 && lastscore[0] > 0 && lastmultiplier[0] > 0)
+			receiver.drawScoreFont(engine, playerID, x+4, y, "+" + lastscore[0] + "e" + lastmultiplier[0],
+					EventReceiver.COLOR_RED);
+		else
+			receiver.drawScoreFont(engine, playerID, x+4, y, String.valueOf(score[0]), EventReceiver.COLOR_RED);
+		y++;
+		receiver.drawScoreFont(engine, playerID, x, y, "2P: ", EventReceiver.COLOR_BLUE);
+		if (scgettime[1] > 0 && lastscore[1] > 0 && lastmultiplier[1] > 0)
+			receiver.drawScoreFont(engine, playerID, x+4, y, "+" + lastscore[1] + "e" + lastmultiplier[1],
+					EventReceiver.COLOR_BLUE);
+		else
+			receiver.drawScoreFont(engine, playerID, x+4, y, String.valueOf(score[1]), EventReceiver.COLOR_BLUE);
+	}
+
+	protected void drawOjama (GameEngine engine, int playerID, int x, int y, int headerColor) {
+		receiver.drawScoreFont(engine, playerID, x, y, "OJAMA", headerColor);
+		String ojamaStr1P = String.valueOf(ojama[0]);
+		if (ojamaAdd[0] > 0)
+			ojamaStr1P = ojamaStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
+		String ojamaStr2P = String.valueOf(ojama[1]);
+		if (ojamaAdd[1] > 0)
+			ojamaStr2P = ojamaStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
+		receiver.drawScoreFont(engine, playerID, x, y+1, "1P:", EventReceiver.COLOR_RED);
+		receiver.drawScoreFont(engine, playerID, x+4, y+1, ojamaStr1P, (ojama[0] > 0));
+		receiver.drawScoreFont(engine, playerID, x, y+2, "2P:", EventReceiver.COLOR_BLUE);
+		receiver.drawScoreFont(engine, playerID, x+4, y+2, ojamaStr2P, (ojama[1] > 0));
+	}
+
+	protected void drawAttack (GameEngine engine, int playerID, int x, int y, int headerColor) {
+		receiver.drawScoreFont(engine, playerID, x, y, "ATTACK", headerColor);
+		receiver.drawScoreFont(engine, playerID, x, y+1, "1P: " + String.valueOf(ojamaSent[0]), EventReceiver.COLOR_RED);
+		receiver.drawScoreFont(engine, playerID, x, y+2, "2P: " + String.valueOf(ojamaSent[1]), EventReceiver.COLOR_BLUE);
 	}
 
 	/*
