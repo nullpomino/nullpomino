@@ -76,6 +76,15 @@ public class NetVSBattleMode extends NetDummyMode {
 							 EVENT_TSPIN_TRIPLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_EZ = 10;
+	
+	/** Type of attack performed */
+	private static final int ATTACK_CATEGORY_NORMAL = 0,
+							 ATTACK_CATEGORY_B2B = 1,
+							 ATTACK_CATEGORY_SPIN = 2,
+							 ATTACK_CATEGORY_COMBO = 3,
+							 ATTACK_CATEGORY_BRAVO = 4,
+							 ATTACK_CATEGORY_GEM = 5,
+							 ATTACK_CATEGORIES = 6;
 
 	/** ゲーム席とゲーム画面上でのフィールド numberの対応表 */
 	private static final int[][] GAME_SEAT_NUMBERS =
@@ -1042,7 +1051,9 @@ public class NetVSBattleMode extends NetDummyMode {
 	public void calcScore(GameEngine engine, int playerID, int lines) {
 		// 攻撃
 		if(lines > 0) {
-			int pts = 0;
+			//int pts = 0;
+			int[] pts = new int[ATTACK_CATEGORIES];
+			
 			scgettime[playerID] = 0;
 
 			int numAliveTeams = getNumberOfTeamsAlive();
@@ -1052,8 +1063,10 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(attackNumPlayerIndex > 4) attackNumPlayerIndex = 4;
 
 			int attackLineIndex = LINE_ATTACK_INDEX_SINGLE;
+			int mainAttackCategory = ATTACK_CATEGORY_NORMAL;
 
 			if(engine.tspin) {
+				mainAttackCategory = ATTACK_CATEGORY_SPIN;
 				if(engine.tspinez) {
 					attackLineIndex = LINE_ATTACK_INDEX_EZ_T;
 					lastevent[playerID] = EVENT_TSPIN_EZ;
@@ -1106,19 +1119,19 @@ public class NetVSBattleMode extends NetDummyMode {
 			// 攻撃力計算
 			//log.debug("attackNumPlayerIndex:" + attackNumPlayerIndex + ", attackLineIndex:" + attackLineIndex);
 			if(engine.useAllSpinBonus)
-				pts += LINE_ATTACK_TABLE_ALLSPIN[attackLineIndex][attackNumPlayerIndex];
+				pts[mainAttackCategory] += LINE_ATTACK_TABLE_ALLSPIN[attackLineIndex][attackNumPlayerIndex];
 			else
-				pts += LINE_ATTACK_TABLE[attackLineIndex][attackNumPlayerIndex];
+				pts[mainAttackCategory] += LINE_ATTACK_TABLE[attackLineIndex][attackNumPlayerIndex];
 
 			// B2B
 			if(engine.b2b) {
 				lastb2b[playerID] = true;
 
-				if(pts > 0) {
+				if(pts[mainAttackCategory] > 0) {
 					if((attackLineIndex == LINE_ATTACK_INDEX_TTRIPLE) && (!engine.useAllSpinBonus))
-						pts += 2;
+						pts[ATTACK_CATEGORY_B2B] += 2;
 					else
-						pts += 1;
+						pts[ATTACK_CATEGORY_B2B] += 1;
 				}
 			} else {
 				lastb2b[playerID] = false;
@@ -1129,44 +1142,52 @@ public class NetVSBattleMode extends NetDummyMode {
 				int cmbindex = engine.combo - 1;
 				if(cmbindex < 0) cmbindex = 0;
 				if(cmbindex >= COMBO_ATTACK_TABLE[attackNumPlayerIndex].length) cmbindex = COMBO_ATTACK_TABLE[attackNumPlayerIndex].length - 1;
-				pts += COMBO_ATTACK_TABLE[attackNumPlayerIndex][cmbindex];
+				pts[ATTACK_CATEGORY_B2B] += COMBO_ATTACK_TABLE[attackNumPlayerIndex][cmbindex];
 				lastcombo[playerID] = engine.combo;
 			}
 
 			// All clear
 			if((lines >= 1) && (engine.field.isEmpty()) && (currentRoomInfo.bravo)) {
 				engine.playSE("bravo");
-				pts += 6;
+				pts[ATTACK_CATEGORY_BRAVO] += 6;
 			}
 
 			// 宝石Block攻撃
-			pts += engine.field.getHowManyGemClears();
+			pts[ATTACK_CATEGORY_GEM] += engine.field.getHowManyGemClears();
 
 			lastpiece[playerID] = engine.nowPieceObject.id;
 
-			pts *= GARBAGE_DENOMINATOR;
+			for(int i = 0; i < pts.length; i++){
+				pts[i] *= GARBAGE_DENOMINATOR;
+			}
 			if(useFractionalGarbage && !isPractice) {
 				if(numAliveTeams >= 3) {
-					pts = pts / (numAliveTeams - 1);
+					for(int i = 0; i < pts.length; i++){
+						pts[i] = pts[i] / (numAliveTeams - 1);
+					}
 				}
 			}
 
 			// 攻撃Linescount
-			garbageSent[playerID] += pts;
+			for(int i : pts){
+				garbageSent[playerID] += i;
+			}
 
 			// 相殺
 			garbage[playerID] = getTotalGarbageLines();
-			if((pts > 0) && (garbage[playerID] > 0) && (currentRoomInfo.counter)) {
-				while(!useFractionalGarbage && !garbageEntries.isEmpty() && (pts > 0)
-						|| useFractionalGarbage && !garbageEntries.isEmpty() && (pts >= GARBAGE_DENOMINATOR)) {
-					GarbageEntry garbageEntry = garbageEntries.getFirst();
-					garbageEntry.lines -= pts;
-
-					if(garbageEntry.lines <= 0) {
-						pts = Math.abs(garbageEntry.lines);
-						garbageEntries.removeFirst();
-					} else {
-						pts = 0;
+			for(int i = 0; i < pts.length; i++){ //TODO: Establish specific priority of garbage cancellation.
+				if((pts[i] > 0) && (garbage[playerID] > 0) && (currentRoomInfo.counter)) {
+					while(!useFractionalGarbage && !garbageEntries.isEmpty() && (pts[i] > 0)
+							|| useFractionalGarbage && !garbageEntries.isEmpty() && (pts[i] >= GARBAGE_DENOMINATOR)) {
+						GarbageEntry garbageEntry = garbageEntries.getFirst();
+						garbageEntry.lines -= pts[i];
+	
+						if(garbageEntry.lines <= 0) {
+							pts[i] = Math.abs(garbageEntry.lines);
+							garbageEntries.removeFirst();
+						} else {
+							pts[i] = 0;
+						}
 					}
 				}
 			}
@@ -1174,7 +1195,12 @@ public class NetVSBattleMode extends NetDummyMode {
 			// 攻撃
 			if(!isPractice && (numPlayers + numSpectators >= 2)) {
 				garbage[playerID] = getTotalGarbageLines();
-				netLobby.netPlayerClient.send("game\tattack\t" + pts + "\t" + lastevent[playerID] + "\t" + lastb2b[playerID] + "\t" +
+				
+				String stringPts = "";
+				for(int i : pts){
+					stringPts += i + "\t";
+				}
+				netLobby.netPlayerClient.send("game\tattack\t" + stringPts + "\t" + lastevent[playerID] + "\t" + lastb2b[playerID] + "\t" +
 						lastcombo[playerID] + "\t" + garbage[playerID] + "\t" + lastpiece[playerID] + "\n");
 			}
 		}
@@ -2306,27 +2332,32 @@ public class NetVSBattleMode extends NetDummyMode {
 			}
 			// 攻撃
 			if(message[3].equals("attack")) {
-				int pts = Integer.parseInt(message[4]);
-				lastevent[playerID] = Integer.parseInt(message[5]);
-				lastb2b[playerID] = Boolean.parseBoolean(message[6]);
-				lastcombo[playerID] = Integer.parseInt(message[7]);
-				garbage[playerID] = Integer.parseInt(message[8]);
-				lastpiece[playerID] = Integer.parseInt(message[9]);
+				//int pts = Integer.parseInt(message[4]);
+				int[] pts = new int[ATTACK_CATEGORIES];
+				int sumPts = 0;
+				
+				for(int i = 0; i < ATTACK_CATEGORIES; i++){
+					pts[i] = Integer.parseInt(message[4+i]);
+					sumPts += pts[i];
+				}
+				
+				lastevent[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 5]);
+				lastb2b[playerID] = Boolean.parseBoolean(message[ATTACK_CATEGORIES + 6]);
+				lastcombo[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 7]);
+				garbage[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 8]);
+				lastpiece[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 9]);
 				scgettime[playerID] = 0;
 
-				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (pts > 0) && (!isPractice) && (!isNewcomer) &&
+				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (sumPts > 0) && (!isPractice) && (!isNewcomer) &&
 				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || (!playerTeams[0].equalsIgnoreCase(playerTeams[playerID]))) &&
 				    (playerTeamsIsTank[0]) )
 				{
-					int secondAdd = 0;
-					if((lastb2b[playerID]) && (currentRoomInfo.b2bChunk)){ //Add a separate garbage entry if the separate b2b option is enabled.
-						if((lastevent[playerID] == EVENT_TSPIN_TRIPLE) && (currentRoomInfo.tspinEnableType != 2)) //Case for TST with All Spin disabled
-							secondAdd = 2 * GARBAGE_DENOMINATOR;
-						else
-							secondAdd = 1 * GARBAGE_DENOMINATOR;
+					int secondAdd = 0; //TODO: Allow for chunking of attack types other than b2b.
+					if(currentRoomInfo.b2bChunk){
+						secondAdd = pts[ATTACK_CATEGORY_B2B];
 					}
 
-					GarbageEntry garbageEntry = new GarbageEntry(pts - secondAdd, playerID, uid);
+					GarbageEntry garbageEntry = new GarbageEntry(sumPts - secondAdd, playerID, uid);
 					garbageEntries.add(garbageEntry);
 
 					if(secondAdd > 0){
