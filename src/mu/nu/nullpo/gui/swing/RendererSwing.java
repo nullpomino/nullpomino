@@ -33,10 +33,6 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Field;
@@ -45,33 +41,18 @@ import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
-import mu.nu.nullpo.util.GeneralUtil;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 /**
  * ゲームのイベント処理と描画処理（Swing版）
  */
 public class RendererSwing extends EventReceiver {
 	/** Log */
-	static Logger log = Logger.getLogger(RendererSwing.class);
-
-	/** フィールドの表示位置(1人・2人のとき) */
-	public static final int[] FIELD_OFFSET_X = {32, 432, 432, 432, 432, 432},
-							  FIELD_OFFSET_Y = {32, 32, 32, 32, 32, 32};
-
-	/** フィールドの表示位置(3人以上のとき) */
-	public static final int[] FIELD_OFFSET_X_MULTI = {119, 247, 375, 503, 247, 375},
-							  FIELD_OFFSET_Y_MULTI = {80, 80, 80, 80, 286, 286};
+	//static Logger log = Logger.getLogger(RendererSwing.class);
 
 	/** 描画先サーフェイス */
 	protected Graphics2D graphics;
-
-	/** 背景表示 */
-	protected boolean showbg;
-
-	/** フィールド右側にMeterを表示 */
-	protected boolean showmeter;
 
 	/** フィールドのBlockを表示（falseなら枠線だけ表示） */
 	protected boolean showfieldblockgraphics;
@@ -81,12 +62,6 @@ public class RendererSwing extends EventReceiver {
 
 	/** ゴーストピースの上にNEXT表示 */
 	protected boolean nextshadow;
-
-	/** 枠線型ゴーストピース */
-	protected boolean outlineghost;
-
-	/** Piece previews on sides */
-	protected boolean sidenext;
 
 	/**
 	 * 指定したフォント色をAWT用Colorとして取得
@@ -151,48 +126,6 @@ public class RendererSwing extends EventReceiver {
 		if(g instanceof Graphics2D) {
 			graphics = (Graphics2D)g;
 		}
-	}
-
-	/*
-	 * フィールド右のMeterの最大量
-	 */
-	@Override
-	public int getMeterMax(GameEngine engine) {
-		if(!showmeter) return 0;
-		int blksize = engine.minidisplay ? 8 : 16;
-		return engine.fieldHeight * blksize;
-	}
-
-	/*
-	 * Blockの画像の幅
-	 */
-	@Override
-	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
-		return engine.minidisplay ? 8 : 16;
-	}
-
-	/*
-	 * Blockの画像の高さ
-	 */
-	@Override
-	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
-		return engine.minidisplay ? 8 : 16;
-	}
-
-	/*
-	 * フィールドの表示位置の左端の座標を取得
-	 */
-	@Override
-	public int getFieldDisplayPositionX(GameEngine engine, int playerID) {
-		return engine.minidisplay ? FIELD_OFFSET_X_MULTI[playerID] : FIELD_OFFSET_X[playerID];
-	}
-
-	/*
-	 * フィールドの表示位置の上端の座標を取得
-	 */
-	@Override
-	public int getFieldDisplayPositionY(GameEngine engine, int playerID) {
-		return engine.minidisplay ? FIELD_OFFSET_Y_MULTI[playerID] : FIELD_OFFSET_Y[playerID];
 	}
 
 	/*
@@ -312,99 +245,13 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * Mode の設定ファイルを読み込み
-	 */
-	@Override
-	public CustomProperties loadModeConfig() {
-		CustomProperties propModeConfig = new CustomProperties();
-
-		try {
-			FileInputStream in = new FileInputStream("config/setting/mode.cfg");
-			propModeConfig.load(in);
-			in.close();
-		} catch(IOException e) {
-			return null;
-		}
-
-		return propModeConfig;
-	}
-
-	/*
-	 * Mode の設定ファイルを保存
-	 */
-	@Override
-	public void saveModeConfig(CustomProperties modeConfig) {
-		try {
-			FileOutputStream out = new FileOutputStream("config/setting/mode.cfg");
-			modeConfig.store(out, "NullpoMino Mode Config");
-			out.close();
-		} catch(IOException e) {
-			log.error("Couldn't save mode config", e);
-		}
-	}
-
-	/*
-	 * 任意のプロパティセットを読み込み
-	 */
-	@Override
-	public CustomProperties loadProperties(String filename) {
-		CustomProperties prop = new CustomProperties();
-
-		try {
-			FileInputStream in = new FileInputStream(filename);
-			prop.load(in);
-			in.close();
-		} catch(IOException e) {
-			log.debug("Failed to load custom property file from " + filename, e);
-			return null;
-		}
-
-		return prop;
-	}
-
-	/*
-	 * 任意のプロパティセットを任意のファイル名で保存
-	 */
-	@Override
-	public boolean saveProperties(String filename, CustomProperties prop) {
-		try {
-			FileOutputStream out = new FileOutputStream(filename);
-			prop.store(out, "NullpoMino Custom Property File");
-			out.close();
-		} catch(IOException e) {
-			log.debug("Failed to save custom property file to " + filename, e);
-			return false;
-		}
-
-		return true;
-	}
-
-	/*
 	 * リプレイを保存
 	 */
 	@Override
 	public void saveReplay(GameManager owner, CustomProperties prop) {
 		if(owner.mode.isNetplayMode()) return;
 
-		String foldername = NullpoMinoSwing.propGlobal.getProperty("custom.replay.directory", "replay");
-		String filename = foldername + "/" + GeneralUtil.getReplayFilename();
-		try {
-			File repfolder = new File(foldername);
-			if (!repfolder.exists()) {
-				if (repfolder.mkdir()) {
-					log.info("Created replay folder: " + foldername);
-				} else {
-					log.info("Couldn't create replay folder at "+ foldername);
-				}
-			}
-
-			FileOutputStream out = new FileOutputStream(filename);
-			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
-			out.close();
-			log.info("Saved replay file: " + filename);
-		} catch(IOException e) {
-			log.error("Couldn't save replay file to " + filename, e);
-		}
+		saveReplay(owner, prop, NullpoMinoSwing.propGlobal.getProperty("custom.replay.directory", "replay"));
 	}
 
 	/*
@@ -612,7 +459,7 @@ public class RendererSwing extends EventReceiver {
 
 		if(piece != null) {
 			for(int i = 0; i < piece.getMaxBlock(); i++) {
-				if(piece.big == false) {
+				if(!piece.big) {
 					int x2 = engine.nowPieceX + piece.dataX[piece.direction][i];
 					int y2 = engine.nowPieceY + piece.dataY[piece.direction][i];
 
@@ -651,7 +498,7 @@ public class RendererSwing extends EventReceiver {
 
 		if(piece != null) {
 			for(int i = 0; i < piece.getMaxBlock(); i++) {
-				if(piece.big == false) {
+				if(!piece.big) {
 					int x2 = engine.nowPieceX + piece.dataX[piece.direction][i];
 					int y2 = engine.nowPieceBottomY + piece.dataY[piece.direction][i];
 
@@ -770,10 +617,18 @@ public class RendererSwing extends EventReceiver {
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
 	 */
-	protected void drawField(int x, int y, GameEngine engine, boolean small) {
+	protected void drawField(int x, int y, GameEngine engine, int size) {
 		if(graphics == null) return;
 
-		int blksize = small ? 8 : 16;
+		int blksize = 16;
+		float scale = 1.0f;
+		if (size == -1) {
+			blksize = 8;
+			scale = 0.5f;
+		} else if (size == 1){
+			blksize = 32;
+			scale = 2.0f;
+		}
 
 		Field field = engine.field;
 		int width = 10;
@@ -799,12 +654,12 @@ public class RendererSwing extends EventReceiver {
 				if((field != null) && (blk != null) && (blk.color > Block.BLOCK_COLOR_NONE)) {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
-								  blk.darkness, blk.alpha, small ? 0.5f : 1.0f);
+								  blk.darkness, blk.alpha, scale);
 					} else if (showfieldblockgraphics) {
 						if (engine.owner.replayMode && engine.owner.replayShowInvisible) {
-							drawBlockForceVisible(x2, y2, blk, small ? 0.5f : 1.0f);
+							drawBlockForceVisible(x2, y2, blk, scale);
 						} else if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
-							drawBlock(x2, y2, blk, small ? 0.5f : 1.0f);
+							drawBlock(x2, y2, blk, scale);
 						}
 					} else {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
@@ -844,7 +699,7 @@ public class RendererSwing extends EventReceiver {
 			if(maxY > height) maxY = height;
 			for(int i = 0; i < maxY; i++) {
 				for(int j = 0; j < width; j++) {
-					drawBlock(x + (j * blksize), y + ((height - 1 - i) * blksize), Block.BLOCK_COLOR_GRAY, 0, false, 0.0f, 1.0f, small ? 0.5f : 1.0f);
+					drawBlock(x + (j * blksize), y + ((height - 1 - i) * blksize), Block.BLOCK_COLOR_GRAY, 0, false, 0.0f, 1.0f, scale);
 				}
 			}
 		}
@@ -856,10 +711,14 @@ public class RendererSwing extends EventReceiver {
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
 	 */
-	protected void drawFrame(int x, int y, GameEngine engine, boolean small) {
+	protected void drawFrame(int x, int y, GameEngine engine, int displaysize) {
 		if(graphics == null) return;
 
-		int size = small ? 2 : 4;
+		int size = 4;
+		if (displaysize == -1)
+			size = 2;
+		else if (displaysize == 1)
+			size = 8;
 		int width = 10;
 		int height = 20;
 		int offsetX = 0;
@@ -1112,7 +971,7 @@ public class RendererSwing extends EventReceiver {
 				Piece next = engine.getNextObject(engine.nextPieceCount + i);
 
 				if (next != null) {
-					int size = (piece.big ? 2 : 1);
+					int size = ((piece.big || engine.displaysize == 1) ? 2 : 1);
 					int shadowCenter = blksize * piece.getMinimumBlockX() + blksize
 							* (piece.getWidth() + size) / 2;
 					int nextCenter = blksize / 2 * next.getMinimumBlockX() + blksize / 2
@@ -1156,13 +1015,13 @@ public class RendererSwing extends EventReceiver {
 			int offsetX = getFieldDisplayPositionX(engine, playerID);
 			int offsetY = getFieldDisplayPositionY(engine, playerID);
 
-			if(!engine.minidisplay) {
+			if(engine.displaysize != -1) {
 				drawNext(offsetX, offsetY, engine);
-				drawFrame(offsetX, offsetY + 48, engine, false);
-				drawField(offsetX + 4, offsetY + 52, engine, false);
+				drawFrame(offsetX, offsetY + 48, engine, engine.displaysize);
+				drawField(offsetX + 4, offsetY + 52, engine, engine.displaysize);
 			} else {
-				drawFrame(offsetX, offsetY, engine, true);
-				drawField(offsetX + 4, offsetY + 4, engine, true);
+				drawFrame(offsetX, offsetY, engine, -1);
+				drawField(offsetX + 4, offsetY + 4, engine, -1);
 			}
 		}
 	}
@@ -1181,7 +1040,7 @@ public class RendererSwing extends EventReceiver {
 			int offsetY = getFieldDisplayPositionY(engine, playerID);
 
 			if(engine.statc[0] > 0) {
-				if(!engine.minidisplay) {
+				if(engine.displaysize != -1) {
 					if((engine.statc[0] >= engine.readyStart) && (engine.statc[0] < engine.readyEnd))
 						NormalFontSwing.printFont(offsetX + 44, offsetY + 204, "READY", COLOR_WHITE, 1.0f);
 					else if((engine.statc[0] >= engine.goStart) && (engine.statc[0] < engine.goEnd))
@@ -1207,7 +1066,11 @@ public class RendererSwing extends EventReceiver {
 		int offsetY = getFieldDisplayPositionY(engine, playerID);
 
 		if((engine.statc[0] > 1) || (engine.ruleopt.moveFirstFrame)) {
-			if(!engine.minidisplay) {
+			if(engine.displaysize == 1) {
+				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 2.0f);
+				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
+				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
+			} else if(engine.displaysize == 0) {
 				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 1.0f);
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
@@ -1230,7 +1093,7 @@ public class RendererSwing extends EventReceiver {
 		int offsetX = getFieldDisplayPositionX(engine, playerID);
 		int offsetY = getFieldDisplayPositionY(engine, playerID);
 
-		if(!engine.minidisplay) {
+		if(engine.displaysize != -1) {
 			if(engine.statc[1] == 0)
 				NormalFontSwing.printFont(offsetX + 4, offsetY + 204, "EXCELLENT!", COLOR_ORANGE, 1.0f);
 			else if(engine.owner.getPlayers() < 3)
@@ -1260,7 +1123,7 @@ public class RendererSwing extends EventReceiver {
 			int offsetX = getFieldDisplayPositionX(engine, playerID);
 			int offsetY = getFieldDisplayPositionY(engine, playerID);
 
-			if(!engine.minidisplay) {
+			if(engine.displaysize != -1) {
 				if(engine.owner.getPlayers() < 2)
 					NormalFontSwing.printFont(offsetX + 12, offsetY + 204, "GAME OVER", COLOR_WHITE, 1.0f);
 				else if(engine.owner.getWinner() == -2)

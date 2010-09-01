@@ -479,8 +479,8 @@ public class GameEngine {
 	/** Lag flag (Pause the game completely) */
 	public boolean lagStop;
 
-	/** Mini display (Used for opponents in netplay) */
-	public boolean minidisplay;
+	/** Field display size (-1 for mini, 1 for big, 0 for normal) */
+	public int displaysize;
 
 	/** Sound effects enable flag */
 	public boolean enableSE;
@@ -804,7 +804,7 @@ public class GameEngine {
 
 		lagARE = false;
 		lagStop = false;
-		minidisplay = (playerID >= 2);
+		displaysize = (playerID >= 2) ? -1 : 0;
 
 		enableSE = true;
 		gameoverAll = true;
@@ -2667,7 +2667,15 @@ public class GameEngine {
 							continue;
 						if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_ERASE)) {
 							if(owner.mode != null) owner.mode.blockBreak(this, playerID, j, i, blk);
-							owner.receiver.blockBreak(this, playerID, j, i, blk);
+							if (displaysize == 1)
+							{
+								owner.receiver.blockBreak(this, playerID, 2*j, 2*i, blk);
+								owner.receiver.blockBreak(this, playerID, 2*j+1, 2*i, blk);
+								owner.receiver.blockBreak(this, playerID, 2*j, 2*i+1, blk);
+								owner.receiver.blockBreak(this, playerID, 2*j+1, 2*i+1, blk);
+							}
+							else
+								owner.receiver.blockBreak(this, playerID, j, i, blk);
 						}
 					}
 				}

@@ -28,15 +28,46 @@
 */
 package mu.nu.nullpo.game.event;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
+import mu.nu.nullpo.util.GeneralUtil;
 
 /**
  * Drawing and event handling EventReceiver
  */
 public class EventReceiver {
+	/** Log */
+	static Logger log = Logger.getLogger(EventReceiver.class);
+
+	/** フィールドの表示位置(1人・2人のとき) */
+	public static final int[] FIELD_OFFSET_X = {32, 432, 432, 432, 432, 432},
+							  FIELD_OFFSET_Y = {32, 32, 32, 32, 32, 32};
+
+	/** フィールドの表示位置(3人以上のとき) */
+	public static final int[] FIELD_OFFSET_X_MULTI = {119, 247, 375, 503, 247, 375},
+							  FIELD_OFFSET_Y_MULTI = {80, 80, 80, 80, 286, 286};
+
+	/** 背景表示 */
+	protected boolean showbg;
+
+	/** フィールド右側にMeterを表示 */
+	protected boolean showmeter;
+
+	/** 枠線型ゴーストピース */
+	protected boolean outlineghost;
+
+	/** Piece previews on sides */
+	protected boolean sidenext;
+
 	/**
 	 * 文字色の定count
 	 */
@@ -514,17 +545,13 @@ public class EventReceiver {
 	 * @return フィールド右のMeterの最大量
 	 */
 	public int getMeterMax(GameEngine engine) {
-		return 0;
-	}
-
-	/**
-	 * Blockの画像の幅を取得
-	 * @return Blockの画像の幅
-	 * @deprecated getBlockGraphicsWidth(GameEngine engine, int playerID)に置き換えられました
-	 */
-	@Deprecated
-	public int getBlockGraphicsWidth() {
-		return 0;
+		if(!showmeter) return 0;
+		int blksize = 16;
+		if (engine.displaysize == -1)
+			blksize =  8;
+		else if (engine.displaysize == 1)
+			blksize = 32;
+		return engine.fieldHeight * blksize;
 	}
 
 	/**
@@ -534,17 +561,12 @@ public class EventReceiver {
 	 * @return Blockの画像の幅
 	 */
 	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
-		return 0;
-	}
-
-	/**
-	 * Blockの画像の高さを取得
-	 * @return Blockの画像の高さ
-	 * @deprecated getBlockGraphicsHeight(GameEngine engine, int playerID)に置き換えられました
-	 */
-	@Deprecated
-	public int getBlockGraphicsHeight() {
-		return 0;
+		if (engine.displaysize == -1)
+			return 8;
+		else if (engine.displaysize == 1)
+			return 32;
+		else
+			return 16;
 	}
 
 	/**
@@ -554,7 +576,12 @@ public class EventReceiver {
 	 * @return Blockの画像の高さ
 	 */
 	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
-		return 0;
+		if (engine.displaysize == -1)
+			return 8;
+		else if (engine.displaysize == 1)
+			return 32;
+		else
+			return 16;
 	}
 
 	/**
@@ -564,7 +591,7 @@ public class EventReceiver {
 	 * @return フィールドの表示位置の左端の座標
 	 */
 	public int getFieldDisplayPositionX(GameEngine engine, int playerID) {
-		return 0;
+		return (engine.displaysize == -1) ? FIELD_OFFSET_X_MULTI[playerID] : FIELD_OFFSET_X[playerID];
 	}
 
 	/**
@@ -574,7 +601,7 @@ public class EventReceiver {
 	 * @return フィールドの表示位置の上端の座標
 	 */
 	public int getFieldDisplayPositionY(GameEngine engine, int playerID) {
-		return 0;
+		return (engine.displaysize == -1) ? FIELD_OFFSET_Y_MULTI[playerID] : FIELD_OFFSET_Y[playerID];
 	}
 
 	/**
@@ -594,14 +621,32 @@ public class EventReceiver {
 	 * @return Modeの設定データ（nullならなし）
 	 */
 	public CustomProperties loadModeConfig() {
-		return null;
+		CustomProperties propModeConfig = new CustomProperties();
+
+		try {
+			FileInputStream in = new FileInputStream("config/setting/mode.cfg");
+			propModeConfig.load(in);
+			in.close();
+		} catch(IOException e) {
+			return null;
+		}
+
+		return propModeConfig;
 	}
 
 	/**
 	 * Mode の設定を保存
 	 * @param modeConfig Modeの設定データ
 	 */
-	public void saveModeConfig(CustomProperties modeConfig) {}
+	public void saveModeConfig(CustomProperties modeConfig) {
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/mode.cfg");
+			modeConfig.store(out, "NullpoMino Mode Config");
+			out.close();
+		} catch(IOException e) {
+			log.error("Failed to save mode config", e);
+		}
+	}
 
 	/**
 	 * 任意のプロパティセットを読み込み
@@ -609,7 +654,18 @@ public class EventReceiver {
 	 * @return プロパティセット（失敗したらnull）
 	 */
 	public CustomProperties loadProperties(String filename) {
-		return null;
+		CustomProperties prop = new CustomProperties();
+
+		try {
+			FileInputStream in = new FileInputStream(filename);
+			prop.load(in);
+			in.close();
+		} catch(IOException e) {
+			log.debug("Failed to load custom property file from " + filename, e);
+			return null;
+		}
+
+		return prop;
 	}
 
 	/**
@@ -619,7 +675,16 @@ public class EventReceiver {
 	 * @return 成功するとtrue
 	 */
 	public boolean saveProperties(String filename, CustomProperties prop) {
-		return false;
+		try {
+			FileOutputStream out = new FileOutputStream(filename);
+			prop.store(out, "NullpoMino Custom Property File");
+			out.close();
+		} catch(IOException e) {
+			log.debug("Failed to save custom property file to " + filename, e);
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -900,4 +965,27 @@ public class EventReceiver {
 	 * @param prop リプレイ保存先のプロパティセット
 	 */
 	public void saveReplay(GameManager owner, CustomProperties prop) {}
+	
+	public void saveReplay(GameManager owner, CustomProperties prop, String foldername) {
+		if(owner.mode.isNetplayMode()) return;
+
+		String filename = foldername + "/" + GeneralUtil.getReplayFilename();
+		try {
+			File repfolder = new File(foldername);
+			if (!repfolder.exists()) {
+				if (repfolder.mkdir()) {
+					log.info("Created replay folder: " + foldername);
+				} else {
+					log.info("Couldn't create replay folder at "+ foldername);
+				}
+			}
+
+			FileOutputStream out = new FileOutputStream(filename);
+			prop.store(new FileOutputStream(filename), "NullpoMino Replay");
+			out.close();
+			log.info("Saved replay file: " + filename);
+		} catch(IOException e) {
+			log.error("Couldn't save replay file to " + filename, e);
+		}
+	}
 }

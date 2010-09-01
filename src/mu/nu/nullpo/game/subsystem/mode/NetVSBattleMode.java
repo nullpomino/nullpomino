@@ -597,10 +597,10 @@ public class NetVSBattleMode extends NetDummyMode {
 			}
 		}
 		if(playerSeatNumber >= 0) {
-			owner.engine[0].minidisplay = false;
+			owner.engine[0].displaysize = 0;
 			owner.engine[0].enableSE = true;
 		} else {
-			owner.engine[0].minidisplay = true;
+			owner.engine[0].displaysize = -1;
 			owner.engine[0].enableSE = false;
 		}
 
@@ -752,10 +752,10 @@ public class NetVSBattleMode extends NetDummyMode {
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
 		if((playerID >= 1) || (playerSeatNumber == -1)) {
-			engine.minidisplay = true;
+			engine.displaysize = -1;
 			engine.enableSE = false;
 		} else {
-			engine.minidisplay = false;
+			engine.displaysize = 0;
 			engine.enableSE = true;
 		}
 		engine.fieldWidth = 10;
@@ -815,7 +815,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			isPlayerExist[0] = true;
 			engine.framecolor = PLAYER_COLOR_FRAME[playerSeatNumber];
 
-			engine.minidisplay = false;
+			engine.displaysize = 0;
 			engine.enableSE = true;
 
 			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
@@ -879,7 +879,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			int y = receiver.getFieldDisplayPositionY(engine, playerID);
 
 			if(isReady[playerID] && isPlayerExist[playerID]) {
-				if(!engine.minidisplay)
+				if(engine.displaysize != -1)
 					receiver.drawDirectFont(engine, playerID, x + 68, y + 204, "OK", EventReceiver.COLOR_YELLOW);
 				else
 					receiver.drawDirectFont(engine, playerID, x + 36, y + 80, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
@@ -1425,7 +1425,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		// Number of players
 		if((playerID == getPlayers() - 1) && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected()) &&
-		   (!owner.engine[1].isVisible || owner.engine[1].minidisplay || !isNetGameActive))
+		   (!owner.engine[1].isVisible || owner.engine[1].displaysize == -1 || !isNetGameActive))
 		{
 			if(currentRoomID != -1) {
 				receiver.drawDirectFont(engine, 0, 503, 286, "PLAYERS", EventReceiver.COLOR_CYAN, 0.5f);
@@ -1468,7 +1468,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					name = "*" + playerNames[playerID];
 				}
 
-				if(engine.minidisplay) {
+				if(engine.displaysize == -1) {
 					if(name.length() > 7) name = name.substring(0, 7) + "..";
 					receiver.drawTTFDirectFont(engine, playerID, x, y - 16, name);
 				} else if(playerID == 0) {
@@ -1488,7 +1488,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				if(garbage[playerID] >= GARBAGE_DENOMINATOR*3) fontColor = EventReceiver.COLOR_ORANGE;
 				if(garbage[playerID] >= GARBAGE_DENOMINATOR*4) fontColor = EventReceiver.COLOR_RED;
 
-				if(!engine.minidisplay) {
+				if(engine.displaysize != -1) {
 					//strTempGarbage = String.format(Locale.ROOT, "%5.2f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
 					strTempGarbage = String.format(Locale.US, "%5.2f", (float)garbage[playerID] / GARBAGE_DENOMINATOR);
 					receiver.drawDirectFont(engine, playerID, x + 96, y + 372, strTempGarbage, fontColor, 1.0f);
@@ -1524,7 +1524,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
 			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
-			if(!engine.minidisplay) {
+			if(engine.displaysize != -1) {
 				switch(lastevent[playerID]) {
 				case EVENT_SINGLE:
 					receiver.drawMenuFont(engine, playerID, 2, 21, "SINGLE", EventReceiver.COLOR_DARKBLUE);
@@ -1693,7 +1693,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		int y = receiver.getFieldDisplayPositionY(engine, playerID);
 		int place = playerPlace[playerID];
 
-		if(!engine.minidisplay) {
+		if(engine.displaysize != -1) {
 			if(isReady[playerID] && !isNetGameActive) {
 				receiver.drawDirectFont(engine, playerID, x + 68, y + 204, "OK", EventReceiver.COLOR_YELLOW);
 			} else if((numNowPlayers == 2) && (isDead[playerID])) {
@@ -1795,7 +1795,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		int x = receiver.getFieldDisplayPositionX(engine, playerID);
 		int y = receiver.getFieldDisplayPositionY(engine, playerID);
 
-		if(!engine.minidisplay) {
+		if(engine.displaysize != -1) {
 			if(isReady[playerID] && !isNetGameActive) {
 				receiver.drawDirectFont(engine, playerID, x + 68, y + 204, "OK", EventReceiver.COLOR_YELLOW);
 			} else if(numNowPlayers == 2) {
@@ -1940,15 +1940,15 @@ public class NetVSBattleMode extends NetDummyMode {
 
 				if(playerSeatNumber >= 0) {
 					// 参戦
-					owner.engine[0].minidisplay = false;
+					owner.engine[0].displaysize = 0;
 					owner.engine[0].enableSE = true;
 					for(int i = 1; i < getPlayers(); i++) {
-						owner.engine[i].minidisplay = true;
+						owner.engine[i].displaysize = -1;
 					}
 				} else {
 					// 観戦
 					for(int i = 0; i < getPlayers(); i++) {
-						owner.engine[i].minidisplay = true;
+						owner.engine[i].displaysize = -1;
 						owner.engine[i].enableSE = false;
 					}
 				}
@@ -2118,7 +2118,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 					if((numMaxPlayers == 2) && (numNowPlayers == 2)) {
 						engine.isVisible = true;
-						engine.minidisplay = false;
+						engine.displaysize = 0;
 
 						if( (rulelockFlag) || ((i == 0) && (playerSeatNumber != -1)) ) {
 							engine.isNextVisible = true;

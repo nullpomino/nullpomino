@@ -311,84 +311,87 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
 				case 15:
+					newChainPower[playerID] = !newChainPower[playerID];
+					break;
+				case 16:
+					outlineType[playerID] += change;
+					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
+					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
+					break;
+				case 17:
+					chainDisplayType[playerID] += change;
+					if(chainDisplayType[playerID] < 0) chainDisplayType[playerID] = 3;
+					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
+					break;
+				case 18:
+					cascadeSlow[playerID] = !cascadeSlow[playerID];
+					break;
+				case 19:
+					big[playerID] = !big[playerID];
+					break;
+				case 20:
+					zenKeshiType[playerID] += change;
+					if(zenKeshiType[playerID] < 0) zenKeshiType[playerID] = 2;
+					if(zenKeshiType[playerID] > 2) zenKeshiType[playerID] = 0;
+					break;
+				case 21:
 					ojamaHard[playerID] += change;
 					if(ojamaHard[playerID] < 0) ojamaHard[playerID] = 9;
 					if(ojamaHard[playerID] > 9) ojamaHard[playerID] = 0;
 					break;
-				case 16:
+				case 22:
 					dangerColumnDouble[playerID] = !dangerColumnDouble[playerID];
 					break;
-				case 17:
+				case 23:
 					dangerColumnShowX[playerID] = !dangerColumnShowX[playerID];
 					break;
-				case 18:
+				case 24:
 					feverThreshold[playerID] += change;
 					if(feverThreshold[playerID] < 0) feverThreshold[playerID] = 9;
 					if(feverThreshold[playerID] > 9) feverThreshold[playerID] = 0;
 					break;
-				case 19:
+				case 25:
+					feverMapSet[playerID] += change;
+					if(feverMapSet[playerID] < 0) feverMapSet[playerID] = FEVER_MAPS.length-1;
+					if(feverMapSet[playerID] >= FEVER_MAPS.length) feverMapSet[playerID] = 0;
+					break;
+				case 26:
 					if (m >= 10) feverTimeMin[playerID] += change*10;
 					else feverTimeMin[playerID] += change;
 					if(feverTimeMin[playerID] < 1) feverTimeMin[playerID] = feverTimeMax[playerID];
 					if(feverTimeMin[playerID] > feverTimeMax[playerID]) feverTimeMin[playerID] = 1;
 					break;
-				case 20:
+				case 27:
 					if (m >= 10) feverTimeMax[playerID] += change*10;
 					else feverTimeMax[playerID] += change;
 					if(feverTimeMax[playerID] < feverTimeMin[playerID]) feverTimeMax[playerID] = 99;
 					if(feverTimeMax[playerID] > 99) feverTimeMax[playerID] = feverTimeMin[playerID];
 					break;
-				case 21:
-					feverMapSet[playerID] += change;
-					if(feverMapSet[playerID] < 0) feverMapSet[playerID] = FEVER_MAPS.length-1;
-					if(feverMapSet[playerID] >= FEVER_MAPS.length) feverMapSet[playerID] = 0;
-					break;
-				case 22:
+				case 28:
 					feverShowMeter[playerID] = !feverShowMeter[playerID];
 					break;
-				case 23:
+				case 29:
 					feverPointCriteria[playerID] += change;
 					if(feverPointCriteria[playerID] < 0) feverPointCriteria[playerID] = 2;
 					if(feverPointCriteria[playerID] > 2) feverPointCriteria[playerID] = 0;
 					break;
-				case 24:
+				case 30:
 					feverTimeCriteria[playerID] += change;
 					if(feverTimeCriteria[playerID] < 0) feverTimeCriteria[playerID] = 1;
 					if(feverTimeCriteria[playerID] > 1) feverTimeCriteria[playerID] = 0;
 					break;
-				case 25:
+				case 31:
 					feverPower[playerID] += change;
 					if(feverPower[playerID] < 0) feverPower[playerID] = 20;
 					if(feverPower[playerID] > 20) feverPower[playerID] = 0;
 					break;
-				case 26:
-					zenKeshiType[playerID] += change;
-					if(zenKeshiType[playerID] < 0) zenKeshiType[playerID] = 2;
-					if(zenKeshiType[playerID] > 2) zenKeshiType[playerID] = 0;
-					break;
-				case 27:
+				case 32:
 					if (feverThreshold[playerID] > 0)
 						ojamaMeter[playerID] = !ojamaMeter[playerID];
 					else
 						ojamaMeter[playerID] = true;
 					break;
-				case 28:
-					outlineType[playerID] += change;
-					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
-					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
-					break;
-				case 29:
-					chainDisplayType[playerID] += change;
-					if(chainDisplayType[playerID] < 0) chainDisplayType[playerID] = 3;
-					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
-					break;
-				case 30:
-					cascadeSlow[playerID] = !cascadeSlow[playerID];
-					break;
-				case 31:
-					newChainPower[playerID] = !newChainPower[playerID];
-					break;
-				case 32:
+				case 33:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -396,7 +399,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 33:
+				case 34:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -405,7 +408,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 34:
+				case 35:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -414,10 +417,6 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 					} else {
 						mapNumber[playerID] = -1;
 					}
-					break;
-				case 35:
-					//big[playerID] = !big[playerID];
-					big[playerID] = false;
 					break;
 				case 36:
 					bgmno += change;
@@ -521,7 +520,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 18) {
+			} else if(engine.statc[2] < 16) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
 						"MAX ATTACK", String.valueOf(maxAttack[playerID]),
@@ -529,44 +528,52 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"MIN CHAIN", String.valueOf(rensaShibari[playerID]),
 						"OJAMA RATE", String.valueOf(ojamaRate[playerID]),
 						"HURRYUP", (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
-						"HARD OJAMA", String.valueOf(ojamaHard[playerID]),
-						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
-						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
-				
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 27) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
-						"FEVER", (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS",
-						"F-MIN TIME", feverTimeMin[playerID] + "SEC",
-						"F-MAX TIME", feverTimeMax[playerID] + "SEC",
-						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase(),
-						"F-DISPLAY", feverShowMeter[playerID] ? "METER" : "COUNT",
-						"F-ADDPOINT", FEVER_POINT_CRITERIA_NAMES[feverPointCriteria[playerID]],
-						"F-ADDTIME", FEVER_TIME_CRITERIA_NAMES[feverTimeCriteria[playerID]],
-						"F-POWER", (feverPower[playerID] * 10) + "%");
-				drawMenu(engine, playerID, receiver, 16, EventReceiver.COLOR_CYAN, 26,
-						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
+						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 32) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_DARKBLUE, 27,
-						"SIDE METER", (ojamaMeter[playerID] || feverThreshold[playerID] == 0) ? "OJAMA" : "FEVER",
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
+			} else if(engine.statc[2] < 24) {
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_DARKBLUE, 16,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
 						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_CYAN, 31,
-						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
+				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_CYAN, 19,
+						"BIG", GeneralUtil.getONorOFF(big[playerID]));
+				drawMenu(engine, playerID, receiver, 8,
+						big[playerID] ? EventReceiver.COLOR_WHITE : EventReceiver.COLOR_CYAN, 20,
+						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]],
+						"HARD OJAMA", String.valueOf(ojamaHard[playerID]),
+						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
+						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
+
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
+			} else if(engine.statc[2] < 33) {
+				drawMenu(engine, playerID, receiver, 0,
+						big[playerID] ? EventReceiver.COLOR_WHITE : EventReceiver.COLOR_PURPLE, 24,
+						"FEVER", (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS");
+				drawMenu(engine, playerID, receiver, 2, (big[playerID] ||
+						(feverThreshold[playerID] == 0 && zenKeshiType[playerID] != ZENKESHI_MODE_FEVER)) ?
+						EventReceiver.COLOR_WHITE : EventReceiver.COLOR_PURPLE, 25,
+						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
+				drawMenu(engine, playerID, receiver, 4, (big[playerID] || feverThreshold[playerID] == 0) ?
+							EventReceiver.COLOR_WHITE : EventReceiver.COLOR_PURPLE, 26,
+						"F-MIN TIME", feverTimeMin[playerID] + "SEC",
+						"F-MAX TIME", feverTimeMax[playerID] + "SEC",
+						"F-DISPLAY", feverShowMeter[playerID] ? "METER" : "COUNT",
+						"F-ADDPOINT", FEVER_POINT_CRITERIA_NAMES[feverPointCriteria[playerID]],
+						"F-ADDTIME", FEVER_TIME_CRITERIA_NAMES[feverTimeCriteria[playerID]],
+						"F-POWER", (feverPower[playerID] * 10) + "%",
+						"SIDE METER", (ojamaMeter[playerID] || feverThreshold[playerID] == 0) ? "OJAMA" : "FEVER");
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 32,
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 33,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
-						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-						"BIG", GeneralUtil.getONorOFF(big[playerID]));
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 36,
+						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1));
+				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_DARKBLUE, 36,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 38,
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_GREEN, 38,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 				
@@ -582,10 +589,19 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {
+		if (big[playerID])
+		{
+			feverThreshold[playerID] = 0;
+			ojamaMeter[playerID] = true;
+		}
+		else if(feverThreshold[playerID] == 0)
+			ojamaMeter[playerID] = true;
+		else
+		{
+			feverTime[playerID] = feverTimeMin[playerID] * 60;
+			feverChain[playerID] = 5;
+		}
 		super.readyInit(engine, playerID);
-		if(feverThreshold[playerID] == 0) ojamaMeter[playerID] = true;
-		feverTime[playerID] = feverTimeMin[playerID] * 60;
-		feverChain[playerID] = 5;
 		return false;
 	}
 
@@ -665,7 +681,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		if (inFever[playerID])
 			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%2d",(feverTime[playerID]+59)/60),
 					feverTime[playerID] < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
-		else if (dangerColumnShowX[playerID])
+		else if (!big[playerID] && dangerColumnShowX[playerID])
 			drawX(engine, playerID);
 		if (ojamaHard[playerID] > 0)
 			drawHardOjama(engine, playerID);
@@ -784,6 +800,9 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			}
 			else
 				loadFeverMap(engine, playerID, 4);
+		}
+		if (zenKeshi[playerID] && zenKeshiType[playerID] != ZENKESHI_MODE_ON)
+		{
 			zenKeshi[playerID] = false;
 			zenKeshiDisplay[playerID] = 120;
 		}
@@ -832,7 +851,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 				ojamaFever[playerID] -= drop;
 			else
 				ojama[playerID] -= drop;
-			engine.field.garbageDrop(engine, drop, big[playerID], ojamaHard[playerID]);
+			engine.field.garbageDrop(engine, drop, false, ojamaHard[playerID]);
 			engine.field.setAllSkin(engine.getSkin());
 			return true;
 		}

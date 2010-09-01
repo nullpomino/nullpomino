@@ -511,7 +511,18 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
 		if(outlineType[playerID] == 2) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 
-		if (feverMapSet[playerID] > 0 && feverMapSet[playerID] < FEVER_MAPS.length)
+		if (big[playerID])
+		{
+			engine.fieldHeight = 6;
+			engine.fieldWidth = 3;
+			engine.field = null;
+			engine.colorClearSize = 3;
+			engine.displaysize = 1;
+			engine.createFieldIfNeeded();
+			zenKeshiType[playerID] = ZENKESHI_MODE_OFF;
+			ojamaHard[playerID] = 0;
+		}
+		else if (feverMapSet[playerID] >= 0 && feverMapSet[playerID] < FEVER_MAPS.length)
 			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
 		// マップ読み込み・リプレイ保存用にバックアップ
 		if(useMap[playerID]) {
@@ -555,10 +566,9 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	public void startGame(GameEngine engine, int playerID) {
 		engine.b2bEnable = false;
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		engine.big = big[playerID];
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
-		engine.colorClearSize = big[playerID] ? 12 : 4;
+		engine.colorClearSize = big[playerID] ? 3 : 4;
 		engine.ignoreHidden = true;
 
 		engine.tspinAllowKick = false;
@@ -587,9 +597,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		if (big[playerID])
-			avalanche >>= 2;
-
 		if (avalanche > 0) {
 			cleared[playerID] = true;
 
@@ -716,7 +723,12 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	protected void gameOverCheck(GameEngine engine, int playerID) {
 		if (engine.field == null)
 			return;
-		if (!engine.field.getBlockEmpty(2, 0) ||
+		if (big[playerID])
+		{
+			if (!engine.field.getBlockEmpty(1, 0))
+				engine.stat = GameEngine.STAT_GAMEOVER;
+		}
+		else if (!engine.field.getBlockEmpty(2, 0) ||
 				(dangerColumnDouble[playerID] && !engine.field.getBlockEmpty(3, 0)))
 			engine.stat = GameEngine.STAT_GAMEOVER;
 	}
@@ -812,7 +824,12 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 
 		int textHeight = 13;
 		if (engine.field != null)
-			textHeight = engine.field.getHeight()+1;
+		{
+			textHeight = engine.field.getHeight();
+			if (big[playerID])
+				textHeight <<= 1;
+			textHeight++;
+		}
 		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
 			receiver.drawMenuFont(engine, playerID, chain[playerID] > 9 ? 0 : 1, textHeight,
 					chain[playerID] + " CHAIN!", getChainColor(playerID));
