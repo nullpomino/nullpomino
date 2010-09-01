@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,6 +15,7 @@ import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -92,14 +96,15 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		labelPane.add(inputFileLabel);
 		labelPane.add(outputFileLabel);
 		labelPane.add(numIterationsLabel);
+		
 		JPanel fieldPane = new JPanel(new GridLayout(0, 1));
 
 		fieldPane.add(inputFileField);
 		fieldPane.add(outputFileField);
-		// fieldPane.add(numIterationsField);
 		fieldPane.add(numIterationsSpinner);
-		// fieldPane.add(goButton);
+		
 		JPanel pane = new JPanel(new BorderLayout());
+		
 		pane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 		JPanel buttonsPane = new JPanel();
@@ -111,13 +116,20 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		pane.add(buttonsPane, BorderLayout.SOUTH);
 		add(pane);
 	}
+	
+	
 
 	public void actionPerformed(ActionEvent e) {
 		if ("go".equals(e.getActionCommand())) {
+			goButton.setEnabled(false);
 			new RanksIterator(this, inputFileField.getText(),
 					outputFileField.getText(),
 					(Integer) numIterationsSpinner.getValue());
+			goButton.setEnabled(true);
+
+			
 		} else {
+			setEnabledBWButtons(false);
 			Ranks ranks = null;
 
 			FileInputStream fis = null;
@@ -143,8 +155,25 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 
 			}
 
-			new RanksResult(this, ranks, 100, "worsts".equals(e.getActionCommand()));
+			JDialog results=new RanksResult(this, ranks, 100, "worsts".equals(e.getActionCommand()));
+			results.addWindowListener(new WindowAdapter(){
+
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+					
+					setEnabledBWButtons(true);
+					
+				}				
+				
+			});
+			
 		}
+	}
+	public void setEnabledBWButtons(boolean b){
+		viewBestsButton.setEnabled(b);
+		viewWorstsButton.setEnabled(b);
+	
 	}
 
 	public static String getUIText(String str) {

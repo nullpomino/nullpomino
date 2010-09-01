@@ -3,6 +3,8 @@ package mu.nu.nullpo.tool.airanksgenerator;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -26,11 +28,20 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
+	private JFrame parent;
 	class SurfaceComparator implements Comparator<Integer>{
 
 		public int compare(Integer o1, Integer o2) {
 
-			return (factorCompare*(ranks.getRankValue(o2.intValue())-ranks.getRankValue(o1.intValue())));
+			if ((factorCompare*(ranks.getRankValue(o2.intValue())))>(factorCompare*ranks.getRankValue(o1.intValue()))){
+				return 1;
+			}
+			else if ((factorCompare*(ranks.getRankValue(o2.intValue())))<(factorCompare*ranks.getRankValue(o1.intValue()))){
+				return -1;
+			}
+			else {
+				return 0;
+			}
 		}
 
 
@@ -56,7 +67,13 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 			}
 			public int compareTo(SurfaceRank o) {
 
-				return (factorCompare*((o).getRank()-rank));
+				if ((factorCompare*((o).getRank()))>(factorCompare*rank)){
+					return 1;
+				}
+				else if ((factorCompare*((o).getRank()))<(factorCompare*rank)){
+					return -1;
+				}
+				else return 0;
 			}
 
 
@@ -156,10 +173,12 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	    }
 
 	public RanksResult(JFrame parent,Ranks ranks,int bestNRanks,boolean ascendant){
-
+	
 		super(parent,true);
+		this.parent=parent;
 		this.bestNRanks=bestNRanks;
 		this.ranks=ranks;
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		this.factorCompare=ascendant?-1:1;
 		this.maxJump=ranks.getMaxJump();
@@ -239,6 +258,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 
 	public void actionPerformed(ActionEvent e) {
+		
 		if ("next".equals(e.getActionCommand())) {
 			if (indexSurface<bestNRanks-1){
 	           indexSurface++;
@@ -304,5 +324,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 
 	}
+
 
 }

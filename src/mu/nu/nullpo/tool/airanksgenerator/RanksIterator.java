@@ -25,12 +25,9 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 	private Ranks ranks;
 	private Ranks ranksFrom;
 	private String outputFile;
-	//private JFrame parent;
 	private int numIterations;
 	private int iteration;
-	//private int size;
-	//private float lastError;
-	//private int lastErrorMax;
+	
 
 	 private MySwingWorker mySwingWorker;
 
@@ -68,11 +65,13 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 					e.printStackTrace();
 				}
         	}
+        	
         	if (cancelled){
         		System.out.println("cancelled !");
         		ranks=ranks.getRanksFrom();
         		return null;
         	}
+        	ranks.scaleRanks();
         	//lastError=ranks.getErrorPercentage();
         	//lastErrorMax=ranks.getMaxError();
         	if (n!=numIterations-1){
@@ -80,7 +79,7 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         	  ranksFrom.setRanksFrom(ranks);
         	  ranks=ranksFrom;
         	}
-
+        	
         	}
 
             return null;
@@ -133,7 +132,7 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 
 	super(parent,AIRanksGenerator.getUIText("Progress_Message"),"",0,100);
 	this.outputFile=outputFile;
-
+	
 	this.numIterations=numIterations;
 	FileInputStream fis = null;
 	ObjectInputStream in = null;

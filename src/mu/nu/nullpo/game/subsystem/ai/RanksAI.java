@@ -109,18 +109,19 @@ public class RanksAI extends DummyAI implements Runnable {
 	private int currentHeightMin;
 	private int currentHeightMax;
 
-	private static int THRESHOLD_FORCE_4LINES=10;
-	private static int MAX_PREVIEWS=2;
+	private static int THRESHOLD_FORCE_4LINES=8;
+	private static int MAX_PREVIEWS=3;
 
 	private int[] heights;
 	private Score bestScore;
 	private boolean gameOver;
-
+	private boolean plannedToUseIPiece;
 
 	public class Score{
 
-		public int rankStacking;
+		public float rankStacking;
 		public int distanceToSet;
+		public boolean iPieceUsedInTheStack;
 		public Score(){
 
 			rankStacking=0;
@@ -519,7 +520,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		 
 		 
 		 // If we are able to score a 4-Line and if the maximum height is dangerously high, then force doing a tetris
-		 if (pieceNow==Piece.PIECE_I &&currentHeightMax>=THRESHOLD_FORCE_4LINES && currentHeightMin>=4){
+		 if (pieceNow==Piece.PIECE_I &&currentHeightMax>=THRESHOLD_FORCE_4LINES && currentHeightMin>=4 &&!plannedToUseIPiece){
 		
 			 //Rightmost column
 			 bestX = ranks.getStackWidth();
@@ -552,7 +553,9 @@ public class RanksAI extends DummyAI implements Runnable {
 					 //If the score is better than the previos best score, change it, and record the chosen move for further application by setControl 
 					 if(score.compareTo(bestScore)>0) {
 						 log.debug("MAIN new best piece !");
-
+						 if (pieceNow==Piece.PIECE_I){
+							 bestScore.iPieceUsedInTheStack=true;
+						 }
 						 bestHold = false;
 						 bestX = x;
 						 bestRt = rt;
@@ -588,6 +591,8 @@ public class RanksAI extends DummyAI implements Runnable {
 
 			 }
 		 }
+		 if (numPreviews>0)
+			 plannedToUseIPiece=bestScore.iPieceUsedInTheStack;
 
 	 }			
 
@@ -669,7 +674,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				 System.arraycopy(pieces, 1, pieces2, 0, pieces.length-1);
 
 				 // If current piece is I Piece,  and minimum height is greater 4 and maximum height is greater than threshold, force the 4-Line 
-				 if (pieceNow==Piece.PIECE_I && heightMax>=THRESHOLD_FORCE_4LINES && heightMin>=4){
+				 if (pieceNow==Piece.PIECE_I && heightMax>=THRESHOLD_FORCE_4LINES && heightMin>=4 &&!plannedToUseIPiece){
 					 int rt2=1;
 					 int maxX2=ranks.getStackWidth()-1;
 					// Recursive call to thinkMain to examine that move 
@@ -749,6 +754,9 @@ public class RanksAI extends DummyAI implements Runnable {
 			 else {
 				
 				 score.computeScore(heightsWork);
+				 if ((pieces[0]==Piece.PIECE_I)&&(x<ranks.getStackWidth()) && numPreviews<MAX_PREVIEWS){
+					 score.iPieceUsedInTheStack=true;
+				 }
 				 return score;
 			 }
 		 }	

@@ -91,8 +91,7 @@ public class Ranks implements Serializable{
 		{{1,1,1},{2},{1,1,1},{2}},     //I3
 		{{1,1},{1,0},{0,1},{1,1}}      //L3
 	};
-public static final float DAMPING_FACTOR=(float) 0.85;
-private int [] ranks;
+private int  [] ranks;
 
 
 
@@ -102,8 +101,12 @@ private int size;
 private Ranks ranksFrom;
 private int maxJump;
 private int error;
-private int maxError;
-public int getMaxError() {
+private int  maxError;
+private int rankMin;
+private int rankMax;
+
+
+public float getMaxError() {
 	return maxError;
 }
 
@@ -122,12 +125,12 @@ public int getCompletionPercentage(){
 public boolean completionPercentageIncrease(){
 	return (0==(completion % (size/100)) && completion!=0);
 }
-public float getErrorPercentage(){
-	float errorLong= error/completion;
+public float  getErrorPercentage(){
+	long  errorLong= error/completion;
 	  long maxErrorPossible=((long)Integer.MAX_VALUE-(long)Integer.MIN_VALUE);
 	   float errorPercentage= ((float)errorLong/(float)maxErrorPossible);
 	   errorPercentage*=100;
-	return errorPercentage;
+	return  errorPercentage;
 }
 public  int getError() {
 	return error;
@@ -141,16 +144,23 @@ public int getStackWidth() {
 public Ranks(int maxJump,int stackWidth){
 	 this.maxJump=maxJump;
 	 base=2*maxJump+1;
+	 
 	 this.stackWidth=stackWidth;
+	 
 	 surfaceWidth=stackWidth-1;
-	size=(int) Math.pow(base,surfaceWidth);
+	
+	
+	 size=(int) Math.pow(base,surfaceWidth);
 	ranks=new int[size];
 	completion=0;
 	error=0;
 	maxError=0;
-	Arrays.fill(ranks,Integer.MAX_VALUE/Piece.PIECE_STANDARD_COUNT);
+	rankMin=Integer.MAX_VALUE;
+	rankMax=0;
+	Arrays.fill(ranks,Integer.MAX_VALUE);
 	
 }
+
 public Ranks(Ranks rankFrom){
 	this.ranksFrom=rankFrom;
 	this.maxJump=ranksFrom.getMaxJump();
@@ -158,11 +168,13 @@ public Ranks(Ranks rankFrom){
 	
 	 this.stackWidth=ranksFrom.getStackWidth();
 	 surfaceWidth=stackWidth-1;
-	size=(int) Math.pow(2*maxJump+1,stackWidth-1);
+	 size=(int) Math.pow(2*maxJump+1,stackWidth-1);
 	ranks=new int[size];
 	completion=0;
 	error=0;
 	maxError=0;
+	rankMin=Integer.MAX_VALUE;
+	rankMax=0;
 	
 	
 }
@@ -171,6 +183,9 @@ public void setRanksFrom(Ranks ranksfrom){
 	error=0;
 	maxError=0;
     completion=0;
+    rankMin=Integer.MAX_VALUE;
+	rankMax=0;
+
 }
 public Ranks getRanksFrom(){
 	return ranksFrom;
@@ -182,7 +197,7 @@ public int getSize(){
 	return size;
 }
 public int getRankValue(int surface){
-	return ranks[surface];
+		return ranks[surface];
 }
 public int encode(int [] surface){
 	int surfaceNum=0;
@@ -194,9 +209,15 @@ public int encode(int [] surface){
 		return surfaceNum;
 }
 
+private void setRankValue(int surface,int value){
+	
+	ranks[surface]= value;
+	
+}
+
 public void setRank(int [] surface, int []surfaceDecodedWork){
 	int currentSurfaceNum=encode(surface);
-	ranks[currentSurfaceNum]=getRank(surface,surfaceDecodedWork);
+	setRankValue(currentSurfaceNum,getRank(surface,surfaceDecodedWork));
 	synchronized(this){
 		completion++;
 		int errorCurrent=Math.abs(ranks[currentSurfaceNum]-ranksFrom.getRankValue(currentSurfaceNum));
@@ -208,6 +229,39 @@ public void setRank(int [] surface, int []surfaceDecodedWork){
 	}
 }
 
+public void scaleRanks(){
+	/*int pas =(Integer.MAX_VALUE-rankMin)/4;
+	 int n1=0;
+	 int n2=0;
+	 int n3=0;
+	 int n4=0;*/
+	
+	for (int i=0;i<size;i++){
+		long newValue=((long)(ranks[i]-rankMin))*((long)(Integer.MAX_VALUE-rankMin));
+		newValue=newValue/(rankMax-rankMin);
+		
+		newValue=Math.max(Math.min(newValue,Integer.MAX_VALUE-rankMin),0);
+		newValue=newValue+rankMin;
+		/*if (newValue/pas==0){
+			n1++;
+			
+		}
+		if (newValue/pas==1){
+			n2++;
+			
+		}
+		if (newValue/pas==2){
+			n3++;
+			
+		}
+		if (newValue/pas==3){
+			n4++;
+			
+		}*/
+		ranks[i]=(int)newValue;
+	}
+	//System.out.println("n1 = "+n1+" n2 = "+n2+" n3 = "+n3+" n4 = "+n4);
+}
 public void decode(int surfaceNum,int []surface ){
 	
 	int surfaceNumWork=surfaceNum;
@@ -221,7 +275,8 @@ public void decode(int surfaceNum,int []surface ){
 
 
 public void iterateSurface(int [] surface,int []surfaceDecodedWork){
-	
+	setRank(surface,surfaceDecodedWork);
+		
 	int retenue=1;
 	for (int i=0;i<surfaceWidth;i++){
 		if (retenue==0)
@@ -239,20 +294,30 @@ public void iterateSurface(int [] surface,int []surfaceDecodedWork){
 		   }
 		}
 	}
-	setRank(surface,surfaceDecodedWork);
 	
 }
 private int getRank(int [] surface,int [] surfaceDecodedWork){
-	int sum=0;
+	long sum=0;
 	
 	
 	for (int p=0;p<Piece.PIECE_STANDARD_COUNT;p++){
-		sum+=(getRankPiece(surface,surfaceDecodedWork,p)/Piece.PIECE_STANDARD_COUNT);
+		sum+=getRankPiece(surface,surfaceDecodedWork,p);
 	}
 	int result=0;
-	result=(int) ((1-DAMPING_FACTOR)*Integer.MAX_VALUE/Piece.PIECE_STANDARD_COUNT+DAMPING_FACTOR*(sum));
-	if (result<0)
+	result=(int) (sum/Piece.PIECE_STANDARD_COUNT);
+	synchronized(this){
+	if (result>rankMax){
+		rankMax=result;
+	}
+	if (result<rankMin){
+		 rankMin=result;
+	}
+	}
+	
+	if (result<0){
 		result=0;
+		System.out.println("ahhhhhh");
+	}
 	return result;
 }
 private int getRankPiece(int [] surface, int [] surfaceDecodedWork ,int piece){
@@ -286,50 +351,43 @@ public boolean surfaceAddPossible(int []surfaceDecodedWork, int piece, int rotat
 		   surfaceDecodedWork[x-1]+=PIECES_HEIGHTS[piece][rotation][0];
 		  if (surfaceDecodedWork[x-1]>maxJump){
 			  
-			  surfaceDecodedWork[x-1]=maxJump;
-			  addPossible=false;
+			   return false;
 		  }
 		  else if (surfaceDecodedWork[x-1]<-maxJump){
-			  surfaceDecodedWork[x-1]=-maxJump;
-			  addPossible=false;
+			   return false;
 			  
 		  }
-		  
-		  
+		  		  
 		  
 	  }
-	  if (addPossible){
+	
 	  
 		  for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
-			  surfaceDecodedWork[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1];
+			  surfaceDecodedWork[x+x1]+=(PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1]);
 			  if (surfaceDecodedWork[x+x1]>maxJump){
-				  surfaceDecodedWork[x+x1]=maxJump;
 				  
-				  addPossible=false;
-				  break;
+				   return false;
+				  
 				  
 			  }
 			  else if(surfaceDecodedWork[x+x1]<-maxJump) {
-				  surfaceDecodedWork[x+x1]=-maxJump;
 				  
-				  addPossible=false;
-				  break;
+				  return false;
+				  
 				  
 			  }
 		  }
-	  }
 	  
-	  if ( addPossible && x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
+	  
+	  if (x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
 		  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]-=PIECES_HEIGHTS[piece][rotation][PIECES_WIDTHS[piece][rotation]-1];
 		  if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]>maxJump){
-			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=maxJump;
-			 
-			  addPossible=false;
+			  
+			  return false;
 			  
 		  }
 		  else if ( surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]<-maxJump){
-			  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=-maxJump;
-			  addPossible=false;
+			   return false;
 			  
 		  }
 	  }
@@ -373,12 +431,8 @@ private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int p
 	      if (fits){
 	    	  boolean addPossible=surfaceAddPossible(surfaceDecodedWork,piece,rotation,x);
 	    	  if (addPossible){
-	    		  int newSurface=0;
-	    		  int factor=1;
-	    		  for (int i=0;i<surfaceWidth;i++){
-	    			  newSurface+=(surfaceDecodedWork[i]+maxJump)*factor;
-	    			  factor*=base;
-	    		  }
+	    		  int newSurface=encode(surfaceDecodedWork);
+
 	    		  int rank=ranksFrom.getRankValue(newSurface);
 	    		  if (rank>bestRank){
 	    			  bestRank=rank;

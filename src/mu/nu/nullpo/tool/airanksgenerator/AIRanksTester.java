@@ -21,7 +21,7 @@ public class AIRanksTester {
 	}
 	public static void main(String[] args) {
 
-		AIRanksTester tester=new AIRanksTester(4 );
+		AIRanksTester tester=new AIRanksTester(100 );
 		tester.test();
 	}
 	private void init(){
