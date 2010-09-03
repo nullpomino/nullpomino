@@ -124,7 +124,6 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 
 	/** ??? */
 	private int xyzzy;
-	private boolean plugh;
 	
 	/*
 	 * Mode  name
@@ -158,7 +157,6 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		rankingTime = new int[3][FEVER_MAPS.length][RANKING_MAX];
 		
 		xyzzy = 0;
-		plugh = false;
 		fastenable = 0;
 		fastinuse = false;
 		previewChain = 5;
@@ -193,7 +191,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		// Menu
 		if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, plugh ? 6 : 3);
+			int change = updateCursor(engine, (xyzzy == 573) ? 6 : 3);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -204,7 +202,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					mapSet += change;
 					if(mapSet < 0) mapSet = FEVER_MAPS.length - 1;
 					if(mapSet > FEVER_MAPS.length - 1) mapSet = 0;
-					if (plugh) loadMapSetFever(engine, playerID, mapSet, true);
+					if (xyzzy == 573) loadMapSetFever(engine, playerID, mapSet, true);
 					break;
 				case 1:
 					outlinetype += change;
@@ -240,7 +238,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 				if (mapSet == 4) numColors = 3;
 			}
 
-			if (xyzzy != -1) {
+			if (xyzzy != 573) {
 				if (engine.ctrl.isPush(Controller.BUTTON_UP)) {
 					if (xyzzy == 1)
 						xyzzy++;
@@ -268,13 +266,12 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			}
 
 			if (engine.ctrl.isPush(Controller.BUTTON_A)) {
-				if (plugh && engine.statc[2] > 4) {
+				if ((xyzzy == 573) && engine.statc[2] > 4) {
 					loadMapSetFever(engine, playerID, mapSet, true);
 					loadFeverMap(engine, playerID, previewChain, previewSubset);
 				} else if (xyzzy == 9) {
 					engine.playSE("levelup");
-					xyzzy = -1;
-					plugh = true;
+					xyzzy = 573;
 					loadMapSetFever(engine, playerID, mapSet, true);
 				} else if (engine.statc[3] >= 5) {
 					// 決定
@@ -323,7 +320,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					"OUTLINE", strOutline,
 					"COLORS", String.valueOf(numColors),
 					"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType]);
-			if (plugh)
+			if (xyzzy == 573)
 				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE, 4, "FAST", FAST_NAMES[fastenable]);
 		} else {
 			receiver.drawMenuFont(engine, playerID, 0, 13, "MAP PREVIEW", EventReceiver.COLOR_YELLOW);
