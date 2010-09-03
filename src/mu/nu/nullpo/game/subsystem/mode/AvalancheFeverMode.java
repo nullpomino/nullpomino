@@ -109,6 +109,22 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	
 	/** Level at start of chain */
 	private int chainLevelMultiplier;
+
+	/** Names of fast-fowards settings */
+	private static final String[] FAST_NAMES = {"OFF", "CLEAR", "ALL"};
+	
+	/** Fast-forward settings for debug use */
+	private int fastenable;
+	
+	/** Flag set when fast-forward is in use */
+	private boolean fastinuse;
+	
+	/** Indices for map previews */
+	private int previewChain, previewSubset;
+
+	/** ??? */
+	private int xyzzy;
+	private boolean plugh;
 	
 	/*
 	 * Mode  name
@@ -126,7 +142,6 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		super.playerInit(engine, playerID);
 		
 		cleared = false;
-		zenKeshi = false;
 		boardsPlayed = 0;
 		
 		timeLimit = TIME_LIMIT;
@@ -141,6 +156,13 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		rankingRank = -1;
 		rankingScore = new int[3][FEVER_MAPS.length][RANKING_MAX];
 		rankingTime = new int[3][FEVER_MAPS.length][RANKING_MAX];
+		
+		xyzzy = 0;
+		plugh = false;
+		fastenable = 0;
+		fastinuse = false;
+		previewChain = 5;
+		previewSubset = 0;
 
 		if(owner.replayMode == false) {
 			loadSetting(owner.modeConfig);
@@ -171,7 +193,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		// Menu
 		if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 3);
+			int change = updateCursor(engine, plugh ? 6 : 3);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -182,6 +204,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					mapSet += change;
 					if(mapSet < 0) mapSet = FEVER_MAPS.length - 1;
 					if(mapSet > FEVER_MAPS.length - 1) mapSet = 0;
+					if (plugh) loadMapSetFever(engine, playerID, mapSet, true);
 					break;
 				case 1:
 					outlinetype += change;
@@ -198,21 +221,77 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					if(chainDisplayType < 0) chainDisplayType = 2;
 					if(chainDisplayType > 2) chainDisplayType = 0;
 					break;
+				case 4:
+					fastenable += change;
+					if(fastenable < 0) fastenable = 2;
+					if(fastenable > 2) fastenable = 0;
+					break;
+				case 5:
+					previewSubset += change;
+					if(previewSubset < 0) previewSubset = mapSubsets.length-1;
+					if(previewSubset >= mapSubsets.length) previewSubset = 0;
+					break;
+				case 6:
+					previewChain += change;
+					if(previewChain < feverChainMin) previewChain = feverChainMax;
+					if(previewChain > feverChainMax) previewChain = feverChainMin;
+					break;
 				}
 				if (mapSet == 4) numColors = 3;
 			}
 
-			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
-				engine.playSE("decide");
-				saveSetting(owner.modeConfig);
-				receiver.saveModeConfig(owner.modeConfig);
-				return false;
+			if (xyzzy != -1) {
+				if (engine.ctrl.isPush(Controller.BUTTON_UP)) {
+					if (xyzzy == 1)
+						xyzzy++;
+					else if (xyzzy != 2)
+						xyzzy = 1;
+				}
+				if (engine.ctrl.isPush(Controller.BUTTON_DOWN)) {
+					if (xyzzy == 2 || xyzzy == 3)
+						xyzzy++;
+					else
+						xyzzy = 0;
+				}
+				if (engine.ctrl.isPush(Controller.BUTTON_LEFT)) {
+					if (xyzzy == 4 || xyzzy == 6)
+						xyzzy++;
+					else
+						xyzzy = 0;
+				}
+				if (engine.ctrl.isPush(Controller.BUTTON_RIGHT)) {
+					if (xyzzy == 5 || xyzzy == 7)
+						xyzzy++;
+					else
+						xyzzy = 0;
+				}
 			}
 
-			// Cancel
+			if (engine.ctrl.isPush(Controller.BUTTON_A)) {
+				if (plugh && engine.statc[2] > 4) {
+					loadMapSetFever(engine, playerID, mapSet, true);
+					loadFeverMap(engine, playerID, previewChain, previewSubset);
+				} else if (xyzzy == 9) {
+					engine.playSE("levelup");
+					xyzzy = -1;
+					plugh = true;
+					loadMapSetFever(engine, playerID, mapSet, true);
+				} else if (engine.statc[3] >= 5) {
+					// 決定
+					engine.playSE("decide");
+					saveSetting(owner.modeConfig);
+					receiver.saveModeConfig(owner.modeConfig);
+					return false;
+				}
+			}
+
 			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
-				engine.quitflag = true;
+				if (xyzzy == 8)
+					xyzzy++;
+				else {
+					// Cancel
+					engine.quitflag = true;
+				}
 			}
 
 			engine.statc[3]++;
@@ -238,11 +317,21 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
 		
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),
-				"OUTLINE", strOutline,
-				"COLORS", String.valueOf(numColors),
-				"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType]);
+		if (engine.statc[2] <= 4) {
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+					"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),
+					"OUTLINE", strOutline,
+					"COLORS", String.valueOf(numColors),
+					"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType]);
+			if (plugh)
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE, 4, "FAST", FAST_NAMES[fastenable]);
+		} else {
+			receiver.drawMenuFont(engine, playerID, 0, 13, "MAP PREVIEW", EventReceiver.COLOR_YELLOW);
+			receiver.drawMenuFont(engine, playerID, 0, 14, "A:DISPLAY", EventReceiver.COLOR_GREEN);
+			drawMenu(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, 5,
+					"SUBSET", mapSubsets[previewSubset].toUpperCase(),
+					"CHAIN", String.valueOf(previewChain));
+		}
 	}
 
 	/*
@@ -308,6 +397,9 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 18, "CLEARED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 19, String.valueOf(blocksCleared));
 			
+			if (!engine.gameActive)
+				return;
+
 			int textHeight = 13;
 			if (engine.field != null)
 				textHeight = engine.field.getHeight()+1;
@@ -367,6 +459,13 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if(timeLimit <= 1800) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		if(timeLimit <= 900) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(timeLimit <= 300) engine.meterColor = GameEngine.METER_COLOR_RED;
+
+		if (!fastinuse && engine.ctrl.isPress(Controller.BUTTON_F) &&
+				((fastenable == 2) || (engine.stat == GameEngine.STAT_LINECLEAR && fastenable == 1))) {
+			fastinuse = true;
+			for (int i = 0; i < 4; i++) engine.owner.updateAll();
+			fastinuse = false;
+		}
 	}
 
 	protected int calcOjama(int score, int avalanche, int pts, int multiplier)
@@ -544,10 +643,13 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	}
 
 	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
+		loadFeverMap(engine, playerID, chain, engine.random.nextInt(mapSubsets.length));
+	}
+
+	private void loadFeverMap(GameEngine engine, int playerID, int chain, int subset) {
 		engine.createFieldIfNeeded();
 		engine.field.reset();
-		engine.field.stringToField(propFeverMap.getProperty(
-				mapSubsets[engine.random.nextInt(mapSubsets.length)] +
+		engine.field.stringToField(propFeverMap.getProperty(mapSubsets[subset] +
 				"." + numColors + "colors." + chain + "chain"));
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
