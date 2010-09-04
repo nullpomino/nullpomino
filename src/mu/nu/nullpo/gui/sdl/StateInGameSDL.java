@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
+import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.util.CustomProperties;
@@ -142,7 +143,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			// AI
 			String aiName = NullpoMinoSDL.propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
-				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
 				gameManager.engine[i].ai = aiObj;
 				gameManager.engine[i].aiMoveDelay = NullpoMinoSDL.propGlobal.getProperty(i + ".aiMoveDelay", 0);
 				gameManager.engine[i].aiThinkDelay = NullpoMinoSDL.propGlobal.getProperty(i + ".aiThinkDelay", 0);
@@ -204,11 +205,13 @@ public class StateInGameSDL extends BaseStateSDL {
 			// AI（リプレイ追記用）
 			String aiName = NullpoMinoSDL.propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
-				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
 				gameManager.engine[i].ai = aiObj;
 				gameManager.engine[i].aiMoveDelay = NullpoMinoSDL.propGlobal.getProperty(i + ".aiMoveDelay", 0);
 				gameManager.engine[i].aiThinkDelay = NullpoMinoSDL.propGlobal.getProperty(i + ".aiThinkDelay", 0);
 				gameManager.engine[i].aiUseThread = NullpoMinoSDL.propGlobal.getProperty(i + ".aiUseThread", true);
+				gameManager.engine[i].aiShowHint = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowHint", false);
+				
 			}
 
 			// Initialization処理

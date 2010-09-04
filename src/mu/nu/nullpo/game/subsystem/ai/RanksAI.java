@@ -53,12 +53,12 @@ public class RanksAI extends DummyAI implements Runnable {
 	public boolean bestHold;
 
 
-	public int bestX;
+	//public int bestX;
 
-	public int bestY;
+	//public int bestY;
 
 
-	public int bestRt;
+	//public int bestRt;
 
 
 	public int bestXSub;
@@ -94,10 +94,10 @@ public class RanksAI extends DummyAI implements Runnable {
 	public int thinkDelay;
 
 
-	public int thinkCurrentPieceNo;
+	//public int thinkCurrentPieceNo;
 
 
-	public int thinkLastPieceNo;
+	//public int thinkLastPieceNo;
 
 
 	public volatile boolean threadRunning;

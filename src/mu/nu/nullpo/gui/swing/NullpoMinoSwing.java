@@ -71,6 +71,7 @@ import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
+import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
@@ -789,11 +790,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			// AI
 			String aiName = propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
-				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
 				gameManager.engine[i].ai = aiObj;
 				gameManager.engine[i].aiMoveDelay = propGlobal.getProperty(i + ".aiMoveDelay", 0);
 				gameManager.engine[i].aiThinkDelay = propGlobal.getProperty(i + ".aiThinkDelay", 0);
 				gameManager.engine[i].aiUseThread = propGlobal.getProperty(i + ".aiUseThread", true);
+				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint", false);
 			}
 
 			// Initialization処理
@@ -856,11 +858,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			// AI（リプレイ追記用）
 			String aiName = propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
-				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
 				gameManager.engine[i].ai = aiObj;
 				gameManager.engine[i].aiMoveDelay = propGlobal.getProperty(i + ".aiMoveDelay", 0);
 				gameManager.engine[i].aiThinkDelay = propGlobal.getProperty(i + ".aiThinkDelay", 0);
 				gameManager.engine[i].aiUseThread = propGlobal.getProperty(i + ".aiUseThread", true);
+				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint",false);
 			}
 
 			// Initialization処理
@@ -944,11 +947,13 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			// AI
 			String aiName = NullpoMinoSwing.propGlobal.getProperty(0 + ".ai", "");
 			if(aiName.length() > 0) {
-				AIPlayer aiObj = GeneralUtil.loadAIPlayer(aiName);
+				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
 				gameManager.engine[0].ai = aiObj;
 				gameManager.engine[0].aiMoveDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiMoveDelay", 0);
 				gameManager.engine[0].aiThinkDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiThinkDelay", 0);
 				gameManager.engine[0].aiUseThread = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiUseThread", true);
+				gameManager.engine[0].aiShowHint = NullpoMinoSwing.propGlobal.getProperty(0+".aiShowHint",false);
+			
 			}
 
 			// Initialization for each player

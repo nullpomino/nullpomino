@@ -74,6 +74,8 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
+	
+	protected boolean aiShowHint= false;
 
 	/** カーソル位置 */
 	protected int cursor = 0;
@@ -101,6 +103,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		aiMoveDelay = NullpoMinoSDL.propGlobal.getProperty(player + ".aiMoveDelay", 0);
 		aiThinkDelay = NullpoMinoSDL.propGlobal.getProperty(player + ".aiThinkDelay", 0);
 		aiUseThread = NullpoMinoSDL.propGlobal.getProperty(player + ".aiUseThread", true);
+		aiShowHint = NullpoMinoSDL.propGlobal.getProperty(player + ".aiShowHint", false);
 
 		aiID = -1;
 		for(int i = 0; i < aiPathList.length; i++) {
@@ -181,6 +184,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 4, "AI MOVE DELAY:" + aiMoveDelay, (cursor == 1));
 		NormalFontSDL.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
 		NormalFontSDL.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
+		NormalFontSDL.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
 
 		NormalFontSDL.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFontSDL.COLOR_GREEN);
 	}
@@ -194,13 +198,13 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 3;
+			if(cursor < 0) cursor = 4;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_DOWN)) {
 			cursor++;
-			if(cursor > 3) cursor = 0;
+			if(cursor > 4) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 

@@ -610,6 +610,116 @@ public class RendererSwing extends EventReceiver {
 			}
 		}
 	}
+	
+	protected void drawHintPiece(int x, int y, GameEngine engine, float scale) {
+		if (engine.nowPieceObject!=null){
+		Piece piece = new Piece(engine.nowPieceObject);
+		piece.direction=engine.aiHintRt;
+		piece.updateConnectData();
+		int blksize = (int)(16 * scale);
+
+		if(piece != null) {
+			for(int i = 0; i < piece.getMaxBlock(); i++) {
+				if(!piece.big) {
+					int x2 = engine.aiHintX + piece.dataX[piece.direction][i];
+					int y2 = engine.aiHintY + piece.dataY[piece.direction][i];
+
+					if(y2 >= 0) {
+						
+							Block blkTemp = piece.block[i];
+							int x3 = x + (x2 * blksize);
+							int y3 = y + (y2 * blksize);
+							int ls = (blksize-1);
+
+							int colorID = blkTemp.getDrawColor();
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
+							Color color = getColorByID(colorID);
+							graphics.setColor(color);
+							//graphics.fillRect(x3, y3, blksize, blksize);
+							graphics.setColor(Color.white);
+
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+								graphics.drawLine(x3, y3, x3 + ls, y3);
+								graphics.drawLine(x3, y3 + 1, x3 + ls, y3 + 1);
+							}
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+								graphics.drawLine(x3, y3 + ls, x3 + ls, y3 + ls);
+								graphics.drawLine(x3, y3 - 1 + ls, x3 + ls, y3 - 1 + ls);
+							}
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
+								graphics.drawLine(x3, y3, x3, y3 + ls);
+								graphics.drawLine(x3 + 1, y3, x3 + 1, y3 + ls);
+							}
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
+								graphics.drawLine(x3 + ls, y3, x3 + ls, y3 + ls);
+								graphics.drawLine(x3 - 1 + ls, y3, x3 - 1 + ls, y3 + ls);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+								graphics.fillRect(x3, y3, 2, 2);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+								graphics.fillRect(x3, y3 + (blksize-2), 2, 2);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+								graphics.fillRect(x3 + (blksize-2), y3, 2, 2);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+								graphics.fillRect(x3 + (blksize-2), y3 + (blksize-2), 2, 2);
+							}
+						
+					}
+				} else {
+					int x2 = engine.aiHintX + (piece.dataX[piece.direction][i] * 2);
+					int y2 = engine.aiHintY + (piece.dataY[piece.direction][i] * 2);
+
+				
+						Block blkTemp = piece.block[i];
+						int x3 = x + (x2 * blksize);
+						int y3 = y + (y2 * blksize);
+						int ls = (blksize * 2 -1);
+
+						int colorID = blkTemp.getDrawColor();
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
+						Color color = getColorByID(colorID);
+						graphics.setColor(color);
+						//graphics.fillRect(x3, y3, blksize * 2, blksize * 2);
+						graphics.setColor(Color.white);
+
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							graphics.drawLine(x3, y3, x3 + ls, y3);
+							graphics.drawLine(x3, y3 + 1, x3 + ls, y3 + 1);
+						}
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							graphics.drawLine(x3, y3 + ls, x3 + ls, y3 + ls);
+							graphics.drawLine(x3, y3 - 1 + ls, x3 + ls, y3 - 1 + ls);
+						}
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
+							graphics.drawLine(x3, y3, x3, y3 + ls);
+							graphics.drawLine(x3 + 1, y3, x3 + 1, y3 + ls);
+						}
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
+							graphics.drawLine(x3 + ls, y3, x3 + ls, y3 + ls);
+							graphics.drawLine(x3 - 1 + ls, y3, x3 - 1 + ls, y3 + ls);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							graphics.fillRect(x3, y3, 2, 2);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							graphics.fillRect(x3, y3 + (blksize*2-2), 2, 2);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							graphics.fillRect(x3 + (blksize*2-2), y3, 2, 2);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							graphics.fillRect(x3 + (blksize*2-2), y3 + (blksize*2-2), 2, 2);
+						}
+					
+				}
+			}
+		}
+		}
+	}
+
 
 	/**
 	 * フィールドのBlockを描画
@@ -1069,13 +1179,18 @@ public class RendererSwing extends EventReceiver {
 			if(engine.displaysize == 1) {
 				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 2.0f);
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
+				if((engine.ai!=null) && (engine.aiShowHint)&& engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 2.0f); 
 				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
 			} else if(engine.displaysize == 0) {
 				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 1.0f);
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
+				if((engine.ai!=null) && (engine.aiShowHint ) && engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 1.0f); 
+				
 				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 			} else {
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
+				if((engine.ai!=null) && (engine.aiShowHint) &&engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 4, engine, 0.5f); 
+				
 				drawCurrentPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
 			}
 		}

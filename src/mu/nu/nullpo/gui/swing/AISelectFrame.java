@@ -88,6 +88,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
+	
+	protected boolean aiShowHint = false;
 
 	/** AI一覧リストボックス */
 	protected JList listboxAI;
@@ -100,6 +102,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	/** AIでスレッド使用 check ボックス */
 	protected JCheckBox chkboxAIUseThread;
+	
+	protected JCheckBox chkBoxAIShowHint;
 
 	/**
 	 * Constructor
@@ -138,6 +142,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		aiMoveDelay = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiMoveDelay", 0);
 		aiThinkDelay = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiThinkDelay", 0);
 		aiUseThread = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiUseThread", true);
+		aiShowHint = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiShowHint", false);
 
 		aiID = -1;
 		listboxAI.clearSelection();
@@ -152,6 +157,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		txtfldAIMoveDelay.setText(String.valueOf(aiMoveDelay));
 		txtfldAIThinkDelay.setText(String.valueOf(aiThinkDelay));
 		chkboxAIUseThread.setSelected(aiUseThread);
+		chkBoxAIShowHint.setSelected(aiShowHint);
 	}
 
 	/**
@@ -265,6 +271,11 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		chkboxAIUseThread.setAlignmentX(LEFT_ALIGNMENT);
 		chkboxAIUseThread.setMnemonic('T');
 		this.add(chkboxAIUseThread);
+		
+		chkBoxAIShowHint = new JCheckBox(NullpoMinoSwing.getUIText("AISelect_CheckboxAIShowHint"));
+		chkBoxAIShowHint.setAlignmentX(LEFT_ALIGNMENT);
+		chkBoxAIShowHint.setMnemonic('H');
+		this.add(chkBoxAIShowHint);
 
 		//  button類
 		JPanel panelButtons = new JPanel();
@@ -312,12 +323,15 @@ public class AISelectFrame extends JFrame implements ActionListener {
 				aiThinkDelay = 0;
 			}
 			aiUseThread = chkboxAIUseThread.isSelected();
+			aiShowHint=chkBoxAIShowHint.isSelected();
 
 			if(aiID >= 0) NullpoMinoSwing.propGlobal.setProperty(playerID + ".ai", aiPathList[aiID]);
 			else NullpoMinoSwing.propGlobal.setProperty(playerID + ".ai", "");
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiMoveDelay", aiMoveDelay);
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiThinkDelay", aiThinkDelay);
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiUseThread", aiUseThread);
+			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiShowHint", aiShowHint);
+			
 			NullpoMinoSwing.saveConfig();
 
 			this.setVisible(false);

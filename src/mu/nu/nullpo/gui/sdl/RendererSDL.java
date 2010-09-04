@@ -618,6 +618,113 @@ public class RendererSDL extends EventReceiver {
 			}
 		}
 	}
+	
+	
+	protected void drawHintPiece(int x, int y, GameEngine engine, float scale) throws SDLException {
+		if (engine.nowPieceObject!=null){
+		Piece piece = new Piece(engine.nowPieceObject);
+		piece.direction=engine.aiHintRt;
+		piece.updateConnectData();
+		int blksize = (int)(16 * scale);
+
+		if(piece != null) {
+			for(int i = 0; i < piece.getMaxBlock(); i++) {
+				if(!piece.big) {
+					int x2 = engine.aiHintX + piece.dataX[piece.direction][i];
+					int y2 = engine.aiHintY + piece.dataY[piece.direction][i];
+
+					if(y2 >= 0) {
+						
+							Block blkTemp = piece.block[i];
+							int x3 = x + (x2 * blksize);
+							int y3 = y + (y2 * blksize);
+
+							int colorID = blkTemp.getDrawColor();
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
+							long color = getColorByID(colorID);
+							//graphics.fillRect(new SDLRect(x3, y3, blksize, blksize), color);
+
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3,blksize,1));
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3+1,blksize,1));
+							}
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3 + blksize-1,blksize,1));
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3 + blksize-2,blksize,1));
+							}
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3,y3,1,blksize));
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3+1,y3,1,blksize));
+							}
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3 + blksize-1,y3,1,blksize));
+								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3 + blksize-2,y3,1,blksize));
+							}
+
+							color = getColorValue(255, 255, 255);
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+								graphics.fillRect(new SDLRect(x3, y3, 2, 2), color);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+								graphics.fillRect(new SDLRect(x3, y3 + (blksize-2), 2, 2), color);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+								graphics.fillRect(new SDLRect(x3 + (blksize-2), y3, 2, 2), color);
+							}
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+								graphics.fillRect(new SDLRect(x3 + (blksize-2), y3 + (blksize-2), 2, 2), color);
+							}
+					}
+				} else {
+					int x2 = engine.aiHintX + (piece.dataX[piece.direction][i] * 2);
+					int y2 = engine.aiHintY + (piece.dataY[piece.direction][i] * 2);
+
+					
+						Block blkTemp = piece.block[i];
+						int x3 = x + (x2 * blksize);
+						int y3 = y + (y2 * blksize);
+
+						int colorID = blkTemp.getDrawColor();
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
+						long color = getColorByID(colorID);
+						//graphics.fillRect(new SDLRect(x3, y3, blksize * 2, blksize * 2), color);
+
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize*2,1), graphics, new SDLRect(x3,y3,blksize*2,1));
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize*2,1), graphics, new SDLRect(x3,y3+1,blksize*2,1));
+						}
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize*2,1), graphics, new SDLRect(x3,y3 + blksize*2-1,blksize*2,1));
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize*2,1), graphics, new SDLRect(x3,y3 + blksize*2-2,blksize*2,1));
+						}
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize*2), graphics, new SDLRect(x3,y3,1,blksize*2));
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize*2), graphics, new SDLRect(x3+1,y3,1,blksize*2));
+						}
+						if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize*2), graphics, new SDLRect(x3 + blksize*2-1,y3,1,blksize*2));
+							ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize*2), graphics, new SDLRect(x3 + blksize*2-2,y3,1,blksize*2));
+						}
+
+						color = getColorValue(255, 255, 255);
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							graphics.fillRect(new SDLRect(x3, y3, 2, 2), color);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							graphics.fillRect(new SDLRect(x3, y3 + (blksize*2-2), 2, 2), color);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							graphics.fillRect(new SDLRect(x3 + (blksize*2-2), y3, 2, 2), color);
+						}
+						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							graphics.fillRect(new SDLRect(x3 + (blksize*2-2), y3 + (blksize*2-2), 2, 2), color);
+						}
+					
+				}
+			}
+		}
+		}
+	}
 
 	/**
 	 * フィールドのBlockを描画
@@ -1162,13 +1269,19 @@ public class RendererSDL extends EventReceiver {
 				if(engine.displaysize == 1) {
 					if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 2.0f);
 					if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
+					if((engine.ai!=null) && (engine.aiShowHint)&& engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 2.0f); 
+					
 					drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
 				} else if(engine.displaysize == 0) {
 					if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 1.0f);
 					if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
+					if((engine.ai!=null) && (engine.aiShowHint ) && engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 1.0f); 
+					
 					drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 				} else {
 					if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
+					if((engine.ai!=null) && (engine.aiShowHint) &&engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 4, engine, 0.5f); 
+					
 					drawCurrentPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
 				}
 			}

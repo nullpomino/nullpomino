@@ -45,6 +45,7 @@ import mu.nu.nullpo.game.component.SpeedParam;
 import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.component.WallkickResult;
 import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
+import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
@@ -177,7 +178,7 @@ public class GameEngine {
 	public ReplayData replayData;
 
 	/** AIPlayer: AI for auto playing */
-	public AIPlayer ai;
+	public DummyAI ai;
 
 	/** AI move delay */
 	public int aiMoveDelay;
@@ -187,7 +188,14 @@ public class GameEngine {
 
 	/** Use thread for AI */
 	public boolean aiUseThread;
+	
+	/** Show Hint with AI */
+	public boolean aiShowHint;
 
+	public int aiHintX;
+	public int aiHintY;
+	public int aiHintRt;
+	public boolean aiHintReady;
 	/** Current main game status */
 	public int stat;
 
@@ -1561,7 +1569,20 @@ public class GameEngine {
 			// リプレイ関連の処理
 			if(!owner.replayMode || owner.replayRerecord) {
 				// AIの button処理
-				if(ai != null) ai.setControl(this, playerID, ctrl);
+				if(ai != null ){
+					if (aiShowHint==false) {
+						ai.setControl(this, playerID, ctrl);
+					}
+					else {
+						aiHintReady=(ai.thinkCurrentPieceNo == ai.thinkLastPieceNo) && (ai.thinkCurrentPieceNo>0) && ! (ai.bestHold || ai.forceHold);
+						if (aiHintReady){
+							aiHintX=ai.bestX;
+							aiHintY=ai.bestY;
+							aiHintRt=ai.bestRt;
+						}
+					}
+					
+				} 
 
 				// 入力状態をリプレイに記録
 				replayData.setInputData(ctrl.getButtonBit(), replayTimer);

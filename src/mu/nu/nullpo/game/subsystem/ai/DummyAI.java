@@ -35,6 +35,13 @@ import mu.nu.nullpo.game.play.GameEngine;
  * DummyAI - Base class for AI players
  */
 public class DummyAI implements AIPlayer {
+	public int bestX;
+	public int bestY;
+	public int bestRt;
+	public int thinkCurrentPieceNo;
+	public int thinkLastPieceNo;
+	public boolean bestHold;
+	public boolean forceHold;
 	public String getName() {
 		return "DummyAI";
 	}

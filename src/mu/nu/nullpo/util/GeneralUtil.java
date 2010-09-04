@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
+import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
@@ -215,13 +216,13 @@ public class GeneralUtil {
 	 * @param filename クラスファイルの名前
 	 * @return AIのオブジェクト（読み込み失敗したらnull）
 	 */
-	public static AIPlayer loadAIPlayer(String filename) {
+	public static DummyAI loadAIPlayer(String filename) {
 		Class<?> aiClass = null;
-		AIPlayer aiObject = null;
+		DummyAI aiObject = null;
 
 		try {
 			aiClass = Class.forName(filename);
-			aiObject = (AIPlayer) aiClass.newInstance();
+			aiObject = (DummyAI) aiClass.newInstance();
 		} catch (Exception e) {
 			log.warn("Failed to load AIPlayer from " + filename, e);
 		}

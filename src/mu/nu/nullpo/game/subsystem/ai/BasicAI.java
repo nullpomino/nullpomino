@@ -45,16 +45,16 @@ public class BasicAI extends DummyAI implements Runnable {
 	static Logger log = Logger.getLogger(BasicAI.class);
 
 	/** ホールド使用予定 */
-	public boolean bestHold;
+	//public boolean bestHold;
 
 	/** 置く予定のX-coordinate */
-	public int bestX;
+	//public int bestX;
 
 	/** 置く予定のY-coordinate */
-	public int bestY;
+	//public int bestY;
 
 	/** 置く予定のDirection */
-	public int bestRt;
+	//public int bestRt;
 
 	/** 接地したあとのX-coordinate */
 	public int bestXSub;
@@ -69,7 +69,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	public int bestPts;
 
 	/** 強制ホールド */
-	public boolean forceHold;
+	//public boolean forceHold;
 
 	/** 移動を遅らせる用の変count */
 	public int delay;
@@ -90,10 +90,10 @@ public class BasicAI extends DummyAI implements Runnable {
 	public int thinkDelay;
 
 	/** Current ピースの number */
-	public int thinkCurrentPieceNo;
+	//public int thinkCurrentPieceNo;
 
 	/** 思考が終わったピースの number */
-	public int thinkLastPieceNo;
+	//public int thinkLastPieceNo;
 
 	/** trueならスレッド動作中 */
 	public volatile boolean threadRunning;

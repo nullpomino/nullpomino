@@ -79,6 +79,8 @@ public class StateConfigAISelect extends BasicGameState {
 
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
+	
+	protected boolean aiShowHint=false;
 
 	/** カーソル位置 */
 	protected int cursor = 0;
@@ -117,7 +119,7 @@ public class StateConfigAISelect extends BasicGameState {
 		aiMoveDelay = NullpoMinoSlick.propGlobal.getProperty(player + ".aiMoveDelay", 0);
 		aiThinkDelay = NullpoMinoSlick.propGlobal.getProperty(player + ".aiThinkDelay", 0);
 		aiUseThread = NullpoMinoSlick.propGlobal.getProperty(player + ".aiUseThread", true);
-
+		aiShowHint = NullpoMinoSlick.propGlobal.getProperty(player+ ".aiShowHint",false);
 		aiID = -1;
 		for(int i = 0; i < aiPathList.length; i++) {
 			if(currentAI.equals(aiPathList[i])) aiID = i;
@@ -198,7 +200,8 @@ public class StateConfigAISelect extends BasicGameState {
 		NormalFont.printFontGrid(2, 4, "AI MOVE DELAY:" + aiMoveDelay, (cursor == 1));
 		NormalFont.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
 		NormalFont.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
-
+		NormalFont.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint),(cursor==4));
+		
 		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFont.COLOR_GREEN);
 
 		// FPS
@@ -231,14 +234,14 @@ public class StateConfigAISelect extends BasicGameState {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
 				
 		    cursor--;
-			if(cursor < 0) cursor = 3;
+			if(cursor < 0) cursor = 4;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
 				
 		    cursor++;
-			if(cursor > 3) cursor = 0;
+			if(cursor > 4) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -271,6 +274,9 @@ public class StateConfigAISelect extends BasicGameState {
 			case 3:
 				aiUseThread = !aiUseThread;
 				break;
+			case 4:
+				aiShowHint=!aiShowHint;
+				break;
 			}
 		}
 
@@ -285,6 +291,7 @@ public class StateConfigAISelect extends BasicGameState {
 			NullpoMinoSlick.propGlobal.setProperty(player + ".aiMoveDelay", aiMoveDelay);
 			NullpoMinoSlick.propGlobal.setProperty(player + ".aiThinkDelay", aiThinkDelay);
 			NullpoMinoSlick.propGlobal.setProperty(player + ".aiUseThread", aiUseThread);
+			NullpoMinoSlick.propGlobal.setProperty(player + ".aiShowHint",aiShowHint);
 			NullpoMinoSlick.saveConfig();
 
 			game.enterState(StateConfigMainMenu.ID);

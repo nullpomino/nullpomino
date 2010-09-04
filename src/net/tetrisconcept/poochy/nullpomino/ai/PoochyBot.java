@@ -21,16 +21,16 @@ public class PoochyBot extends DummyAI implements Runnable {
 	static Logger log = Logger.getLogger(PoochyBot.class);
 
 	/** ホールド使用予定 */
-	public boolean bestHold;
+	//public boolean bestHold;
 
 	/** 置く予定のX-coordinate */
-	public int bestX;
+	//public int bestX;
 
 	/** 置く予定のY-coordinate */
-	public int bestY;
+	//public int bestY;
 
 	/** 置く予定のDirection */
-	public int bestRt;
+	//public int bestRt;
 
 	/** 接地したあとのX-coordinate */
 	public int bestXSub;
@@ -63,10 +63,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public int thinkDelay;
 
 	/** Current ピースの number */
-	public int thinkCurrentPieceNo;
+	//public int thinkCurrentPieceNo;
 
 	/** 思考が終わったピースの number */
-	public int thinkLastPieceNo;
+	//public int thinkLastPieceNo;
 
 	/** trueならスレッド動作中 */
 	public volatile boolean threadRunning;
@@ -160,8 +160,10 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else if (!thinking && !thinkComplete) {
-			thinkRequest = true;
+		} else{ 
+			if (!thinking && !thinkComplete) {
+				thinkRequest = true;
+			}
 			thinkCurrentPieceNo++;
 		}
 	}
