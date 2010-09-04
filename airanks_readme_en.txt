@@ -1,5 +1,5 @@
 NullpoMino RanksAI
-Version 7.3.0
+Version 7.4.0
 
 
 1. What is this ?
@@ -11,7 +11,7 @@ The results displayed on his page seem better than the ones we get, but I haven'
 
 The goal of this AI is to stack for 4-Lines, and only stack for 4-Lines. It will stop playing as soon as it cannot prevent making a hole.
 
-2. How to use it?
+2. How to use it ?
 
 To be able to use ranks AI at its full potential, you will have to generate the huge ranks tables.
 To do this, you have to run the AIRanksGenerator, and run some iterations (15 iterations is advised). 
@@ -25,4 +25,10 @@ Additionally, you can view the 100 best or worst surfaces of a ranks table from 
 Finally, to use ranksAI, or any other AI in Nullpomino, start Nullpomino, pick the config menu, then AI setting and change AI type to RanksAI
 
 
+3. Who did this ?
 
+You can contact me at this address :
+
+olivier.vidal1@gmail.com
+
+Thanks to myndzi, Zircean and Poochy for their help.

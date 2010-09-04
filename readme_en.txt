@@ -425,7 +425,7 @@ NullpoMino created by:
 	Zircean
 	Poochy
 	Wojtek (aka dodd)
-	olivier.vidal1 (better known as Spirale)
+	Spirale (olivier.vidal1 on the SVN)
 	kitaru2004
 	Shrapnel.City (aka Pineapple)
 	vic7070 (aka Digital)
