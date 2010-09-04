@@ -7,14 +7,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -23,10 +27,15 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.apache.log4j.Logger;
+
+import mu.nu.nullpo.tool.musiclisteditor.MusicListEditor;
 import mu.nu.nullpo.util.CustomProperties;
 
 public class AIRanksGenerator extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
+	/** Log */
+	static final Logger log = Logger.getLogger(AIRanksGenerator.class);
 
 	/** Default language file */
 	public static CustomProperties propLangDefault;
@@ -34,16 +43,23 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 	public static CustomProperties propLang;
 
 	private JLabel inputFileLabel;
-	private JFormattedTextField inputFileField;
+	//private JFormattedTextField inputFileField;
+	private JComboBox inputFileComboBox;
 	private JLabel outputFileLabel;
 	private JFormattedTextField outputFileField;
 	private JLabel numIterationsLabel;
-
+	private JLabel numPreviewsLabel;
 	private SpinnerNumberModel spinModel;
 	private JSpinner numIterationsSpinner;
+	private SpinnerNumberModel numPreviewsSpinModel;
+	private JSpinner numPreviewsSpinner;
 	private JButton goButton;
 	private JButton viewBestsButton;
 	private JButton viewWorstsButton;
+	private JButton setDefaultButton;
+	public static String RANKSAI_DIR="res/ranksAI/";
+	public static String RANKSAI_CONFIG_FILE="config/setting/ranksai.cfg";
+	private String newFileText;
 
 	public AIRanksGenerator() {
 		super();
@@ -59,19 +75,61 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 	private void initUI() {
 
 		inputFileLabel = new JLabel(getUIText("Main_Input_Label"));
-		inputFileField = new JFormattedTextField();
-		inputFileField.setColumns(20);
-		inputFileField.setToolTipText(getUIText("Main_Input_Tip"));
+		CustomProperties propRanksAI = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream(AIRanksGenerator.RANKSAI_CONFIG_FILE);
+			propRanksAI.load(in);
+			in.close();
+		} catch (IOException e) {}
+		String file=propRanksAI.getProperty("ranksai.file");
+		int numPreviews=propRanksAI.getProperty("ranksai.numpreviews", 2);
+		String [] children=new File(RANKSAI_DIR).list();
+		int fileIndex=0;
+		if (file!=null){
+	    fileIndex=-1;
+		for (int i=0;i<children.length;i++){
+			if (children[i].equals(file)){
+				fileIndex=i;
+			}
+		}
+		fileIndex++;
+		}
+		String []ranksList=new String[children.length+1];
+		newFileText=getUIText("Main_New_File_Text");
+		ranksList[0]=newFileText;
+		System.arraycopy(children, 0, ranksList, 1, children.length);
+		inputFileComboBox=new JComboBox(ranksList);
+		inputFileComboBox.setSelectedIndex(fileIndex);
+		//inputFileField = new JFormattedTextField();
+		//inputFileField.setColumns(20);
+		inputFileComboBox.setToolTipText(getUIText("Main_Input_Tip"));
+		inputFileComboBox.setActionCommand("input");
+		inputFileComboBox.addActionListener(this);
 
 		outputFileLabel = new JLabel(getUIText("Main_Output_Label"));
 		outputFileField = new JFormattedTextField("ranks.bin");
 		outputFileField.setColumns(20);
+		if (inputFileComboBox.getSelectedIndex()>0){
+			outputFileField.setText((String) inputFileComboBox.getSelectedItem());
+		}
 		outputFileField.setToolTipText(getUIText("Main_Output_Tip"));
 
 		numIterationsLabel = new JLabel(getUIText("Main_Iterations_Label"));
 		spinModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
 		numIterationsSpinner = new JSpinner(spinModel);
+				
 		numIterationsSpinner.setToolTipText(getUIText("Main_Iterations_Tip"));
+		
+		numPreviewsLabel = new JLabel(getUIText("Main_Num_Previews_Label"));
+		numPreviewsSpinModel = new SpinnerNumberModel(2, 0, Integer.MAX_VALUE, 1);
+		numPreviewsSpinner = new JSpinner(numPreviewsSpinModel);
+		if (numPreviews>=0){
+			numPreviewsSpinner.setValue((Integer) numPreviews);
+		}
+
+		numPreviewsSpinner.setToolTipText(getUIText("Main_Num_Previws_Tip"));
+		
+		
 
 		goButton = new JButton(getUIText("Main_Go_Label"));
 		goButton.setActionCommand("go");
@@ -90,18 +148,25 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		viewWorstsButton.addActionListener(this);
 		viewWorstsButton.setToolTipText(getUIText("Main_Worsts_Tip"));
 		viewWorstsButton.setMnemonic('W');
+		
+		setDefaultButton=new JButton(getUIText("Main_Set_Default_Label"));
+		setDefaultButton.setActionCommand("default");
+		setDefaultButton.addActionListener(this);
+		setDefaultButton.setToolTipText(getUIText("Main_Set_Default_Tip"));
+		setDefaultButton.setMnemonic('S');
 
 		JPanel labelPane = new JPanel(new GridLayout(0, 1));
 
 		labelPane.add(inputFileLabel);
 		labelPane.add(outputFileLabel);
 		labelPane.add(numIterationsLabel);
-		
+		labelPane.add(numPreviewsLabel);
 		JPanel fieldPane = new JPanel(new GridLayout(0, 1));
 
-		fieldPane.add(inputFileField);
+		fieldPane.add(inputFileComboBox);
 		fieldPane.add(outputFileField);
 		fieldPane.add(numIterationsSpinner);
+		fieldPane.add(numPreviewsSpinner);
 		
 		JPanel pane = new JPanel(new BorderLayout());
 		
@@ -111,6 +176,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		buttonsPane.add(goButton);
 		buttonsPane.add(viewBestsButton);
 		buttonsPane.add(viewWorstsButton);
+		buttonsPane.add(setDefaultButton);
 		pane.add(labelPane, BorderLayout.WEST);
 		pane.add(fieldPane, BorderLayout.EAST);
 		pane.add(buttonsPane, BorderLayout.SOUTH);
@@ -120,53 +186,118 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 	
 
 	public void actionPerformed(ActionEvent e) {
+		String inputFile=(String) inputFileComboBox.getSelectedItem();
+		if (inputFile.equals(newFileText)){
+			inputFile="";
+		}
 		if ("go".equals(e.getActionCommand())) {
+			String outputFile=outputFileField.getText();
 			goButton.setEnabled(false);
-			new RanksIterator(this, inputFileField.getText(),
-					outputFileField.getText(),
+
+			RanksIterator ranksIterator=new RanksIterator(this, inputFile,
+					outputFile,
 					(Integer) numIterationsSpinner.getValue());
-			goButton.setEnabled(true);
-
-			
-		} else {
-			setEnabledBWButtons(false);
-			Ranks ranks = null;
-
-			FileInputStream fis = null;
-			ObjectInputStream in = null;
-
-			if (inputFileField.getText().trim().length() == 0)
-				ranks = new Ranks(4, 9);
-			else {
-				try {
-					fis = new FileInputStream(inputFileField.getText());
-					in = new ObjectInputStream(fis);
-					ranks = (Ranks) in.readObject();
-					in.close();
-				} catch (FileNotFoundException e1) {
-					ranks = new Ranks(4, 9);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-
-			JDialog results=new RanksResult(this, ranks, 100, "worsts".equals(e.getActionCommand()));
-			results.addWindowListener(new WindowAdapter(){
+		
+			ranksIterator.addWindowListener(new WindowAdapter(){
 
 
 				@Override
 				public void windowClosed(WindowEvent e) {
+					boolean isInCombo=false;
+					int index=0;
+					for (int i=1;i<inputFileComboBox.getItemCount();i++){
+						if (outputFileField.getText().equals(inputFileComboBox.getItemAt(i))){
+							isInCombo=true;
+							index=i;
+							break;
+						}
+					}
+					if (!isInCombo){
+					inputFileComboBox.addItem(outputFileField.getText());
+					inputFileComboBox.setSelectedIndex(inputFileComboBox.getItemCount()-1);
+					}
+					else{
+						inputFileComboBox.setSelectedIndex(index);
+					}
 					
-					setEnabledBWButtons(true);
-					
+					setDefaults(outputFileField.getText());
+					goButton.setEnabled(true);
+
 				}				
-				
+
 			});
+
+
+		} else {
+			if ("bests".equals(e.getActionCommand()) || "worsts".equals(e.getActionCommand())){
+				setEnabledBWButtons(false);
+				Ranks ranks = null;
+
+				FileInputStream fis = null;
+				ObjectInputStream in = null;
+
+				if (inputFile.trim().length() == 0)
+					ranks = new Ranks(4, 9);
+				else {
+					try {
+						fis = new FileInputStream(inputFile);
+						in = new ObjectInputStream(fis);
+						ranks = (Ranks) in.readObject();
+						in.close();
+					} catch (FileNotFoundException e1) {
+						ranks = new Ranks(4, 9);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
+
+				JDialog results=new RanksResult(this, ranks, 100, "worsts".equals(e.getActionCommand()));
+				results.addWindowListener(new WindowAdapter(){
+
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+
+						setEnabledBWButtons(true);
+
+					}				
+
+				});
+
+			}
+			else {
+				if ("default".equals(e.getActionCommand())){
+					setDefaults(inputFile);
+				}
+				else {
+					if ("input".equals(e.getActionCommand())){
+						if (inputFileComboBox.getSelectedIndex()>0){
+							outputFileField.setText((String) inputFileComboBox.getSelectedItem());
+						}
+						else {
+							outputFileField.setText("ranks.bin");
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	public void setDefaults(String file){
+		CustomProperties ranksAIConfig=new CustomProperties();
+		ranksAIConfig.setProperty("ranksai.file",file );
+		ranksAIConfig.setProperty("ranksai.numpreviews",(Integer) numPreviewsSpinner.getValue());
+		try {
+			FileOutputStream out = new FileOutputStream(RANKSAI_CONFIG_FILE);
+			ranksAIConfig.store(out, "Ranks AI Config");
+		} catch (IOException exc) {
+			log.error("Failed to save RanksAI config file", exc);
 			
 		}
 	}

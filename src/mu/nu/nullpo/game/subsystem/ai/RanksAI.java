@@ -39,7 +39,9 @@ import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.tool.airanksgenerator.AIRanksGenerator;
 import mu.nu.nullpo.tool.airanksgenerator.Ranks;
+import mu.nu.nullpo.util.CustomProperties;
 
 import org.apache.log4j.Logger;
 
@@ -110,12 +112,13 @@ public class RanksAI extends DummyAI implements Runnable {
 	private int currentHeightMax;
 
 	private static int THRESHOLD_FORCE_4LINES=8;
-	private static int MAX_PREVIEWS=3;
+	private  int MAX_PREVIEWS=2;
 
 	private int[] heights;
 	private Score bestScore;
 	private boolean gameOver;
 	private boolean plannedToUseIPiece;
+	private String currentRanksFile="";
 
 	public class Score{
 
@@ -177,7 +180,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 	@Override
 	public String getName() {
-		return "RANKS";
+		return "RANKSAI";
 	}
 	public void initRanks(){
 		delay = 0;
@@ -185,10 +188,21 @@ public class RanksAI extends DummyAI implements Runnable {
 		thinkRequest = false;
 		thinking = false;
 		threadRunning = false;
-		
+		CustomProperties propRanksAI = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream(AIRanksGenerator.RANKSAI_CONFIG_FILE);
+			propRanksAI.load(in);
+			in.close();
+		} catch (IOException e) {}
+		String file=propRanksAI.getProperty("ranksai.file");
+		MAX_PREVIEWS=propRanksAI.getProperty("ranksai.numpreviews", 2);
 		// If no ranks file has been loaded yet, try to load it
-		if (ranks==null){
-			String inputFile="res/ranksai/"+"ranks.bin";
+		if (ranks==null || !(currentRanksFile.equals(file))){
+			currentRanksFile=file;
+			String inputFile="";
+			if (file!=null && file.trim().length()>0){
+			 inputFile=AIRanksGenerator.RANKSAI_DIR+currentRanksFile;
+			}
 			FileInputStream fis = null;
 			ObjectInputStream in = null;
 			

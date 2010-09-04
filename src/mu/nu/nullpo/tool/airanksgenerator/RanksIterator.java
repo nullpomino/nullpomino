@@ -1,5 +1,9 @@
 package mu.nu.nullpo.tool.airanksgenerator;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -10,12 +14,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.ProgressMonitor;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-public class RanksIterator extends ProgressMonitor implements PropertyChangeListener {
+public class RanksIterator extends JDialog implements PropertyChangeListener,ActionListener {
 	/**
 	 *
 	 */
@@ -28,8 +39,10 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 	private String outputFile;
 	private int numIterations;
 	private int iteration;
-	
-
+	private JFrame parent;
+	private JLabel progressLabel;
+	private JProgressBar progressBar;
+	private JButton cancelButton;
 	 private MySwingWorker mySwingWorker;
 
     class MySwingWorker extends SwingWorker<Void, String> {
@@ -102,13 +115,13 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         protected void done() {
         	System.out.println("done !");
             try {
-            	File ranksAIDir=new File("res/ranksai/");
+            	File ranksAIDir=new File(AIRanksGenerator.RANKSAI_DIR);
             	if (!ranksAIDir.exists()){
             		ranksAIDir.mkdirs();
             	}
                 FileOutputStream fos=null;
                 ObjectOutputStream out=null;
-                fos=new FileOutputStream("res/ranksai/"+ outputFile);
+                fos=new FileOutputStream(AIRanksGenerator.RANKSAI_DIR+ outputFile);
                 out = new ObjectOutputStream(fos);
                 ranks.freeRanksFrom();
                 out.writeObject(ranks);
@@ -118,7 +131,7 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
                 e.printStackTrace();
             }
             setProgress(100);
-
+           dispose();
 
 
         	//new RanksResult(parent,ranks,100,false);
@@ -134,10 +147,34 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
 
 public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIterations){
 
-	super(parent,AIRanksGenerator.getUIText("Progress_Message"),"",0,100);
-	this.outputFile=outputFile;
 	
+	super(parent,AIRanksGenerator.getUIText("Progress_Message"));
+	this.outputFile=outputFile;
+	this.parent=parent;
+
 	this.numIterations=numIterations;
+	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	
+	progressLabel=new JLabel(String.format(AIRanksGenerator.getUIText("Progress_Note"), 1,0,numIterations,0));
+    progressBar=new JProgressBar(0,100); 
+    cancelButton= new JButton(AIRanksGenerator.getUIText("Progress_Cancel_Button"));
+    cancelButton.setActionCommand("cancel");
+    cancelButton.addActionListener(this);
+	JPanel mainPane=new JPanel(new BorderLayout() );
+    JPanel pane = new JPanel(new GridLayout(0,1));
+    mainPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+	pane.add(progressLabel);
+	pane.add(progressBar);
+	pane.add(cancelButton);
+	mainPane.add(pane,BorderLayout.CENTER);
+	add(mainPane);
+	pack();
+	setVisible(true);
+	
+	
+	
+	
 	FileInputStream fis = null;
 	ObjectInputStream in = null;
 	if (inputFile.trim().length() == 0)
@@ -165,6 +202,7 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 
 	//size=ranks.getSize();
 
+	
 	mySwingWorker =this.new MySwingWorker(4);
 	mySwingWorker.addPropertyChangeListener(this);
 	mySwingWorker.execute();
@@ -175,12 +213,12 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 public void propertyChange(PropertyChangeEvent evt) {
 	 if ("progress" == evt.getPropertyName() ) {
            int progress = (Integer) evt.getNewValue();
-           setProgress(progress);
+           progressBar.setValue(progress);
 
 
            String message =
                String.format(AIRanksGenerator.getUIText("Progress_Note"), iteration+1,ranks.getCompletionPercentage(),numIterations,progress);
-          setNote(message);
+          progressLabel.setText(message);
           if (progress==100){
 
         	  ranks=null;
@@ -188,16 +226,14 @@ public void propertyChange(PropertyChangeEvent evt) {
           }
 	 }
 
-   if (isCanceled()) {
-
-	                   this.mySwingWorker.cancelTask();
 
 
 
-   }
 
-
-
+}
+@Override
+public void actionPerformed(ActionEvent arg0) {
+	this.mySwingWorker.cancelTask();
 }
 
 }
