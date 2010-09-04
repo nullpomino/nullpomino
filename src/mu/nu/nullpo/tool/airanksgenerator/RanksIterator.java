@@ -2,6 +2,7 @@ package mu.nu.nullpo.tool.airanksgenerator;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -101,10 +102,13 @@ public class RanksIterator extends ProgressMonitor implements PropertyChangeList
         protected void done() {
         	System.out.println("done !");
             try {
-
+            	File ranksAIDir=new File("res/ranksai/");
+            	if (!ranksAIDir.exists()){
+            		ranksAIDir.mkdirs();
+            	}
                 FileOutputStream fos=null;
                 ObjectOutputStream out=null;
-                fos=new FileOutputStream(outputFile);
+                fos=new FileOutputStream("res/ranksai/"+ outputFile);
                 out = new ObjectOutputStream(fos);
                 ranks.freeRanksFrom();
                 out.writeObject(ranks);

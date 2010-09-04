@@ -188,7 +188,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		
 		// If no ranks file has been loaded yet, try to load it
 		if (ranks==null){
-			String inputFile="ranks.bin";
+			String inputFile="res/ranksai/"+"ranks.bin";
 			FileInputStream fis = null;
 			ObjectInputStream in = null;
 			
