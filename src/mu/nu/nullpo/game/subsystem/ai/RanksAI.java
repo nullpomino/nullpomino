@@ -49,7 +49,9 @@ public class RanksAI extends DummyAI implements Runnable {
 
 	static Logger log = Logger.getLogger(RanksAI.class);
 
-	public boolean bestHold;
+
+	//public boolean bestHold;
+	
 
 	//public int bestX;
 
@@ -65,7 +67,8 @@ public class RanksAI extends DummyAI implements Runnable {
 
 	public int bestPts;
 
-	public boolean forceHold;
+
+	//public boolean forceHold;
 
 	public int delay;
 
@@ -266,8 +269,8 @@ public class RanksAI extends DummyAI implements Runnable {
 			Field fld = engine.field;
 			boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
 
-			if((bestHold || forceHold) && engine.isHoldOK()) {
-
+			if((bestHold || forceHold) ) {
+				if  (engine.isHoldOK())
 				input |= Controller.BUTTON_BIT_D;
 			} else {
 
@@ -437,11 +440,12 @@ public class RanksAI extends DummyAI implements Runnable {
 		 bestY = pieceNow.getBottom(bestX, nowY, bestRt, engine.field);
 		 bestYSub=bestY;
 		 bestYSub=bestY;
-
-		 // If we cant fit the pieces anymore without creating holes, stop playing
-		 if (bestScore.rankStacking==0)
-			 threadRunning=false;
 		 
+		 // If we cant fit the pieces anymore without creating holes, try hold
+		 bestHold=false;
+		 if (bestScore.rankStacking==0)
+			// threadRunning=false;
+		 	 bestHold=true;
 		 thinkLastPieceNo++;
 		 log.debug("nowX : "+engine.nowPieceX+" X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestScore);
 
