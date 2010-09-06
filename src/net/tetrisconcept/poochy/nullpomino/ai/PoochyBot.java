@@ -839,6 +839,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 		}
 		pieceNow = checkOffset(pieceNow, engine);
 		pieceHold = checkOffset(pieceHold, engine);
+		if (pieceHold.id == pieceNow.id)
+			pieceHold = null;
 		/*
 		if (!pieceNow.offsetApplied)
 		pieceNow.applyOffsetArray(engine.ruleopt.pieceOffsetX[pieceNow.id],

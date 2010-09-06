@@ -126,6 +126,20 @@ public class RendererSDL extends EventReceiver {
 		return getColorValue(0,0,0);
 	}
 
+	public long getColorByIDBright(int colorID) {
+		switch(colorID) {
+		case Block.BLOCK_COLOR_GRAY:   return getColorValue(128,128,128);
+		case Block.BLOCK_COLOR_RED:    return getColorValue(255,  0,  0);
+		case Block.BLOCK_COLOR_ORANGE: return getColorValue(255,128,  0);
+		case Block.BLOCK_COLOR_YELLOW: return getColorValue(255,255,  0);
+		case Block.BLOCK_COLOR_GREEN:  return getColorValue(  0,255,  0);
+		case Block.BLOCK_COLOR_CYAN:   return getColorValue(  0,255,255);
+		case Block.BLOCK_COLOR_BLUE:   return getColorValue(  0,  0,255);
+		case Block.BLOCK_COLOR_PURPLE: return getColorValue(255,  0,255);
+		}
+		return getColorValue(0,0,0);
+	}
+
 	/*
 	 * Menu 用の文字列を描画
 	 */
@@ -637,42 +651,29 @@ public class RendererSDL extends EventReceiver {
 							Block blkTemp = piece.block[i];
 							int x3 = x + (x2 * blksize);
 							int y3 = y + (y2 * blksize);
+							int ls = (blksize-1);
 
 							int colorID = blkTemp.getDrawColor();
 							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
-							long color = getColorByID(colorID);
+							long color = getColorByIDBright(colorID);
 							//graphics.fillRect(new SDLRect(x3, y3, blksize, blksize), color);
 
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3,blksize,1));
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3+1,blksize,1));
-							}
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3 + blksize-1,blksize,1));
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(43,0,blksize,1), graphics, new SDLRect(x3,y3 + blksize-2,blksize,1));
-							}
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3,y3,1,blksize));
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3+1,y3,1,blksize));
-							}
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3 + blksize-1,y3,1,blksize));
-								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(42,0,1,blksize), graphics, new SDLRect(x3 + blksize-2,y3,1,blksize));
-							}
-
-							color = getColorValue(255, 255, 255);
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
+								graphics.fillRect(new SDLRect(x3, y3, ls, 2), color);
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+								graphics.fillRect(new SDLRect(x3, y3 + ls - 1, ls, 2), color);
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
+								graphics.fillRect(new SDLRect(x3, y3, 2, ls), color);
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+								graphics.fillRect(new SDLRect(x3 + ls - 1, y3, 2, ls), color);
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP))
 								graphics.fillRect(new SDLRect(x3, y3, 2, 2), color);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
 								graphics.fillRect(new SDLRect(x3, y3 + (blksize-2), 2, 2), color);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP))
 								graphics.fillRect(new SDLRect(x3 + (blksize-2), y3, 2, 2), color);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
 								graphics.fillRect(new SDLRect(x3 + (blksize-2), y3 + (blksize-2), 2, 2), color);
-							}
 						}
 					} else {
 						int x2 = engine.aiHintX + (piece.dataX[piece.direction][i] * 2);

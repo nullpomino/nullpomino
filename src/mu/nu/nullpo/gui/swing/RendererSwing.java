@@ -103,6 +103,20 @@ public class RendererSwing extends EventReceiver {
 		return new Color(0,0,0);
 	}
 
+	public static Color getColorByIDBright(int colorID) {
+		switch(colorID) {
+		case Block.BLOCK_COLOR_GRAY:   return new Color(128,128,128);
+		case Block.BLOCK_COLOR_RED:    return new Color(255,  0,  0);
+		case Block.BLOCK_COLOR_ORANGE: return new Color(255,128,  0);
+		case Block.BLOCK_COLOR_YELLOW: return new Color(255,255,  0);
+		case Block.BLOCK_COLOR_GREEN:  return new Color(  0,255,  0);
+		case Block.BLOCK_COLOR_CYAN:   return new Color(  0,255,255);
+		case Block.BLOCK_COLOR_BLUE:   return new Color(  0,  0,255);
+		case Block.BLOCK_COLOR_PURPLE: return new Color(255,  0,255);
+		}
+		return new Color(0,0,0);
+	}
+
 	/**
 	 * Constructor
 	 */
@@ -633,39 +647,25 @@ public class RendererSwing extends EventReceiver {
 
 							int colorID = blkTemp.getDrawColor();
 							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) colorID = -1;
-							Color color = getColorByID(colorID);
+							Color color = getColorByIDBright(colorID);
 							graphics.setColor(color);
-							//graphics.fillRect(x3, y3, blksize, blksize);
-							graphics.setColor(Color.white);
 
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
-								graphics.drawLine(x3, y3, x3 + ls, y3);
-								graphics.drawLine(x3, y3 + 1, x3 + ls, y3 + 1);
-							}
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
-								graphics.drawLine(x3, y3 + ls, x3 + ls, y3 + ls);
-								graphics.drawLine(x3, y3 - 1 + ls, x3 + ls, y3 - 1 + ls);
-							}
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
-								graphics.drawLine(x3, y3, x3, y3 + ls);
-								graphics.drawLine(x3 + 1, y3, x3 + 1, y3 + ls);
-							}
-							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
-								graphics.drawLine(x3 + ls, y3, x3 + ls, y3 + ls);
-								graphics.drawLine(x3 - 1 + ls, y3, x3 - 1 + ls, y3 + ls);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
+								graphics.fillRect(x3, y3, ls, 2);
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
+								graphics.fillRect(x3, y3 + ls - 1, ls, 2);
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))
+								graphics.fillRect(x3, y3, 2, ls);
+							if(!blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
+								graphics.fillRect(x3 + ls - 1, y3, 2, ls);
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_UP))
 								graphics.fillRect(x3, y3, 2, 2);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
 								graphics.fillRect(x3, y3 + (blksize-2), 2, 2);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_UP))
 								graphics.fillRect(x3 + (blksize-2), y3, 2, 2);
-							}
-							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
 								graphics.fillRect(x3 + (blksize-2), y3 + (blksize-2), 2, 2);
-							}
 						}
 					} else {
 						int x2 = engine.aiHintX + (piece.dataX[piece.direction][i] * 2);
