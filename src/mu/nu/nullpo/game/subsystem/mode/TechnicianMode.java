@@ -195,7 +195,7 @@ public class TechnicianMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -785,11 +785,11 @@ public class TechnicianMode extends DummyMode {
 
 			if(goal <= 0) {
 				if((engine.statistics.level >= 14) && ((gametype == GAMETYPE_LV15_EASY) || (gametype == GAMETYPE_LV15_HARD))) {
-					// Ending（LV15-EASY/HARD）
+					// Ending (LV15-EASY/HARD）
 					engine.ending = 1;
 					engine.gameActive = false;
 				} else if((engine.statistics.level >= 29) && (gametype == GAMETYPE_SPECIAL)) {
-					// Ending（SPECIAL）
+					// Ending (SPECIAL）
 					engine.ending = 2;
 					engine.timerActive = false;
 					engine.staffrollEnable = true;

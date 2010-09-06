@@ -34,14 +34,14 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.newdawn.slick.Input;
 
 /**
- * キー入力状態の管理
+ * キー input 状態の管理
  */
 public class GameKey extends GameKeyDummy {
-	/** キー入力状態（全ステート共通） */
+	/** キー input 状態 (全ステート共通) */
 	public static GameKey[] gamekey;
 
 	/**
-	 * 全ステート共通のキー入力状態オブジェクトをInitialization
+	 * 全ステート共通のキー input 状態オブジェクトをInitialization
 	 */
 	public static void initGlobalGameKey() {
 		ControllerManager.initControllers();
@@ -51,23 +51,23 @@ public class GameKey extends GameKeyDummy {
 	}
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public GameKey() {
 		super();
 	}
 
 	/**
-	 * プレイヤー numberを指定できるConstructor
-	 * @param pl プレイヤー number
+	 * Player numberを指定できるConstructor
+	 * @param pl Player number
 	 */
 	public GameKey(int pl) {
 		super(pl);
 	}
 
 	/**
-	 *  button入力状態を更新
-	 * @param input Inputクラス（container.getInput()で取得可能）
+	 *  button input状態を更新
+	 * @param input Inputクラス (container.getInput()で取得可能）
 	 */
 	public void update(Input input) {
 		for(int i = 0; i < MAX_BUTTON; i++) {

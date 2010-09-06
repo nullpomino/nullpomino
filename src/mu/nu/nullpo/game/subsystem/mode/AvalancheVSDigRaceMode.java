@@ -53,7 +53,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	private int[] handicapRows;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -364,7 +364,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {

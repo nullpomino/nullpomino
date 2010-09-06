@@ -36,34 +36,34 @@ import mu.nu.nullpo.util.CustomProperties;
  * Scoreなどの情報
  */
 public class Statistics implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = -499640168205398295L;
 
-	/** 合計Score */
+	/** Total score */
 	public int score;
 
-	/** Line clearのScore */
+	/** Line clear score */
 	public int scoreFromLineClear;
 
-	/** Soft dropのScore */
+	/** Soft drop score */
 	public int scoreFromSoftDrop;
 
-	/** Hard dropのScore */
+	/** Hard drop score */
 	public int scoreFromHardDrop;
 
 	/** その他の方法で手に入れたScore */
 	public int scoreFromOtherBonus;
 
-	/** 合計Linescount */
+	/** Total line count */
 	public int lines;
 
 	/** 経過 time */
 	public int time;
 
-	/**  level */
+	/** Level */
 	public int level;
 
-	/**  levelの表示に加算するcount（表示 levelが内部の値と異なる場合に使用） */
+	/** Levelの表示に加算するcount (表示 levelが内部の値と異なる場合に使用) */
 	public int levelDispAdd;
 
 	/** 置いたピースのcount */
@@ -75,73 +75,73 @@ public class Statistics implements Serializable {
 	/** ピースを移動させた合計 count */
 	public int totalPieceMove;
 
-	/** ピースを回転させた合計 count */
+	/** ピースをrotationさせた合計 count */
 	public int totalPieceRotate;
 
-	/** 1Lines消し count */
+	/** 1-line clear count */
 	public int totalSingle;
 
-	/** 2Lines消し count */
+	/** 2-line clear count */
 	public int totalDouble;
 
-	/** 3Lines消し count */
+	/** 3-line clear count */
 	public int totalTriple;
 
-	/** 4Lines消し count */
+	/** 4-line clear count */
 	public int totalFour;
 
-	/** T-Spin0Lines（Wallkickあり） count */
+	/** T-Spin 0 lines (with wallkick) count */
 	public int totalTSpinZeroMini;
 
-	/** T-Spin0Lines（Wallkickなし） count */
+	/** T-Spin 0 lines (without wallkick) count */
 	public int totalTSpinZero;
 
-	/** T-Spin1Lines（Wallkickあり） count */
+	/** T-Spin 1 line (with wallkick) count */
 	public int totalTSpinSingleMini;
 
-	/** T-Spin1Lines（Wallkickなし） count */
+	/** T-Spin 1 line (without wallkick) count */
 	public int totalTSpinSingle;
 
-	/** T-Spin2Lines（Wallkickあり） count */
+	/** T-Spin 2 line (with wallkick) count */
 	public int totalTSpinDoubleMini;
 
-	/** T-Spin2Lines（Wallkickなし） count */
+	/** T-Spin 2 line (without wallkick) count */
 	public int totalTSpinDouble;
 
-	/** T-Spin3Lines count */
+	/** T-Spin 3 line count */
 	public int totalTSpinTriple;
 
-	/** Back to Back 4Lines消し count */
+	/** Back to Back 4-line clear count */
 	public int totalB2BFour;
 
-	/** Back to Back T-Spin消し count */
+	/** Back to Back T-Spin clear count */
 	public int totalB2BTSpin;
 
-	/** ホールド使用 count */
+	/** Hold use count */
 	public int totalHoldUsed;
 
-	/** 最大Combocount */
+	/** Largest combo */
 	public int maxCombo;
 
-	/** 1Linesあたりの得点（Score Per Line） */
+	/** 1Linesあたりの得点 (Score Per Line) */
 	public double spl;
 
-	/** 1分間あたりの得点（Score Per Minute） */
+	/** 1分間あたりの得点 (Score Per Minute) */
 	public double spm;
 
-	/** 1秒間あたりの得点（Score Per Second） */
+	/** 1秒間あたりの得点 (Score Per Second) */
 	public double sps;
 
-	/** 1分間あたりのLinescount（Lines Per Minute） */
+	/** 1分間あたりのLinescount (Lines Per Minute) */
 	public float lpm;
 
-	/** 1秒間あたりのLinescount（Lines Per Second） */
+	/** 1秒間あたりのLinescount (Lines Per Second) */
 	public float lps;
 
-	/** 1分間あたりのピースcount（Pieces Per Minute） */
+	/** 1分間あたりのピースcount (Pieces Per Minute) */
 	public float ppm;
 
-	/** 1秒間あたりのピースcount（Pieces Per Second） */
+	/** 1秒間あたりのピースcount (Pieces Per Second) */
 	public float pps;
 
 	/** TAS detection: slowdown rate */
@@ -158,8 +158,8 @@ public class Statistics implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param s コピー元
+	 * Copy constructor
+	 * @param s Copy source
 	 */
 	public Statistics(Statistics s) {
 		copy(s);
@@ -210,7 +210,7 @@ public class Statistics implements Serializable {
 
 	/**
 	 * 他のStatisticsの値をコピー
-	 * @param s コピー元
+	 * @param s Copy source
 	 */
 	public void copy(Statistics s) {
 		score = s.score;
@@ -271,7 +271,7 @@ public class Statistics implements Serializable {
 	/**
 	 * プロパティセットに保存
 	 * @param p プロパティセット
-	 * @param id 任意のID（プレイヤーIDなど）
+	 * @param id 任意のID (Player IDなど）
 	 */
 	public void writeProperty(CustomProperties p, int id) {
 		p.setProperty(id + ".statistics.score", score);
@@ -324,7 +324,7 @@ public class Statistics implements Serializable {
 	/**
 	 * プロパティセットから読み込み
 	 * @param p プロパティセット
-	 * @param id 任意のID（プレイヤーIDなど）
+	 * @param id 任意のID (Player IDなど）
 	 */
 	public void readProperty(CustomProperties p, int id) {
 		score = p.getProperty(id + ".statistics.score", 0);

@@ -155,7 +155,7 @@ public class ExtremeMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -446,7 +446,7 @@ public class ExtremeMode extends DummyMode {
 	}
 
 	/*
-	 * 各フレームの終わりの処理
+	 * 各 frame の終わりの処理
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {

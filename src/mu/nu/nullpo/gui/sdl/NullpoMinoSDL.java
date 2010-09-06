@@ -86,7 +86,7 @@ public class NullpoMinoSDL {
 	/** ゲームステートのcount */
 	public static final int STATE_MAX = 14;
 
-	/** 認識するキーの最大値 */
+	/** 認識するキーのMaximum値 */
 	public static final int SDL_KEY_MAX = 322;
 
 	/** プログラムに渡されたコマンドLines引count */
@@ -95,7 +95,7 @@ public class NullpoMinoSDL {
 	/** 設定保存用Property file */
 	public static CustomProperties propConfig;
 
-	/** 設定保存用Property file（全Version共通） */
+	/** 設定保存用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
 	/** 音楽リストProperty file */
@@ -137,34 +137,34 @@ public class NullpoMinoSDL {
 	/** キーを押しているならtrue */
 	public static boolean[] keyPressedState;
 
-	/** 使用するジョイスティックの number */
+	/** 使用するJoystick の number */
 	public static int[] joyUseNumber;
 
-	/** ジョイスティックのアナログスティック無視 */
+	/** Joystick のアナログスティック無視 */
 	public static boolean[] joyIgnoreAxis;
 
-	/** ジョイスティックのハットスイッチ無視 */
+	/** Joystick のハットスイッチ無視 */
 	public static boolean[] joyIgnorePOV;
 
-	/** ジョイスティックのcount */
+	/** Joystick のcount */
 	public static int joystickMax;
 
-	/** ジョイスティック */
+	/** Joystick  */
 	public static SDLJoystick[] joystick;
 
-	/** ジョイスティックのDirectionキー状態 */
+	/** Joystick direction key 状態 */
 	public static int[] joyAxisX, joyAxisY;
 
-	/** ジョイスティックのハットスイッチのcount */
+	/** Joystick のハットスイッチのcount */
 	public static int[] joyMaxHat;
 
-	/** ジョイスティックのハットスイッチの状態 */
+	/** Joystick のハットスイッチの状態 */
 	public static HatState[] joyHatState;
 
-	/** ジョイスティックの buttonのcount */
+	/** Joystick の buttonのcount */
 	public static int[] joyMaxButton;
 
-	/** ジョイスティックの buttonを押しているならtrue */
+	/** Joystick の buttonを押しているならtrue */
 	public static boolean[][] joyPressedState;
 
 	/** ゲームステート */
@@ -179,7 +179,7 @@ public class NullpoMinoSDL {
 	/** 終了 button使用許可 */
 	public static boolean allowQuit;
 
-	/** 最大FPS */
+	/** MaximumFPS */
 	public static int maxFPS;
 
 	/** オブザーバークライアント */
@@ -242,7 +242,7 @@ public class NullpoMinoSDL {
 			log.error("Failed to load game mode list", e);
 		}
 
-		// キー入力のInitialization
+		// キー input のInitialization
 		keyPressedState = new boolean[SDL_KEY_MAX];
 		GameKeySDL.initGlobalGameKeySDL();
 		GameKeySDL.gamekey[0].loadConfig(propConfig);
@@ -384,10 +384,10 @@ public class NullpoMinoSDL {
 			// イベント処理
 			processEvent();
 
-			// ジョイスティックの更新
+			// Joystick の更新
 			if(joystickMax > 0) joyUpdate();
 
-			// キー入力状態を更新
+			// キー input 状態を更新
 			for(int i = 0; i < 2; i++) {
 				int joynum = joyUseNumber[i];
 
@@ -434,7 +434,7 @@ public class NullpoMinoSDL {
 			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回のフレームの休止 time誤差も引いておく
+			// 前回の frame の休止 time誤差も引いておく
 			long period = (long) (1.0 / maxFPS * 1000000000);
 			sleepTime = (period - timeDiff) - overSleepTime;
 
@@ -483,7 +483,7 @@ public class NullpoMinoSDL {
 
 	/**
 	 * ステート切り替え
-	 * @param id 切り替え先ステートID（-1で終了）
+	 * @param id 切り替え先ステートID (-1で終了）
 	 * @throws SDLException SDLのエラーが発生した場合
 	 */
 	public static void enterState(int id) throws SDLException {
@@ -554,8 +554,8 @@ public class NullpoMinoSDL {
 
 	/**
 	 * 画面外にはみ出す画像をちゃんと描画できるようにSDLRectを修正する
-	 * @param rectSrc 修正するSDLRect（描画元）
-	 * @param rectDst 修正するSDLRect（描画先）
+	 * @param rectSrc 修正するSDLRect (描画元）
+	 * @param rectDst 修正するSDLRect (描画先）
 	 */
 	public static void fixRect(SDLRect rectSrc, SDLRect rectDst) {
 		if(rectSrc == null) return;
@@ -581,7 +581,7 @@ public class NullpoMinoSDL {
 	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	public static String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -604,7 +604,7 @@ public class NullpoMinoSDL {
 				// 終了 button
 				enterState(-1);
 			} else if(event instanceof SDLKeyboardEvent) {
-				// キー入力
+				// キー input 
 				SDLKeyboardEvent keyevent = (SDLKeyboardEvent)event;
 
 				int keysym = keyevent.getSym();
@@ -619,7 +619,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * ジョイスティックの状態の更新
+	 * Joystick の状態の更新
 	 */
 	protected static void joyUpdate() {
 		try {

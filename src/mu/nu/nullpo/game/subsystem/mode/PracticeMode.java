@@ -68,7 +68,7 @@ public class PracticeMode extends DummyMode {
 	/** Comboで手に入る point */
 	private static final int COMBO_GOAL_TABLE[] = {0,0,1,1,2,2,3,3,4,4,4,5};
 
-	/**  levelタイプの定count */
+	/** Levelタイプの定count */
 	private static final int LEVELTYPE_NONE = 0,
 							 LEVELTYPE_10LINES = 1,
 							 LEVELTYPE_POINTS = 2,
@@ -84,7 +84,7 @@ public class PracticeMode extends DummyMode {
 		"GM"													// 18
 	};
 
-	/**  levelタイプの表示名 */
+	/** Levelタイプの表示名 */
 	private static final String[] LEVELTYPE_STRING = {"NONE", "10LINES", "POINTS", "MANIA", "MANIA+"};
 
 	/** Comboタイプの表示名 */
@@ -156,7 +156,7 @@ public class PracticeMode extends DummyMode {
 	/** Big時Linescount半分 */
 	private boolean bighalf;
 
-	/**  levelタイプ */
+	/** Levelタイプ */
 	private int leveltype;
 
 	/** Preset number */
@@ -168,10 +168,10 @@ public class PracticeMode extends DummyMode {
 	/** Current version */
 	private int version;
 
-	/** 次のSection の level（これ-1のときに levelストップする） */
+	/** Next Section の level (これ-1のときに levelストップする) */
 	private int nextseclv;
 
-	/**  levelが増えた flag */
+	/** Levelが増えた flag */
 	private boolean lvupflag;
 
 	/** Combo bonus */
@@ -180,16 +180,16 @@ public class PracticeMode extends DummyMode {
 	/** Hard drop bonus */
 	private int harddropBonus;
 
-	/**  levelストップ音 */
+	/** Levelストップ音 */
 	private boolean lvstopse;
 
 	/** クリアになる level */
 	private int goallv;
 
-	/** 制限 time（0:なし） */
+	/** 制限 time (0:なし) */
 	private int timelimit;
 
-	/** Ending time（0:なし） */
+	/** Ending time (0:なし) */
 	private int rolltimelimit;
 
 	/** 出現可能ピースの配列 */
@@ -198,7 +198,7 @@ public class PracticeMode extends DummyMode {
 	/** マップ使用 flag */
 	private boolean useMap;
 
-	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
+	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
 	private Field fldBackup;
 
 	/** 残り time */
@@ -211,7 +211,7 @@ public class PracticeMode extends DummyMode {
 	private boolean bone;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -688,7 +688,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -731,7 +731,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（ゲーム開始直前）
+	 * Readyの時のInitialization処理 (ゲーム開始直前）
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -871,7 +871,7 @@ public class PracticeMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 9, String.valueOf(engine.statistics.level + 1));
 			}
 
-			// 1分間あたりのScore
+			// 1分間あたり score
 			receiver.drawScoreFont(engine, playerID, 0, 11, "SCORE/MIN", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 12, String.format("%-10g", engine.statistics.spm));
 
@@ -1051,7 +1051,7 @@ public class PracticeMode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後のフレーム
+		// 最後の frame 
 		if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
 			if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 				if(engine.statistics.level < nextseclv - 1) {
@@ -1117,7 +1117,7 @@ public class PracticeMode extends DummyMode {
 					engine.staffrollNoDeath = false;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のSection 
+				// Next Section 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1325,7 +1325,7 @@ public class PracticeMode extends DummyMode {
 			}
 		}
 
-		// Ending（ levelタイプNONE）
+		// Ending ( levelタイプNONE）
 		if( (version >= 2) && (leveltype == LEVELTYPE_NONE) && (engine.statistics.lines >= goallv + 1) && ((goallv != -1) || (version <= 2)) ) {
 			endingFlag = true;
 		}
@@ -1352,7 +1352,7 @@ public class PracticeMode extends DummyMode {
 	/**
 	 * Meterの量を更新
 	 * @param engine GameEngine
-	 * @param playerID プレイヤー number
+	 * @param playerID Player number
 	 */
 	private void setMeter(GameEngine engine, int playerID) {
 		if((engine.gameActive) && (engine.ending == 2)) {

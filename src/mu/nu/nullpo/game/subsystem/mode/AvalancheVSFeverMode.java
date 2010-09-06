@@ -66,7 +66,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	private int[] feverChainDisplay;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -394,7 +394,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {

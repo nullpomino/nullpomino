@@ -85,7 +85,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー入力状態を更新
+		// キー input 状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
 		// Mouse

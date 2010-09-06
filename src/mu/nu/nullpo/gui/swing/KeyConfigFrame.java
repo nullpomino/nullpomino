@@ -47,16 +47,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * キーコンフィグ画面のフレーム
+ * キーコンフィグ画面の frame 
  */
 public class KeyConfigFrame extends JFrame implements ActionListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
 
-	/** プレイヤー number */
+	/** Player number */
 	protected int playerID;
 
 	/** キーイベント受け取り用クラス */
@@ -68,7 +68,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	/** キー設定用テキストボックス */
 	protected JTextField[] txtfldGameKeys;
 
-	/** キーコード */
+	/** Key code */
 	protected int[] keyCodes;
 
 	/**
@@ -93,7 +93,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 
 	/**
 	 * キーボード設定を読み込み
-	 * @param pl プレイヤー number
+	 * @param pl Player number
 	 */
 	public void load(int pl) {
 		this.playerID = pl;

@@ -41,7 +41,7 @@ import mu.nu.nullpo.util.GeneralUtil;
  */
 public class DummyMode implements GameMode {
 
-	/** 合計Score */
+	/** Total score */
 	protected static final int STAT_SCORE = 1, STAT_LINES = 2, STAT_TIME = 3,
 			STAT_LEVEL = 4, STAT_LEVEL_MANIA = 5, STAT_PIECE = 6,
 			STAT_MAXCOMBO = 7, STAT_SPL = 8, STAT_SPM = 9, STAT_SPS = 10,

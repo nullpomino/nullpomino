@@ -34,7 +34,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.WallkickResult;
 
 /**
- * DrMarioWallkick
+ * PhysicianWallkick
  */
 public class PhysicianWallkick implements Wallkick {
 	/*

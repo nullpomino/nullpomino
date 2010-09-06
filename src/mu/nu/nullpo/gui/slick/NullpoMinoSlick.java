@@ -68,7 +68,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** 設定保存用Property file */
 	public static CustomProperties propConfig;
 
-	/** 設定保存用Property file（全Version共通） */
+	/** 設定保存用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
 	/** 音楽リストProperty file */
@@ -122,16 +122,16 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
 
-	/** ジョイスティック button設定画面のステート */
+	/** Joystick  button設定画面のステート */
 	public static StateConfigJoystickButton stateConfigJoystickButton;
 
 	/** ネットプレイ画面のステート */
 	public static StateNetGame stateNetGame;
 
-	/** ジョイスティック設定メインメニューのステート */
+	/** Joystick 設定メインメニューのステート */
 	public static StateConfigJoystickMain stateConfigJoystickMain;
 
-	/** ジョイスティックテスト画面のステート */
+	/** Joystick テスト画面のステート */
 	public static StateConfigJoystickTest stateConfigJoystickTest;
 
 	/** チューニング設定画面のステート */
@@ -391,7 +391,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	public static String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -423,7 +423,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回のフレームの休止 time誤差も引いておく
+			// 前回の frame の休止 time誤差も引いておく
 			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
 			if(alternateFPSPerfectMode && ingame) {
@@ -508,7 +508,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/*
-	 * ステート（タイトルとかゲームとかのシーンのことね）を追加
+	 * ステート (タイトルとかゲームとかのシーンのことね）を追加
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {

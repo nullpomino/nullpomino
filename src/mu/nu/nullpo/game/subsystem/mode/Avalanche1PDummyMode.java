@@ -147,7 +147,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -287,7 +287,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー
+	 * game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
@@ -309,7 +309,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Hard dropしたときの処理
+	 * Called when hard drop used
 	 */
 	@Override
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
@@ -317,7 +317,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Hard dropしたときの処理
+	 * Called when soft drop used
 	 */
 	@Override
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {

@@ -44,7 +44,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 /**
- * ゲームのイベント処理と描画処理（Slick版）
+ * ゲームのイベント処理と描画処理 (Slick版）
  */
 public class RendererSlick extends EventReceiver {
 	/** Log */
@@ -314,7 +314,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -325,7 +325,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率と暗さ指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率と暗さ指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -352,7 +352,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画（拡大率指定可能）
+	 * Blockピースを描画 (拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -363,7 +363,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画（暗さもしくは明るさの指定可能）
+	 * Blockピースを描画 (暗さもしくは明るさの指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -383,7 +383,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースを描画（Y-coordinateが0以上のBlockだけ表示）
+	 * 現在操作中のBlockピースを描画 (Y-coordinateが0以上のBlockだけ表示）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -1118,9 +1118,9 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 各フレーム最初の描画処理
+	 * 各 frame 最初の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	@Override
 	public void renderFirst(GameEngine engine, int playerID) {
@@ -1288,7 +1288,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * ゲームオーバー画面の描画処理
+	 * game over画面の描画処理
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1355,7 +1355,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 各フレームの最後に行われる処理
+	 * 各 frame の最後に行われる処理
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -1363,7 +1363,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 各フレームの最後に行われる描画処理
+	 * 各 frame の最後に行われる描画処理
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {

@@ -33,7 +33,7 @@ import java.io.Serializable;
 import mu.nu.nullpo.game.component.RuleOptions;
 
 /**
- * プレイヤー情報
+ * Player情報
  */
 public class NetPlayerInfo implements Serializable {
 	/** シリアルVersion */
@@ -82,15 +82,15 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param n コピー元
+	 * Copy constructor
+	 * @param n Copy source
 	 */
 	public NetPlayerInfo(NetPlayerInfo n) {
 		copy(n);
 	}
 
 	/**
-	 * Stringの配列からデータを読み込むConstructor
+	 * Stringの配列から dataを読み込むConstructor
 	 * @param pdata Stringの配列(String[10])
 	 */
 	public NetPlayerInfo(String[] pdata) {
@@ -98,7 +98,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * Stringらデータを読み込むConstructor
+	 * Stringら dataを読み込むConstructor
 	 * @param str String(;で区切り)
 	 */
 	public NetPlayerInfo(String str) {
@@ -107,7 +107,7 @@ public class NetPlayerInfo implements Serializable {
 
 	/**
 	 * 他のNetPlayerInfoからコピー
-	 * @param n コピー元
+	 * @param n Copy source
 	 */
 	public void copy(NetPlayerInfo n) {
 		strName = n.strName;
@@ -131,7 +131,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列からデータ代入
+	 * Stringの配列から data代入
 	 * @param pdata Stringの配列(String[11])
 	 */
 	public void importStringArray(String[] pdata) {
@@ -149,7 +149,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * String(;で区切り)からデータ代入
+	 * String(;で区切り)から data代入
 	 * @param str String
 	 */
 	public void importString(String str) {
@@ -201,7 +201,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * プレイヤー消去時の処理
+	 * Player消去時の処理
 	 */
 	public void delete() {
 		ruleOpt = null;

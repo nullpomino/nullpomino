@@ -51,7 +51,7 @@ public class NetObserverClient extends NetBaseClient {
 	protected volatile int observerCount = 0;
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public NetObserverClient() {
 		super();

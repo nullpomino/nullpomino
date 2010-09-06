@@ -150,14 +150,14 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/*
-	 *  button入力状態を設定
+	 *  button input状態を設定
 	 */
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) && (delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 		    (!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{
-			int input = 0;	//  button入力データ
+			int input = 0;	//  button input data
 			Piece pieceNow = engine.nowPieceObject;
 			int nowX = engine.nowPieceX;
 			int nowY = engine.nowPieceY;
@@ -169,7 +169,7 @@ public class BasicAI extends DummyAI implements Runnable {
 				// ホールド
 				input |= Controller.BUTTON_BIT_D;
 			} else {
-				// 回転
+				// rotation
 				if(rt != bestRt) {
 					int lrot = engine.getRotateDirection(-1);
 					int rrot = engine.getRotateDirection(1);
@@ -200,7 +200,7 @@ public class BasicAI extends DummyAI implements Runnable {
 				} else {
 					// 到達できる場合
 					if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
-						// 接地回転
+						// 接地rotation
 						if(bestRtSub != -1) {
 							bestRt = bestRtSub;
 							bestRtSub = -1;
@@ -248,7 +248,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	/**
 	 * 最善手を探す
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
 		bestHold = false;
@@ -333,7 +333,7 @@ public class BasicAI extends DummyAI implements Runnable {
 								}
 							}
 
-							// 左回転
+							// 左rotation
 							if(!engine.isRotateButtonDefaultRight() || engine.ruleopt.rotateButtonAllowReverse) {
 								int rot = pieceNow.getRotateDirection(-1, rt);
 								int newX = x;
@@ -368,7 +368,7 @@ public class BasicAI extends DummyAI implements Runnable {
 								}
 							}
 
-							// 右回転
+							// 右rotation
 							if(engine.isRotateButtonDefaultRight() || engine.ruleopt.rotateButtonAllowReverse) {
 								int rot = pieceNow.getRotateDirection(1, rt);
 								int newX = x;
@@ -403,7 +403,7 @@ public class BasicAI extends DummyAI implements Runnable {
 								}
 							}
 
-							// 180度回転
+							// 180-degree rotation
 							if(engine.ruleopt.rotateButtonAllowDouble) {
 								int rot = pieceNow.getRotateDirection(2, rt);
 								int newX = x;
@@ -488,8 +488,8 @@ public class BasicAI extends DummyAI implements Runnable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld 回転前のDirection（-1：なし）
-	 * @param fld フィールド（どんなに弄っても問題なし）
+	 * @param rtOld Direction before rotation (-1：なし）
+	 * @param fld フィールド (どんなに弄っても問題なし）
 	 * @param piece ピース
 	 * @param nextpiece NEXTピース
 	 * @param holdpiece HOLDピース(nullの場合あり)
@@ -631,8 +631,8 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 最大妥協 levelを取得
-	 * @return 最大妥協 level
+	 * Maximum妥協 levelを取得
+	 * @return Maximum妥協 level
 	 */
 	public int getMaxThinkDepth() {
 		return 2;

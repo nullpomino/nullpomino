@@ -35,7 +35,7 @@ import sdljava.video.SDLSurface;
  * 設定画面のステート
  */
 public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
-	/** プレイヤー number */
+	/** Player number */
 	protected int player = 0;
 	
 	public StateConfigMainMenuSDL () {

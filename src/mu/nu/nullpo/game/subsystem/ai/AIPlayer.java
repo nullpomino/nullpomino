@@ -44,43 +44,43 @@ public interface AIPlayer {
 	/**
 	 * Initialization処理
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void init(GameEngine engine, int playerID);
 
 	/**
 	 * 終了処理
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void shutdown(GameEngine engine, int playerID);
 
 	/**
-	 *  button入力状態を設定
+	 *  button input状態を設定
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
-	 * @param ctrl  button入力状態管理クラス
+	 * @param playerID Player ID
+	 * @param ctrl Button input状態管理クラス
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl);
 
 	/**
 	 * Called at the start of each frame
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onFirst(GameEngine engine, int playerID);
 
 	/**
 	 * Called after every frame
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onLast(GameEngine engine, int playerID);
 
 	/**
 	 * 新しいピースが出現したときの処理
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void newPiece(GameEngine engine, int playerID);
 }

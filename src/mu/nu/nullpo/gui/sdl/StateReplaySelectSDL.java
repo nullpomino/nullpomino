@@ -51,7 +51,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateReplaySelectSDL.class);
 
-	/** 1画面に表示する最大ファイルcount */
+	/** 1画面に表示するMaximumファイルcount */
 	public static final int PAGE_HEIGHT = 20;
 
 	/** Mode  name */

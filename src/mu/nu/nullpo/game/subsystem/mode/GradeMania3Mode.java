@@ -160,10 +160,10 @@ public class GradeMania3Mode extends DummyMode {
 	/** 段位認定試験の発生確率(EXAM_CHANCE分の1の確率で発生) */
 	private static final int EXAM_CHANCE = 3;
 
-	/** 最大Section count */
+	/** Number of sections */
 	private static final int SECTION_MAX = 10;
 
-	/** デフォルトのSection Time */
+	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
 	/** GameManager that owns this mode */
@@ -172,16 +172,16 @@ public class GradeMania3Mode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
+	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
 
-	/** 次のSection の level（これ-1のときに levelストップする） */
+	/** Next Section の level (これ-1のときに levelストップする) */
 	private int nextseclv;
 
 	/** 内部 level */
 	private int internalLevel;
 
-	/**  levelが増えた flag */
+	/** Levelが増えた flag */
 	private boolean lvupflag;
 
 	/** 最終結果などに表示される実際の段位 */
@@ -283,10 +283,10 @@ public class GradeMania3Mode extends DummyMode {
 	/** 消えRoll started flag */
 	private boolean mrollFlag;
 
-	/** Roll 中に稼いだ point（段位上昇用） */
+	/** Roll 中に稼いだ point (段位上昇用) */
 	private float rollPoints;
 
-	/** Roll 中に稼いだ point（合計） */
+	/** Roll 中に稼いだ point (合計) */
 	private float rollPointsTotal;
 
 	/** AC medal 状態 */
@@ -304,7 +304,7 @@ public class GradeMania3Mode extends DummyMode {
 	/** Section Time記録表示中ならtrue */
 	private boolean isShowBestSectionTime;
 
-	/** 開始時の level */
+	/** Level at start */
 	private int startlevel;
 
 	/** trueなら常にゴーストON */
@@ -340,7 +340,7 @@ public class GradeMania3Mode extends DummyMode {
 	/** Rankings' 段位 */
 	private int[][] rankingGrade;
 
-	/** Rankings'  level */
+	/** Rankings' levels */
 	private int[][] rankingLevel;
 
 	/** Rankings' times */
@@ -352,7 +352,7 @@ public class GradeMania3Mode extends DummyMode {
 	/** Section Time記録 */
 	private int[][] bestSectionTime;
 
-	/** 段位履歴（昇格・降格試験用） */
+	/** 段位履歴 (昇格・降格試験用) */
 	private int[] gradeHistory;
 
 	/** 昇格試験の目標段位 */
@@ -361,7 +361,7 @@ public class GradeMania3Mode extends DummyMode {
 	/** Current 認定段位 */
 	private int qualifiedGrade;
 
-	/** 降格試験 point（30以上溜まると降格試験発生） */
+	/** 降格試験 point (30以上溜まると降格試験発生) */
 	private int demotionPoints;
 
 	/** 昇格試験 flag */
@@ -380,7 +380,7 @@ public class GradeMania3Mode extends DummyMode {
 	private int passframe;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -1132,7 +1132,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後のフレーム
+		// 最後の frame 
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -1227,7 +1227,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// 4Lines消しカウント
+			// 4-line clearカウント
 			if(lines >= 4) {
 				// SK medal 
 				if(big == true) {
@@ -1338,7 +1338,7 @@ public class GradeMania3Mode extends DummyMode {
 				// REGRET判定
 				checkRegret(engine, levelb);
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のSection 
+				// Next Section 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1433,7 +1433,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/*
-	 * Hard dropしたときの処理
+	 * Called when hard drop used
 	 */
 	@Override
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
@@ -1441,7 +1441,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/*
-	 * 各フレームの終わりの処理
+	 * 各 frame の終わりの処理
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -1516,7 +1516,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー
+	 * game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {

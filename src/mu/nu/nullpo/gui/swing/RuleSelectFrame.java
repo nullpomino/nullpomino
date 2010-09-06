@@ -49,10 +49,10 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.apache.log4j.Logger;
 
 /**
- * ルール選択画面のフレーム
+ * ルール選択画面の frame 
  */
 public class RuleSelectFrame extends JFrame implements ActionListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** Log */
@@ -61,7 +61,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
 
-	/** プレイヤー number */
+	/** Player number */
 	protected int playerID;
 
 	/** ファイル名 */
@@ -107,7 +107,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 
 	/**
 	 * 現在選択しているルールを読み込み
-	 * @param pl プレイヤー number
+	 * @param pl Player number
 	 */
 	public void load(int pl) {
 		this.playerID = pl;
@@ -147,7 +147,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		scpaneRule.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(scpaneRule);
 
-		// デフォルトに戻す button
+		//  default に戻す button
 		JButton btnUseDefault = new JButton(NullpoMinoSwing.getUIText("RuleSelect_UseDefault"));
 		btnUseDefault.setMnemonic('D');
 		btnUseDefault.addActionListener(this);

@@ -73,7 +73,7 @@ public class LineRaceMode extends NetDummyMode {
 	/** Big */
 	private boolean big;
 
-	/** Target line count type（0=20,1=40,2=100） */
+	/** Target line count type (0=20,1=40,2=100) */
 	private int goaltype;
 
 	/** Last preset number used */

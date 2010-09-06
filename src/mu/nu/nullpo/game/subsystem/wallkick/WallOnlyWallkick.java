@@ -44,7 +44,7 @@ public class WallOnlyWallkick implements Wallkick {
 		int check = 0;
 		if(piece.big) check = 1;
 
-		// 通常のWallkick（I以外）
+		// 通常のWallkick (I以外）
 		if(piece.id != Piece.PIECE_I) {
 			if(checkCollisionKick(piece, x, y, rtNew, field)) {
 				int temp = 0;
@@ -87,7 +87,7 @@ public class WallOnlyWallkick implements Wallkick {
 	}
 
 	/**
-	 * Wallkick可能かどうか調べる（Big用）
+	 * Wallkick可能かどうか調べる (Big用）
 	 * @param piece Blockピース
 	 * @param x X-coordinate
 	 * @param y Y-coordinate

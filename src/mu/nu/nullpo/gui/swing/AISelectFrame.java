@@ -53,10 +53,10 @@ import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import org.apache.log4j.Logger;
 
 /**
- * AI選択画面のフレーム
+ * AI選択画面の frame 
  */
 public class AISelectFrame extends JFrame implements ActionListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** Log */
@@ -65,7 +65,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
 
-	/** プレイヤー number */
+	/** Player number */
 	protected int playerID;
 
 	/** AIのクラス一覧 */
@@ -130,8 +130,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * このフレームを表示するときに実行する処理
-	 * @param pl プレイヤー number
+	 * この frame を表示するときに実行する処理
+	 * @param pl Player number
 	 */
 	public void load(int pl) {
 		this.playerID = pl;

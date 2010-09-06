@@ -34,10 +34,10 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.WallkickResult;
 
 /**
- * StandardSymmetricWallkick - 壁登りなどができるWallkick（I型のWallkickが左右対称なVersion）
+ * StandardSymmetricWallkick - 壁登りなどができるWallkick (I型のWallkickが左右対称なVersion）
  */
 public class StandardSymmetricWallkick implements Wallkick {
-	// Wallkickデータ
+	// Wallkick data
 	private static final int WALLKICK_NORMAL_L[][][] =
 	{
 		{{ 1, 0},{ 1,-1},{ 0, 2},{ 1, 2}},	// 0>>3
@@ -109,7 +109,7 @@ public class StandardSymmetricWallkick implements Wallkick {
 		{{ 0, 1},{ 0,-1}},					// 3>>0
 	};
 
-	// 180度回転のWallkickデータ
+	// 180-degree rotation wallkick data
 	private static final int WALLKICK_NORMAL_180[][][] =
 	{
 		{{ 1, 0},{ 2, 0},{ 1, 1},{ 2, 1},{-1, 0},{-2, 0},{-1, 1},{-2, 1},{ 0,-1},{ 3, 0},{-3, 0}},	// 0>>2─┐
@@ -132,7 +132,7 @@ public class StandardSymmetricWallkick implements Wallkick {
 		int x2, y2;
 
 		if(rtDir == 2) {
-			// 180度回転
+			// 180-degree rotation
 			int[][][] kicktable = WALLKICK_NORMAL_180;
 			if((piece.id == Piece.PIECE_I) || (piece.id == Piece.PIECE_I3))
 				kicktable = WALLKICK_I_180;
@@ -153,11 +153,11 @@ public class StandardSymmetricWallkick implements Wallkick {
 				}
 			}
 		} else {
-			// 通常回転
+			// 通常rotation
 			int[][][] kicktable = null;
 
 			if(rtDir < 0) {
-				// 左回転
+				// 左rotation
 				switch (piece.id) {
 				case Piece.PIECE_I:
 					kicktable = WALLKICK_I_L;
@@ -176,7 +176,7 @@ public class StandardSymmetricWallkick implements Wallkick {
 					break;
 				}
 			} else {
-				// 右回転
+				// 右rotation
 				switch (piece.id) {
 				case Piece.PIECE_I:
 					kicktable = WALLKICK_I_R;

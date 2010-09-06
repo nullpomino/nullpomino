@@ -104,7 +104,7 @@ public class MarathonPlusMode extends DummyMode {
 	/** Current BGM */
 	private int bgmlv;
 
-	/**  bonus levelでのLinescount */
+	/**  bonus levelでのline count */
 	private int bonusLines;
 
 	/**  bonus levelでBlockを置いた count */
@@ -153,7 +153,7 @@ public class MarathonPlusMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -723,7 +723,7 @@ public class MarathonPlusMode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー
+	 * game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {

@@ -34,7 +34,7 @@ import mu.nu.nullpo.game.component.Piece;
 
 /**
  * 通常のランダムな出現順
- * （engine.randomizerがnullの場合にGameEngineから使われます）
+ *  (engine.randomizerがnullの場合にGameEngineから使われます）
  */
 public class NintendoRandomizer implements Randomizer {
 	/*

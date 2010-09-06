@@ -37,7 +37,7 @@ import sdljava.video.SDLSurface;
  * Mode 選択画面のステート
  */
 public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
-	/** 1画面に表示する最大Mode count */
+	/** 1画面に表示するMaximumMode count */
 	public static final int PAGE_HEIGHT = 25;
 
 	/**

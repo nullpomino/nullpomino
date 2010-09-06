@@ -40,7 +40,7 @@ public class StateConfigGameTuning extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 14;
 
-	/** プレイヤー number */
+	/** Player number */
 	public int player = 0;
 
 	/** カーソル位置 */
@@ -49,13 +49,13 @@ public class StateConfigGameTuning extends BasicGameState {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** A buttonでの回転Directionを -1=ルールに従う 0=常に左回転 1=常に右回転 */
+	/** A buttonでのrotationDirectionを -1=ルールに従う 0=常に左rotation 1=常に右rotation */
 	protected int owRotateButtonDefaultRight;
 
 	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */
 	protected int owSkin;
 
-	/** 最低/最大横溜め速度 -1=ルールに従う 0以上=固定 */
+	/** 最低/Maximum横溜め速度 -1=ルールに従う 0以上=固定 */
 	protected int owMinDAS, owMaxDAS;
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */

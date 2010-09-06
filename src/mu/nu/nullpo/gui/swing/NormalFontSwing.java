@@ -31,7 +31,7 @@ package mu.nu.nullpo.gui.swing;
 import java.awt.Graphics2D;
 
 /**
- * 普通の文字列の表示クラス（Swing用）
+ * 普通の文字列の表示クラス (Swing用）
  */
 public class NormalFontSwing {
 	/** 文字色の定count */
@@ -59,7 +59,7 @@ public class NormalFontSwing {
 			int stringChar = str.charAt(i);
 
 			if(stringChar == 0x0A) {
-				// 改行（\n）
+				// 改行 (\n）
 				dy = (int) (dy + 16 * scale);
 				dx = x;
 			} else {
@@ -91,7 +91,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * 文字列を描画（文字色は白）
+	 * 文字列を描画 (文字色は白）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -128,7 +128,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画（拡大率指定可能）
+	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -145,7 +145,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画（拡大率指定可能）
+	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -157,7 +157,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * 文字列を描画（16x16のグリッド単位）
+	 * 文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -168,7 +168,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * 文字列を描画（16x16のグリッド単位・文字色は白）
+	 * 文字列を描画 (16x16のグリッド単位・文字色は白）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -178,7 +178,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画（16x16のグリッド単位）
+	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -191,7 +191,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画（16x16のグリッド単位）
+	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列

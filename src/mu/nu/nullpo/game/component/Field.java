@@ -43,30 +43,30 @@ import org.apache.log4j.Logger;
  */
 public class Field implements Serializable {
 	/** Log */
-	static Logger log = Logger.getLogger(PoochyBot.class);
+	static Logger log = Logger.getLogger(Field.class);
 
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 7745183278794213487L;
 
-	/** デフォルトの幅 */
+	/**  default の幅 */
 	public static final int DEFAULT_WIDTH = 10;
 
-	/** デフォルトの高さ */
+	/**  default の高さ */
 	public static final int DEFAULT_HEIGHT = 20;
 
-	/** デフォルトの見えない部分の高さ */
+	/**  default の見えない部分の高さ */
 	public static final int DEFAULT_HIDDEN_HEIGHT = 3;
 
-	/** 座標の属性（通常） */
+	/** 座標の属性 (通常) */
 	public static final int COORD_NORMAL = 0;
 
-	/** 座標の属性（見えない部分） */
+	/** 座標の属性 (見えない部分) */
 	public static final int COORD_HIDDEN = 1;
 
-	/** 座標の属性（置いたBlockが消える） */
+	/** 座標の属性 (置いたBlockが消える) */
 	public static final int COORD_VANISH = 2;
 
-	/** 座標の属性（壁） */
+	/** 座標の属性 (壁) */
 	public static final int COORD_WALL = 3;
 
 	/** フィールドの幅 */
@@ -139,15 +139,15 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public Field() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_HIDDEN_HEIGHT);
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param f コピー元
+	 * Copy constructor
+	 * @param f Copy source
 	 */
 	public Field(Field f) {
 		copy(f);
@@ -181,7 +181,7 @@ public class Field implements Serializable {
 
 	/**
 	 * 別のFieldからコピー
-	 * @param f コピー元
+	 * @param f Copy source
 	 */
 	public void copy(Field f) {
 		width = f.width;
@@ -329,7 +329,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockを取得（失敗したら例外送出）
+	 * 指定した座標にあるBlockを取得 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @return 指定した座標にあるBlockオブジェクト
@@ -384,7 +384,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockを設定（失敗したら例外送出）
+	 * 指定した座標にあるBlockを設定 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Block
@@ -414,7 +414,7 @@ public class Field implements Serializable {
 	 * 指定した座標にあるBlockの色を取得
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockの色（失敗したらBLOCK_COLOR_INVALID）
+	 * @return 指定した座標にあるBlockの色 (失敗したらBLOCK_COLOR_INVALID）
 	 */
 	public int getBlockColor(int x, int y) {
 		// フィールド内
@@ -440,14 +440,14 @@ public class Field implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param gemSame If true, a gem block will return the color of the corresponding normal block.
-	 * @return 指定した座標にあるBlockの色（失敗したらBLOCK_COLOR_INVALID）
+	 * @return 指定した座標にあるBlockの色 (失敗したらBLOCK_COLOR_INVALID）
 	 */
 	public int getBlockColor(int x, int y, boolean gemSame) {
 		return Block.gemToNormalColor(getBlockColor(x, y));
 	}
 
 	/**
-	 * 指定した座標にあるBlockの色を取得（失敗したら例外送出）
+	 * 指定した座標にあるBlockの色を取得 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @return 指定した座標にあるBlockの色
@@ -503,7 +503,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockの色を変更（失敗したら例外送出）
+	 * 指定した座標にあるBlockの色を変更 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param c 色
@@ -532,7 +532,7 @@ public class Field implements Serializable {
 	/**
 	 * Line clear flagを取得
 	 * @param y Y-coordinate
-	 * @return 消える列ならtrue、そうでないなら（もしくは座標が範囲外なら）false
+	 * @return 消える列ならtrue、そうでないなら (もしくは座標が範囲外なら）false
 	 */
 	public boolean getLineFlag(int y) {
 		// フィールド内
@@ -558,7 +558,7 @@ public class Field implements Serializable {
 	 * 指定した座標にあるBlockが空白かどうか判定
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockが空白ならtrue（指定した座標が範囲外の場合もtrue）
+	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合もtrue）
 	 */
 	public boolean getBlockEmpty(int x, int y) {
 		// フィールド内
@@ -581,10 +581,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockが空白かどうか判定（指定した座標が範囲外の場合はfalse）
+	 * 指定した座標にあるBlockが空白かどうか判定 (指定した座標が範囲外の場合はfalse）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockが空白ならtrue（指定した座標が範囲外の場合はfalse）
+	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合はfalse）
 	 */
 	public boolean getBlockEmptyF(int x, int y) {
 		// フィールド内
@@ -607,7 +607,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockが空白かどうか判定（失敗したら例外送出）
+	 * 指定した座標にあるBlockが空白かどうか判定 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @return 指定した座標にあるBlockが空白ならtrue
@@ -633,7 +633,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear flagを取得（失敗したら例外送出）
+	 * Line clear flagを取得 (失敗したら例外送出）
 	 * @param y Y-coordinate
 	 * @return 消える列ならtrue、そうでないならfalse
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
@@ -687,7 +687,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear flagを設定（失敗したら例外送出）
+	 * Line clear flagを設定 (失敗したら例外送出）
 	 * @param y Y-coordinate
 	 * @param flag 設定するLine clear flag
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
@@ -744,7 +744,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear check （消去 flagの設定とかはしない）
+	 * Line clear check  (消去 flagの設定とかはしない）
 	 * @return 消えるLinescount
 	 */
 	public int checkLineNoFlag() {
@@ -1244,7 +1244,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 一番上にあるBlockのY-coordinateを取得（X-coordinateを指定できるVersion）
+	 * 一番上にあるBlockのY-coordinateを取得 (X-coordinateを指定できるVersion）
 	 * @param x X-coordinate
 	 * @return 一番上にあるBlockのY-coordinate
 	 */
@@ -1340,7 +1340,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 全ての谷（■　■になっている地形）の深さを合計したものを返す（谷が多くて深いほど戻り値も大きくなる）
+	 * 全ての谷 (■　■になっている地形）の深さを合計したものを返す (谷が多くて深いほど戻り値も大きくなる）
 	 * @return 全ての谷の深さを合計したもの
 	 */
 	public int getTotalValleyDepth() {
@@ -1355,7 +1355,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * I型が必要な谷（深さ3以上）のcountを返す
+	 * I型が必要な谷 (深さ3以上）のcountを返す
 	 * @return I型が必要な谷のcount
 	 */
 	public int getTotalValleyNeedIPiece() {
@@ -1369,9 +1369,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 谷（■　■になっている地形）の深さを調べる
+	 * 谷 (■　■になっている地形）の深さを調べる
 	 * @param x 調べるX-coordinate
-	 * @return 谷の深さ（無かったら0）
+	 * @return 谷の深さ (無かったら0）
 	 */
 	public int getValleyDepth(int x) {
 		int depth = 0;
@@ -1478,7 +1478,7 @@ public class Field implements Serializable {
 
 	/**
 	 * 穴が1箇所だけ開いた邪魔Blockを一番下に追加
-	 * @param hole 穴の位置（-1なら穴なし）
+	 * @param hole 穴の位置 (-1なら穴なし）
 	 * @param color 邪魔Blockの色
 	 * @param skin 邪魔Blockの絵柄
 	 * @param attribute 邪魔Blockの属性

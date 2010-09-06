@@ -131,10 +131,10 @@ public class GradeMania2Mode extends DummyMode {
 	/** Number of entries in rankings */
 	private static final int RANKING_MAX = 10;
 
-	/** 最大Section count */
+	/** Number of sections */
 	private static final int SECTION_MAX = 10;
 
-	/** デフォルトのSection Time */
+	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
 	/** GameManager that owns this mode */
@@ -143,13 +143,13 @@ public class GradeMania2Mode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
+	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
 
-	/** 次のSection の level（これ-1のときに levelストップする） */
+	/** Next Section の level (これ-1のときに levelストップする) */
 	private int nextseclv;
 
-	/**  levelが増えた flag */
+	/** Levelが増えた flag */
 	private boolean lvupflag;
 
 	/** 画面に表示されている実際の段位 */
@@ -212,19 +212,19 @@ public class GradeMania2Mode extends DummyMode {
 	/** 直前のSection Time */
 	private int sectionlasttime;
 
-	/** Section 内で4Lines消した count */
+	/** Section 内で4-line clearた count */
 	private int[] sectionfourline;
 
-	/** 消えRoll  flag１（Section Time） */
+	/** 消えRoll  flag１ (Section Time) */
 	private boolean mrollSectiontime;
 
-	/** 消えRoll  flag２（4Lines消し） */
+	/** 消えRoll  flag２ (4-line clear) */
 	private boolean mrollFourline;
 
 	/** 消えRoll started flag */
 	private boolean mrollFlag;
 
-	/** 消えRoll 中に消したLinescount */
+	/** 消えRoll 中に消したline count */
 	private int mrollLines;
 
 	/** AC medal 状態 */
@@ -248,13 +248,13 @@ public class GradeMania2Mode extends DummyMode {
 	/** 150個以上Blockがあるとtrue、70個まで減らすとfalseになる */
 	private boolean recoveryFlag;
 
-	/** 回転した合計 count（最大4個ずつ増える） */
+	/** rotationした合計 count (Maximum4個ずつ増える) */
 	private int rotateCount;
 
 	/** Section Time記録表示中ならtrue */
 	private boolean isShowBestSectionTime;
 
-	/** 開始時の level */
+	/** Level at start */
 	private int startlevel;
 
 	/** trueなら常にゴーストON */
@@ -294,7 +294,7 @@ public class GradeMania2Mode extends DummyMode {
 	private int[] bestSectionTime;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -479,7 +479,7 @@ public class GradeMania2Mode extends DummyMode {
 			if(sectionlasttime > temp + 120) mrollSectiontime = false;
 		}
 
-		// 4Lines消し
+		// 4-line clear
 		int required4line = 2;
 		if((levelb >= 500) && (levelb < 900)) required4line = 1;
 		if(levelb >= 900) required4line = 0;
@@ -852,7 +852,7 @@ public class GradeMania2Mode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後のフレーム
+		// 最後の frame 
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -957,7 +957,7 @@ public class GradeMania2Mode extends DummyMode {
 				}
 			}
 
-			// 4Lines消しカウント
+			// 4-line clearカウント
 			if(lines >= 4) {
 				sectionfourline[engine.statistics.level / 100]++;
 
@@ -1042,7 +1042,7 @@ public class GradeMania2Mode extends DummyMode {
 				if((mrollSectiontime == true) && (mrollFourline == true) && (engine.statistics.time <= M_ROLL_TIME_REQUIRE) && (grade >= 17))
 					mrollFlag = true;
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のSection 
+				// Next Section 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1099,7 +1099,7 @@ public class GradeMania2Mode extends DummyMode {
 	}
 
 	/*
-	 * Hard dropしたときの処理
+	 * Called when hard drop used
 	 */
 	@Override
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
@@ -1107,7 +1107,7 @@ public class GradeMania2Mode extends DummyMode {
 	}
 
 	/*
-	 * 各フレームの終わりの処理
+	 * 各 frame の終わりの処理
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -1167,7 +1167,7 @@ public class GradeMania2Mode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー
+	 * game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {

@@ -38,19 +38,19 @@ import sdljava.video.SDLSurface;
  * チューニング設定画面のステート
  */
 public class StateConfigGameTuningSDL extends BaseStateSDL {
-	/** プレイヤー number */
+	/** Player number */
 	public int player;
 
 	/** カーソル位置 */
 	protected int cursor;
 
-	/** A buttonでの回転Directionを -1=ルールに従う 0=常に左回転 1=常に右回転 */
+	/** A buttonでのrotationDirectionを -1=ルールに従う 0=常に左rotation 1=常に右rotation */
 	protected int owRotateButtonDefaultRight;
 
 	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */
 	protected int owSkin;
 
-	/** 最低/最大横溜め速度 -1=ルールに従う 0以上=固定 */
+	/** 最低/Maximum横溜め速度 -1=ルールに従う 0以上=固定 */
 	protected int owMinDAS, owMaxDAS;
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */

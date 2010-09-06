@@ -184,7 +184,7 @@ public class ResourceHolderSwing {
 	/**
 	 * 画像を読み込み
 	 * @param url 画像ファイルのURL
-	 * @return 画像ファイル（失敗するとnull）
+	 * @return 画像ファイル (失敗するとnull）
 	 */
 	public static BufferedImage loadImage(URL url) {
 		BufferedImage img = null;

@@ -46,10 +46,10 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	/** このステートのID */
 	public static final int ID = 7;
 
-	/** 1画面に表示する最大ファイルcount */
+	/** 1画面に表示するMaximumファイルcount */
 	public static final int PAGE_HEIGHT = 20;
 
-	/** プレイヤーID */
+	/** Player ID */
 	public int player = 0;
 
 	/** 初期設定Mode  */

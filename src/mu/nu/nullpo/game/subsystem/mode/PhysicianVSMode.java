@@ -125,10 +125,10 @@ public class PhysicianVSMode extends DummyMode {
 	/** マップセットのProperty file */
 	private CustomProperties[] propMap;
 
-	/** 最大マップ number */
+	/** Maximumマップ number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
+	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
 	private Field[] fldBackup;
 
 	/** マップ選択用乱count */
@@ -168,7 +168,7 @@ public class PhysicianVSMode extends DummyMode {
 	private boolean[] flash;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -316,7 +316,7 @@ public class PhysicianVSMode extends DummyMode {
 	/**
 	 * プレビュー用にマップを読み込み
 	 * @param engine GameEngine
-	 * @param playerID プレイヤー number
+	 * @param playerID Player number
 	 * @param id マップID
 	 * @param forceReload trueにするとマップファイルを強制再読み込み
 	 */
@@ -587,7 +587,7 @@ public class PhysicianVSMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {

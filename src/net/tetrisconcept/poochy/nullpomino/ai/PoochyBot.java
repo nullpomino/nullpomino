@@ -67,7 +67,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	protected int setDAS;
 	/** Last input if done in ARE */
 	protected int inputARE;
-	/** 最大妥協 level */
+	/** Maximum妥協 level */
 	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
 	protected static final boolean DEBUG_ALL = true;
@@ -208,7 +208,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 *  button入力状態を設定
+	 *  button input状態を設定
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
@@ -453,7 +453,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					// 到達できる場合
 					if((nowX == bestX) && (pieceTouchGround)) {
 						if (rt == bestRt) {
-							// 接地回転
+							// 接地rotation
 							if(bestRtSub != -1) {
 								bestRt = bestRtSub;
 								bestRtSub = -1;
@@ -791,7 +791,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/**
 	 * 最善手を探す
 	 * @param engine このAIを所有するGameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
 		debugOut("thinkBestPosition called, inARE = " + inARE + ", piece: ");
@@ -1367,8 +1367,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld 回転前のDirection（-1：なし）
-	 * @param fld フィールド（どんなに弄っても問題なし）
+	 * @param rtOld Direction before rotation (-1：なし）
+	 * @param fld フィールド (どんなに弄っても問題なし）
 	 * @param piece ピース
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
 	 * @return 評価得点

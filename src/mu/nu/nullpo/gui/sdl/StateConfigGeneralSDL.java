@@ -59,10 +59,10 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** FPS表示 */
 	protected boolean showfps;
 
-	/** フレームステップ有効 */
+	/**  frame ステップ有効 */
 	protected boolean enableframestep;
 
-	/** 最大FPS */
+	/** MaximumFPS */
 	protected int maxfps;
 
 	/** Line clearエフェクト表示 */

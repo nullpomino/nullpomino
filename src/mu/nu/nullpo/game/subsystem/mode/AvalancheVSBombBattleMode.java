@@ -54,7 +54,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 	private int[] ojamaCountdown;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {

@@ -278,7 +278,7 @@ public class ResourceHolder {
 	/**
 	 * 画像読み込み
 	 * @param filename ファイル名
-	 * @return 画像データ
+	 * @return 画像 data
 	 */
 	public static Image loadImage(String filename) {
 		log.debug("Loading image from " + filename);
@@ -299,7 +299,7 @@ public class ResourceHolder {
 	/**
 	 * 巨大画像を読み込み
 	 * @param filename ファイル名
-	 * @return 画像データ
+	 * @return 画像 data
 	 */
 	public static BigImage loadBigImage(String filename) {
 		log.debug("Loading big image from " + filename);

@@ -221,7 +221,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** チーム変更 button(Lobby screen) */
 	protected JButton btnRoomListTeamChange;
 
-	/** チーム名入力欄(Lobby screen) */
+	/** チーム名 input 欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
 
 	/** ルーム一覧 table */
@@ -230,22 +230,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ルーム一覧 tableのカラム名(翻訳後) */
 	protected String[] strTableColumnNames;
 
-	/** ルーム一覧 tableのデータ */
+	/** ルーム一覧 tableの data */
 	protected DefaultTableModel tablemodelRoomList;
 
-	/** チャットログとプレイヤーリストの仕切り線(Lobby screen) */
+	/** チャットログとPlayerリストの仕切り線(Lobby screen) */
 	protected JSplitPane splitLobbyChat;
 
 	/** チャットログ(Lobby screen) */
 	protected JTextPane txtpaneLobbyChatLog;
 
-	/** プレイヤーリスト(Lobby screen) */
+	/** Playerリスト(Lobby screen) */
 	protected JList listboxLobbyChatPlayerList;
 
-	/** プレイヤーリスト(Lobby screen)のデータ */
+	/** Playerリスト(Lobby screen)の data */
 	protected DefaultListModel listmodelLobbyChatPlayerList;
 
-	/** チャット入力欄(Lobby screen) */
+	/** チャット input 欄(Lobby screen) */
 	protected JTextField txtfldLobbyChatInput;
 
 	/** チャット送信 button(Lobby screen) */
@@ -278,34 +278,34 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ゲーム結果 tableのカラム名(翻訳後) */
 	protected String[] strGameStatTableColumnNames;
 
-	/** ゲーム結果 tableのデータ */
+	/** ゲーム結果 tableの data */
 	protected DefaultTableModel tablemodelGameStat;
 
-	/** チャットログとプレイヤーリストの仕切り線(Room screen) */
+	/** チャットログとPlayerリストの仕切り線(Room screen) */
 	protected JSplitPane splitRoomChat;
 
 	/** チャットログ(Room screen) */
 	protected JTextPane txtpaneRoomChatLog;
 
-	/** プレイヤーリスト(Room screen) */
+	/** Playerリスト(Room screen) */
 	protected JList listboxRoomChatPlayerList;
 
-	/** プレイヤーリスト(Room screen)のデータ */
+	/** Playerリスト(Room screen)の data */
 	protected DefaultListModel listmodelRoomChatPlayerList;
 
-	/** 同じ部屋のプレイヤー情報 */
+	/** 同じ部屋のPlayer情報 */
 	protected LinkedList<NetPlayerInfo> sameRoomPlayerInfoList;
 
-	/** チャット入力欄(Room screen) */
+	/** チャット input 欄(Room screen) */
 	protected JTextField txtfldRoomChatInput;
 
 	/** チャット送信 button(Room screen) */
 	protected JButton btnRoomChatSend;
 
-	/** チーム名入力欄(Room screen) */
+	/** チーム名 input 欄(Room screen) */
 	protected JTextField txtfldRoomTeam;
 
-	/** ホスト名入力欄(Server add screen) */
+	/** ホスト名 input 欄(Server add screen) */
 	protected JTextField txtfldServerAddHost;
 
 	/** OK button(Server add screen) */
@@ -538,16 +538,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * Server select screen initialization
 	 */
 	protected void initServerSelectUI() {
-		// サーバー選択と名前入力画面
+		// サーバー選択と名前 input 画面
 		JPanel mainpanelServerSelect = new JPanel(new BorderLayout());
 		this.getContentPane().add(mainpanelServerSelect, SCREENCARD_NAMES[SCREENCARD_SERVERSELECT]);
 
-		// * 名前とチーム名入力パネル
+		// * 名前とチーム名 input パネル
 		JPanel subpanelNames = new JPanel();
 		subpanelNames.setLayout(new BoxLayout(subpanelNames, BoxLayout.Y_AXIS));
 		mainpanelServerSelect.add(subpanelNames, BorderLayout.NORTH);
 
-		// ** 名前入力パネル
+		// ** 名前 input パネル
 		JPanel subpanelNameEntry = new JPanel(new BorderLayout());
 		subpanelNames.add(subpanelNameEntry);
 
@@ -555,13 +555,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JLabel labelNameEntry = new JLabel(getUIText("ServerSelect_LabelName"));
 		subpanelNameEntry.add(labelNameEntry, BorderLayout.WEST);
 
-		// *** 名前入力欄
+		// *** 名前 input 欄
 		txtfldPlayerName = new JTextField();
 		txtfldPlayerName.setComponentPopupMenu(new TextComponentPopupMenu(txtfldPlayerName));
 		txtfldPlayerName.setText(propConfig.getProperty("serverselect.txtfldPlayerName.text", ""));
 		subpanelNameEntry.add(txtfldPlayerName, BorderLayout.CENTER);
 
-		// ** チーム名入力パネル
+		// ** チーム名 input パネル
 		JPanel subpanelTeamEntry = new JPanel(new BorderLayout());
 		subpanelNames.add(subpanelTeamEntry);
 
@@ -569,7 +569,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JLabel labelTeamEntry = new JLabel(getUIText("ServerSelect_LabelTeam"));
 		subpanelTeamEntry.add(labelTeamEntry, BorderLayout.WEST);
 
-		// *** チーム名入力欄
+		// *** チーム名 input 欄
 		txtfldPlayerTeam = new JTextField();
 		txtfldPlayerTeam.setComponentPopupMenu(new TextComponentPopupMenu(txtfldPlayerTeam));
 		txtfldPlayerTeam.setText(propConfig.getProperty("serverselect.txtfldPlayerTeam.text", ""));
@@ -720,7 +720,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel subpanelRoomListTeam = new JPanel(new BorderLayout());
 		subpanelRoomListTopBar.add(subpanelRoomListTeam, "Team");
 
-		// ***** チーム名入力欄
+		// ***** チーム名 input 欄
 		txtfldRoomListTeam = new JTextField();
 		subpanelRoomListTeam.add(txtfldRoomListTeam, BorderLayout.CENTER);
 
@@ -773,7 +773,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelLobbyChat.setMinimumSize(new Dimension(0,0));
 		splitLobby.setBottomComponent(subpanelLobbyChat);
 
-		// *** チャットログとプレイヤーリストの仕切り線
+		// *** チャットログとPlayerリストの仕切り線
 		splitLobbyChat = new JSplitPane();
 		splitLobbyChat.setDividerLocation(propConfig.getProperty("lobby.splitLobbyChat.location", 350));
 		subpanelLobbyChat.add(splitLobbyChat, BorderLayout.CENTER);
@@ -786,7 +786,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spTxtpaneLobbyChatLog.setMinimumSize(new Dimension(0,0));
 		splitLobbyChat.setLeftComponent(spTxtpaneLobbyChatLog);
 
-		// **** プレイヤーリスト(Lobby screen)
+		// **** Playerリスト(Lobby screen)
 		listmodelLobbyChatPlayerList = new DefaultListModel();
 		listboxLobbyChatPlayerList = new JList(listmodelLobbyChatPlayerList);
 		listboxLobbyChatPlayerList.setComponentPopupMenu(new ListBoxPopupMenu(listboxLobbyChatPlayerList));
@@ -794,11 +794,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spListboxLobbyChatPlayerList.setMinimumSize(new Dimension(0, 0));
 		splitLobbyChat.setRightComponent(spListboxLobbyChatPlayerList);
 
-		// *** チャット入力欄パネル(Lobby screen)
+		// *** チャット input 欄パネル(Lobby screen)
 		JPanel subpanelLobbyChatInputArea = new JPanel(new BorderLayout());
 		subpanelLobbyChat.add(subpanelLobbyChatInputArea, BorderLayout.SOUTH);
 
-		// **** チャット入力欄(Lobby screen)
+		// **** チャット input 欄(Lobby screen)
 		txtfldLobbyChatInput = new JTextField();
 		txtfldLobbyChatInput.setComponentPopupMenu(new TextComponentPopupMenu(txtfldLobbyChatInput));
 		subpanelLobbyChatInputArea.add(txtfldLobbyChatInput, BorderLayout.CENTER);
@@ -870,7 +870,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel subpanelRoomTeam = new JPanel(new BorderLayout());
 		subpanelRoomTopBar.add(subpanelRoomTeam, "Team");
 
-		// ***** チーム名入力欄
+		// ***** チーム名 input 欄
 		txtfldRoomTeam = new JTextField();
 		subpanelRoomTeam.add(txtfldRoomTeam, BorderLayout.CENTER);
 
@@ -933,7 +933,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelRoomChat.setMinimumSize(new Dimension(0,0));
 		splitRoom.setBottomComponent(subpanelRoomChat);
 
-		// *** チャットログとプレイヤーリストの仕切り線(Room screen)
+		// *** チャットログとPlayerリストの仕切り線(Room screen)
 		splitRoomChat = new JSplitPane();
 		splitRoomChat.setDividerLocation(propConfig.getProperty("room.splitRoomChat.location", 350));
 		subpanelRoomChat.add(splitRoomChat, BorderLayout.CENTER);
@@ -946,7 +946,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spTxtpaneRoomChatLog.setMinimumSize(new Dimension(0,0));
 		splitRoomChat.setLeftComponent(spTxtpaneRoomChatLog);
 
-		// **** プレイヤーリスト(Room screen)
+		// **** Playerリスト(Room screen)
 		sameRoomPlayerInfoList = new LinkedList<NetPlayerInfo>();
 		listmodelRoomChatPlayerList = new DefaultListModel();
 		listboxRoomChatPlayerList = new JList(listmodelRoomChatPlayerList);
@@ -955,11 +955,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spListboxRoomChatPlayerList.setMinimumSize(new Dimension(0,0));
 		splitRoomChat.setRightComponent(spListboxRoomChatPlayerList);
 
-		// *** チャット入力欄パネル(Room screen)
+		// *** チャット input 欄パネル(Room screen)
 		JPanel subpanelRoomChatInputArea = new JPanel(new BorderLayout());
 		subpanelRoomChat.add(subpanelRoomChatInputArea, BorderLayout.SOUTH);
 
-		// **** チャット入力欄(Room screen)
+		// **** チャット input 欄(Room screen)
 		txtfldRoomChatInput = new JTextField();
 		txtfldRoomChatInput.setComponentPopupMenu(new TextComponentPopupMenu(txtfldRoomChatInput));
 		subpanelRoomChatInputArea.add(txtfldRoomChatInput, BorderLayout.CENTER);
@@ -993,7 +993,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JLabel labelHost = new JLabel(getUIText("ServerAdd_Host"));
 		subpanelHost.add(labelHost, BorderLayout.WEST);
 
-		// *** ホスト名入力欄
+		// *** ホスト名 input 欄
 		txtfldServerAddHost = new JTextField();
 		txtfldServerAddHost.setComponentPopupMenu(new TextComponentPopupMenu(txtfldServerAddHost));
 		subpanelHost.add(txtfldServerAddHost, BorderLayout.CENTER);
@@ -1069,7 +1069,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JLabel labelName = new JLabel(getUIText("CreateRoom_Name"));
 		subpanelName.add(labelName, BorderLayout.WEST);
 
-		// *** ルーム名入力欄
+		// *** ルーム名 input 欄
 		txtfldCreateRoomName = new JTextField();
 		txtfldCreateRoomName.setComponentPopupMenu(new TextComponentPopupMenu(txtfldCreateRoomName));
 		txtfldCreateRoomName.setToolTipText(getUIText("CreateRoom_Name_Tip"));
@@ -1516,7 +1516,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	public String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -1534,7 +1534,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		contentPaneCardLayout.show(this.getContentPane(), SCREENCARD_NAMES[cardNumber]);
 		currentScreenCardNumber = cardNumber;
 
-		// デフォルト buttonの設定
+		//  default  buttonの設定
 		JButton defaultButton = null;
 		switch(currentScreenCardNumber) {
 		case SCREENCARD_SERVERSELECT:
@@ -1584,9 +1584,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * プレイヤーの名前をトリップ記号変換して取得
-	 * @param pInfo プレイヤー情報
-	 * @return プレイヤーの名前(トリップ記号変換済み)
+	 * Playerの名前をトリップ記号変換して取得
+	 * @param pInfo Player情報
+	 * @return Playerの名前(トリップ記号変換済み)
 	 */
 	public String getPlayerNameWithTripCode(NetPlayerInfo pInfo) {
 		return convTripCode(pInfo.strName);
@@ -1803,9 +1803,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルームリスト tableの行データを作成
+	 * ルームリスト tableの行 dataを作成
 	 * @param r ルーム情報
-	 * @return 行データ
+	 * @return 行 data
 	 */
 	public String[] createRoomListRowData(NetRoomInfo r) {
 		String[] rowData = new String[6];
@@ -1943,7 +1943,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ロビー画面のプレイヤーリスト更新
+	 * ロビー画面のPlayerリスト更新
 	 */
 	public void updateLobbyUserList() {
 		LinkedList<NetPlayerInfo> pList = new LinkedList<NetPlayerInfo>(netPlayerClient.getPlayerInfoList());
@@ -2009,7 +2009,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム画面のプレイヤーリスト更新
+	 * ルーム画面のPlayerリスト更新
 	 */
 	public void updateRoomUserList() {
 		NetRoomInfo roomInfo = netPlayerClient.getRoomInfo(netPlayerClient.getYourPlayerInfo().roomID);
@@ -2065,8 +2065,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * 同じ部屋にいるプレイヤーリストを更新
-	 * @return 同じ部屋にいるプレイヤーリスト
+	 * 同じ部屋にいるPlayerリストを更新
+	 * @return 同じ部屋にいるPlayerリスト
 	 */
 	public LinkedList<NetPlayerInfo> updateSameRoomPlayerInfoList() {
 		LinkedList<NetPlayerInfo> pList = new LinkedList<NetPlayerInfo>(netPlayerClient.getPlayerInfoList());
@@ -2083,15 +2083,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * 同じ部屋にいるプレイヤーリストを返す(更新はしない)
-	 * @return 同じ部屋にいるプレイヤーリスト
+	 * 同じ部屋にいるPlayerリストを返す(更新はしない)
+	 * @return 同じ部屋にいるPlayerリスト
 	 */
 	public LinkedList<NetPlayerInfo> getSameRoomPlayerInfoList() {
 		return sameRoomPlayerInfoList;
 	}
 
 	/**
-	 * ルールデータ送信
+	 * ルール data送信
 	 */
 	public void sendMyRuleDataToServer() {
 		if(ruleOpt == null) ruleOpt = new RuleOptions();
@@ -2342,7 +2342,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * プレイヤーが選択したマップセットIDを取得
+	 * Playerが選択したマップセットIDを取得
 	 * @return マップセットID
 	 */
 	public int getCurrentSelectedMapSetID() {
@@ -2717,7 +2717,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 			addSystemChatLogLater(txtpaneLobbyChatLog, getUIText("SysMsg_LoginFail") + reason, Color.red);
 		}
-		// ルールデータ送信成功
+		// ルール data送信成功
 		if(message[0].equals("ruledatasuccess")) {
 			addSystemChatLogLater(txtpaneLobbyChatLog, getUIText("SysMsg_SendRuleDataOK"), Color.blue);
 
@@ -2729,11 +2729,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			setLobbyButtonsEnabled(1);
 		}
-		// ルールデータ送信失敗
+		// ルール data送信失敗
 		if(message[0].equals("ruledatafail")) {
 			sendMyRuleDataToServer();
 		}
-		// プレイヤーリスト
+		// Playerリスト
 		if(message[0].equals("playerlist") || message[0].equals("playerupdate") ||
 		   message[0].equals("playernew") || message[0].equals("playerlogout"))
 		{
@@ -2765,7 +2765,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				}
 			}
 		}
-		// プレイヤー入室
+		// Player入室
 		if(message[0].equals("playerenter")) {
 			int uid = Integer.parseInt(message[1]);
 			NetPlayerInfo pInfo = netPlayerClient.getPlayerInfoByUID(uid);
@@ -2780,7 +2780,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				addSystemChatLogLater(txtpaneRoomChatLog, strTemp, Color.blue);
 			}
 		}
-		// プレイヤー退出
+		// Player退出
 		if(message[0].equals("playerleave")) {
 			int uid = Integer.parseInt(message[1]);
 			NetPlayerInfo pInfo = netPlayerClient.getPlayerInfoByUID(uid);
@@ -3176,7 +3176,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * テキスト入力欄用ポップアップメニュー
+	 * テキスト input 欄用ポップアップメニュー
 	 * <a href="http://terai.xrea.jp/Swing/DefaultEditorKit.html">出展</a>
 	 */
 	protected class TextComponentPopupMenu extends JPopupMenu {

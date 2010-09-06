@@ -104,10 +104,10 @@ public class GradeManiaMode extends DummyMode {
 	/** Number of entries in rankings */
 	private static final int RANKING_MAX = 10;
 
-	/** 最大Section count */
+	/** Number of sections */
 	private static final int SECTION_MAX = 10;
 
-	/** デフォルトのSection Time */
+	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
 	/** GameManager that owns this mode */
@@ -116,13 +116,13 @@ public class GradeManiaMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
+	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
 
-	/** 次のSection の level（これ-1のときに levelストップする） */
+	/** Next Section の level (これ-1のときに levelストップする) */
 	private int nextseclv;
 
-	/**  levelが増えた flag */
+	/** Levelが増えた flag */
 	private boolean lvupflag;
 
 	/** 段位 */
@@ -176,7 +176,7 @@ public class GradeManiaMode extends DummyMode {
 	/** Section Time記録表示中ならtrue */
 	private boolean isShowBestSectionTime;
 
-	/** 開始時の level */
+	/** Level at start */
 	private int startlevel;
 
 	/** trueなら常にゴーストON */
@@ -213,7 +213,7 @@ public class GradeManiaMode extends DummyMode {
 	private int[] bestSectionTime;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -597,7 +597,7 @@ public class GradeManiaMode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後のフレーム
+		// 最後の frame 
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -700,7 +700,7 @@ public class GradeManiaMode extends DummyMode {
 					engine.ending = 1;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
-				// 次のSection 
+				// Next Section 
 				engine.playSE("levelup");
 
 				owner.backgroundStatus.fadesw = true;
@@ -738,7 +738,7 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/*
-	 * 各フレームの終わりの処理
+	 * 各 frame の終わりの処理
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {

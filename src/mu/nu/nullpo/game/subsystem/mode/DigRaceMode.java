@@ -65,7 +65,7 @@ public class DigRaceMode extends DummyMode {
 	/** Big */
 	private boolean big;
 
-	/** 邪魔Linescount type（0=5,1=10,2=18） */
+	/** 邪魔Linescount type (0=5,1=10,2=18) */
 	private int goaltype;
 
 	/** Current version */
@@ -87,7 +87,7 @@ public class DigRaceMode extends DummyMode {
 	private int[][] rankingPiece;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {

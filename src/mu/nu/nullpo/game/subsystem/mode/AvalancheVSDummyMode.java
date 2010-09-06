@@ -141,10 +141,10 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** マップセットのProperty file */
 	protected CustomProperties[] propMap;
 
-	/** 最大マップ number */
+	/** Maximumマップ number */
 	protected int[] mapMaxNo;
 
-	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
+	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
 	protected Field[] fldBackup;
 
 	/** マップ選択用乱count */
@@ -229,7 +229,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	protected boolean[] cascadeSlow;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -429,7 +429,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/**
 	 * プレビュー用にマップを読み込み
 	 * @param engine GameEngine
-	 * @param playerID プレイヤー number
+	 * @param playerID Player number
 	 * @param id マップID
 	 * @param forceReload trueにするとマップファイルを強制再読み込み
 	 */
@@ -494,7 +494,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -577,7 +577,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Hard dropしたときの処理
+	 * Called when hard drop used
 	 */
 	@Override
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {
@@ -585,7 +585,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Hard dropしたときの処理
+	 * Called when soft drop used
 	 */
 	@Override
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {

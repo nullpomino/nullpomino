@@ -53,10 +53,10 @@ import mu.nu.nullpo.game.net.NetObserverClient;
 import org.apache.log4j.Logger;
 
 /**
- * ゲーム画面のフレーム
+ * ゲーム画面の frame 
  */
 public class GameFrame extends JFrame implements Runnable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** Log */
@@ -86,10 +86,10 @@ public class GameFrame extends JFrame implements Runnable {
 	/**  frame count */
 	protected long frameCount = 0;
 
-	/** 最大FPS（設定値） */
+	/** MaximumFPS (設定値) */
 	public int maxfps;
 
-	/** Current 最大FPS */
+	/** Current MaximumFPS */
 	protected int maxfpsCurrent = 0;
 
 	/** Current 休止 time */
@@ -119,7 +119,7 @@ public class GameFrame extends JFrame implements Runnable {
 	/** スクリーンショット用Image */
 	protected Image ssImage = null;
 
-	/** フレームステップ有効 flag */
+	/**  frame ステップ有効 flag */
 	protected boolean enableframestep = false;
 
 	/** FPS表示 */
@@ -238,7 +238,7 @@ public class GameFrame extends JFrame implements Runnable {
 			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回のフレームの休止 time誤差も引いておく
+			// 前回の frame の休止 time誤差も引いておく
 			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
 			if(sleepTime > 0) {

@@ -74,7 +74,7 @@ public class StateLoading extends BasicGameState {
 		preloadCount = 0;
 		preloadSet = 0;
 
-		// 入力関連をInitialization
+		//  input 関連をInitialization
 		GameKey.initGlobalGameKey();
 		GameKey.gamekey[0].loadConfig(NullpoMinoSlick.propConfig);
 		GameKey.gamekey[1].loadConfig(NullpoMinoSlick.propConfig);

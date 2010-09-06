@@ -34,7 +34,7 @@ import java.io.Serializable;
  * Wallkick結果のクラス
  */
 public class WallkickResult implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = -7985029240622355609L;
 
 	/** X-coordinate補正量 */
@@ -43,7 +43,7 @@ public class WallkickResult implements Serializable {
 	/** Y-coordinate補正量 */
 	public int offsetY;
 
-	/** 回転後のピースのDirection */
+	/** rotation後のピースのDirection */
 	public int direction;
 
 	/**
@@ -57,7 +57,7 @@ public class WallkickResult implements Serializable {
 	 * パラメータ付きConstructor
 	 * @param offsetX X-coordinate補正量
 	 * @param offsetY Y-coordinate補正量
-	 * @param direction 回転後のテトラミノのDirection
+	 * @param direction rotation後のテトラミノのDirection
 	 */
 	public WallkickResult(int offsetX, int offsetY, int direction) {
 		this.offsetX = offsetX;
@@ -66,8 +66,8 @@ public class WallkickResult implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param w コピー元
+	 * Copy constructor
+	 * @param w Copy source
 	 */
 	public WallkickResult(WallkickResult w) {
 		copy(w);
@@ -84,7 +84,7 @@ public class WallkickResult implements Serializable {
 
 	/**
 	 * 別のWallkickResultからコピー
-	 * @param w コピー元
+	 * @param w Copy source
 	 */
 	public void copy(WallkickResult w) {
 		this.offsetX = w.offsetX;
@@ -94,7 +94,7 @@ public class WallkickResult implements Serializable {
 
 	/**
 	 * 上DirectionへのWallkickかどうか判定
-	 * @return 上DirectionへのWallkickのとき（offsetY < 0のとき）にtrue
+	 * @return 上DirectionへのWallkickのとき (offsetY < 0のとき）にtrue
 	 */
 	public boolean isUpward() {
 		return (offsetY < 0);

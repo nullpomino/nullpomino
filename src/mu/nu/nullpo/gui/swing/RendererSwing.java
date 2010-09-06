@@ -45,7 +45,7 @@ import mu.nu.nullpo.util.CustomProperties;
 //import org.apache.log4j.Logger;
 
 /**
- * ゲームのイベント処理と描画処理（Swing版）
+ * ゲームのイベント処理と描画処理 (Swing版）
  */
 public class RendererSwing extends EventReceiver {
 	/** Log */
@@ -54,7 +54,7 @@ public class RendererSwing extends EventReceiver {
 	/** 描画先サーフェイス */
 	protected Graphics2D graphics;
 
-	/** フィールドのBlockを表示（falseなら枠線だけ表示） */
+	/** フィールドのBlockを表示 (falseなら枠線だけ表示) */
 	protected boolean showfieldblockgraphics;
 
 	/** 操作Blockの絵柄をシンプルにする */
@@ -379,7 +379,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -390,7 +390,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画（拡大率と暗さ指定可能）
+	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率と暗さ指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
@@ -417,7 +417,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画（拡大率指定可能）
+	 * Blockピースを描画 (拡大率指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -428,7 +428,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画（暗さもしくは明るさの指定可能）
+	 * Blockピースを描画 (暗さもしくは明るさの指定可能）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece 描画するピース
@@ -448,7 +448,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースを描画（Y-coordinateが0以上のBlockだけ表示）
+	 * 現在操作中のBlockピースを描画 (Y-coordinateが0以上のBlockだけ表示）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -1094,9 +1094,9 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * 各フレーム最初の描画処理
+	 * 各 frame 最初の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	@Override
 	public void renderFirst(GameEngine engine, int playerID) {
@@ -1221,7 +1221,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * ゲームオーバー画面の描画処理
+	 * game over画面の描画処理
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {

@@ -14,34 +14,34 @@ public class GameKeyDummy {
 	/**  buttoncountの定count */
 	public static final int MAX_BUTTON = 22;
 	
-	/** キーコード */
+	/** Key code */
 	public int keymap[];
 
-	/** ジョイスティックButton number */
+	/** Joystick Button number */
 	public int buttonmap[];
 
-	/** ジョイスティックのDirectionキーが反応する閾値 */
+	/** Joystick direction key が反応する閾値 */
 	public int joyBorder;
 
-	/** プレイヤーID */
+	/** Player ID */
 	public int player;
 
-	/**  button入力 flag兼入力 time */
+	/**  button input flag兼 input  time */
 	protected int inputstate[];
 	
-	/**  button入力 flag */
+	/**  button input flag */
 	protected boolean[] pressstate;
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	protected GameKeyDummy() {
 		this(0);
 	}
 
 	/**
-	 * プレイヤー numberを指定できるConstructor
-	 * @param pl プレイヤー number
+	 * Player numberを指定できるConstructor
+	 * @param pl Player number
 	 */
 	protected GameKeyDummy(int pl) {
 		keymap = new int[MAX_BUTTON];
@@ -63,7 +63,7 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 *  buttonが1フレームだけ押されているか判定
+	 *  buttonが1 frame だけ押されているか判定
 	 * @param key Button number
 	 * @return 押されていたらtrue
 	 */
@@ -95,7 +95,7 @@ public class GameKeyDummy {
 	/**
 	 *  buttonを押している timeを取得
 	 * @param key Button number
-	 * @return  buttonを押している time（0なら押してない）
+	 * @return  buttonを押している time (0なら押してない）
 	 */
 	public int getInputState(int key) {
 		return inputstate[key];
@@ -214,8 +214,8 @@ public class GameKeyDummy {
 	}
 	
 	/**
-	 * Controllerに入力状況を伝える
-	 * @param ctrl 入力状況を伝えるControllerのインスタンス
+	 * Controllerに input 状況を伝える
+	 * @param ctrl  input 状況を伝えるControllerのインスタンス
 	 */
 	public void inputStatusUpdate(Controller ctrl) {
 		for(int i = 0; i < Controller.BUTTON_COUNT; i++) {

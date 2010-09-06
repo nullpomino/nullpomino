@@ -41,7 +41,7 @@ public class EffectObject {
 	/** Y-coordinate */
 	public int y;
 
-	/** エフェクトのパラメータ（Blockの色など） */
+	/** エフェクトのパラメータ (Blockの色など) */
 	public int param;
 
 	/** アニメーションカウンタ */
@@ -63,7 +63,7 @@ public class EffectObject {
 	 * @param effect エフェクト type
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param param エフェクトのパラメータ（Blockの色など）
+	 * @param param エフェクトのパラメータ (Blockの色など）
 	 */
 	public EffectObject(int effect, int x, int y, int param) {
 		this.effect = effect;
@@ -74,8 +74,8 @@ public class EffectObject {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param src コピー元
+	 * Copy constructor
+	 * @param src Copy source
 	 */
 	public EffectObject(EffectObject src) {
 		this.effect = src.effect;

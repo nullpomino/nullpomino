@@ -182,7 +182,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 	private boolean[] ojamaChecked;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -687,7 +687,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {

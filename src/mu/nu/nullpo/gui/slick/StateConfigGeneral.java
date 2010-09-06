@@ -44,7 +44,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 6;
 
-	/** ジョイスティック入力検出法の表示名 */
+	/** Joystick  input 検出法の表示名 */
 	protected static final String[] JOYSTICK_METHOD_STRINGS = {"NONE", "SLICK DEFAULT", "SLICK ALTERNATE", "LWJGL"};
 
 	/** スクリーンショット撮影 flag */
@@ -74,10 +74,10 @@ public class StateConfigGeneral extends BasicGameState {
 	/** FPS表示 */
 	protected boolean showfps;
 
-	/** フレームステップ有効 */
+	/**  frame ステップ有効 */
 	protected boolean enableframestep;
 
-	/** 最大FPS */
+	/** MaximumFPS */
 	protected int maxfps;
 
 	/** Line clearエフェクト表示 */
@@ -98,7 +98,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/** BGMボリューム */
 	protected int bgmvolume;
 
-	/** ジョイスティック入力の検出法 */
+	/** Joystick  input の検出法 */
 	protected int joyMethod;
 
 	/** フィールド右側にMeterを表示 */
@@ -284,7 +284,7 @@ public class StateConfigGeneral extends BasicGameState {
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー入力状態を更新
+		// キー input 状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
 		// カーソル移動

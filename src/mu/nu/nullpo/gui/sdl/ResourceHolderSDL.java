@@ -274,7 +274,7 @@ public class ResourceHolderSDL {
 	/**
 	 * 画像読み込み
 	 * @param filename ファイル名
-	 * @return 画像データ
+	 * @return 画像 data
 	 */
 	public static SDLSurface loadImage(String filename) {
 		SDLSurface img = null;

@@ -61,7 +61,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetVSBattleMode.class);
 
-	/** プレイヤーの最大count */
+	/** PlayerのMaximumcount */
 	private static final int MAX_PLAYERS = 6;
 
 	/** Most recent scoring event typeの定count */
@@ -97,7 +97,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		{1,2,3,4,5,0},
 	};
 
-	/** 各プレイヤーの邪魔Blockの色 */
+	/** 各Playerの邪魔Blockの色 */
 	private static final int[] PLAYER_COLOR_BLOCK = {
 		Block.BLOCK_COLOR_RED, Block.BLOCK_COLOR_BLUE, Block.BLOCK_COLOR_GREEN,
 		Block.BLOCK_COLOR_YELLOW, Block.BLOCK_COLOR_PURPLE, Block.BLOCK_COLOR_CYAN
@@ -221,7 +221,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** ゲームが始まったあとの合計Number of players(間に挟まれているnull席はカウントしない) */
 	private int numNowPlayers;
 
-	/** この部屋の最大人count */
+	/** この部屋のMaximum人count */
 	private int numMaxPlayers;
 
 	/** まだ生きている人count */
@@ -230,7 +230,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 各フィールドのゲーム席の number */
 	private int[] allPlayerSeatNumbers;
 
-	/** プレイヤーが存在するフィールドならtrue */
+	/** Playerが存在するフィールドならtrue */
 	private boolean[] isPlayerExist;
 
 	/** 準備完了状態ならtrue */
@@ -242,13 +242,13 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 順位 */
 	private int[] playerPlace;
 
-	/** 自分がKOしたプレイヤーはtrue */
+	/** 自分がKOしたPlayerはtrue */
 	private boolean[] playerKObyYou;
 
 	/** 使用しているスキン */
 	private int[] playerSkin;
 
-	/** プレイヤーの名前 */
+	/** Playerの名前 */
 	private String[] playerNames;
 
 	/** チーム名 */
@@ -333,7 +333,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 練習Mode で前回使ったマップ number */
 	private int mapPreviousPracticeMap;
 
-	/** 最後に攻撃してきた相手のプレイヤー number */
+	/** 最後に攻撃してきた相手のPlayer number */
 	private int lastAttackerUID;
 
 	/** KOcount */
@@ -351,7 +351,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * プレイヤー存在 flagと人countを更新
+	 * Player存在 flagと人countを更新
 	 */
 	private void updatePlayerExist() {
 		numPlayers = 0;
@@ -386,7 +386,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 生き残っているチームcountを返す(チーム無しプレイヤーも1つのチームとcountえる)
+	 * 生き残っているチームcountを返す(チーム無しPlayerも1つのチームとcountえる)
 	 * @return 生き残っているチームcount
 	 */
 	private int getNumberOfTeamsAlive() {
@@ -423,7 +423,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	*/
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -431,7 +431,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * 最大人count
+	 * Maximum人count
 	 */
 	@Override
 	public int getPlayers() {
@@ -733,7 +733,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/**
 	 * ゲーム結果送信
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	private void sendGameStat(GameEngine engine, int playerID) {
 		String msg = "gstat\t";
@@ -1419,7 +1419,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * 各フレームの最後の描画処理
+	 * 各 frame の最後の描画処理
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
@@ -1632,7 +1632,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * ゲームオーバー
+	 * game over
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
@@ -1682,7 +1682,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * ゲームオーバー画面描画
+	 * game over画面描画
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1896,7 +1896,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
-		// プレイヤー状態変更
+		// Player状態変更
 		if(message[0].equals("playerupdate")) {
 			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
 
@@ -1918,7 +1918,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			updatePlayerExist();
 			updatePlayerNames();
 		}
-		// プレイヤー切断
+		// Player切断
 		if(message[0].equals("playerlogout")) {
 			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
 
@@ -2423,16 +2423,16 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 敵から送られてきた邪魔Blockのデータ
+	 * 敵から送られてきた邪魔Blockの data
 	 */
 	private class GarbageEntry {
 		/** 邪魔Blockcount */
 		public int lines = 0;
 
-		/** 送信元(ゲーム用プレイヤー number) */
+		/** 送信元(ゲーム用Player number) */
 		public int playerID = 0;
 
-		/** 送信元(ゲーム以外用プレイヤー number) */
+		/** 送信元(ゲーム以外用Player number) */
 		public int uid = 0;
 
 		/**
@@ -2454,7 +2454,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		/**
 		 * パラメータ付きConstructor
 		 * @param g 邪魔Blockcount
-		 * @param p 送信元(ゲーム用プレイヤー number)
+		 * @param p 送信元(ゲーム用Player number)
 		 */
 		public GarbageEntry(int g, int p) {
 			lines = g;
@@ -2464,8 +2464,8 @@ public class NetVSBattleMode extends NetDummyMode {
 		/**
 		 * パラメータ付きConstructor
 		 * @param g 邪魔Blockcount
-		 * @param p 送信元(ゲーム用プレイヤー number)
-		 * @param s 送信元(ゲーム以外用プレイヤー number)
+		 * @param p 送信元(ゲーム用Player number)
+		 * @param s 送信元(ゲーム以外用Player number)
 		 */
 		public GarbageEntry(int g, int p, int s) {
 			lines = g;

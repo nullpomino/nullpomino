@@ -36,7 +36,7 @@ import mu.nu.nullpo.game.play.GameEngine;
  * Block
  */
 public class Block implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = -7126899262733374545L;
 
 	/** Blockの色の定count */
@@ -84,10 +84,10 @@ public class Block implements Serializable {
 
 	public static final int MAX_ITEM = 1;
 
-	/** 通常のBlockの色の最大count */
+	/** 通常のBlockの色のMaximumcount */
 	public static final int BLOCK_COLOR_COUNT = 9;
 
-	/** 通常＋宝石Blockの色の最大count */
+	/** 通常＋宝石Blockの色のMaximumcount */
 	public static final int BLOCK_COLOR_EXT_COUNT = 16;
 
 	/** Block表示あり */
@@ -147,13 +147,13 @@ public class Block implements Serializable {
 	/** 固定してから経過した frame count */
 	public int elapsedFrames;
 
-	/** Blockの暗さ、または明るさ（0.03だったら3%暗く、-0.05だったら5%明るい） */
+	/** Blockの暗さ、または明るさ (0.03だったら3%暗く、-0.05だったら5%明るい) */
 	public float darkness;
 
-	/** 透明度（1.0fで不透明、0.0fで完全に透明） */
+	/** 透明度 (1.0fで不透明、0.0fで完全に透明) */
 	public float alpha;
 
-	/** ゲームが始まってから何番目に置いたBlockか（負countだったら初期配置や邪魔Block） */
+	/** ゲームが始まってから何番目に置いたBlockか (負countだったら初期配置や邪魔Block) */
 	public int pieceNum;
 
 	/** アイテム number */
@@ -215,8 +215,8 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param b コピー元
+	 * Copy constructor
+	 * @param b Copy source
 	 */
 	public Block(Block b) {
 		copy(b);
@@ -242,7 +242,7 @@ public class Block implements Serializable {
 
 	/**
 	 * 設定を他のBlockからコピー
-	 * @param b コピー元
+	 * @param b Copy source
 	 */
 	public void copy(Block b) {
 		color = b.color;

@@ -52,23 +52,23 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
 /**
- * チューニング設定画面のフレーム
+ * チューニング設定画面の frame 
  */
 public class GameTuningFrame extends JFrame implements ActionListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
 
-	/** プレイヤー number */
+	/** Player number */
 	protected int playerID;
 
-	/** A buttonでの回転Directionはルールに従う */
+	/** A buttonでのrotationDirectionはルールに従う */
 	protected JRadioButton radioRotateButtonDefaultRightAuto;
-	/** A buttonでの回転Directionを左回転に固定 */
+	/** A buttonでのrotationDirectionを左rotationに固定 */
 	protected JRadioButton radioRotateButtonDefaultRightLeft;
-	/** A buttonでの回転Directionを右回転に固定 */
+	/** A buttonでのrotationDirectionを右rotationに固定 */
 	protected JRadioButton radioRotateButtonDefaultRightRight;
 
 	/** 絵柄のComboボックス */
@@ -78,7 +78,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 	/** 最小DAS */
 	protected JTextField txtfldMinDAS;
-	/** 最大DAS */
+	/** MaximumDAS */
 	protected JTextField txtfldMaxDAS;
 
 	/** 横移動速度 */
@@ -110,7 +110,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		// ---------- A buttonでの回転Direction ----------
+		// ---------- A buttonでのrotationDirection ----------
 		JPanel pRotateButtonDefaultRight = new JPanel();
 		pRotateButtonDefaultRight.setLayout(new BoxLayout(pRotateButtonDefaultRight, BoxLayout.Y_AXIS));
 		pRotateButtonDefaultRight.setAlignmentX(LEFT_ALIGNMENT);
@@ -163,7 +163,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		txtfldMinDAS = new JTextField(5);
 		pMinDAS.add(txtfldMinDAS);
 
-		// ---------- 最大DAS ----------
+		// ---------- MaximumDAS ----------
 		JPanel pMaxDAS = new JPanel();
 		pMaxDAS.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(pMaxDAS);
@@ -219,8 +219,8 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * このフレームを表示するときに実行する処理
-	 * @param pl プレイヤー number
+	 * この frame を表示するときに実行する処理
+	 * @param pl Player number
 	 */
 	public void load(int pl) {
 		this.playerID = pl;

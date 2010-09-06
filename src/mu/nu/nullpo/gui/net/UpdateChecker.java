@@ -45,7 +45,7 @@ public class UpdateChecker implements Runnable {
 	/** Log */
 	static Logger log = Logger.getLogger(UpdateChecker.class);
 
-	/** デフォルトのXMLのURL */
+	/**  default のXMLのURL */
 	public static final String DEFAULT_XML_URL = "http://dl.dropbox.com/u/6118422/NullpoUpdate.xml";
 
 	/** 状態の定count */
@@ -195,7 +195,7 @@ public class UpdateChecker implements Runnable {
 
 	/**
 	 * Version check 
-	 * @param strURL 最新版の情報が入ったXMLファイルのURL(nullまたは空文字列にするとデフォルト値を使う)
+	 * @param strURL 最新版の情報が入ったXMLファイルのURL(nullまたは空文字列にすると default 値を使う)
 	 */
 	public static void startCheckForUpdates(String strURL) {
 		if((strURL == null) || (strURL.length() <= 0)) {

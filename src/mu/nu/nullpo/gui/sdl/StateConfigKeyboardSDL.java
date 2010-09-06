@@ -39,10 +39,10 @@ import sdljava.video.SDLVideo;
  * キーボード設定画面のステート
  */
 public class StateConfigKeyboardSDL extends BaseStateSDL {
-	/** キー入力を受付可能になるまでの frame count */
+	/** キー input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
-	/** プレイヤー number */
+	/** Player number */
 	public int player = 0;
 
 	/** 初期設定Mode  */
@@ -57,7 +57,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	/**  button設定 */
 	protected int keymap[];
 
-	/** 前のフレームのキー入力状態 */
+	/** 前の frame のキー input 状態 */
 	protected boolean previousKeyPressedState[];
 
 	/**
@@ -79,8 +79,8 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 
 	/**
 	 * 押されたキーの numberを返す
-	 * @param prev 前のフレームでの入力状態
-	 * @param now このフレームでの入力状態
+	 * @param prev 前の frame での input 状態
+	 * @param now この frame での input 状態
 	 * @return 押されたキーの number、無いならSDLKey.SDLK_UNKNOWN
 	 */
 	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {

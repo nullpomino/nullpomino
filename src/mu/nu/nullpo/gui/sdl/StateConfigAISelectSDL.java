@@ -48,10 +48,10 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateConfigAISelectSDL.class);
 
-	/** 1画面に表示する最大AIcount */
+	/** 1画面に表示するMaximumAIcount */
 	public static final int MAX_AI_IN_ONE_PAGE = 20;
 
-	/** プレイヤーID */
+	/** Player ID */
 	public int player = 0;
 
 	/** AIのクラス一覧 */

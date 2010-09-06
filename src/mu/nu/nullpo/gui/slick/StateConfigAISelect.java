@@ -50,13 +50,13 @@ public class StateConfigAISelect extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 8;
 
-	/** 1画面に表示する最大AIcount */
+	/** 1画面に表示するMaximumAIcount */
 	public static final int MAX_AI_IN_ONE_PAGE = 20;
 
 	/** Log */
 	static Logger log = Logger.getLogger(StateConfigAISelect.class);
 
-	/** プレイヤーID */
+	/** Player ID */
 	public int player = 0;
 
 	/** AIのクラス一覧 */
@@ -226,7 +226,7 @@ public class StateConfigAISelect extends BasicGameState {
 			return;
 		}
 
-		// キー入力状態を更新
+		// キー input 状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
 		// カーソル移動

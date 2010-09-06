@@ -77,7 +77,7 @@ public class EventReceiver {
 	/**
 	 * メニュー用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -88,9 +88,9 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * メニュー用の文字列を描画（文字色は白）
+	 * メニュー用の文字列を描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -103,7 +103,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * メニュー用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -117,7 +117,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でメニュー用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -137,7 +137,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったら白、trueだったら赤でメニュー用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -154,9 +154,9 @@ public class EventReceiver {
 	}
 
 	/**
-	 * メニュー用の文字列をTTFフォントで描画（必ずしも全てのVersionで使えるわけではありません）
+	 * メニュー用の文字列をTTFフォントで描画 (必ずしも全てのVersionで使えるわけではありません）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -166,9 +166,9 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * メニュー用の文字列をTTFフォントで描画（文字色は白）
+	 * メニュー用の文字列をTTFフォントで描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -182,7 +182,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でメニュー用の文字列をTTFフォントで描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -202,7 +202,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったら白、trueだったら赤でメニュー用の文字列をTTFフォントで描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -221,7 +221,7 @@ public class EventReceiver {
 	/**
 	 * Render score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -232,9 +232,9 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * Render score用の文字列を描画（文字色は白）
+	 * Render score用の文字列を描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -247,7 +247,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * Render score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -261,7 +261,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でRender score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -281,7 +281,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったら白、trueだったら赤でRender score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -298,9 +298,9 @@ public class EventReceiver {
 	}
 
 	/**
-	 * Render score用の文字列をTTFフォントで描画（必ずしも全てのVersionで使えるわけではありません）
+	 * Render score用の文字列をTTFフォントで描画 (必ずしも全てのVersionで使えるわけではありません）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -310,9 +310,9 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * Render score用の文字列をTTFフォントで描画（文字色は白）
+	 * Render score用の文字列をTTFフォントで描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -326,7 +326,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でRender score用の文字列をTTFフォントで描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -346,7 +346,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったら白、trueだったら赤でRender score用の文字列をTTFフォントで描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -365,7 +365,7 @@ public class EventReceiver {
 	/**
 	 * 直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -376,9 +376,9 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * 直接指定した座標へ文字列を描画（文字色は白）
+	 * 直接指定した座標へ文字列を描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -391,7 +391,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * 直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -405,7 +405,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色で直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -425,7 +425,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったら白、trueだったら赤で直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -442,9 +442,9 @@ public class EventReceiver {
 	}
 
 	/**
-	 * 直接指定した座標へ描画できる文字列をTTFフォントで描画（必ずしも全てのVersionで使えるわけではありません）
+	 * 直接指定した座標へ描画できる文字列をTTFフォントで描画 (必ずしも全てのVersionで使えるわけではありません）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -454,9 +454,9 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * 直接指定した座標へ描画できる文字列をTTFフォントで描画（文字色は白）
+	 * 直接指定した座標へ描画できる文字列をTTFフォントで描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -470,7 +470,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色で直接指定した座標へ描画できる文字列をTTFフォントで描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -490,7 +490,7 @@ public class EventReceiver {
 	 * ※オーバーライドする必要はありません
 	 * flagがfalseだったら白、trueだったら赤で直接指定した座標へ描画できる文字列をTTFフォントで描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -509,7 +509,7 @@ public class EventReceiver {
 	/**
 	 * スピードMeterを描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param s スピード
@@ -519,7 +519,7 @@ public class EventReceiver {
 	/**
 	 * 1マスBlockを描画
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param color 色
@@ -540,9 +540,9 @@ public class EventReceiver {
 	}
 
 	/**
-	 * フィールド右のMeterの最大量を取得
+	 * フィールド右のMeterのMaximum量を取得
 	 * @param engine GameEngineのインスタンス
-	 * @return フィールド右のMeterの最大量
+	 * @return フィールド右のMeterのMaximum量
 	 */
 	public int getMeterMax(GameEngine engine) {
 		if(!showmeter) return 0;
@@ -557,7 +557,7 @@ public class EventReceiver {
 	/**
 	 * Blockの画像の幅を取得
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return Blockの画像の幅
 	 */
 	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
@@ -572,7 +572,7 @@ public class EventReceiver {
 	/**
 	 * Blockの画像の高さを取得
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return Blockの画像の高さ
 	 */
 	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
@@ -587,7 +587,7 @@ public class EventReceiver {
 	/**
 	 * フィールドの表示位置の左端の座標を取得
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return フィールドの表示位置の左端の座標
 	 */
 	public int getFieldDisplayPositionX(GameEngine engine, int playerID) {
@@ -597,7 +597,7 @@ public class EventReceiver {
 	/**
 	 * フィールドの表示位置の上端の座標を取得
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return フィールドの表示位置の上端の座標
 	 */
 	public int getFieldDisplayPositionY(GameEngine engine, int playerID) {
@@ -618,7 +618,7 @@ public class EventReceiver {
 
 	/**
 	 * Mode の設定を読み込み
-	 * @return Modeの設定データ（nullならなし）
+	 * @return Modeの設定 data (nullならなし）
 	 */
 	public CustomProperties loadModeConfig() {
 		CustomProperties propModeConfig = new CustomProperties();
@@ -636,7 +636,7 @@ public class EventReceiver {
 
 	/**
 	 * Mode の設定を保存
-	 * @param modeConfig Modeの設定データ
+	 * @param modeConfig Modeの設定 data
 	 */
 	public void saveModeConfig(CustomProperties modeConfig) {
 		try {
@@ -651,7 +651,7 @@ public class EventReceiver {
 	/**
 	 * 任意のプロパティセットを読み込み
 	 * @param filename ファイル名
-	 * @return プロパティセット（失敗したらnull）
+	 * @return プロパティセット (失敗したらnull）
 	 */
 	public CustomProperties loadProperties(String filename) {
 		CustomProperties prop = new CustomProperties();
@@ -696,217 +696,217 @@ public class EventReceiver {
 	/**
 	 * Initialization for each playerが終わるときに呼び出される処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void playerInit(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ready→Go直後、最初のピースが現れる直前の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void startGame(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各プレイヤーの最初の処理の時に呼び出される
+	 * 各Playerの最初の処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onFirst(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各プレイヤーの最後の処理の時に呼び出される
+	 * 各Playerの最後の処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onLast(GameEngine engine, int playerID) {}
 
 	/**
 	 * 開始前の設定画面のときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onSetting(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ready→Goのときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onReady(GameEngine engine, int playerID) {}
 
 	/**
 	 * Blockピースの移動処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onMove(GameEngine engine, int playerID) {}
 
 	/**
 	 * Block固定直後の光っているときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onLockFlash(GameEngine engine, int playerID) {}
 
 	/**
 	 * Line clear処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onLineClear(GameEngine engine, int playerID) {}
 
 	/**
 	 * ARE中の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onARE(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ending突入時の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onEndingStart(GameEngine engine, int playerID) {}
 
 	/**
 	 * 各ゲームMode が自由に使えるステータスの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onCustom(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ending画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onExcellent(GameEngine engine, int playerID) {}
 
 	/**
-	 * ゲームオーバー画面の処理
+	 * game over画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onGameOver(GameEngine engine, int playerID) {}
 
 	/**
 	 * 結果画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onResult(GameEngine engine, int playerID) {}
 
 	/**
 	 * フィールドエディット画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onFieldEdit(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各プレイヤーの最初の描画処理の時に呼び出される
+	 * 各Playerの最初の描画処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderFirst(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各プレイヤーの最後の描画処理の時に呼び出される
+	 * 各Playerの最後の描画処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderLast(GameEngine engine, int playerID) {}
 
 	/**
 	 * 開始前の設定画面のときの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderSetting(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ready→Goのときの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderReady(GameEngine engine, int playerID) {}
 
 	/**
 	 * Blockピースの移動描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderMove(GameEngine engine, int playerID) {}
 
 	/**
 	 * Block固定直後の光っているときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderLockFlash(GameEngine engine, int playerID) {}
 
 	/**
 	 * Line clear描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderLineClear(GameEngine engine, int playerID) {}
 
 	/**
 	 * ARE中の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderARE(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ending突入時の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderEndingStart(GameEngine engine, int playerID) {}
 
 	/**
 	 * 各ゲームMode が自由に使えるステータスの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderCustom(GameEngine engine, int playerID) {}
 
 	/**
 	 * Ending画面の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderExcellent(GameEngine engine, int playerID) {}
 
 	/**
-	 * ゲームオーバー画面の描画処理
+	 * game over画面の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderGameOver(GameEngine engine, int playerID) {}
 
 	/**
 	 * Render results screen処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderResult(GameEngine engine, int playerID) {}
 
 	/**
 	 * フィールドエディット画面の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderFieldEdit(GameEngine engine, int playerID) {}
 
 	/**
 	 * Blockを消す演出を出すときの処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Block
@@ -916,15 +916,15 @@ public class EventReceiver {
 	/**
 	 * Calculate score
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
-	 * @param lines 消えるLinescount（消えなかった場合は0）
+	 * @param playerID Player ID
+	 * @param lines 消えるLinescount (消えなかった場合は0）
 	 */
 	public void calcScore(GameEngine engine, int playerID, int lines) {}
 
 	/**
 	 * Soft drop使用後の処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param fall 今落下した段count
 	 */
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall) {}
@@ -932,7 +932,7 @@ public class EventReceiver {
 	/**
 	 * Hard drop使用後の処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param fall 今落下した段count
 	 */
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {}
@@ -940,22 +940,22 @@ public class EventReceiver {
 	/**
 	 * フィールドエディット画面から出たときの処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void fieldEditExit(GameEngine engine, int playerID) {}
 
 	/**
 	 * Blockピースが固定されたときの処理(calcScoreの直後)
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
-	 * @param lines 消えるLinescount（消えなかった場合は0）
+	 * @param playerID Player ID
+	 * @param lines 消えるLinescount (消えなかった場合は0）
 	 */
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {}
 
 	/**
 	 * Line clearが終わるときに呼び出される処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void lineClearEnd(GameEngine engine, int playerID) {}
 

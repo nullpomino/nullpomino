@@ -77,7 +77,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param rtOld Direction before rotation (-1: none)
-	 * @param fld フィールド（どんなに弄っても問題なし）
+	 * @param fld フィールド (どんなに弄っても問題なし）
 	 * @param piece ピース
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
 	 * @return 評価得点

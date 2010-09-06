@@ -60,7 +60,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	/** Log */
 	static Logger log = Logger.getLogger(UpdateCheckFrame.class);
 
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** 親ウィンドウ */

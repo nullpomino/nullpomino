@@ -54,7 +54,7 @@ public class ModeManager {
 
 	/**
 	 * Copy constructor
-	 * @param m コピー元
+	 * @param m Copy source
 	 */
 	public ModeManager(ModeManager m) {
 		modelist.addAll(m.modelist);
@@ -125,7 +125,7 @@ public class ModeManager {
 	/**
 	 * Mode  nameを取得
 	 * @param id ModeID
-	 * @return Mode name（idが不正なら「*INVALID MODE*」）
+	 * @return Mode name (idが不正なら「*INVALID MODE*」）
 	 */
 	public String getName(int id) {
 		try {
@@ -138,7 +138,7 @@ public class ModeManager {
 	/**
 	 * Mode  nameからIDを取得
 	 * @param name Mode name
-	 * @return ModeID（見つからない場合は-1）
+	 * @return ModeID (見つからない場合は-1）
 	 */
 	public int getIDbyName(String name) {
 		if(name == null) return -1;
@@ -155,7 +155,7 @@ public class ModeManager {
 	/**
 	 * Mode オブジェクトを取得
 	 * @param id ModeID
-	 * @return Modeオブジェクト（idが不正ならnull）
+	 * @return Modeオブジェクト (idが不正ならnull）
 	 */
 	public GameMode getMode(int id) {
 		try {
@@ -168,7 +168,7 @@ public class ModeManager {
 	/**
 	 * Mode オブジェクトを取得
 	 * @param name Mode name
-	 * @return Modeオブジェクト（見つからないならnull）
+	 * @return Modeオブジェクト (見つからないならnull）
 	 */
 	public GameMode getMode(String name) {
 		try {

@@ -36,22 +36,22 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * ジョイスティック button設定画面のステート
+ * Joystick  button設定画面のステート
  */
 public class StateConfigJoystickButton extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 10;
 
-	/** キー入力を受付可能になるまでの frame count */
+	/** キー input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
-	/** プレイヤー number */
+	/** Player number */
 	public int player = 0;
 
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
-	/** 使用するジョイスティックの number */
+	/** 使用するJoystick の number */
 	protected int joyNumber;
 
 	/** 現在設定中の button */
@@ -146,7 +146,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 
 		frame++;
 
-		// ジョイスティック button判定
+		// Joystick  button判定
 		if(frame >= KEYACCEPTFRAME) {
 			for(int i = 0; i < ControllerManager.MAX_BUTTONS; i++) {
 				try {

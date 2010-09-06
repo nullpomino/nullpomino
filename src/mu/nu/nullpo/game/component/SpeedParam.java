@@ -31,16 +31,16 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * Blockピースの落下速度や出現待ち timeなどのデータ
+ * Blockピースの落下速度や出現待ち timeなどの data
  */
 public class SpeedParam implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = -955934100998757270L;
 
 	/** 落下速度 */
 	public int gravity;
 
-	/** 落下速度の分母（gravity==denominatorなら1Gになる） */
+	/** 落下速度の分母 (gravity==denominatorなら1Gになる) */
 	public int denominator;
 
 	/** 出現待ち time */
@@ -66,8 +66,8 @@ public class SpeedParam implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param s コピー元
+	 * Copy constructor
+	 * @param s Copy source
 	 */
 	public SpeedParam(SpeedParam s) {
 		copy(s);
@@ -88,7 +88,7 @@ public class SpeedParam implements Serializable {
 
 	/**
 	 * 別のSpeedParamからコピー
-	 * @param s コピー元
+	 * @param s Copy source
 	 */
 	public void copy(SpeedParam s) {
 		gravity = s.gravity;

@@ -154,7 +154,7 @@ public class GeneralUtil {
 	/**
 	 * ルールファイルを読み込み
 	 * @param filename ファイル名
-	 * @return ルールデータ
+	 * @return ルール data
 	 */
 	public static RuleOptions loadRule(String filename) {
 		CustomProperties prop = new CustomProperties();
@@ -176,7 +176,7 @@ public class GeneralUtil {
 	/**
 	 * NEXT順生成アルゴリズムを読み込み
 	 * @param filename クラスファイルの名前
-	 * @return NEXT順生成アルゴリズムのオブジェクト（読み込み失敗したらnull）
+	 * @return NEXT順生成アルゴリズムのオブジェクト (読み込み失敗したらnull）
 	 */
 	public static Randomizer loadRandomizer(String filename) {
 		Class<?> randomizerClass = null;
@@ -195,7 +195,7 @@ public class GeneralUtil {
 	/**
 	 * Wallkickアルゴリズムを読み込み
 	 * @param filename クラスファイルの名前
-	 * @return Wallkickアルゴリズムのオブジェクト（読み込み失敗したらnull）
+	 * @return Wallkickアルゴリズムのオブジェクト (読み込み失敗したらnull）
 	 */
 	public static Wallkick loadWallkick(String filename) {
 		Class<?> wallkickClass = null;
@@ -214,7 +214,7 @@ public class GeneralUtil {
 	/**
 	 * AIを読み込み
 	 * @param filename クラスファイルの名前
-	 * @return AIのオブジェクト（読み込み失敗したらnull）
+	 * @return AIのオブジェクト (読み込み失敗したらnull）
 	 */
 	public static DummyAI loadAIPlayer(String filename) {
 		Class<?> aiClass = null;

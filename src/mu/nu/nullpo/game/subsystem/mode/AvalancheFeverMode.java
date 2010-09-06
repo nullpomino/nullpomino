@@ -126,7 +126,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	private int xyzzy;
 	
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {

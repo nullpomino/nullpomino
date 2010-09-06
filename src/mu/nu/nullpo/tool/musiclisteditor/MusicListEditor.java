@@ -65,7 +65,7 @@ import org.apache.log4j.PropertyConfigurator;
  * MusicListEditor (音楽リスト編集ツール)
  */
 public class MusicListEditor extends JFrame implements ActionListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = -6480034324392568869L;
 
 	/** Log */
@@ -247,7 +247,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	private String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -302,14 +302,14 @@ public class MusicListEditor extends JFrame implements ActionListener {
 			// カレントディレクトリ
 			String currentDirectory = System.getProperty("user.dir");
 
-			// デフォルトディレクトリを設定
+			//  default ディレクトリを設定
 			String defaultDirectory = txtfldMusicFileNames[number].getText();
 			if(defaultDirectory.length() < 1) defaultDirectory = currentDirectory + "/res/bgm";
 
 			File file = new File(defaultDirectory);
 			fileChooser.setCurrentDirectory(file);
 
-			// ファイル選択ダイアログのデフォルト拡張子を設定
+			// ファイル選択ダイアログの default 拡張子を設定
 			if(file.isFile()) {
 				try {
 					String strName = file.getName();

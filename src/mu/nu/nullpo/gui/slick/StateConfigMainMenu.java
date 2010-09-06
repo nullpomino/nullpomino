@@ -50,7 +50,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		"ConfigMainMenu_Joystick"
 	};
 
-	/** プレイヤー number */
+	/** Player number */
 	protected int player = 0;
 
 	public StateConfigMainMenu () {

@@ -102,7 +102,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	public CustomProperties propLang;
 
 	//----------------------------------------------------------------------
-	/** 今開いているファイル名（null:なし） */
+	/** 今開いているファイル名 (null:なし) */
 	private String strNowFile;
 
 	/** タブ */
@@ -126,7 +126,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Blockピースがフィールド枠外から出現 */
 	private JCheckBox chkboxEnterAboveField;
 
-	/** 出現予定地が埋まっているときにY-coordinateを上にずらす最大 count */
+	/** 出現予定地が埋まっているときにY-coordinateを上にずらすMaximum count */
 	private JTextField txtfldEnterMaxDistanceY;
 
 	/** NEXT順生成アルゴリズム */
@@ -174,7 +174,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** ホールドを使ったときにBlockピースの向きを初期状態に戻す */
 	private JCheckBox chkboxHoldResetDirection;
 
-	/** ホールドできる count（-1:無制限） */
+	/** ホールドできる count (-1:無制限) */
 	private JTextField txtfldHoldLimit;
 
 	//----------------------------------------------------------------------
@@ -208,30 +208,30 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JCheckBox chkboxDropSoftDropMultiplyNativeSpeed;
 
 	//----------------------------------------------------------------------
-	/* 回転設定パネル */
+	/* rotation設定パネル */
 
-	/** 先行回転 */
+	/** 先行rotation */
 	private JCheckBox chkboxRotateInitial;
 
-	/** 先行回転連続使用不可 */
+	/** 先行rotation連続使用不可 */
 	private JCheckBox chkboxRotateInitialLimit;
 
 	/** Wallkick */
 	private JCheckBox chkboxRotateWallkick;
 
-	/** 先行回転でもWallkickする */
+	/** 先行rotationでもWallkickする */
 	private JCheckBox chkboxRotateInitialWallkick;
 
-	/** 上DirectionへのWallkickができる count（-1:無限） */
+	/** 上DirectionへのWallkickができる count (-1:無限) */
 	private JTextField txtfldRotateMaxUpwardWallkick;
 
-	/** falseなら左が正回転、trueなら右が正回転 */
+	/** falseなら左が正rotation、trueなら右が正rotation */
 	private JCheckBox chkboxRotateButtonDefaultRight;
 
-	/** 逆回転を許可（falseなら正回転と同じ） */
+	/** 逆rotationを許可 (falseなら正rotationと同じ) */
 	private JCheckBox chkboxRotateButtonAllowReverse;
 
-	/** 2回転を許可（falseなら正回転と同じ） */
+	/** 2rotationを許可 (falseなら正rotationと同じ) */
 	private JCheckBox chkboxRotateButtonAllowDouble;
 
 	/** Wallkickアルゴリズム */
@@ -258,25 +258,25 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 移動で固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetMove;
 
-	/** 回転で固定 timeリセット */
+	/** rotationで固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetRotate;
 
-	/** 横移動カウンタと回転カウンタを共有（横移動カウンタだけ使う） */
+	/** 横移動カウンタとrotationカウンタを共有 (横移動カウンタだけ使う) */
 	private JCheckBox chkboxLockDelayLockResetLimitShareCount;
 
 	/** 横移動 count制限 */
 	private JTextField txtfldLockDelayLockResetLimitMove;
 
-	/** 回転 count制限 */
+	/** rotation count制限 */
 	private JTextField txtfldLockDelayLockResetLimitRotate;
 
-	/** 横移動カウンタか回転カウンタが超過したら固定 timeリセットを無効にする */
+	/** 横移動カウンタかrotationカウンタが超過したら固定 timeリセットを無効にする */
 	private JRadioButton radioLockDelayLockResetLimitOverNoReset;
 
-	/** 横移動カウンタか回転カウンタが超過したら即座に固定する */
+	/** 横移動カウンタかrotationカウンタが超過したら即座に固定する */
 	private JRadioButton radioLockDelayLockResetLimitOverInstant;
 
-	/** 横移動カウンタか回転カウンタが超過したらWallkick無効にする */
+	/** 横移動カウンタかrotationカウンタが超過したらWallkick無効にする */
 	private JRadioButton radioLockDelayLockResetLimitOverNoWallkick;
 
 	//----------------------------------------------------------------------
@@ -297,10 +297,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 固定した瞬間に光る frame count */
 	private JTextField txtfldARELockFlash;
 
-	/** Blockが光る専用フレームを入れる */
+	/** Blockが光る専用 frame を入れる */
 	private JCheckBox chkboxARELockFlashOnlyFrame;
 
-	/** Line clear前にBlockが光るフレームを入れる */
+	/** Line clear前にBlockが光る frame を入れる */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
 	
 	/** ARE cancel on move checkbox */
@@ -348,7 +348,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Ready画面で横溜め可能 */
 	private JCheckBox chkboxMoveDASInReady;
 
-	/** 最初のフレームで横溜め可能 */
+	/** 最初の frame で横溜め可能 */
 	private JCheckBox chkboxMoveDASInMoveFirstFrame;
 
 	/** Blockが光った瞬間に横溜め可能 */
@@ -360,7 +360,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** ARE中に横溜め可能 */
 	private JCheckBox chkboxMoveDASInARE;
 
-	/** AREの最後のフレームで横溜め可能 */
+	/** AREの最後の frame で横溜め可能 */
 	private JCheckBox chkboxMoveDASInARELastFrame;
 
 	/** Ending突入画面で横溜め可能 */
@@ -375,7 +375,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Redirect in delay checkbox **/
 	private JCheckBox chkboxMoveDASRedirectInDelay;
 
-	/** 最初のフレームに移動可能 */
+	/** 最初の frame に移動可能 */
 	private JCheckBox chkboxMoveFirstFrame;
 
 	/** 斜め移動 */
@@ -387,40 +387,40 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 左右同時押し可能 */
 	private JCheckBox chkboxMoveLeftAndRightAllow;
 
-	/** 左右同時押ししたときに前のフレームの入力Directionを優先する */
+	/** 左右同時押ししたときに前の frame の input Directionを優先する */
 	private JCheckBox chkboxMoveLeftAndRightUsePreviousInput;
 	
 	/** Shift lock checkbox */
 	private JCheckBox chkboxMoveShiftLockEnable;
 
 	//----------------------------------------------------------------------
-	/* 回転パターン補正パネル */
+	/* rotationパターン補正パネル */
 
-	/** 回転パターン補正タブ */
+	/** rotationパターン補正タブ */
 	private JTabbedPane tabPieceOffset;
 
-	/** 回転パターン補正(X)入力欄 */
+	/** rotationパターン補正(X) input 欄 */
 	private JTextField[][] txtfldPieceOffsetX;
 
-	/** 回転パターン補正(Y)入力欄 */
+	/** rotationパターン補正(Y) input 欄 */
 	private JTextField[][] txtfldPieceOffsetY;
 
 	//----------------------------------------------------------------------
-	/* 回転パターン補正パネル */
+	/* rotationパターン補正パネル */
 
-	/** 回転パターン補正タブ */
+	/** rotationパターン補正タブ */
 	private JTabbedPane tabPieceSpawn;
 
-	/** 出現位置補正(X)入力欄 */
+	/** 出現位置補正(X) input 欄 */
 	private JTextField[][] txtfldPieceSpawnX;
 
-	/** 出現位置補正(Y)入力欄 */
+	/** 出現位置補正(Y) input 欄 */
 	private JTextField[][] txtfldPieceSpawnY;
 
-	/** Big時出現位置補正(X)入力欄 */
+	/** Big時出現位置補正(X) input 欄 */
 	private JTextField[][] txtfldPieceSpawnBigX;
 
-	/** Big時出現位置補正(Y)入力欄 */
+	/** Big時出現位置補正(Y) input 欄 */
 	private JTextField[][] txtfldPieceSpawnBigY;
 
 	//----------------------------------------------------------------------
@@ -453,7 +453,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/**
 	 * 特定のファイルを読み込むConstructor
-	 * @param filename ファイル名（空文字列かnullにするとパラメータなしConstructorと同じ動作）
+	 * @param filename ファイル名 (空文字列かnullにするとパラメータなしConstructorと同じ動作）
 	 */
 	public RuleEditor(String filename) {
 		super();
@@ -636,7 +636,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxEnterAboveField = new JCheckBox(getUIText("Basic_EnterAboveField"));
 		panelBasic.add(chkboxEnterAboveField);
 
-		// 出現予定地が埋まっているときにY-coordinateを上にずらす最大 count
+		// 出現予定地が埋まっているときにY-coordinateを上にずらすMaximum count
 		JPanel pEnterMaxDistanceY = new JPanel();
 		panelBasic.add(pEnterMaxDistanceY);
 
@@ -788,16 +788,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldDropSoftDropSpeed = new JTextField("", 5);
 		pDropSoftDropSpeed.add(txtfldDropSoftDropSpeed);
 
-		// 回転タブ --------------------------------------------------
+		// rotationタブ --------------------------------------------------
 		JPanel panelRotate = new JPanel();
 		panelRotate.setLayout(new BoxLayout(panelRotate, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Rotate"), panelRotate);
 
-		// 先行回転
+		// 先行rotation
 		chkboxRotateInitial = new JCheckBox(getUIText("Rotate_RotateInitial"));
 		panelRotate.add(chkboxRotateInitial);
 
-		// 先行回転連続使用不可
+		// 先行rotation連続使用不可
 		chkboxRotateInitialLimit = new JCheckBox(getUIText("Rotate_RotateInitialLimit"));
 		panelRotate.add(chkboxRotateInitialLimit);
 
@@ -805,19 +805,19 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxRotateWallkick = new JCheckBox(getUIText("Rotate_RotateWallkick"));
 		panelRotate.add(chkboxRotateWallkick);
 
-		// 先行回転でもWallkickする
+		// 先行rotationでもWallkickする
 		chkboxRotateInitialWallkick = new JCheckBox(getUIText("Rotate_RotateInitialWallkick"));
 		panelRotate.add(chkboxRotateInitialWallkick);
 
-		// Aで右回転
+		// Aで右rotation
 		chkboxRotateButtonDefaultRight = new JCheckBox(getUIText("Rotate_RotateButtonDefaultRight"));
 		panelRotate.add(chkboxRotateButtonDefaultRight);
 
-		// 逆回転許可
+		// 逆rotation許可
 		chkboxRotateButtonAllowReverse = new JCheckBox(getUIText("Rotate_RotateButtonAllowReverse"));
 		panelRotate.add(chkboxRotateButtonAllowReverse);
 
-		// 2回転許可
+		// 2rotation許可
 		chkboxRotateButtonAllowDouble = new JCheckBox(getUIText("Rotate_RotateButtonAllowDouble"));
 		panelRotate.add(chkboxRotateButtonAllowDouble);
 
@@ -873,11 +873,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLockDelayLockResetMove = new JCheckBox(getUIText("LockDelay_LockResetMove"));
 		panelLockDelay.add(chkboxLockDelayLockResetMove);
 
-		// 回転で固定 timeリセット
+		// rotationで固定 timeリセット
 		chkboxLockDelayLockResetRotate = new JCheckBox(getUIText("LockDelay_LockResetRotate"));
 		panelLockDelay.add(chkboxLockDelayLockResetRotate);
 
-		// 横移動カウンタと回転カウンタを共有（横移動カウンタだけ使う）
+		// 横移動カウンタとrotationカウンタを共有 (横移動カウンタだけ使う）
 		chkboxLockDelayLockResetLimitShareCount = new JCheckBox(getUIText("LockDelay_LockDelayLockResetLimitShareCount"));
 		panelLockDelay.add(chkboxLockDelayLockResetLimitShareCount);
 
@@ -890,7 +890,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayLockResetLimitMove = new JTextField("", 5);
 		pLockDelayLockResetLimitMove.add(txtfldLockDelayLockResetLimitMove);
 
-		// 回転 count制限
+		// rotation count制限
 		JPanel pLockDelayLockResetLimitRotate = new JPanel();
 		panelLockDelay.add(pLockDelayLockResetLimitRotate);
 		JLabel lLockDelayLockResetLimitRotate = new JLabel(getUIText("LockDelay_LockDelayLockResetLimitRotate"));
@@ -899,7 +899,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayLockResetLimitRotate = new JTextField("", 5);
 		pLockDelayLockResetLimitRotate.add(txtfldLockDelayLockResetLimitRotate);
 
-		// 移動または回転 count制限が超過した時の設定
+		// 移動またはrotation count制限が超過した時の設定
 		JPanel pLockDelayLockResetLimitOver = new JPanel();
 		pLockDelayLockResetLimitOver.setLayout(new BoxLayout(pLockDelayLockResetLimitOver, BoxLayout.Y_AXIS));
 		panelLockDelay.add(pLockDelayLockResetLimitOver);
@@ -960,11 +960,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELockFlash = new JTextField("", 5);
 		pARELockFlash.add(txtfldARELockFlash);
 
-		// Blockが光る専用フレームを入れる
+		// Blockが光る専用 frame を入れる
 		chkboxARELockFlashOnlyFrame = new JCheckBox(getUIText("ARE_LockFlashOnlyFrame"));
 		panelARE.add(chkboxARELockFlashOnlyFrame);
 
-		// Line clear前にBlockが光るフレームを入れる
+		// Line clear前にBlockが光る frame を入れる
 		chkboxARELockFlashBeforeLineClear = new JCheckBox(getUIText("ARE_LockFlashBeforeLineClear"));
 		panelARE.add(chkboxARELockFlashBeforeLineClear);
 		
@@ -1065,7 +1065,7 @@ public class RuleEditor extends JFrame implements ActionListener {
       chkboxMoveDASRedirectInDelay = new JCheckBox(getUIText("Move_DASRedirectInDelay"));
       panelMove.add(chkboxMoveDASRedirectInDelay);
       
-		// 最初のフレームに移動可能
+		// 最初の frame に移動可能
 		chkboxMoveFirstFrame = new JCheckBox(getUIText("Move_FirstFrame"));
 		panelMove.add(chkboxMoveFirstFrame);
 
@@ -1081,7 +1081,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveLeftAndRightAllow = new JCheckBox(getUIText("Move_LeftAndRightAllow"));
 		panelMove.add(chkboxMoveLeftAndRightAllow);
 
-		// 左右同時押ししたときに前フレームの入力を優先
+		// 左右同時押ししたときに前 frame の input を優先
 		chkboxMoveLeftAndRightUsePreviousInput = new JCheckBox(getUIText("Move_LeftAndRightUsePreviousInput"));
 		panelMove.add(chkboxMoveLeftAndRightUsePreviousInput);
 		
@@ -1089,7 +1089,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveShiftLockEnable = new JCheckBox(getUIText("Move_ShiftLock"));
 		panelMove.add(chkboxMoveShiftLockEnable);
 
-		// 回転パターン補正タブ ------------------------------------------------
+		// rotationパターン補正タブ ------------------------------------------------
 		JPanel panelPieceOffset = new JPanel();
 		panelPieceOffset.setLayout(new BoxLayout(panelPieceOffset, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_PieceOffset"), panelPieceOffset);
@@ -1097,7 +1097,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		tabPieceOffset = new JTabbedPane();
 		panelPieceOffset.add(tabPieceOffset);
 
-		// 回転パターン補正(X)タブ --------------------------------------------------
+		// rotationパターン補正(X)タブ --------------------------------------------------
 		JPanel panelPieceOffsetX = new JPanel();
 		panelPieceOffsetX.setLayout(new BoxLayout(panelPieceOffsetX, BoxLayout.Y_AXIS));
 		tabPieceOffset.addTab(getUIText("TabName_PieceOffsetX"), panelPieceOffsetX);
@@ -1118,7 +1118,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// 回転パターン補正(Y)タブ --------------------------------------------------
+		// rotationパターン補正(Y)タブ --------------------------------------------------
 		JPanel panelPieceOffsetY = new JPanel();
 		panelPieceOffsetY.setLayout(new BoxLayout(panelPieceOffsetY, BoxLayout.Y_AXIS));
 		tabPieceOffset.addTab(getUIText("TabName_PieceOffsetY"), panelPieceOffsetY);
@@ -1300,7 +1300,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/**
 	 * 画像を読み込み
 	 * @param url 画像ファイルのURL
-	 * @return 画像ファイル（失敗するとnull）
+	 * @return 画像ファイル (失敗するとnull）
 	 */
 	public BufferedImage loadImage(URL url) {
 		BufferedImage img = null;
@@ -1640,7 +1640,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/**
 	 * ルールをファイルから読み込み
 	 * @param filename ファイル名
-	 * @return ルールデータ
+	 * @return ルール data
 	 * @throws IOException 読み込みに失敗したとき
 	 */
 	public RuleOptions load(String filename) throws IOException {
@@ -1661,7 +1661,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	public String getUIText(String str) {
 		String result = propLang.getProperty(str);

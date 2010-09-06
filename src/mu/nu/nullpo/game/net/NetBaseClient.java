@@ -44,7 +44,7 @@ public class NetBaseClient extends Thread {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetBaseClient.class);
 
-	/** デフォルトのポート number */
+	/**  default のポート number */
 	public static final int DEFAULT_PORT = 9200;
 
 	/** 読み込みバッファのサイズ */
@@ -84,7 +84,7 @@ public class NetBaseClient extends Thread {
 	protected Timer timerPing;
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public NetBaseClient() {
 		super();

@@ -42,16 +42,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * 設定画面のフレーム
+ * 設定画面の frame 
  */
 public class GeneralConfigFrame extends JFrame implements ActionListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
 
-	/** 最大FPS */
+	/** MaximumFPS */
 	protected JTextField txtfldMaxFPS;
 
 	/** 効果音の音量 */
@@ -66,7 +66,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Meter表示 */
 	protected JCheckBox chkboxShowMeter;
 
-	/** フィールドのBlockの絵を表示（ check なしの場合は枠線だけ） */
+	/** フィールドのBlockの絵を表示 ( check なしの場合は枠線だけ) */
 	protected JCheckBox chkboxShowFieldBlockGraphics;
 
 	/** シンプルな絵柄のBlockを使う */
@@ -78,7 +78,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** ネイティブのLook and Feelを使う */
 	protected JCheckBox chkboxUseNativeLookAndFeel;
 
-	/** フレームステップ */
+	/**  frame ステップ */
 	protected JCheckBox chkboxEnableFrameStep;
 
 	/** ゴーストピースの上にNEXT表示 */
@@ -113,7 +113,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		// ---------- 最大FPS ----------
+		// ---------- MaximumFPS ----------
 		JPanel pMaxFPS = new JPanel();
 		pMaxFPS.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(pMaxFPS);

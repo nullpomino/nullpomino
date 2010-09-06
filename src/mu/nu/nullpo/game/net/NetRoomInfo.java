@@ -46,7 +46,7 @@ public class NetRoomInfo implements Serializable {
 	/** ルーム名 */
 	public String strName = "";
 
-	/** 参加可能な最大人count */
+	/** 参加可能なMaximum人count */
 	public int maxPlayers = 6;
 
 	/** 自動開始までの待機 time */
@@ -197,15 +197,15 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param n コピー元
+	 * Copy constructor
+	 * @param n Copy source
 	 */
 	public NetRoomInfo(NetRoomInfo n) {
 		copy(n);
 	}
 
 	/**
-	 * Stringの配列からデータ代入するConstructor
+	 * Stringの配列から data代入するConstructor
 	 * @param rdata Stringの配列(String[7])
 	 */
 	public NetRoomInfo(String[] rdata) {
@@ -213,7 +213,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringからデータ代入するConstructor
+	 * Stringから data代入するConstructor
 	 * @param str String
 	 */
 	public NetRoomInfo(String str) {
@@ -222,7 +222,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 他のNetRoomInfoからコピー
-	 * @param n コピー元
+	 * @param n Copy source
 	 */
 	public void copy(NetRoomInfo n) {
 		roomID = n.roomID;
@@ -289,7 +289,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列からデータ代入(プレイヤーリスト除く)
+	 * Stringの配列から data代入(Playerリスト除く)
 	 * @param rdata Stringの配列(String[37])
 	 */
 	public void importStringArray(String[] rdata) {
@@ -333,7 +333,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * String(;で区切り)からデータ代入(プレイヤーリスト除く)
+	 * String(;で区切り)から data代入(Playerリスト除く)
 	 * @param str String
 	 */
 	public void importString(String str) {
@@ -341,7 +341,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列に変換(プレイヤーリスト除く)
+	 * Stringの配列に変換(Playerリスト除く)
 	 * @return Stringの配列(String[37])
 	 */
 	public String[] exportStringArray() {
@@ -387,7 +387,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringに変換(;で区切り)(プレイヤーリスト除く)
+	 * Stringに変換(;で区切り)(Playerリスト除く)
 	 * @return String
 	 */
 	public String exportString() {
@@ -424,17 +424,17 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 指定したプレイヤーがゲーム席にいるかどうか調べる
-	 * @param pInfo プレイヤー
-	 * @return 指定したプレイヤーがゲーム席にいるならtrue
+	 * 指定したPlayerがゲーム席にいるかどうか調べる
+	 * @param pInfo Player
+	 * @return 指定したPlayerがゲーム席にいるならtrue
 	 */
 	public boolean isPlayerInSeat(NetPlayerInfo pInfo) {
 		return playerSeat.contains(pInfo);
 	}
 
 	/**
-	 * 指定したプレイヤーがどの numberのゲーム席にいるか調べる
-	 * @param pInfo プレイヤー
+	 * 指定したPlayerがどの numberのゲーム席にいるか調べる
+	 * @param pInfo Player
 	 * @return ゲーム席 number(いないなら-1)
 	 */
 	public int getPlayerSeatNumber(NetPlayerInfo pInfo) {
@@ -455,7 +455,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * ゲーム席に入る
-	 * @param pInfo プレイヤー
+	 * @param pInfo Player
 	 * @return ゲーム席の number(満員だったら-1)
 	 */
 	public int joinSeat(NetPlayerInfo pInfo) {
@@ -476,8 +476,8 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 指定したプレイヤーをゲーム席から外す
-	 * @param pInfo プレイヤー
+	 * 指定したPlayerをゲーム席から外す
+	 * @param pInfo Player
 	 */
 	public void exitSeat(NetPlayerInfo pInfo) {
 		for(int i = 0; i < playerSeat.size(); i++) {
@@ -489,7 +489,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 順番待ちに入る
-	 * @param pInfo プレイヤー
+	 * @param pInfo Player
 	 * @return 順番待ち number
 	 */
 	public int joinQueue(NetPlayerInfo pInfo) {
@@ -501,15 +501,15 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 指定したプレイヤーを順番待ちから外す
-	 * @param pInfo プレイヤー
+	 * 指定したPlayerを順番待ちから外す
+	 * @param pInfo Player
 	 */
 	public void exitQueue(NetPlayerInfo pInfo) {
 		playerQueue.remove(pInfo);
 	}
 
 	/**
-	 * 何人のプレイヤーが準備完了したかcountえる
+	 * 何人のPlayerが準備完了したかcountえる
 	 * @return 準備完了したNumber of players
 	 */
 	public int getHowManyPlayersReady() {
@@ -523,7 +523,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 何人のプレイヤーがプレイ中かcountえる(死んだ人とまだ部屋に来た直後の人は含みません)
+	 * 何人のPlayerがプレイ中かcountえる(死んだ人とまだ部屋に来た直後の人は含みません)
 	 * @return プレイ中のNumber of players
 	 */
 	public int getHowManyPlayersPlaying() {
@@ -537,8 +537,8 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 最後に生き残ったプレイヤーの情報を取得
-	 * @return 最後に生き残ったプレイヤーの情報(まだ2人以上生きている場合や、そもそもゲームが始まっていない場合はnull)
+	 * 最後に生き残ったPlayerの情報を取得
+	 * @return 最後に生き残ったPlayerの情報(まだ2人以上生きている場合や、そもそもゲームが始まっていない場合はnull)
 	 */
 	public NetPlayerInfo getWinner() {
 		if((startPlayers >= 2) && (getHowManyPlayersPlaying() < 2) && (playing == true)) {

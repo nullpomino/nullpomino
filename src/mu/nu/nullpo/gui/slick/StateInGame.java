@@ -65,7 +65,7 @@ public class StateInGame extends BasicGameState {
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/** フレームステップ有効 flag */
+	/**  frame ステップ有効 flag */
 	protected boolean enableframestep = false;
 
 	/** 倍速Mode  */
@@ -77,7 +77,7 @@ public class StateInGame extends BasicGameState {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** AppGameContainer（これを使ってタイトルバーを変える） */
+	/** AppGameContainer (これを使ってタイトルバーを変える) */
 	protected AppGameContainer appContainer = null;
 
 	/*
@@ -179,7 +179,7 @@ public class StateInGame extends BasicGameState {
 
 	/**
 	 * リプレイを読み込んで再生
-	 * @param prop リプレイデータの入ったプロパティセット
+	 * @param prop リプレイ dataの入ったプロパティセット
 	 */
 	public void startReplayGame(CustomProperties prop) {
 		gameManager = new GameManager(new RendererSlick());
@@ -220,7 +220,7 @@ public class StateInGame extends BasicGameState {
 				gameManager.engine[i].wallkick = wallkickObject;
 			}
 
-			// AI（リプレイ追記用）
+			// AI (リプレイ追記用）
 			String aiName = NullpoMinoSlick.propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
 				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
@@ -308,7 +308,7 @@ public class StateInGame extends BasicGameState {
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー入力状態を更新
+		// キー input 状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 		GameKey.gamekey[1].update(container.getInput());
 

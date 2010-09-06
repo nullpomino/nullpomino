@@ -42,10 +42,10 @@ public class StateConfigKeyboard extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 9;
 
-	/** キー入力を受付可能になるまでの frame count */
+	/** キー input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
-	/** プレイヤー number */
+	/** Player number */
 	public int player = 0;
 
 	/** 初期設定Mode  */

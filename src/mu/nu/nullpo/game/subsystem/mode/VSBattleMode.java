@@ -80,7 +80,7 @@ public class VSBattleMode extends DummyMode {
 	/** 邪魔Blockタイプの表示名 */
 	private final String[] GARBAGE_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
 
-	/** 各プレイヤーの邪魔Blockの色 */
+	/** 各Playerの邪魔Blockの色 */
 	private final int[] PLAYER_COLOR_BLOCK = {Block.BLOCK_COLOR_RED, Block.BLOCK_COLOR_BLUE};
 
 	/** Each player's frame color */
@@ -188,10 +188,10 @@ public class VSBattleMode extends DummyMode {
 	/** マップセットのProperty file */
 	private CustomProperties[] propMap;
 
-	/** 最大マップ number */
+	/** Maximumマップ number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
+	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
 	private Field[] fldBackup;
 
 	/** マップ選択用乱count */
@@ -201,7 +201,7 @@ public class VSBattleMode extends DummyMode {
 	private int version;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -389,7 +389,7 @@ public class VSBattleMode extends DummyMode {
 
 	/**
 	 * 今溜まっている邪魔Blockのcountを返す
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return 今溜まっている邪魔Blockのcount
 	 */
 	private int getTotalGarbageLines(int playerID) {
@@ -403,7 +403,7 @@ public class VSBattleMode extends DummyMode {
 	/**
 	 * プレビュー用にマップを読み込み
 	 * @param engine GameEngine
-	 * @param playerID プレイヤー number
+	 * @param playerID Player number
 	 * @param id マップID
 	 * @param forceReload trueにするとマップファイルを強制再読み込み
 	 */
@@ -735,7 +735,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -1251,7 +1251,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * 敵から送られてきた邪魔Blockのデータ
+	 * 敵から送られてきた邪魔Blockの data
 	 */
 	private class GarbageEntry {
 		/** 邪魔Blockcount */

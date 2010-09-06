@@ -61,7 +61,7 @@ public class StateInGameSDL extends BaseStateSDL {
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/** フレームステップ有効 flag */
+	/**  frame ステップ有効 flag */
 	protected boolean enableframestep = false;
 
 	/** 倍速Mode  */
@@ -158,7 +158,7 @@ public class StateInGameSDL extends BaseStateSDL {
 
 	/**
 	 * リプレイを読み込んで再生
-	 * @param prop リプレイデータの入ったプロパティセット
+	 * @param prop リプレイ dataの入ったプロパティセット
 	 */
 	public void startReplayGame(CustomProperties prop) {
 		gameManager = new GameManager(new RendererSDL());
@@ -203,7 +203,7 @@ public class StateInGameSDL extends BaseStateSDL {
 				gameManager.engine[i].wallkick = wallkickObject;
 			}
 
-			// AI（リプレイ追記用）
+			// AI (リプレイ追記用）
 			String aiName = NullpoMinoSDL.propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
 				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);

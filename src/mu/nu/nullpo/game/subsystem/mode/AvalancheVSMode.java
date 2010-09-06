@@ -122,7 +122,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	private boolean[] ojamaMeter;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -585,7 +585,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {

@@ -44,8 +44,8 @@ public interface GameMode {
 	public String getName();
 
 	/**
-	 * このMode のプレイヤーの人countを取得
-	 * @return プレイヤーの人count
+	 * このMode のPlayerの人countを取得
+	 * @return Playerの人count
 	 */
 	public int getPlayers();
 
@@ -58,35 +58,35 @@ public interface GameMode {
 	/**
 	 * Initialization for each playerが終わるときに呼び出される処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void playerInit(GameEngine engine, int playerID);
 
 	/**
 	 * Ready→Go直後、最初のピースが現れる直前の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void startGame(GameEngine engine, int playerID);
 
 	/**
-	 * 各プレイヤーの最初の処理の時に呼び出される
+	 * 各Playerの最初の処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onFirst(GameEngine engine, int playerID);
 
 	/**
-	 * 各プレイヤーの最後の処理の時に呼び出される
+	 * 各Playerの最後の処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void onLast(GameEngine engine, int playerID);
 
 	/**
 	 * 開始前の設定画面のときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと自動的にReady画面に移動しない
 	 */
 	public boolean onSetting(GameEngine engine, int playerID);
@@ -94,7 +94,7 @@ public interface GameMode {
 	/**
 	 * Ready→Goのときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onReady(GameEngine engine, int playerID);
@@ -102,7 +102,7 @@ public interface GameMode {
 	/**
 	 * Blockピースの移動処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onMove(GameEngine engine, int playerID);
@@ -110,7 +110,7 @@ public interface GameMode {
 	/**
 	 * Block固定直後の光っているときの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onLockFlash(GameEngine engine, int playerID);
@@ -118,7 +118,7 @@ public interface GameMode {
 	/**
 	 * Line clear処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onLineClear(GameEngine engine, int playerID);
@@ -126,7 +126,7 @@ public interface GameMode {
 	/**
 	 * ARE中の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onARE(GameEngine engine, int playerID);
@@ -134,7 +134,7 @@ public interface GameMode {
 	/**
 	 * Ending突入時の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onEndingStart(GameEngine engine, int playerID);
@@ -142,7 +142,7 @@ public interface GameMode {
 	/**
 	 * 各ゲームMode が自由に使えるステータスの処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueでもfalseでも意味は変わりません
 	 */
 	public boolean onCustom(GameEngine engine, int playerID);
@@ -150,15 +150,15 @@ public interface GameMode {
 	/**
 	 * Ending画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onExcellent(GameEngine engine, int playerID);
 
 	/**
-	 * ゲームオーバー画面の処理
+	 * game over画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onGameOver(GameEngine engine, int playerID);
@@ -166,7 +166,7 @@ public interface GameMode {
 	/**
 	 * 結果画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onResult(GameEngine engine, int playerID);
@@ -174,113 +174,113 @@ public interface GameMode {
 	/**
 	 * フィールドエディット画面の処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean onFieldEdit(GameEngine engine, int playerID);
 
 	/**
-	 * 各プレイヤーの最初の描画処理の時に呼び出される
+	 * 各Playerの最初の描画処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderFirst(GameEngine engine, int playerID);
 
 	/**
-	 * 各プレイヤーの最後の描画処理の時に呼び出される
+	 * 各Playerの最後の描画処理の時に呼び出される
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderLast(GameEngine engine, int playerID);
 
 	/**
 	 * 開始前の設定画面のときの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderSetting(GameEngine engine, int playerID);
 
 	/**
 	 * Ready→Goのときの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderReady(GameEngine engine, int playerID);
 
 	/**
 	 * Blockピースの移動描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderMove(GameEngine engine, int playerID);
 
 	/**
 	 * Block固定直後の光っているときの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderLockFlash(GameEngine engine, int playerID);
 
 	/**
 	 * Line clear描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderLineClear(GameEngine engine, int playerID);
 
 	/**
 	 * ARE中の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderARE(GameEngine engine, int playerID);
 
 	/**
 	 * Ending突入時の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderEndingStart(GameEngine engine, int playerID);
 
 	/**
 	 * 各ゲームMode が自由に使えるステータスの描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderCustom(GameEngine engine, int playerID);
 
 	/**
 	 * Ending画面の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderExcellent(GameEngine engine, int playerID);
 
 	/**
-	 * ゲームオーバー画面の描画処理
+	 * game over画面の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderGameOver(GameEngine engine, int playerID);
 
 	/**
 	 * Render results screen処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderResult(GameEngine engine, int playerID);
 
 	/**
 	 * フィールドエディット画面の描画処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void renderFieldEdit(GameEngine engine, int playerID);
 
 	/**
 	 * Blockを消す演出を出すときの処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Block
@@ -290,15 +290,15 @@ public interface GameMode {
 	/**
 	 * Calculate score(pieceLockedの前)
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
-	 * @param lines 消えるLinescount（消えなかった場合は0）
+	 * @param playerID Player ID
+	 * @param lines 消えるLinescount (消えなかった場合は0）
 	 */
 	public void calcScore(GameEngine engine, int playerID, int lines);
 
 	/**
 	 * Soft drop使用後の処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param fall 今落下した段count
 	 */
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall);
@@ -306,7 +306,7 @@ public interface GameMode {
 	/**
 	 * Hard drop使用後の処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param fall 今落下した段count
 	 */
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall);
@@ -314,22 +314,22 @@ public interface GameMode {
 	/**
 	 * フィールドエディット画面から出たときの処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 */
 	public void fieldEditExit(GameEngine engine, int playerID);
 
 	/**
 	 * Blockピースが固定されたときの処理(calcScoreの直後)
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
-	 * @param lines 消えるLinescount（消えなかった場合は0）
+	 * @param playerID Player ID
+	 * @param lines 消えるLinescount (消えなかった場合は0）
 	 */
 	public void pieceLocked(GameEngine engine, int playerID, int lines);
 
 	/**
 	 * Line clearが終わるときに呼び出される処理
 	 * @param engine GameEngine
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @return trueを返すと通常の処理を行わない
 	 */
 	public boolean lineClearEnd(GameEngine engine, int playerID);
@@ -337,7 +337,7 @@ public interface GameMode {
 	/**
 	 * Called when saving replay
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param prop リプレイ保存先のプロパティセット
 	 */
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop);
@@ -345,7 +345,7 @@ public interface GameMode {
 	/**
 	 * リプレイ読み込み時の処理
 	 * @param engine GameEngineのインスタンス
-	 * @param playerID プレイヤーID
+	 * @param playerID Player ID
 	 * @param prop リプレイ読み込み元のプロパティセット
 	 */
 	public void loadReplay(GameEngine engine, int playerID, CustomProperties prop);

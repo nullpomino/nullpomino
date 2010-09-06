@@ -63,7 +63,7 @@ public class NetServer {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetServer.class);
 
-	/** デフォルトのポート number */
+	/**  default のポート number */
 	public static final int DEFAULT_PORT = 9200;
 
 	/** 読み込みバッファのサイズ */
@@ -84,7 +84,7 @@ public class NetServer {
 	/** 不完全パケット */
 	private Map<SocketChannel, StringBuilder> notCompletePacketMap = new HashMap<SocketChannel, StringBuilder>();
 
-	/** プレイヤー情報 */
+	/** Player情報 */
 	private Map<SocketChannel, NetPlayerInfo> playerInfoMap = new HashMap<SocketChannel, NetPlayerInfo>();
 
 	/** ルーム情報 */
@@ -135,7 +135,7 @@ public class NetServer {
 	}
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public NetServer() {
 		super();
@@ -458,7 +458,7 @@ public class NetServer {
 
 	/**
 	 * クライアントにメッセージを送信(すぐには送信せずBufferに一旦貯められます)
-	 * @param pInfo 送信先プレイヤー
+	 * @param pInfo 送信先Player
 	 * @param msg 送信するメッセージ
 	 */
 	@SuppressWarnings("unused")
@@ -470,7 +470,7 @@ public class NetServer {
 
 	/**
 	 * クライアントにメッセージを送信(すぐには送信せずBufferに一旦貯められます)
-	 * @param pInfo 送信先プレイヤー
+	 * @param pInfo 送信先Player
 	 * @param msg 送信するメッセージ
 	 */
 	@SuppressWarnings("unused")
@@ -481,7 +481,7 @@ public class NetServer {
 	}
 
 	/**
-	 * すべてのプレイヤーにメッセージ送信
+	 * すべてのPlayerにメッセージ送信
 	 * @param msg 送信するメッセージ
 	 */
 	private void broadcast(String msg) throws IOException {
@@ -497,7 +497,7 @@ public class NetServer {
 	}
 
 	/**
-	 * 特定のルームにいる全員のプレイヤーにメッセージ送信
+	 * 特定のルームにいる全員のPlayerにメッセージ送信
 	 * @param msg 送信するメッセージ
 	 * @param roomID ルームID
 	 */
@@ -514,10 +514,10 @@ public class NetServer {
 	}
 
 	/**
-	 * 特定のルームにいる全員のプレイヤーにメッセージ送信(送信元プレイヤー除く)
+	 * 特定のルームにいる全員のPlayerにメッセージ送信(送信元Player除く)
 	 * @param msg 送信するメッセージ
 	 * @param roomID ルームID
-	 * @param pInfo 送信元プレイヤー
+	 * @param pInfo 送信元Player
 	 */
 	private void broadcast(String msg, int roomID, NetPlayerInfo pInfo) throws IOException {
 		synchronized(channelList) {
@@ -542,7 +542,7 @@ public class NetServer {
 	}
 
 	/**
-	 * ユーザーcount更新を全員(オブザーバーとプレイヤー)に伝える
+	 * ユーザーcount更新を全員(オブザーバーとPlayer)に伝える
 	 */
 	private void broadcastUserCountToAll() throws IOException {
 		String msg = "observerupdate\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n";
@@ -552,9 +552,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定したプレイヤーのSocketChannelを取得
-	 * @param pInfo プレイヤー
-	 * @return 指定したプレイヤーのSocketChannel
+	 * 指定したPlayerのSocketChannelを取得
+	 * @param pInfo Player
+	 * @return 指定したPlayerのSocketChannel
 	 */
 	private SocketChannel getSocketChannelByPlayer(NetPlayerInfo pInfo) {
 		synchronized(channelList) {
@@ -577,7 +577,7 @@ public class NetServer {
 	 */
 	private void processPacket(SocketChannel client, String fullMessage) throws IOException {
 		String[] message = fullMessage.split("\t");	// タブ区切り
-		NetPlayerInfo pInfo = playerInfoMap.get(client);	// プレイヤー情報
+		NetPlayerInfo pInfo = playerInfoMap.get(client);	// Player情報
 
 		// サーバー情報取得
 		if(message[0].equals("getinfo")) {
@@ -661,7 +661,7 @@ public class NetServer {
 				originalName = originalName.replace('!', '?');
 			}
 
-			// プレイヤー名決定(同じ名前の人がいたら後ろにcount字をくっつける)
+			// Player名決定(同じ名前の人がいたら後ろにcount字をくっつける)
 			if(originalName.length() < 1) originalName = "noname";
 			String name = originalName;
 			int nameCount = 0;
@@ -713,7 +713,7 @@ public class NetServer {
 			broadcastUserCountToAll();
 			return;
 		}
-		// ルールデータ登録(クライアント→サーバー)
+		// ルール data登録(クライアント→サーバー)
 		if(message[0].equals("ruledata")) {
 			//ruledata\t[ADLER32CHECKSUM]\t[RULEDATA]
 
@@ -743,7 +743,7 @@ public class NetServer {
 			}
 			return;
 		}
-		// ルールデータ送信(サーバー→クライアント)
+		// ルール data送信(サーバー→クライアント)
 		if(message[0].equals("ruleget")) {
 			//ruleget\t[UID]
 
@@ -910,7 +910,7 @@ public class NetServer {
 			}
 			return;
 		}
-		// ルーム作成時のマップデータ受信
+		// ルーム作成時のマップ data受信
 		if(message[0].equals("roommap")) {
 			if((pInfo != null) && (pInfo.roomID != -1)) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1153,7 +1153,7 @@ public class NetServer {
 
 				if((seat != -1) && (roomInfo.autoStartActive) && (!roomInfo.singleplayer)) {
 					if(roomInfo.autoStartTNET2) {
-						// 準備完了でないプレイヤーを観戦状態にする
+						// 準備完了でないPlayerを観戦状態にする
 						LinkedList<NetPlayerInfo> pList = new LinkedList<NetPlayerInfo>();
 						pList.addAll(roomInfo.playerSeat);
 
@@ -1372,7 +1372,7 @@ public class NetServer {
 				if(teamName == null) teamName = "";
 				msg += -1 + "\t" + -1 + "\t" + NetUtil.urlEncode(teamName) + "\t" + isTeamWin;
 
-				// プレイヤーのプレイ中 flagを解除
+				// Playerのプレイ中 flagを解除
 				for(NetPlayerInfo pInfo: roomInfo.playerSeat) {
 					if((pInfo != null) && (pInfo.playing)) {
 						pInfo.resetPlayState();
@@ -1422,7 +1422,7 @@ public class NetServer {
 	}
 
 	/**
-	 * プレイヤーリストを送る
+	 * Playerリストを送る
 	 * @param client 送信先
 	 */
 	private void sendPlayerList(SocketChannel client) throws IOException {
@@ -1442,16 +1442,16 @@ public class NetServer {
 	}
 
 	/**
-	 * プレイヤー情報更新通知を全員に送る(コマンドはplayerupdate)
-	 * @param pInfo プレイヤー情報
+	 * Player情報更新通知を全員に送る(コマンドはplayerupdate)
+	 * @param pInfo Player情報
 	 */
 	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo) throws IOException  {
 		broadcastPlayerInfoUpdate(pInfo, "playerupdate");
 	}
 
 	/**
-	 * プレイヤー情報更新通知を全員に送る
-	 * @param pInfo プレイヤー情報
+	 * Player情報更新通知を全員に送る
+	 * @param pInfo Player情報
 	 * @param command コマンド
 	 */
 	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo, String command) throws IOException {
@@ -1462,9 +1462,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定した名前のプレイヤーを探す
+	 * 指定した名前のPlayerを探す
 	 * @param name 名前
-	 * @return 指定した名前のプレイヤー情報(いなかったらnull)
+	 * @return 指定した名前のPlayer情報(いなかったらnull)
 	 */
 	private NetPlayerInfo searchPlayerByName(String name) {
 		for(SocketChannel ch: channelList) {
@@ -1477,9 +1477,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定したIDのプレイヤーを探す
+	 * 指定したIDのPlayerを探す
 	 * @param uid ID
-	 * @return 指定したIDのプレイヤー情報(いなかったらnull)
+	 * @return 指定したIDのPlayer情報(いなかったらnull)
 	 */
 	private NetPlayerInfo searchPlayerByUID(int uid) {
 		for(SocketChannel ch: channelList) {
@@ -1492,7 +1492,7 @@ public class NetServer {
 	}
 
 	/**
-	 * 順番待ちのプレイヤーをすべて空席に参加させる
+	 * 順番待ちのPlayerをすべて空席に参加させる
 	 * @param roomInfo ルーム情報
 	 * @return 席に入れたNumber of players
 	 */
@@ -1516,15 +1516,15 @@ public class NetServer {
 	}
 
 	/**
-	 * プレイヤー死亡時の処理
-	 * @param pInfo プレイヤー
+	 * Player死亡時の処理
+	 * @param pInfo Player
 	 */
 	private void playerDead(NetPlayerInfo pInfo) throws IOException {
 		playerDead(pInfo, null);
 	}
 
 	/**
-	 * プレイヤー死亡時の処理
+	 * Player死亡時の処理
 	 * @param pInfo 被害者
 	 * @param pKOInfo 加害者(null可)
 	 */

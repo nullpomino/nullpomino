@@ -74,7 +74,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** AppGameContainer（これを使ってタイトルバーを変える） */
+	/** AppGameContainer (これを使ってタイトルバーを変える) */
 	protected AppGameContainer appContainer = null;
 
 	/** Mode name to enter (null=Exit) */
@@ -178,7 +178,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			// TTFフォント描画
 			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-			// キー入力状態を更新
+			// キー input 状態を更新
 			GameKey.gamekey[0].update(container.getInput());
 
 			if((gameManager != null) && (gameManager.mode != null)) {

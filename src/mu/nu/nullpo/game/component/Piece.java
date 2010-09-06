@@ -34,7 +34,7 @@ import java.io.Serializable;
  * Blockピース
  */
 public class Piece implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1204901746632931186L;
 
 	/** BlockピースのIDの定count */
@@ -54,13 +54,13 @@ public class Piece implements Serializable {
 	/** Blockピースの名前 */
 	public static final String[] PIECE_NAMES = {"I","L","O","Z","T","J","S","I1","I2","I3","L3"};
 
-	/** 通常のBlockピースのIDの最大count */
+	/** 通常のBlockピースのIDのMaximumcount */
 	public static final int PIECE_STANDARD_COUNT = 7;
 
-	/** BlockピースのIDの最大count */
+	/** BlockピースのIDのMaximumcount */
 	public static final int PIECE_COUNT = 11;
 
-	/** デフォルトのBlockピースのデータ（X-coordinate） */
+	/**  default のBlockピースの data (X-coordinate) */
 	public static final int[][][] DEFAULT_PIECE_DATA_X = {
 		{{0,1,2,3},{2,2,2,2},{3,2,1,0},{1,1,1,1}},	// I
 		{{2,2,1,0},{2,1,1,1},{0,0,1,2},{0,1,1,1}},	// L
@@ -75,7 +75,7 @@ public class Piece implements Serializable {
 		{{1,0,0  },{0,0,1  },{0,1,1  },{1,1,0  }},	// L3
 	};
 
-	/** デフォルトのBlockピースのデータ（Y-coordinate） */
+	/**  default のBlockピースの data (Y-coordinate) */
 	public static final int[][][] DEFAULT_PIECE_DATA_Y = {
 		{{1,1,1,1},{0,1,2,3},{2,2,2,2},{3,2,1,0}},	// I
 		{{0,1,1,1},{2,2,1,0},{2,1,1,1},{0,0,1,2}},	// L
@@ -90,7 +90,7 @@ public class Piece implements Serializable {
 		{{1,1,0  },{1,0,0  },{0,0,1  },{0,1,1  }},	// L3
 	};
 
-	/** 新スピン bonus用座標データA(X-coordinate) */
+	/** 新スピン bonus用座標 dataA(X-coordinate) */
 	public static final int[][][] SPINBONUSDATA_HIGH_X = {
 		{{1,2,2,1},{1,3,1,3},{1,2,2,1},{0,2,0,2}},	// I
 		{{1,0    },{2,2    },{1,2    },{0,0    }},	// L
@@ -105,7 +105,7 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** 新スピン bonus用座標データA(Y-coordinate) */
+	/** 新スピン bonus用座標 dataA(Y-coordinate) */
 	public static final int[][][] SPINBONUSDATA_HIGH_Y = {
 		{{0,2,0,2},{1,2,2,1},{1,3,1,3},{1,2,2,1}},	// I
 		{{0,0    },{1,0    },{2,2    },{1,2    }},	// L
@@ -120,7 +120,7 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** 新スピン bonus用座標データB(X-coordinate) */
+	/** 新スピン bonus用座標 dataB(X-coordinate) */
 	public static final int[][][] SPINBONUSDATA_LOW_X = {
 		{{-1,4,-1,4},{2,2,2,2},{-1,4,-1,4},{1,1,1,1}},	// I
 		{{2,0    },{0,0    },{0,2    },{2,2    }},	// L
@@ -135,7 +135,7 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** 新スピン bonus用座標データB(Y-coordinate) */
+	/** 新スピン bonus用座標 dataB(Y-coordinate) */
 	public static final int[][][] SPINBONUSDATA_LOW_Y = {
 		{{1,1,1,1},{-1,4,-1,4},{2,2,2,2},{-1,4,-1,4}},	// I
 		{{2,2    },{2,0    },{0,0    },{0,3    }},	// L
@@ -153,16 +153,16 @@ public class Piece implements Serializable {
 	/** Directionの定count */
 	public static final int DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3, DIRECTION_RANDOM = 4;
 
-	/** Directionの最大count */
+	/** DirectionのMaximumcount */
 	public static final int DIRECTION_COUNT = 4;
 
-	/** 相対X位置（4Direction×nBlock） */
+	/** 相対X位置 (4Direction×nBlock) */
 	public int[][] dataX;
 
-	/** 相対Y位置（4Direction×nBlock） */
+	/** 相対Y位置 (4Direction×nBlock) */
 	public int[][] dataY;
 
-	/** ピースを構成するBlock（nBlock） */
+	/** ピースを構成するBlock (nBlock) */
 	public Block[] block;
 
 	/** ID */
@@ -206,8 +206,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param p コピー元
+	 * Copy constructor
+	 * @param p Copy source
 	 */
 	public Piece(Piece p) {
 		copy(p);
@@ -244,8 +244,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * Blockピースのデータを他のPieceからコピー
-	 * @param p コピー元
+	 * Blockピースの dataを他のPieceからコピー
+	 * @param p Copy source
 	 */
 	public void copy(Piece p) {
 		id = p.id;
@@ -377,7 +377,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの経過フレームを変更
+	 * すべてのBlockの経過 frame を変更
 	 * @param elapsedFrames 固定してから経過した frame count
 	 */
 	public void setElapsedFrames(int elapsedFrames) {
@@ -388,7 +388,7 @@ public class Piece implements Serializable {
 
 	/**
 	 * すべてのBlockの暗さまたは明るさを変更
-	 * @param darkness 暗さまたは明るさ（0.03だったら3%暗く、-0.05だったら5%明るい）
+	 * @param darkness 暗さまたは明るさ (0.03だったら3%暗く、-0.05だったら5%明るい）
 	 */
 	public void setDarkness(float darkness) {
 		for(int i = 0; i < block.length; i++) {
@@ -398,7 +398,7 @@ public class Piece implements Serializable {
 
 	/**
 	 * すべてのBlockの透明度を変更
-	 * @param alpha 透明度（1.0fで不透明、0.0fで完全に透明）
+	 * @param alpha 透明度 (1.0fで不透明、0.0fで完全に透明）
 	 */
 	public void setAlpha(float alpha) {
 		for(int i = 0; i < block.length; i++) {
@@ -417,8 +417,8 @@ public class Piece implements Serializable {
 
 	/**
 	 * 相対X位置と相対Y位置をずらす
-	 * @param offsetX X位置補正量の配列（int[DIRECTION_COUNT]）
-	 * @param offsetY Y位置補正量の配列（int[DIRECTION_COUNT]）
+	 * @param offsetX X位置補正量の配列 (int[DIRECTION_COUNT]）
+	 * @param offsetY Y位置補正量の配列 (int[DIRECTION_COUNT]）
 	 */
 	public void applyOffsetArray(int[] offsetX, int[] offsetY) {
 		applyOffsetArrayX(offsetX);
@@ -427,7 +427,7 @@ public class Piece implements Serializable {
 
 	/**
 	 * 相対X位置をずらす
-	 * @param offsetX X位置補正量の配列（int[DIRECTION_COUNT]）
+	 * @param offsetX X位置補正量の配列 (int[DIRECTION_COUNT]）
 	 */
 	public void applyOffsetArrayX(int[] offsetX) {
 		offsetApplied = true;
@@ -442,7 +442,7 @@ public class Piece implements Serializable {
 
 	/**
 	 * 相対Y位置をずらす
-	 * @param offsetY Y位置補正量の配列（int[DIRECTION_COUNT]）
+	 * @param offsetY Y位置補正量の配列 (int[DIRECTION_COUNT]）
 	 */
 	public void applyOffsetArrayY(int[] offsetY) {
 		offsetApplied = true;
@@ -471,7 +471,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * Blockの繋がりデータを更新
+	 * Blockの繋がり dataを更新
 	 */
 	public void updateConnectData() {
 		for(int j = 0; j < getMaxBlock(); j++) {
@@ -646,7 +646,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * フィールドのピースを置く（Big用）
+	 * フィールドのピースを置く (Big用）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
@@ -728,7 +728,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * ピースの当たり判定（Big用）
+	 * ピースの当たり判定 (Big用）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
@@ -939,9 +939,9 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 回転 buttonを押したあとのピースのDirectionを取得
-	 * @param move 回転Direction（-1:左 1:右 2:180度）
-	 * @return 回転 buttonを押したあとのピースのDirection
+	 * rotation buttonを押したあとのピースのDirectionを取得
+	 * @param move rotationDirection (-1:左 1:右 2:180度）
+	 * @return rotation buttonを押したあとのピースのDirection
 	 */
 	public int getRotateDirection(int move) {
 		int rt = direction + move;
@@ -958,10 +958,10 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 回転 buttonを押したあとのピースのDirectionを取得
-	 * @param move 回転Direction（-1:左 1:右 2:180度）
+	 * rotation buttonを押したあとのピースのDirectionを取得
+	 * @param move rotationDirection (-1:左 1:右 2:180度）
 	 * @param dir 元のDirection
-	 * @return 回転 buttonを押したあとのピースのDirection
+	 * @return rotation buttonを押したあとのピースのDirection
 	 */
 	public int getRotateDirection(int move, int dir) {
 		int rt = dir + move;

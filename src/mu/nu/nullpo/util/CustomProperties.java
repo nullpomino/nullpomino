@@ -128,7 +128,7 @@ public class CustomProperties extends Properties {
 	 * byte型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public byte getProperty(String key, byte defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -147,7 +147,7 @@ public class CustomProperties extends Properties {
 	 * short型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public short getProperty(String key, short defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -166,7 +166,7 @@ public class CustomProperties extends Properties {
 	 * int型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public int getProperty(String key, int defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -185,7 +185,7 @@ public class CustomProperties extends Properties {
 	 * long型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public long getProperty(String key, long defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -204,7 +204,7 @@ public class CustomProperties extends Properties {
 	 * float型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public float getProperty(String key, float defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -223,7 +223,7 @@ public class CustomProperties extends Properties {
 	 * double型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public double getProperty(String key, double defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -242,7 +242,7 @@ public class CustomProperties extends Properties {
 	 * char型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
 	 */
 	public char getProperty(String key, char defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -261,7 +261,7 @@ public class CustomProperties extends Properties {
 	 * boolean型のプロパティを取得
 	 * @param key キー
 	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応するboolean型変count（見つからなかったらdefaultValue）
+	 * @return 指定されたキーに対応するboolean型変count (見つからなかったらdefaultValue）
 	 */
 	public boolean getProperty(String key, boolean defaultValue) {
 		String str = getProperty(key, Boolean.toString(defaultValue));

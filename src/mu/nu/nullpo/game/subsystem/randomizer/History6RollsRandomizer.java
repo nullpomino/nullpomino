@@ -34,7 +34,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * 4つの履歴を使うNEXT順生成アルゴリズム（偏り少なめ）
+ * 4つの履歴を使うNEXT順生成アルゴリズム (偏り少なめ）
  */
 public class History6RollsRandomizer implements Randomizer {
 	/*
@@ -75,7 +75,7 @@ public class History6RollsRandomizer implements Randomizer {
 				id = random.nextInt(Piece.PIECE_COUNT);
 			} while(!pieceEnable[id]);
 
-			// 引いたツモが履歴にあったら最大6回引き直し
+			// 引いたツモが履歴にあったらMaximum6回引き直し
 			if((id == history[0]) || (id == history[1]) || (id == history[2]) || (id == history[3])) {
 				for(int j = 0; j < 6; j++) {
 					do {

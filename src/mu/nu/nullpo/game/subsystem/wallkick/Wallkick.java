@@ -41,13 +41,13 @@ public interface Wallkick {
 	 * Wallkickを実行
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param rtDir 使用した回転 button（-1なら左回転、1なら右回転、2なら180度回転）
-	 * @param rtOld 回転前のDirection
-	 * @param rtNew 回転後のDirection
-	 * @param allowUpward trueの場合は上DirectionへのWallkickが可能
+	 * @param rtDir Rotation button used (-1: left rotation, 1: right rotation, 2: 180-degree rotation)
+	 * @param rtOld Direction before rotation
+	 * @param rtNew Direction after rotation
+	 * @param allowUpward If true, upward wallkicks are allowed.
 	 * @param piece 操作中のピース
-	 * @param field Current フィールド
-	 * @param ctrl  button入力状態（nullの場合あり）
+	 * @param field Current field
+	 * @param ctrl Button input状態 (nullの場合あり）
 	 * @return Wallkick結果、nullならWallkickなし
 	 */
 	public WallkickResult executeWallkick(int x, int y, int rtDir, int rtOld, int rtNew, boolean allowUpward, Piece piece, Field field, Controller ctrl);

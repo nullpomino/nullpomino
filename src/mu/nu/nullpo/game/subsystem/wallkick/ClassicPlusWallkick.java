@@ -35,7 +35,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.WallkickResult;
 
 /**
- * ClassicPlusWallkick - I型もWallkickができるクラシックルールなWallkick（旧VersionのCLASSIC3相当）
+ * ClassicPlusWallkick - I型もWallkickができるクラシックルールなWallkick (旧VersionのCLASSIC3相当）
  */
 public class ClassicPlusWallkick implements Wallkick {
 	/*
@@ -45,7 +45,7 @@ public class ClassicPlusWallkick implements Wallkick {
 		int check = 0;
 		if(piece.big) check = 1;
 
-		// 通常のWallkick（I以外）
+		// 通常のWallkick (I以外）
 		if(piece.id != Piece.PIECE_I) {
 			if(checkCollisionKick(piece, x, y, rtNew, field) || (piece.id == Piece.PIECE_I2) || (piece.id == Piece.PIECE_L3)) {
 				int temp = 0;
@@ -85,7 +85,7 @@ public class ClassicPlusWallkick implements Wallkick {
 			}
 		}
 
-		// Iの床蹴り（接地している場合のみ）
+		// Iの床蹴り (接地している場合のみ）
 		if( (piece.id == Piece.PIECE_I) && (allowUpward) && ((rtNew == Piece.DIRECTION_LEFT) || (rtNew == Piece.DIRECTION_RIGHT)) &&
 		    (piece.checkCollision(x, y + 1, field) == true) )
 		{
@@ -144,7 +144,7 @@ public class ClassicPlusWallkick implements Wallkick {
 	}
 
 	/**
-	 * Wallkick可能かどうか調べる（Big用）
+	 * Wallkick可能かどうか調べる (Big用）
 	 * @param piece Blockピース
 	 * @param x X-coordinate
 	 * @param y Y-coordinate

@@ -35,19 +35,19 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * ジョイスティック設定メインメニューのステート
+ * Joystick 設定メインメニューのステート
  */
 public class StateConfigJoystickMainSDL extends BaseStateSDL {
-	/** プレイヤー number */
+	/** Player number */
 	public int player;
 
 	/** カーソル位置 */
 	protected int cursor;
 
-	/** 使用するジョイスティックの number */
+	/** 使用するJoystick の number */
 	protected int joyUseNumber;
 
-	/** ジョイスティックのDirectionキーが反応する閾値 */
+	/** Joystick direction key が反応する閾値 */
 	protected int joyBorder;
 
 	/** アナログスティック無視 */

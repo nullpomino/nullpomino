@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 背景画像の状態
  */
 public class BackgroundStatus implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 2159669210087818385L;
 
 	/** 背景 number */
@@ -43,7 +43,7 @@ public class BackgroundStatus implements Serializable {
 	/** 背景フェード flag */
 	public boolean fadesw;
 
-	/** 背景フェードの状態（falseならフェードアウト、trueならフェードイン） */
+	/** 背景フェードの状態 (falseならフェードアウト、trueならフェードイン) */
 	public boolean fadestat;
 
 	/** 背景フェード用カウンタ */
@@ -53,15 +53,15 @@ public class BackgroundStatus implements Serializable {
 	public int fadebg;
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public BackgroundStatus() {
 		reset();
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param b コピー元
+	 * Copy constructor
+	 * @param b Copy source
 	 */
 	public BackgroundStatus(BackgroundStatus b) {
 		copy(b);
@@ -80,7 +80,7 @@ public class BackgroundStatus implements Serializable {
 
 	/**
 	 * 別のBackgroundStatusからコピー
-	 * @param b コピー元
+	 * @param b Copy source
 	 */
 	public void copy(BackgroundStatus b) {
 		bg = b.bg;

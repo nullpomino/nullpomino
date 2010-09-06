@@ -34,14 +34,14 @@ import sdljava.event.SDLKey;
 import sdljava.joystick.HatState;
 
 /**
- * キー入力状態の管理
+ * キー input 状態の管理
  */
 public class GameKeySDL extends GameKeyDummy {
-	/** キー入力状態（全ステート共通） */
+	/** キー input 状態 (全ステート共通) */
 	public static GameKeySDL gamekey[];
 
 	/**
-	 * 全ステート共通のキー入力状態オブジェクトをInitialization
+	 * 全ステート共通のキー input 状態オブジェクトをInitialization
 	 */
 	public static void initGlobalGameKeySDL() {
 		gamekey = new GameKeySDL[2];
@@ -50,22 +50,22 @@ public class GameKeySDL extends GameKeyDummy {
 	}
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public GameKeySDL() {
 		super();
 	}
 
 	/**
-	 * プレイヤー numberを指定できるConstructor
-	 * @param pl プレイヤー number
+	 * Player numberを指定できるConstructor
+	 * @param pl Player number
 	 */
 	public GameKeySDL(int pl) {
 		super(pl);
 	}
 
 	/**
-	 *  button入力状態を更新
+	 *  button input状態を更新
 	 * @param keyboard キーボードのキーが押されているかどうかの配列
 	 */
 	public void update(boolean[] keyboard) {
@@ -73,12 +73,12 @@ public class GameKeySDL extends GameKeyDummy {
 	}
 
 	/**
-	 *  button入力状態を更新
+	 *  button input状態を更新
 	 * @param keyboard キーボードのキーが押されているかどうかの配列
-	 * @param joyButton ジョイスティックの buttonが押されているかどうかの配列（nullにしても問題なし）
-	 * @param joyX ジョイスティックのX軸の状態
-	 * @param joyY ジョイスティックのY軸の状態
-	 * @param hat ハットスイッチの状態（nullにしても問題なし）
+	 * @param joyButton Joystick の buttonが押されているかどうかの配列 (nullにしても問題なし）
+	 * @param joyX Joystick のX軸の状態
+	 * @param joyY Joystick のY軸の状態
+	 * @param hat ハットスイッチの状態 (nullにしても問題なし）
 	 */
 	public void update(boolean[] keyboard, boolean[] joyButton, int joyX, int joyY, HatState hat) {
 		for(int i = 0; i < MAX_BUTTON; i++) {

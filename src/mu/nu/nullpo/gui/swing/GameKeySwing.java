@@ -31,10 +31,10 @@ package mu.nu.nullpo.gui.swing;
 import mu.nu.nullpo.gui.GameKeyDummy;
 
 /**
- * キー入力状態の管理
+ * キー input 状態の管理
  */
 public class GameKeySwing extends GameKeyDummy {
-	/** キー入力状態（全ステート共通） */
+	/** キー input 状態 (全ステート共通) */
 	public static GameKeySwing gamekey[];
 	
 	/** Button number定count */
@@ -46,7 +46,7 @@ public class GameKeySwing extends GameKeyDummy {
 	public static final int MAX_BUTTON = 15;
 
 	/**
-	 * 全ステート共通のキー入力状態オブジェクトをInitialization
+	 * 全ステート共通のキー input 状態オブジェクトをInitialization
 	 */
 	public static void initGlobalGameKeySwing() {
 		gamekey = new GameKeySwing[2];
@@ -55,7 +55,7 @@ public class GameKeySwing extends GameKeyDummy {
 	}
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public GameKeySwing() {
 		super();
@@ -63,8 +63,8 @@ public class GameKeySwing extends GameKeyDummy {
 	}
 
 	/**
-	 * プレイヤー numberを指定できるConstructor
-	 * @param pl プレイヤー number
+	 * Player numberを指定できるConstructor
+	 * @param pl Player number
 	 */
 	public GameKeySwing(int pl) {
 		super(pl);
@@ -91,7 +91,7 @@ public class GameKeySwing extends GameKeyDummy {
 	}
 	
 	/**
-	 *  buttonの入力状態を設定
+	 *  buttonの input 状態を設定
 	 * @param key Button number
 	 * @param pressed 押している場合はtrue、離した場合はfalse
 	 */

@@ -131,7 +131,7 @@ public class ScoreRaceMode extends DummyMode {
 	private int[][] rankingLines;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -636,7 +636,7 @@ public class ScoreRaceMode extends DummyMode {
 	}
 
 	/*
-	 * 各フレームの終わりの処理
+	 * 各 frame の終わりの処理
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {

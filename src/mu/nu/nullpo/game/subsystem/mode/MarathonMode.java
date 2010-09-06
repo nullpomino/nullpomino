@@ -145,7 +145,7 @@ public class MarathonMode extends DummyMode {
 	private int[][] rankingTime;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {

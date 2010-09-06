@@ -37,25 +37,25 @@ import mu.nu.nullpo.game.play.GameManager;
 import org.apache.log4j.Logger;
 
 /**
- * クライアント(プレイヤー用)
+ * クライアント(Player用)
  */
 public class NetPlayerClient extends NetBaseClient {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetPlayerClient.class);
 
-	/** プレイヤー情報 */
+	/** Player情報 */
 	protected LinkedList<NetPlayerInfo> playerInfoList = new LinkedList<NetPlayerInfo>();
 
 	/** ルーム情報 */
 	protected LinkedList<NetRoomInfo> roomInfoList = new LinkedList<NetRoomInfo>();
 
-	/** 自分のプレイヤー名 */
+	/** 自分のPlayer名 */
 	protected String playerName;
 
 	/** 自分のチーム名 */
 	protected String playerTeam;
 
-	/** 自分のプレイヤー識別 number */
+	/** 自分のPlayer識別 number */
 	protected int playerUID;
 
 	/** サーバーVersion */
@@ -68,7 +68,7 @@ public class NetPlayerClient extends NetBaseClient {
 	protected int observerCount = -1;
 
 	/**
-	 * デフォルトConstructor
+	 *  default Constructor
 	 */
 	public NetPlayerClient() {
 		super();
@@ -95,7 +95,7 @@ public class NetPlayerClient extends NetBaseClient {
 	 * Constructor
 	 * @param host 接続先ホスト
 	 * @param port 接続先ポート number
-	 * @param name プレイヤーの名前
+	 * @param name Playerの名前
 	 */
 	public NetPlayerClient(String host, int port, String name) {
 		super();
@@ -109,7 +109,7 @@ public class NetPlayerClient extends NetBaseClient {
 	 * Constructor
 	 * @param host 接続先ホスト
 	 * @param port 接続先ポート number
-	 * @param name プレイヤーの名前
+	 * @param name Playerの名前
 	 * @param team 所属するチーム名
 	 */
 	public NetPlayerClient(String host, int port, String name, String team) {
@@ -147,7 +147,7 @@ public class NetPlayerClient extends NetBaseClient {
 			playerName = NetUtil.urlDecode(message[1]);
 			playerUID = Integer.parseInt(message[2]);
 		}
-		// プレイヤーリスト
+		// Playerリスト
 		if(message[0].equals("playerlist")) {
 			//playerlist\t[PLAYERS]\t[PLAYERDATA...]
 
@@ -158,7 +158,7 @@ public class NetPlayerClient extends NetBaseClient {
 				playerInfoList.add(p);
 			}
 		}
-		// プレイヤー情報更新/新規プレイヤー
+		// Player情報更新/新規Player
 		if(message[0].equals("playerupdate") || message[0].equals("playernew")) {
 			//playerupdate\t[PLAYERDATA]
 
@@ -172,7 +172,7 @@ public class NetPlayerClient extends NetBaseClient {
 				playerInfoList.set(index, p);
 			}
 		}
-		// プレイヤー切断
+		// Player切断
 		if(message[0].equals("playerlogout")) {
 			//playerlogout\t[PLAYERDATA]
 
@@ -261,9 +261,9 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * 指定した名前のプレイヤーを取得
+	 * 指定した名前のPlayerを取得
 	 * @param name 名前
-	 * @return 指定した名前のプレイヤー情報(いなかったらnull)
+	 * @return 指定した名前のPlayer情報(いなかったらnull)
 	 */
 	public NetPlayerInfo getPlayerInfoByName(String name) {
 		for(NetPlayerInfo pInfo: playerInfoList) {
@@ -275,9 +275,9 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * 指定したIDのプレイヤーを取得
+	 * 指定したIDのPlayerを取得
 	 * @param uid ID
-	 * @return 指定したIDのプレイヤー情報(いなかったらnull)
+	 * @return 指定したIDのPlayer情報(いなかったらnull)
 	 */
 	public NetPlayerInfo getPlayerInfoByUID(int uid) {
 		for(NetPlayerInfo pInfo: playerInfoList) {
@@ -289,7 +289,7 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return プレイヤー情報のリスト
+	 * @return Player情報のリスト
 	 */
 	public LinkedList<NetPlayerInfo> getPlayerInfoList() {
 		return playerInfoList;
@@ -303,14 +303,14 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return Current プレイヤー名
+	 * @return Current Player名
 	 */
 	public String getPlayerName() {
 		return playerName;
 	}
 
 	/**
-	 * @return Current プレイヤーの識別 number
+	 * @return Current Playerの識別 number
 	 */
 	public int getPlayerUID() {
 		return playerUID;

@@ -88,34 +88,34 @@ import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
  * NullpoMino SwingVersion
  */
 public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyListener, UpdateCheckerListener {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
 	/** Log */
 	static Logger log = Logger.getLogger(NullpoMinoSwing.class);
 
-	/** メインウィンドウのフレーム */
+	/** メインウィンドウの frame  */
 	public static NullpoMinoSwing mainFrame;
 
-	/** ゲームウィンドウのフレーム */
+	/** ゲームウィンドウの frame  */
 	public static GameFrame gameFrame;
 
-	/** キーコンフィグ画面のフレーム */
+	/** キーコンフィグ画面の frame  */
 	public static KeyConfigFrame keyConfigFrame;
 
-	/** ルール選択画面のフレーム */
+	/** ルール選択画面の frame  */
 	public static RuleSelectFrame ruleSelectFrame;
 
-	/** AI選択画面のフレーム */
+	/** AI選択画面の frame  */
 	public static AISelectFrame aiSelectFrame;
 
-	/** その他の設定画面のフレーム */
+	/** その他の設定画面の frame  */
 	public static GeneralConfigFrame generalConfigFrame;
 
-	/** チューニング設定画面のフレーム */
+	/** チューニング設定画面の frame  */
 	public static GameTuningFrame gameTuningFrame;
 
-	/** 更新 check 設定画面のフレーム */
+	/** 更新 check 設定画面の frame  */
 	public static UpdateCheckFrame updateCheckFrame;
 
 	/** プログラムに渡されたコマンドLines引count */
@@ -124,7 +124,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** 設定保存用Property file */
 	public static CustomProperties propConfig;
 
-	/** 設定保存用Property file（全Version共通） */
+	/** 設定保存用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
 	/** オブザーバー機能用Property file */
@@ -252,7 +252,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列（無いならそのままstrを返す）
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	public static String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -805,7 +805,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 	/**
 	 * リプレイを読み込んで再生
-	 * @param filename リプレイデータのファイル名
+	 * @param filename リプレイ dataのファイル名
 	 */
 	public void startReplayGame(String filename) {
 		log.info("Loading Replay:" + filename);
@@ -855,7 +855,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[i].wallkick = wallkickObject;
 			}
 
-			// AI（リプレイ追記用）
+			// AI (リプレイ追記用）
 			String aiName = propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
 				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);

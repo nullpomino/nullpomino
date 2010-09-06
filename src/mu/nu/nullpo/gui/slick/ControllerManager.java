@@ -36,32 +36,32 @@ import org.lwjgl.input.Controllers;
 import org.newdawn.slick.Input;
 
 /**
- * ジョイスティック関連の処理
+ * Joystick 関連の処理
  */
 public class ControllerManager {
 	/** Log */
 	static Logger log = Logger.getLogger(ControllerManager.class);
 
-	/** 最小/最大 buttoncount */
+	/** 最小/Maximum buttoncount */
 	public static final int MIN_BUTTONS = 3, MAX_BUTTONS = 100;
 
-	/** ジョイスティック状態検出法の定count */
+	/** Joystick 状態検出法の定count */
 	public static final int CONTROLLER_METHOD_NONE = 0,
 							CONTROLLER_METHOD_SLICK_DEFAULT = 1,
 							CONTROLLER_METHOD_SLICK_ALTERNATE = 2,
 							CONTROLLER_METHOD_LWJGL = 3,
 							CONTROLLER_METHOD_MAX = 4;
 
-	/** ジョイスティック状態検出法 */
+	/** Joystick 状態検出法 */
 	public static int method = CONTROLLER_METHOD_SLICK_DEFAULT;
 
-	/** ジョイスティックの状態 */
+	/** Joystick の状態 */
 	public static ArrayList<Controller> controllers;
 
-	/** 各プレイヤーが使用するジョイスティックの number */
+	/** 各Playerが使用するJoystick の number */
 	public static int[] controllerID;
 
-	/** ジョイスティックのDirectionキーが反応する閾値（一部検出法では使えない） */
+	/** Joystick direction key が反応する閾値 (一部検出法では使えない) */
 	public static float[] border;
 
 	/** アナログスティック無視 */
@@ -100,8 +100,8 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックのcountを取得
-	 * @return ジョイスティックのcount
+	 * Joystick のcountを取得
+	 * @return Joystick のcount
 	 */
 	public static int getControllerCount() {
 		if(controllers == null) return 0;
@@ -109,9 +109,9 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの上を押しているとtrue
-	 * @param player プレイヤー number
-	 * @param input Inputクラス（container.getInput()で取得可能）
+	 * Joystick の上を押しているとtrue
+	 * @param player Player number
+	 * @param input Inputクラス (container.getInput()で取得可能）
 	 * @return 上を押しているとtrue
 	 */
 	public static boolean isControllerUp(int player, Input input) {
@@ -134,9 +134,9 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの下を押しているとtrue
-	 * @param player プレイヤー number
-	 * @param input Inputクラス（container.getInput()で取得可能）
+	 * Joystick の下を押しているとtrue
+	 * @param player Player number
+	 * @param input Inputクラス (container.getInput()で取得可能）
 	 * @return 下を押しているとtrue
 	 */
 	public static boolean isControllerDown(int player, Input input) {
@@ -159,9 +159,9 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの左を押しているとtrue
-	 * @param player プレイヤー number
-	 * @param input Inputクラス（container.getInput()で取得可能）
+	 * Joystick の左を押しているとtrue
+	 * @param player Player number
+	 * @param input Inputクラス (container.getInput()で取得可能）
 	 * @return 左を押しているとtrue
 	 */
 	public static boolean isControllerLeft(int player, Input input) {
@@ -184,9 +184,9 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの右を押しているとtrue
-	 * @param player プレイヤー number
-	 * @param input Inputクラス（container.getInput()で取得可能）
+	 * Joystick の右を押しているとtrue
+	 * @param player Player number
+	 * @param input Inputクラス (container.getInput()で取得可能）
 	 * @return 右を押しているとtrue
 	 */
 	public static boolean isControllerRight(int player, Input input) {
@@ -209,9 +209,9 @@ public class ControllerManager {
 	}
 
 	/**
-	 * ジョイスティックの特定の buttonが押されているならtrue
-	 * @param player プレイヤー number
-	 * @param input Inputクラス（container.getInput()で取得可能）
+	 * Joystick の特定の buttonが押されているならtrue
+	 * @param player Player number
+	 * @param input Inputクラス (container.getInput()で取得可能）
 	 * @param button Button number
 	 * @return 指定した buttonが押されているとtrue
 	 */

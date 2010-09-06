@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 音楽の再生状況を管理するクラス
  */
 public class BGMStatus implements Serializable {
-	/** シリアルVersionID */
+	/** Serial version ID */
 	private static final long serialVersionUID = -1003092972570497408L;
 
 	/** 音楽の定count */
@@ -56,13 +56,13 @@ public class BGMStatus implements Serializable {
 							BGM_SPECIAL3 = 14,
 							BGM_SPECIAL4 = 15;
 
-	/** 音楽の最大count */
+	/** 音楽のMaximumcount */
 	public static final int BGM_COUNT = 16;
 
 	/** Current BGM number */
 	public int bgm;
 
-	/** 音量（1f=100%、0.5f=50%） */
+	/** 音量 (1f=100%、0.5f=50%) */
 	public float volume;
 
 	/** BGMフェードアウトスイッチ */
@@ -76,8 +76,8 @@ public class BGMStatus implements Serializable {
 	}
 
 	/**
-	 * コピーConstructor
-	 * @param b コピー元
+	 * Copy constructor
+	 * @param b Copy source
 	 */
 	public BGMStatus(BGMStatus b) {
 		copy(b);
@@ -94,7 +94,7 @@ public class BGMStatus implements Serializable {
 
 	/**
 	 * 他のBGMStatusからコピー
-	 * @param b コピー元
+	 * @param b Copy source
 	 */
 	public void copy(BGMStatus b) {
 		bgm = b.bgm;

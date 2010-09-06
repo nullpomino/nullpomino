@@ -243,10 +243,10 @@ public class SPFMode extends DummyMode {
 	/** マップセットのProperty file */
 	private CustomProperties[] propMap;
 
-	/** 最大マップ number */
+	/** Maximumマップ number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用フィールド（マップをリプレイに保存するときに使用） */
+	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
 	private Field[] fldBackup;
 
 	/** マップ選択用乱count */
@@ -295,7 +295,7 @@ public class SPFMode extends DummyMode {
 	private boolean[] countdownDecremented;
 	
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {
@@ -457,7 +457,7 @@ public class SPFMode extends DummyMode {
 	/**
 	 * プレビュー用にマップを読み込み
 	 * @param engine GameEngine
-	 * @param playerID プレイヤー number
+	 * @param playerID Player number
 	 * @param id マップID
 	 * @param forceReload trueにするとマップファイルを強制再読み込み
 	 */
@@ -847,7 +847,7 @@ public class SPFMode extends DummyMode {
 		}
 	}
 	/*
-	 * Readyの時のInitialization処理（Initialization前）
+	 * Readyの時のInitialization処理 (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {

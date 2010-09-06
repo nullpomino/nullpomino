@@ -50,7 +50,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	/** このステートのID */
 	public static final int ID = 4;
 
-	/** 1画面に表示する最大ファイルcount */
+	/** 1画面に表示するMaximumファイルcount */
 	public static final int PAGE_HEIGHT = 20;
 
 	/** Log */

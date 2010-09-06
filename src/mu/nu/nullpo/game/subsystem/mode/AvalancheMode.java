@@ -103,7 +103,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {

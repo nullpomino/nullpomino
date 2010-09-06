@@ -49,10 +49,10 @@ public class ToolVSMapEditMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** マップデータの入ったProperty file */
+	/** マップ dataの入ったProperty file */
 	private CustomProperties propMap;
 
-	/** Current マップファイルに入っている全フィールドデータ */
+	/** Current マップファイルに入っている全フィールド data */
 	private LinkedList<Field> listFields;
 
 	/** Current マップセットID */
@@ -62,7 +62,7 @@ public class ToolVSMapEditMode extends DummyMode {
 	private int nowMapID;
 
 	/*
-	 * Mode  name
+	 * Mode name
 	 */
 	@Override
 	public String getName() {

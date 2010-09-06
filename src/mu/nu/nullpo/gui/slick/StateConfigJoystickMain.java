@@ -38,16 +38,16 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * ジョイスティック設定メインメニューのステート
+ * Joystick 設定メインメニューのステート
  */
 public class StateConfigJoystickMain extends BasicGameState {
 	/** このステートのID */
 	public static final int ID = 12;
 
-	/** キー入力を受付可能になるまでの frame count */
+	/** キー input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
-	/** プレイヤー number */
+	/** Player number */
 	public int player = 0;
 
 	/** カーソル位置 */
@@ -56,10 +56,10 @@ public class StateConfigJoystickMain extends BasicGameState {
 	/** スクリーンショット撮影 flag */
 	protected boolean ssflag = false;
 
-	/** 使用するジョイスティックの number */
+	/** 使用するJoystick の number */
 	protected int joyUseNumber;
 
-	/** ジョイスティックのDirectionキーが反応する閾値 */
+	/** Joystick direction key が反応する閾値 */
 	protected int joyBorder;
 
 	/** アナログスティック無視 */
@@ -161,7 +161,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 		// TTFフォント描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー入力状態を更新
+		// キー input 状態を更新
 		GameKey.gamekey[0].update(container.getInput());
 
 		// カーソル移動

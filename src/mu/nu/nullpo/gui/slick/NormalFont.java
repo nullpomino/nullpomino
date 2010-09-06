@@ -99,7 +99,7 @@ public class NormalFont {
 			int stringChar = fontStr.charAt(i);
 
 			if(stringChar == 0x0A) {
-				// 改行（\n）
+				// 改行 (\n）
 				if(scale == 1.0f) {
 					dy = dy + 16;
 					dx = fontX;
@@ -139,7 +139,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * 文字列を描画（文字色は白）
+	 * 文字列を描画 (文字色は白）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -176,7 +176,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画（拡大率指定可能）
+	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -194,7 +194,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画（拡大率指定可能）
+	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -207,7 +207,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * 文字列を描画（16x16のグリッド単位）
+	 * 文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -218,7 +218,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * 文字列を描画（16x16のグリッド単位・文字色は白）
+	 * 文字列を描画 (16x16のグリッド単位・文字色は白）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -228,7 +228,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画（16x16のグリッド単位）
+	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -241,7 +241,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画（16x16のグリッド単位）
+	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列

@@ -50,10 +50,10 @@ public class GemManiaMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
-	/** 最大ステージcount */
+	/** Maximum stage count */
 	private static final int MAX_STAGE_TOTAL = 27;
 
-	/** 通常ステージcount */
+	/** 通常 stage count */
 	private static final int MAX_STAGE_NORMAL = 20;
 
 	/** NEXTリスト */
@@ -86,31 +86,31 @@ public class GemManiaMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** ステージセットのProperty file */
+	/**  stage セットのProperty file */
 	private CustomProperties propStageSet;
 
 	/** 残りプラチナBlockcount */
 	private int rest;
 
-	/** Current ステージ number */
+	/** Current  stage  number */
 	private int stage;
 
-	/** 最終ステージ number */
+	/** 最終 stage  number */
 	private int laststage;
 
-	/** 挑戦したステージcount */
+	/** 挑戦した stage count */
 	private int trystage;
 
-	/** Cleared ステージcount */
+	/** Cleared  stage count */
 	private int clearstage;
 
 	/** クリア率 */
 	private int clearper;
 
-	/** ステージクリア flag */
+	/**  stage クリア flag */
 	private boolean clearflag;
 
-	/** ステージスキップ flag */
+	/**  stage スキップ flag */
 	private boolean skipflag;
 
 	/** 残りリミットTime */
@@ -119,28 +119,28 @@ public class GemManiaMode extends DummyMode {
 	/** スタート時のリミットTime */
 	private int limittimeStart;
 
-	/** 残りステージTime */
+	/** 残り stage Time */
 	private int stagetimeNow;
 
-	/** ステージ開始後の経過 time */
+	/**  stage 開始後の経過 time */
 	private int cleartime;
 
-	/** スタート時のステージTime */
+	/** スタート時の stage Time */
 	private int stagetimeStart;
 
-	/** ステージBGM */
+	/**  stage BGM */
 	private int stagebgm;
 
-	/** Current 落下速度の number（tableGravityChangeLevelの levelに到達するたびに1つ増える） */
+	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
 
-	/** 次のSection の level（これ-1のときに levelストップする） */
+	/** Next Section の level (これ-1のときに levelストップする) */
 	private int nextseclv;
 
-	/**  level */
+	/** Level */
 	private int speedlevel;
 
-	/**  levelが増えた flag */
+	/** Levelが増えた flag */
 	private boolean lvupflag;
 
 	/** Section Time */
@@ -152,7 +152,7 @@ public class GemManiaMode extends DummyMode {
 	/** 今増えたリミットTime秒count display time frame count */
 	private int timeextendDisp;
 
-	/** ステージクリア時に増えたリミットTime秒count */
+	/**  stage クリア時に増えたリミットTime秒count */
 	private int timeextendStageClearSeconds;
 
 	/** Blockを置いた count(1面終了でリセット) */
@@ -161,7 +161,7 @@ public class GemManiaMode extends DummyMode {
 	/** スキップ buttonを押している time */
 	private int skipbuttonPressTime;
 
-	/** Blockピースを置いた count（NEXTピースの計算用）のバックアップ（コンティニュー時に戻す） */
+	/** Blockピースを置いた count (NEXTピースの計算用）のバックアップ (コンティニュー時に戻す) */
 	private int continueNextPieceCount;
 
 	/** コンティニュー画面でNOを選ぶとtrue */
@@ -191,10 +191,10 @@ public class GemManiaMode extends DummyMode {
 	/** Current エディット画面 */
 	private int editModeScreen;
 
-	/** スタート時のステージ */
+	/** スタート時の stage  */
 	private int startstage;
 
-	/** 選択したステージセット */
+	/** 選択した stage セット */
 	private int stageset;
 
 	/** trueなら常にゴーストON */
@@ -224,7 +224,7 @@ public class GemManiaMode extends DummyMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** Rankings' 到達ステージ */
+	/** Rankings' 到達 stage  */
 	private int[][] rankingStage;
 
 	/** Rankings' クリア率 */
@@ -344,7 +344,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージ開始時の処理
+	 *  stage 開始時の処理
 	 * @param engine GameEngine
 	 */
 	private void startStage(GameEngine engine) {
@@ -374,12 +374,12 @@ public class GemManiaMode extends DummyMode {
 		clearflag = false;
 		skipflag = false;
 
-		// ステージマップ読み込み
+		//  stage マップ読み込み
 		engine.createFieldIfNeeded();
 		loadMap(engine.field, propStageSet, stage);
 		engine.field.setAllSkin(engine.getSkin());
 
-		// ステージTimeなどを設定
+		//  stage Timeなどを設定
 		cleartime = 0;
 		sectiontime[stage] = 0;
 		stagetimeNow = stagetimeStart;
@@ -391,8 +391,8 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージセットを読み込み
-	 * @param id ステージセット number(-1でデフォルト)
+	 *  stage セットを読み込み
+	 * @param id  stage セット number(-1で default )
 	 */
 	private void loadStageSet(int id) {
 		if(id >= 0) {
@@ -407,8 +407,8 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージセットを保存
-	 * @param id ステージセット number(-1でデフォルト)
+	 *  stage セットを保存
+	 * @param id  stage セット number(-1で default )
 	 */
 	private void saveStageSet(int id) {
 		if((propStageSet != null) && (!owner.replayMode)) {
@@ -522,7 +522,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージクリアや time切れの判定
+	 *  stage クリアや time切れの判定
 	 * @param engine GameEngine
 	 */
 	private void checkStageEnd(GameEngine engine) {
@@ -540,9 +540,9 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージ numberをStringで取得
-	 * @param stageNumber ステージ number
-	 * @return ステージ numberの文字列(21面以降はEX扱い)
+	 *  stage  numberをStringで取得
+	 * @param stageNumber  stage  number
+	 * @return  stage  numberの文字列(21面以降はEX扱い)
 	 */
 	private String getStageName(int stageNumber) {
 		if(stageNumber >= MAX_STAGE_NORMAL) {
@@ -621,7 +621,7 @@ public class GemManiaMode extends DummyMode {
 
 			engine.statc[3]++;
 		}
-		// エディットメニュー ステージ画面
+		// エディットメニュー  stage 画面
 		else if(editModeScreen == 2) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
@@ -823,7 +823,7 @@ public class GemManiaMode extends DummyMode {
 
 			receiver.drawMenuFont(engine, playerID, 0, 19, "EXIT-> D+E", EventReceiver.COLOR_ORANGE);
 		} else if(editModeScreen == 2) {
-			// エディットメニュー ステージ画面
+			// エディットメニュー  stage 画面
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 0,
 					"MAP EDIT", "[PUSH A]",
 					"STAGE TIME", GeneralUtil.getTime(stagetimeStart),
@@ -975,7 +975,7 @@ public class GemManiaMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, 0, 14, String.format("%3d", nextseclv));
 
-			// ステージTime
+			//  stage Time
 			if(stagetimeStart > 0) {
 				receiver.drawScoreFont(engine, playerID, 0, 16, "STAGE TIME", EventReceiver.COLOR_PINK);
 				receiver.drawScoreFont(engine, playerID, 0, 17, GeneralUtil.getTime(stagetimeNow),
@@ -1068,7 +1068,7 @@ public class GemManiaMode extends DummyMode {
 			}
 		}
 
-		// ステージTime
+		//  stage Time
 		if(engine.gameActive && engine.timerActive && (stagetimeNow > 0)) {
 			stagetimeNow--;
 
@@ -1132,7 +1132,7 @@ public class GemManiaMode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後のフレーム
+		// 最後の frame 
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(speedlevel < nextseclv - 1) {
 				speedlevel++;
@@ -1176,7 +1176,7 @@ public class GemManiaMode extends DummyMode {
 			if(speedlevel > 998) {
 				speedlevel = 998;
 			} else if(speedlevel >= nextseclv) {
-				// 次のSection 
+				// Next Section 
 				engine.playSE("levelup");
 
 				// 背景切り替え
@@ -1215,22 +1215,22 @@ public class GemManiaMode extends DummyMode {
 			engine.interruptItemNumber = GameEngine.INTERRUPTITEM_MIRROR;
 		}
 
-		// ステージ終了判定
+		//  stage 終了判定
 		if(lines <= 0) checkStageEnd(engine);
 	}
 
 	/**
-	 * ステージ終了画面の描画
+	 *  stage 終了画面の描画
 	 */
 	@Override
 	public boolean onCustom(GameEngine engine, int playerID) {
-		// 最初のフレームの処理
+		// 最初の frame の処理
 		if(engine.statc[0] == 0) {
 			// 効果音
 			if(clearflag) engine.playSE("stageclear");
 			else engine.playSE("stagefail");
 
-			// Cleared ステージ+1
+			// Cleared  stage +1
 			if(clearflag) clearstage++;
 
 			// クリア率計算
@@ -1248,10 +1248,10 @@ public class GemManiaMode extends DummyMode {
 				timeextendStageClearSeconds = 30;
 			}
 
-			// 最終ステージを決定
+			// 最終 stage を決定
 			if(stage == MAX_STAGE_NORMAL - 1) {
 				if(clearper < 90)
-					laststage = 19;	// クリア率が90%に満たない場合はステージ20で終了
+					laststage = 19;	// クリア率が90%に満たない場合は stage 20で終了
 				else if(clearper < 100)
 					laststage = 22;	// クリア率が90～99%はEX3まで
 				else if(engine.statistics.time > 5 * 3600)
@@ -1312,7 +1312,7 @@ public class GemManiaMode extends DummyMode {
 			if(limittimeTemp <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 		}
 
-		// 次の画面へ
+		// Next 画面へ
 		if((engine.statc[0] >= 300) || (engine.ctrl.isPush(Controller.BUTTON_A))) {
 			// トレーニング
 			if(trainingType != 0) {
@@ -1331,7 +1331,7 @@ public class GemManiaMode extends DummyMode {
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				engine.resetStatc();
 			}
-			// 次のステージ
+			// Next  stage 
 			else {
 				stage++;
 				if(clearflag) limittimeNow += timeextendStageClearSeconds * 60;
@@ -1348,7 +1348,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/**
-	 * ステージ終了画面の描画
+	 *  stage 終了画面の描画
 	 */
 	@Override
 	public void renderCustom(GameEngine engine, int playerID) {
@@ -1486,7 +1486,7 @@ public class GemManiaMode extends DummyMode {
 	}
 
 	/*
-	 * ゲームオーバー時の描画処理(主にコンティニュー画面)
+	 * game over時の描画処理(主にコンティニュー画面)
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1636,7 +1636,7 @@ public class GemManiaMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param type Game type
-	 * @param stg ステージ
+	 * @param stg  stage 
 	 * @param clper クリア率
 	 * @param time Time
 	 * @param clear 完全クリア flag
@@ -1664,7 +1664,7 @@ public class GemManiaMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param type Game type
-	 * @param stg ステージ
+	 * @param stg  stage 
 	 * @param clper クリア率
 	 * @param time Time
 	 * @param clear 完全クリア flag
