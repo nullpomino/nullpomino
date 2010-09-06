@@ -144,7 +144,7 @@ public class RuleOptions implements Serializable {
 	/** 接地状態でSoft dropすると即固定 */
 	public boolean softdropSurfaceLock;
 
-	/** Soft drop速度 (1.0f=1G、0.5f=0.5G) */
+	/** Soft drop速度 (1.0f=1G, 0.5f=0.5G) */
 	public float softdropSpeed;
 
 	/** Soft drop速度をCurrent 通常速度×n倍にする */
@@ -165,7 +165,7 @@ public class RuleOptions implements Serializable {
 	/** 上DirectionへのWallkickができる count (-1:無限) */
 	public int rotateMaxUpwardWallkick;
 
-	/** falseなら左が正rotation、trueなら右が正rotation */
+	/** falseなら左が正rotation, trueなら右が正rotation */
 	public boolean rotateButtonDefaultRight;
 
 	/** 逆rotationを許可 (falseなら正rotationと同じ) */
@@ -203,13 +203,13 @@ public class RuleOptions implements Serializable {
 
 	/** Line clear前にBlockが光る frame を入れる */
 	public boolean lockflashBeforeLineClear;
-	
+
 	/** ARE cancel on move */
 	public boolean areCancelMove;
-	
+
 	/** ARE cancel on rotate*/
 	public boolean areCancelRotate;
-	
+
 	/** ARE cancel on hold*/
 	public boolean areCancelHold;
 
@@ -232,7 +232,7 @@ public class RuleOptions implements Serializable {
 	public int dasDelay;
 
 	public boolean shiftLockEnable;
-	
+
 	/** Ready画面で横溜め可能 */
 	public boolean dasInReady;
 
@@ -253,13 +253,13 @@ public class RuleOptions implements Serializable {
 
 	/** Ending突入画面で横溜め可能 */
 	public boolean dasInEndingStart;
-	
+
 	/** Charge DAS on blocked move */
 	public boolean dasChargeOnBlockedMove;
-	
+
 	/** Leave DAS charge alone when left/right are not held -- useful with dasRedirectInDelay **/
    public boolean dasStoreChargeOnNeutral;
-   
+
    /** Allow direction changes during delays without zeroing DAS charge **/
    public boolean dasRedirectInDelay;
 
@@ -280,13 +280,13 @@ public class RuleOptions implements Serializable {
 
 	/** Line clear後に上のBlockが1段ずつ落ちるアニメーションを表示 */
 	public boolean lineFallAnim;
-	
+
 	/** Line delay cancel on move */
 	public boolean lineCancelMove;
-	
+
 	/** Line delay cancel on rotate */
 	public boolean lineCancelRotate;
-	
+
 	/** Line delay cancel on hold */
 	public boolean lineCancelHold;
 
@@ -407,7 +407,7 @@ public class RuleOptions implements Serializable {
 		dasDelay = 0;
 
 		shiftLockEnable = false;
-		
+
 		dasInReady = true;
 		dasInMoveFirstFrame = true;
 		dasInLockFlash = true;
@@ -530,7 +530,7 @@ public class RuleOptions implements Serializable {
 		dasDelay = r.dasDelay;
 
 		shiftLockEnable = r.shiftLockEnable;
-		
+
 		dasInReady = r.dasInReady;
 		dasInMoveFirstFrame = r.dasInMoveFirstFrame;
 		dasInLockFlash = r.dasInLockFlash;
@@ -558,7 +558,7 @@ public class RuleOptions implements Serializable {
 	}
 
 	/**
-	 * 他のルールと比較し、同じならtrueを返す
+	 * 他のルールと比較し, 同じならtrueを返す
 	 * @param r 比較するルール
 	 * @param ignoreGraphicsSetting trueにするとゲーム自体に影響しない設定を無視
 	 * @return 比較したルールと同じならtrue
@@ -645,8 +645,8 @@ public class RuleOptions implements Serializable {
 		if(maxDAS != r.maxDAS) return false;
 
 		if(dasDelay != r.dasDelay) return false;
-		
-		if(shiftLockEnable != r.shiftLockEnable) return false; 
+
+		if(shiftLockEnable != r.shiftLockEnable) return false;
 
 		if(dasInReady != r.dasInReady) return false;
 		if(dasInMoveFirstFrame != r.dasInMoveFirstFrame) return false;
@@ -763,7 +763,7 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.maxDAS", maxDAS);
 
 		p.setProperty(id + ".ruleopt.dasDelay", dasDelay);
-		
+
 		p.setProperty(id + ".ruleopt.shiftLockEnable", shiftLockEnable);
 
 		p.setProperty(id + ".ruleopt.dasInReady", dasInReady);

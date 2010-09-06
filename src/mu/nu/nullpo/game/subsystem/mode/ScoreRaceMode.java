@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * SCORE RACEMode 
+ * SCORE RACEMode
  */
 public class ScoreRaceMode extends DummyMode {
 	/** Current version */
@@ -374,7 +374,7 @@ public class ScoreRaceMode extends DummyMode {
 				strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
 			}
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 10,
-					"SPIN BONUS", strTSpinEnable, 
+					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo));
@@ -385,7 +385,7 @@ public class ScoreRaceMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理
+	 * Readyの時のCalled at initialization
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {

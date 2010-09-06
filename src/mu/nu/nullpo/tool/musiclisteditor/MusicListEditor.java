@@ -71,7 +71,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	/** Log */
 	static final Logger log = Logger.getLogger(MusicListEditor.class);
 
-	/** Swing版の設定保存用Property file */
+	/** Swing版のSave settings用Property file */
 	private CustomProperties propConfig;
 
 	/** Default language file */
@@ -83,7 +83,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	/** 音楽リストが含まれるProperty file */
 	private CustomProperties propMusic;
 
-	/** 音楽のファイル名用テキストボックス */
+	/** 音楽のFilename用テキストボックス */
 	private JTextField[] txtfldMusicFileNames;
 
 	/** ループなし check ボックス */
@@ -285,7 +285,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * メニュー実行時の処理
+	 * Menu 実行時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().startsWith("OpenFileDialog")) {
@@ -370,7 +370,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ポップアップメニュー
+	 * ポップアップMenu
 	 * <a href="http://terai.xrea.jp/Swing/DefaultEditorKit.html">出展</a>
 	 */
 	private class TextFieldPopupMenu extends JPopupMenu {

@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * DIG RACEMode 
+ * DIG RACEMode
  */
 public class DigRaceMode extends DummyMode {
 	/** Current version */
@@ -307,7 +307,7 @@ public class DigRaceMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理
+	 * Readyの時のCalled at initialization
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -464,7 +464,7 @@ public class DigRaceMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param time Time
-	 * @param piece ピースcount
+	 * @param piece Piececount
 	 */
 	private void updateRanking(int time, int lines, int piece) {
 		rankingRank = checkRanking(time, lines, piece);
@@ -487,7 +487,7 @@ public class DigRaceMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param time Time
-	 * @param piece ピースcount
+	 * @param piece Piececount
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int time, int lines, int piece) {

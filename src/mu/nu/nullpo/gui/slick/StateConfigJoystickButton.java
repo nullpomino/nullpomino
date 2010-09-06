@@ -36,13 +36,13 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * Joystick  button設定画面のステート
+ * Joystick button設定画面のステート
  */
 public class StateConfigJoystickButton extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 10;
 
-	/** キー input を受付可能になるまでの frame count */
+	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
@@ -54,17 +54,17 @@ public class StateConfigJoystickButton extends BasicGameState {
 	/** 使用するJoystick の number */
 	protected int joyNumber;
 
-	/** 現在設定中の button */
+	/** Number of button currently being configured */
 	protected int keynum;
 
 	/** 経過 frame count */
 	protected int frame;
 
-	/**  button設定 */
+	/** Button settings */
 	protected int buttonmap[];
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -72,7 +72,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/**
-	 *  button設定をInitialization
+	 * Button settings initialization
 	 */
 	protected void reset() {
 		keynum = 4;
@@ -88,14 +88,14 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		gameObj = game;
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
@@ -146,7 +146,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 
 		frame++;
 
-		// Joystick  button判定
+		// Joystick button判定
 		if(frame >= KEYACCEPTFRAME) {
 			for(int i = 0; i < ControllerManager.MAX_BUTTONS; i++) {
 				try {
@@ -163,7 +163,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/*
-	 * キーを押したときの処理
+	 * Called when a key is pressed
 	 */
 	@Override
 	public void keyPressed(int key, char c) {
@@ -207,7 +207,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/**
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -215,7 +215,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 	}
 
 	/**
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {

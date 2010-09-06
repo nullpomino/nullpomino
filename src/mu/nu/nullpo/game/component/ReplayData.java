@@ -40,10 +40,10 @@ public class ReplayData implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 737226985994393117L;
 
-	/**  button input dataの default の長さ */
+	/** Button input dataの default の長さ */
 	public static final int DEFAULT_ARRAYLIST_SIZE = 60 * 60 * 10;
 
-	/**  button input data */
+	/** Button input data */
 	public ArrayList<Integer> inputDataArray;
 
 	/**

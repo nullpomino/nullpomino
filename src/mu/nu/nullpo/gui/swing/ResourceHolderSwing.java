@@ -42,28 +42,28 @@ import org.apache.log4j.Logger;
  * 画像や音声の管理をするクラス
  */
 public class ResourceHolderSwing {
-	/** 背景のcount */
+	/** Backgroundのcount */
 	public static final int BACKGROUND_MAX = 20;
 
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolderSwing.class);
 
-	/** Blockの画像 */
+	/** Block images */
 	public static Image imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊Blockの画像 - old */
+	/** 特殊Block images - old */
 	//public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
-	/** 通常のフォント */
+	/** Regular font */
 	public static Image imgFont, imgFontSmall;
 
-	/** フィールドの枠 */
+	/** Field frame */
 	public static Image imgFrame;
 
-	/** フィールドの背景 */
+	/** Field background */
 	public static Image imgFieldbg;
 
-	/** プレイ中の背景 */
+	/** プレイ中のBackground */
 	public static Image[] imgPlayBG;
 
 	/** 音声ファイル管理 */
@@ -93,7 +93,7 @@ public class ResourceHolderSwing {
 			loadBackgroundImages();
 		}
 
-		// 効果音
+		// Sound effects
 		soundManager = new WaveEngine();
 		if(NullpoMinoSwing.propConfig.getProperty("option.se", true) == true) {
 			soundManager.load("cursor", skindir + "/se/cursor.wav");
@@ -202,7 +202,7 @@ public class ResourceHolderSwing {
 
 	/**
 	 * リソースファイルのURLを返す
-	 * @param str ファイル名
+	 * @param str Filename
 	 * @return リソースファイルのURL
 	 */
 	public static URL getURL(String str) {

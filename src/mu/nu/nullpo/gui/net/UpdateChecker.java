@@ -77,7 +77,7 @@ public class UpdateChecker implements Runnable {
 
 	/**
 	 * XMLをダウンロードしてVersion numberなどを取得
-	 * @return 成功したらtrue
+	 * @return true if successful
 	 */
 	private static boolean checkUpdate() {
 		try {
@@ -194,7 +194,7 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * Version check 
+	 * Version check
 	 * @param strURL 最新版の情報が入ったXMLファイルのURL(nullまたは空文字列にすると default 値を使う)
 	 */
 	public static void startCheckForUpdates(String strURL) {
@@ -279,7 +279,7 @@ public class UpdateChecker implements Runnable {
 	/**
 	 * イベントリスナーを削除
 	 * @param l 削除するイベントリスナー
-	 * @return 削除されたらtrue、最初から登録されていなかったらfalse
+	 * @return 削除されたらtrue, 最初から登録されていなかったらfalse
 	 */
 	public static boolean removeListener(UpdateCheckerListener l) {
 		if(listeners == null) {
@@ -300,7 +300,7 @@ public class UpdateChecker implements Runnable {
 			}
 		}
 
-		// 更新 check 
+		// 更新 check
 		if(checkUpdate() == true) {
 			status = STATUS_COMPLETE;
 		} else {

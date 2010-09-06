@@ -43,7 +43,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 public class AvalancheVSMode extends AvalancheVSDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Chain multipliers in Fever */
 	private static final int[] FEVER_POWERS = {
 		4, 10, 18, 21, 29, 46, 76, 113, 150, 223, 259, 266, 313, 364, 398, 432, 468, 504, 540, 576, 612, 648, 684, 720 //Arle
@@ -576,7 +576,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_GREEN, 38,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 5/5", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
@@ -585,7 +585,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {
@@ -685,7 +685,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			drawX(engine, playerID);
 		if (ojamaHard[playerID] > 0)
 			drawHardOjama(engine, playerID);
-		
+
 		super.renderLast(engine, playerID);
 
 	}
@@ -697,15 +697,15 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		else
 			return powers[chain-1];
 	}
-	
+
 	protected void onClear(GameEngine engine, int playerID) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		
+
 		if (chain[playerID] == 1)
 			ojamaAddToFever[enemyID] = inFever[enemyID];
 	}
-	
+
 	protected void addOjama(GameEngine engine, int playerID, int pts) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;

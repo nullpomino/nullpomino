@@ -82,10 +82,10 @@ public class Controller implements Serializable {
 							BUTTON_BIT_E = 256,
 							BUTTON_BIT_F = 512;
 
-	/**  buttonを押した状態ならtrue */
+	/** Buttonを押した状態ならtrue */
 	public boolean[] buttonPress;
 
-	/**  buttonを押しっぱなしにしている time */
+	/** Buttonを押しっぱなしにしている time */
 	public int[] buttonTime;
 
 	/**
@@ -151,7 +151,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 * メニューでカーソルが動くかどうか判定
+	 * Menu でカーソルが動くかどうか判定
 	 * @param key Button number
 	 * @return カーソルが動くならtrue
 	 */
@@ -160,7 +160,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 * メニューでカーソルが動くかどうか判定
+	 * Menu でカーソルが動くかどうか判定
 	 * @param key Button number
 	 * @param enableCButton C buttonでの高速移動許可
 	 * @return カーソルが動くならtrue
@@ -194,7 +194,7 @@ public class Controller implements Serializable {
 	/**
 	 *  buttonを押した状態を設定
 	 * @param key Button number
-	 * @param pressed trueなら押した、falseなら押してない
+	 * @param pressed trueなら押した, falseなら押してない
 	 */
 	public void setButtonState(int key, boolean pressed) {
 		if((key >= 0) && (key < buttonPress.length)) buttonPress[key] = pressed;

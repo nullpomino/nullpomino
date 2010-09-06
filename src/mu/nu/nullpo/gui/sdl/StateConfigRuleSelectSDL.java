@@ -48,7 +48,7 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	/** Player ID */
 	public int player = 0;
 
-	/** 初期設定Mode  */
+	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
 	/** ファイルパス一覧 */
@@ -62,7 +62,7 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 
 	/** Current Rule name */
 	protected String strCurrentRuleName;
-	
+
 	public StateConfigRuleSelectSDL() {
 		pageHeight = PAGE_HEIGHT;
 		nullError = "RULE DIRECTORY NOT FOUND";
@@ -71,7 +71,7 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 
 	/**
 	 * ルールファイル一覧を取得
-	 * @return ルールファイルのファイル名の配列。ディレクトリがないならnull
+	 * @return ルールファイルのFilenameの配列。ディレクトリがないならnull
 	 */
 	protected String[] getRuleFileList() {
 		File dir = new File("config/rule");
@@ -112,7 +112,7 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -153,7 +153,7 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 			NormalFontSDL.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
 		super.render(screen);
 	}
-	
+
 	@Override
 	protected boolean onDecide() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
@@ -166,13 +166,13 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean onCancel() throws SDLException {
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean onPushButtonD() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");

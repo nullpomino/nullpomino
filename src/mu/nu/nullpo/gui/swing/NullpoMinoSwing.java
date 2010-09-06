@@ -70,7 +70,6 @@ import mu.nu.nullpo.game.net.NetObserverClient;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
@@ -94,40 +93,40 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** Log */
 	static Logger log = Logger.getLogger(NullpoMinoSwing.class);
 
-	/** メインウィンドウの frame  */
+	/** メインウィンドウの frame */
 	public static NullpoMinoSwing mainFrame;
 
-	/** ゲームウィンドウの frame  */
+	/** ゲームウィンドウの frame */
 	public static GameFrame gameFrame;
 
-	/** キーコンフィグ画面の frame  */
+	/** キーコンフィグ画面の frame */
 	public static KeyConfigFrame keyConfigFrame;
 
-	/** ルール選択画面の frame  */
+	/** ルール選択画面の frame */
 	public static RuleSelectFrame ruleSelectFrame;
 
-	/** AI選択画面の frame  */
+	/** AI選択画面の frame */
 	public static AISelectFrame aiSelectFrame;
 
-	/** その他の設定画面の frame  */
+	/** その他の設定画面の frame */
 	public static GeneralConfigFrame generalConfigFrame;
 
-	/** チューニング設定画面の frame  */
+	/** チューニング設定画面の frame */
 	public static GameTuningFrame gameTuningFrame;
 
-	/** 更新 check 設定画面の frame  */
+	/** 更新 check 設定画面の frame */
 	public static UpdateCheckFrame updateCheckFrame;
 
 	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
-	/** 設定保存用Property file */
+	/** Save settings用Property file */
 	public static CustomProperties propConfig;
 
-	/** 設定保存用Property file (全Version共通) */
+	/** Save settings用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
-	/** オブザーバー機能用Property file */
+	/** Observer機能用Property file */
 	public static CustomProperties propObserver;
 
 	/** Default language file */
@@ -160,7 +159,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** ロビー画面 */
 	public static NetLobbyFrame netLobby;
 
-	/** オブザーバークライアント */
+	/** Observerクライアント */
 	public static NetObserverClient netObserverClient;
 
 	/** Mode セレクト画面のラベル(新Versionがある場合は切り替わる) */
@@ -219,7 +218,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			in.close();
 		} catch(IOException e) {}
 
-		// キーボード設定読み込み
+		// キーボードLoad settings
 		GameKeySwing.initGlobalGameKeySwing();
 		GameKeySwing.gamekey[0].loadConfig(propConfig);
 		GameKeySwing.gamekey[1].loadConfig(propConfig);
@@ -287,7 +286,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * テキストフィールドからint型の値を取得
 	 * @param value テキストフィールドから値の取得に失敗したときの値
 	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値、失敗したらvalueをそのまま返す
+	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
 	 */
 	public static int getIntTextField(int value, JTextField txtfld) {
 		int v = value;
@@ -303,7 +302,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * テキストフィールドからdouble型の値を取得
 	 * @param value テキストフィールドから値の取得に失敗したときの値
 	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値、失敗したらvalueをそのまま返す
+	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
 	 */
 	public static double getDoubleTextField(double value, JTextField txtfld) {
 		double v = value;
@@ -319,7 +318,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * テキストフィールドからfloat型の値を取得
 	 * @param value テキストフィールドから値の取得に失敗したときの値
 	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値、失敗したらvalueをそのまま返す
+	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
 	 */
 	public static float getFloatTextField(float value, JTextField txtfld) {
 		float v = value;
@@ -333,7 +332,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 	/**
 	 * Constructor
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public NullpoMinoSwing() throws HeadlessException {
 		super();
@@ -462,13 +461,13 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * メニューのInitialization
+	 * Menu のInitialization
 	 */
 	protected void initMenu() {
 		JMenuBar menubar = new JMenuBar();
 		this.setJMenuBar(menubar);
 
-		// ファイルメニュー
+		// ファイルMenu
 		JMenu menuFile = new JMenu(getUIText("Menu_File"));
 		menuFile.setMnemonic('F');
 		menubar.add(menuFile);
@@ -494,7 +493,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		miExit.setActionCommand("Menu_Exit");
 		menuFile.add(miExit);
 
-		// 設定メニュー
+		// 設定Menu
 		JMenu menuConfig = new JMenu(getUIText("Menu_Config"));
 		menuConfig.setMnemonic('C');
 		menubar.add(menuConfig);
@@ -592,7 +591,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/*
-	 * メニュー実行時の処理
+	 * Menu 実行時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// オフLinesゲーム開始
@@ -798,14 +797,14 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint", false);
 			}
 
-			// Initialization処理
+			// Called at initialization
 			gameManager.engine[i].init();
 		}
 	}
 
 	/**
 	 * リプレイを読み込んで再生
-	 * @param filename リプレイ dataのファイル名
+	 * @param filename リプレイ dataのFilename
 	 */
 	public void startReplayGame(String filename) {
 		log.info("Loading Replay:" + filename);
@@ -866,7 +865,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint",false);
 			}
 
-			// Initialization処理
+			// Called at initialization
 			gameManager.engine[i].init();
 		}
 	}
@@ -967,7 +966,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * オブザーバークライアントを開始
+	 * Observerクライアントを開始
 	 */
 	public synchronized static void startObserverClient() {
 		log.debug("startObserverClient called");
@@ -995,7 +994,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * オブザーバークライアントを停止
+	 * Observerクライアントを停止
 	 */
 	public synchronized static void stopObserverClient() {
 		log.debug("stopObserverClient called");
@@ -1012,8 +1011,8 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * オブザーバークライアント取得
-	 * @return オブザーバークライアント
+	 * Observerクライアント取得
+	 * @return Observerクライアント
 	 */
 	public synchronized static NetObserverClient getObserverClient() {
 		return netObserverClient;

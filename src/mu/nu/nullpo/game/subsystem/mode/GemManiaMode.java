@@ -191,7 +191,7 @@ public class GemManiaMode extends DummyMode {
 	/** Current エディット画面 */
 	private int editModeScreen;
 
-	/** スタート時の stage  */
+	/** スタート時の stage */
 	private int startstage;
 
 	/** 選択した stage セット */
@@ -212,7 +212,7 @@ public class GemManiaMode extends DummyMode {
 	/** NEXTをランダムにする */
 	private boolean randomnext;
 
-	/** トレーニングMode  */
+	/** トレーニングMode */
 	private int trainingType;
 
 	/** 開始時のBlockカウンタ */
@@ -224,7 +224,7 @@ public class GemManiaMode extends DummyMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** Rankings' 到達 stage  */
+	/** Rankings' 到達 stage */
 	private int[][] rankingStage;
 
 	/** Rankings' クリア率 */
@@ -357,7 +357,7 @@ public class GemManiaMode extends DummyMode {
 		thisStageTotalPieceLockCount = 0;
 		continueNextPieceCount = engine.nextPieceCount;
 
-		// 背景戻す
+		// Background戻す
 		if(owner.backgroundStatus.bg != 0) {
 			owner.backgroundStatus.fadesw = true;
 			owner.backgroundStatus.fadecount = 0;
@@ -556,7 +556,7 @@ public class GemManiaMode extends DummyMode {
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
-		// エディットメニュー メイン画面
+		// エディットMenu  メイン画面
 		if(editModeScreen == 1) {
 			// Configuration changes
 			int change = updateCursor(engine, 4);
@@ -621,7 +621,7 @@ public class GemManiaMode extends DummyMode {
 
 			engine.statc[3]++;
 		}
-		// エディットメニュー  stage 画面
+		// エディットMenu   stage 画面
 		else if(editModeScreen == 2) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
@@ -697,7 +697,7 @@ public class GemManiaMode extends DummyMode {
 
 			engine.statc[3]++;
 		}
-		// 普通のメニュー
+		// 普通のMenu
 		else if(engine.owner.replayMode == false) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
@@ -823,7 +823,7 @@ public class GemManiaMode extends DummyMode {
 
 			receiver.drawMenuFont(engine, playerID, 0, 19, "EXIT-> D+E", EventReceiver.COLOR_ORANGE);
 		} else if(editModeScreen == 2) {
-			// エディットメニュー  stage 画面
+			// エディットMenu   stage 画面
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 0,
 					"MAP EDIT", "[PUSH A]",
 					"STAGE TIME", GeneralUtil.getTime(stagetimeStart),
@@ -831,7 +831,7 @@ public class GemManiaMode extends DummyMode {
 					"BGM", String.valueOf(stagebgm),
 					"MIRROR", (gimmickMirror == 0) ? "OFF" : String.valueOf(gimmickMirror));
 		} else {
-			// 普通のメニュー
+			// 普通のMenu
 			if(engine.owner.replayMode == false) {
 				receiver.drawMenuFont(engine, playerID, 0, 19, "D:EDIT", EventReceiver.COLOR_ORANGE);
 			}
@@ -843,7 +843,7 @@ public class GemManiaMode extends DummyMode {
 					"STAGE SET", (stageset < 0) ? "DEFAULT" : "EDIT "+stageset,
 					"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
 					"20G MODE", GeneralUtil.getONorOFF(always20g),
-					"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse), 
+					"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
 					"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
 					"RANDOM", GeneralUtil.getONorOFF(randomnext),
 					"TRAINING", strTrainingType,
@@ -1098,7 +1098,7 @@ public class GemManiaMode extends DummyMode {
 		}
 
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false)) {
-			// Roll Roll 
+			// Roll Roll
 			engine.itemRollRollEnable = ((gimmickRoll > 0) && ((thisStageTotalPieceLockCount + 1) % gimmickRoll == 0));
 			// Big
 			engine.big = ((gimmickBig > 0) && ((thisStageTotalPieceLockCount + 1) % gimmickBig == 0));
@@ -1132,7 +1132,7 @@ public class GemManiaMode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame 
+		// 最後の frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(speedlevel < nextseclv - 1) {
 				speedlevel++;
@@ -1176,10 +1176,10 @@ public class GemManiaMode extends DummyMode {
 			if(speedlevel > 998) {
 				speedlevel = 998;
 			} else if(speedlevel >= nextseclv) {
-				// Next Section 
+				// Next Section
 				engine.playSE("levelup");
 
-				// 背景切り替え
+				// Background切り替え
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
@@ -1226,7 +1226,7 @@ public class GemManiaMode extends DummyMode {
 	public boolean onCustom(GameEngine engine, int playerID) {
 		// 最初の frame の処理
 		if(engine.statc[0] == 0) {
-			// 効果音
+			// Sound effects
 			if(clearflag) engine.playSE("stageclear");
 			else engine.playSE("stagefail");
 
@@ -1331,7 +1331,7 @@ public class GemManiaMode extends DummyMode {
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				engine.resetStatc();
 			}
-			// Next  stage 
+			// Next  stage
 			else {
 				stage++;
 				if(clearflag) limittimeNow += timeextendStageClearSeconds * 60;
@@ -1636,7 +1636,7 @@ public class GemManiaMode extends DummyMode {
 	/**
 	 * Update rankings
 	 * @param type Game type
-	 * @param stg  stage 
+	 * @param stg  stage
 	 * @param clper クリア率
 	 * @param time Time
 	 * @param clear 完全クリア flag
@@ -1664,7 +1664,7 @@ public class GemManiaMode extends DummyMode {
 	/**
 	 * Calculate ranking position
 	 * @param type Game type
-	 * @param stg  stage 
+	 * @param stg  stage
 	 * @param clper クリア率
 	 * @param time Time
 	 * @param clear 完全クリア flag

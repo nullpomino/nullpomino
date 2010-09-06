@@ -90,13 +90,13 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	/** XMLのURL */
 	protected JTextField txtfldXMLURL;
 
-	/** この起動 countごとに更新 check  */
+	/** この起動 countごとに更新 check */
 	protected JTextField txtfldStartupMax;
 
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public UpdateCheckFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -216,7 +216,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldXMLURL.setPreferredSize(new Dimension(220, 20));
 		spXMLURL.add(txtfldXMLURL, BorderLayout.EAST);
 
-		// * この起動 countごとに更新 check 
+		// * この起動 countごとに更新 check
 		JPanel spStartupMax = new JPanel(new BorderLayout());
 		spStartupMax.setAlignmentX(0f);
 		spSetting.add(spStartupMax);
@@ -270,7 +270,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	 * ボタンクリック時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// 今すぐ更新 check 
+		// 今すぐ更新 check
 		if(e.getActionCommand() == "CheckNow") {
 			if(!UpdateChecker.isRunning()) {
 				txtfldLatestVersion.setForeground(Color.black);

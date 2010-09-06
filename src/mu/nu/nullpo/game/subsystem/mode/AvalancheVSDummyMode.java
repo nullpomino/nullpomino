@@ -92,7 +92,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Constants for chain display settings */
 	public static final int CHAIN_DISPLAY_NONE = 0, CHAIN_DISPLAY_YELLOW = 1,
 		CHAIN_DISPLAY_PLAYER = 2, CHAIN_DISPLAY_SIZE = 3;
-	
+
 	/** Each player's frame color */
 	public static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -120,7 +120,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Big */
 	protected boolean[] big;
 
-	/** 効果音ON/OFF */
+	/** Sound effectsON/OFF */
 	protected boolean[] enableSE;
 
 	/** マップ使用 flag */
@@ -221,7 +221,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 
 	/** Type of chain display */
 	protected int[] chainDisplayType;
-	
+
 	/** True to use new (Fever) chain powers */
 	protected boolean[] newChainPower;
 
@@ -494,7 +494,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -606,7 +606,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			onClear(engine, playerID);
 
 			int pts = calcPts(engine, playerID, avalanche);
-			
+
 			int multiplier = engine.field.colorClearExtraCount;
 			if (big[playerID])
 				multiplier >>= 2;
@@ -628,7 +628,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 
 			if (chain[playerID] >= rensaShibari[playerID])
 				addOjama(engine, playerID, ptsTotal);
-			
+
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 				zenKeshi[playerID] = true;
@@ -641,11 +641,11 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		else if (!engine.field.canCascade())
 			cleared[playerID] = false;
 	}
-	
+
 	protected int calcPts (GameEngine engine, int playerID, int avalanche) {
 		return avalanche*10;
 	}
-	
+
 	protected int calcChainMultiplier(GameEngine engine, int playerID, int chain) {
 		if (newChainPower[playerID])
 			return calcChainNewPower(engine, playerID, chain);
@@ -659,7 +659,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		else
 			return CHAIN_POWERS[chain-1];
 	}
-	
+
 	protected int calcChainClassicPower(GameEngine engine, int playerID, int chain) {
 		if (chain == 2)
 			return 8;
@@ -670,7 +670,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		else
 			return 0;
 	}
-	
+
 	protected void onClear(GameEngine engine, int playerID) {
 	}
 
@@ -709,14 +709,14 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		if (ojamaNew > 0)
 			ojamaAdd[enemyID] += ojamaNew;
 	}
-	
+
 	protected int ptsToOjama(GameEngine engine, int playerID, int pts, int rate)
 	{
 		return (pts+rate-1)/rate;
 	}
 
 	public abstract boolean lineClearEnd(GameEngine engine, int playerID);
-	
+
 	/**
 	 * Check for game over
 	 */
@@ -799,7 +799,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		ojamaDrop[playerID] = false;
 		return false;
 	}
-	
+
 	protected void updateOjamaMeter (GameEngine engine, int playerID) {
 		int width = 6;
 		if (engine.field != null)
@@ -836,7 +836,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
 			receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 	}
-	
+
 	protected int getChainColor (int playerID) {
 		if (chainDisplayType[playerID] == CHAIN_DISPLAY_PLAYER)
 			return (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
@@ -845,7 +845,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		else
 			return EventReceiver.COLOR_YELLOW;
 	}
-	
+
 	protected void drawX (GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED);
 	}
@@ -919,7 +919,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 				"CLEARED", String.format("%10d", engine.statistics.lines),
 				"MAX CHAIN", String.format("%10d", engine.statistics.maxChain),
 				"PIECE", String.format("%10d", engine.statistics.totalPieceLocked),
-				"ATTACK/MIN", String.format("%10g", apm), 
+				"ATTACK/MIN", String.format("%10g", apm),
 				"PIECE/SEC", String.format("%10g", engine.statistics.pps),
 				"TIME", String.format("%10s", GeneralUtil.getTime(owner.engine[0].statistics.time)));
 	}

@@ -77,7 +77,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 
 	protected boolean aiShowHint = false;
 
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor = 0;
 
 	/**
@@ -95,7 +95,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -167,7 +167,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -194,7 +194,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
-		// カーソル移動
+		// Cursor movement
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;

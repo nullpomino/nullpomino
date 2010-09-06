@@ -35,7 +35,7 @@ import mu.nu.nullpo.game.play.GameManager;
 import org.apache.log4j.Logger;
 
 /**
- * クライアント(オブザーバー用)
+ * クライアント(Observer用)
  */
 public class NetObserverClient extends NetBaseClient {
 	/** Log */
@@ -47,7 +47,7 @@ public class NetObserverClient extends NetBaseClient {
 	/** Number of players */
 	protected volatile int playerCount = 0;
 
-	/** オブザーバーcount */
+	/** Observercount */
 	protected volatile int observerCount = 0;
 
 	/**

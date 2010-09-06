@@ -71,14 +71,14 @@ public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void onRenderSuccess(SDLSurface screen) throws SDLException {
 		NormalFontSDL.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
 									NormalFontSDL.COLOR_ORANGE);
 	}
-	
+
 	@Override
 	protected boolean onDecide() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
@@ -89,10 +89,10 @@ public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
 		s.startNewGame();
 
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_INGAME);
-		
+
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onCancel() throws SDLException {
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);

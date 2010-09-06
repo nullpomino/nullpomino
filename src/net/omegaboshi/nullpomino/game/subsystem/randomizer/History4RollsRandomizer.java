@@ -3,14 +3,14 @@ package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 import mu.nu.nullpo.game.component.Piece;
 
 public class History4RollsRandomizer extends LimitedHistoryRandomizer {
-	
+
 	public History4RollsRandomizer() {
 		super();
 	}
-	
+
 	public History4RollsRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
-		
+
 	}
 
 	public void init() {

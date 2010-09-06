@@ -34,7 +34,6 @@ import java.util.Random;
 
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.util.CustomProperties;
-import net.tetrisconcept.poochy.nullpomino.ai.PoochyBot;
 
 import org.apache.log4j.Logger;
 
@@ -98,7 +97,7 @@ public class Field implements Serializable {
 
 	/** Number of total blocks above minimum required in color clears */
 	public int colorClearExtraCount;
-	
+
 	/** Number of different colors in simultaneous color clears */
 	public int colorsCleared;
 
@@ -107,7 +106,7 @@ public class Field implements Serializable {
 
 	/** Number of garbage blocks cleared in last color clear */
 	public int garbageCleared;
-	
+
 	/** List of colors of lines cleared in most recent line color clear */
 	public ArrayList<Integer> lineColorsCleared;
 
@@ -122,7 +121,7 @@ public class Field implements Serializable {
 		height = h;
 		hidden_height = hh;
 		ceiling = false;
-		
+
 		reset();
 	}
 
@@ -154,7 +153,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Initialization処理
+	 * Called at initialization
 	 */
 	public void reset() {
 		block_field = new Block[width][height];
@@ -200,7 +199,7 @@ public class Field implements Serializable {
 		gemsCleared = f.gemsCleared = 0;
 		lineColorsCleared = f.lineColorsCleared;
 		garbageCleared = f.garbageCleared;
-		
+
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
 				block_field[i][j] = new Block(f.getBlock(i, j));
@@ -307,7 +306,7 @@ public class Field implements Serializable {
 	 * 指定した座標にあるBlockを取得
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 成功したら指定した座標にあるBlockオブジェクト、失敗したらnull
+	 * @return 成功したら指定した座標にあるBlockオブジェクト, 失敗したらnull
 	 */
 	public Block getBlock(int x, int y) {
 		// フィールド内
@@ -358,7 +357,7 @@ public class Field implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Block
-	 * @return 成功したらtrue、失敗したらfalse
+	 * @return true if successful, false if failed
 	 */
 	public boolean setBlock(int x, int y, Block blk) {
 		// フィールド内
@@ -477,7 +476,7 @@ public class Field implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param c 色
-	 * @return 成功したらtrue、失敗したらfalse
+	 * @return true if successful, false if failed
 	 */
 	public boolean setBlockColor(int x, int y, int c) {
 		// フィールド内
@@ -532,7 +531,7 @@ public class Field implements Serializable {
 	/**
 	 * Line clear flagを取得
 	 * @param y Y-coordinate
-	 * @return 消える列ならtrue、そうでないなら (もしくは座標が範囲外なら）false
+	 * @return 消える列ならtrue, そうでないなら (もしくは座標が範囲外なら）false
 	 */
 	public boolean getLineFlag(int y) {
 		// フィールド内
@@ -635,7 +634,7 @@ public class Field implements Serializable {
 	/**
 	 * Line clear flagを取得 (失敗したら例外送出）
 	 * @param y Y-coordinate
-	 * @return 消える列ならtrue、そうでないならfalse
+	 * @return 消える列ならtrue, そうでないならfalse
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public boolean getLineFlagE(int y) throws ArrayIndexOutOfBoundsException {
@@ -661,7 +660,7 @@ public class Field implements Serializable {
 	 * Line clear flagを設定
 	 * @param y Y-coordinate
 	 * @param flag 設定するLine clear flag
-	 * @return 成功したらtrue、失敗したらfalse
+	 * @return true if successful, false if failed
 	 */
 	public boolean setLineFlag(int y, boolean flag) {
 		// フィールド内
@@ -713,7 +712,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear check 
+	 * Line clear check
 	 * @return 消えるLinescount
 	 */
 	public int checkLine() {
@@ -1065,10 +1064,8 @@ public class Field implements Serializable {
 		return result;
 	}
 
-
 	public int getHowManyBlocksCovered() {
 		int blocksCovered = 0;
-
 
 		for(int j = 0; j < width; j++) {
 
@@ -1225,7 +1222,6 @@ public class Field implements Serializable {
 
 		return count;
 	}
-
 
 	/**
 	 * 一番上にあるBlockのY-coordinateを取得
@@ -1819,7 +1815,7 @@ public class Field implements Serializable {
 		// We have to divide the amount by 4 because it's based on 1x4 strips, not single blocks.
 		squares[0] /= 4;
 		squares[1] /= 4;
-		
+
 		return squares;
 	}
 
@@ -2117,7 +2113,7 @@ public class Field implements Serializable {
 		else
 			return doCascadeGravity();
 	}
-	
+
 	/**
 	 * Main routine for cascade gravity.
 	 * @return <code>true</code> if something falls. <code>false</code> if nothing falls.
@@ -2187,7 +2183,7 @@ public class Field implements Serializable {
 
 		return result;
 	}
-	
+
 	/**
 	 * Routine for cascade gravity which checks from the top down for a slower fall animation.
 	 * @return <code>true</code> if something falls. <code>false</code> if nothing falls.
@@ -2475,7 +2471,7 @@ public class Field implements Serializable {
 		Field temp = new Field(this);
 		int total = 0;
 		boolean[] colorsClearedArray = new boolean[7];
-		if (flag) 
+		if (flag)
 		{
 			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
 			garbageCleared = 0;
@@ -2575,7 +2571,7 @@ public class Field implements Serializable {
 			if (placeBlock[x])
 				garbageDropPlace(x*bigMove, y, big, hard, color, countdown);
 	}
-	
+
 	public boolean garbageDropPlace (int x, int y, boolean big, int hard)
 	{
 		return garbageDropPlace(x, y, big, hard, Block.BLOCK_COLOR_GRAY, 0);
@@ -2666,7 +2662,7 @@ public class Field implements Serializable {
 		int[] colorCounts = new int[colors.length];
 		for (int i = 0; i < colorCounts.length; i++)
 			colorCounts[i] = 0;
-		
+
 		int blockColor;
 		if (count < (placeSize >> 1))
 		{
@@ -2726,7 +2722,7 @@ public class Field implements Serializable {
 					blockColor = getBlockColor(x, y);
 					if (blockColor != colorUp && blockColor != colorLeft)
 						continue;
-					
+
 					cIndex = -1;
 					for (int i = 0; i < colorCounts.length; i++)
 						if (colors[i] == blockColor)
@@ -2734,7 +2730,7 @@ public class Field implements Serializable {
 							cIndex = i;
 							break;
 						}
-					
+
 					if (colors.length == 2)
 					{
 						if ((colors[0] == colorUp && colors[1] != colorLeft) ||
@@ -2802,7 +2798,7 @@ public class Field implements Serializable {
 					}
 					for (int i = 0; i < colorCounts.length; i++)
 						canSwitch[i] = colorCounts[i] < maxCount;
-	
+
 					colorSide = getBlockColor(x, y-2);
 					for (int i = 0; i < colors.length; i++)
 						if (colors[i] == colorSide)
@@ -2971,7 +2967,7 @@ public class Field implements Serializable {
 	public int gemColorCheck(int size, boolean flag, boolean garbageClear, boolean ignoreHidden) {
 		if (flag)
 			setAllAttribute(Block.BLOCK_ATTRIBUTE_ERASE, false);
-		
+
 		Field temp = new Field(this);
 		int total = 0;
 		Block b;
@@ -2994,7 +2990,7 @@ public class Field implements Serializable {
 		}
 		return total;
 	}
-	
+
 	public void freeFall() {
 		int y1, y2;
 		for (int x = 0; x < width; x++)
@@ -3017,13 +3013,13 @@ public class Field implements Serializable {
 		for (int y = getHighestBlockY(); y < height; y++)
 			delLine(y);
 	}
-	
+
 	public void delLower() {
 		int rows = (height - getHighestBlockY() + 1) >> 1;
 		for (int i = 1; i <= rows; i++)
 			delLine(height-i);
 	}
-	
+
 	public void delUpper() {
 		int maxY = (height - getHighestBlockY()) >> 1;
 		//TODO: Check if this should round up or down.
@@ -3080,7 +3076,7 @@ public class Field implements Serializable {
 			}
 		}
 	}
-	
+
 	public void negaField() {
 		for (int y = getHighestBlockY(); y < height; y--)
 			for (int x = 0; x < width; x++)
@@ -3091,7 +3087,7 @@ public class Field implements Serializable {
 					setBlockColor(x, y, Block.BLOCK_COLOR_NONE);
 			}
 	}
-	
+
 	public void flipVertical() {
 		Block[] temp;
 		for (int yMin = getHighestBlockY(), yMax = height-1; yMin < yMax; yMin--, yMax--)
@@ -3113,7 +3109,7 @@ public class Field implements Serializable {
 
 	public void mirror() {
 		Block temp;
-		
+
 		for (int y = getHighestBlockY(); y < height; y--)
 			for (int xMin = 0, xMax = width-1; xMin < xMax; xMin++, xMax--)
 			{

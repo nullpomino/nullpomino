@@ -43,7 +43,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * VS-BATTLEMode 
+ * VS-BATTLEMode
  */
 public class VSBattleMode extends DummyMode {
 	/** Current version */
@@ -155,7 +155,7 @@ public class VSBattleMode extends DummyMode {
 	/** Big */
 	private boolean[] big;
 
-	/** 効果音ON/OFF */
+	/** Sound effectsON/OFF */
 	private boolean[] enableSE;
 
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
@@ -735,7 +735,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {

@@ -41,13 +41,13 @@ import mu.nu.nullpo.util.GeneralUtil;
 public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** Enabled piece types */
 	public static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
+
 	/** Enabled piece types */
-	public static final int[] CHAIN_POWERS_FEVERTYPE = 
+	public static final int[] CHAIN_POWERS_FEVERTYPE =
 	{
 		4, 12, 24, 32, 48, 96, 160, 240, 320, 400, 500, 600, 700, 800, 900, 999
 	};
-	
+
 	public int[] tableSpeedChangeLevel =
 	{
 		80, 90, 96, 97, Integer.MAX_VALUE
@@ -57,7 +57,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	{
 		30, 45, 120, 480, -1
 	};
-	
+
 	/** Block colors */
 	public static final int[] BLOCK_COLORS =
 	{
@@ -69,11 +69,11 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	};
 
 	/** Fever map files list */
-	public static final String[] FEVER_MAPS = 
+	public static final String[] FEVER_MAPS =
 	{
 		"Fever", "15th", "15thDS", "7", "Poochy7"
 	};
-	
+
 	public static final int DAS = 10;
 
 	/** GameManager object (Manages entire game status) */
@@ -84,52 +84,52 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 
 	/** Amount of points earned from most recent clear */
 	protected int lastscore, lastmultiplier;
-	
+
 	/** Elapsed time from last line clear (lastscore is displayed to screen until this reaches to 120) */
 	protected int scgettime;
 
 	/** Outline type */
 	protected int outlinetype;
-	
+
 	/** Flag for all clear */
 	protected boolean zenKeshi;
-	
+
 	/** Amount of garbage sent */
 	protected int garbageSent, garbageAdd;
-	
+
 	/** Number of colors to use */
 	protected int numColors;
-	
+
 	/** Last chain hit number */
 	protected int chain;
-	
+
 	/** Time to display last chain */
 	protected int chainDisplay;
-	
+
 	/** Number of all clears */
 	protected int zenKeshiCount;
-	
+
 	/** Score before adding zenkeshi bonus and max chain bonus */
 	protected int scoreBeforeBonus;
-	
+
 	/** Zenkeshi bonus and max chain bonus amounts */
 	protected int zenKeshiBonus, maxChainBonus;
-	
+
 	/** Blocks cleared */
 	protected int blocksCleared;
-	
+
 	/** Current level */
 	protected int level;
-	
+
 	/** Maximum level */
 	protected int maxLevel;
-	
+
 	/** Blocks cleared needed to reach next level */
 	protected int toNextLevel;
-	
+
 	/** Blocks cleared needed to reach next level */
 	protected int blocksPerLevel;
-	
+
 	/** True to use slower falling animations, false to use faster */
 	protected boolean cascadeSlow;
 
@@ -167,19 +167,19 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 
 		speedIndex = 0;
 		outlinetype = 0;
-		
+
 		zenKeshi = false;
 		garbageSent = 0;
 		garbageAdd = 0;
 		//firstExtra = false;
-		
+
 		zenKeshiCount = 0;
 		engine.statistics.maxChain = 0;
 		scoreBeforeBonus = 0;
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
 		blocksCleared = 0;
-		
+
 		chain = 0;
 		chainDisplay = 0;
 		level = 5;
@@ -225,7 +225,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 			return readyInit(engine, playerID);
 		return false;
 	}
-	
+
 	protected boolean readyInit(GameEngine engine, int playerID) {
 		engine.numColors = numColors;
 		engine.lineGravityType = cascadeSlow ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
@@ -238,14 +238,14 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		else if (numColors == 4) level = 5;
 		else if (numColors == 5) level = 10;
 		toNextLevel = blocksPerLevel;
-		
+
 		zenKeshiCount = 0;
 		engine.statistics.maxChain = 0;
 		scoreBeforeBonus = 0;
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
 		blocksCleared = 0;
-		
+
 		return false;
 	}
 
@@ -267,7 +267,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 
 		setSpeed(engine);
 	}
-	
+
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
 		if (engine.dasCount > 0 && engine.dasCount < DAS)
@@ -347,20 +347,20 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 				engine.statistics.maxChain = chain;
 			onClear(engine, playerID);
 			engine.playSE("combo" + Math.min(chain, 20));
-			
+
 			int pts = calcPts(avalanche);
-			
+
 			int multiplier = engine.field.colorClearExtraCount;
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
 
 			multiplier += calcChainMultiplier(chain);
-				
+
 			if (multiplier > 999)
 				multiplier = 999;
 			if (multiplier < 1)
 				multiplier = 1;
-			
+
 			blocksCleared += avalanche;
 			toNextLevel -= avalanche;
 			if (toNextLevel <= 0 && level < maxLevel)
@@ -368,7 +368,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 				toNextLevel = blocksPerLevel;
 				level++;
 			}
-			
+
 			lastscore = pts;
 			lastmultiplier = multiplier;
 			scgettime = 120;
@@ -377,20 +377,20 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 			engine.statistics.score += score;
 
 			garbageAdd += calcOjama(score, avalanche, pts, multiplier);
-			
+
 			setSpeed(engine);
 		}
 	}
-	
+
 	protected int calcOjama(int score, int avalanche, int pts, int multiplier)
 	{
 		return (score+ojamaRate-1)/ojamaRate;
 	}
-	
+
 	protected int calcPts (int avalanche) {
 		return avalanche*10;
 	}
-	
+
 	protected int calcChainMultiplier(int chain) {
 		if (chain == 2)
 			return 8;
@@ -401,7 +401,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		else
 			return 0;
 	}
-	
+
 	protected void onClear (GameEngine engine, int playerID) {
 		chainDisplay = 60;
 	}
@@ -421,7 +421,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
-		
+
 		receiver.drawMenuFont(engine, playerID,  0, 3, "SCORE", EventReceiver.COLOR_BLUE);
 		String strScoreBefore = String.format("%10d", scoreBeforeBonus);
 		receiver.drawMenuFont(engine, playerID,  0, 4, strScoreBefore, EventReceiver.COLOR_GREEN);
@@ -430,7 +430,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID,  0, 6, String.format("%10d", zenKeshiCount));
 		String strZenKeshiBonus = "+" + zenKeshiBonus;
 		receiver.drawMenuFont(engine, playerID, 10-strZenKeshiBonus.length(), 7, strZenKeshiBonus, EventReceiver.COLOR_GREEN);
-		
+
 		receiver.drawMenuFont(engine, playerID,  0, 8, "MAX CHAIN", EventReceiver.COLOR_BLUE);
 		receiver.drawMenuFont(engine, playerID,  0, 9, String.format("%10d", engine.statistics.maxChain));
 		String strMaxChainBonus = "+" + maxChainBonus;
@@ -439,7 +439,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		receiver.drawMenuFont(engine, playerID,  0, 11, "TOTAL", EventReceiver.COLOR_BLUE);
 		String strScore = String.format("%10d", engine.statistics.score);
 		receiver.drawMenuFont(engine, playerID,  0, 12, strScore, EventReceiver.COLOR_RED);
-		
+
 		receiver.drawMenuFont(engine, playerID,  0, 13, "TIME", EventReceiver.COLOR_BLUE);
 		String strTime = String.format("%10s", GeneralUtil.getTime(engine.statistics.time));
 		receiver.drawMenuFont(engine, playerID,  0, 14, strTime);

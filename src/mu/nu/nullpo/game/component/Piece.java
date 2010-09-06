@@ -182,7 +182,7 @@ public class Piece implements Serializable {
 
 	/** 相対Y位置のずれ幅 */
 	public int[] dataOffsetY;
-	
+
 	/** Connect blocks in this piece? */
 	public boolean connectBlocks;
 
@@ -319,7 +319,7 @@ public class Piece implements Serializable {
 			block[i].item = item;
 		}
 	}
-	
+
 	/**
 	 * Sets the items of the blocks individually; allows one piece to have
 	 * different item settings for each block
@@ -341,7 +341,7 @@ public class Piece implements Serializable {
 			block[i].hard = hard;
 		}
 	}
-	
+
 	/**
 	 * Sets the hard counts of the blocks individually; allows one piece to have
 	 * different hard count settings for each block
@@ -353,7 +353,6 @@ public class Piece implements Serializable {
 			block[i].hard = hard[i];
 		}
 	}
-
 
 	/**
 	 * Fetches the colors of the blocks in the piece
@@ -388,7 +387,7 @@ public class Piece implements Serializable {
 
 	/**
 	 * すべてのBlockの暗さまたは明るさを変更
-	 * @param darkness 暗さまたは明るさ (0.03だったら3%暗く、-0.05だったら5%明るい）
+	 * @param darkness 暗さまたは明るさ (0.03だったら3%暗く, -0.05だったら5%明るい）
 	 */
 	public void setDarkness(float darkness) {
 		for(int i = 0; i < block.length; i++) {
@@ -398,7 +397,7 @@ public class Piece implements Serializable {
 
 	/**
 	 * すべてのBlockの透明度を変更
-	 * @param alpha 透明度 (1.0fで不透明、0.0fで完全に透明）
+	 * @param alpha 透明度 (1.0fで不透明, 0.0fで完全に透明）
 	 */
 	public void setAlpha(float alpha) {
 		for(int i = 0; i < block.length; i++) {
@@ -492,7 +491,7 @@ public class Piece implements Serializable {
 					if(k != j) {
 						int bx2 = dataX[direction][k];
 						int by2 = dataY[direction][k];
-	
+
 						if((bx == bx2) && (by - 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);		// Up
 						if((bx == bx2) && (by + 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);	// Down
 						if((by == by2) && (bx - 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);	// 左
@@ -511,7 +510,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue、そうでないならfalse
+	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue, そうでないならfalse
 	 */
 	public boolean isPartialLockOut(int x, int y, int rt, Field fld) {
 		// Bigでは専用処理
@@ -533,7 +532,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue、そうでないならfalse
+	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue, そうでないならfalse
 	 */
 	protected boolean isPartialLockOutBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -556,7 +555,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld フィールド
-	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue、そうでないならfalse
+	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue, そうでないならfalse
 	 */
 	public boolean isPartialLockOut(int x, int y, Field fld) {
 		return isPartialLockOut(x, y, direction, fld);
@@ -568,7 +567,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue、そうでないならfalse
+	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue, そうでないならfalse
 	 */
 	public boolean canPlaceToVisibleField(int x, int y, int rt, Field fld) {
 		// Bigでは専用処理
@@ -590,7 +589,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue、そうでないならfalse
+	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue, そうでないならfalse
 	 */
 	protected boolean canPlaceToVisibleFieldBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -613,7 +612,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue、そうでないならfalse
+	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue, そうでないならfalse
 	 */
 	public boolean canPlaceToVisibleField(int x, int y, Field fld) {
 		return canPlaceToVisibleField(x, y, direction, fld);
@@ -625,7 +624,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue、そうでないならfalse
+	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue, そうでないならfalse
 	 */
 	public boolean placeToField(int x, int y, int rt, Field fld) {
 		updateConnectData();
@@ -651,7 +650,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue、そうでないならfalse
+	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue, そうでないならfalse
 	 */
 	protected boolean placeToFieldBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -677,7 +676,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue、そうでないならfalse
+	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue, そうでないならfalse
 	 */
 	public boolean placeToField(int x, int y, Field fld) {
 		return placeToField(x, y, direction, fld);
@@ -688,7 +687,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld フィールド
-	 * @return Blockに重なっていたらtrue、重なっていないならfalse
+	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
 	 */
 	public boolean checkCollision(int x, int y, Field fld) {
 		return checkCollision(x, y, direction, fld);
@@ -700,7 +699,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return Blockに重なっていたらtrue、重なっていないならfalse
+	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
 	 */
 	public boolean checkCollision(int x, int y, int rt, Field fld) {
 		// Bigでは専用処理
@@ -733,7 +732,7 @@ public class Piece implements Serializable {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld フィールド
-	 * @return Blockに重なっていたらtrue、重なっていないならfalse
+	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
 	 */
 	protected boolean checkCollisionBig(int x, int y, int rt, Field fld) {
 		for(int i = 0; i < getMaxBlock(); i++) {

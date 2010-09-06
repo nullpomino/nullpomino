@@ -37,14 +37,14 @@ import sdljava.video.SDLSurface;
 public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 	/** Player number */
 	protected int player = 0;
-	
+
 	public StateConfigMainMenuSDL () {
 		maxCursor = 5;
 		minChoiceY = 3;
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -68,7 +68,7 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 		if(cursor == 4) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Keyboard"));
 		if(cursor == 5) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Joystick"));
 	}
-	
+
 	@Override
 	protected void onChange(int change) {
 		player += change;
@@ -76,7 +76,7 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 		if(player > 1) player = 0;
 		ResourceHolderSDL.soundManager.play("change");
 	}
-	
+
 	@Override
 	protected boolean onDecide() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
@@ -113,7 +113,7 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onCancel() throws SDLException {
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);

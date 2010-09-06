@@ -34,14 +34,14 @@ import sdljava.event.SDLKey;
 import sdljava.joystick.HatState;
 
 /**
- * キー input 状態の管理
+ * Key input stateの管理
  */
 public class GameKeySDL extends GameKeyDummy {
-	/** キー input 状態 (全ステート共通) */
+	/** Key input state (全ステート共通) */
 	public static GameKeySDL gamekey[];
 
 	/**
-	 * 全ステート共通のキー input 状態オブジェクトをInitialization
+	 * 全ステート共通のKey input stateオブジェクトをInitialization
 	 */
 	public static void initGlobalGameKeySDL() {
 		gamekey = new GameKeySDL[2];
@@ -144,7 +144,7 @@ public class GameKeySDL extends GameKeyDummy {
 	 */
 	public void loadConfig(CustomProperties prop) {
 		super.loadConfig(prop);
-		
+
 		keymap[BUTTON_NAV_UP] = prop.getProperty("key.p" + player + ".navigationup", SDLKey.SDLK_UP);
 		keymap[BUTTON_NAV_DOWN] = prop.getProperty("key.p" + player + ".navigationdown", SDLKey.SDLK_DOWN);
 		keymap[BUTTON_NAV_LEFT] = prop.getProperty("key.p" + player + ".navigationleft", SDLKey.SDLK_LEFT);

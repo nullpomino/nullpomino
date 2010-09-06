@@ -36,7 +36,6 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
@@ -68,11 +67,11 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	protected String strModeToEnter = "";
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
-		// オブザーバー停止
+		// Observer停止
 		NullpoMinoSDL.stopObserverClient();
 
 		// 60FPS
@@ -100,7 +99,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave() throws SDLException {
@@ -119,7 +118,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {

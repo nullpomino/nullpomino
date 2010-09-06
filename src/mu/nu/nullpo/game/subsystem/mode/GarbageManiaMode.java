@@ -37,7 +37,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * GARBAGE MANIAMode 
+ * GARBAGE MANIAMode
  */
 public class GarbageManiaMode extends DummyMode {
 	/** Current version */
@@ -214,7 +214,7 @@ public class GarbageManiaMode extends DummyMode {
 	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** BigMode  */
+	/** BigMode */
 	private boolean big;
 
 	/** trueならSection Time表示有効 */
@@ -628,7 +628,7 @@ public class GarbageManiaMode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame 
+		// 最後の frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -740,14 +740,14 @@ public class GarbageManiaMode extends DummyMode {
 				setAverageSectionTime();
 				stNewRecordCheck(sectionscomp - 1);
 			} else if(engine.statistics.level >= nextseclv) {
-				// Next Section 
+				// Next Section
 				engine.playSE("levelup");
 
 				sectionscomp++;
 				setAverageSectionTime();
 				stNewRecordCheck(sectionscomp - 1);
 
-				// 背景切り替え
+				// Background切り替え
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;

@@ -21,8 +21,6 @@ import javax.swing.ProgressMonitor;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-
-
 public class RanksResult extends JDialog implements ActionListener, PropertyChangeListener{
 	/**
 	 *
@@ -44,8 +42,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 			}
 		}
 
-
-
 	}
 	class SurfaceRank implements Comparable<SurfaceRank>{
 	       private int surface;
@@ -57,9 +53,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		public int getRank() {
 			return rank;
 		}
-
-
-
 
 			public SurfaceRank(int surface,int rank2){
 				this.surface=surface;
@@ -75,8 +68,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 				}
 				else return 0;
 			}
-
-
 
 		}
 	private SurfaceComponent surfaceComponent;
@@ -121,8 +112,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 	            	   SurfaceRank surfaceRank=new SurfaceRank(i,rank);
 
-
-
 	            		   if (surfaceRank.compareTo(surfaceRankBestsList.get(iMax))<0){
 	            			   surfaceRankBestsList.add(new SurfaceRank(i,rank));
 	            		       surfaceRankBestsList.remove(iMax);
@@ -131,9 +120,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 	            	           iMax=surfaceRankBestsList.indexOf(Collections.max(surfaceRankBestsList));
 	            		   }
-
-
-
 
 	            	   if (0==(i % (ranks.getSize()/100)) && i>=ranks.getSize()/100){
 
@@ -155,8 +141,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	               }
 	               ranks=null;
 
-
-
 	            return null;
 	        }
 
@@ -173,7 +157,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	    }
 
 	public RanksResult(JFrame parent,Ranks ranks,int bestNRanks,boolean ascendant){
-	
+
 		super(parent,true);
 		this.parent=parent;
 		this.bestNRanks=bestNRanks;
@@ -188,7 +172,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		task = new Task();
         task.addPropertyChangeListener(this);
         task.execute();
-
 
 	}
 
@@ -212,7 +195,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 		indexSurface=0;
 		currentSurface=surfaceRanksBests[indexSurface].getSurface();
-
 
 		surfaceComponent=new SurfaceComponent (maxJump,stackWidth,currentSurface);
 		labelScore=new JLabel(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBests[indexSurface].getRank());
@@ -243,7 +225,6 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		highPane.add(surfacePaneMirrored);
 		JPanel buttonsPane=new JPanel();
 
-
 		buttonsPane.add(buttonPrevious);
 		buttonsPane.add(buttonNext);
 		pane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -255,10 +236,8 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 
 	}
 
-
-
 	public void actionPerformed(ActionEvent e) {
-		
+
 		if ("next".equals(e.getActionCommand())) {
 			if (indexSurface<bestNRanks-1){
 	           indexSurface++;
@@ -300,10 +279,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 				}
 	    }
 
-
 	}
-
-
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if ("progress" == evt.getPropertyName() ) {
@@ -317,13 +293,8 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	    if (progressMonitor.isCanceled()) {
 	                    task.cancel(true);
 
-
-
 	    }
 
-
-
 	}
-
 
 }

@@ -364,7 +364,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -441,7 +441,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 		if (dangerColumnShowX[playerID])
 			drawX(engine, playerID);
 		drawHardOjama(engine, playerID);
-		
+
 		super.renderLast(engine, playerID);
 	}
 

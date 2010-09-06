@@ -43,10 +43,10 @@ import mu.nu.nullpo.util.GeneralUtil;
 public class PhysicianMode extends DummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
+
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
 	{
@@ -65,7 +65,7 @@ public class PhysicianMode extends DummyMode {
 
 	/** Number of ranking records */
 	private static final int RANKING_MAX = 10;
-	
+
 	/** Names of speed settings */
 	private static final String[] SPEED_NAME = {"LOW", "MED", "HI"};
 
@@ -100,13 +100,13 @@ public class PhysicianMode extends DummyMode {
 
 	/** Rankings' times */
 	private int[] rankingTime;
-	
+
 	/** Number of initial gem blocks */
 	private int hoverBlocks;
-	
+
 	/** Speed mode */
 	private int speed;
-	
+
 	/** Number gem blocks cleared in current chain */
 	private int gemsClearedChainTotal;
 
@@ -177,7 +177,7 @@ public class PhysicianMode extends DummyMode {
 			int m = 1;
 			if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 			if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
-			
+
 			if(change != 0) {
 				engine.playSE("change");
 
@@ -295,7 +295,7 @@ public class PhysicianMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, 0, 10, "SPEED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 11, SPEED_NAME[speed], SPEED_COLOR[speed]);
-			
+
 			receiver.drawScoreFont(engine, playerID, 0, 13, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 14, GeneralUtil.getTime(engine.statistics.time));
 		}
@@ -318,7 +318,7 @@ public class PhysicianMode extends DummyMode {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * Called after every frame
 	 */
@@ -328,7 +328,7 @@ public class PhysicianMode extends DummyMode {
 
 		if (engine.field == null)
 			return;
-		
+
 		int rest = engine.field.getHowManyGems();
 		engine.meterValue = (rest * receiver.getMeterMax(engine)) / hoverBlocks;
 		if (rest <= 3) engine.meterColor = GameEngine.METER_COLOR_GREEN;

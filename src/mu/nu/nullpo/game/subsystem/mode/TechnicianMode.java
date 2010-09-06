@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * TECHNICIANMode 
+ * TECHNICIANMode
  */
 public class TechnicianMode extends DummyMode {
 	/** Current version */
@@ -355,7 +355,7 @@ public class TechnicianMode extends DummyMode {
 		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 				"GAME TYPE", GAMETYPE_NAME[gametype],
 				"LEVEL", String.valueOf(startlevel + 1),
-				"SPIN BONUS", strTSpinEnable, 
+				"SPIN BONUS", strTSpinEnable,
 				"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
 				"B2B", GeneralUtil.getONorOFF(enableB2B),
 				"COMBO",  GeneralUtil.getONorOFF(enableCombo),

@@ -47,7 +47,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * AI選択画面のステート
  */
 public class StateConfigAISelect extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 8;
 
 	/** 1画面に表示するMaximumAIcount */
@@ -79,17 +79,17 @@ public class StateConfigAISelect extends BasicGameState {
 
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
-	
+
 	protected boolean aiShowHint = false;
 
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -97,7 +97,7 @@ public class StateConfigAISelect extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		try {
@@ -111,7 +111,7 @@ public class StateConfigAISelect extends BasicGameState {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -183,10 +183,10 @@ public class StateConfigAISelect extends BasicGameState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		// 背景
+		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
@@ -206,9 +206,9 @@ public class StateConfigAISelect extends BasicGameState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
+		// Observer
 		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
+		// Screenshot
 		if(ssflag) {
 			NullpoMinoSlick.saveScreenShot(container, g);
 			ssflag = false;
@@ -226,20 +226,20 @@ public class StateConfigAISelect extends BasicGameState {
 			return;
 		}
 
-		// キー input 状態を更新
+		// Update key input states
 		GameKey.gamekey[0].update(container.getInput());
 
-		// カーソル移動
+		// Cursor movement
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
-				
+
 		    cursor--;
 			if(cursor < 0) cursor = 4;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
-				
+
 		    cursor++;
 			if(cursor > 4) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
@@ -283,7 +283,7 @@ public class StateConfigAISelect extends BasicGameState {
 		// 決定 button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_SELECT)) {
-				
+
 		    ResourceHolder.soundManager.play("decide");
 
 			if(aiID >= 0) NullpoMinoSlick.propGlobal.setProperty(player + ".ai", aiPathList[aiID]);
@@ -301,15 +301,15 @@ public class StateConfigAISelect extends BasicGameState {
 		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
-				
+
 		    game.enterState(StateConfigMainMenu.ID);
 			return;
 		}
 
-		// スクリーンショット button
+		// Screenshot button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了 button
+		// Exit button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

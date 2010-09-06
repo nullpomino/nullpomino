@@ -197,7 +197,7 @@ public class DummyMode implements GameMode {
 
 	public void netplayUnload(Object obj){
 	}
-	
+
 	protected int updateCursor (GameEngine engine, int maxCursor) {
 		// Up
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {

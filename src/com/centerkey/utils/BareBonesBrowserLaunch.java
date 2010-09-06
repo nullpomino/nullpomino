@@ -26,7 +26,7 @@ public class BareBonesBrowserLaunch {
    /**
     * Opens the specified web page in the user's default browser
     * @param url A web address (URL) of a web page (ex: "http://www.google.com/")
-    */
+ */
    public static void openURL(String url) {
       try {  //attempt to use Desktop library from JDK 1.6+
          Class<?> d = Class.forName("java.awt.Desktop");

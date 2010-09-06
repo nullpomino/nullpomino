@@ -31,22 +31,22 @@ package mu.nu.nullpo.gui.swing;
 import mu.nu.nullpo.gui.GameKeyDummy;
 
 /**
- * キー input 状態の管理
+ * Key input stateの管理
  */
 public class GameKeySwing extends GameKeyDummy {
-	/** キー input 状態 (全ステート共通) */
+	/** Key input state (全ステート共通) */
 	public static GameKeySwing gamekey[];
-	
+
 	/** Button number定count */
 	public static final int BUTTON_UP = 0, BUTTON_DOWN = 1, BUTTON_LEFT = 2, BUTTON_RIGHT = 3, BUTTON_A = 4, BUTTON_B = 5, BUTTON_C = 6,
 			BUTTON_D = 7, BUTTON_E = 8, BUTTON_F = 9, BUTTON_PAUSE = 10, BUTTON_QUIT = 11, BUTTON_RETRY = 12,
 			BUTTON_FRAMESTEP = 13, BUTTON_SCREENSHOT = 14;
 
-	/**  buttoncountの定count */
+	/** Buttoncountの定count */
 	public static final int MAX_BUTTON = 15;
 
 	/**
-	 * 全ステート共通のキー input 状態オブジェクトをInitialization
+	 * 全ステート共通のKey input stateオブジェクトをInitialization
 	 */
 	public static void initGlobalGameKeySwing() {
 		gamekey = new GameKeySwing[2];
@@ -59,7 +59,7 @@ public class GameKeySwing extends GameKeyDummy {
 	 */
 	public GameKeySwing() {
 		super();
-		
+
 	}
 
 	/**
@@ -89,11 +89,11 @@ public class GameKeySwing extends GameKeyDummy {
 			pressstate[i] = false;
 		}
 	}
-	
+
 	/**
 	 *  buttonの input 状態を設定
 	 * @param key Button number
-	 * @param pressed 押している場合はtrue、離した場合はfalse
+	 * @param pressed 押している場合はtrue, 離した場合はfalse
 	 */
 	public void setPressState(int key, boolean pressed) {
 		if(!pressed) {

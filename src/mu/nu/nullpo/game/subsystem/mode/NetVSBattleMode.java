@@ -76,7 +76,7 @@ public class NetVSBattleMode extends NetDummyMode {
 							 EVENT_TSPIN_TRIPLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_EZ = 10;
-	
+
 	/** Type of attack performed */
 	private static final int ATTACK_CATEGORY_NORMAL = 0,
 							 ATTACK_CATEGORY_B2B = 1,
@@ -258,7 +258,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 	private boolean isTank;
 
-	/** ゲームが続いてる間true、開始前や全員完全に終わるとfalse */
+	/** ゲームが続いてる間true, 開始前や全員完全に終わるとfalse */
 	private boolean isNetGameActive;
 
 	/** 全員完全に終わるとtrue(開始前はfalse) */
@@ -267,7 +267,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 進行中の部屋に入った直後はtrue */
 	private boolean isNewcomer;
 
-	/** OK表示切り替え直後、変更が確定するまでtrue */
+	/** OK表示切り替え直後, 変更が確定するまでtrue */
 	private boolean isReadyChangePending;
 
 	/** 練習Mode ならtrue */
@@ -1053,7 +1053,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		if(lines > 0) {
 			//int pts = 0;
 			int[] pts = new int[ATTACK_CATEGORIES];
-			
+
 			scgettime[playerID] = 0;
 
 			int numAliveTeams = getNumberOfTeamsAlive();
@@ -1181,7 +1181,7 @@ public class NetVSBattleMode extends NetDummyMode {
 							|| useFractionalGarbage && !garbageEntries.isEmpty() && (pts[i] >= GARBAGE_DENOMINATOR)) {
 						GarbageEntry garbageEntry = garbageEntries.getFirst();
 						garbageEntry.lines -= pts[i];
-	
+
 						if(garbageEntry.lines <= 0) {
 							pts[i] = Math.abs(garbageEntry.lines);
 							garbageEntries.removeFirst();
@@ -1195,7 +1195,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			// 攻撃
 			if(!isPractice && (numPlayers + numSpectators >= 2)) {
 				garbage[playerID] = getTotalGarbageLines();
-				
+
 				String stringPts = "";
 				for(int i : pts){
 					stringPts += i + "\t";
@@ -1682,7 +1682,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * game over画面描画
+	 * game overDraw the screen
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1873,7 +1873,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				"ATTACK", String.format("%10g", (float)garbageSent[playerID] / GARBAGE_DENOMINATOR),
 				"LINE", String.format("%10d", engine.statistics.lines),
 				"PIECE", String.format("%10d", engine.statistics.totalPieceLocked),
-				"ATTACK/MIN", String.format("%10g", playerAPM), 
+				"ATTACK/MIN", String.format("%10g", playerAPM),
 				"LINE/MIN", String.format("%10g", engine.statistics.lpm),
 				"PIECE/SEC", String.format("%10g", engine.statistics.pps),
 				"TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time)));
@@ -2335,12 +2335,12 @@ public class NetVSBattleMode extends NetDummyMode {
 				//int pts = Integer.parseInt(message[4]);
 				int[] pts = new int[ATTACK_CATEGORIES];
 				int sumPts = 0;
-				
+
 				for(int i = 0; i < ATTACK_CATEGORIES; i++){
 					pts[i] = Integer.parseInt(message[4+i]);
 					sumPts += pts[i];
 				}
-				
+
 				lastevent[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 5]);
 				lastb2b[playerID] = Boolean.parseBoolean(message[ATTACK_CATEGORIES + 6]);
 				lastcombo[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 7]);

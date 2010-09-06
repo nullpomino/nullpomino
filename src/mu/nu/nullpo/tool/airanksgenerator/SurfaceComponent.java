@@ -9,7 +9,6 @@ import javax.swing.JComponent;
 
 public class SurfaceComponent extends JComponent {
 
-
 	private static final long serialVersionUID = 1L;
 
 	private int [] surfaceDecoded;
@@ -22,10 +21,10 @@ public class SurfaceComponent extends JComponent {
 	private int baseSizeY;
     public SurfaceComponent(int maxJump,int stackWidth, int surface){
     	super();
-    	
+    
     	this.surfaceDecoded=new int[stackWidth-1];
-    	
-    	
+    
+    
     	baseSizeX=10;
     	baseSizeY=10;
     	this.stackWidth=stackWidth;
@@ -33,14 +32,14 @@ public class SurfaceComponent extends JComponent {
     	componentHeight=maxJump*(stackWidth-1);
     	setPreferredSize(getPreferredSize());
     	setSurface(surface);
-    	
-    	
+    
+    
     }
     public Dimension getPreferredSize(){
         return new Dimension(baseSizeX*(stackWidth+1)+2*baseSizeX,componentHeight*baseSizeY+2*baseSizeY);
-          
+
     }
-    
+
     public void setSurface(int surface){
     	int height=0;
     	minHeight=0;
@@ -60,9 +59,8 @@ public class SurfaceComponent extends JComponent {
     	repaint();
     }
 
-    
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);       
+        super.paintComponent(g);
         Rectangle bounds=g.getClipBounds();
         g.setColor(Color.BLACK);
         baseSizeX=bounds.width/(stackWidth+3);
@@ -78,8 +76,7 @@ public class SurfaceComponent extends JComponent {
         	posY-=surfaceDecoded[x]*baseSizeY;
         }
         g.drawLine(posX, posY, posX+baseSizeX, posY);
-        
-    }  
-    
+
+    }
 
 }

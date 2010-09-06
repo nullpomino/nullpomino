@@ -49,7 +49,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.apache.log4j.Logger;
 
 /**
- * ルール選択画面の frame 
+ * ルール選択画面の frame
  */
 public class RuleSelectFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -64,7 +64,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	/** Player number */
 	protected int playerID;
 
-	/** ファイル名 */
+	/** Filename */
 	protected String[] strFileNameList;
 
 	/** ファイルパス一覧 */
@@ -85,7 +85,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public RuleSelectFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -182,7 +182,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 
 	/**
 	 * ルールファイル一覧を取得
-	 * @return ルールファイルのファイル名の配列。ディレクトリがないならnull
+	 * @return ルールファイルのFilenameの配列。ディレクトリがないならnull
 	 */
 	protected String[] getRuleFileList() {
 		File dir = new File("config/rule");
@@ -223,7 +223,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * メニュー実行時の処理
+	 * Menu 実行時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "RuleSelect_OK") {

@@ -36,7 +36,7 @@ import sdljava.video.SDLSurface;
  */
 public class BaseStateSDL {
 	/**
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 * @throws SDLException SDLのエラー
 	 */
 	public void enter() throws SDLException {}
@@ -48,7 +48,7 @@ public class BaseStateSDL {
 	public void leave() throws SDLException {}
 
 	/**
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 * @param screen ゲーム画面のサーフェイス
 	 * @throws SDLException SDLのエラー
 	 */

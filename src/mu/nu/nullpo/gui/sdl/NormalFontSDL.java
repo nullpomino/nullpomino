@@ -45,9 +45,9 @@ public class NormalFontSDL {
 	public static SDLSurface dest;
 
 	/**
-	 * 指定したフォント色をSDLColorとして取得
-	 * @param fontColor フォント色
-	 * @return フォント色のSDLColor
+	 * 指定した font 色をSDLColorとして取得
+	 * @param fontColor  font 色
+	 * @return  font 色のSDLColor
 	 */
 	public static SDLColor getFontColorAsSDLColor(int fontColor) {
 		switch(fontColor) {
@@ -66,7 +66,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * TTFフォントを使用して文字列を描画
+	 * TTF font を使用して文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -83,7 +83,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * TTFフォントを使用して文字列を描画
+	 * TTF font を使用して文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -163,7 +163,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -180,7 +180,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -192,7 +192,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -210,7 +210,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -246,7 +246,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -260,7 +260,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列

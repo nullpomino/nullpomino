@@ -234,7 +234,7 @@ public class NetBaseClient extends Thread {
 	/**
 	 * サーバーにメッセージを送信
 	 * @param bytes 送信するメッセージ
-	 * @return 成功したらtrue
+	 * @return true if successful
 	 */
 	public boolean send(byte[] bytes) {
 		try {
@@ -249,7 +249,7 @@ public class NetBaseClient extends Thread {
 	/**
 	 * サーバーにメッセージを送信
 	 * @param msg 送信するメッセージ
-	 * @return 成功したらtrue
+	 * @return true if successful
 	 */
 	public boolean send(String msg) {
 		try {
@@ -293,7 +293,7 @@ public class NetBaseClient extends Thread {
 	/**
 	 * 指定したNetMessageListenerを削除
 	 * @param l 削除するNetMessageListener
-	 * @return 実際に削除されたらtrue、もともと追加されてなかったらfalse
+	 * @return 実際に削除されたらtrue, もともと追加されてなかったらfalse
 	 */
 	public boolean removeListener(NetMessageListener l) {
 		return listeners.remove(l);

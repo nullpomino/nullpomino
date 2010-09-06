@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
@@ -64,14 +63,14 @@ public class StateInGameSDL extends BaseStateSDL {
 	/**  frame ステップ有効 flag */
 	protected boolean enableframestep = false;
 
-	/** 倍速Mode  */
+	/** 倍速Mode */
 	protected int fastforward = 0;
 
-	/** ポーズメニューのカーソル位置 */
+	/** Pause menuのCursor position */
 	protected int cursor = 0;
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -151,7 +150,7 @@ public class StateInGameSDL extends BaseStateSDL {
 				gameManager.engine[i].aiShowHint = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowHint",false);
 			}
 
-			// Initialization処理
+			// Called at initialization
 			gameManager.engine[i].init();
 		}
 	}
@@ -214,13 +213,13 @@ public class StateInGameSDL extends BaseStateSDL {
 				gameManager.engine[i].aiShowHint = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowHint", false);
 			}
 
-			// Initialization処理
+			// Called at initialization
 			gameManager.engine[i].init();
 		}
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave() throws SDLException {
@@ -229,14 +228,14 @@ public class StateInGameSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
 		if(gameManager != null) {
 			gameManager.renderAll();
 
-			// ポーズメニュー
+			// Pause menu
 			if(pause && !enableframestep && !pauseMessageHide) {
 				int offsetX = RendererSDL.FIELD_OFFSET_X[0];
 				int offsetY = RendererSDL.FIELD_OFFSET_Y[0];
@@ -280,7 +279,7 @@ public class StateInGameSDL extends BaseStateSDL {
 				if(!enableframestep) ResourceHolderSDL.bgmResume();
 			}
 		}
-		// ポーズメニュー
+		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 				cursor--;
@@ -320,18 +319,18 @@ public class StateInGameSDL extends BaseStateSDL {
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 					return;
 				} else if(cursor == 3) {
-					// リプレイ追記
+					// Replay re-record
 					gameManager.replayRerecord = true;
 					ResourceHolderSDL.soundManager.play("tspin1");
 					cursor = 0;
 				}
 			}
 		}
-		// ポーズメニュー非表示
+		// Hide pause menu
 		pauseMessageHide = GameKeySDL.gamekey[0].isPressKey(GameKeySDL.BUTTON_C);
 
 		if(gameManager.replayMode && !gameManager.replayRerecord && gameManager.engine[0].gameActive) {
-			// リプレイ倍速
+			// Replay speed
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_LEFT)) {
 				if(fastforward > 0) {
 					fastforward--;
@@ -343,13 +342,13 @@ public class StateInGameSDL extends BaseStateSDL {
 				}
 			}
 
-			// リプレイ追記
+			// Replay re-record
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_D)) {
 				gameManager.replayRerecord = true;
 				ResourceHolderSDL.soundManager.play("tspin1");
 				cursor = 0;
 			}
-			// リプレイ追記
+			// Replay re-record
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_E)) {
 				gameManager.replayShowInvisible = !gameManager.replayShowInvisible;
 				ResourceHolderSDL.soundManager.play("tspin1");
@@ -389,14 +388,14 @@ public class StateInGameSDL extends BaseStateSDL {
 		}
 
 		if(gameManager != null) {
-			// リトライ button
+			// Retry button
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_RETRY) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_RETRY)) {
 				ResourceHolderSDL.bgmStop();
 				pause = false;
 				gameManager.reset();
 			}
 
-			// タイトルに戻る
+			// Return to title
 			if(gameManager.getQuitFlag() ||
 			   GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_GIVEUP) ||
 			   GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_GIVEUP))

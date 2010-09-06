@@ -41,7 +41,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	/** Player number */
 	public int player;
 
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor;
 
 	/** A buttonでのrotationDirectionを -1=ルールに従う 0=常に左rotation 1=常に右rotation */
@@ -65,7 +65,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 設定読み込み
+	 * Load settings
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
@@ -77,7 +77,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 設定保存
+	 * Save settings
 	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
@@ -89,7 +89,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -97,7 +97,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -129,7 +129,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
-		// カーソル移動
+		// Cursor movement
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;

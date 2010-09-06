@@ -7,22 +7,22 @@ public abstract class LimitedHistoryRandomizer extends Randomizer {
 	int[] history;
 	int id;
 	int numrolls;
-	
+
 	boolean firstPiece;
-	
+
 	public LimitedHistoryRandomizer() {
 		super();
 	}
-	
+
 	public LimitedHistoryRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
-		
+
 	}
 
 	public void init() {
 		firstPiece = true;
 	}
-	
+
 	public int next() {
 		if (firstPiece && !isPieceSZOOnly()) {
 			do {

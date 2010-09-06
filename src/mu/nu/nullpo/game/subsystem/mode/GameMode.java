@@ -63,7 +63,7 @@ public interface GameMode {
 	public void playerInit(GameEngine engine, int playerID);
 
 	/**
-	 * Ready→Go直後、最初のピースが現れる直前の処理
+	 * Ready→Go直後, 最初のピースが現れる直前の処理
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */

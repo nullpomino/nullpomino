@@ -47,7 +47,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * リプレイ選択画面のステート
  */
 public class StateReplaySelect extends DummyMenuScrollState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 4;
 
 	/** 1画面に表示するMaximumファイルcount */
@@ -64,7 +64,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 
 	/** Scoreなどの情報 */
 	protected Statistics[] statsList;
-	
+
 	public StateReplaySelect () {
 		pageHeight = PAGE_HEIGHT;
 		nullError = "REPLAY DIRECTORY NOT FOUND";
@@ -72,7 +72,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	}
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -80,13 +80,13 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -97,7 +97,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 
 	/**
 	 * リプレイファイル一覧を取得
-	 * @return リプレイファイルのファイル名の配列。ディレクトリがないならnull
+	 * @return リプレイファイルのFilenameの配列。ディレクトリがないならnull
 	 */
 	protected String[] getReplayFileList() {
 		File dir = new File(NullpoMinoSlick.propGlobal.getProperty("custom.replay.directory", "replay"));
@@ -141,7 +141,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 			statsList[i].readProperty(prop, 0);
 		}
 	}
-	
+
 	@Override
 	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
 		String title = "SELECT REPLAY FILE";
@@ -162,7 +162,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 									, NormalFont.COLOR_CYAN);
 		*/
 	}
-	
+
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
@@ -183,7 +183,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 		game.enterState(StateInGame.ID);
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		game.enterState(StateTitle.ID);

@@ -40,9 +40,9 @@ public class NormalFont {
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
 
 	/**
-	 * 指定したフォント色をSlick用Colorとして取得
-	 * @param fontColor フォント色
-	 * @return フォント色のColor
+	 * 指定した font 色をSlick用Colorとして取得
+	 * @param fontColor  font 色
+	 * @return  font 色のColor
 	 */
 	public static Color getFontColorAsColor(int fontColor) {
 		switch(fontColor) {
@@ -61,7 +61,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * TTFフォントを使用して文字列を描画
+	 * TTF font を使用して文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -73,7 +73,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * TTFフォントを使用して文字列を描画
+	 * TTF font を使用して文字列を描画
 	 * (各ステートのupdateメソッドでResourceHolder.ttfFont.loadGlyphs()を呼ばないと描画されないので注意)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
@@ -149,7 +149,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -165,7 +165,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -176,7 +176,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -194,7 +194,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -228,7 +228,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -241,7 +241,7 @@ public class NormalFont {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列

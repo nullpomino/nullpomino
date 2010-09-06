@@ -469,7 +469,7 @@ public class RetroMasteryMode extends DummyMode {
 			else if(togo <= 5) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			else if(togo <= 8) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			else engine.meterColor = GameEngine.METER_COLOR_GREEN;
-			
+
 		}
 	}
 

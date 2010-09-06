@@ -62,7 +62,7 @@ public class RendererSlick extends EventReceiver {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールド背景の明るさ */
+	/** フィールドBackgroundの明るさ */
 	protected float fieldbgbright;
 
 	/** NEXT欄を暗くする */
@@ -110,7 +110,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * メニュー用の文字列を描画
+	 * Menu 用の文字列を描画
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -125,7 +125,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * メニュー用の文字列をTTFフォントで描画
+	 * Menu 用の文字列をTTF font で描画
 	 */
 	@Override
 	public void drawTTFMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -139,7 +139,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Render score用のフォントを描画
+	 * Render score用の font を描画
 	 */
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -151,7 +151,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Render score用のフォントをTTFフォントで描画
+	 * Render score用の font をTTF font で描画
 	 */
 	@Override
 	public void drawTTFScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -170,7 +170,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 直接指定した座標へ描画できるTTFフォントを描画
+	 * 直接指定した座標へ描画できるTTF font を描画
 	 */
 	@Override
 	public void drawTTFDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -213,7 +213,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 効果音再生
+	 * Sound effects再生
 	 */
 	@Override
 	public void playSE(String name) {
@@ -335,7 +335,7 @@ public class RendererSlick extends EventReceiver {
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
 	}
-	
+
 	protected void drawBlockForceVisible(int x, int y, Block blk, float scale) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness,
 				(0.5f*blk.alpha)+0.5f, scale);
@@ -766,7 +766,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * フィールドの枠を描画
+	 * Field frameを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -792,7 +792,7 @@ public class RendererSlick extends EventReceiver {
 			offsetX = engine.framecolor * 16;
 		}
 
-		// フィールド背景
+		// フィールドBackground
 		if((fieldbgbright > 0) && (showbg)) {
 			Color filter = new Color(Color.black);
 			filter.a = fieldbgbright;
@@ -923,7 +923,7 @@ public class RendererSlick extends EventReceiver {
 	protected void drawNext(int x, int y, GameEngine engine) {
 		if(graphics == null) return;
 
-		// NEXT欄背景
+		// NEXT欄Background
 		if(showbg && darknextarea) {
 			Color filter = new Color(Color.black);
 			graphics.setColor(filter);
@@ -1127,7 +1127,7 @@ public class RendererSlick extends EventReceiver {
 		if(graphics == null) return;
 
 		if(engine.playerID == 0) {
-			// 背景
+			// Background
 			if(engine.owner.menuOnly) {
 				graphics.setColor(Color.white);
 				graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
@@ -1217,16 +1217,16 @@ public class RendererSlick extends EventReceiver {
 			if(engine.displaysize == 1) {
 				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 2.0f);
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
-				if((engine.ai!=null) && (engine.aiShowHint)&& engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 2.0f); 
+				if((engine.ai!=null) && (engine.aiShowHint)&& engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
 				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 2.0f);
 			} else if(engine.displaysize == 0) {
 				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 1.0f);
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
-				if((engine.ai!=null) && (engine.aiShowHint ) && engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 1.0f); 
+				if((engine.ai!=null) && (engine.aiShowHint ) && engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 			} else {
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
-				if((engine.ai!=null) && (engine.aiShowHint) &&engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 4, engine, 0.5f); 
+				if((engine.ai!=null) && (engine.aiShowHint) &&engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
 				drawCurrentPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
 			}
 		}

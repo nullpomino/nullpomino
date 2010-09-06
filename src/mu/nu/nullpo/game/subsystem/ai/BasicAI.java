@@ -50,25 +50,25 @@ public class BasicAI extends DummyAI implements Runnable {
 	/** 接地したあとのY-coordinate */
 	public int bestYSub;
 
-	/** 接地したあとのDirection(-1：なし) */
+	/** 接地したあとのDirection(-1: None) */
 	public int bestRtSub;
 
-	/** 最善手の評価得点 */
+	/** 最善手のEvaluation score */
 	public int bestPts;
 
 	/** 移動を遅らせる用の変count */
 	public int delay;
 
-	/** このAIを所持するGameEngine */
+	/** The GameEngine that owns this AI */
 	public GameEngine gEngine;
 
-	/** このAIを所有するGameManager */
+	/** The GameManager that owns this AI */
 	public GameManager gManager;
 
 	/** trueならスレッドにThink routineの実行を指示 */
 	public boolean thinkRequest;
 
-	/** trueならスレッドがThink routine実行中 */
+	/** true when thread is executing the think routine. */
 	public boolean thinking;
 
 	/** スレッドを停止させる time */
@@ -77,7 +77,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	/** trueならスレッド動作中 */
 	public volatile boolean threadRunning;
 
-	/** Think routine実行用スレッド */
+	/** Thread for executing the think routine */
 	public Thread thread;
 
 	/*
@@ -89,7 +89,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * Initialization処理
+	 * Called at initialization
 	 */
 	@Override
 	public void init(GameEngine engine, int playerID) {
@@ -150,7 +150,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/*
-	 *  button input状態を設定
+	 * Set button input states
 	 */
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
@@ -246,8 +246,8 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 最善手を探す
-	 * @param engine このAIを所有するGameEngine
+	 * Search for the best choice
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
@@ -488,13 +488,13 @@ public class BasicAI extends DummyAI implements Runnable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld Direction before rotation (-1：なし）
-	 * @param fld フィールド (どんなに弄っても問題なし）
-	 * @param piece ピース
+	 * @param rtOld Direction before rotation (-1: None）
+	 * @param fld Field (Can be modified without problems)
+	 * @param piece Piece
 	 * @param nextpiece NEXTピース
 	 * @param holdpiece HOLDピース(nullの場合あり)
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
-	 * @return 評価得点
+	 * @return Evaluation score
 	 */
 	public int thinkMain(GameEngine engine, int x, int y, int rt, int rtOld, Field fld, Piece piece, Piece nextpiece, Piece holdpiece, int depth) {
 		int pts = 0;

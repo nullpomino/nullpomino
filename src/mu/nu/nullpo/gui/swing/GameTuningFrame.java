@@ -52,7 +52,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
 /**
- * チューニング設定画面の frame 
+ * チューニング設定画面の frame
  */
 public class GameTuningFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -87,7 +87,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public GameTuningFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();

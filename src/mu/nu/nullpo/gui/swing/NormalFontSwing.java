@@ -42,7 +42,7 @@ public class NormalFontSwing {
 	public static Graphics2D graphics = null;
 
 	/**
-	 * フォントを描画
+	 *  font を描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param str 文字列
@@ -101,7 +101,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -117,7 +117,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -128,7 +128,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -145,7 +145,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -178,7 +178,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色、trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -191,7 +191,7 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白、trueだったら赤で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列

@@ -65,16 +65,16 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
-	/** 設定保存用Property file */
+	/** Save settings用Property file */
 	public static CustomProperties propConfig;
 
-	/** 設定保存用Property file (全Version共通) */
+	/** Save settings用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
 	/** 音楽リストProperty file */
 	public static CustomProperties propMusic;
 
-	/** オブザーバー機能用Property file */
+	/** Observer機能用Property file */
 	public static CustomProperties propObserver;
 
 	/** Default language file */
@@ -83,7 +83,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
-	/** スクリーンショット用 */
+	/** Screenshot用 */
 	public static BufferedImage ssImage;
 
 	/** Mode 管理 */
@@ -122,13 +122,13 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
 
-	/** Joystick  button設定画面のステート */
+	/** Joystick button設定画面のステート */
 	public static StateConfigJoystickButton stateConfigJoystickButton;
 
 	/** ネットプレイ画面のステート */
 	public static StateNetGame stateNetGame;
 
-	/** Joystick 設定メインメニューのステート */
+	/** Joystick 設定メインMenu のステート */
 	public static StateConfigJoystickMain stateConfigJoystickMain;
 
 	/** Joystick テスト画面のステート */
@@ -182,7 +182,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Used by perfect fps mode */
 	public static long perfectFPSDelay = 0;
 
-	/** オブザーバークライアント */
+	/** Observerクライアント */
 	public static NetObserverClient netObserverClient;
 
 	/**
@@ -328,12 +328,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * スクリーンショット保存
+	 * Screenshot保存
 	 * @param container GameContainer
 	 * @param g Graphics
 	 */
 	public static void saveScreenShot(GameContainer container, Graphics g) {
-		// ファイル名を決める
+		// Filenameを決める
 		String dir = propGlobal.getProperty("custom.screenshot.directory", "ss");
 		GregorianCalendar currentTime = new GregorianCalendar();
 		int month = currentTime.get(Calendar.MONTH) + 1;
@@ -344,7 +344,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		);
 		log.info("Saving screenshot to " + filename);
 
-		// スクリーンショット作成
+		// Screenshot作成
 		try {
 			File ssfolder = new File(dir);
 			if (!ssfolder.exists()) {
@@ -567,7 +567,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * オブザーバークライアントを開始
+	 * Observerクライアントを開始
 	 */
 	public static void startObserverClient() {
 		log.debug("startObserverClient called");
@@ -594,7 +594,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * オブザーバークライアントを停止
+	 * Observerクライアントを停止
 	 */
 	public static void stopObserverClient() {
 		log.debug("stopObserverClient called");
@@ -611,7 +611,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * オブザーバークライアントからの情報を描画
+	 * Observerクライアントからの情報を描画
 	 */
 	public static void drawObserverClient() {
 		if((netObserverClient != null) && netObserverClient.isConnected()) {

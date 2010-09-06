@@ -43,7 +43,7 @@ public class AvalancheWallkick implements Wallkick {
 	public WallkickResult executeWallkick(int x, int y, int rtDir, int rtOld, int rtNew, boolean allowUpward, Piece piece, Field field, Controller ctrl) {
 		int check = 1;
 		if(piece.big) check = 2;
-		
+
 		if(rtNew == Piece.DIRECTION_LEFT || !piece.checkCollision(x, y, rtNew, field))
 			return null;
 		if(!piece.checkCollision(x, y - check, rtNew, field))

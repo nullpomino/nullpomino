@@ -455,7 +455,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			in.close();
 		} catch(IOException e) {}
 
-		// オブザーバー機能の設定ファイル読み込み
+		// Observer機能の設定ファイル読み込み
 		propObserver = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
@@ -625,7 +625,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnUnsetObserver.setMnemonic('U');
 		subpanelServerAdd.add(btnUnsetObserver);
 
-		// * 接続 button・終了 button用パネル
+		// * 接続 button・Exit button用パネル
 		JPanel subpanelServerSelectButtons = new JPanel();
 		subpanelServerSelectButtons.setLayout(new BoxLayout(subpanelServerSelectButtons, BoxLayout.X_AXIS));
 		mainpanelServerSelect.add(subpanelServerSelectButtons, BorderLayout.SOUTH);
@@ -638,7 +638,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnServerConnect.setMnemonic('C');
 		subpanelServerSelectButtons.add(btnServerConnect);
 
-		// ** 終了 button
+		// ** Exit button
 		JButton btnServerExit = new JButton(getUIText("ServerSelect_Exit"));
 		btnServerExit.setMaximumSize(new Dimension(Short.MAX_VALUE, btnServerExit.getMaximumSize().height));
 		btnServerExit.addActionListener(this);
@@ -1109,7 +1109,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel subpanelHurryupInterval = new JPanel(new BorderLayout());
 		containerpanelCreateRoomMain.add(subpanelHurryupInterval);
 
-		// *** 「HURRY UP後、床をせり上げる間隔:」ラベル
+		// *** 「HURRY UP後, 床をせり上げる間隔:」ラベル
 		JLabel labelHurryupInterval = new JLabel(getUIText("CreateRoom_HurryupInterval"));
 		subpanelHurryupInterval.add(labelHurryupInterval, BorderLayout.WEST);
 
@@ -1724,7 +1724,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/**
 	 * ファイルをDefaultListModelに読み込み
 	 * @param listModel 読み込み先のDefaultListModel
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return 成功するとtrue
 	 */
 	public boolean loadListToDefaultListModel(DefaultListModel listModel, String filename) {
@@ -1747,7 +1747,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/**
 	 * DefaultListModelからファイルに保存
 	 * @param listModel 保存元のDefaultListModel
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return 成功するとtrue
 	 */
 	public boolean saveListFromDefaultListModel(DefaultListModel listModel, String filename) {
@@ -1780,7 +1780,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/**
 	 * ルーム画面の buttonの有効状態を変更
-	 * @param b trueなら有効、falseなら無効
+	 * @param b trueなら有効, falseなら無効
 	 */
 	public void setRoomButtonsEnabled(boolean b) {
 		btnRoomButtonsTeamChange.setEnabled(b);
@@ -1793,7 +1793,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/**
 	 * ルーム画面の参戦 buttonと離脱 buttonの切り替え
-	 * @param b trueのときは参戦 button、falseのときは離脱 buttonを表示
+	 * @param b trueのときは参戦 button, falseのときは離脱 buttonを表示
 	 */
 	public void setRoomJoinButtonVisible(boolean b) {
 		btnRoomButtonsJoin.setVisible(b);
@@ -1838,7 +1838,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/**
 	 * ルーム作成画面のMode 切り替え
-	 * @param isDetailMode falseなら作成Mode 、trueなら詳細Mode
+	 * @param isDetailMode falseなら作成Mode , trueなら詳細Mode
 	 * @param roomInfo ルーム情報(isDetailMode == trueのときだけ使用)
 	 */
 	public void setCreateRoomUIType(boolean isDetailMode, NetRoomInfo roomInfo) {
@@ -2371,7 +2371,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/*
-	 * メニュー実行時の処理
+	 * Menu 実行時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
 		//addSystemChatLog(getCurrentChatLogTextPane(), e.getActionCommand(), Color.magenta);
@@ -3176,7 +3176,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * テキスト input 欄用ポップアップメニュー
+	 * テキスト input 欄用ポップアップMenu
 	 * <a href="http://terai.xrea.jp/Swing/DefaultEditorKit.html">出展</a>
 	 */
 	protected class TextComponentPopupMenu extends JPopupMenu {
@@ -3237,7 +3237,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * リストボックス用ポップアップメニュー
+	 * リストボックス用ポップアップMenu
 	 */
 	protected class ListBoxPopupMenu extends JPopupMenu {
 		private static final long serialVersionUID = 1L;
@@ -3276,7 +3276,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * サーバー選択リストボックス用ポップアップメニュー
+	 * サーバー選択リストボックス用ポップアップMenu
 	 */
 	protected class ServerSelectListBoxPopupMenu extends JPopupMenu {
 		private static final long serialVersionUID = 1L;
@@ -3332,7 +3332,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム一覧 table用ポップアップメニュー
+	 * ルーム一覧 table用ポップアップMenu
 	 */
 	protected class RoomTablePopupMenu extends JPopupMenu {
 		private static final long serialVersionUID = 1L;
@@ -3440,7 +3440,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ログ表示欄用ポップアップメニュー
+	 * ログ表示欄用ポップアップMenu
 	 */
 	protected class LogPopupMenu extends JPopupMenu {
 		private static final long serialVersionUID = 1L;

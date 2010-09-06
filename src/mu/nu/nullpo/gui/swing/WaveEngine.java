@@ -54,13 +54,13 @@ public class WaveEngine implements LineListener {
 	/** Log */
 	static Logger log = Logger.getLogger(WaveEngine.class);
 
-	/** 登録できるWAVEファイルのMaximumcount */
+	/** 登録できるWAVE file のMaximumcount */
 	private int maxClips;
 
-	/** WAVEファイル data (名前-> data本体) */
+	/** WAVE file  data (名前-> data本体) */
 	private HashMap<String, Clip> clipMap;
 
-	/** 登録されたWAVEファイルcount */
+	/** 登録されたWAVE file count */
 	private int counter = 0;
 
 	/** 音量 */
@@ -75,7 +75,7 @@ public class WaveEngine implements LineListener {
 
 	/**
 	 * Constructor
-	 * @param maxClips 登録できるWAVEファイルのMaximumcount
+	 * @param maxClips 登録できるWAVE file のMaximumcount
 	 */
 	public WaveEngine(int maxClips) {
 		this.maxClips = maxClips;
@@ -108,16 +108,16 @@ public class WaveEngine implements LineListener {
 	}
 
 	/**
-	 * Waveファイルを読み込み
+	 * WAVE file を読み込み
 	 * @param name 登録名
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 */
 	public void load(String name, String filename) {
 		load(name, ResourceHolderSwing.getURL(filename));
 	}
 
 	/**
-	 * Waveファイルを読み込み
+	 * WAVE file を読み込み
 	 * @param name 登録名
 	 * @param url URL
 	 */

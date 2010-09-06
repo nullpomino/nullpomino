@@ -34,7 +34,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * 出現する可能性のあるピースが全て偏らずに1個ずつ出る出現順 (最初にS、Z、Oを出さない）
+ * 出現する可能性のあるピースが全て偏らずに1個ずつ出る出現順 (最初にS, Z, Oを出さない）
  */
 public class BagRandomizerNoSZO implements Randomizer {
 	/*

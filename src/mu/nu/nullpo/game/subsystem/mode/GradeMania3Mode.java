@@ -41,7 +41,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * GRADE MANIA 3Mode 
+ * GRADE MANIA 3Mode
  */
 public class GradeMania3Mode extends DummyMode {
 	/** Log */
@@ -243,7 +243,7 @@ public class GradeMania3Mode extends DummyMode {
 
 	/** REGRET section flags*/
 	private boolean[] regretsection;
-	
+
 	/** Section time display color-code type */
 	private int stcolor;
 
@@ -316,7 +316,7 @@ public class GradeMania3Mode extends DummyMode {
 	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** BigMode  */
+	/** BigMode */
 	private boolean big;
 
 	/** trueならSection Time表示有効 */
@@ -637,11 +637,11 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * COOLの check 
+	 * COOLの check
 	 * @param engine GameEngine
 	 */
 	private void checkCool(GameEngine engine) {
-		// COOL check 
+		// COOL check
 		if((engine.statistics.level % 100 >= 70) && (coolchecked == false)) {
 			int section = engine.statistics.level / 100;
 
@@ -667,7 +667,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/**
-	 * REGRETの check 
+	 * REGRETの check
 	 * @param engine GameEngine
 	 * @param levelb Line clear前の level
 	 */
@@ -846,7 +846,7 @@ public class GradeMania3Mode extends DummyMode {
 				"LV500LIMIT", (lv500torikan == 0) ? "NONE" : GeneralUtil.getTime(lv500torikan),
 				"EXAM", GeneralUtil.getONorOFF(enableexam),
 				"STIMECOLOR", scolorStr);
-		
+
 	}
 
 	/*
@@ -990,7 +990,7 @@ public class GradeMania3Mode extends DummyMode {
 				receiver.drawMenuFont(engine,playerID,2,21,"COOL!!",(cooldispframe % 4 == 0),EventReceiver.COLOR_WHITE,EventReceiver.COLOR_ORANGE);
 			}
 
-			//  medal 
+			//  medal
 			if(medalAC >= 1) receiver.drawScoreFont(engine, playerID, 0, 20, "AC", getMedalFontColor(medalAC));
 			if(medalST >= 1) receiver.drawScoreFont(engine, playerID, 3, 20, "ST", getMedalFontColor(medalST));
 			if(medalSK >= 1) receiver.drawScoreFont(engine, playerID, 0, 21, "SK", getMedalFontColor(medalSK));
@@ -1007,7 +1007,7 @@ public class GradeMania3Mode extends DummyMode {
 
 						int section = engine.statistics.level / 100;
 						String strSeparator = " ";
-						
+
 						int color = EventReceiver.COLOR_WHITE;
 						if((i == section) && (engine.ending == 0)) {
 							strSeparator = "b";
@@ -1022,7 +1022,7 @@ public class GradeMania3Mode extends DummyMode {
 
 						String strSectionTime;
 						strSectionTime = String.format("%3d%s%s", temp, strSeparator, GeneralUtil.getTime(sectiontime[i]));
-						
+
 						receiver.drawScoreFont(engine, playerID, 12, 3 + i, strSectionTime, color);
 					}
 				}
@@ -1132,7 +1132,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame 
+		// 最後の frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -1157,7 +1157,7 @@ public class GradeMania3Mode extends DummyMode {
 		if(engine.statistics.level % 100 >= 80) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(engine.statistics.level == nextseclv - 1) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-		// COOL check 
+		// COOL check
 		checkCool(engine);
 
 		// 速度変更
@@ -1229,7 +1229,7 @@ public class GradeMania3Mode extends DummyMode {
 
 			// 4-line clearカウント
 			if(lines >= 4) {
-				// SK medal 
+				// SK medal
 				if(big == true) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						engine.playSE("medal");
@@ -1243,7 +1243,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// AC medal 
+			// AC medal
 			if(engine.field.isEmpty()) {
 				engine.playSE("bravo");
 
@@ -1253,7 +1253,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// CO medal 
+			// CO medal
 			if(big == true) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					engine.playSE("medal");
@@ -1304,7 +1304,7 @@ public class GradeMania3Mode extends DummyMode {
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
 				// REGRET判定
@@ -1332,16 +1332,16 @@ public class GradeMania3Mode extends DummyMode {
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
 				// REGRET判定
 				checkRegret(engine, levelb);
 			} else if(engine.statistics.level >= nextseclv) {
-				// Next Section 
+				// Next Section
 				engine.playSE("levelup");
 
-				// 背景切り替え
+				// Background切り替え
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
@@ -1358,7 +1358,7 @@ public class GradeMania3Mode extends DummyMode {
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
 				// REGRET判定

@@ -37,7 +37,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * GRADE MANIA 2Mode 
+ * GRADE MANIA 2Mode
  */
 public class GradeMania2Mode extends DummyMode {
 	/** Current version */
@@ -245,7 +245,7 @@ public class GradeMania2Mode extends DummyMode {
 	/** CO medal 状態 */
 	private int medalCO;
 
-	/** 150個以上Blockがあるとtrue、70個まで減らすとfalseになる */
+	/** 150個以上Blockがあるとtrue, 70個まで減らすとfalseになる */
 	private boolean recoveryFlag;
 
 	/** rotationした合計 count (Maximum4個ずつ増える) */
@@ -266,7 +266,7 @@ public class GradeMania2Mode extends DummyMode {
 	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** BigMode  */
+	/** BigMode */
 	private boolean big;
 
 	/** trueならSection Time表示有効 */
@@ -462,7 +462,7 @@ public class GradeMania2Mode extends DummyMode {
 	}
 
 	/**
-	 * 消えRoll 条件を満たしているか check 
+	 * 消えRoll 条件を満たしているか check
 	 * @param levelb 上がる前の level
 	 */
 	private void mrollCheck(int levelb) {
@@ -737,7 +737,7 @@ public class GradeMania2Mode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(time), ((time > 0) && (time < 10 * 60)));
 			}
 
-			//  medal 
+			//  medal
 			if(medalAC >= 1) receiver.drawScoreFont(engine, playerID, 0, 20, "AC", getMedalFontColor(medalAC));
 			if(medalST >= 1) receiver.drawScoreFont(engine, playerID, 3, 20, "ST", getMedalFontColor(medalST));
 			if(medalSK >= 1) receiver.drawScoreFont(engine, playerID, 0, 21, "SK", getMedalFontColor(medalSK));
@@ -792,7 +792,7 @@ public class GradeMania2Mode extends DummyMode {
 				// Hard drop bonusInitialization
 				harddropBonus = 0;
 
-				// RE medal 
+				// RE medal
 				if((engine.timerActive == true) && (medalRE < 3)) {
 					int blocks = engine.field.getHowManyBlocks();
 
@@ -852,7 +852,7 @@ public class GradeMania2Mode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame 
+		// 最後の frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -890,7 +890,7 @@ public class GradeMania2Mode extends DummyMode {
 			// Hard drop bonusInitialization
 			harddropBonus = 0;
 
-			// RE medal 
+			// RE medal
 			if((engine.timerActive == true) && (medalRE < 3)) {
 				int blocks = engine.field.getHowManyBlocks();
 
@@ -961,7 +961,7 @@ public class GradeMania2Mode extends DummyMode {
 			if(lines >= 4) {
 				sectionfourline[engine.statistics.level / 100]++;
 
-				// SK medal 
+				// SK medal
 				if(big == true) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						engine.playSE("medal");
@@ -975,7 +975,7 @@ public class GradeMania2Mode extends DummyMode {
 				}
 			}
 
-			// AC medal 
+			// AC medal
 			if(engine.field.isEmpty()) {
 				engine.playSE("bravo");
 
@@ -985,7 +985,7 @@ public class GradeMania2Mode extends DummyMode {
 				}
 			}
 
-			// CO medal 
+			// CO medal
 			if(big == true) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					engine.playSE("medal");
@@ -1032,20 +1032,20 @@ public class GradeMania2Mode extends DummyMode {
 				// 消えRoll check
 				mrollCheck(levelb);
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
-				// RO medal 
+				// RO medal
 				roMedalCheck(engine);
 
 				// 条件を全て満たしているなら消えRoll 発動
 				if((mrollSectiontime == true) && (mrollFourline == true) && (engine.statistics.time <= M_ROLL_TIME_REQUIRE) && (grade >= 17))
 					mrollFlag = true;
 			} else if(engine.statistics.level >= nextseclv) {
-				// Next Section 
+				// Next Section
 				engine.playSE("levelup");
 
-				// 背景切り替え
+				// Background切り替え
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
@@ -1065,10 +1065,10 @@ public class GradeMania2Mode extends DummyMode {
 				// 消えRoll check
 				mrollCheck(levelb);
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
-				// RO medal 
+				// RO medal
 				if((nextseclv == 300) || (nextseclv == 700)) roMedalCheck(engine);
 
 				// Update level for next section

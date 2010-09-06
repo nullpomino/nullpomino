@@ -538,7 +538,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 最後に生き残ったPlayerの情報を取得
-	 * @return 最後に生き残ったPlayerの情報(まだ2人以上生きている場合や、そもそもゲームが始まっていない場合はnull)
+	 * @return 最後に生き残ったPlayerの情報(まだ2人以上生きている場合や, そもそもゲームが始まっていない場合はnull)
 	 */
 	public NetPlayerInfo getWinner() {
 		if((startPlayers >= 2) && (getHowManyPlayersPlaying() < 2) && (playing == true)) {

@@ -48,58 +48,58 @@ public class ResourceHolderSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolderSDL.class);
 
-	/** 背景のcount */
+	/** Backgroundのcount */
 	public static final int BACKGROUND_MAX = 20;
 
-	/** Line clear時に飛び散るBlockの画像count */
+	/** Number of images for block spatter animation during line clears */
 	public static final int BLOCK_BREAK_MAX = 8;
 
-	/** Line clear時に飛び散るBlockの画像分割count */
+	/** Number of image splits for block spatter animation during line clears */
 	public static final int BLOCK_BREAK_SEGMENTS = 2;
 
-	/** 宝石Block消去エフェクトのcount */
+	/** Number of gem block clear effects */
 	public static final int PERASE_MAX = 7;
 
-	/** Blockの画像 */
+	/** Block images */
 	public static SDLSurface imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊Blockの画像 - old */
+	/** 特殊Block images - old */
 	//public static SDLSurface imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
-	/** 通常のフォント */
+	/** Regular font */
 	public static SDLSurface imgFont, imgFontSmall;
 
 	/** 小物画像 */
 	public static SDLSurface imgSprite;
 
-	/** タイトル */
+	/** Title */
 	public static SDLSurface imgTitle;
 
-	/** メニュー背景 */
+	/** Menu Background */
 	public static SDLSurface imgMenu;
 
-	/** フィールドの枠 */
+	/** Field frame */
 	public static SDLSurface imgFrame;
 
-	/** フィールドの背景 */
+	/** Field background */
 	public static SDLSurface imgFieldbg;
 
 	/** 真っ黒画像と真っ白画像 */
 	public static SDLSurface imgBlankBlack, imgBlankWhite;
 
-	/** Line clear時に飛び散るBlock */
+	/** Block spatter animation during line clears */
 	public static SDLSurface[][] imgBreak;
 
-	/** 宝石Block消去エフェクト */
+	/** Effects for clearing gem blocks */
 	public static SDLSurface[] imgPErase;
 
-	/** プレイ中の背景 */
+	/** プレイ中のBackground */
 	public static SDLSurface[] imgPlayBG;
 
-	/** TTFフォント */
+	/** TTF font */
 	public static SDLTrueTypeFont ttfFont;
 
-	/** 効果音 */
+	/** Sound effects */
 	public static SoundManagerSDL soundManager;
 
 	/** BGM */
@@ -110,7 +110,7 @@ public class ResourceHolderSDL {
 
 	/**
 	 * 画像や音声を読み込み
-	 * @throws SDLException 読み込みに失敗
+	 * @throws SDLException Failed to load
 	 */
 	public static void load() throws SDLException {
 		String skindir = NullpoMinoSDL.propConfig.getProperty("custom.skin.directory", "res");
@@ -140,7 +140,7 @@ public class ResourceHolderSDL {
 		if(NullpoMinoSDL.propConfig.getProperty("option.showbg", true) == true)
 			loadBackgroundImages();
 
-		// フォント
+		// Font
 		try {
 			ttfFont = SDLTTF.openFont(skindir + "/font/font.ttf", 16);
 		} catch (Throwable e) {
@@ -148,7 +148,7 @@ public class ResourceHolderSDL {
 			ttfFont = null;
 		}
 
-		// 効果音
+		// Sound effects
 		SDLMixer.allocateChannels(NullpoMinoSDL.propConfig.getProperty("option.soundChannels", 15));
 
 		soundManager = new SoundManagerSDL();
@@ -273,7 +273,7 @@ public class ResourceHolderSDL {
 
 	/**
 	 * 画像読み込み
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return 画像 data
 	 */
 	public static SDLSurface loadImage(String filename) {

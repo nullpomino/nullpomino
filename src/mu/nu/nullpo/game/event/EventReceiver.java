@@ -56,7 +56,7 @@ public class EventReceiver {
 	public static final int[] FIELD_OFFSET_X_MULTI = {119, 247, 375, 503, 247, 375},
 							  FIELD_OFFSET_Y_MULTI = {80, 80, 80, 80, 286, 286};
 
-	/** 背景表示 */
+	/** Background表示 */
 	protected boolean showbg;
 
 	/** フィールド右側にMeterを表示 */
@@ -75,7 +75,7 @@ public class EventReceiver {
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
 
 	/**
-	 * メニュー用の文字列を描画
+	 * Menu 用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -88,7 +88,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * メニュー用の文字列を描画 (文字色は白）
+	 * Menu 用の文字列を描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -101,7 +101,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * メニュー用の文字列を描画
+	 * Menu 用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -115,7 +115,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でメニュー用の文字列を描画
+	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でMenu 用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -135,7 +135,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったら白、trueだったら赤でメニュー用の文字列を描画
+	 * flagがfalseだったら白, trueだったら赤でMenu 用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -154,7 +154,7 @@ public class EventReceiver {
 	}
 
 	/**
-	 * メニュー用の文字列をTTFフォントで描画 (必ずしも全てのVersionで使えるわけではありません）
+	 * Menu 用の文字列をTTF font で描画 (必ずしも全てのVersionで使えるわけではありません）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -166,7 +166,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * メニュー用の文字列をTTFフォントで描画 (文字色は白）
+	 * Menu 用の文字列をTTF font で描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -177,10 +177,9 @@ public class EventReceiver {
 		drawTTFMenuFont(engine, playerID, x, y, str, COLOR_WHITE);
 	}
 
-
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でメニュー用の文字列をTTFフォントで描画
+	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でMenu 用の文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -200,7 +199,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったら白、trueだったら赤でメニュー用の文字列をTTFフォントで描画
+	 * flagがfalseだったら白, trueだったら赤でMenu 用の文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -259,7 +258,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でRender score用の文字列を描画
+	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でRender score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -279,7 +278,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったら白、trueだったら赤でRender score用の文字列を描画
+	 * flagがfalseだったら白, trueだったら赤でRender score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -298,7 +297,7 @@ public class EventReceiver {
 	}
 
 	/**
-	 * Render score用の文字列をTTFフォントで描画 (必ずしも全てのVersionで使えるわけではありません）
+	 * Render score用の文字列をTTF font で描画 (必ずしも全てのVersionで使えるわけではありません）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -310,7 +309,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * Render score用の文字列をTTFフォントで描画 (文字色は白）
+	 * Render score用の文字列をTTF font で描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -321,10 +320,9 @@ public class EventReceiver {
 		drawTTFScoreFont(engine, playerID, x, y, str, COLOR_WHITE);
 	}
 
-
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色でRender score用の文字列をTTFフォントで描画
+	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でRender score用の文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -344,7 +342,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったら白、trueだったら赤でRender score用の文字列をTTFフォントで描画
+	 * flagがfalseだったら白, trueだったら赤でRender score用の文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -403,7 +401,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色で直接指定した座標へ文字列を描画
+	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色で直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -423,7 +421,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったら白、trueだったら赤で直接指定した座標へ文字列を描画
+	 * flagがfalseだったら白, trueだったら赤で直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -442,7 +440,7 @@ public class EventReceiver {
 	}
 
 	/**
-	 * 直接指定した座標へ描画できる文字列をTTFフォントで描画 (必ずしも全てのVersionで使えるわけではありません）
+	 * 直接指定した座標へ描画できる文字列をTTF font で描画 (必ずしも全てのVersionで使えるわけではありません）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -454,7 +452,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * 直接指定した座標へ描画できる文字列をTTFフォントで描画 (文字色は白）
+	 * 直接指定した座標へ描画できる文字列をTTF font で描画 (文字色は白）
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -465,10 +463,9 @@ public class EventReceiver {
 		drawTTFDirectFont(engine, playerID, x, y, str, COLOR_WHITE);
 	}
 
-
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色、trueだったらcolorTの色で直接指定した座標へ描画できる文字列をTTFフォントで描画
+	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色で直接指定した座標へ描画できる文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -488,7 +485,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったら白、trueだったら赤で直接指定した座標へ描画できる文字列をTTFフォントで描画
+	 * flagがfalseだったら白, trueだったら赤で直接指定した座標へ描画できる文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -532,8 +529,8 @@ public class EventReceiver {
 	public void drawSingleBlock(GameEngine engine, int playerID, int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {}
 
 	/**
-	 * TTFフォントを使用できるか判定
-	 * @return TTFフォントを使用できるならtrue
+	 * TTF font を使用できるか判定
+	 * @return TTF font を使用できるならtrue
 	 */
 	public boolean isTTFSupport() {
 		return false;
@@ -555,10 +552,10 @@ public class EventReceiver {
 	}
 
 	/**
-	 * Blockの画像の幅を取得
+	 * Block imagesの幅を取得
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
-	 * @return Blockの画像の幅
+	 * @return Block imagesの幅
 	 */
 	public int getBlockGraphicsWidth(GameEngine engine, int playerID) {
 		if (engine.displaysize == -1)
@@ -570,10 +567,10 @@ public class EventReceiver {
 	}
 
 	/**
-	 * Blockの画像の高さを取得
+	 * Block imagesの高さを取得
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
-	 * @return Blockの画像の高さ
+	 * @return Block imagesの高さ
 	 */
 	public int getBlockGraphicsHeight(GameEngine engine, int playerID) {
 		if (engine.displaysize == -1)
@@ -605,8 +602,8 @@ public class EventReceiver {
 	}
 
 	/**
-	 * 効果音再生
-	 * @param name 効果音の名前
+	 * Sound effects再生
+	 * @param name Sound effectsの名前
 	 */
 	public void playSE(String name) {}
 
@@ -650,7 +647,7 @@ public class EventReceiver {
 
 	/**
 	 * 任意のプロパティセットを読み込み
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return プロパティセット (失敗したらnull）
 	 */
 	public CustomProperties loadProperties(String filename) {
@@ -669,8 +666,8 @@ public class EventReceiver {
 	}
 
 	/**
-	 * 任意のプロパティセットを任意のファイル名で保存
-	 * @param filename ファイル名
+	 * 任意のプロパティセットを任意のFilenameで保存
+	 * @param filename Filename
 	 * @param prop 保存するプロパティセット
 	 * @return 成功するとtrue
 	 */
@@ -701,7 +698,7 @@ public class EventReceiver {
 	public void playerInit(GameEngine engine, int playerID) {}
 
 	/**
-	 * Ready→Go直後、最初のピースが現れる直前の処理
+	 * Ready→Go直後, 最初のピースが現れる直前の処理
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
@@ -965,7 +962,7 @@ public class EventReceiver {
 	 * @param prop リプレイ保存先のプロパティセット
 	 */
 	public void saveReplay(GameManager owner, CustomProperties prop) {}
-	
+
 	public void saveReplay(GameManager owner, CustomProperties prop, String foldername) {
 		if(owner.mode.isNetplayMode()) return;
 

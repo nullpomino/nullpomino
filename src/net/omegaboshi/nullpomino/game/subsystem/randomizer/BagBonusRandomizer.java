@@ -1,20 +1,20 @@
 package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
 public class BagBonusRandomizer extends Randomizer {
-	
+
 	int[] bag;
 	int baglen;
 	int pt;
 	int bonus;
-	
+
 	public BagBonusRandomizer() {
 		super();
 	}
-	
+
 	public BagBonusRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
 	}
-	
+
 	public void init() {
 		baglen = pieces.length+1;
 		bag = new int[baglen];
@@ -25,7 +25,7 @@ public class BagBonusRandomizer extends Randomizer {
 		}
 		shuffle();
 	}
-	
+
 	public void shuffle() {
 		bag[bonus] = r.nextInt(pieces.length);
 		for (int i = baglen; i > 1; i--) {

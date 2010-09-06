@@ -67,7 +67,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 	@Override
 	public void modeInit(GameManager manager) {
 		super.modeInit(manager);
-		
+
 		ojamaCountdown = new int[MAX_PLAYERS];
 		newChainPower = new boolean[MAX_PLAYERS];
 	}
@@ -398,13 +398,13 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 						"HARD OJAMA", String.valueOf(ojamaHard[playerID]),
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 25) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 18,
 						"COUNTDOWN", String.valueOf(ojamaCountdown[playerID]),
 						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
-				drawMenu(engine, playerID, receiver, 4, zenKeshiType[playerID] == ZENKESHI_MODE_FEVER ? 
+				drawMenu(engine, playerID, receiver, 4, zenKeshiType[playerID] == ZENKESHI_MODE_FEVER ?
 							EventReceiver.COLOR_PURPLE : EventReceiver.COLOR_WHITE, 20,
 						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
 				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_DARKBLUE, 21,
@@ -413,7 +413,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
 				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_CYAN, 24,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 25,
@@ -427,7 +427,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 31,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/4", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
@@ -450,7 +450,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 			receiver.drawScoreFont(engine, playerID,  3,  5, ojama[1]/6 + " " + ojama[1]%6 + "/6", (ojama[1] > 0));
 			if (ojamaAdd[1] > 0)
 				receiver.drawScoreFont(engine, playerID,  1,  6, "(+" + ojamaAdd[1]/6 + " " + ojamaAdd[1]%6 + "/6" + ")", (ojamaAdd[1] > 0));
-			
+
 			drawAttack(engine, playerID, -1, 8, EventReceiver.COLOR_GREEN);
 			drawScores(engine, playerID, -1, 12, EventReceiver.COLOR_PURPLE);
 

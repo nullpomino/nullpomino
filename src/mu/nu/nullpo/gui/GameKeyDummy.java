@@ -4,16 +4,16 @@ import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.util.CustomProperties;
 
 public class GameKeyDummy {
-	
+
 	/** Button number定count */
 	public static final int BUTTON_UP = 0, BUTTON_DOWN = 1, BUTTON_LEFT = 2, BUTTON_RIGHT = 3, BUTTON_A = 4, BUTTON_B = 5, BUTTON_C = 6,
 			BUTTON_D = 7, BUTTON_E = 8, BUTTON_F = 9, BUTTON_QUIT = 10, BUTTON_PAUSE = 11, BUTTON_GIVEUP = 12, BUTTON_RETRY = 13,
-			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15, BUTTON_NAV_UP = 16, BUTTON_NAV_DOWN = 17, BUTTON_NAV_LEFT = 18, 
+			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15, BUTTON_NAV_UP = 16, BUTTON_NAV_DOWN = 17, BUTTON_NAV_LEFT = 18,
 			BUTTON_NAV_RIGHT = 19, BUTTON_NAV_SELECT = 20, BUTTON_NAV_CANCEL = 21;
 
-	/**  buttoncountの定count */
+	/** Buttoncountの定count */
 	public static final int MAX_BUTTON = 22;
-	
+
 	/** Key code */
 	public int keymap[];
 
@@ -26,10 +26,10 @@ public class GameKeyDummy {
 	/** Player ID */
 	public int player;
 
-	/**  button input flag兼 input  time */
+	/** Button input flag兼 input  time */
 	protected int inputstate[];
-	
-	/**  button input flag */
+
+	/** Button input flag */
 	protected boolean[] pressstate;
 
 	/**
@@ -52,7 +52,7 @@ public class GameKeyDummy {
 		inputstate = new int[MAX_BUTTON];
 		pressstate = new boolean[MAX_BUTTON];
 	}
-	
+
 	/**
 	 * Clear button input state
 	 */
@@ -81,7 +81,7 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 * メニューでカーソルが動くかどうか判定
+	 * Menu でカーソルが動くかどうか判定
 	 * @param key Button number
 	 * @return カーソルが動くならtrue
 	 */
@@ -109,7 +109,7 @@ public class GameKeyDummy {
 	public void setInputState(int key, int state) {
 		inputstate[key] = state;
 	}
-	
+
 	/**
 	 * キー設定を読み込み
 	 * @param prop Property file to read from
@@ -154,7 +154,7 @@ public class GameKeyDummy {
 		buttonmap[BUTTON_NAV_RIGHT]=prop.getProperty("button.p" + player + ".navigationright", -1);
 		buttonmap[BUTTON_NAV_SELECT]=prop.getProperty("button.p" + player + ".navigationselect", -1);
 		buttonmap[BUTTON_NAV_CANCEL]=prop.getProperty("button.p" + player + ".navigationcancel", -1);
-		
+
 		joyBorder = prop.getProperty("joyBorder.p" + player, 0);
 	}
 
@@ -205,14 +205,14 @@ public class GameKeyDummy {
 		prop.setProperty("button.p" + player + ".navigationup", buttonmap[BUTTON_NAV_UP]);
         prop.setProperty("button.p" + player + ".navigationdown", buttonmap[BUTTON_NAV_DOWN]);
         prop.setProperty("button.p" + player + ".navigationleft", buttonmap[BUTTON_NAV_LEFT]);
-        prop.setProperty("button.p" + player + ".navigationright", buttonmap[BUTTON_NAV_RIGHT]);        
+        prop.setProperty("button.p" + player + ".navigationright", buttonmap[BUTTON_NAV_RIGHT]);
         prop.setProperty("button.p" + player + ".navigationselect", buttonmap[BUTTON_NAV_SELECT]);
         prop.setProperty("button.p" + player + ".navigationcancel", buttonmap[BUTTON_NAV_CANCEL]);
-        
+
         prop.setProperty("joyBorder.p" + player, joyBorder);
 
 	}
-	
+
 	/**
 	 * Controllerに input 状況を伝える
 	 * @param ctrl  input 状況を伝えるControllerのインスタンス
@@ -222,7 +222,7 @@ public class GameKeyDummy {
 			ctrl.buttonPress[i] = isPressKey(i);
 		}
 	}
-	
+
 	public static boolean isNavKey(int key) {
 		return (key >= BUTTON_NAV_UP) && (key <= BUTTON_NAV_CANCEL);
 	}

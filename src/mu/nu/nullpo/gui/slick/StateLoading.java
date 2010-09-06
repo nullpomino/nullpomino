@@ -43,7 +43,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * ロード画面のステート
  */
 public class StateLoading extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 0;
 
 	/** Log */
@@ -53,7 +53,7 @@ public class StateLoading extends BasicGameState {
 	protected int preloadCount, preloadSet;
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -61,13 +61,13 @@ public class StateLoading extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -79,7 +79,6 @@ public class StateLoading extends BasicGameState {
 		GameKey.gamekey[0].loadConfig(NullpoMinoSlick.propConfig);
 		GameKey.gamekey[1].loadConfig(NullpoMinoSlick.propConfig);
 		MouseInput.initializeMouseInput();
-		
 
 		// 設定を反映させる
 		NullpoMinoSlick.setGeneralConfig();
@@ -93,7 +92,7 @@ public class StateLoading extends BasicGameState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// 巨大な画像をあらかじめ画面に描画することでメモリにキャッシュさせる

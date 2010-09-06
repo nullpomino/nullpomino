@@ -38,22 +38,22 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * Joystick 設定メインメニューのステート
+ * Joystick 設定メインMenu のステート
  */
 public class StateConfigJoystickMain extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 12;
 
-	/** キー input を受付可能になるまでの frame count */
+	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
 	public int player = 0;
 
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/** 使用するJoystick の number */
@@ -69,7 +69,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	protected boolean joyIgnorePOV;
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -77,7 +77,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	}
 
 	/**
-	 * 設定読み込み
+	 * Load settings
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
@@ -88,7 +88,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	}
 
 	/**
-	 * 設定保存
+	 * Save settings
 	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
@@ -99,7 +99,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -107,13 +107,13 @@ public class StateConfigJoystickMain extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Menu
@@ -139,9 +139,9 @@ public class StateConfigJoystickMain extends BasicGameState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
+		// Observer
 		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
+		// Screenshot
 		if(ssflag) {
 			NullpoMinoSlick.saveScreenShot(container, g);
 			ssflag = false;
@@ -158,13 +158,13 @@ public class StateConfigJoystickMain extends BasicGameState {
 			return;
 		}
 
-		// TTFフォント描画
+		// TTF font 描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー input 状態を更新
+		// Update key input states
 		GameKey.gamekey[0].update(container.getInput());
 
-		// カーソル移動
+		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 5;
@@ -231,10 +231,10 @@ public class StateConfigJoystickMain extends BasicGameState {
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// スクリーンショット button
+		// Screenshot button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了 button
+		// Exit button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

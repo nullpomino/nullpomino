@@ -42,22 +42,22 @@ public interface AIPlayer {
 	public String getName();
 
 	/**
-	 * Initialization処理
-	 * @param engine このAIを所有するGameEngine
+	 * Called at initialization
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void init(GameEngine engine, int playerID);
 
 	/**
 	 * 終了処理
-	 * @param engine このAIを所有するGameEngine
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void shutdown(GameEngine engine, int playerID);
 
 	/**
-	 *  button input状態を設定
-	 * @param engine このAIを所有するGameEngine
+	 *  Set button input states
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 * @param ctrl Button input状態管理クラス
 	 */
@@ -65,21 +65,21 @@ public interface AIPlayer {
 
 	/**
 	 * Called at the start of each frame
-	 * @param engine このAIを所有するGameEngine
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void onFirst(GameEngine engine, int playerID);
 
 	/**
 	 * Called after every frame
-	 * @param engine このAIを所有するGameEngine
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void onLast(GameEngine engine, int playerID);
 
 	/**
 	 * 新しいピースが出現したときの処理
-	 * @param engine このAIを所有するGameEngine
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void newPiece(GameEngine engine, int playerID);

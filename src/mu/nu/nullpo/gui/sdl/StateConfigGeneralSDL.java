@@ -38,13 +38,13 @@ import sdljava.video.SDLSurface;
  * 全般の設定画面のステート
  */
 public class StateConfigGeneralSDL extends BaseStateSDL {
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor;
 
 	/** フルスクリーン flag */
 	protected boolean fullscreen;
 
-	/** 効果音ON/OFF */
+	/** Sound effectsON/OFF */
 	protected boolean se;
 
 	/** BGMのON/OFF */
@@ -53,7 +53,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** BGMの事前読み込み */
 	protected boolean bgmpreload;
 
-	/** 背景表示 */
+	/** Background表示 */
 	protected boolean showbg;
 
 	/** FPS表示 */
@@ -74,19 +74,19 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールド背景の明るさ */
+	/** フィールドBackgroundの明るさ */
 	protected int fieldbgbright;
 
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
 
-	/** 効果音ボリューム */
+	/** Sound effects volume */
 	protected int sevolume;
 
-	/** BGMボリューム */
+	/** BGM volume */
 	protected int bgmvolume;
 
-	/** 同時再生できる効果音のcount */
+	/** 同時再生できるSound effectsのcount */
 	protected int soundChannels;
 
 	/** フィールド右側にMeterを表示 */
@@ -110,7 +110,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 設定読み込み
+	 * Load settings
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
@@ -137,7 +137,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 設定保存
+	 * Save settings
 	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
@@ -164,7 +164,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -222,7 +222,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
-		// カーソル移動
+		// Cursor movement
 		// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 			cursor--;

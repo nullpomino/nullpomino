@@ -6,28 +6,28 @@ public class StrictHistoryRandomizer extends Randomizer {
 
 	int[] history;
 	int id;
-	
+
 	boolean[] curHist;
 	int numDistinctCurHist;
 	int[] notHist;
 	int notHistPos;
 	int histLen;
-	
+
 	public StrictHistoryRandomizer() {
 		super();
 	}
-	
+
 	public StrictHistoryRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
 	}
-	
+
 	public void init() {
 		history = new int[] {Piece.PIECE_S, Piece.PIECE_Z, Piece.PIECE_O, Piece.PIECE_O};
 		curHist = new boolean[pieces.length];
 		notHist = new int[pieces.length];
 		histLen = Math.min(4,pieces.length-1);
 	}
-	
+
 	public int next() {
 		for (int i = 0; i < pieces.length; i++) {
 			curHist[i] = false;

@@ -147,10 +147,10 @@ public class Block implements Serializable {
 	/** 固定してから経過した frame count */
 	public int elapsedFrames;
 
-	/** Blockの暗さ、または明るさ (0.03だったら3%暗く、-0.05だったら5%明るい) */
+	/** Blockの暗さ, または明るさ (0.03だったら3%暗く, -0.05だったら5%明るい) */
 	public float darkness;
 
-	/** 透明度 (1.0fで不透明、0.0fで完全に透明) */
+	/** 透明度 (1.0fで不透明, 0.0fで完全に透明) */
 	public float alpha;
 
 	/** ゲームが始まってから何番目に置いたBlockか (負countだったら初期配置や邪魔Block) */
@@ -158,22 +158,22 @@ public class Block implements Serializable {
 
 	/** アイテム number */
 	public int item;
-	
+
 	/** Number of extra clears required before block is erased */
 	public int hard;
-	
+
 	/** Counter for blocks that count down before some effect occurs */
 	public int countdown;
-	
+
 	/** Color-shift phase for rainbow blocks */
 	public static int rainbowPhase = 0;
-	
+
 	/** Color to turn into when garbage block turns into a regular block */
 	public int secondaryColor;
-	
+
 	/** Bonus value awarded when cleared */
 	public int bonusValue;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -318,7 +318,7 @@ public class Block implements Serializable {
 	public boolean isNormalBlock() {
 		return (color >= BLOCK_COLOR_GRAY) && (color <= BLOCK_COLOR_PURPLE);
 	}
-	
+
 	public int getDrawColor() {
 		if (color == BLOCK_COLOR_GEM_RAINBOW)
 			return BLOCK_COLOR_GEM_RED + (rainbowPhase/3);
@@ -342,7 +342,7 @@ public class Block implements Serializable {
 				rainbowPhase = 0;
 		}
 	}
-	
+
 	public static int gemToNormalColor(int color)
 	{
 		if ((color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE))

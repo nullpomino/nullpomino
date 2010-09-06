@@ -6,7 +6,7 @@ import org.newdawn.slick.Input;
 
 public class MouseInput extends MouseInputDummy {
 	public static MouseInput mouseInput;
-	
+
 	private MouseInput() {
 		super();
 	}

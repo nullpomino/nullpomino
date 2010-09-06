@@ -53,7 +53,7 @@ import mu.nu.nullpo.game.net.NetObserverClient;
 import org.apache.log4j.Logger;
 
 /**
- * ゲーム画面の frame 
+ * ゲーム画面の frame
  */
 public class GameFrame extends JFrame implements Runnable {
 	/** Serial version ID */
@@ -107,16 +107,16 @@ public class GameFrame extends JFrame implements Runnable {
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/** ポーズメニューのカーソル位置 */
+	/** Pause menuのCursor position */
 	protected int cursor = 0;
 
-	/** 倍速Mode  */
+	/** 倍速Mode */
 	protected int fastforward = 0;
 
-	/** スクリーンショット作成 flag */
+	/** Screenshot作成 flag */
 	protected boolean ssflag = false;
 
-	/** スクリーンショット用Image */
+	/** Screenshot用Image */
 	protected Image ssImage = null;
 
 	/**  frame ステップ有効 flag */
@@ -134,7 +134,7 @@ public class GameFrame extends JFrame implements Runnable {
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public GameFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -220,7 +220,7 @@ public class GameFrame extends JFrame implements Runnable {
 		enableframestep = NullpoMinoSwing.propConfig.getProperty("option.enableframestep", false);
 		showfps = NullpoMinoSwing.propConfig.getProperty("option.showfps", true);
 
-		// オブザーバー開始
+		// Observer開始
 		if(!isNetPlay) NullpoMinoSwing.startObserverClient();
 
 		// メインループ
@@ -299,7 +299,7 @@ public class GameFrame extends JFrame implements Runnable {
 				pause = false;
 			}
 		}
-		// ポーズメニュー
+		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
 			if(GameKeySwing.gamekey[0].isMenuRepeatKey(GameKeySwing.BUTTON_UP)) {
 				ResourceHolderSwing.soundManager.play("cursor");
@@ -334,17 +334,17 @@ public class GameFrame extends JFrame implements Runnable {
 					shutdown();
 					return;
 				} else if(cursor == 3) {
-					// リプレイ追記
+					// Replay re-record
 					NullpoMinoSwing.gameManager.replayRerecord = true;
 					cursor = 0;
 				}
 			}
 		}
-		// ポーズメニュー非表示
+		// Hide pause menu
 		pauseMessageHide = GameKeySwing.gamekey[0].isPressKey(GameKeySwing.BUTTON_C);
 
 		if(NullpoMinoSwing.gameManager.replayMode && !NullpoMinoSwing.gameManager.replayRerecord && NullpoMinoSwing.gameManager.engine[0].gameActive) {
-			// リプレイ倍速
+			// Replay speed
 			if(GameKeySwing.gamekey[0].isMenuRepeatKey(GameKeySwing.BUTTON_LEFT)) {
 				if(fastforward > 0) {
 					fastforward--;
@@ -356,7 +356,7 @@ public class GameFrame extends JFrame implements Runnable {
 				}
 			}
 
-			// リプレイ追記
+			// Replay re-record
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_D)) {
 				NullpoMinoSwing.gameManager.replayRerecord = true;
 				cursor = 0;
@@ -386,13 +386,13 @@ public class GameFrame extends JFrame implements Runnable {
 		}
 
 		if(NullpoMinoSwing.gameManager != null) {
-			// リトライ button
+			// Retry button
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_RETRY) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_RETRY)) {
 				pause = false;
 				NullpoMinoSwing.gameManager.reset();
 			}
 
-			// タイトルに戻る
+			// Return to title
 			if(NullpoMinoSwing.gameManager.getQuitFlag() ||
 			   GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_QUIT) ||
 			   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_QUIT))
@@ -402,7 +402,7 @@ public class GameFrame extends JFrame implements Runnable {
 			}
 		}
 
-		// スクリーンショット button
+		// Screenshot button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 			ssflag = true;
 		}
@@ -422,14 +422,14 @@ public class GameFrame extends JFrame implements Runnable {
 				GameKeySwing.gamekey[0].inputStatusUpdate(NullpoMinoSwing.gameManager.engine[0].ctrl);
 				NullpoMinoSwing.gameManager.updateAll();
 
-				// タイトルに戻る
+				// Return to title
 				if(NullpoMinoSwing.gameManager.getQuitFlag()) {
 					shutdown();
 					return;
 				}
 			}
 
-			// スクリーンショット button
+			// Screenshot button
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 				ssflag = true;
 			}
@@ -481,7 +481,7 @@ public class GameFrame extends JFrame implements Runnable {
 		NullpoMinoSwing.gameManager.receiver.setGraphics(g);
 		NullpoMinoSwing.gameManager.renderAll();
 
-		// ポーズメニュー
+		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
 			int offsetX = RendererSwing.FIELD_OFFSET_X[0];
 			int offsetY = RendererSwing.FIELD_OFFSET_Y[0];
@@ -508,7 +508,7 @@ public class GameFrame extends JFrame implements Runnable {
 			NormalFontSwing.printFont(0, 480-16, df.format(actualFPS) + "/" + maxfpsCurrent, NormalFontSwing.COLOR_BLUE, 1.0f);
 		}
 
-		// オブザーバー情報
+		// Observer情報
 		NetObserverClient obClient = NullpoMinoSwing.getObserverClient();
 		if((obClient != null) && obClient.isConnected()) {
 			int observerCount = obClient.getObserverCount();
@@ -519,7 +519,7 @@ public class GameFrame extends JFrame implements Runnable {
 			NormalFontSwing.printFont(0, 480 - 16, strObserverString, fontcolor);
 		}
 
-		// 画面に表示／スクリーンショット作成
+		// 画面に表示／Screenshot作成
 		g.dispose();
 		if(ssflag) {
 			saveScreenShot();
@@ -581,7 +581,7 @@ public class GameFrame extends JFrame implements Runnable {
 			NormalFontSwing.printFont(0, 480-16, df.format(actualFPS) + "/" + maxfpsCurrent, NormalFontSwing.COLOR_BLUE, 1.0f);
 		}
 
-		// 画面に表示／スクリーンショット作成
+		// 画面に表示／Screenshot作成
 		g.dispose();
 		if(ssflag) {
 			saveScreenShot();

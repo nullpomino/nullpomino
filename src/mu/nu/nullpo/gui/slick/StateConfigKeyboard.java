@@ -39,32 +39,32 @@ import org.newdawn.slick.state.StateBasedGame;
  * キーボード設定画面のステート
  */
 public class StateConfigKeyboard extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 9;
 
-	/** キー input を受付可能になるまでの frame count */
+	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
 	/** Player number */
 	public int player = 0;
 
-	/** 初期設定Mode  */
+	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
-	/** 現在設定中の button */
+	/** Number of button currently being configured */
 	protected int keynum;
 
 	/** 経過 frame count */
 	protected int frame;
 
-	/**  button設定 */
+	/** Button settings */
 	protected int keymap[];
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -72,7 +72,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/**
-	 *  button設定をInitialization
+	 * Button settings initialization
 	 */
 	protected void reset() {
 		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
@@ -88,7 +88,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		gameObj = game;
@@ -105,7 +105,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
@@ -214,7 +214,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/**
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -222,7 +222,7 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/**
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {

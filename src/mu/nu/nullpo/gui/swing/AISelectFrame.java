@@ -53,7 +53,7 @@ import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import org.apache.log4j.Logger;
 
 /**
- * AI選択画面の frame 
+ * AI選択画面の frame
  */
 public class AISelectFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -88,7 +88,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
-	
+
 	protected boolean aiShowHint = false;
 
 	/** AI一覧リストボックス */
@@ -102,13 +102,13 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	/** AIでスレッド使用 check ボックス */
 	protected JCheckBox chkboxAIUseThread;
-	
+
 	protected JCheckBox chkBoxAIShowHint;
 
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public AISelectFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();

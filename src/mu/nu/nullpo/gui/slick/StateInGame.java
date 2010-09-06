@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
@@ -50,7 +49,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * ゲーム画面のステート
  */
 public class StateInGame extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 2;
 
 	/** ゲームのメインクラス */
@@ -68,20 +67,20 @@ public class StateInGame extends BasicGameState {
 	/**  frame ステップ有効 flag */
 	protected boolean enableframestep = false;
 
-	/** 倍速Mode  */
+	/** 倍速Mode */
 	protected int fastforward = 0;
 
-	/** ポーズメニューのカーソル位置 */
+	/** Pause menuのCursor position */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/** AppGameContainer (これを使ってタイトルバーを変える) */
 	protected AppGameContainer appContainer = null;
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -89,14 +88,14 @@ public class StateInGame extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		appContainer = (AppGameContainer)container;
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -172,7 +171,7 @@ public class StateInGame extends BasicGameState {
 				gameManager.engine[i].aiShowHint = NullpoMinoSlick.propGlobal.getProperty(i + ".aiShowHint",false);
 			}
 
-			// Initialization処理
+			// Called at initialization
 			gameManager.engine[i].init();
 		}
 	}
@@ -230,7 +229,7 @@ public class StateInGame extends BasicGameState {
 				gameManager.engine[i].aiUseThread = NullpoMinoSlick.propGlobal.getProperty(i + ".aiUseThread", true);
 			}
 
-			// Initialization処理
+			// Called at initialization
 			gameManager.engine[i].init();
 		}
 	}
@@ -245,7 +244,7 @@ public class StateInGame extends BasicGameState {
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
@@ -253,14 +252,14 @@ public class StateInGame extends BasicGameState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// ゲーム画面
 		if(gameManager != null) {
 			gameManager.renderAll();
 
-			// ポーズメニュー
+			// Pause menu
 			if(pause && !enableframestep && !pauseMessageHide) {
 				int offsetX = RendererSlick.FIELD_OFFSET_X[0];
 				int offsetY = RendererSlick.FIELD_OFFSET_Y[0];
@@ -285,9 +284,9 @@ public class StateInGame extends BasicGameState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container, true);
-		// オブザーバー
+		// Observer
 		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
+		// Screenshot
 		if(ssflag) {
 			NullpoMinoSlick.saveScreenShot(container, g);
 			ssflag = false;
@@ -305,10 +304,10 @@ public class StateInGame extends BasicGameState {
 			return;
 		}
 
-		// TTFフォント描画
+		// TTF font 描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー input 状態を更新
+		// Update key input states
 		GameKey.gamekey[0].update(container.getInput());
 		GameKey.gamekey[1].update(container.getInput());
 
@@ -327,7 +326,7 @@ public class StateInGame extends BasicGameState {
 				if(!enableframestep) ResourceHolder.bgmResume();
 			}
 		}
-		// ポーズメニュー
+		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
 			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 				cursor--;
@@ -367,18 +366,18 @@ public class StateInGame extends BasicGameState {
 					game.enterState(StateTitle.ID);
 					return;
 				} else if(cursor == 3) {
-					// リプレイ追記
+					// Replay re-record
 					gameManager.replayRerecord = true;
 					ResourceHolder.soundManager.play("tspin1");
 					cursor = 0;
 				}
 			}
 		}
-		// ポーズメニュー非表示
+		// Hide pause menu
 		pauseMessageHide = GameKey.gamekey[0].isPressKey(GameKey.BUTTON_C);
 
 		if(gameManager.replayMode && !gameManager.replayRerecord && gameManager.engine[0].gameActive) {
-			// リプレイ倍速
+			// Replay speed
 			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) {
 				if(fastforward > 0) {
 					fastforward--;
@@ -390,13 +389,13 @@ public class StateInGame extends BasicGameState {
 				}
 			}
 
-			// リプレイ追記
+			// Replay re-record
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_D)) {
 				gameManager.replayRerecord = true;
 				ResourceHolder.soundManager.play("tspin1");
 				cursor = 0;
 			}
-			// リプレイ追記
+			// Show invisible blocks during replays
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_E)) {
 				gameManager.replayShowInvisible = !gameManager.replayShowInvisible;
 				ResourceHolder.soundManager.play("tspin1");
@@ -436,14 +435,14 @@ public class StateInGame extends BasicGameState {
 		}
 
 		if(gameManager != null) {
-			// リトライ button
+			// Retry button
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_RETRY) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_RETRY)) {
 				ResourceHolder.bgmStop();
 				pause = false;
 				gameManager.reset();
 			}
 
-			// タイトルに戻る
+			// Return to title
 			if(gameManager.getQuitFlag() ||
 			   GameKey.gamekey[0].isPushKey(GameKey.BUTTON_GIVEUP) ||
 			   GameKey.gamekey[1].isPushKey(GameKey.BUTTON_GIVEUP))
@@ -454,11 +453,11 @@ public class StateInGame extends BasicGameState {
 			}
 		}
 
-		// スクリーンショット button
+		// Screenshot button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 			ssflag = true;
 
-		// 終了 button
+		// Exit button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_QUIT)) {
 			shutdown();
 			container.exit();

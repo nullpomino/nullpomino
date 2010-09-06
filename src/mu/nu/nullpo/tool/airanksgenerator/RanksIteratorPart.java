@@ -13,14 +13,12 @@ private int size;
 private int  [] surface;
 private int [] surfaceDecodedWork;
 
-
 	public RanksIteratorPart(MySwingWorker mySwingWorker, Ranks ranks, int i,
 			int totalParts) {
 
-
       this.mySwingWorker=mySwingWorker;
       this.ranks=ranks;
-     
+
      size=ranks.getSize();
 		  sMin=i*size/totalParts;
 		 sMax=(i==totalParts-1)?size:(i+1)*size/totalParts;
@@ -44,7 +42,6 @@ private int [] surfaceDecodedWork;
 
 			   ranks=null;
 				break;
-
 
 		   }
 

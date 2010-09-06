@@ -92,7 +92,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Log */
 	static Logger log = Logger.getLogger(RuleEditor.class);
 
-	/** Swing版の設定保存用Property file */
+	/** Swing版のSave settings用Property file */
 	public CustomProperties propConfig;
 
 	/** Default language file */
@@ -102,7 +102,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	public CustomProperties propLang;
 
 	//----------------------------------------------------------------------
-	/** 今開いているファイル名 (null:なし) */
+	/** 今開いているFilename (null:なし) */
 	private String strNowFile;
 
 	/** タブ */
@@ -225,7 +225,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 上DirectionへのWallkickができる count (-1:無限) */
 	private JTextField txtfldRotateMaxUpwardWallkick;
 
-	/** falseなら左が正rotation、trueなら右が正rotation */
+	/** falseなら左が正rotation, trueなら右が正rotation */
 	private JCheckBox chkboxRotateButtonDefaultRight;
 
 	/** 逆rotationを許可 (falseなら正rotationと同じ) */
@@ -302,13 +302,13 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** Line clear前にBlockが光る frame を入れる */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
-	
+
 	/** ARE cancel on move checkbox */
 	private JCheckBox chkboxARECancelMove;
-	
+
 	/** ARE cancel on rotate checkbox */
 	private JCheckBox chkboxARECancelRotate;
-	
+
 	/** ARE cancel on hold checkbox */
 	private JCheckBox chkboxARECancelHold;
 
@@ -320,16 +320,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** 最高Line clear time */
 	private JTextField txtfldLineDelayMax;
-	
+
 	/** 落下アニメ */
 	private JCheckBox chkboxLineFallAnim;
-	
+
 	/** Line delay cancel on move checkbox */
 	private JCheckBox chkboxLineCancelMove;
-	
+
 	/** Line delay cancel on rotate checkbox */
 	private JCheckBox chkboxLineCancelRotate;
-	
+
 	/** Line delay cancel on hold checkbox */
 	private JCheckBox chkboxLineCancelHold;
 
@@ -365,13 +365,13 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** Ending突入画面で横溜め可能 */
 	private JCheckBox chkboxMoveDASInEndingStart;
-	
+
 	/** DAS charge on blocked move checkbox*/
 	private JCheckBox chkboxMoveDASChargeOnBlockedMove;
-	
+
 	/** Store DAS Charge on neutral checkbox **/
 	private JCheckBox chkboxMoveDASStoreChargeOnNeutral;
-	
+
 	/** Redirect in delay checkbox **/
 	private JCheckBox chkboxMoveDASRedirectInDelay;
 
@@ -389,7 +389,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** 左右同時押ししたときに前の frame の input Directionを優先する */
 	private JCheckBox chkboxMoveLeftAndRightUsePreviousInput;
-	
+
 	/** Shift lock checkbox */
 	private JCheckBox chkboxMoveShiftLockEnable;
 
@@ -453,7 +453,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/**
 	 * 特定のファイルを読み込むConstructor
-	 * @param filename ファイル名 (空文字列かnullにするとパラメータなしConstructorと同じ動作）
+	 * @param filename Filename (空文字列かnullにするとパラメータなしConstructorと同じ動作）
 	 */
 	public RuleEditor(String filename) {
 		super();
@@ -539,7 +539,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
-		// ファイルメニュー
+		// ファイルMenu
 		JMenu mFile = new JMenu(getUIText("JMenu_File"));
 		mFile.setMnemonic('F');
 		menuBar.add(mFile);
@@ -967,15 +967,15 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// Line clear前にBlockが光る frame を入れる
 		chkboxARELockFlashBeforeLineClear = new JCheckBox(getUIText("ARE_LockFlashBeforeLineClear"));
 		panelARE.add(chkboxARELockFlashBeforeLineClear);
-		
+
 		// ARE cancel on move
 		chkboxARECancelMove = new JCheckBox(getUIText("ARE_CancelMove"));
 		panelARE.add(chkboxARECancelMove);
-		
+
 		// ARE cancel on move
 		chkboxARECancelRotate = new JCheckBox(getUIText("ARE_CancelRotate"));
 		panelARE.add(chkboxARECancelRotate);
-		
+
 		// ARE cancel on move
 		chkboxARECancelHold = new JCheckBox(getUIText("ARE_CancelHold"));
 		panelARE.add(chkboxARECancelHold);
@@ -1000,15 +1000,15 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// 落下アニメ
 		chkboxLineFallAnim = new JCheckBox(getUIText("Line_FallAnim"));
 		panelLine.add(chkboxLineFallAnim);
-		
+
 		// Line delay cancel on move
 		chkboxLineCancelMove = new JCheckBox(getUIText("Line_CancelMove"));
 		panelLine.add(chkboxLineCancelMove);
-		
+
 		// Line delay cancel on rotate
 		chkboxLineCancelRotate = new JCheckBox(getUIText("Line_CancelRotate"));
 		panelLine.add(chkboxLineCancelRotate);
-		
+
 		// Line delay cancel on hold
 		chkboxLineCancelHold = new JCheckBox(getUIText("Line_CancelHold"));
 		panelLine.add(chkboxLineCancelHold);
@@ -1039,7 +1039,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 		txtfldMoveDASDelay = new JTextField("", 5);
 		pMoveDASDelay.add(txtfldMoveDASDelay);
-		
+
 		JLabel lMoveDASDelay2 = new JLabel(getUIText("Move_DASDelay2"));
 		pMoveDASDelay.add(lMoveDASDelay2);
 
@@ -1064,7 +1064,7 @@ public class RuleEditor extends JFrame implements ActionListener {
       panelMove.add(chkboxMoveDASStoreChargeOnNeutral);
       chkboxMoveDASRedirectInDelay = new JCheckBox(getUIText("Move_DASRedirectInDelay"));
       panelMove.add(chkboxMoveDASRedirectInDelay);
-      
+
 		// 最初の frame に移動可能
 		chkboxMoveFirstFrame = new JCheckBox(getUIText("Move_FirstFrame"));
 		panelMove.add(chkboxMoveFirstFrame);
@@ -1084,7 +1084,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// 左右同時押ししたときに前 frame の input を優先
 		chkboxMoveLeftAndRightUsePreviousInput = new JCheckBox(getUIText("Move_LeftAndRightUsePreviousInput"));
 		panelMove.add(chkboxMoveLeftAndRightUsePreviousInput);
-		
+
 		// Shift lock
 		chkboxMoveShiftLockEnable = new JCheckBox(getUIText("Move_ShiftLock"));
 		panelMove.add(chkboxMoveShiftLockEnable);
@@ -1315,7 +1315,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/**
 	 * リソースファイルのURLを返す
-	 * @param str ファイル名
+	 * @param str Filename
 	 * @return リソースファイルのURL
 	 */
 	public URL getURL(String str) {
@@ -1345,7 +1345,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/**
 	 * テキストファイルを読み込んでVector&lt;String&gt;に入れる
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return テキストファイルを読み込んだVector&lt;String&gt;
 	 */
 	public Vector<String> getTextFileVector(String filename) {
@@ -1620,7 +1620,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/**
 	 * ルールをファイルに保存
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @throws IOException 保存に失敗したとき
 	 */
 	public void save(String filename) throws IOException {
@@ -1639,9 +1639,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/**
 	 * ルールをファイルから読み込み
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return ルール data
-	 * @throws IOException 読み込みに失敗したとき
+	 * @throws IOException Failed to loadしたとき
 	 */
 	public RuleOptions load(String filename) throws IOException {
 		CustomProperties prop = new CustomProperties();
@@ -1674,7 +1674,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/**
 	 * テキストフィールドからint型の値を取得
 	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値、失敗したら0
+	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したら0
 	 */
 	public int getIntTextField(JTextField txtfld) {
 		int v = 0;
@@ -1689,7 +1689,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/**
 	 * テキストフィールドからfloat型の値を取得
 	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値、失敗したら0f
+	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したら0f
 	 */
 	public float getFloatTextField(JTextField txtfld) {
 		float v = 0f;

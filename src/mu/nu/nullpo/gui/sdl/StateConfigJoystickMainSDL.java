@@ -35,13 +35,13 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * Joystick 設定メインメニューのステート
+ * Joystick 設定メインMenu のステート
  */
 public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	/** Player number */
 	public int player;
 
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor;
 
 	/** 使用するJoystick の number */
@@ -65,7 +65,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 設定読み込み
+	 * Load settings
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
@@ -76,7 +76,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 設定保存
+	 * Save settings
 	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
@@ -87,7 +87,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -95,7 +95,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -125,7 +125,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
-		// カーソル移動
+		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 5;

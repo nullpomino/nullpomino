@@ -39,10 +39,10 @@ import org.newdawn.slick.state.StateBasedGame;
  * Dummy class for menus where the player picks from a list of options
  */
 public abstract class DummyMenuChooseState extends BasicGameState {
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/** Max cursor value */
@@ -64,9 +64,9 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
+		// Observer
 		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
+		// Screenshot
 		if(ssflag) {
 			NullpoMinoSlick.saveScreenShot(container, g);
 			ssflag = false;
@@ -82,10 +82,10 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 			return;
 		}
 
-		// TTFフォント描画
+		// TTF font 描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー input 状態を更新
+		// Update key input states
 		GameKey.gamekey[0].update(container.getInput());
 
 		// Mouse
@@ -94,7 +94,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 			mouseConfirm = updateMouseInput(container.getInput());
 
 		if (maxCursor >= 0) {
-			// カーソル移動
+			// Cursor movement
 			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
 				cursor--;
@@ -135,10 +135,10 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 				return;
 		}
 
-		// スクリーンショット button
+		// Screenshot button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了 button
+		// Exit button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

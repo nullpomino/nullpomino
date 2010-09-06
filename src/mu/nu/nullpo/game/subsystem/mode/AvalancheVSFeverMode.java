@@ -116,7 +116,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	public void playerInit(GameEngine engine, int playerID) {
 		super.playerInit(engine, playerID);
 		ojamaCounterMode[playerID] = OJAMA_COUNTER_FEVER;
-		
+
 		ojama[playerID] = 0;
 		feverChainDisplay[playerID] = 0;
 
@@ -350,7 +350,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 						"DAS", String.valueOf(engine.speed.das),
 						"FALL DELAY", String.valueOf(engine.cascadeDelay),
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
@@ -363,7 +363,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 						"HARD OJAMA", String.valueOf(ojamaHard[playerID]),
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 24) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
@@ -371,12 +371,12 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
 				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_DARKBLUE, 20,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
-						"SHOW CHAIN", chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE ? 
+						"SHOW CHAIN", chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE ?
 								"FEVERSIZE" : CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
 				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 23,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 24,
@@ -385,7 +385,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_GREEN, 26,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/4", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
@@ -394,7 +394,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {
@@ -446,10 +446,10 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			drawX(engine, playerID);
 		if (ojamaHard[playerID] > 0)
 			drawHardOjama(engine, playerID);
-		
+
 		super.renderLast(engine, playerID);
 	}
-	
+
 	@Override
 	protected int getChainColor (int playerID) {
 		if (chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE)
@@ -473,7 +473,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		else
 			return FEVER_POWERS[chain-1];
 	}
-	
+
 	protected void onClear(GameEngine engine, int playerID) {
 		feverChainDisplay[playerID] = feverChain[playerID];
 	}

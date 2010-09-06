@@ -42,7 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * 設定画面の frame 
+ * 設定画面の frame
  */
 public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -54,13 +54,13 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** MaximumFPS */
 	protected JTextField txtfldMaxFPS;
 
-	/** 効果音の音量 */
+	/** Sound effectsの音量 */
 	protected JTextField txtfldSEVolume;
 
 	/** FPS表示 */
 	protected JCheckBox chkboxShowFPS;
 
-	/** 背景表示 */
+	/** Background表示 */
 	protected JCheckBox chkboxShowBackground;
 
 	/** Meter表示 */
@@ -72,7 +72,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** シンプルな絵柄のBlockを使う */
 	protected JCheckBox chkboxSimpleBlock;
 
-	/** 効果音 */
+	/** Sound effects */
 	protected JCheckBox chkboxSE;
 
 	/** ネイティブのLook and Feelを使う */
@@ -93,7 +93,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public GeneralConfigFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -124,7 +124,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		txtfldMaxFPS = new JTextField(5);
 		pMaxFPS.add(txtfldMaxFPS);
 
-		// ---------- 効果音の音量 ----------
+		// ---------- Sound effectsの音量 ----------
 		JPanel pSEVolume = new JPanel();
 		pSEVolume.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(pSEVolume);

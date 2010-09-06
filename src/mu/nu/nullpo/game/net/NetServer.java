@@ -90,7 +90,7 @@ public class NetServer {
 	/** ルーム情報 */
 	private LinkedList<NetRoomInfo> roomInfoList = new LinkedList<NetRoomInfo>();
 
-	/** オブザーバーリスト */
+	/** Observerリスト */
 	private LinkedList<SocketChannel> observerList = new LinkedList<SocketChannel>();
 
 	/** セレクタ */
@@ -214,7 +214,7 @@ public class NetServer {
 			channel.configureBlocking(false);
 
 			// ×× OP_WRITE を監視対象にすると CPU利用率が100%になる ××
-			// 書き込むメッセージがあるときだけ、そのチャンネルの OP_WRITE
+			// 書き込むメッセージがあるときだけ, そのチャンネルの OP_WRITE
 			// を監視する。
 			// channel.register(selector,
 			// SelectionKey.OP_READ + SelectionKey.OP_WRITE);
@@ -302,7 +302,7 @@ public class NetServer {
 				log.debug("Send " + size + "/" + bbuf.limit());
 
 				if (bbuf.hasRemaining()) {
-					// bbufをすべてを送信しきれなかったので、残りをbufferMapに書き戻す
+					// bbufをすべてを送信しきれなかったので, 残りをbufferMapに書き戻す
 					ByteArrayOutputStream rest = new ByteArrayOutputStream();
 					rest.write(bbuf.array(), bbuf.position(), bbuf.remaining());
 					bufferMap.put(channel, rest);
@@ -310,7 +310,7 @@ public class NetServer {
 					// 宛先チャンネルが切断されたことを検知するために Readable の監視も行う
 					channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 				} else {
-					// bbufをすべて送信し終わったので、bufferMap今回送信分を削除する
+					// bbufをすべて送信し終わったので, bufferMap今回送信分を削除する
 					bufferMap.remove(channel);
 					// 宛先チャンネルが Writable になるのを監視するのをやめる
 					channel.register(selector, SelectionKey.OP_READ);
@@ -434,8 +434,8 @@ public class NetServer {
 		// ×× ここで Channel に write() しちゃダメ ××
 		// client.write(ByteBuffer.wrap(bytes));
 
-		// ※ ここでは、Buffer に貯めておいて、Channel が writable
-		// ※ になったら、書き出す。
+		// ※ ここでは, Buffer に貯めておいて, Channel が writable
+		// ※ になったら, 書き出す。
 		ByteArrayOutputStream bout = bufferMap.get(client);
 		if (bout == null) {
 			bout = new ByteArrayOutputStream();
@@ -532,7 +532,7 @@ public class NetServer {
 	}
 
 	/**
-	 * すべてのオブザーバーにメッセージ送信
+	 * すべてのObserverにメッセージ送信
 	 * @param msg 送信するメッセージ
 	 */
 	private void broadcastObserver(String msg) throws IOException {
@@ -542,7 +542,7 @@ public class NetServer {
 	}
 
 	/**
-	 * ユーザーcount更新を全員(オブザーバーとPlayer)に伝える
+	 * ユーザーcount更新を全員(ObserverとPlayer)に伝える
 	 */
 	private void broadcastUserCountToAll() throws IOException {
 		String msg = "observerupdate\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n";
@@ -601,7 +601,7 @@ public class NetServer {
 			}
 			return;
 		}
-		// オブザーバーログイン
+		// Observerログイン
 		if(message[0].equals("observerlogin")) {
 			//observer\t[VERSION]
 
@@ -1302,9 +1302,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 全員が準備完了状態か check し、条件を満たしていればゲームを開始する
+	 * 全員が準備完了状態か check し, 条件を満たしていればゲームを開始する
 	 * @param roomInfo ルーム情報
-	 * @return ゲーム開始したらtrue、しなかったらfalse
+	 * @return ゲーム開始したらtrue, しなかったらfalse
 	 */
 	private boolean gameStartIfPossible(NetRoomInfo roomInfo) throws IOException {
 		// 全員が準備完了状態になったら
@@ -1353,9 +1353,9 @@ public class NetServer {
 	}
 
 	/**
-	 * ゲーム終了かどうか check し、終了条件を満たしていればルーム内の全員に通知する
+	 * ゲーム終了かどうか check し, 終了条件を満たしていればルーム内の全員に通知する
 	 * @param roomInfo ルーム情報
-	 * @return ゲーム終了したらtrue、終了前・すでに終了後ならfalse
+	 * @return ゲーム終了したらtrue, 終了前・すでに終了後ならfalse
 	 */
 	private boolean gameFinished(NetRoomInfo roomInfo) throws IOException {
 		int startPlayers = roomInfo.startPlayers;

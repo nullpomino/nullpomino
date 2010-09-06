@@ -31,25 +31,25 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * 背景画像の状態
+ * Background画像の状態
  */
 public class BackgroundStatus implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 2159669210087818385L;
 
-	/** 背景 number */
+	/** Background number */
 	public int bg;
 
-	/** 背景フェード flag */
+	/** Backgroundフェード flag */
 	public boolean fadesw;
 
-	/** 背景フェードの状態 (falseならフェードアウト、trueならフェードイン) */
+	/** Backgroundフェードの状態 (falseならフェードアウト, trueならフェードイン) */
 	public boolean fadestat;
 
-	/** 背景フェード用カウンタ */
+	/** Backgroundフェード用カウンタ */
 	public int fadecount;
 
-	/** 背景フェード後の背景 */
+	/** Backgroundフェード後のBackground */
 	public int fadebg;
 
 	/**
@@ -91,7 +91,7 @@ public class BackgroundStatus implements Serializable {
 	}
 
 	/**
-	 * 背景フェードの状態を更新
+	 * Backgroundフェードの状態を更新
 	 */
 	public void fadeUpdate() {
 		if(fadesw == true) {

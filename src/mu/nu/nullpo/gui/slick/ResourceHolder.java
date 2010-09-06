@@ -48,55 +48,55 @@ public class ResourceHolder {
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolder.class);
 
-	/** 背景のcount */
+	/** Backgroundのcount */
 	public static final int BACKGROUND_MAX = 20;
 
-	/** Line clear時に飛び散るBlockの画像count */
+	/** Number of images for block spatter animation during line clears */
 	public static final int BLOCK_BREAK_MAX = 8;
 
-	/** Line clear時に飛び散るBlockの画像分割count */
+	/** Number of image splits for block spatter animation during line clears */
 	public static final int BLOCK_BREAK_SEGMENTS = 2;
 
-	/** 宝石Block消去エフェクトのcount */
+	/** Number of gem block clear effects */
 	public static final int PERASE_MAX = 7;
 
-	/** Blockの画像 */
+	/** Block images */
 	public static Image imgBlock, imgBlockSmall, imgBlockBig;
 
-	/** 特殊Blockの画像 - old */
+	/** 特殊Block images - old */
 	//public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
-	/** 通常のフォント */
+	/** Regular font */
 	public static Image imgFont, imgFontSmall;
 
 	/** 小物画像 */
 	//public static Image imgSprite;
 
-	/** タイトル */
+	/** Title */
 	public static Image imgTitle;
 
-	/** メニュー背景 */
+	/** Menu Background */
 	public static Image imgMenu;
 
-	/** フィールドの枠 */
+	/** Field frame */
 	public static Image imgFrame;
 
-	/** フィールドの背景 */
+	/** Field background */
 	//public static Image imgFieldbg;
 
-	/** Line clear時に飛び散るBlock */
+	/** Block spatter animation during line clears */
 	public static Image[][] imgBreak;
 
-	/** 宝石Block消去エフェクト */
+	/** Effects for clearing gem blocks */
 	public static Image[] imgPErase;
 
-	/** プレイ中の背景 */
+	/** プレイ中のBackground */
 	public static Image[] imgPlayBG;
 
-	/** TTFフォント */
+	/** TTF font */
 	public static UnicodeFont ttfFont;
 
-	/** 効果音 */
+	/** Sound effects */
 	public static SoundManager soundManager;
 
 	/** BGM */
@@ -107,7 +107,7 @@ public class ResourceHolder {
 
 	/**
 	 * 画像や音声を読み込み
-	 * @throws SlickException 読み込みに失敗
+	 * @throws SlickException Failed to load
 	 */
 	public static void load() throws SlickException {
 		String skindir = NullpoMinoSlick.propConfig.getProperty("custom.skin.directory", "res");
@@ -136,7 +136,7 @@ public class ResourceHolder {
 			loadBackgroundImages();
 		}
 
-		// フォント
+		// Font
 		try {
 			ttfFont = new UnicodeFont(skindir + "/font/font.ttf", 16, false, false);
 			ttfFont.getEffects().add(new ShadowEffect(Color.black, 1, 1, 1));
@@ -146,7 +146,7 @@ public class ResourceHolder {
 			ttfFont = null;
 		}
 
-		// 効果音
+		// Sound effects
 		/*
 		try {
 			SoundStore.get().init();
@@ -277,7 +277,7 @@ public class ResourceHolder {
 
 	/**
 	 * 画像読み込み
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return 画像 data
 	 */
 	public static Image loadImage(String filename) {
@@ -298,7 +298,7 @@ public class ResourceHolder {
 
 	/**
 	 * 巨大画像を読み込み
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return 画像 data
 	 */
 	public static BigImage loadBigImage(String filename) {

@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * SPEED MANIA 2Mode 
+ * SPEED MANIA 2Mode
  */
 public class SpeedMania2Mode extends DummyMode {
 	/** Current version */
@@ -178,7 +178,7 @@ public class SpeedMania2Mode extends DummyMode {
 	/** trueなら levelストップ音有効 */
 	private boolean lvstopse;
 
-	/** BigMode  */
+	/** BigMode */
 	private boolean big;
 
 	/** LV500の足切りTime */
@@ -600,7 +600,7 @@ public class SpeedMania2Mode extends DummyMode {
 				receiver.drawMenuFont(engine,playerID,2,21,"REGRET",(regretdispframe % 4 == 0),EventReceiver.COLOR_WHITE,EventReceiver.COLOR_ORANGE);
 			}
 
-			//  medal 
+			//  medal
 			if(medalAC >= 1) receiver.drawScoreFont(engine, playerID, 0, 20, "AC", getMedalFontColor(medalAC));
 			if(medalST >= 1) receiver.drawScoreFont(engine, playerID, 3, 20, "ST", getMedalFontColor(medalST));
 			if(medalSK >= 1) receiver.drawScoreFont(engine, playerID, 0, 21, "SK", getMedalFontColor(medalSK));
@@ -681,7 +681,7 @@ public class SpeedMania2Mode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame 
+		// 最後の frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -729,7 +729,7 @@ public class SpeedMania2Mode extends DummyMode {
 		if((lines >= 1) && (engine.ending == 0)) {
 			// 4-line clearカウント
 			if(lines >= 4) {
-				// SK medal 
+				// SK medal
 				if(big == true) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						engine.playSE("medal");
@@ -743,7 +743,7 @@ public class SpeedMania2Mode extends DummyMode {
 				}
 			}
 
-			// AC medal 
+			// AC medal
 			if(engine.field.isEmpty()) {
 				engine.playSE("bravo");
 
@@ -753,7 +753,7 @@ public class SpeedMania2Mode extends DummyMode {
 				}
 			}
 
-			// CO medal 
+			// CO medal
 			if(big == true) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					engine.playSE("medal");
@@ -805,7 +805,7 @@ public class SpeedMania2Mode extends DummyMode {
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
 				if(sectionlasttime > tableTimeRegret[levelb / 100]) {
@@ -839,7 +839,7 @@ public class SpeedMania2Mode extends DummyMode {
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
 				if(sectionlasttime > tableTimeRegret[levelb / 100]) {
@@ -853,10 +853,10 @@ public class SpeedMania2Mode extends DummyMode {
 					gradeflash = 180;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
-				// Next Section 
+				// Next Section
 				engine.playSE("levelup");
 
-				// 背景切り替え
+				// Background切り替え
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
@@ -873,7 +873,7 @@ public class SpeedMania2Mode extends DummyMode {
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// ST medal 
+				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
 				// 骨Block出現開始

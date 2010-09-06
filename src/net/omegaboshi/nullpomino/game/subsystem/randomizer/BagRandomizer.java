@@ -1,18 +1,18 @@
 package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
 public class BagRandomizer extends Randomizer {
-	
+
 	int[] bag;
 	int pt;
-	
+
 	public BagRandomizer() {
 		super();
 	}
-	
+
 	public BagRandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
 	}
-	
+
 	public void init() {
 		bag = new int[pieces.length];
 		pt = 0;

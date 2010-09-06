@@ -43,7 +43,7 @@ import sdljava.video.SDLVideo;
 public class StateTitleSDL extends DummyMenuChooseStateSDL {
 	/** Strings for menu choices */
 	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "CONFIG", "EXIT"};
-	
+
 	/** UI Text identifier Strings */
 	private static final String[] UI_TEXT = {
         "Title_Start", "Title_Replay", "Title_NetPlay", "Title_Config", "Title_Exit"
@@ -51,25 +51,25 @@ public class StateTitleSDL extends DummyMenuChooseStateSDL {
 
 	/** 新Versionの check 済みならtrue */
 	protected boolean isNewVersionChecked = false;
-	
+
 	public StateTitleSDL () {
 		maxCursor = 4;
 		minChoiceY = 4;
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
 		// タイトルバー変更
 		SDLVideo.wmSetCaption("NullpoMino version" + GameManager.getVersionString(), null);
-		// オブザーバー開始
+		// Observer開始
 		NullpoMinoSDL.startObserverClient();
 		// GC呼び出し
 		System.gc();
 
-		// 新Version check 
+		// 新Version check
 		if(!isNewVersionChecked && NullpoMinoSDL.propGlobal.getProperty("updatechecker.enable", true)) {
 			isNewVersionChecked = true;
 
@@ -92,7 +92,7 @@ public class StateTitleSDL extends DummyMenuChooseStateSDL {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -106,14 +106,14 @@ public class StateTitleSDL extends DummyMenuChooseStateSDL {
 		renderChoices(2, 4, CHOICES);
 
 		NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
-		
+
 		if(UpdateChecker.isNewVersionAvailable(GameManager.getVersionMajor(), GameManager.getVersionMinor())) {
 			String strTemp = String.format(NullpoMinoSDL.getUIText("Title_NewVersion"),
 					UpdateChecker.getLatestVersionFullString(), UpdateChecker.getStrReleaseDate());
 			NormalFontSDL.printTTFFont(16, 416, strTemp);
 		}
 	}
-	
+
 	@Override
 	protected boolean onDecide () throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");

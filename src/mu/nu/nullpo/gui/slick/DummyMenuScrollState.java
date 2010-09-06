@@ -18,7 +18,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 		SB_MIN_Y = 65,
 		LINE_WIDTH = 2,
 		SB_WIDTH = 14;
-	
+
 	/** Scroll bar colors */
 	protected static final Color SB_SHADOW_COLOR = new Color(12, 78, 156),
 		SB_BORDER_COLOR = new Color(52, 150, 252),
@@ -33,13 +33,13 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 
 	/** List of entries */
 	protected String[] list;
-	
+
 	/** Error messages for null or empty list */
 	protected String nullError, emptyError;
 
 	/** Y-coordinates of dark sections of scroll bar */
 	protected int pUpMinY, pUpMaxY, pDownMinY, pDownMaxY;
-	
+
 	public DummyMenuScrollState () {
 		minentry = 0;
 		nullError = "";
@@ -51,11 +51,11 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
-		// 背景
+		// Background
 		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
@@ -83,7 +83,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 
 	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
 	}
-	
+
 	@Override
 	public boolean updateMouseInput (Input input) {
 		// Mouse
@@ -133,7 +133,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 		}
 		return false;
 	}
-	
+
 	public void drawMenuList (Graphics graphics)
 	{
 		int maxentry = minentry + pageHeight - 1;

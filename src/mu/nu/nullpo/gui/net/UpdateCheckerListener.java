@@ -39,7 +39,7 @@ public interface UpdateCheckerListener {
 
 	/**
 	 * 更新 check 終了時
-	 * @param status 状態(失敗するとSTATUS_ERROR、成功するとSTATUS_COMPLETE)
+	 * @param status 状態(失敗するとSTATUS_ERROR, 成功するとSTATUS_COMPLETE)
 	 */
 	public void onUpdateCheckerEnd(int status);
 }

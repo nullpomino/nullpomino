@@ -7,15 +7,15 @@ import sdljava.event.SDLEvent;
 
 public class MouseInputSDL extends MouseInputDummy {
 	public static MouseInputSDL mouseInput;
-	
+
 	private MouseInputSDL() {
 		super();
 	}
-	
+
 	public static void initalizeMouseInput() {
 		mouseInput = new MouseInputSDL();
 	}
-	
+
 	public void update() throws SDLException {
 		MouseState ms = SDLEvent.getMouseState();
 		mouseX = ms.getX();

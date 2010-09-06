@@ -3,13 +3,13 @@ package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 import mu.nu.nullpo.game.component.Piece;
 
 public class BagNoSZORandomizer extends BagRandomizer {
-	
+
 	boolean firstBag = true;
-	
+
 	public BagNoSZORandomizer() {
 		super();
 	}
-	
+
 	public BagNoSZORandomizer(boolean[] pieceEnable, long seed) {
 		super(pieceEnable, seed);
 	}
@@ -24,6 +24,5 @@ public class BagNoSZORandomizer extends BagRandomizer {
 			super.shuffle();
 		}
 	}
-	
-	
+
 }

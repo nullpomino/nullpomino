@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.RuleOptions;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
@@ -153,7 +152,7 @@ public class GeneralUtil {
 
 	/**
 	 * ルールファイルを読み込み
-	 * @param filename ファイル名
+	 * @param filename Filename
 	 * @return ルール data
 	 */
 	public static RuleOptions loadRule(String filename) {

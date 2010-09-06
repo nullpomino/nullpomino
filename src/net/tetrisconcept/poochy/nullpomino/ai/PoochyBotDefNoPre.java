@@ -77,10 +77,10 @@ public class PoochyBotDefNoPre extends PoochyBot {
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param rtOld Direction before rotation (-1: none)
-	 * @param fld フィールド (どんなに弄っても問題なし）
-	 * @param piece ピース
+	 * @param fld Field (Can be modified without problems)
+	 * @param piece Piece
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
-	 * @return 評価得点
+	 * @return Evaluation score
 	 */
 	@Override
 	public int thinkMain(int x, int y, int rt, int rtOld, Field fld, Piece piece, int depth) {
@@ -100,7 +100,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 		// Number of holes and valleys needing an I piece (before placement)
 		int holeBefore = fld.getHowManyHoles();
 		//int lidBefore = fld.getHowManyLidAboveHoles();
-		
+
 		//Fetch depths.
 		int[] depthsBefore = getColumnDepths(fld);
 		int deepestY = -1;
@@ -156,7 +156,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 			needJValleyBefore += 2;
 		if ((depthsBefore[width-1] - depthsBefore[width-2])%4 == 2)
 			needJValleyBefore += 2;
-		
+
 		needJValleyBefore >>= 1;
 		needLValleyBefore >>= 1;
 
@@ -230,7 +230,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 			debugOut("I piece xMax = " + xMax + ", valley depth = " + valley +
 					", valley bonus = " + valleyBonus);
 		pts += valleyBonus;
-		
+
 		//Points for line clears
 		if (peril) {
 			if(lines == 1) pts += 500000;
@@ -385,7 +385,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 			// Demerits for increase in height
 			else if(heightBefore > heightAfter)
 				pts -= (heightBefore - heightAfter) * 4;
-			
+
 			//Penalty for dangerous placements
 			if (heightAfter < 2)
 			{

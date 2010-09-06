@@ -92,16 +92,16 @@ public class NullpoMinoSDL {
 	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
-	/** 設定保存用Property file */
+	/** Save settings用Property file */
 	public static CustomProperties propConfig;
 
-	/** 設定保存用Property file (全Version共通) */
+	/** Save settings用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
 	/** 音楽リストProperty file */
 	public static CustomProperties propMusic;
 
-	/** オブザーバー機能用Property file */
+	/** Observer機能用Property file */
 	public static CustomProperties propObserver;
 
 	/** Default language file */
@@ -149,7 +149,7 @@ public class NullpoMinoSDL {
 	/** Joystick のcount */
 	public static int joystickMax;
 
-	/** Joystick  */
+	/** Joystick */
 	public static SDLJoystick[] joystick;
 
 	/** Joystick direction key 状態 */
@@ -173,16 +173,16 @@ public class NullpoMinoSDL {
 	/** Current ステート */
 	public static int currentState;
 
-	/** 終了 buttonやスクリーンショット buttonの使用許可 */
+	/** Exit buttonやScreenshot buttonの使用許可 */
 	public static boolean enableSpecialKeys;
 
-	/** 終了 button使用許可 */
+	/** Exit button使用許可 */
 	public static boolean allowQuit;
 
 	/** MaximumFPS */
 	public static int maxFPS;
 
-	/** オブザーバークライアント */
+	/** Observerクライアント */
 	public static NetObserverClient netObserverClient;
 
 	/**
@@ -242,14 +242,14 @@ public class NullpoMinoSDL {
 			log.error("Failed to load game mode list", e);
 		}
 
-		// キー input のInitialization
+		// Key input のInitialization
 		keyPressedState = new boolean[SDL_KEY_MAX];
 		GameKeySDL.initGlobalGameKeySDL();
 		GameKeySDL.gamekey[0].loadConfig(propConfig);
 		GameKeySDL.gamekey[1].loadConfig(propConfig);
 		MouseInputSDL.initalizeMouseInput();
 
-		// ステートのInitialization
+		// State initialization
 		currentState = -1;
 		gameStates = new BaseStateSDL[STATE_MAX];
 		gameStates[STATE_TITLE] = new StateTitleSDL();
@@ -387,7 +387,7 @@ public class NullpoMinoSDL {
 			// Joystick の更新
 			if(joystickMax > 0) joyUpdate();
 
-			// キー input 状態を更新
+			// Update key input states
 			for(int i = 0; i < 2; i++) {
 				int joynum = joyUseNumber[i];
 
@@ -405,7 +405,7 @@ public class NullpoMinoSDL {
 			// FPS描画
 			if(showfps) NormalFontSDL.printFont(0, 480 - 16, NullpoMinoSDL.df.format(NullpoMinoSDL.actualFPS), NormalFontSDL.COLOR_BLUE, 1.0f);
 
-			// オブザーバークライアント
+			// Observerクライアント
 			if((netObserverClient != null) && netObserverClient.isConnected()) {
 				int fontcolor = NormalFontSDL.COLOR_BLUE;
 				if(netObserverClient.getObserverCount() > 1) fontcolor = NormalFontSDL.COLOR_GREEN;
@@ -417,11 +417,11 @@ public class NullpoMinoSDL {
 
 			// 特殊キー
 			if(enableSpecialKeys) {
-				// スクリーンショット
+				// Screenshot
 				if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_SCREENSHOT) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_SCREENSHOT))
 					saveScreenShot();
 
-				// 終了 button
+				// Exit button
 				if(allowQuit) {
 					if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_QUIT) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_QUIT))
 						enterState(-1);
@@ -524,11 +524,11 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * スクリーンショットを保存
+	 * Screenshotを保存
 	 * @throws SDLException 保存に失敗した場合
 	 */
 	public static void saveScreenShot() throws SDLException {
-		// ファイル名を決める
+		// Filenameを決める
 		String dir = NullpoMinoSDL.propGlobal.getProperty("custom.screenshot.directory", "ss");
 		GregorianCalendar currentTime = new GregorianCalendar();
 		int month = currentTime.get(Calendar.MONTH) + 1;
@@ -601,10 +601,10 @@ public class NullpoMinoSDL {
 			if(event == null) break;
 
 			if(event instanceof SDLQuitEvent) {
-				// 終了 button
+				// Exit button
 				enterState(-1);
 			} else if(event instanceof SDLKeyboardEvent) {
-				// キー input 
+				// Key input
 				SDLKeyboardEvent keyevent = (SDLKeyboardEvent)event;
 
 				int keysym = keyevent.getSym();
@@ -675,7 +675,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * オブザーバークライアントを開始
+	 * Observerクライアントを開始
 	 */
 	public static void startObserverClient() {
 		log.debug("startObserverClient called");
@@ -702,7 +702,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * オブザーバークライアントを停止
+	 * Observerクライアントを停止
 	 */
 	public static void stopObserverClient() {
 		log.debug("stopObserverClient called");

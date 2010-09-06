@@ -64,7 +64,7 @@ public class NetPlayerClient extends NetBaseClient {
 	/** Number of players */
 	protected int playerCount = -1;
 
-	/** オブザーバーcount */
+	/** Observercount */
 	protected int observerCount = -1;
 
 	/**
@@ -353,7 +353,7 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return オブザーバーcount
+	 * @return Observercount
 	 */
 	public int getObserverCount() {
 		return observerCount;

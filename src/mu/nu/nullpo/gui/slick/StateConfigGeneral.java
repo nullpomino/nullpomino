@@ -41,22 +41,22 @@ import org.newdawn.slick.state.StateBasedGame;
  * 全般の設定画面のステート
  */
 public class StateConfigGeneral extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 6;
 
-	/** Joystick  input 検出法の表示名 */
+	/** Joystick input 検出法の表示名 */
 	protected static final String[] JOYSTICK_METHOD_STRINGS = {"NONE", "SLICK DEFAULT", "SLICK ALTERNATE", "LWJGL"};
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor = 0;
 
 	/** フルスクリーン flag */
 	protected boolean fullscreen;
 
-	/** 効果音ON/OFF */
+	/** Sound effectsON/OFF */
 	protected boolean se;
 
 	/** BGMのON/OFF */
@@ -68,7 +68,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/** BGMストリーミングのON/OFF */
 	protected boolean bgmstreaming;
 
-	/** 背景表示 */
+	/** Background表示 */
 	protected boolean showbg;
 
 	/** FPS表示 */
@@ -86,19 +86,19 @@ public class StateConfigGeneral extends BasicGameState {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールド背景の明るさ */
+	/** フィールドBackgroundの明るさ */
 	protected int fieldbgbright;
 
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
 
-	/** 効果音ボリューム */
+	/** Sound effects volume */
 	protected int sevolume;
 
-	/** BGMボリューム */
+	/** BGM volume */
 	protected int bgmvolume;
 
-	/** Joystick  input の検出法 */
+	/** Joystick input の検出法 */
 	protected int joyMethod;
 
 	/** フィールド右側にMeterを表示 */
@@ -126,7 +126,7 @@ public class StateConfigGeneral extends BasicGameState {
 	protected boolean alternateFPSPerfectMode;
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -134,14 +134,14 @@ public class StateConfigGeneral extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		loadConfig(NullpoMinoSlick.propConfig);
 	}
 
 	/**
-	 * 設定読み込み
+	 * Load settings
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
@@ -172,7 +172,7 @@ public class StateConfigGeneral extends BasicGameState {
 	}
 
 	/**
-	 * 設定保存
+	 * Save settings
 	 * @param prop Property file to save to
 	 */
 	protected void saveConfig(CustomProperties prop) {
@@ -203,10 +203,10 @@ public class StateConfigGeneral extends BasicGameState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		// 背景
+		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
@@ -266,9 +266,9 @@ public class StateConfigGeneral extends BasicGameState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
-		// オブザーバー
+		// Observer
 		NullpoMinoSlick.drawObserverClient();
-		// スクリーンショット
+		// Screenshot
 		if(ssflag) {
 			NullpoMinoSlick.saveScreenShot(container, g);
 			ssflag = false;
@@ -281,16 +281,16 @@ public class StateConfigGeneral extends BasicGameState {
 	 * Update game state
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		// TTFフォント描画
+		// TTF font 描画
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-		// キー input 状態を更新
+		// Update key input states
 		GameKey.gamekey[0].update(container.getInput());
 
-		// カーソル移動
+		// Cursor movement
 		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
-				
+
 		    cursor--;
 			if(cursor < 0) cursor = 23;
 			ResourceHolder.soundManager.play("cursor");
@@ -413,15 +413,15 @@ public class StateConfigGeneral extends BasicGameState {
 		// Cancel button
 		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
-			
+
 		    loadConfig(NullpoMinoSlick.propConfig);
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
-		// スクリーンショット button
+		// Screenshot button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
 
-		// 終了 button
+		// Exit button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
 
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

@@ -47,7 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * キーコンフィグ画面の frame 
+ * キーコンフィグ画面の frame
  */
 public class KeyConfigFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -74,7 +74,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード、マウス、ディスプレイなどが存在しない場合の例外
+	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
 	public KeyConfigFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -173,7 +173,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * メニュー実行時の処理
+	 * Menu 実行時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "KeyConfig_OK") {

@@ -42,7 +42,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * PRACTICEMode 
+ * PRACTICEMode
  */
 public class PracticeMode extends DummyMode {
 	/** Log */
@@ -688,7 +688,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -731,7 +731,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (ゲーム開始直前）
+	 * Readyの時のCalled at initialization (ゲーム開始直前）
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -1051,7 +1051,7 @@ public class PracticeMode extends DummyMode {
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame 
+		// 最後の frame
 		if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
 			if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 				if(engine.statistics.level < nextseclv - 1) {
@@ -1117,10 +1117,10 @@ public class PracticeMode extends DummyMode {
 					engine.staffrollNoDeath = false;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
-				// Next Section 
+				// Next Section
 				engine.playSE("levelup");
 
-				// 背景切り替え
+				// Background切り替え
 				if(owner.backgroundStatus.bg < 19) {
 					owner.backgroundStatus.fadesw = true;
 					owner.backgroundStatus.fadecount = 0;
@@ -1180,7 +1180,6 @@ public class PracticeMode extends DummyMode {
 			setMeter(engine, playerID);
 		}
 	}
-
 
 	/**
 	 *  levelタイプがMANIA系以外のときのCalculate score

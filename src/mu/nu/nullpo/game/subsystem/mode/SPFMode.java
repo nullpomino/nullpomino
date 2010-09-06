@@ -49,13 +49,13 @@ import org.apache.log4j.Logger;
 public class SPFMode extends DummyMode {
 	/** Log (Apache log4j) */
 	static Logger log = Logger.getLogger(SPFMode.class);
-	
+
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Enabled piece types */
 	private static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
-	
+
 	/** Block colors */
 	private static final int[] BLOCK_COLORS =
 	{
@@ -80,20 +80,20 @@ public class SPFMode extends DummyMode {
 		Block.BLOCK_COLOR_YELLOW,
 		Block.BLOCK_COLOR_GEM_YELLOW
 	};
-	
+
 	private static final double[] ROW_VALUES =
 	{
 		2.3, 2.2, 2.1, 2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0
 	};
-	
+
 	private static final int DIAMOND_COLOR = Block.BLOCK_COLOR_GEM_RAINBOW;
 
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
-	
+
 	/** Names of drop map sets */
 	private static final String[] DROP_SET_NAMES = {"CLASSIC", "REMIX", "SWORD", "S-MIRROR", "AVALANCHE", "A-MIRROR"};
-	
+
 	private static final int[][][][] DROP_PATTERNS = {
 		{
 			{{2,2,2,2}, {5,5,5,5}, {7,7,7,7}, {4,4,4,4}},
@@ -194,10 +194,10 @@ public class SPFMode extends DummyMode {
 		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 		{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.2, 1.0, 1.0}
 	};
-	
+
 	/** Names of rainbow power settings */
 	private static final String[] RAINBOW_POWER_NAMES = {"NONE", "50%", "80%", "100%", "50/100%"};
-	
+
 	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
@@ -222,7 +222,7 @@ public class SPFMode extends DummyMode {
 	/** Big */
 	//private boolean[] big;
 
-	/** 効果音ON/OFF */
+	/** Sound effectsON/OFF */
 	private boolean[] enableSE;
 
 	/** マップ使用 flag */
@@ -257,43 +257,43 @@ public class SPFMode extends DummyMode {
 
 	/** Amount of points earned from most recent clear */
 	private int[] lastscore;
-	
+
 	/** Score */
 	private int[] score;
-	
+
 	/** Settings for starting countdown for ojama blocks */
 	private int[] ojamaCountdown;
 
 	/** Hurryup開始までの秒count(0でHurryupなし) */
 	private int[] hurryupSeconds;
-	
+
 	/** Time to display "ZENKESHI!" */
 	private int[] zenKeshiDisplay;
-	
+
 	/** Time to display "TECH BONUS" */
 	private int[] techBonusDisplay;
-	
+
 	/** Drop patterns */
 	private int[][][] dropPattern;
-	
+
 	/** Drop map set selected */
 	private int[] dropSet;
-	
+
 	/** Drop map selected */
 	private int[] dropMap;
-	
+
 	/** Drop multipliers */
 	private double[] attackMultiplier, defendMultiplier;
-	
+
 	/** Rainbow power settings for each player */
 	private int[] diamondPower;
-	
+
 	/** Frame when squares were last checked */
 	private int[] lastSquareCheck;
-	
+
 	/** Flag set when counters have been decremented */
 	private boolean[] countdownDecremented;
-	
+
 	/*
 	 * Mode name
 	 */
@@ -341,7 +341,7 @@ public class SPFMode extends DummyMode {
 
 		zenKeshiDisplay = new int[MAX_PLAYERS];
 		techBonusDisplay = new int[MAX_PLAYERS];
-		
+
 		dropSet = new int[MAX_PLAYERS];
 		dropMap = new int[MAX_PLAYERS];
 		dropPattern = new int[MAX_PLAYERS][][];
@@ -817,7 +817,7 @@ public class SPFMode extends DummyMode {
 							multiplier == 100 ? EventReceiver.COLOR_YELLOW : EventReceiver.COLOR_RED);
 				else
 					receiver.drawMenuFont(engine, playerID, 3,  3, multiplier + "%", EventReceiver.COLOR_GREEN);
-				
+
 				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_CYAN, 17,
 						"DROP SET", DROP_SET_NAMES[dropSet[playerID]],
 						"DROP MAP", String.format("%2d", dropMap[playerID]+1) + "/" +
@@ -847,7 +847,7 @@ public class SPFMode extends DummyMode {
 		}
 	}
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -855,11 +855,11 @@ public class SPFMode extends DummyMode {
 			engine.numColors = BLOCK_COLORS.length;
 			engine.rainbowAnimate = (playerID == 0);
 			engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_CONNECT;
-			
+
 			dropPattern[playerID] = DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]];
 			attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
 			defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
-			
+
 			// マップ読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
@@ -944,7 +944,7 @@ public class SPFMode extends DummyMode {
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
 		}
-		
+
 		if (!owner.engine[playerID].gameActive)
 			return;
 
@@ -952,7 +952,7 @@ public class SPFMode extends DummyMode {
 			receiver.drawMenuFont(engine, playerID, 0, 20, "TECH BONUS", EventReceiver.COLOR_YELLOW);
 		if(zenKeshiDisplay[playerID] > 0)
 			receiver.drawMenuFont(engine, playerID, 1, 21, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
-		
+
 		Block b;
 		int blockColor, textColor;
 		if (engine.field != null)
@@ -976,13 +976,13 @@ public class SPFMode extends DummyMode {
 					}
 				}
 	}
-	
+
 	@Override
 	public boolean onMove (GameEngine engine, int playerID) {
 		countdownDecremented[playerID] = false;
 		return false;
 	}
-	
+
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int avalanche) {
 		if (engine.field == null)
@@ -997,15 +997,15 @@ public class SPFMode extends DummyMode {
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
 		if (engine.field == null)
 			return;
-		
+
 		checkAll(engine, playerID);
-		
+
 		if (engine.field.canCascade())
 			return;
-		
+
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
-		
+
 		int width = engine.field.getWidth();
 		int height = engine.field.getHeight();
 		int hiddenHeight = engine.field.getHiddenHeight();
@@ -1080,7 +1080,7 @@ public class SPFMode extends DummyMode {
 			pts += (engine.chain-1)*20.0;
 		engine.playSE("combo" + Math.min(engine.chain, 20));
 		double ojamaNew = (int) (pts*attackMultiplier[playerID]/7.0);
-	
+
 		if (engine.field.isEmpty()) {
 			engine.playSE("bravo");
 			zenKeshiDisplay[playerID] = 120;
@@ -1088,14 +1088,14 @@ public class SPFMode extends DummyMode {
 			engine.statistics.score += 1000;
 			score[playerID] += 1000;
 		}
-		
+
 		lastscore[playerID] = ((int) pts) * 10;
 		scgettime[playerID] = 120;
 		score[playerID] += lastscore[playerID];
 
 		if (hurryupSeconds[playerID] > 0 && engine.statistics.time > hurryupSeconds[playerID])
 			ojamaNew *= 1 << (engine.statistics.time / (hurryupSeconds[playerID] * 60));
-		
+
 		if (ojama[playerID] > 0 && ojamaNew > 0.0)
 		{
 			int delta = Math.min(ojama[playerID] << 1, (int) ojamaNew);
@@ -1106,19 +1106,19 @@ public class SPFMode extends DummyMode {
 		if (ojamaSend > 0)
 			ojama[enemyID] += ojamaSend;
 	}
-	
+
 	public static double getRowValue(int row)
 	{
 		return ROW_VALUES[Math.min(Math.max(row, 0), ROW_VALUES.length-1)];
 	}
-	
+
 	public void checkAll(GameEngine engine, int playerID) {
 		boolean recheck = checkCountdown(engine, playerID);
 		if (recheck)
 			log.debug("Converted garbage blocks to regular blocks. Rechecking squares.");
 		checkSquares(engine, playerID, recheck);
 	}
-	
+
 	public boolean checkCountdown (GameEngine engine, int playerID) {
 		if (countdownDecremented[playerID])
 			return false;
@@ -1142,7 +1142,7 @@ public class SPFMode extends DummyMode {
 			}
 		return result;
 	}
-	
+
 	public void checkSquares (GameEngine engine, int playerID, boolean forceRecheck)
 	{
 		if (engine.field == null)
@@ -1150,13 +1150,13 @@ public class SPFMode extends DummyMode {
 		if (engine.statistics.time == lastSquareCheck[playerID] && !forceRecheck)
 			return;
 		lastSquareCheck[playerID] = engine.statistics.time;
-		
+
 		log.debug("Checking squares.");
-		
+
 		int width = engine.field.getWidth();
 		int height = engine.field.getHeight();
 		int hiddenHeight = engine.field.getHiddenHeight();
-		
+
 		int color;
 		Block b;
 		int minX, minY, maxX, maxY;
@@ -1381,11 +1381,11 @@ public class SPFMode extends DummyMode {
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
 		if (engine.field == null)
 			return false;
-		
+
 		int width = engine.field.getWidth();
 		int height = engine.field.getHeight();
 		int hiddenHeight = engine.field.getHiddenHeight();
-		
+
 		for (int y = (-1*hiddenHeight); y < height; y++)
 			for (int x = 0; x < width; x++)
 				if (engine.field.getBlockColor(x, y) == DIAMOND_COLOR)
@@ -1395,13 +1395,13 @@ public class SPFMode extends DummyMode {
 				}
 
 		checkAll(engine, playerID);
-		
+
 		//Drop garbage if needed.
 		if (ojama[playerID] > 0)
 		{
 			int enemyID = 0;
 			if(playerID == 0) enemyID = 1;
-			
+
 			int dropRows = Math.min((ojama[playerID] + width - 1) / width, engine.field.getHighestBlockY(3));
 			if (dropRows <= 0)
 				return false;

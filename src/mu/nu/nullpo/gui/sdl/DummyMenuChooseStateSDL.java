@@ -35,10 +35,10 @@ import sdljava.video.SDLSurface;
  * Dummy class for menus where the player picks from a list of options
  */
 public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
-	/** カーソル位置 */
+	/** Cursor position */
 	protected int cursor = 0;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/** Max cursor value */
@@ -70,7 +70,7 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 
 		if (maxCursor >= 0) {
 
-			// カーソル移動
+			// Cursor movement
 			// if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_NAV_UP)) {
 				cursor--;

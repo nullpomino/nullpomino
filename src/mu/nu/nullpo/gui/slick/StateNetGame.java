@@ -36,7 +36,6 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
@@ -59,7 +58,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** Log */
 	static Logger log = Logger.getLogger(StateNetGame.class);
 
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 11;
 
 	/** ゲームのメインクラス */
@@ -71,7 +70,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** FPS表示 */
 	protected boolean showfps = true;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/** AppGameContainer (これを使ってタイトルバーを変える) */
@@ -81,7 +80,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	protected String strModeToEnter = "";
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -89,18 +88,18 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		appContainer = (AppGameContainer)container;
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-		// オブザーバー停止
+		// Observer停止
 		NullpoMinoSlick.stopObserverClient();
 
 		// 60FPS
@@ -125,7 +124,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
@@ -145,7 +144,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	/*
-	 * ゲーム画面の描画
+	 * Draw the game screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		try {
@@ -156,7 +155,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 			// FPS
 			NullpoMinoSlick.drawFPS(container, true);
-			// スクリーンショット
+			// Screenshot
 			if(ssflag) {
 				NullpoMinoSlick.saveScreenShot(container, g);
 				ssflag = false;
@@ -175,10 +174,10 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		try {
-			// TTFフォント描画
+			// TTF font 描画
 			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-			// キー input 状態を更新
+			// Update key input states
 			GameKey.gamekey[0].update(container.getInput());
 
 			if((gameManager != null) && (gameManager.mode != null)) {
@@ -209,7 +208,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				}
 			}
 
-			// スクリーンショット button
+			// Screenshot button
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
 				ssflag = true;
 

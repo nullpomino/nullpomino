@@ -62,7 +62,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 
 	/** Scoreなどの情報 */
 	protected Statistics[] statsList;
-	
+
 	public StateReplaySelectSDL () {
 		pageHeight = PAGE_HEIGHT;
 		nullError = "REPLAY DIRECTORY NOT FOUND";
@@ -70,7 +70,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -81,7 +81,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 
 	/**
 	 * リプレイファイル一覧を取得
-	 * @return リプレイファイルのファイル名の配列。ディレクトリがないならnull
+	 * @return リプレイファイルのFilenameの配列。ディレクトリがないならnull
 	 */
 	protected String[] getReplayFileList() {
 		File dir = new File(NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay"));
@@ -127,7 +127,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	protected void onRenderSuccess(SDLSurface screen) throws SDLException {
@@ -150,7 +150,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 									, NormalFontSDL.COLOR_CYAN);
 		*/
 	}
-	
+
 	@Override
 	protected boolean onDecide() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
@@ -170,10 +170,10 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 		s.startReplayGame(prop);
 
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_INGAME);
-		
+
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onCancel() throws SDLException {
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);

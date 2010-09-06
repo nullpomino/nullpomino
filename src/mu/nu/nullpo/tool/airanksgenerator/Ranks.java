@@ -5,7 +5,7 @@ import java.util.Arrays;
 import mu.nu.nullpo.game.component.Piece;
 public class Ranks implements Serializable{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -93,9 +93,6 @@ public class Ranks implements Serializable{
 	};
 private int  [] ranks;
 
-
-
-
 private int stackWidth;
 private int size;
 private Ranks ranksFrom;
@@ -105,11 +102,9 @@ private int  maxError;
 private int rankMin;
 private int rankMax;
 
-
 public float getMaxError() {
 	return maxError;
 }
-
 
 private int completion;
 private int base;
@@ -120,7 +115,7 @@ public int getCompletionPercentage(){
 	completionPercentage= ((long)completion+1) *100;
 	completionPercentage/=size;
 	return (int)completionPercentage;
-	
+
 }
 public boolean completionPercentageIncrease(){
 	return (0==(completion % (size/100)) && completion!=0);
@@ -144,12 +139,11 @@ public int getStackWidth() {
 public Ranks(int maxJump,int stackWidth){
 	 this.maxJump=maxJump;
 	 base=2*maxJump+1;
-	 
+
 	 this.stackWidth=stackWidth;
-	 
+
 	 surfaceWidth=stackWidth-1;
-	
-	
+
 	 size=(int) Math.pow(base,surfaceWidth);
 	ranks=new int[size];
 	completion=0;
@@ -158,14 +152,14 @@ public Ranks(int maxJump,int stackWidth){
 	rankMin=Integer.MAX_VALUE;
 	rankMax=0;
 	Arrays.fill(ranks,Integer.MAX_VALUE);
-	
+
 }
 
 public Ranks(Ranks rankFrom){
 	this.ranksFrom=rankFrom;
 	this.maxJump=ranksFrom.getMaxJump();
 	base=2*maxJump+1;
-	
+
 	 this.stackWidth=ranksFrom.getStackWidth();
 	 surfaceWidth=stackWidth-1;
 	 size=(int) Math.pow(2*maxJump+1,stackWidth-1);
@@ -175,8 +169,7 @@ public Ranks(Ranks rankFrom){
 	maxError=0;
 	rankMin=Integer.MAX_VALUE;
 	rankMax=0;
-	
-	
+
 }
 public void setRanksFrom(Ranks ranksfrom){
 	this.ranksFrom=ranksfrom;
@@ -210,9 +203,9 @@ public int encode(int [] surface){
 }
 
 private void setRankValue(int surface,int value){
-	
+
 	ranks[surface]= value;
-	
+
 }
 
 public void setRank(int [] surface, int []surfaceDecodedWork){
@@ -235,48 +228,46 @@ public void scaleRanks(){
 	 int n2=0;
 	 int n3=0;
 	 int n4=0;*/
-	
+
 	for (int i=0;i<size;i++){
 		long newValue=((long)(ranks[i]-rankMin))*((long)(Integer.MAX_VALUE-rankMin));
 		newValue=newValue/(rankMax-rankMin);
-		
+
 		newValue=Math.max(Math.min(newValue,Integer.MAX_VALUE-rankMin),0);
 		newValue=newValue+rankMin;
 		/*if (newValue/pas==0){
 			n1++;
-			
+
 		}
 		if (newValue/pas==1){
 			n2++;
-			
+
 		}
 		if (newValue/pas==2){
 			n3++;
-			
+
 		}
 		if (newValue/pas==3){
 			n4++;
-			
+
 		}*/
 		ranks[i]=(int)newValue;
 	}
 	//System.out.println("n1 = "+n1+" n2 = "+n2+" n3 = "+n3+" n4 = "+n4);
 }
 public void decode(int surfaceNum,int []surface ){
-	
+
 	int surfaceNumWork=surfaceNum;
 	for (int i=0;i<surfaceWidth;i++){
 		surface[i]=surfaceNumWork%base-maxJump;
 		surfaceNumWork/=(base);
 	}
-	
-	
-}
 
+}
 
 public void iterateSurface(int [] surface,int []surfaceDecodedWork){
 	setRank(surface,surfaceDecodedWork);
-		
+
 	int retenue=1;
 	for (int i=0;i<surfaceWidth;i++){
 		if (retenue==0)
@@ -294,12 +285,11 @@ public void iterateSurface(int [] surface,int []surfaceDecodedWork){
 		   }
 		}
 	}
-	
+
 }
 private int getRank(int [] surface,int [] surfaceDecodedWork){
 	long sum=0;
-	
-	
+
 	for (int p=0;p<Piece.PIECE_STANDARD_COUNT;p++){
 		sum+=getRankPiece(surface,surfaceDecodedWork,p);
 	}
@@ -313,7 +303,7 @@ private int getRank(int [] surface,int [] surfaceDecodedWork){
 		 rankMin=result;
 	}
 	}
-	
+
 	if (result<0){
 		result=0;
 		System.out.println("ahhhhhh");
@@ -327,7 +317,7 @@ private int getRankPiece(int [] surface, int [] surfaceDecodedWork ,int piece){
 		if (rank>bestRank){
 			bestRank=rank;
 		}
-		
+
 	}
 	return bestRank;
 }
@@ -336,7 +326,7 @@ public boolean surfaceFitsPiece(int [] surface,int piece, int rotation, int x){
 	boolean fits=true;
 
     for (int x1=0;x1<(PIECES_WIDTHS[piece][rotation]-1);x1++){
-	     
+
 	   if (surface[x+x1]!=PIECES_LOWESTS[piece][rotation][x1]-PIECES_LOWESTS[piece][rotation][x1+1]){
 		   fits=false;
          break;
@@ -350,45 +340,41 @@ public boolean surfaceAddPossible(int []surfaceDecodedWork, int piece, int rotat
 	  if ( x>0){
 		   surfaceDecodedWork[x-1]+=PIECES_HEIGHTS[piece][rotation][0];
 		  if (surfaceDecodedWork[x-1]>maxJump){
-			  
+
 			   return false;
 		  }
 		  else if (surfaceDecodedWork[x-1]<-maxJump){
 			   return false;
-			  
+
 		  }
-		  		  
 		  
+
 	  }
-	
-	  
+
 		  for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
 			  surfaceDecodedWork[x+x1]+=(PIECES_HEIGHTS[piece][rotation][x1+1]-PIECES_HEIGHTS[piece][rotation][x1]);
 			  if (surfaceDecodedWork[x+x1]>maxJump){
-				  
+
 				   return false;
-				  
-				  
+
 			  }
 			  else if(surfaceDecodedWork[x+x1]<-maxJump) {
-				  
+
 				  return false;
-				  
-				  
+
 			  }
 		  }
-	  
-	  
+
 	  if (x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
 		  surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]-=PIECES_HEIGHTS[piece][rotation][PIECES_WIDTHS[piece][rotation]-1];
 		  if (surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]>maxJump){
-			  
+
 			  return false;
-			  
+
 		  }
 		  else if ( surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]<-maxJump){
 			   return false;
-			  
+
 		  }
 	  }
 	  return addPossible;
@@ -398,36 +384,35 @@ public void addToHeights(int [] heights,int piece,int rotation,int x){
 	for (int x1=0;x1<PIECES_WIDTHS[piece][rotation];x1++){
 		heights[x+x1]+=PIECES_HEIGHTS[piece][rotation][x1];
 	}
-	
+
 }
 
 public int [] heightsToSurface(int [] heights){
-	
+
 	int [] surface= new int[stackWidth-1];
 	for (int i=0;i<stackWidth-1;i++){
         int diff=heights[i+1]-heights[i];
         if (diff>maxJump){
-                
-                       
+
                  diff=maxJump;
         }
         if (diff<-maxJump){
-                
+
                 diff=-maxJump;
         }
         surface[i]=diff;
 	}
 	return surface;
-	
+
 }
 
 private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int piece, int rotation){
-	
-	int bestRank=0;	
-	
+
+	int bestRank=0;
+
 	for (int x=0;x<(stackWidth-(PIECES_WIDTHS[piece][rotation]-1));x++){
 		boolean fits=surfaceFitsPiece(surfaceDecodedWork,piece,rotation,x);
-	     
+
 	      if (fits){
 	    	  boolean addPossible=surfaceAddPossible(surfaceDecodedWork,piece,rotation,x);
 	    	  if (addPossible){
@@ -437,16 +422,16 @@ private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int p
 	    		  if (rank>bestRank){
 	    			  bestRank=rank;
 	    		  }
-	    		
-	    		
-	    		
+	    
+	    
+	    
 	    	  }
-	    		  
+	    
 	      }
 	      //Reinit work surface
 	  	if (x>0){
 			surfaceDecodedWork[x-1]=surface[x-1];
-		
+
 		}
 		for (int x1=0;x1<PIECES_WIDTHS[piece][rotation]-1;x1++){
 			surfaceDecodedWork[x+x1]=surface[x+x1];
@@ -454,11 +439,8 @@ private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int p
 		if (x<(surfaceWidth-(PIECES_WIDTHS[piece][rotation]-1))){
 			surfaceDecodedWork[x+(PIECES_WIDTHS[piece][rotation]-1)]=surface[x+(PIECES_WIDTHS[piece][rotation]-1)];
 		}
-	
+
      }
-	
-		
-	
 
 return bestRank;
 }

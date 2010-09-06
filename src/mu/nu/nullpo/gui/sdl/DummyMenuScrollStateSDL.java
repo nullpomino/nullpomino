@@ -48,11 +48,11 @@ public abstract class DummyMenuScrollStateSDL extends DummyMenuChooseStateSDL {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
-		// 背景
+		// Background
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
 		// Menu

@@ -40,9 +40,9 @@ import mu.nu.nullpo.util.GeneralUtil;
 public class AvalancheMode extends Avalanche1PDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
-	
+
 	/** Enabled piece types */
-	private static final int[] CHAIN_POWERS_FEVERTYPE = 
+	private static final int[] CHAIN_POWERS_FEVERTYPE =
 	{
 		4, 12, 24, 32, 48, 96, 160, 240, 320, 400, 500, 600, 700, 800, 900, 999
 	};
@@ -88,19 +88,18 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 
 	/** Chain display enable/disable */
 	private boolean showChains;
-	
+
 	/** If true, both columns 3 and 4 are danger columns */
 	protected boolean dangerColumnDouble;
-	
+
 	/** If true, red X's appear at tops of danger columns */
 	protected boolean dangerColumnShowX;
-	
+
 	/** True for classic scoring, false for 15th scoring algorithm */
 	private int scoreType;
-	
+
 	/** Sprint target score */
 	private int sprintTarget;
-	
 
 	/*
 	 * Mode name
@@ -116,7 +115,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
 		super.playerInit(engine, playerID);
-		
+
 		showChains = true;
 
 		scoreType = 0;
@@ -147,7 +146,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			engine.speed.denominator = 40;
 		}
 	}
-	
+
 	/*
 	 * Called at settings screen
 	 */
@@ -257,12 +256,12 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE, 1,
 					"TARGET", String.valueOf(SPRINT_MAX_SCORE[sprintTarget]));
 		}
-		
+
 		String strOutline = "";
 		if(outlinetype == 0) strOutline = "NORMAL";
 		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
-		
+
 		drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE, 2,
 				"SCORE TYPE", SCORETYPE_NAME[scoreType],
 				"OUTLINE", strOutline,
@@ -316,7 +315,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 					String.valueOf(lastmultiplier) + ")";
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 4, strScore);
-			
+
 			receiver.drawScoreFont(engine, playerID, 0, 6, "LEVEL", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(level));
 
@@ -326,19 +325,19 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				strSent = strSent + "(+" + String.valueOf(garbageAdd)+ ")";
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 10, strSent);
-			
+
 			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
-			
+
 			receiver.drawScoreFont(engine, playerID, 14, 6, "CLEARED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 14, 7, String.valueOf(blocksCleared));
-			
+
 			receiver.drawScoreFont(engine, playerID, 14, 9, "ZENKESHI", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 14, 10, String.valueOf(zenKeshiCount));
-			
+
 			receiver.drawScoreFont(engine, playerID, 14, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(engine.statistics.maxChain));
-			
+
 			if (dangerColumnShowX)
 				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
 
@@ -397,12 +396,12 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			}
 		}
 	}
-	
+
 	protected void addBonus (GameEngine engine, int playerID) {
 		if (gametype != 2)
 			super.addBonus(engine, playerID);
 	}
-	
+
 	protected int calcChainMultiplier(int chain) {
 		if (scoreType == 0)
 		{
@@ -433,7 +432,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				engine.statc[1] = 1;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -557,7 +556,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 					for(int sctype = 0; sctype < SCORETYPE_MAX; sctype++) {
 						prop.setProperty("avalanche.ranking." + ruleName + ".scoretype" + sctype +
 								"." + colors + "colors." + j + ".score." + i, rankingScore[sctype][colors-3][j][i]);
-						prop.setProperty("avalanche.ranking." + ruleName + ".scoretype" + sctype + 
+						prop.setProperty("avalanche.ranking." + ruleName + ".scoretype" + sctype +
 								"." + colors + "colors." + j + ".time." + i, rankingTime[sctype][colors-3][j][i]);
 					}
 				}

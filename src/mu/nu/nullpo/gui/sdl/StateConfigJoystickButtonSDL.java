@@ -33,10 +33,10 @@ import sdljava.event.SDLKey;
 import sdljava.video.SDLSurface;
 
 /**
- * Joystick  button設定画面のステート
+ * Joystick button設定画面のステート
  */
 public class StateConfigJoystickButtonSDL extends BaseStateSDL {
-	/** キー input を受付可能になるまでの frame count */
+	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
@@ -45,20 +45,20 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	/** 使用するJoystick の number */
 	protected int joyNumber;
 
-	/** 現在設定中の button */
+	/** Number of button currently being configured */
 	protected int keynum;
 
 	/** 経過 frame count */
 	protected int frame;
 
-	/**  button設定 */
+	/** Button settings */
 	protected int buttonmap[];
 
 	/** 前の frame のJoystick の input 状態 */
 	protected boolean previousJoyPressedState[];
 
 	/**
-	 *  button設定をInitialization
+	 * Button settings initialization
 	 */
 	protected void reset() {
 		keynum = 4;
@@ -82,7 +82,7 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	 * 押された buttonの numberを返す
 	 * @param prev 前の frame での input 状態
 	 * @param now この frame での input 状態
-	 * @return 押された buttonの number、無いなら-1
+	 * @return 押された buttonの number, 無いなら-1
 	 */
 	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {
 		for(int i = 0; i < now.length; i++) {
@@ -95,7 +95,7 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -179,7 +179,7 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 				NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN);
 				return;
 			}
-			// Joystick  input 
+			// Joystick input
 			else if(previousJoyPressedState != null) {
 				int key = getPressedKeyNumber(previousJoyPressedState, NullpoMinoSDL.joyPressedState[joyNumber]);
 
@@ -200,7 +200,7 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -209,7 +209,7 @@ public class StateConfigJoystickButtonSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave() throws SDLException {

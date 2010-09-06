@@ -44,7 +44,6 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.component.SpeedParam;
 import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.component.WallkickResult;
-import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer;
@@ -188,7 +187,7 @@ public class GameEngine {
 
 	/** Use thread for AI */
 	public boolean aiUseThread;
-	
+
 	/** Show Hint with AI */
 	public boolean aiShowHint;
 
@@ -597,10 +596,10 @@ public class GameEngine {
 
 	/** If true, color clears will ignore hidden rows */
 	public boolean ignoreHidden;
-	
+
 	/** Set to true to process rainbow block effects, false to skip. */
 	public boolean rainbowAnimate;
-	
+
 	/**
 	 * Constructor
 	 * @param owner このゲームエンジンを所有するGameOwnerクラス
@@ -845,7 +844,7 @@ public class GameEngine {
 		blockColors = BLOCK_COLORS_DEFAULT;
 		cascadeDelay = 0;
 		cascadeClearDelay = 0;
-		
+
 		rainbowAnimate = false;
 
 		// イベント発生
@@ -887,8 +886,8 @@ public class GameEngine {
 	}
 
 	/**
-	 * 効果音を再生する (enableSEがtrueのときだけ）
-	 * @param name 効果音の名前
+	 * Sound effectsを再生する (enableSEがtrueのときだけ）
+	 * @param name Sound effectsの名前
 	 */
 	public void playSE(String name) {
 		if(enableSE) owner.receiver.playSE(name);
@@ -1005,7 +1004,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * @return A buttonを押したときに左rotationするならfalse、右rotationするならtrue
+	 * @return A buttonを押したときに左rotationするならfalse, 右rotationするならtrue
 	 */
 	public boolean isRotateButtonDefaultRight() {
 		if((ruleopt == null) || (owRotateButtonDefaultRight >= 0)) {
@@ -1311,7 +1310,7 @@ public class GameEngine {
 	/**
 	 * ピースが出現するX-coordinateを取得
 	 * @param fld フィールド
-	 * @param piece ピース
+	 * @param piece Piece
 	 * @return 出現位置のX-coordinate
 	 */
 	public int getSpawnPosX(Field fld, Piece piece) {
@@ -1331,7 +1330,7 @@ public class GameEngine {
 
 	/**
 	 * ピースが出現するY-coordinateを取得
-	 * @param piece ピース
+	 * @param piece Piece
 	 * @return 出現位置のY-coordinate
 	 */
 	public int getSpawnPosY(Piece piece) {
@@ -1668,14 +1667,14 @@ public class GameEngine {
 	}
 
 	/**
-	 * 画面描画
-	 *  (各Mode やイベント処理クラスのイベントを呼び出すだけで、それ以外にGameEngine自身は何もしません）
+	 * Draw the screen
+	 *  (各Mode やイベント処理クラスのイベントを呼び出すだけで, それ以外にGameEngine自身は何もしません）
 	 */
 	public void render() {
 		// 最初の処理
 		if(owner.mode != null) owner.mode.renderFirst(this, playerID);
 		owner.receiver.renderFirst(this, playerID);
-		
+
 		if (rainbowAnimate)
 			Block.updateRainbowPhase(this);
 
@@ -2052,7 +2051,7 @@ public class GameEngine {
 				initialRotateContinuousUse = true;
 				playSE("initialrotate");
 			} else if((statc[0] > 0) || (ruleopt.moveFirstFrame == true)) {
-				if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// Roll Roll 
+				if((itemRollRollEnable) && (replayTimer % itemRollRollInterval == 0)) move = 1;	// Roll Roll
 
 				//  button input
 				if(ctrl.isPush(Controller.BUTTON_A) || ctrl.isPush(Controller.BUTTON_C)) move = -1;
@@ -2132,7 +2131,7 @@ public class GameEngine {
 			}
 			initialRotateDirection = 0;
 
-			// game over check 
+			// game over check
 			if((statc[0] == 0) && (nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true)) {
 				// Blockの出現位置を上にずらすことができる場合はそうする
 				for(int i = 0; i < ruleopt.pieceEnterMaxDistanceY; i++) {
@@ -2220,7 +2219,7 @@ public class GameEngine {
 							}
 
 							if(!dasInstant) playSE("move");
-							
+
 						} else if (ruleopt.dasChargeOnBlockedMove) {
 							dasCount = getDAS();
 							dasSpeedCount = getDASDelay();
@@ -2575,7 +2574,7 @@ public class GameEngine {
 		if(ruleopt.dasInLineClear) padRepeat();
 		else if(ruleopt.dasRedirectInDelay) { dasRedirect(); }
 
-		// 最初の frame 
+		// 最初の frame
 		if(statc[0] == 0) {
 			// Line clear flagを設定
 			if (clearMode == CLEAR_LINE)
@@ -2751,7 +2750,7 @@ public class GameEngine {
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
 						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden) > 0) ||
-						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0) || 
+						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0) ||
 						((clearMode == CLEAR_GEM_COLOR) && field.gemColorCheck(colorClearSize, false, garbageColorClear, ignoreHidden) > 0)) {
 					tspin = false;
 					tspinmini = false;
@@ -3075,7 +3074,7 @@ public class GameEngine {
 		}
 		owner.receiver.onResult(this, playerID);
 
-		// カーソル移動
+		// Cursor movement
 		if(ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT) || ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) {
 			if(statc[0] == 0) statc[0] = 1;
 			else statc[0] = 0;
@@ -3106,7 +3105,7 @@ public class GameEngine {
 
 		fldeditFrames++;
 
-		// カーソル移動
+		// Cursor movement
 		if(ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT, false) && !ctrl.isPress(Controller.BUTTON_C)) {
 			playSE("move");
 			fldeditX--;

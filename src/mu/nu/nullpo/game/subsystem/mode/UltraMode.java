@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * ULTRAMode 
+ * ULTRAMode
  */
 public class UltraMode extends DummyMode {
 	/** Current version */
@@ -377,7 +377,7 @@ public class UltraMode extends DummyMode {
 				strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
 			}
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 10,
-					"SPIN BONUS", strTSpinEnable, 
+					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo));
@@ -388,7 +388,7 @@ public class UltraMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理
+	 * Readyの時のCalled at initialization
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -685,7 +685,7 @@ public class UltraMode extends DummyMode {
 				owner.bgmStatus.fadesw = true;
 			}
 
-			// 1分ごとの背景切り替え
+			// 1分ごとのBackground切り替え
 			if((engine.statistics.time > 0) && (engine.statistics.time % 3600 == 0)) {
 				engine.playSE("levelup");
 				owner.backgroundStatus.fadesw = true;

@@ -26,25 +26,25 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** 接地したあとのY-coordinate */
 	public int bestYSub;
 
-	/** 接地したあとのDirection(-1：なし) */
+	/** 接地したあとのDirection(-1: None) */
 	public int bestRtSub;
 
-	/** 最善手の評価得点 */
+	/** 最善手のEvaluation score */
 	public int bestPts;
 
 	/** 移動を遅らせる用の変count */
 	public int delay;
 
-	/** このAIを所持するGameEngine */
+	/** The GameEngine that owns this AI */
 	public GameEngine gEngine;
 
-	/** このAIを所有するGameManager */
+	/** The GameManager that owns this AI */
 	public GameManager gManager;
 
 	/** trueならスレッドにThink routineの実行を指示 */
 	public boolean thinkRequest;
 
-	/** trueならスレッドがThink routine実行中 */
+	/** true when thread is executing the think routine. */
 	public boolean thinking;
 
 	/** スレッドを停止させる time */
@@ -53,7 +53,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** trueならスレッド動作中 */
 	public volatile boolean threadRunning;
 
-	/** Think routine実行用スレッド */
+	/** Thread for executing the think routine */
 	public Thread thread;
 
 	/** Number of frames for which piece has been stuck */
@@ -92,7 +92,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * Initialization処理
+	 * Called at initialization
 	 */
 	public void init(GameEngine engine, int playerID) {
 		delay = 0;
@@ -208,7 +208,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 *  button input状態を設定
+	 * Set button input states
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
@@ -651,7 +651,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				input |= Controller.BUTTON_BIT_UP;
 			else if(drop == -1)
 				input |= Controller.BUTTON_BIT_DOWN;
-			
+
 			if (rotateDir != 0)
 			{
 				if(engine.ruleopt.rotateButtonAllowDouble &&
@@ -685,16 +685,15 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (setDAS != moveDir)
 				setDAS = 0;
-			
+
 			lastInput = input;
 			lastX = nowX;
 			lastY = nowY;
 			lastRt = rt;
 
-
 			debugOut ("Input = " + input + ", moveDir = " + moveDir  + ", rotateDir = " + rotateDir +
 					 ", sync = " + sync  + ", drop = " + drop  + ", setDAS = " + setDAS);
-			
+
 			delay = 0;
 			ctrl.setButtonBit(input);
 		}
@@ -789,8 +788,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * 最善手を探す
-	 * @param engine このAIを所有するGameEngine
+	 * Search for the best choice
+	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
@@ -860,7 +859,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			canFloorKickT = false;
 		else if (canFloorKickT && !pieceNow.checkCollision(nowX+1, nowY, Piece.DIRECTION_UP, fld))
 			canFloorKickT = false;
-		
+
 		int move = 1;
 		if (engine.big)
 			move = 2;
@@ -1132,7 +1131,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 						holdPts -= 30;
 					else if (holdType == Piece.PIECE_O)
 						holdPts -= 10;
-					
+
 					for(int x = minHoldX; x <= maxHoldX; x+=move)
 					{
 						fld.copy(engine.field);
@@ -1188,7 +1187,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 											", bestPts = " + pts);
 								}
 							}
-	
+
 							// Right shift
 							fld.copy(engine.field);
 							if(!pieceHold.checkCollision(x + move, y, rt, fld) && pieceHold.checkCollision(x + move, y - 1, rt, fld)) {
@@ -1214,7 +1213,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 											", bestPts = " + pts);
 								}
 							}
-	
+
 							// Left rotation
 							if(!engine.ruleopt.rotateButtonDefaultRight || engine.ruleopt.rotateButtonAllowReverse) {
 								int rot = pieceHold.getRotateDirection(-1, rt);
@@ -1222,7 +1221,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 								int newY = y;
 								fld.copy(engine.field);
 								pts = Integer.MIN_VALUE;
-	
+
 								if(!pieceHold.checkCollision(x, y, rot, fld)) {
 									pts = thinkMain(x, y, rot, rt, fld, pieceHold, depth);
 								} else if((engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
@@ -1230,7 +1229,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 														  (engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick);
 									WallkickResult kick = engine.wallkick.executeWallkick(x, y, -1, rt, rot,
 														  allowUpward, pieceHold, fld, null);
-	
+
 									if(kick != null) {
 										newX = x + kick.offsetX;
 										newY = y + kick.offsetY;
@@ -1258,7 +1257,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 											", bestPts = " + pts);
 								}
 							}
-	
+
 							// Right rotation
 							if(engine.ruleopt.rotateButtonDefaultRight || engine.ruleopt.rotateButtonAllowReverse) {
 								int rot = pieceHold.getRotateDirection(1, rt);
@@ -1266,7 +1265,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 								int newY = y;
 								fld.copy(engine.field);
 								pts = Integer.MIN_VALUE;
-	
+
 								if(!pieceHold.checkCollision(x, y, rot, fld)) {
 									pts = thinkMain(x, y, rot, rt, fld, pieceHold, depth);
 								} else if((engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
@@ -1274,7 +1273,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 														  (engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick);
 									WallkickResult kick = engine.wallkick.executeWallkick(x, y, 1, rt, rot,
 														  allowUpward, pieceHold, fld, null);
-	
+
 									if(kick != null) {
 										newX = x + kick.offsetX;
 										newY = y + kick.offsetY;
@@ -1302,7 +1301,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 											", bestPts = " + pts);
 								}
 							}
-	
+
 							// 180-degree rotation
 							if(engine.ruleopt.rotateButtonAllowDouble) {
 								int rot = pieceHold.getRotateDirection(2, rt);
@@ -1310,7 +1309,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 								int newY = y;
 								fld.copy(engine.field);
 								pts = Integer.MIN_VALUE;
-	
+
 								if(!pieceHold.checkCollision(x, y, rot, fld)) {
 									pts = thinkMain(x, y, rot, rt, fld, pieceHold, depth);
 								} else if((engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
@@ -1318,7 +1317,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 														  (engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick);
 									WallkickResult kick = engine.wallkick.executeWallkick(x, y, 2, rt, rot,
 														  allowUpward, pieceHold, fld, null);
-	
+
 									if(kick != null) {
 										newX = x + kick.offsetX;
 										newY = y + kick.offsetY;
@@ -1367,15 +1366,15 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld Direction before rotation (-1：なし）
-	 * @param fld フィールド (どんなに弄っても問題なし）
-	 * @param piece ピース
+	 * @param rtOld Direction before rotation (-1: None）
+	 * @param fld Field (Can be modified without problems)
+	 * @param piece Piece
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
-	 * @return 評価得点
+	 * @return Evaluation score
 	 */
 	public int thinkMain(int x, int y, int rt, int rtOld, Field fld, Piece piece, int depth) {
 		int pts = 0;
-		
+
 		boolean big = piece.big;
 		int move = 1;
 		if (big)

@@ -104,7 +104,7 @@ public class PhysicianVSMode extends DummyMode {
 	/** 使用するBGM */
 	private int bgmno;
 
-	/** 効果音ON/OFF */
+	/** Sound effectsON/OFF */
 	private boolean[] enableSE;
 
 	/** マップ使用 flag */
@@ -587,7 +587,7 @@ public class PhysicianVSMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {

@@ -43,7 +43,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * ルール選択画面のステート
  */
 public class StateConfigRuleSelect extends DummyMenuScrollState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 7;
 
 	/** 1画面に表示するMaximumファイルcount */
@@ -52,7 +52,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	/** Player ID */
 	public int player = 0;
 
-	/** 初期設定Mode  */
+	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
 	/** ファイルパス一覧 */
@@ -66,7 +66,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 
 	/** Current Rule name */
 	protected String strCurrentRuleName;
-	
+
 	public StateConfigRuleSelect() {
 		pageHeight = PAGE_HEIGHT;
 		nullError = "RULE DIRECTORY NOT FOUND";
@@ -74,7 +74,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	}
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -83,7 +83,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 
 	/**
 	 * ルールファイル一覧を取得
-	 * @return ルールファイルのファイル名の配列。ディレクトリがないならnull
+	 * @return ルールファイルのFilenameの配列。ディレクトリがないならnull
 	 */
 	protected String[] getRuleFileList() {
 		File dir = new File("config/rule");
@@ -124,7 +124,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -144,23 +144,23 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
 		if(firstSetupMode)
 			NormalFont.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
 		else
 			NormalFont.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
-		
+
 		super.render(container, game, graphics);
 	}
-	
+
 	@Override
 	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
 		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
@@ -171,7 +171,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 
 		NormalFont.printFontGrid(1, 28, "A:OK", NormalFont.COLOR_GREEN);
 	}
-	
+
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
@@ -183,10 +183,10 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 
 		if(!firstSetupMode) game.enterState(StateConfigMainMenu.ID);
 		else game.enterState(StateTitle.ID);
-		
+
 		return true;
 	}
-	
+
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		if (!firstSetupMode)
@@ -196,7 +196,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onPushButtonD(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");

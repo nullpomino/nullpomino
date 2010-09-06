@@ -117,9 +117,9 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		numIterationsLabel = new JLabel(getUIText("Main_Iterations_Label"));
 		spinModel = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
 		numIterationsSpinner = new JSpinner(spinModel);
-				
+
 		numIterationsSpinner.setToolTipText(getUIText("Main_Iterations_Tip"));
-		
+
 		numPreviewsLabel = new JLabel(getUIText("Main_Num_Previews_Label"));
 		numPreviewsSpinModel = new SpinnerNumberModel(2, 0, Integer.MAX_VALUE, 1);
 		numPreviewsSpinner = new JSpinner(numPreviewsSpinModel);
@@ -128,8 +128,6 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		}
 
 		numPreviewsSpinner.setToolTipText(getUIText("Main_Num_Previws_Tip"));
-		
-		
 
 		goButton = new JButton(getUIText("Main_Go_Label"));
 		goButton.setActionCommand("go");
@@ -148,7 +146,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		viewWorstsButton.addActionListener(this);
 		viewWorstsButton.setToolTipText(getUIText("Main_Worsts_Tip"));
 		viewWorstsButton.setMnemonic('W');
-		
+
 		setDefaultButton=new JButton(getUIText("Main_Set_Default_Label"));
 		setDefaultButton.setActionCommand("default");
 		setDefaultButton.addActionListener(this);
@@ -167,9 +165,9 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		fieldPane.add(outputFileField);
 		fieldPane.add(numIterationsSpinner);
 		fieldPane.add(numPreviewsSpinner);
-		
+
 		JPanel pane = new JPanel(new BorderLayout());
-		
+
 		pane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 		JPanel buttonsPane = new JPanel();
@@ -182,8 +180,6 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		pane.add(buttonsPane, BorderLayout.SOUTH);
 		add(pane);
 	}
-	
-	
 
 	public void actionPerformed(ActionEvent e) {
 		String inputFile=(String) inputFileComboBox.getSelectedItem();
@@ -197,9 +193,8 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 			RanksIterator ranksIterator=new RanksIterator(this, inputFile,
 					outputFile,
 					(Integer) numIterationsSpinner.getValue());
-		
-			ranksIterator.addWindowListener(new WindowAdapter(){
 
+			ranksIterator.addWindowListener(new WindowAdapter(){
 
 				@Override
 				public void windowClosed(WindowEvent e) {
@@ -219,14 +214,13 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 					else{
 						inputFileComboBox.setSelectedIndex(index);
 					}
-					
+
 					setDefaults(outputFileField.getText());
 					goButton.setEnabled(true);
 
-				}				
+				}
 
 			});
-
 
 		} else {
 			if ("bests".equals(e.getActionCommand()) || "worsts".equals(e.getActionCommand())){
@@ -249,7 +243,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						
+
 					} catch (ClassNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -260,13 +254,12 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 				JDialog results=new RanksResult(this, ranks, 100, "worsts".equals(e.getActionCommand()));
 				results.addWindowListener(new WindowAdapter(){
 
-
 					@Override
 					public void windowClosed(WindowEvent e) {
 
 						setEnabledBWButtons(true);
 
-					}				
+					}
 
 				});
 
@@ -287,7 +280,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 				}
 			}
 		}
-		
+
 	}
 	public void setDefaults(String file){
 		CustomProperties ranksAIConfig=new CustomProperties();
@@ -298,13 +291,13 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 			ranksAIConfig.store(out, "Ranks AI Config");
 		} catch (IOException exc) {
 			log.error("Failed to save RanksAI config file", exc);
-			
+
 		}
 	}
 	public void setEnabledBWButtons(boolean b){
 		viewBestsButton.setEnabled(b);
 		viewWorstsButton.setEnabled(b);
-	
+
 	}
 
 	public static String getUIText(String str) {

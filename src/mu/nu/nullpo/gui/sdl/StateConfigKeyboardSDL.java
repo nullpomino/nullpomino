@@ -39,29 +39,29 @@ import sdljava.video.SDLVideo;
  * キーボード設定画面のステート
  */
 public class StateConfigKeyboardSDL extends BaseStateSDL {
-	/** キー input を受付可能になるまでの frame count */
+	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
 	/** Player number */
 	public int player = 0;
 
-	/** 初期設定Mode  */
+	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
-	/** 現在設定中の button */
+	/** Number of button currently being configured */
 	protected int keynum;
 
 	/** 経過 frame count */
 	protected int frame;
 
-	/**  button設定 */
+	/** Button settings */
 	protected int keymap[];
 
-	/** 前の frame のキー input 状態 */
+	/** 前の frame のKey input state */
 	protected boolean previousKeyPressedState[];
 
 	/**
-	 *  button設定をInitialization
+	 * Button settings initialization
 	 */
 	protected void reset() {
 		firstSetupMode = NullpoMinoSDL.propConfig.getProperty("option.firstSetupMode", true);
@@ -81,7 +81,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	 * 押されたキーの numberを返す
 	 * @param prev 前の frame での input 状態
 	 * @param now この frame での input 状態
-	 * @return 押されたキーの number、無いならSDLKey.SDLK_UNKNOWN
+	 * @return 押されたキーの number, 無いならSDLKey.SDLK_UNKNOWN
 	 */
 	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {
 		for(int i = 0; i < now.length; i++) {
@@ -103,7 +103,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
@@ -212,7 +212,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
@@ -222,7 +222,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave() throws SDLException {

@@ -40,16 +40,16 @@ import org.newdawn.slick.state.StateBasedGame;
  * Joystick テスト画面のステート
  */
 public class StateConfigJoystickTest extends BasicGameState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 13;
 
-	/** キー input を受付可能になるまでの frame count */
+	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
 	public int player = 0;
 
-	/** スクリーンショット撮影 flag */
+	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
 	/** 使用するJoystick の number */
@@ -61,14 +61,14 @@ public class StateConfigJoystickTest extends BasicGameState {
 	/** 経過 frame count */
 	protected int frame;
 
-	/**  buttoncount */
+	/** Buttoncount */
 	protected int buttonCount;
 
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -76,7 +76,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		gameObj = game;
@@ -97,7 +97,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		ResourceHolder.imgMenu.draw(0, 0);
@@ -138,7 +138,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 
 		frame++;
 
-		// Joystick  button判定
+		// Joystick button判定
 		if(frame >= KEYACCEPTFRAME) {
 			for(int i = 0; i < buttonCount; i++) {
 				try {
@@ -154,7 +154,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/*
-	 * キーを押したときの処理
+	 * Called when a key is pressed
 	 */
 	@Override
 	public void keyPressed(int key, char c) {
@@ -167,7 +167,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/*
-	 * このステートに入ったときの処理
+	 * Called when entering this state
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -175,7 +175,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/*
-	 * このステートを去るときの処理
+	 * Called when leaving this state
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {

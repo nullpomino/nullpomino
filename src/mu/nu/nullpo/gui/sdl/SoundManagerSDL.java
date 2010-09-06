@@ -37,22 +37,22 @@ import sdljava.mixer.MixChunk;
 import sdljava.mixer.SDLMixer;
 
 /**
- * 効果音マネージャ
+ * Sound effectsマネージャ
  */
 public class SoundManagerSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(SoundManagerSDL.class);
 
-	/** 登録できるWAVEファイルのMaximumcount */
+	/** 登録できるWAVE file のMaximumcount */
 	protected int maxClips;
 
-	/** WAVEファイル data (名前-> data本体) */
+	/** WAVE file  data (名前-> data本体) */
 	protected HashMap<String, MixChunk> clipMap;
 
 	/** チャンネル data (名前->チャンネル number) */
 	protected HashMap<String, Integer> channelMap;
 
-	/** 登録されたWAVEファイルcount */
+	/** 登録されたWAVE file count */
 	protected int counter = 0;
 
 	/**
@@ -64,7 +64,7 @@ public class SoundManagerSDL {
 
 	/**
 	 * Constructor
-	 * @param maxClips 登録できるWAVEファイルのMaximumcount
+	 * @param maxClips 登録できるWAVE file のMaximumcount
 	 */
 	public SoundManagerSDL(int maxClips) {
 		this.maxClips = maxClips;
@@ -73,10 +73,10 @@ public class SoundManagerSDL {
 	}
 
 	/**
-	 * WAVEファイルをロード
+	 * Load WAVE file
 	 * @param name 登録名
-	 * @param filename ファイル名 (String）
-	 * @return 成功したらtrue、失敗したらfalse
+	 * @param filename Filename (String）
+	 * @return true if successful, false if failed
 	 */
 	public boolean load(String name, String filename) {
 		if(counter >= maxClips) {
@@ -98,10 +98,10 @@ public class SoundManagerSDL {
 	}
 
 	/**
-	 * WAVEファイルをロード
+	 * Load WAVE file
 	 * @param name 登録名
-	 * @param fileurl ファイル名 (URL）
-	 * @return 成功したらtrue、失敗したらfalse
+	 * @param fileurl Filename (URL）
+	 * @return true if successful, false if failed
 	 */
 	public boolean load(String name, URL fileurl) {
 		if(counter >= maxClips) {

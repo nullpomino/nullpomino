@@ -50,7 +50,7 @@ public class NintendoRandomizer implements Randomizer {
 			do {
 				id = random.nextInt(Piece.PIECE_COUNT+1);
 			} while(id != Piece.PIECE_COUNT && pieceEnable[id] == false);
-			
+
 			if (id == prev || id == Piece.PIECE_COUNT) {
 				do {
 					id = random.nextInt(Piece.PIECE_COUNT);

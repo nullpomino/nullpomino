@@ -39,7 +39,6 @@ public class AIRanksTester {
 			pieces[i]=randomizer.next();
 		}
 
-
 		ranksAI.initRanks();
 	}
 	private void incrementPieces(){
@@ -48,7 +47,6 @@ public class AIRanksTester {
 			pieces[i]=pieces[i+1];
 		}
 		pieces[5]=randomizer.next();
-
 
 	}
 	public void test(){

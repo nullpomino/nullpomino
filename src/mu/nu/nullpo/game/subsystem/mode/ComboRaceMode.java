@@ -53,7 +53,7 @@ public class ComboRaceMode extends DummyMode {
 
 	/** 邪魔Linescountの定count */
 	private static final int[] GOAL_TABLE = {20, 40, 100};
-	
+
 	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
@@ -65,7 +65,7 @@ public class ComboRaceMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE = 7,
 							 EVENT_TSPIN_TRIPLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9;
-	
+
 	/** Number of starting shapes */
 	private static final int SHAPETYPE_MAX = 9;
 
@@ -81,7 +81,7 @@ public class ComboRaceMode extends DummyMode {
 		"LEFT J",
 		"RIGHT L",
 	};
-	
+
 	/** Starting shape table */
 	private static final int[][] SHAPE_TABLE = {
 		{0,0,0,0,0,0,0,0,0,0,0,0},
@@ -94,7 +94,7 @@ public class ComboRaceMode extends DummyMode {
 		{1,0,0,0,1,0,0,0,1,0,0,0},
 		{0,0,0,1,0,0,0,1,0,0,0,1}
 	};
-	
+
 	/** Starting shape colour */
 	private static final int[] SHAPE_COLOUR_TABLE = {
 		Block.BLOCK_COLOR_NONE,
@@ -107,7 +107,7 @@ public class ComboRaceMode extends DummyMode {
 		Block.BLOCK_COLOR_BLUE,
 		Block.BLOCK_COLOR_ORANGE
 	};
-	
+
 	/** Stack colour order */
 	private static final int[] STACK_COLOUR_TABLE = {
 		Block.BLOCK_COLOR_RED,
@@ -118,16 +118,16 @@ public class ComboRaceMode extends DummyMode {
 		Block.BLOCK_COLOR_BLUE,
 		Block.BLOCK_COLOR_PURPLE,
 	};
-	
+
 	/** Number of stack colours */
 	private static final int STACK_COLOUR_MAX = 7;
-	
+
 	/** GameManager object (Manages entire game status) */
 	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
-	
+
 	/** Elapsed time from last line clear (lastscore is displayed to screen until this reaches to 120) */
 	private int scgettime;
 
@@ -142,7 +142,7 @@ public class ComboRaceMode extends DummyMode {
 
 	/** Most recent scoring eventでのピースID */
 	private int lastpiece;
-	
+
 	/** BGM number */
 	private int bgmno;
 
@@ -169,25 +169,25 @@ public class ComboRaceMode extends DummyMode {
 
 	/** Shape type */
 	private int shapetype;
-	
+
 	/** Stack colour */
 	private int stackColour;
-	
+
 	/** Column number of combo well (starts from 1) */
 	private int comboColumn;
 
 	/** Width of combo well */
 	private int comboWidth;
-	
+
 	/** Height difference between ceiling and stack (negative number lowers the stack height) */
 	private int ceilingAdjust;
-	
+
 	/** Piece spawns above field if true */
 	private boolean spawnAboveField;
-	
+
 	/** Number of remaining stack lines that need to be added when lines are cleared */
 	private int remainStack;
-	
+
 	/** Next section lines */
 	private int nextseclines;
 
@@ -224,7 +224,7 @@ public class ComboRaceMode extends DummyMode {
 		rankingRank = -1;
 		rankingTime = new int[GOALTYPE_MAX][RANKING_MAX];
 		rankingCombo = new int[GOALTYPE_MAX][RANKING_MAX];
-		
+
 		engine.framecolor = GameEngine.FRAME_COLOR_RED;
 
 		if(engine.owner.replayMode == false) {
@@ -488,7 +488,7 @@ public class ComboRaceMode extends DummyMode {
 		int w = engine.field.getWidth();
 		int h = engine.field.getHeight();
 		int stackHeight;
-		
+
 		/*
 		 *  set initial stack height and remaining stack lines
 		 *  depending on the goal lines and ceiling height adjustment
@@ -512,7 +512,7 @@ public class ComboRaceMode extends DummyMode {
 			}
 			stackColour++;
 		}
-		
+
 		// insert starting shape
 		if(comboWidth == 4) {
 			for(int i = 0; i < 12; i++) {
@@ -551,13 +551,13 @@ public class ComboRaceMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, 0, 9, "LINE/MIN", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 10, String.valueOf(engine.statistics.lpm));
-			
+
 			receiver.drawScoreFont(engine, playerID, 0, 12, "PIECE/SEC", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 13, String.valueOf(engine.statistics.pps));
 
 			receiver.drawScoreFont(engine, playerID, 0, 15, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 16, GeneralUtil.getTime(engine.statistics.time));
-			
+
 			if((lastevent != EVENT_NONE) && (scgettime < 120)) {
 				String strPieceName = Piece.getPieceName(lastpiece);
 
@@ -601,7 +601,7 @@ public class ComboRaceMode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 2, 22, (lastcombo - 1) + "COMBO", EventReceiver.COLOR_CYAN);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -657,7 +657,7 @@ public class ComboRaceMode extends DummyMode {
 			if((lines >= 1) && (engine.field.isEmpty())) {
 				engine.playSE("bravo");
 			}
-			
+
 			lastpiece = engine.nowPieceObject.id;
 
 			// add any remaining stack lines
@@ -670,14 +670,14 @@ public class ComboRaceMode extends DummyMode {
 				}
 				stackColour++;
 			}
-			
+
 			int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
 			engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
 
 			if(remainLines <= 30) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
-			
+
 			// ゴール
 			if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
 				engine.ending = 1;
@@ -691,9 +691,9 @@ public class ComboRaceMode extends DummyMode {
 				owner.backgroundStatus.fadebg = nextseclines / 10;
 				nextseclines += 10;
 			}
-		}	
+		}
 	}
-	
+
 	/**
 	 * This function will be called when the game timer updates
 	 */
@@ -759,7 +759,7 @@ public class ComboRaceMode extends DummyMode {
 			}
 		}
 	}
-	
+
 	/**
 	 * Update the ranking
 	 */
@@ -778,7 +778,7 @@ public class ComboRaceMode extends DummyMode {
 			rankingTime[goaltype][rankingRank] = time;
 		}
 	}
-	
+
 	/**
 	 * This function will check the ranking and returns which place you are. (-1: Out of rank)
 	 */

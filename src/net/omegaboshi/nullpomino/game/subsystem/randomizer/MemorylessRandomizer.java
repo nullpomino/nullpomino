@@ -1,7 +1,7 @@
 package net.omegaboshi.nullpomino.game.subsystem.randomizer;
 
 public class MemorylessRandomizer extends Randomizer {
-	
+
 	public MemorylessRandomizer() {
 		super();
 	}

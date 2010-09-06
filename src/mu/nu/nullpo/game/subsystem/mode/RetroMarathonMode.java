@@ -320,7 +320,7 @@ public class RetroMarathonMode extends DummyMode {
 				"HEIGHT", String.valueOf(startheight),
 				"BIG", GeneralUtil.getONorOFF(big));
 	}
-	
+
 	public boolean onReady(GameEngine engine, int playerID) {
 		if (engine.statc[0] == 0) {
 			engine.createFieldIfNeeded();
@@ -337,8 +337,6 @@ public class RetroMarathonMode extends DummyMode {
 		engine.statistics.level = startlevel;
 		engine.statistics.levelDispAdd = 1;
 		engine.big = big;
-
-		
 
 		setSpeed(engine);
 	}

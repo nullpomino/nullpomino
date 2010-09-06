@@ -48,7 +48,7 @@ public interface Wallkick {
 	 * @param piece 操作中のピース
 	 * @param field Current field
 	 * @param ctrl Button input状態 (nullの場合あり）
-	 * @return Wallkick結果、nullならWallkickなし
+	 * @return Wallkick結果, nullならWallkickなし
 	 */
 	public WallkickResult executeWallkick(int x, int y, int rtDir, int rtOld, int rtNew, boolean allowUpward, Piece piece, Field field, Controller ctrl);
 }

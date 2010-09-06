@@ -37,18 +37,18 @@ import org.newdawn.slick.state.StateBasedGame;
  * Mode 選択画面のステート
  */
 public class StateSelectMode extends DummyMenuScrollState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 3;
 
 	/** 1画面に表示するMaximumMode count */
 	public static final int PAGE_HEIGHT = 25;
-	
+
 	public StateSelectMode() {
 		pageHeight = PAGE_HEIGHT;
 	}
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -56,7 +56,7 @@ public class StateSelectMode extends DummyMenuScrollState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		String lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode", null);
@@ -89,7 +89,7 @@ public class StateSelectMode extends DummyMenuScrollState {
 		NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
 				NormalFont.COLOR_ORANGE);
 	}
-	
+
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
@@ -99,7 +99,7 @@ public class StateSelectMode extends DummyMenuScrollState {
 		game.enterState(StateInGame.ID);
 		return false;
 	}
-	
+
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		game.enterState(StateTitle.ID);

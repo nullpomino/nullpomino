@@ -52,10 +52,10 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		Block.BLOCK_COLOR_BLUE,
 		Block.BLOCK_COLOR_YELLOW
 	};
-	
+
 	/** Names of drop map sets */
 	private static final String[] DROP_SET_NAMES = {"CLASSIC", "REMIX", "SWORD", "S-MIRROR", "AVALANCHE", "A-MIRROR"};
-	
+
 	private static final int[][][][] DROP_PATTERNS = {
 		{
 			{{2,2,2,2}, {5,5,5,5}, {7,7,7,7}, {4,4,4,4}},
@@ -162,22 +162,22 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 
 	/** Settings for starting countdown for ojama blocks */
 	private int[] ojamaCountdown;
-	
+
 	/** Drop patterns */
 	private int[][][] dropPattern;
-	
+
 	/** Drop map set selected */
 	private int[] dropSet;
-	
+
 	/** Drop map selected */
 	private int[] dropMap;
-	
+
 	/** Drop multipliers */
 	private double[] attackMultiplier, defendMultiplier;
-	
+
 	/** Flag set when counters have been decremented */
 	private boolean[] countdownDecremented;
-	
+
 	/** Flag set when cleared ojama have been turned into normal blocks */
 	private boolean[] ojamaChecked;
 
@@ -610,13 +610,13 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						"HURRYUP", (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 23) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 16,
 						"COUNTDOWN", String.valueOf(ojamaCountdown[playerID]),
 						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
-				drawMenu(engine, playerID, receiver, 4, zenKeshiType[playerID] == ZENKESHI_MODE_FEVER ? 
+				drawMenu(engine, playerID, receiver, 4, zenKeshiType[playerID] == ZENKESHI_MODE_FEVER ?
 							EventReceiver.COLOR_PURPLE : EventReceiver.COLOR_WHITE, 18,
 						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
 				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_DARKBLUE, 19,
@@ -625,7 +625,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
 				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_CYAN, 22,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 31) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 23,
@@ -639,7 +639,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 29,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
-				
+
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
 			} else {
 				receiver.drawMenuFont(engine, playerID, 0,  0, "ATTACK", EventReceiver.COLOR_CYAN);
@@ -656,7 +656,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 							multiplier == 100 ? EventReceiver.COLOR_YELLOW : EventReceiver.COLOR_RED);
 				else
 					receiver.drawMenuFont(engine, playerID, 3,  3, multiplier + "%", EventReceiver.COLOR_GREEN);
-				
+
 				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_CYAN, 31,
 						"DROP SET", DROP_SET_NAMES[dropSet[playerID]],
 						"DROP MAP", String.format("%2d", dropMap[playerID]+1) + "/" +
@@ -668,7 +668,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
 		}
 	}
-	
+
 	public static double getAttackMultiplier(int set, int map)
 	{
 		try {
@@ -687,7 +687,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のInitialization処理 (Initialization前）
+	 * Readyの時のCalled at initialization (Initialization前）
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {
@@ -717,7 +717,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		if (!owner.engine[playerID].gameActive)
 			return;
 		super.renderLast(engine, playerID);
-		
+
 		Block b;
 		int blockColor, textColor;
 		if (engine.field != null)
@@ -749,12 +749,12 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		if(playerID == 0) enemyID = 1;
 		return ((int) (pts * attackMultiplier[playerID] * defendMultiplier[enemyID])+rate-1)/rate;
 	}
-	
+
 	@Override
 	public boolean onLineClear(GameEngine engine, int playerID) {
 		if (engine.field == null || ojamaChecked[playerID])
 			return false;
-		
+
 		ojamaChecked[playerID] = true;
 		//Turn cleared ojama into normal blocks
 		for (int x = 0; x < engine.field.getWidth(); x++)
@@ -787,10 +787,10 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 			zenKeshi[playerID] = false;
 			zenKeshiDisplay[playerID] = 120;
 		}
-		
+
 		if (engine.field == null)
 			return false;
-		
+
 		boolean result = false;
 		//Decrement countdowns
 		if (!countdownDecremented[playerID])

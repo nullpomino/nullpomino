@@ -62,7 +62,7 @@ public class BGMStatus implements Serializable {
 	/** Current BGM number */
 	public int bgm;
 
-	/** 音量 (1f=100%、0.5f=50%) */
+	/** 音量 (1f=100%, 0.5f=50%) */
 	public float volume;
 
 	/** BGMフェードアウトスイッチ */

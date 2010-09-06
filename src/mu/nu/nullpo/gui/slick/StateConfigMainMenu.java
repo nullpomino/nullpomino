@@ -37,7 +37,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * 設定画面のステート
  */
 public class StateConfigMainMenu extends DummyMenuChooseState {
-	/** このステートのID */
+	/** This state's ID */
 	public static final int ID = 5;
 
 	/** UI Text identifier Strings */
@@ -59,7 +59,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	}
 
 	/*
-	 * このステートのIDを取得
+	 * Fetch this state's ID
 	 */
 	@Override
 	public int getID() {
@@ -67,17 +67,17 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	}
 
 	/*
-	 * ステートのInitialization
+	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
-	 * 画面描画
+	 * Draw the screen
 	 */
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		// 背景
+		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
