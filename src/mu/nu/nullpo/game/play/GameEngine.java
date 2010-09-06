@@ -1569,20 +1569,20 @@ public class GameEngine {
 			// リプレイ関連の処理
 			if(!owner.replayMode || owner.replayRerecord) {
 				// AIの button処理
-				if(ai != null ){
-					if (aiShowHint==false) {
+				if (ai != null) {
+					if (aiShowHint == false) {
 						ai.setControl(this, playerID, ctrl);
-					}
-					else {
-						aiHintReady=(ai.thinkCurrentPieceNo == ai.thinkLastPieceNo) && (ai.thinkCurrentPieceNo>0) && ! (ai.bestHold || ai.forceHold);
-						if (aiHintReady){
-							aiHintX=ai.bestX;
-							aiHintY=ai.bestY;
-							aiHintRt=ai.bestRt;
+					} else {
+						aiHintReady = (ai.thinkCurrentPieceNo == ai.thinkLastPieceNo)
+								&& (ai.thinkCurrentPieceNo > 0)
+								&& !(ai.bestHold || ai.forceHold);
+						if (aiHintReady) {
+							aiHintX = ai.bestX;
+							aiHintY = ai.bestY;
+							aiHintRt = ai.bestRt;
 						}
 					}
-					
-				} 
+				}
 
 				// 入力状態をリプレイに記録
 				replayData.setInputData(ctrl.getButtonBit(), replayTimer);

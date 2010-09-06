@@ -610,22 +610,22 @@ public class RendererSwing extends EventReceiver {
 			}
 		}
 	}
-	
+
 	protected void drawHintPiece(int x, int y, GameEngine engine, float scale) {
 		if (engine.nowPieceObject!=null){
-		Piece piece = new Piece(engine.nowPieceObject);
-		piece.direction=engine.aiHintRt;
-		piece.updateConnectData();
-		int blksize = (int)(16 * scale);
+			Piece piece = new Piece(engine.nowPieceObject);
+			piece.direction=engine.aiHintRt;
+			piece.updateConnectData();
+			int blksize = (int)(16 * scale);
 
-		if(piece != null) {
-			for(int i = 0; i < piece.getMaxBlock(); i++) {
-				if(!piece.big) {
-					int x2 = engine.aiHintX + piece.dataX[piece.direction][i];
-					int y2 = engine.aiHintY + piece.dataY[piece.direction][i];
+			if(piece != null) {
+				for(int i = 0; i < piece.getMaxBlock(); i++) {
+					if(!piece.big) {
+						int x2 = engine.aiHintX + piece.dataX[piece.direction][i];
+						int y2 = engine.aiHintY + piece.dataY[piece.direction][i];
 
-					if(y2 >= 0) {
-						
+						if(y2 >= 0) {
+
 							Block blkTemp = piece.block[i];
 							int x3 = x + (x2 * blksize);
 							int y3 = y + (y2 * blksize);
@@ -666,13 +666,12 @@ public class RendererSwing extends EventReceiver {
 							if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
 								graphics.fillRect(x3 + (blksize-2), y3 + (blksize-2), 2, 2);
 							}
-						
-					}
-				} else {
-					int x2 = engine.aiHintX + (piece.dataX[piece.direction][i] * 2);
-					int y2 = engine.aiHintY + (piece.dataY[piece.direction][i] * 2);
+						}
+					} else {
+						int x2 = engine.aiHintX + (piece.dataX[piece.direction][i] * 2);
+						int y2 = engine.aiHintY + (piece.dataY[piece.direction][i] * 2);
 
-				
+
 						Block blkTemp = piece.block[i];
 						int x3 = x + (x2 * blksize);
 						int y3 = y + (y2 * blksize);
@@ -713,13 +712,11 @@ public class RendererSwing extends EventReceiver {
 						if(blkTemp.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT | Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
 							graphics.fillRect(x3 + (blksize*2-2), y3 + (blksize*2-2), 2, 2);
 						}
-					
+					}
 				}
 			}
 		}
-		}
 	}
-
 
 	/**
 	 * フィールドのBlockを描画
@@ -1185,12 +1182,10 @@ public class RendererSwing extends EventReceiver {
 				if(nextshadow) drawShadowNexts(offsetX + 4, offsetY + 52, engine, 1.0f);
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 				if((engine.ai!=null) && (engine.aiShowHint ) && engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 52, engine, 1.0f); 
-				
 				drawCurrentPiece(offsetX + 4, offsetY + 52, engine, 1.0f);
 			} else {
 				if(engine.ghost && engine.ruleopt.ghost) drawGhostPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
 				if((engine.ai!=null) && (engine.aiShowHint) &&engine.aiHintReady) drawHintPiece(offsetX + 4, offsetY + 4, engine, 0.5f); 
-				
 				drawCurrentPiece(offsetX + 4, offsetY + 4, engine, 0.5f);
 			}
 		}

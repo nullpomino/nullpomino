@@ -80,7 +80,7 @@ public class StateConfigAISelect extends BasicGameState {
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
 	
-	protected boolean aiShowHint=false;
+	protected boolean aiShowHint = false;
 
 	/** カーソル位置 */
 	protected int cursor = 0;
@@ -120,6 +120,7 @@ public class StateConfigAISelect extends BasicGameState {
 		aiThinkDelay = NullpoMinoSlick.propGlobal.getProperty(player + ".aiThinkDelay", 0);
 		aiUseThread = NullpoMinoSlick.propGlobal.getProperty(player + ".aiUseThread", true);
 		aiShowHint = NullpoMinoSlick.propGlobal.getProperty(player+ ".aiShowHint",false);
+
 		aiID = -1;
 		for(int i = 0; i < aiPathList.length; i++) {
 			if(currentAI.equals(aiPathList[i])) aiID = i;
@@ -200,8 +201,7 @@ public class StateConfigAISelect extends BasicGameState {
 		NormalFont.printFontGrid(2, 4, "AI MOVE DELAY:" + aiMoveDelay, (cursor == 1));
 		NormalFont.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
 		NormalFont.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
-		NormalFont.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint),(cursor==4));
-		
+		NormalFont.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
 		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFont.COLOR_GREEN);
 
 		// FPS
@@ -275,7 +275,7 @@ public class StateConfigAISelect extends BasicGameState {
 				aiUseThread = !aiUseThread;
 				break;
 			case 4:
-				aiShowHint=!aiShowHint;
+				aiShowHint = !aiShowHint;
 				break;
 			}
 		}

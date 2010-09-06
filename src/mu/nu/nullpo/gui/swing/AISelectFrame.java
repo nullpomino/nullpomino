@@ -271,7 +271,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		chkboxAIUseThread.setAlignmentX(LEFT_ALIGNMENT);
 		chkboxAIUseThread.setMnemonic('T');
 		this.add(chkboxAIUseThread);
-		
+
 		chkBoxAIShowHint = new JCheckBox(NullpoMinoSwing.getUIText("AISelect_CheckboxAIShowHint"));
 		chkBoxAIShowHint.setAlignmentX(LEFT_ALIGNMENT);
 		chkBoxAIShowHint.setMnemonic('H');
@@ -331,7 +331,6 @@ public class AISelectFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiThinkDelay", aiThinkDelay);
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiUseThread", aiUseThread);
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiShowHint", aiShowHint);
-			
 			NullpoMinoSwing.saveConfig();
 
 			this.setVisible(false);

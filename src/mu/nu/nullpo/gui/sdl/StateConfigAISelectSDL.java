@@ -74,8 +74,8 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 
 	/** AIでスレッドを使う */
 	protected boolean aiUseThread = false;
-	
-	protected boolean aiShowHint= false;
+
+	protected boolean aiShowHint = false;
 
 	/** カーソル位置 */
 	protected int cursor = 0;
@@ -237,6 +237,9 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			case 3:
 				aiUseThread = !aiUseThread;
 				break;
+			case 4:
+				aiShowHint = !aiShowHint;
+				break;
 			}
 		}
 
@@ -250,6 +253,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiMoveDelay", aiMoveDelay);
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiThinkDelay", aiThinkDelay);
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiUseThread", aiUseThread);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".aiShowHint",aiShowHint);
 			NullpoMinoSDL.saveConfig();
 
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);

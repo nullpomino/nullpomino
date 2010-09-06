@@ -244,7 +244,6 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				gameManager.engine[0].aiThinkDelay = NullpoMinoSDL.propGlobal.getProperty(0 + ".aiThinkDelay", 0);
 				gameManager.engine[0].aiUseThread = NullpoMinoSDL.propGlobal.getProperty(0 + ".aiUseThread", true);
 				gameManager.engine[0].aiShowHint = NullpoMinoSDL.propGlobal.getProperty(0 + ".aiShowHint", false);
-
 			}
 
 			// Initialization for each player
