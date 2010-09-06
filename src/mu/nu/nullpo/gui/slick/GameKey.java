@@ -51,7 +51,7 @@ public class GameKey extends GameKeyDummy {
 	}
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public GameKey() {
 		super();

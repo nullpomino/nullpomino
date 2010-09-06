@@ -74,7 +74,7 @@ public class WallkickResult implements Serializable {
 	}
 
 	/**
-	 * 初期値に戻す
+	 * Reset to defaults
 	 */
 	public void reset() {
 		offsetX = 0;

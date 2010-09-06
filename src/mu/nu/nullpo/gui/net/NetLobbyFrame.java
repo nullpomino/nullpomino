@@ -221,7 +221,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** チーム変更 button(Lobby screen) */
 	protected JButton btnRoomListTeamChange;
 
-	/** チーム名 input 欄(Lobby screen) */
+	/** Team name input 欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
 
 	/** ルーム一覧 table */
@@ -302,7 +302,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** チャット送信 button(Room screen) */
 	protected JButton btnRoomChatSend;
 
-	/** チーム名 input 欄(Room screen) */
+	/** Team name input 欄(Room screen) */
 	protected JTextField txtfldRoomTeam;
 
 	/** ホスト名 input 欄(Server add screen) */
@@ -538,38 +538,38 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * Server select screen initialization
 	 */
 	protected void initServerSelectUI() {
-		// サーバー選択と名前 input 画面
+		// サーバー選択とName input 画面
 		JPanel mainpanelServerSelect = new JPanel(new BorderLayout());
 		this.getContentPane().add(mainpanelServerSelect, SCREENCARD_NAMES[SCREENCARD_SERVERSELECT]);
 
-		// * 名前とチーム名 input パネル
+		// * NameとTeam name input パネル
 		JPanel subpanelNames = new JPanel();
 		subpanelNames.setLayout(new BoxLayout(subpanelNames, BoxLayout.Y_AXIS));
 		mainpanelServerSelect.add(subpanelNames, BorderLayout.NORTH);
 
-		// ** 名前 input パネル
+		// ** Name input パネル
 		JPanel subpanelNameEntry = new JPanel(new BorderLayout());
 		subpanelNames.add(subpanelNameEntry);
 
-		// *** 「名前:」ラベル
+		// *** 「Name:」ラベル
 		JLabel labelNameEntry = new JLabel(getUIText("ServerSelect_LabelName"));
 		subpanelNameEntry.add(labelNameEntry, BorderLayout.WEST);
 
-		// *** 名前 input 欄
+		// *** Name input 欄
 		txtfldPlayerName = new JTextField();
 		txtfldPlayerName.setComponentPopupMenu(new TextComponentPopupMenu(txtfldPlayerName));
 		txtfldPlayerName.setText(propConfig.getProperty("serverselect.txtfldPlayerName.text", ""));
 		subpanelNameEntry.add(txtfldPlayerName, BorderLayout.CENTER);
 
-		// ** チーム名 input パネル
+		// ** Team name input パネル
 		JPanel subpanelTeamEntry = new JPanel(new BorderLayout());
 		subpanelNames.add(subpanelTeamEntry);
 
-		// *** 「チーム名:」ラベル
+		// *** 「Team name:」ラベル
 		JLabel labelTeamEntry = new JLabel(getUIText("ServerSelect_LabelTeam"));
 		subpanelTeamEntry.add(labelTeamEntry, BorderLayout.WEST);
 
-		// *** チーム名 input 欄
+		// *** Team name input 欄
 		txtfldPlayerTeam = new JTextField();
 		txtfldPlayerTeam.setComponentPopupMenu(new TextComponentPopupMenu(txtfldPlayerTeam));
 		txtfldPlayerTeam.setText(propConfig.getProperty("serverselect.txtfldPlayerTeam.text", ""));
@@ -720,22 +720,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel subpanelRoomListTeam = new JPanel(new BorderLayout());
 		subpanelRoomListTopBar.add(subpanelRoomListTeam, "Team");
 
-		// ***** チーム名 input 欄
+		// ***** Team name input 欄
 		txtfldRoomListTeam = new JTextField();
 		subpanelRoomListTeam.add(txtfldRoomListTeam, BorderLayout.CENTER);
 
-		// ***** チーム名変更 buttonパネル
+		// ***** Team name変更 buttonパネル
 		JPanel subpanelRoomListTeamButtons = new JPanel();
 		subpanelRoomListTeam.add(subpanelRoomListTeamButtons, BorderLayout.EAST);
 
-		// ****** チーム名変更OK
+		// ****** Team name変更OK
 		JButton btnRoomListTeamOK = new JButton(getUIText("Lobby_TeamChange_OK"));
 		btnRoomListTeamOK.addActionListener(this);
 		btnRoomListTeamOK.setActionCommand("Lobby_TeamChange_OK");
 		btnRoomListTeamOK.setMnemonic('O');
 		subpanelRoomListTeamButtons.add(btnRoomListTeamOK);
 
-		// ****** チーム名変更Cancel
+		// ****** Team name変更Cancel
 		JButton btnRoomListTeamCancel = new JButton(getUIText("Lobby_TeamChange_Cancel"));
 		btnRoomListTeamCancel.addActionListener(this);
 		btnRoomListTeamCancel.setActionCommand("Lobby_TeamChange_Cancel");
@@ -759,7 +759,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		TableColumnModel tm = tableRoomList.getColumnModel();
 		tm.getColumn(0).setPreferredWidth(propConfig.getProperty("tableRoomList.width.id", 35));			// ID
-		tm.getColumn(1).setPreferredWidth(propConfig.getProperty("tableRoomList.width.name", 155));			// 名前
+		tm.getColumn(1).setPreferredWidth(propConfig.getProperty("tableRoomList.width.name", 155));			// Name
 		tm.getColumn(2).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rulename", 105));		// Rule name
 		tm.getColumn(3).setPreferredWidth(propConfig.getProperty("tableRoomList.width.status", 55));		// 状態
 		tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableRoomList.width.players", 65));		// 参加者
@@ -870,22 +870,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel subpanelRoomTeam = new JPanel(new BorderLayout());
 		subpanelRoomTopBar.add(subpanelRoomTeam, "Team");
 
-		// ***** チーム名 input 欄
+		// ***** Team name input 欄
 		txtfldRoomTeam = new JTextField();
 		subpanelRoomTeam.add(txtfldRoomTeam, BorderLayout.CENTER);
 
-		// ***** チーム名変更 buttonパネル
+		// ***** Team name変更 buttonパネル
 		JPanel subpanelRoomTeamButtons = new JPanel();
 		subpanelRoomTeam.add(subpanelRoomTeamButtons, BorderLayout.EAST);
 
-		// ****** チーム名変更OK
+		// ****** Team name変更OK
 		JButton btnRoomTeamOK = new JButton(getUIText("Room_TeamChange_OK"));
 		btnRoomTeamOK.addActionListener(this);
 		btnRoomTeamOK.setActionCommand("Room_TeamChange_OK");
 		btnRoomTeamOK.setMnemonic('O');
 		subpanelRoomTeamButtons.add(btnRoomTeamOK);
 
-		// ****** チーム名変更Cancel
+		// ****** Team name変更Cancel
 		JButton btnRoomTeamCancel = new JButton(getUIText("Room_TeamChange_Cancel"));
 		btnRoomTeamCancel.addActionListener(this);
 		btnRoomTeamCancel.setActionCommand("Room_TeamChange_Cancel");
@@ -913,7 +913,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		TableColumnModel tm2 = tableGameStat.getColumnModel();
 		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat.width.rank", 30));			// 順位
-		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat.width.name", 100));			// 名前
+		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat.width.name", 100));			// Name
 		tm2.getColumn(2).setPreferredWidth(propConfig.getProperty("tableGameStat.width.attack", 55));		// 攻撃count
 		tm2.getColumn(3).setPreferredWidth(propConfig.getProperty("tableGameStat.width.apm", 55));			// APM
 		tm2.getColumn(4).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lines", 55));			// 消去count
@@ -1584,9 +1584,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * Playerの名前をトリップ記号変換して取得
+	 * PlayerのNameをトリップ記号変換して取得
 	 * @param pInfo Player情報
-	 * @return Playerの名前(トリップ記号変換済み)
+	 * @return PlayerのName(トリップ記号変換済み)
 	 */
 	public String getPlayerNameWithTripCode(NetPlayerInfo pInfo) {
 		return convTripCode(pInfo.strName);
@@ -1594,7 +1594,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/**
 	 * トリップ記号を変換
-	 * @param s 変換する文字列(たいていは名前)
+	 * @param s 変換する文字列(たいていはName)
 	 * @return 変換された文字列
 	 */
 	public String convTripCode(String s) {
@@ -1954,7 +1954,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			for(int i = 0; i < pList.size(); i++) {
 				NetPlayerInfo pInfo = pList.get(i);
 
-				// 名前
+				// Name
 				String name = getPlayerNameWithTripCode(pInfo);
 				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
 
@@ -1964,7 +1964,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 				}
 
-				// 国コード
+				// Country code
 				if(pInfo.strCountry.length() > 0) {
 					name += " (" + pInfo.strCountry + ")";
 				}
@@ -1981,7 +1981,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			for(int i = 0; i < pList.size(); i++) {
 				NetPlayerInfo pInfo = pList.get(i);
 
-				// 名前
+				// Name
 				String name = getPlayerNameWithTripCode(pInfo);
 				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
 
@@ -1991,7 +1991,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 				}
 
-				// 国コード
+				// Country code
 				if(pInfo.strCountry.length() > 0) {
 					name += " (" + pInfo.strCountry + ")";
 				}
@@ -2027,7 +2027,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			for(int i = 0; i < pList.size(); i++) {
 				NetPlayerInfo pInfo = pList.get(i);
 
-				// 名前
+				// Name
 				String name = getPlayerNameWithTripCode(pInfo);
 				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
 
@@ -2037,7 +2037,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 				}
 
-				// 国コード
+				// Country code
 				if(pInfo.strCountry.length() > 0) {
 					name += " (" + pInfo.strCountry + ")";
 				}
@@ -3037,7 +3037,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			int myRank = Integer.parseInt(message[4]);
 
 			rowdata[0] = Integer.toString(myRank);			// 順位
-			rowdata[1] = convTripCode(NetUtil.urlDecode(message[3]));	// 名前
+			rowdata[1] = convTripCode(NetUtil.urlDecode(message[3]));	// Name
 			rowdata[2] = message[5];						// 攻撃count
 			rowdata[3] = message[6];						// APM
 			rowdata[4] = message[7];						// 消去count

@@ -70,10 +70,10 @@ public class GradeMania2Mode extends DummyMode {
 	/** DAS table */
 	private static final int[] tableDAS       = {15, 15, 15, 15, 15,  9,  9,  9,  9,  7};
 
-	/** BGMがフェードアウトする level */
+	/** BGM fadeout levels */
 	private static final int[] tableBGMFadeout = {495,695,880,-1};
 
-	/** BGMが変わる level */
+	/** BGM change levels */
 	private static final int[] tableBGMChange  = {500,700,900,-1};
 
 	/** Line clear時に入る段位 point */
@@ -106,7 +106,7 @@ public class GradeMania2Mode extends DummyMode {
 		125, 80, 80, 50, 45, 45, 45, 40, 40, 40, 40, 40, 30, 30, 30, 20, 20, 20, 20, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10
 	};
 
-	/** 段位の名前 */
+	/** 段位のName */
 	private static final String[] tableGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -114,7 +114,7 @@ public class GradeMania2Mode extends DummyMode {
 		 "M", "GM"												// 18～19
 	};
 
-	/** 裏段位の名前 */
+	/** 裏段位のName */
 	private static final String[] tableSecretGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -882,7 +882,7 @@ public class GradeMania2Mode extends DummyMode {
 		// LV100到達でゴーストを消す
 		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
 
-		// BGMフェードアウト
+		// BGM fadeout
 		if((tableBGMFadeout[bgmlv] != -1) && (engine.statistics.level >= tableBGMFadeout[bgmlv]))
 			owner.bgmStatus.fadesw  = true;
 

@@ -128,7 +128,7 @@ public class GradeMania3Mode extends DummyMode {
 	///** 段位のcount */
 	//private static final int GRADE_MAX = 33;
 
-	/** 段位の名前 */
+	/** 段位のName */
 	private static final String[] tableGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -137,7 +137,7 @@ public class GradeMania3Mode extends DummyMode {
 		 "M", "MK", "MV", "MO", "MM", "GM"						// 27～32
 	};
 
-	/** 裏段位の名前 */
+	/** 裏段位のName */
 	private static final String[] tableSecretGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -1166,7 +1166,7 @@ public class GradeMania3Mode extends DummyMode {
 		// LV100到達でゴーストを消す
 		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
 
-		// BGMフェードアウト
+		// BGM fadeout
 		int tempLevel = internalLevel;
 		if(cool) tempLevel += 100;
 

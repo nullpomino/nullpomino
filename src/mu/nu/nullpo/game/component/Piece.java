@@ -51,7 +51,7 @@ public class Piece implements Serializable {
 							PIECE_I3 = 9,
 							PIECE_L3 = 10;
 
-	/** Blockピースの名前 */
+	/** BlockピースのName */
 	public static final String[] PIECE_NAMES = {"I","L","O","Z","T","J","S","I1","I2","I3","L3"};
 
 	/** 通常のBlockピースのIDのMaximumcount */

@@ -63,7 +63,7 @@ public class GradeManiaMode extends DummyMode {
 		126000																// GM
 	};
 
-	/** 段位の名前 */
+	/** 段位のName */
 	private static final String[] tableGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -627,7 +627,7 @@ public class GradeManiaMode extends DummyMode {
 		// LV100到達でゴーストを消す
 		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
 
-		// BGMフェードアウト
+		// BGM fadeout
 		if((bgmlv == 0) && (engine.statistics.level >= 490))
 			owner.bgmStatus.fadesw  = true;
 	}

@@ -138,7 +138,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public Field() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_HIDDEN_HEIGHT);

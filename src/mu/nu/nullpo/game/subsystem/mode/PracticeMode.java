@@ -76,7 +76,7 @@ public class PracticeMode extends DummyMode {
 							 LEVELTYPE_MANIAPLUS = 4,
 							 LEVELTYPE_MAX = 5;
 
-	/** 裏段位の名前 */
+	/** 裏段位のName */
 	private static final String[] tableSecretGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -984,7 +984,7 @@ public class PracticeMode extends DummyMode {
 				engine.playSE("countdown");
 			}
 
-			// 5秒前からのBGMフェードアウト
+			// 5秒前からのBGM fadeout
 			if((timelimit > 0) && (timelimitTimer <= 5 * 60) && (timelimitResetEveryLevel == false) && (engine.timerActive == true)) {
 				owner.bgmStatus.fadesw = true;
 			}

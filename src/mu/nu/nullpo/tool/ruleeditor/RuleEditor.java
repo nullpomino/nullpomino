@@ -86,7 +86,7 @@ import org.apache.log4j.PropertyConfigurator;
  * ルールエディター
  */
 public class RuleEditor extends JFrame implements ActionListener {
-	/** シリアルVersion */
+	/** Serial version */
 	private static final long serialVersionUID = 1L;
 
 	/** Log */
@@ -568,7 +568,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		miSave.addActionListener(this);
 		mFile.add(miSave);
 
-		// 名前を付けて保存
+		// Nameを付けて保存
 		JMenuItem miSaveAs = new JMenuItem(getUIText("JMenuItem_SaveAs"));
 		miSaveAs.setMnemonic('A');
 		miSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
@@ -1743,7 +1743,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 											  JOptionPane.ERROR_MESSAGE);
 			}
 		} else if((e.getActionCommand() == "Save") || (e.getActionCommand() == "SaveAs")) {
-			// 名前を付けて保存
+			// Nameを付けて保存
 			JFileChooser c = new JFileChooser(System.getProperty("user.dir") + "/config/rule");
 			c.setFileFilter(new FileFilterRUL());
 

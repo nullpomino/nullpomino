@@ -1260,7 +1260,7 @@ public class GemManiaMode extends DummyMode {
 					laststage = MAX_STAGE_TOTAL - 1;	// クリア率が100%で5分以内ならEX7
 			}
 
-			// BGMフェードアウト
+			// BGM fadeout
 			if( ((stage == MAX_STAGE_NORMAL - 1) || (stage == laststage)) && (trainingType == 0) ) {
 				owner.bgmStatus.fadesw = true;
 			}

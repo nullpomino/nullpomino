@@ -57,7 +57,7 @@ public class WaveEngine implements LineListener {
 	/** 登録できるWAVE file のMaximumcount */
 	private int maxClips;
 
-	/** WAVE file  data (名前-> data本体) */
+	/** WAVE file  data (Name-> data本体) */
 	private HashMap<String, Clip> clipMap;
 
 	/** 登録されたWAVE file count */

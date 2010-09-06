@@ -135,7 +135,7 @@ public class NetServer {
 	}
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public NetServer() {
 		super();
@@ -661,7 +661,7 @@ public class NetServer {
 				originalName = originalName.replace('!', '?');
 			}
 
-			// Player名決定(同じ名前の人がいたら後ろにcount字をくっつける)
+			// Player名決定(同じNameの人がいたら後ろにcount字をくっつける)
 			if(originalName.length() < 1) originalName = "noname";
 			String name = originalName;
 			int nameCount = 0;
@@ -1462,9 +1462,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定した名前のPlayerを探す
-	 * @param name 名前
-	 * @return 指定した名前のPlayer情報(いなかったらnull)
+	 * 指定したNameのPlayerを探す
+	 * @param name Name
+	 * @return 指定したNameのPlayer情報(いなかったらnull)
 	 */
 	private NetPlayerInfo searchPlayerByName(String name) {
 		for(SocketChannel ch: channelList) {

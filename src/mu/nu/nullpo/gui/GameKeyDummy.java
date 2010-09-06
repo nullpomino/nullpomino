@@ -33,7 +33,7 @@ public class GameKeyDummy {
 	protected boolean[] pressstate;
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	protected GameKeyDummy() {
 		this(0);

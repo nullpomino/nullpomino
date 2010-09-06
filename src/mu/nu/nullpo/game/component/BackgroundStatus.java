@@ -40,20 +40,20 @@ public class BackgroundStatus implements Serializable {
 	/** Background number */
 	public int bg;
 
-	/** Backgroundフェード flag */
+	/** Background fade flag */
 	public boolean fadesw;
 
-	/** Backgroundフェードの状態 (falseならフェードアウト, trueならフェードイン) */
+	/** Background fadeの状態 (false for fadeout, true for fade-in) */
 	public boolean fadestat;
 
-	/** Backgroundフェード用カウンタ */
+	/** Background fade usage counter */
 	public int fadecount;
 
-	/** Backgroundフェード後のBackground */
+	/** Background after fade */
 	public int fadebg;
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public BackgroundStatus() {
 		reset();
@@ -68,7 +68,7 @@ public class BackgroundStatus implements Serializable {
 	}
 
 	/**
-	 * 初期値に戻す
+	 * Reset to defaults
 	 */
 	public void reset() {
 		bg = 0;
@@ -79,7 +79,7 @@ public class BackgroundStatus implements Serializable {
 	}
 
 	/**
-	 * 別のBackgroundStatusからコピー
+	 * Copy from a different BackgroundStatus
 	 * @param b Copy source
 	 */
 	public void copy(BackgroundStatus b) {
@@ -91,7 +91,7 @@ public class BackgroundStatus implements Serializable {
 	}
 
 	/**
-	 * Backgroundフェードの状態を更新
+	 * Update background fade state
 	 */
 	public void fadeUpdate() {
 		if(fadesw == true) {

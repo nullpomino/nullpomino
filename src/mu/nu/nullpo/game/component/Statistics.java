@@ -166,7 +166,7 @@ public class Statistics implements Serializable {
 	}
 
 	/**
-	 * 初期値に戻す
+	 * Reset to defaults
 	 */
 	public void reset() {
 		score = 0;

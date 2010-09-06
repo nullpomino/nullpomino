@@ -50,7 +50,7 @@ public class GameKeySDL extends GameKeyDummy {
 	}
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public GameKeySDL() {
 		super();

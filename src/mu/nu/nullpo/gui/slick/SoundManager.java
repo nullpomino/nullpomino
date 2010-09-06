@@ -44,7 +44,7 @@ public class SoundManager {
 	/** 登録できるWAVE file のMaximumcount */
 	protected int maxClips;
 
-	/** WAVE file  data (名前-> data本体) */
+	/** WAVE file  data (Name-> data本体) */
 	protected HashMap<String, Sound> clipMap;
 
 	/** 登録されたWAVE file count */
@@ -117,7 +117,7 @@ public class SoundManager {
 	 * @param name 登録名
 	 */
 	public void play(String name) {
-		// 名前に対応するクリップを取得
+		// Nameに対応するクリップを取得
 		Sound clip = clipMap.get(name);
 
 		if(clip != null) {

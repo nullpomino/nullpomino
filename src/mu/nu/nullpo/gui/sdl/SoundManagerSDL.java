@@ -46,10 +46,10 @@ public class SoundManagerSDL {
 	/** 登録できるWAVE file のMaximumcount */
 	protected int maxClips;
 
-	/** WAVE file  data (名前-> data本体) */
+	/** WAVE file  data (Name-> data本体) */
 	protected HashMap<String, MixChunk> clipMap;
 
-	/** チャンネル data (名前->チャンネル number) */
+	/** チャンネル data (Name->チャンネル number) */
 	protected HashMap<String, Integer> channelMap;
 
 	/** 登録されたWAVE file count */
@@ -125,7 +125,7 @@ public class SoundManagerSDL {
 	 * @param name 登録名
 	 */
 	public void play(String name) {
-		// 名前に対応するクリップを取得
+		// Nameに対応するクリップを取得
 		MixChunk clip = clipMap.get(name);
 
 		if(clip != null) {

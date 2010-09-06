@@ -57,16 +57,16 @@ public class SpeedManiaMode extends DummyMode {
 	/** DAS table */
 	private static final int[] tableDAS       = {11, 11, 10,  9,  7,  7};
 
-	/** BGMがフェードアウトする level */
+	/** BGM fadeout levels */
 	private static final int[] tableBGMFadeout = {280, 480, -1};
 
-	/** BGMが変わる level */
+	/** BGM change levels */
 	private static final int[] tableBGMChange  = {300, 500, -1};
 
-	/** 段位の名前 */
+	/** 段位のName */
 	private static final String[] tableGradeName = {"", "M", "GM"};
 
-	/** 裏段位の名前 */
+	/** 裏段位のName */
 	private static final String[] tableSecretGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -693,7 +693,7 @@ public class SpeedManiaMode extends DummyMode {
 		// 速度変更
 		setSpeed(engine);
 
-		// BGMフェードアウト
+		// BGM fadeout
 		if((tableBGMFadeout[bgmlv] != -1) && (engine.statistics.level >= tableBGMFadeout[bgmlv]))
 			owner.bgmStatus.fadesw  = true;
 

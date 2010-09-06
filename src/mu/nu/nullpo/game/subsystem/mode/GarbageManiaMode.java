@@ -55,13 +55,13 @@ public class GarbageManiaMode extends DummyMode {
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
 	};
 
-	/** BGMがフェードアウトする level */
+	/** BGM fadeout levels */
 	private static final int[] tableBGMFadeout = {495,695,880,-1};
 
-	/** BGMが変わる level */
+	/** BGM change levels */
 	private static final int[] tableBGMChange  = {500,700,900,-1};
 
-	/** 裏段位の名前 */
+	/** 裏段位のName */
 	private static final String[] tableSecretGradeName =
 	{
 		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
@@ -193,7 +193,7 @@ public class GarbageManiaMode extends DummyMode {
 	/** せり上がりパターン number */
 	private int garbagePos;
 
-	/** せり上がり用カウンタ (Linesを消さないと+1) */
+	/** せり上がり usage counter (Linesを消さないと+1) */
 	private int garbageCount;
 
 	/** せり上がりした count */
@@ -658,7 +658,7 @@ public class GarbageManiaMode extends DummyMode {
 		// LV100到達でゴーストを消す
 		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
 
-		// BGMフェードアウト
+		// BGM fadeout
 		if((tableBGMFadeout[bgmlv] != -1) && (engine.statistics.level >= tableBGMFadeout[bgmlv]))
 			owner.bgmStatus.fadesw  = true;
 	}

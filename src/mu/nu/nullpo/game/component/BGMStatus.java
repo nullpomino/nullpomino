@@ -65,7 +65,7 @@ public class BGMStatus implements Serializable {
 	/** 音量 (1f=100%, 0.5f=50%) */
 	public float volume;
 
-	/** BGMフェードアウトスイッチ */
+	/** BGM fadeoutスイッチ */
 	public boolean fadesw;
 
 	/**
@@ -84,7 +84,7 @@ public class BGMStatus implements Serializable {
 	}
 
 	/**
-	 * 初期値に戻す
+	 * Reset to defaults
 	 */
 	public void reset() {
 		bgm = BGM_NOTHING;
@@ -103,7 +103,7 @@ public class BGMStatus implements Serializable {
 	}
 
 	/**
-	 * BGMフェード状態と音量の更新
+	 * BGM fade状態と音量の更新
 	 */
 	public void fadeUpdate() {
 		if(fadesw == true) {

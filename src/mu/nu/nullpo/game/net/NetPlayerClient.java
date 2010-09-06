@@ -52,7 +52,7 @@ public class NetPlayerClient extends NetBaseClient {
 	/** 自分のPlayer名 */
 	protected String playerName;
 
-	/** 自分のチーム名 */
+	/** 自分のTeam name */
 	protected String playerTeam;
 
 	/** 自分のPlayer識別 number */
@@ -68,7 +68,7 @@ public class NetPlayerClient extends NetBaseClient {
 	protected int observerCount = -1;
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public NetPlayerClient() {
 		super();
@@ -95,7 +95,7 @@ public class NetPlayerClient extends NetBaseClient {
 	 * Constructor
 	 * @param host 接続先ホスト
 	 * @param port 接続先ポート number
-	 * @param name Playerの名前
+	 * @param name PlayerのName
 	 */
 	public NetPlayerClient(String host, int port, String name) {
 		super();
@@ -109,8 +109,8 @@ public class NetPlayerClient extends NetBaseClient {
 	 * Constructor
 	 * @param host 接続先ホスト
 	 * @param port 接続先ポート number
-	 * @param name Playerの名前
-	 * @param team 所属するチーム名
+	 * @param name PlayerのName
+	 * @param team 所属するTeam name
 	 */
 	public NetPlayerClient(String host, int port, String name, String team) {
 		super();
@@ -261,9 +261,9 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * 指定した名前のPlayerを取得
-	 * @param name 名前
-	 * @return 指定した名前のPlayer情報(いなかったらnull)
+	 * 指定したNameのPlayerを取得
+	 * @param name Name
+	 * @return 指定したNameのPlayer情報(いなかったらnull)
 	 */
 	public NetPlayerInfo getPlayerInfoByName(String name) {
 		for(NetPlayerInfo pInfo: playerInfoList) {

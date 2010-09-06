@@ -47,7 +47,7 @@ public class ReplayData implements Serializable {
 	public ArrayList<Integer> inputDataArray;
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public ReplayData() {
 		reset();
@@ -62,7 +62,7 @@ public class ReplayData implements Serializable {
 	}
 
 	/**
-	 * 初期値に戻す
+	 * Reset to defaults
 	 */
 	public void reset() {
 		if(inputDataArray == null)

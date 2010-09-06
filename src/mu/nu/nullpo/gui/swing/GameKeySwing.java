@@ -55,7 +55,7 @@ public class GameKeySwing extends GameKeyDummy {
 	}
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public GameKeySwing() {
 		super();

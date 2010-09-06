@@ -81,7 +81,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	public Thread thread;
 
 	/*
-	 * AIの名前
+	 * AIのName
 	 */
 	@Override
 	public String getName() {

@@ -95,9 +95,9 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/**
-	 * キーの名前を取得
+	 * キーのNameを取得
 	 * @param key キー
-	 * @return キーの名前
+	 * @return キーのName
 	 */
 	protected String getKeyName(int key) {
 		String str = org.lwjgl.input.Keyboard.getKeyName(key);

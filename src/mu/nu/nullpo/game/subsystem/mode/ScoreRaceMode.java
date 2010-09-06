@@ -656,7 +656,7 @@ public class ScoreRaceMode extends DummyMode {
 			engine.stat = GameEngine.STAT_ENDINGSTART;
 		}
 
-		// BGMフェードアウト
+		// BGM fadeout
 		if((remainScore <= 1000) && (engine.timerActive == true)) {
 			owner.bgmStatus.fadesw = true;
 		}

@@ -174,7 +174,7 @@ public class GeneralUtil {
 
 	/**
 	 * NEXT順生成アルゴリズムを読み込み
-	 * @param filename クラスファイルの名前
+	 * @param filename クラスファイルのName
 	 * @return NEXT順生成アルゴリズムのオブジェクト (読み込み失敗したらnull）
 	 */
 	public static Randomizer loadRandomizer(String filename) {
@@ -193,7 +193,7 @@ public class GeneralUtil {
 
 	/**
 	 * Wallkickアルゴリズムを読み込み
-	 * @param filename クラスファイルの名前
+	 * @param filename クラスファイルのName
 	 * @return Wallkickアルゴリズムのオブジェクト (読み込み失敗したらnull）
 	 */
 	public static Wallkick loadWallkick(String filename) {
@@ -212,7 +212,7 @@ public class GeneralUtil {
 
 	/**
 	 * AIを読み込み
-	 * @param filename クラスファイルの名前
+	 * @param filename クラスファイルのName
 	 * @return AIのオブジェクト (読み込み失敗したらnull）
 	 */
 	public static DummyAI loadAIPlayer(String filename) {

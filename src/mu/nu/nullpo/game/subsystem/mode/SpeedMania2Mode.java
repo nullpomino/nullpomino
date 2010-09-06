@@ -65,16 +65,16 @@ public class SpeedMania2Mode extends DummyMode {
 	/** REGRET criteria Time */
 	private static final int[] tableTimeRegret = {3600,3600,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000};
 
-	/** BGMがフェードアウトする level */
+	/** BGM fadeout levels */
 	private static final int[] tableBGMFadeout = {485, 685, 985, -1};
 
-	/** BGMが変わる level */
+	/** BGM change levels */
 	private static final int[] tableBGMChange  = {500, 700, 1000, -1};
 
-	/** 段位の名前 */
+	/** 段位のName */
 	private static final String[] tableGradeName = {"1", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S12", "S13"};
 
-	/** 裏段位の名前 */
+	/** 裏段位のName */
 	private static final String[] tableSecretGradeName =
 	{
 		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  0～ 8
@@ -708,7 +708,7 @@ public class SpeedMania2Mode extends DummyMode {
 		// 速度変更
 		setSpeed(engine);
 
-		// BGMフェードアウト
+		// BGM fadeout
 		if((tableBGMFadeout[bgmlv] != -1) && (engine.statistics.level >= tableBGMFadeout[bgmlv]))
 			owner.bgmStatus.fadesw  = true;
 	}

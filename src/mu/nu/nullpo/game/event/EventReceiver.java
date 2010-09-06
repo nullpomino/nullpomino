@@ -603,7 +603,7 @@ public class EventReceiver {
 
 	/**
 	 * Sound effects再生
-	 * @param name Sound effectsの名前
+	 * @param name Sound effectsのName
 	 */
 	public void playSE(String name) {}
 

@@ -36,8 +36,8 @@ import mu.nu.nullpo.game.play.GameEngine;
  */
 public interface AIPlayer {
 	/**
-	 * 名前を取得
-	 * @return AIの名前
+	 * Nameを取得
+	 * @return AIのName
 	 */
 	public String getName();
 

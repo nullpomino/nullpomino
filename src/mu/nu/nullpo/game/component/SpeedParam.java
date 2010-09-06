@@ -74,7 +74,7 @@ public class SpeedParam implements Serializable {
 	}
 
 	/**
-	 * 初期値に戻す
+	 * Reset to defaults
 	 */
 	public void reset() {
 		gravity = 4;

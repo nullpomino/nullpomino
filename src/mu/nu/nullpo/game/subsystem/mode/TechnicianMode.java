@@ -50,7 +50,7 @@ public class TechnicianMode extends DummyMode {
 	/** Fall velocity table (denominators) */
 	private static final int tableDenominator[] = {63, 50, 39, 30, 22, 16, 12,  8,  6,  4,  3,  2,  1, 256, 256,  256,  256, 256, 256, 256};
 
-	/** BGMが変わる level */
+	/** BGM change levels */
 	private static final int tableBGMChange[]   = {9, 15, 19, 23, 27, -1};
 
 	/** Comboで手に入る point */

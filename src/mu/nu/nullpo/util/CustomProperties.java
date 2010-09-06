@@ -40,7 +40,7 @@ import java.util.Properties;
  */
 public class CustomProperties extends Properties {
 	/**
-	 * シリアルVersion
+	 * Serial version
 	 */
 	private static final long serialVersionUID = 2L;
 

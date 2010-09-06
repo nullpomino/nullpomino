@@ -184,7 +184,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 10, "MAX FPS:" + maxfps, (cursor == 7));
 		NormalFontSDL.printFontGrid(2, 11, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 8));
 		NormalFontSDL.printFontGrid(2, 12, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 9));
-		NormalFontSDL.printFontGrid(2, 13, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 10));
+		NormalFontSDL.printFontGrid(2, 13, "USE Background fade:" + GeneralUtil.getOorX(heavyeffect), (cursor == 10));
 		NormalFontSDL.printFontGrid(2, 14, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 11));
 		NormalFontSDL.printFontGrid(2, 15, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 12));
 		NormalFontSDL.printFontGrid(2, 16, "SE VOLUME:" + sevolume, (cursor == 13));

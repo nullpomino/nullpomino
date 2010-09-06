@@ -223,7 +223,7 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 設定を初期値に戻す
+	 * 設定をReset to defaults
 	 */
 	public void reset() {
 		color = BLOCK_COLOR_NONE;

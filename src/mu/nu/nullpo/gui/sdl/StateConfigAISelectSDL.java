@@ -57,7 +57,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	/** AIのクラス一覧 */
 	protected String[] aiPathList;
 
-	/** AIの名前一覧 */
+	/** AIのName一覧 */
 	protected String[] aiNameList;
 
 	/** Current AIのクラス */
@@ -140,9 +140,9 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * AIの名前一覧を作成
+	 * AIのName一覧を作成
 	 * @param aiPath AIのクラスのリスト
-	 * @return AIの名前一覧
+	 * @return AIのName一覧
 	 */
 	public String[] loadAINames(String[] aiPath) {
 		String[] aiName = new String[aiPath.length];

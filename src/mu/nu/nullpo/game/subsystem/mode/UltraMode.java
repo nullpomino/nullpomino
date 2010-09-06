@@ -680,7 +680,7 @@ public class UltraMode extends DummyMode {
 				engine.playSE("countdown");
 			}
 
-			// 5秒前からのBGMフェードアウト
+			// 5秒前からのBGM fadeout
 			if(engine.statistics.time >= limitTime - (5 * 60)) {
 				owner.bgmStatus.fadesw = true;
 			}

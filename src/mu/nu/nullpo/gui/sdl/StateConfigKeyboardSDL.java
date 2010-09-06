@@ -94,9 +94,9 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * キーの名前を取得
+	 * キーのNameを取得
 	 * @param key キー
-	 * @return キーの名前
+	 * @return キーのName
 	 */
 	protected String getKeyName(int key) {
 		return "(" + key + ")";

@@ -37,7 +37,7 @@ import mu.nu.nullpo.game.component.RuleOptions;
  * ルーム情報
  */
 public class NetRoomInfo implements Serializable {
-	/** シリアルVersion */
+	/** Serial version */
 	private static final long serialVersionUID = 1L;
 
 	/** 識別 number */
@@ -553,8 +553,8 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 最後に生き残ったチーム名を取得
-	 * @return 最後に生き残ったチーム名
+	 * 最後に生き残ったTeam nameを取得
+	 * @return 最後に生き残ったTeam name
 	 */
 	public String getWinnerTeam() {
 		if((startPlayers >= 2) && (getHowManyPlayersPlaying() >= 2) && (playing == true)) {

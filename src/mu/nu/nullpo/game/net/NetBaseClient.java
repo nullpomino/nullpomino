@@ -84,7 +84,7 @@ public class NetBaseClient extends Thread {
 	protected Timer timerPing;
 
 	/**
-	 *  default Constructor
+	 * Default constructor
 	 */
 	public NetBaseClient() {
 		super();

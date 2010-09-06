@@ -248,10 +248,10 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 使用しているスキン */
 	private int[] playerSkin;
 
-	/** Playerの名前 */
+	/** PlayerのName */
 	private String[] playerNames;
 
-	/** チーム名 */
+	/** Team name */
 	private String[] playerTeams;
 
 	private boolean[] playerTeamsIsTank;
@@ -1457,7 +1457,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			int x = receiver.getFieldDisplayPositionX(engine, playerID);
 			int y = receiver.getFieldDisplayPositionY(engine, playerID);
 
-			// 名前
+			// Name
 			if((playerNames != null) && (playerNames[playerID] != null) && (playerNames[playerID].length() > 0)) {
 				String name = playerNames[playerID];
 

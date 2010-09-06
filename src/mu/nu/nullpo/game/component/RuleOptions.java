@@ -48,7 +48,7 @@ public class RuleOptions implements Serializable {
 	/** 横移動カウンタかrotationカウンタが超過したらWallkick無効にする */
 	public static final int LOCKRESET_LIMIT_OVER_NOWALLKICK = 2;
 
-	/** このルールの名前 */
+	/** このルールのName */
 	public String strRuleName;
 
 	/** 使用するWallkickアルゴリズムのクラス名 (空文字列ならWallkickしない) */

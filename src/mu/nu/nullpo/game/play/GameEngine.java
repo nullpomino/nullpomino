@@ -887,7 +887,7 @@ public class GameEngine {
 
 	/**
 	 * Sound effectsを再生する (enableSEがtrueのときだけ）
-	 * @param name Sound effectsの名前
+	 * @param name Sound effectsのName
 	 */
 	public void playSE(String name) {
 		if(enableSE) owner.receiver.playSE(name);

@@ -36,22 +36,22 @@ import mu.nu.nullpo.game.component.RuleOptions;
  * Player情報
  */
 public class NetPlayerInfo implements Serializable {
-	/** シリアルVersion */
+	/** Serial version */
 	private static final long serialVersionUID = 1L;
 
-	/** 名前 */
+	/** Name */
 	public String strName = "";
 
-	/** 国コード */
+	/** Country code */
 	public String strCountry = "";
 
 	/** 接続元ホスト */
 	public String strHost = "";
 
-	/** チーム名 */
+	/** Team name */
 	public String strTeam = "";
 
-	/** 使用中ルール */
+	/** Rules in use */
 	public RuleOptions ruleOpt = null;
 
 	/** 識別用ID */
