@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -35,35 +36,37 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
 	private String outputFile;
 	private int numIterations;
 	private int iteration;
-	//private JFrame parent;
+	
 	private JLabel progressLabel;
 	private JProgressBar progressBar;
 	private JButton cancelButton;
-	 private MySwingWorker mySwingWorker;
+	 private AllIterations allIterations;
+	 private OneIteration oneIteration;
+	  class OneIteration extends SwingWorker<Void, String>{
+		  private int totalParts;
+		  private RanksIteratorPart [] ranksIteratorPart;
+		  private boolean cancelled;
+		  private Ranks ranks;
+		  
+		  public OneIteration(int totalParts, Ranks ranks){
+			  this.ranks=ranks;
+			  this.totalParts=totalParts;
+			  cancelled=false;
+			  
+		  }
+		  public void iterate(){
 
-    class MySwingWorker extends SwingWorker<Void, String> {
+	        	
+	        	if (ranks.completionPercentageIncrease()){
 
-    private int totalParts;
-    private boolean cancelled;
-    private RanksIteratorPart [] ranksIteratorPart;
+	        	  this.setProgress(ranks.getCompletionPercentage());
+	        	}
+	        }
+		@Override
+		protected Void doInBackground() throws Exception {
+			ranksIteratorPart=new RanksIteratorPart[totalParts];
 
-        public MySwingWorker( int totalParts) {
-
-        	this.totalParts=totalParts;
-
-            setProgress(0);
-            cancelled=false;
-
-        }
-        @Override
-
-        public Void doInBackground() {
-
-        	 ranksIteratorPart=new RanksIteratorPart[totalParts];
-
-        	 for (int n=0;n<numIterations;n++){
-        		 iteration=n;
-        	   for (int i=0;i<totalParts;i++){
+     	   for (int i=0;i<totalParts;i++){
         	   ranksIteratorPart[i]=new RanksIteratorPart(this,ranks,i,totalParts);	;
         	   ranksIteratorPart[i].start();
         	   }
@@ -79,8 +82,93 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         	if (cancelled){
         		System.out.println("cancelled !");
         		ranks=ranks.getRanksFrom();
-        		return null;
+        		allIterations.cancelTask();
+        	
         	}
+        	setProgress(100);
+			return null;
+		}
+	    public void cancelTask(){
+        	cancelled=true;
+        	for (int i=0;i<totalParts;i++){
+        		 ranksIteratorPart[i].interrupt();
+        	}
+        }
+		  
+	  }
+    class AllIterations extends SwingWorker<Void, String> {
+
+    private int totalParts;
+    private RanksIterator ranksIterator;
+  
+    private String inputFile;
+    boolean cancelled;
+
+        public AllIterations( int totalParts, RanksIterator ranksIterator, String inputFile) {
+
+        	this.totalParts=totalParts;
+        	this.ranksIterator=ranksIterator;
+        	this.inputFile=inputFile;
+        	cancelled=false;
+            setProgress(0);
+            
+
+        }
+       
+        @Override
+
+        public Void doInBackground() {
+        	progressLabel.setText(AIRanksGenerator.getUIText("Progress_Note_Load_File"));
+        	
+        	FileInputStream fis = null;
+        	ObjectInputStream in = null;
+        	if (inputFile.trim().length() == 0)
+        		ranksFrom=new Ranks(4,9);
+        	else {
+        		  try {
+        			fis = new FileInputStream(AIRanksGenerator.RANKSAI_DIR+inputFile);
+        			   in = new ObjectInputStream(fis);
+        			   ranksFrom = (Ranks)in.readObject();
+        			   in.close();
+
+        		} catch (FileNotFoundException e) {
+        			ranksFrom=new Ranks(4,9);
+        		} catch (IOException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		} catch (ClassNotFoundException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
+
+        	}
+        	ranks=new Ranks(ranksFrom);
+
+
+        	 
+        	 for (int n=0;n<numIterations;n++){
+        		 iteration=n;
+        	  
+        
+        		 oneIteration=new OneIteration(totalParts,ranks);
+        		 oneIteration.addPropertyChangeListener(ranksIterator);
+        		 oneIteration.execute();
+        		 try {
+					oneIteration.get();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (cancelled){
+	        		System.out.println("cancelled !");
+	        		//ranks=ranks.getRanksFrom();
+	        		//allIterations.cancelTask();
+	        		break;
+	        	}
+        		 
         	ranks.scaleRanks();
         	//lastError=ranks.getErrorPercentage();
         	//lastErrorMax=ranks.getMaxError();
@@ -91,63 +179,62 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         	}
         
         	}
+         	System.out.println("save file !");
+       	 progressLabel.setText(AIRanksGenerator.getUIText("Progress_Note_Save_File"));
+          	
+           try {
+           	File ranksAIDir=new File(AIRanksGenerator.RANKSAI_DIR);
+           	if (!ranksAIDir.exists()){
+           		ranksAIDir.mkdirs();
+           	}
+               FileOutputStream fos=null;
+               ObjectOutputStream out=null;
+               fos=new FileOutputStream(AIRanksGenerator.RANKSAI_DIR+ outputFile);
+               out = new ObjectOutputStream(fos);
+               ranks.freeRanksFrom();
+               out.writeObject(ranks);
+               out.close();
+
+           } catch(Exception e) {
+               e.printStackTrace();
+           }
+           ranks=null;
+           ranksFrom=null;
+           setProgress(100);
 
             return null;
         }
 
-        public void iterate(){
-
-        	int totalCompletion=100*iteration+ranks.getCompletionPercentage();
-        	if (ranks.completionPercentageIncrease()){
-
-        	  this.setProgress(totalCompletion/numIterations);
-        	}
+        public void cancelTask(){
+        	cancelled=true;
+        	
         }
 
         @Override
         protected void done() {
-        	System.out.println("done !");
-            try {
-            	File ranksAIDir=new File(AIRanksGenerator.RANKSAI_DIR);
-            	if (!ranksAIDir.exists()){
-            		ranksAIDir.mkdirs();
-            	}
-                FileOutputStream fos=null;
-                ObjectOutputStream out=null;
-                fos=new FileOutputStream(AIRanksGenerator.RANKSAI_DIR+ outputFile);
-                out = new ObjectOutputStream(fos);
-                ranks.freeRanksFrom();
-                out.writeObject(ranks);
-                out.close();
 
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-            setProgress(100);
            dispose();
 
         	//new RanksResult(parent,ranks,100,false);
 
         }
-        public void cancelTask(){
-        	cancelled=true;
-        	for (int i=0;i<totalParts;i++){
-        		 ranksIteratorPart[i].interrupt();
-        	}
-        }
+    
     }
 
 public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIterations){
 
 	super(parent,AIRanksGenerator.getUIText("Progress_Message"));
 	this.outputFile=outputFile;
-	//this.parent=parent;
+	;
 
 	this.numIterations=numIterations;
-	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
 	progressLabel=new JLabel(String.format(AIRanksGenerator.getUIText("Progress_Note"), 1,0,numIterations,0));
-    progressBar=new JProgressBar(0,100);
+	String message=String.format(AIRanksGenerator.getUIText("Progress_Note"), 100,100,100,100);
+    progressLabel.setText(message);
+    
+	progressBar=new JProgressBar(0,100);
     cancelButton= new JButton(AIRanksGenerator.getUIText("Progress_Cancel_Button"));
     cancelButton.setActionCommand("cancel");
     cancelButton.addActionListener(this);
@@ -163,56 +250,30 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 	pack();
 	setVisible(true);
 
-	FileInputStream fis = null;
-	ObjectInputStream in = null;
-	if (inputFile.trim().length() == 0)
-		ranksFrom=new Ranks(4,9);
-	else {
-		  try {
-			fis = new FileInputStream(inputFile);
-			   in = new ObjectInputStream(fis);
-			   ranksFrom = (Ranks)in.readObject();
-			   in.close();
-
-		} catch (FileNotFoundException e) {
-			ranksFrom=new Ranks(4,9);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-	ranks=new Ranks(ranksFrom);
-
+	
 	//size=ranks.getSize();
 
-	mySwingWorker =this.new MySwingWorker(4);
-	mySwingWorker.addPropertyChangeListener(this);
-	mySwingWorker.execute();
+	allIterations =this.new AllIterations(4,this,inputFile);
+	//allIterations.addPropertyChangeListener(this);
+	allIterations.execute();
 
 }
 public void propertyChange(PropertyChangeEvent evt) {
 	 if ("progress" == evt.getPropertyName() ) {
-           int progress = (Integer) evt.getNewValue();
-           progressBar.setValue(progress);
+		 ;
+           int totalCompletion=(100*iteration+ranks.getCompletionPercentage())/numIterations;
+           progressBar.setValue(totalCompletion);
 
            String message =
-               String.format(AIRanksGenerator.getUIText("Progress_Note"), iteration+1,ranks.getCompletionPercentage(),numIterations,progress);
+               String.format(AIRanksGenerator.getUIText("Progress_Note"), iteration+1,ranks.getCompletionPercentage(),numIterations,totalCompletion);
           progressLabel.setText(message);
-          if (progress==100){
-
-        	  ranks=null;
-              ranksFrom=null;
-          }
+         
 	 }
 
 }
 @Override
 public void actionPerformed(ActionEvent arg0) {
-	this.mySwingWorker.cancelTask();
+	this.oneIteration.cancelTask();
 }
 
 }
