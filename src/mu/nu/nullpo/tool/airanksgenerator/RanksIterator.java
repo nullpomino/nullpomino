@@ -80,7 +80,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         	}
         
         	if (cancelled){
-        		System.out.println("cancelled !");
+        		//System.out.println("cancelled !");
         		ranks=ranks.getRanksFrom();
         		allIterations.cancelTask();
         	
@@ -163,7 +163,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
 					e.printStackTrace();
 				}
 				if (cancelled){
-	        		System.out.println("cancelled !");
+	        		//System.out.println("cancelled !");
 	        		//ranks=ranks.getRanksFrom();
 	        		//allIterations.cancelTask();
 	        		break;
@@ -179,7 +179,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         	}
         
         	}
-         	System.out.println("save file !");
+         	//System.out.println("save file !");
        	 progressLabel.setText(AIRanksGenerator.getUIText("Progress_Note_Save_File"));
           	
            try {
@@ -252,8 +252,10 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 
 	
 	//size=ranks.getSize();
-
-	allIterations =this.new AllIterations(4,this,inputFile);
+	int numProcessors=Runtime.getRuntime().availableProcessors();
+	//System.out.println(numProcessors);
+	
+	allIterations =this.new AllIterations(numProcessors,this,inputFile);
 	//allIterations.addPropertyChangeListener(this);
 	allIterations.execute();
 
