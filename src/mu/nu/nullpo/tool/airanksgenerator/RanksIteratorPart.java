@@ -1,10 +1,11 @@
 package mu.nu.nullpo.tool.airanksgenerator;
 
-import mu.nu.nullpo.tool.airanksgenerator.RanksIterator.MySwingWorker;
+import mu.nu.nullpo.tool.airanksgenerator.RanksIterator.AllIterations;
+import mu.nu.nullpo.tool.airanksgenerator.RanksIterator.OneIteration;
 
 public class RanksIteratorPart extends Thread {
 
-private MySwingWorker mySwingWorker;
+private OneIteration oneIteration;
 private Ranks ranks;
 
 private int sMin;
@@ -13,19 +14,19 @@ private int size;
 private int  [] surface;
 private int [] surfaceDecodedWork;
 
-	public RanksIteratorPart(MySwingWorker mySwingWorker, Ranks ranks, int i,
+	public RanksIteratorPart(OneIteration oneIteration, Ranks ranks, int i,
 			int totalParts) {
 
-      this.mySwingWorker=mySwingWorker;
+      this.oneIteration=oneIteration;
       this.ranks=ranks;
 
-     size=ranks.getSize();
+     size=this.ranks.getSize();
 		  sMin=i*size/totalParts;
 		 sMax=(i==totalParts-1)?size:(i+1)*size/totalParts;
-		surface=new int [ranks.getStackWidth()-1];
-		ranks.decode(sMin,surface);
+		surface=new int [this.ranks.getStackWidth()-1];
+		this.ranks.decode(sMin,surface);
 		 surfaceDecodedWork=new int [ranks.getStackWidth()-1];
-		 ranks.decode(sMin,surfaceDecodedWork);
+		 this.ranks.decode(sMin,surfaceDecodedWork);
 		 this.setPriority(MIN_PRIORITY);
 	}
 
@@ -36,7 +37,7 @@ private int [] surfaceDecodedWork;
 			ranks.iterateSurface(surface,surfaceDecodedWork);
 
 		   synchronized(this){
-			 mySwingWorker.iterate();
+			 oneIteration.iterate();
 		  }
 		   if (Thread.interrupted()){
 
