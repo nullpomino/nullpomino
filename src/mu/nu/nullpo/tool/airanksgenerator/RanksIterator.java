@@ -15,14 +15,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.ProgressMonitor;
 
 import org.jdesktop.swingworker.SwingWorker;
 
@@ -37,7 +35,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
 	private String outputFile;
 	private int numIterations;
 	private int iteration;
-	private JFrame parent;
+	//private JFrame parent;
 	private JLabel progressLabel;
 	private JProgressBar progressBar;
 	private JButton cancelButton;
@@ -143,7 +141,7 @@ public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIt
 
 	super(parent,AIRanksGenerator.getUIText("Progress_Message"));
 	this.outputFile=outputFile;
-	this.parent=parent;
+	//this.parent=parent;
 
 	this.numIterations=numIterations;
 	setDefaultCloseOperation(DISPOSE_ON_CLOSE);

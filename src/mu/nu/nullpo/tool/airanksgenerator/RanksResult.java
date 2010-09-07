@@ -3,8 +3,6 @@ package mu.nu.nullpo.tool.airanksgenerator;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private JFrame parent;
+	//private JFrame parent;
 	class SurfaceComparator implements Comparator<Integer>{
 
 		public int compare(Integer o1, Integer o2) {
@@ -159,7 +157,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	public RanksResult(JFrame parent,Ranks ranks,int bestNRanks,boolean ascendant){
 
 		super(parent,true);
-		this.parent=parent;
+		//this.parent=parent;
 		this.bestNRanks=bestNRanks;
 		this.ranks=ranks;
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -6,14 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Arrays;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -29,7 +27,6 @@ import javax.swing.SpinnerNumberModel;
 
 import org.apache.log4j.Logger;
 
-import mu.nu.nullpo.tool.musiclisteditor.MusicListEditor;
 import mu.nu.nullpo.util.CustomProperties;
 
 public class AIRanksGenerator extends JFrame implements ActionListener {
