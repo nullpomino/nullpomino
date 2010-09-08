@@ -224,7 +224,7 @@ public class StateConfigGeneral extends BasicGameState {
 		NormalFont.printFontGrid(2, 10, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 7));
 		NormalFont.printFontGrid(2, 11, "MAX FPS:" + maxfps, (cursor == 8));
 		NormalFont.printFontGrid(2, 12, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 9));
-		NormalFont.printFontGrid(2, 13, "USE Background fade:" + GeneralUtil.getOorX(heavyeffect), (cursor == 10));
+		NormalFont.printFontGrid(2, 13, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 10));
 		NormalFont.printFontGrid(2, 14, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 11));
 		NormalFont.printFontGrid(2, 15, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 12));
 		NormalFont.printFontGrid(2, 16, "SE VOLUME:" + sevolume, (cursor == 13));
