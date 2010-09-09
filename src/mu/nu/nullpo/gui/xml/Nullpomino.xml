@@ -4,25 +4,34 @@
   <tns:subTitle>Version 7.4.0</tns:subTitle>
   <tns:MenuItem xsi:type="tns:MenuMenuItemType">
   	<tns:name>Start</tns:name>
-  	<tns:decription>Start a new game.</tns:decription>
-  	<tns:menu>
-  		<tns:MenuItem>
-  			<tns:name>tns:name</tns:name>
+  	<tns:description>Start a new game.</tns:description>
+  	<tns:menu xsi:type="tns:SelectionMenuType">
+  		<tns:MenuItem xsi:type="tns:ModeMenuItemType">
+  			<tns:name>Marathon</tns:name>
+  			<tns:modeName>MarathonMode</tns:modeName>
   		</tns:MenuItem>
+  		<tns:MenuItem xsi:type="tns:ModeMenuItemType">
+  			<tns:name>Marathon+</tns:name>
+  			<tns:modeName>MarathonPlusMode</tns:modeName>
+  		</tns:MenuItem>
+  		<tns:backgroundImage>menu.png</tns:backgroundImage>
   	</tns:menu>
   </tns:MenuItem>
   <tns:MenuItem>
   	<tns:name>Replay</tns:name>
-  	<tns:decription>Watch a replay file.</tns:decription>
+  	<tns:description>Watch a replay file.</tns:description>
   </tns:MenuItem>
   <tns:MenuItem>
   	<tns:name>Netplay</tns:name>
+  	<tns:description>Connect to a server and play against various players over the internet.</tns:description>
   </tns:MenuItem>
   <tns:MenuItem xsi:type="tns:MenuMenuItemType">
   	<tns:name>Config</tns:name>
+  	<tns:description>You can adjust various settings here.</tns:description>
   </tns:MenuItem>
-  <tns:MenuItem xsi:type="tns:ExitMenuItemType">
+  <tns:MenuItem xsi:type="tns:MenuItemType">
   	<tns:name>Exit</tns:name>
-  	<tns:decription>Quit The game.</tns:decription>
+  	<tns:description>Quit The game.</tns:description>
   </tns:MenuItem>
+  <tns:backgroundImage>title.png</tns:backgroundImage>
 </tns:NullpominoMenu>

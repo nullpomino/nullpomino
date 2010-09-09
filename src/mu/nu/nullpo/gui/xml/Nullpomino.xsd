@@ -14,7 +14,7 @@
     			minOccurs="0">
     		</element>
     		<element name="MenuItem" type="tns:MenuItemType"
-    			maxOccurs="unbounded" minOccurs="1">
+    			maxOccurs="unbounded" minOccurs="0">
     		</element>
     		<element name="backgroundImage" type="string" maxOccurs="1" minOccurs="0"></element>
     	</sequence>
@@ -25,7 +25,7 @@
     		<element name="name" type="string" maxOccurs="1"
     			minOccurs="1">
     		</element>
-    		<element name="decription" type="string" maxOccurs="1" minOccurs="0"></element>
+    		<element name="description" type="string" maxOccurs="1" minOccurs="0"></element>
     	</sequence>
     </complexType>
 
@@ -58,7 +58,7 @@
     	</complexContent>
     </complexType>
 
-    <complexType name="AlphaMenuType">
+    <complexType name="AlphaMenuItemType">
     	<complexContent>
     		<extension base="tns:MenuItemType">
     			<sequence>
@@ -84,12 +84,26 @@
     	</complexContent>
     </complexType>
     
-    <complexType name="ModeMenuItem">
+    <complexType name="ModeMenuItemType">
     	<complexContent>
     		<extension base="tns:MenuItemType">
     			<sequence>
-    				<element name="modeName" type="string"></element>
+    				<element name="modeName" type="string" maxOccurs="1" minOccurs="1"></element>
     			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="SelectionMenuType">
+    	<complexContent>
+    		<extension base="tns:MenuType"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="ReplaySelectionMenuType">
+    	<complexContent>
+    		<extension base="tns:SelectionMenuType">
+    			<attribute name="replayFolder" type="string"></attribute>
     		</extension>
     	</complexContent>
     </complexType>
