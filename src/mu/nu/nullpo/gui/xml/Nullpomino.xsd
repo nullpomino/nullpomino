@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/Nullpomino" xmlns:tns="http://www.example.org/Nullpomino" elementFormDefault="qualified">
+
+    <element name="NullpominoMenu" type="tns:MenuType"></element>
+    
+
+
+    <complexType name="MenuType">
+    	<sequence>
+    		<element name="title" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="subTitle" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="MenuItem" type="tns:MenuItemType"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</element>
+    		<element name="backgroundImage" type="string" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="MenuItemType">
+    	<sequence>
+    		<element name="name" type="string" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="decription" type="string" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="NumericMenuItemType">
+    	<complexContent>
+    		<extension base="tns:MenuItemType">
+    			<sequence>
+    				<element name="minValue" type="string" maxOccurs="1" minOccurs="0"></element>
+    				<element name="maxValue" type="string" maxOccurs="1" minOccurs="0"></element>
+    				<element name="step" type="string" maxOccurs="1" minOccurs="0"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="ToggleMenuItemType">
+    	<complexContent>
+    		<extension base="tns:MenuItemType">
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="MenuMenuItemType">
+    	<complexContent>
+    		<extension base="tns:MenuItemType">
+    			<sequence>
+    				<element name="menu" type="tns:MenuType"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="AlphaMenuType">
+    	<complexContent>
+    		<extension base="tns:MenuItemType">
+    			<sequence>
+    				<element name="item" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="ConfigMenuType">
+    	<complexContent>
+    		<extension base="tns:MenuType">
+    			<sequence>
+    				<element name="configPropertyFile" type="string"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="ExitMenuItemType">
+    	<complexContent>
+    		<extension base="tns:MenuType"></extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="ModeMenuItem">
+    	<complexContent>
+    		<extension base="tns:MenuItemType">
+    			<sequence>
+    				<element name="modeName" type="string"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+</schema>

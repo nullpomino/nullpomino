@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:NullpominoMenu xmlns:tns="http://www.example.org/Nullpomino" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/Nullpomino Nullpomino.xsd ">
+  <tns:title>Nullpomino</tns:title>
+  <tns:subTitle>Version 7.4.0</tns:subTitle>
+  <tns:MenuItem xsi:type="tns:MenuMenuItemType">
+  	<tns:name>Start</tns:name>
+  	<tns:decription>Start a new game.</tns:decription>
+  	<tns:menu>
+  		<tns:MenuItem>
+  			<tns:name>tns:name</tns:name>
+  		</tns:MenuItem>
+  	</tns:menu>
+  </tns:MenuItem>
+  <tns:MenuItem>
+  	<tns:name>Replay</tns:name>
+  	<tns:decription>Watch a replay file.</tns:decription>
+  </tns:MenuItem>
+  <tns:MenuItem>
+  	<tns:name>Netplay</tns:name>
+  </tns:MenuItem>
+  <tns:MenuItem xsi:type="tns:MenuMenuItemType">
+  	<tns:name>Config</tns:name>
+  </tns:MenuItem>
+  <tns:MenuItem xsi:type="tns:ExitMenuItemType">
+  	<tns:name>Exit</tns:name>
+  	<tns:decription>Quit The game.</tns:decription>
+  </tns:MenuItem>
+</tns:NullpominoMenu>
