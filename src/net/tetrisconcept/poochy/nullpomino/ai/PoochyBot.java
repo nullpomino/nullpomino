@@ -88,7 +88,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * AI's name
 	 */
 	public String getName() {
-		return "PoochyBot V1.23";
+		return "PoochyBot V1.24";
 	}
 
 	/*
@@ -1423,56 +1423,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				deepestY = depthsBefore[i];
 				//deepestX = i;
 			}
-		int needIValleyBefore = 0, needJValleyBefore = 0, needLValleyBefore = 0;
-		if (depthsBefore[0] > depthsBefore[move])
-			needIValleyBefore = (depthsBefore[0]-depthsBefore[move])/3/move;
-		if (big && (depthsBefore[width-1] > depthsBefore[width-move-1]))
-			needIValleyBefore = (depthsBefore[width-1]-depthsBefore[width-move-1])/3/move;
-		for (int i = move; i < width-move; i+=move)
-		{
-			int left = depthsBefore[i-move], right = depthsBefore[i+move];
-			int lowerSide = Math.max(left, right);
-			int diff = depthsBefore[i] - lowerSide;
-			if (diff >= 3)
-				needIValleyBefore += diff/3/move;
-			if (left == right)
-			{
-				if (left == depthsBefore[i]+(2*move))
-				{
-					needIValleyBefore++;
-					needLValleyBefore--;
-					needJValleyBefore--;
-				}
-				else if (left == depthsBefore[i]+move)
-				{
-					needLValleyBefore++;
-					needJValleyBefore++;
-				}
-			}
-			if ((diff/move)%4 == 2)
-			{
-				if (left > right)
-					needLValleyBefore+=2;
-				else if (left < right)
-					needJValleyBefore+=2;
-				else
-				{
-					needJValleyBefore++;
-					needLValleyBefore++;
-				}
-			}
-		}
-		if (((depthsBefore[0] - depthsBefore[move])/move)%4 == 2)
-			needJValleyBefore += 2;
-		if (big && ((depthsBefore[width-1] - depthsBefore[width-move-1])/move)%4 == 2)
-			needLValleyBefore += 2;
-		/*
-		if ((depthsBefore[width-2] - depthsBefore[width-3])%4 == 2 &&
-				(depthsBefore[width-1] - depthsBefore[width-2]) < 2)
-			needLValleyBefore++;
-		*/
-		needJValleyBefore >>= 1;
-		needLValleyBefore >>= 1;
+		int[] valleysBefore = calcValleys(depthsBefore, move);
 
 		// Field height (before placement)
 		int heightBefore = fld.getHighestBlockY();
@@ -1590,56 +1541,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			//int lidAfter = fld.getHowManyLidAboveHoles();
 
 			//Find valleys that need an I, J, or L.
-			int needIValleyAfter = 0, needJValleyAfter = 0, needLValleyAfter = 0;
-			if (depthsAfter[0] > depthsAfter[move])
-				needIValleyAfter = (depthsAfter[0]-depthsAfter[move])/3/move;
-			if (big && (depthsAfter[width-1] > depthsAfter[width-move-1]))
-				needIValleyAfter = (depthsAfter[width-1]-depthsAfter[width-move-1])/3/move;
-			for (int i = move; i < width-move; i+=move)
-			{
-				int left = depthsAfter[i-move], right = depthsAfter[i+move];
-				int lowerSide = Math.max(left, right);
-				int diff = depthsAfter[i] - lowerSide;
-				if (diff >= 3)
-					needIValleyAfter += diff/3/move;
-				if (left == right)
-				{
-					if (left == depthsAfter[i]+(2*move))
-					{
-						needIValleyAfter++;
-						needLValleyAfter--;
-						needJValleyAfter--;
-					}
-					else if (left == depthsAfter[i]+move)
-					{
-						needLValleyAfter++;
-						needJValleyAfter++;
-					}
-				}
-				if ((diff/move)%4 == 2)
-				{
-					if (left > right)
-						needLValleyAfter+=2;
-					else if (left < right)
-						needJValleyAfter+=2;
-					else
-					{
-						needJValleyAfter++;
-						needLValleyAfter++;
-					}
-				}
-			}
-			if (((depthsAfter[0] - depthsAfter[move])/move)%4 == 2)
-				needJValleyAfter += 2;
-			if (big && ((depthsAfter[width-1] - depthsAfter[width-move-1])/move)%4 == 2)
-				needLValleyAfter += 2;
-			/*
-			if ((depthsAfter[width-2] - depthsAfter[width-3])%4 == 2 &&
-					(depthsAfter[width-1] - depthsAfter[width-2]) < 2)
-				needLValleyAfter++;
-			*/
-			needJValleyAfter >>= 1;
-			needLValleyAfter >>= 1;
+			int[] valleysAfter = calcValleys(depthsAfter, move);
 
 			if(holeAfter > holeBefore) {
 				// Demerits for new holes
@@ -1688,21 +1590,38 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 			//Bonuses and penalties for valleys that need I, J, or L.
 			int needIValleyDiffScore = 0;
-			if (needIValleyBefore > 0)
-				needIValleyDiffScore = 1 << needIValleyBefore;
-			if (needIValleyAfter > 0)
-				needIValleyDiffScore -= 1 << needIValleyAfter;
+			if (valleysBefore[0] > 0)
+				needIValleyDiffScore = 1 << valleysBefore[0];
+			if (valleysAfter[0] > 0)
+				needIValleyDiffScore -= 1 << valleysAfter[0];
 
 			int needLJValleyDiffScore = 0;
+			int needLOrJValleyDiffScore = 0;
 
-			if (needJValleyBefore > 1)
-				needLJValleyDiffScore += 1 << needJValleyBefore;
-			if (needJValleyAfter > 1)
-				needLJValleyDiffScore -= 1 << needJValleyAfter;
-			if (needLValleyBefore > 1)
-				needLJValleyDiffScore += 1 << needLValleyBefore;
-			if (needLValleyAfter > 1)
-				needLJValleyDiffScore -= 1 << needLValleyAfter;
+			if (valleysBefore[1] > 3) {
+				needLJValleyDiffScore += 1 << (valleysBefore[1] >> 1);
+				needLOrJValleyDiffScore += (valleysBefore[1] & 1);
+			} else {
+				needLOrJValleyDiffScore += (valleysBefore[1] & 3);
+			}
+			if (valleysAfter[1] > 3) {
+				needLJValleyDiffScore -= 1 << (valleysAfter[1] >> 1);
+				needLOrJValleyDiffScore -= (valleysAfter[1] & 1);
+			} else {
+				needLOrJValleyDiffScore -= (valleysAfter[1] & 3);
+			}
+			if (valleysBefore[2] > 3) {
+				needLJValleyDiffScore += 1 << (valleysBefore[2] >> 1);
+				needLOrJValleyDiffScore += (valleysBefore[2] & 1);
+			} else {
+				needLOrJValleyDiffScore += (valleysBefore[2] & 3);
+			}
+			if (valleysAfter[2] > 3) {
+				needLJValleyDiffScore -= 1 << (valleysAfter[2] >> 1);
+				needLOrJValleyDiffScore -= (valleysAfter[2] & 1);
+			} else {
+				needLOrJValleyDiffScore -= (valleysAfter[2] & 3);
+			}
 
 			if(needIValleyDiffScore < 0 && holeAfter >= holeBefore) {
 				pts += needIValleyDiffScore * 200;
@@ -1721,6 +1640,15 @@ public class PoochyBot extends DummyAI implements Runnable {
 					pts += needLJValleyDiffScore * 20;
 				else
 					pts += needLJValleyDiffScore * 40;
+			}
+
+			if(needLOrJValleyDiffScore < 0 && holeAfter >= holeBefore) {
+				pts += needLJValleyDiffScore * 40;
+			} else if(needLOrJValleyDiffScore > 0) {
+				if(!danger)
+					pts += needLOrJValleyDiffScore * 20;
+				else
+					pts += needLOrJValleyDiffScore * 40;
 			}
 
 			if (!big)
@@ -1830,7 +1758,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		return pts;
 	}
 	//private static final int[][] HI_PENALTY = {{6, 2}, {7, 6}, {6, 2}, {1, 0}};
-	public Piece checkOffset(Piece p, GameEngine engine)
+	public static Piece checkOffset(Piece p, GameEngine engine)
 	{
 		Piece result = new Piece(p);
 		result.big = engine.big;
@@ -1838,6 +1766,62 @@ public class PoochyBot extends DummyAI implements Runnable {
 			result.applyOffsetArray(engine.ruleopt.pieceOffsetX[p.id], engine.ruleopt.pieceOffsetY[p.id]);
 		return result;
 	}
+	
+	public static int[] calcValleys(int[] depths, int move)
+	{
+		int[] result = {0, 0, 0};
+		if (depths[0] > depths[move])
+			result[0] = (depths[0]-depths[move])/3/move;
+		if ((move >= 2) && (depths[depths.length-1] > depths[depths.length-move-1]))
+			result[0] = (depths[depths.length-1]-depths[depths.length-move-1])/3/move;
+		for (int i = move; i < depths.length-move; i+=move)
+		{
+			int left = depths[i-move], right = depths[i+move];
+			int lowerSide = Math.max(left, right);
+			int diff = depths[i] - lowerSide;
+			if (diff >= 3)
+				result[0] += diff/3/move;
+			if (left == right)
+			{
+				if (left == depths[i]+(2*move))
+				{
+					result[0]++;
+					result[1]--;
+					result[2]--;
+				}
+				else if (left == depths[i]+move)
+				{
+					result[1]++;
+					result[2]++;
+				}
+			}
+			if ((diff/move)%4 == 2)
+			{
+				if (left > right)
+					result[1]+=2;
+				else if (left < right)
+					result[2]+=2;
+				else
+				{
+					result[2]++;
+					result[1]++;
+				}
+			}
+		}
+		if (((depths[0] - depths[move])/move)%4 == 2)
+			result[2] += 2;
+		if ((move >= 2) && ((depths[depths.length-1] - depths[depths.length-move-1])/move)%4 == 2)
+			result[1] += 2;
+		/*
+		if ((depthsBefore[width-2] - depthsBefore[width-3])%4 == 2 &&
+				(depthsBefore[width-1] - depthsBefore[width-2]) < 2)
+			valleysBefore[1]++;
+		valleysBefore[2] >>= 1;
+		valleysBefore[1] >>= 1;
+		*/
+		return result;
+	}
+	
 	/**
 	 * @deprecated
 	 * Workaround for the bug in Field.getHighestBlockY(int).
@@ -1848,7 +1832,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * @return Y coord of highest block
 	 */
 	@Deprecated
-	public int getColumnDepth (Field fld, int x)
+	public static int getColumnDepth (Field fld, int x)
 	{
 		int maxY = fld.getHeight()-1;
 		int result = fld.getHighestBlockY(x);
@@ -1857,7 +1841,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		return result;
 	}
 
-	public int[] getColumnDepths (Field fld)
+	public static int[] getColumnDepths (Field fld)
 	{
 		int width = fld.getWidth();
 		int[] result = new int[width];

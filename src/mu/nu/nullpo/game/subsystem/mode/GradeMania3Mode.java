@@ -1608,7 +1608,14 @@ public class GradeMania3Mode extends DummyMode {
 
 				for(int i = 0; i < sectiontime.length; i++) {
 					if(sectiontime[i] > 0) {
-						receiver.drawMenuFont(engine, playerID, 2, 3 + i, GeneralUtil.getTime(sectiontime[i]), (sectionIsNewRecord[i] == true));
+						int color = EventReceiver.COLOR_WHITE;
+						if (stcolor == 1 && sectionIsNewRecord[i]) {
+							color = EventReceiver.COLOR_RED;
+						} else if (stcolor == 2) {
+							if (regretsection[i]) color = EventReceiver.COLOR_RED;
+							else if (coolsection[i])  color = EventReceiver.COLOR_GREEN;
+						}
+						receiver.drawMenuFont(engine, playerID, 2, 3 + i, GeneralUtil.getTime(sectiontime[i]), color);
 					}
 				}
 
@@ -1629,7 +1636,7 @@ public class GradeMania3Mode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 0, 7, strRollPointsTotal);
 				}
 
-				drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
+				drawResultStats(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE,
 						STAT_LPM, STAT_SPM, STAT_PIECE, STAT_PPS);
 			}
 		}
