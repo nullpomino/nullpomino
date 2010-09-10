@@ -211,7 +211,9 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			// Rule
 			RuleOptions ruleopt = null;
 			String rulename = NullpoMinoSDL.propGlobal.getProperty(0 + ".rule", "");
-
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = NullpoMinoSDL.propGlobal.getProperty(0 + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.info("Load rule options from " + rulename);
 				ruleopt = GeneralUtil.loadRule(rulename);

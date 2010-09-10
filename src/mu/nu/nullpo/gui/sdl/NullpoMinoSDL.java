@@ -81,10 +81,11 @@ public class NullpoMinoSDL {
 							STATE_NETGAME = 10,
 							STATE_CONFIG_JOYSTICK_MAIN = 11,
 							STATE_CONFIG_JOYSTICK_TEST = 12,
-							STATE_CONFIG_GAMETUNING = 13;
+							STATE_CONFIG_GAMETUNING = 13,
+							STATE_CONFIG_RULESTYLESELECT = 14;
 
 	/** ゲームステートのcount */
-	public static final int STATE_MAX = 14;
+	public static final int STATE_MAX = 15;
 
 	/** 認識するキーのMaximum値 */
 	public static final int SDL_KEY_MAX = 322;
@@ -266,6 +267,7 @@ public class NullpoMinoSDL {
 		gameStates[STATE_CONFIG_JOYSTICK_MAIN] = new StateConfigJoystickMainSDL();
 		gameStates[STATE_CONFIG_JOYSTICK_TEST] = new StateConfigJoystickTestSDL();
 		gameStates[STATE_CONFIG_GAMETUNING] = new StateConfigGameTuningSDL();
+		gameStates[STATE_CONFIG_RULESTYLESELECT] = new StateConfigRuleStyleSelectSDL();
 
 		// SDLのInitializationと開始
 		try {

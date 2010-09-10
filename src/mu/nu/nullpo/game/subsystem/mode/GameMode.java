@@ -34,252 +34,258 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 
 /**
- * ゲームMode のインターフェイス
+ * Game mode interface
  */
 public interface GameMode {
 	/**
-	 * Mode  nameを取得
+	 * Get mode name.
 	 * @return Mode name
 	 */
 	public String getName();
 
 	/**
-	 * このMode のPlayerの人countを取得
-	 * @return Playerの人count
+	 * Get (max) number of players.
+	 * @return Number of players
 	 */
 	public int getPlayers();
 
 	/**
-	 * ゲーム画面表示直前に呼び出される処理
+	 * Get game style.
+	 * @return Game style of this mode (0:Tetromino, 1:Avalanche, 2:Physician, 3:SPF)
+	 */
+	public int getGameStyle();
+
+	/**
+	 * Initialization of game mode. Executed before the game screen appears.
 	 * @param manager GameManager that owns this mode
 	 */
 	public void modeInit(GameManager manager);
 
 	/**
-	 * Initialization for each playerが終わるときに呼び出される処理
+	 * Initialization for each player.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void playerInit(GameEngine engine, int playerID);
 
 	/**
-	 * Ready→Go直後, 最初のピースが現れる直前の処理
+	 * Executed after Ready->Go, before the first piece appears.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void startGame(GameEngine engine, int playerID);
 
 	/**
-	 * 各Playerの最初の処理の時に呼び出される
+	 * Executed at the start of each frame.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void onFirst(GameEngine engine, int playerID);
 
 	/**
-	 * 各Playerの最後の処理の時に呼び出される
+	 * Executed at the end of each frame. You can update your own timers here.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void onLast(GameEngine engine, int playerID);
 
 	/**
-	 * 開始前の設定画面のときの処理
+	 * Settings screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと自動的にReady画面に移動しない
+	 * @return true if you don't want to start the game yet. false if settings are done.
 	 */
 	public boolean onSetting(GameEngine engine, int playerID);
 
 	/**
-	 * Ready→Goのときの処理
+	 * Ready->Go screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onReady(GameEngine engine, int playerID);
 
 	/**
-	 * Blockピースの移動処理
+	 * Piece movement screen. This is where the player can move/rotate/drop current piece.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onMove(GameEngine engine, int playerID);
 
 	/**
-	 * Block固定直後の光っているときの処理
+	 * "Lock flash" screen. Certain rules may skip this screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onLockFlash(GameEngine engine, int playerID);
 
 	/**
-	 * Line clear処理
+	 * During line clear.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onLineClear(GameEngine engine, int playerID);
 
 	/**
-	 * ARE中の処理
+	 * During ARE.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onARE(GameEngine engine, int playerID);
 
 	/**
-	 * Ending突入時の処理
+	 * During ending-start sequence.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onEndingStart(GameEngine engine, int playerID);
 
 	/**
-	 * 各ゲームMode が自由に使えるステータスの処理
+	 * "Custom" screen. Any game mode can use this screen freely.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueでもfalseでも意味は変わりません
+	 * @return This is ignored.
 	 */
 	public boolean onCustom(GameEngine engine, int playerID);
 
 	/**
-	 * Ending画面の処理
+	 * "Excellent!" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onExcellent(GameEngine engine, int playerID);
 
 	/**
-	 * game over画面の処理
+	 * "Game Over" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onGameOver(GameEngine engine, int playerID);
 
 	/**
-	 * 結果画面の処理
+	 * End-of-game results screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onResult(GameEngine engine, int playerID);
 
 	/**
-	 * フィールドエディット画面の処理
+	 * Field editor screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean onFieldEdit(GameEngine engine, int playerID);
 
 	/**
-	 * 各Playerの最初の描画処理の時に呼び出される
+	 * Executed at the start of each frame.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderFirst(GameEngine engine, int playerID);
 
 	/**
-	 * 各Playerの最後の描画処理の時に呼び出される
+	 * Executed at the end of each frame. You can render HUD here.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderLast(GameEngine engine, int playerID);
 
 	/**
-	 * 開始前の設定画面のときの描画処理
+	 * Render settings screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderSetting(GameEngine engine, int playerID);
 
 	/**
-	 * Ready→Goのときの描画処理
+	 * Render Ready->Go screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderReady(GameEngine engine, int playerID);
 
 	/**
-	 * Blockピースの移動描画処理
+	 * Render piece movement screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderMove(GameEngine engine, int playerID);
 
 	/**
-	 * Block固定直後の光っているときの描画処理
+	 * Render "Lock flash" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderLockFlash(GameEngine engine, int playerID);
 
 	/**
-	 * Line clear描画処理
+	 * Render line clear screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderLineClear(GameEngine engine, int playerID);
 
 	/**
-	 * ARE中の描画処理
+	 * Render ARE screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderARE(GameEngine engine, int playerID);
 
 	/**
-	 * Ending突入時の描画処理
+	 * Render "ending start sequence" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderEndingStart(GameEngine engine, int playerID);
 
 	/**
-	 * 各ゲームMode が自由に使えるステータスの描画処理
+	 * Render "Custom" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderCustom(GameEngine engine, int playerID);
 
 	/**
-	 * Ending画面の描画処理
+	 * Render "Excellent!" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderExcellent(GameEngine engine, int playerID);
 
 	/**
-	 * game over画面の描画処理
+	 * Render "Game Over" screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderGameOver(GameEngine engine, int playerID);
 
 	/**
-	 * Render results screen処理
+	 * Render results screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderResult(GameEngine engine, int playerID);
 
 	/**
-	 * フィールドエディット画面の描画処理
+	 * Render field editor screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderFieldEdit(GameEngine engine, int playerID);
 
 	/**
-	 * Blockを消す演出を出すときの処理
-	 * @param engine GameEngineのインスタンス
+	 * Executed when a block gets destroyed in line-clear screen.
+	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
@@ -288,77 +294,77 @@ public interface GameMode {
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk);
 
 	/**
-	 * Calculate score(pieceLockedの前)
-	 * @param engine GameEngineのインスタンス
+	 * Calculate score. Executed before pieceLocked. Please note this event will be called even if no lines are cleared!
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @param lines 消えるLinescount (消えなかった場合は0）
+	 * @param lines Number of lines. Can be zero.
 	 */
 	public void calcScore(GameEngine engine, int playerID, int lines);
 
 	/**
-	 * Soft drop使用後の処理
-	 * @param engine GameEngineのインスタンス
+	 * After soft drop is used
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @param fall 今落下した段count
+	 * @param fall Number of rows
 	 */
 	public void afterSoftDropFall(GameEngine engine, int playerID, int fall);
 
 	/**
-	 * Hard drop使用後の処理
-	 * @param engine GameEngineのインスタンス
+	 * After hard drop is used
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @param fall 今落下した段count
+	 * @param fall Number of rows
 	 */
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall);
 
 	/**
-	 * フィールドエディット画面から出たときの処理
-	 * @param engine GameEngineのインスタンス
+	 * Executed after the player exits field-editor screen.
+	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void fieldEditExit(GameEngine engine, int playerID);
 
 	/**
-	 * Blockピースが固定されたときの処理(calcScoreの直後)
-	 * @param engine GameEngineのインスタンス
+	 * When the current piece locked (Executed befotre calcScore)
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @param lines 消えるLinescount (消えなかった場合は0）
+	 * @param lines Number of lines. Can be zero.
 	 */
 	public void pieceLocked(GameEngine engine, int playerID, int lines);
 
 	/**
-	 * Line clearが終わるときに呼び出される処理
+	 * When line clear ends
 	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return trueを返すと通常の処理を行わない
+	 * @return true if you override everything of this screen (skips default behavior)
 	 */
 	public boolean lineClearEnd(GameEngine engine, int playerID);
 
 	/**
 	 * Called when saving replay
-	 * @param engine GameEngineのインスタンス
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @param prop リプレイ保存先のプロパティセット
+	 * @param prop CustomProperties of replay file (You can write additional settings here)
 	 */
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop);
 
 	/**
-	 * リプレイ読み込み時の処理
-	 * @param engine GameEngineのインスタンス
+	 * Called when a replay file is loaded
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @param prop リプレイ読み込み元のプロパティセット
+	 * @param prop CustomProperties of replay file (You can read additional settings here)
 	 */
 	public void loadReplay(GameEngine engine, int playerID, CustomProperties prop);
 
 	/**
-	 * ネットプレイ用Mode かどうかを取得
-	 * @return ネットプレイ用Mode ならtrue
+	 * Is netplay-only mode?
+	 * @return true if this is netplay-only mode.
 	 */
 	public boolean isNetplayMode();
 
 	/**
-	 * ネットプレイ準備
-	 * @param obj 任意のオブジェクト(今のところNetLobbyFrame)
+	 * Initialization for netplay.
+	 * @param obj Any object (Currently NetLobbyFrame)
 	 */
 	public void netplayInit(Object obj);
 

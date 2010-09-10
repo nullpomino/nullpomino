@@ -37,7 +37,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * ダミーのゲームMode
+ * Dummy implementation of game mode. Used as a base of most game modes.
  */
 public class DummyMode implements GameMode {
 
@@ -75,6 +75,10 @@ public class DummyMode implements GameMode {
 
 	public int getPlayers() {
 		return 1;
+	}
+
+	public int getGameStyle() {
+		return GameEngine.GAMESTYLE_TETROMINO;
 	}
 
 	public void loadReplay(GameEngine engine, int playerID, CustomProperties prop) {

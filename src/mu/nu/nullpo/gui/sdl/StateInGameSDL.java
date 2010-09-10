@@ -116,7 +116,9 @@ public class StateInGameSDL extends BaseStateSDL {
 			// ルール
 			RuleOptions ruleopt = null;
 			String rulename = NullpoMinoSDL.propGlobal.getProperty(i + ".rule", "");
-
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = NullpoMinoSDL.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.debug("Load rule options from " + rulename);
 				ruleopt = GeneralUtil.loadRule(rulename);

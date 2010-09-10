@@ -119,6 +119,14 @@ public class PhysicianMode extends DummyMode {
 	}
 
 	/*
+	 * Game style
+	 */
+	@Override
+	public int getGameStyle() {
+		return GameEngine.GAMESTYLE_PHYSICIAN;
+	}
+
+	/*
 	 * Initialization
 	 */
 	@Override

@@ -155,6 +155,14 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	}
 
 	/*
+	 * Game style
+	 */
+	@Override
+	public int getGameStyle() {
+		return GameEngine.GAMESTYLE_AVALANCHE;
+	}
+
+	/*
 	 * Initialization
 	 */
 	@Override

@@ -86,9 +86,9 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_GENERAL);
 			break;
 		case 1:
-			StateConfigRuleSelectSDL stateR = (StateConfigRuleSelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_RULESELECT];
+			StateConfigRuleStyleSelectSDL stateR = (StateConfigRuleStyleSelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT];
 			stateR.player = player;
-			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESELECT);
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
 			break;
 		case 2:
 			StateConfigGameTuningSDL stateT = (StateConfigGameTuningSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_GAMETUNING];

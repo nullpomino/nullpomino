@@ -137,7 +137,9 @@ public class StateInGame extends BasicGameState {
 			// ルール
 			RuleOptions ruleopt = null;
 			String rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule", "");
-
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.info("Load rule options from " + rulename);
 				ruleopt = GeneralUtil.loadRule(rulename);

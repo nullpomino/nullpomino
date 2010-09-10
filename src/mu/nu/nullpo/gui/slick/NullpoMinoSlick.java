@@ -137,6 +137,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** チューニング設定画面のステート */
 	public static StateConfigGameTuning stateConfigGameTuning;
 
+	/** Style select state */
+	public static StateConfigRuleStyleSelect stateConfigRuleStyleSelect;
+
 	/** Timing of alternate FPS sleep (false=render true=update) */
 	public static boolean alternateFPSTiming;
 
@@ -527,6 +530,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		stateConfigJoystickMain = new StateConfigJoystickMain();
 		stateConfigJoystickTest = new StateConfigJoystickTest();
 		stateConfigGameTuning = new StateConfigGameTuning();
+		stateConfigRuleStyleSelect = new StateConfigRuleStyleSelect();
 
 		addState(stateLoading);
 		addState(stateTitle);
@@ -543,6 +547,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		addState(stateConfigJoystickMain);
 		addState(stateConfigJoystickTest);
 		addState(stateConfigGameTuning);
+		addState(stateConfigRuleStyleSelect);
 	}
 
 	/**

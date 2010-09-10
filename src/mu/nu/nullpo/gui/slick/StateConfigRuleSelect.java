@@ -52,6 +52,9 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	/** Player ID */
 	public int player = 0;
 
+	/** Game style ID */
+	public int style = 0;
+
 	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
@@ -134,8 +137,15 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		maxCursor = list.length-1;
 		updateDetails();
 
-		strCurrentFileName = NullpoMinoSlick.propGlobal.getProperty(player + ".rulefile", "");
-		strCurrentRuleName = NullpoMinoSlick.propGlobal.getProperty(player + ".rulename", "");
+		if(style == 0) {
+			strCurrentFileName = NullpoMinoSlick.propGlobal.getProperty(player + ".rulefile", "");
+			strCurrentRuleName = NullpoMinoSlick.propGlobal.getProperty(player + ".rulename", "");
+		} else {
+			strCurrentFileName = NullpoMinoSlick.propGlobal.getProperty(player + ".rulefile." + style, "");
+			strCurrentRuleName = NullpoMinoSlick.propGlobal.getProperty(player + ".rulename." + style, "");
+		}
+
+		cursor = 0;
 		for(int i = 0; i < list.length; i++) {
 			if(strCurrentFileName.equals(list[i])) {
 				cursor = i;
@@ -166,8 +176,8 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
 		NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 26, "FILE:" + list[cursor].toUpperCase(), NormalFont.COLOR_CYAN);
-		NormalFont.printFontGrid(1, 27, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFont.COLOR_BLUE);
+		NormalFont.printFontGrid(1, 25, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFont.COLOR_BLUE);
+		NormalFont.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFont.COLOR_BLUE);
 
 		NormalFont.printFontGrid(1, 28, "A:OK", NormalFont.COLOR_GREEN);
 	}
@@ -175,13 +185,21 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
-		NullpoMinoSlick.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
-		NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile", list[cursor]);
-		NullpoMinoSlick.propGlobal.setProperty(player + ".rulename", strRuleNameList[cursor]);
+
+		if(style == 0) {
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile", list[cursor]);
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulename", strRuleNameList[cursor]);
+		} else {
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rule." + style, strFilePathList[cursor]);
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile." + style, list[cursor]);
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulename." + style, strRuleNameList[cursor]);
+		}
+
 		NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
 		NullpoMinoSlick.saveConfig();
 
-		if(!firstSetupMode) game.enterState(StateConfigMainMenu.ID);
+		if(!firstSetupMode) game.enterState(StateConfigRuleStyleSelect.ID);
 		else game.enterState(StateTitle.ID);
 
 		return true;
@@ -191,7 +209,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		if (!firstSetupMode)
 		{
-			game.enterState(StateConfigMainMenu.ID);
+			game.enterState(StateConfigRuleStyleSelect.ID);
 			return true;
 		}
 		return false;
@@ -200,12 +218,20 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	@Override
 	protected boolean onPushButtonD(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
-		NullpoMinoSlick.propGlobal.setProperty(player + ".rule", "");
-		NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile", "");
-		NullpoMinoSlick.propGlobal.setProperty(player + ".rulename", "");
+
+		if(style == 0) {
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rule", "");
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile", "");
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulename", "");
+		} else {
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rule." + style, "");
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile." + style, "");
+			NullpoMinoSlick.propGlobal.setProperty(player + ".rulename." + style, "");
+		}
+
 		NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
 		NullpoMinoSlick.saveConfig();
-		if(!firstSetupMode) game.enterState(StateConfigMainMenu.ID);
+		if(!firstSetupMode) game.enterState(StateConfigRuleStyleSelect.ID);
 		else game.enterState(StateTitle.ID);
 		return true;
 	}

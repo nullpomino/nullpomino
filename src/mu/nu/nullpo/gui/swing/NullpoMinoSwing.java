@@ -763,7 +763,9 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			// ルール
 			RuleOptions ruleopt = null;
 			String rulename = propGlobal.getProperty(i + ".rule", "");
-
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.debug("Load rule options from " + rulename);
 				ruleopt = GeneralUtil.loadRule(rulename);
@@ -920,7 +922,9 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			// Rule
 			RuleOptions ruleopt = null;
 			String rulename = NullpoMinoSwing.propGlobal.getProperty(0 + ".rule", "");
-
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = propGlobal.getProperty(0 + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.info("Load rule options from " + rulename);
 				ruleopt = GeneralUtil.loadRule(rulename);

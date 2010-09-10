@@ -259,7 +259,9 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			// Rule
 			RuleOptions ruleopt = null;
 			String rulename = NullpoMinoSlick.propGlobal.getProperty(0 + ".rule", "");
-
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = NullpoMinoSlick.propGlobal.getProperty(0 + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.info("Load rule options from " + rulename);
 				ruleopt = GeneralUtil.loadRule(rulename);

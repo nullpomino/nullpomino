@@ -48,6 +48,9 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	/** Player ID */
 	public int player = 0;
 
+	/** Game style */
+	public int style = 0;
+
 	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
@@ -122,8 +125,15 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		maxCursor = list.length-1;
 		updateDetails();
 
-		strCurrentFileName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulefile", "");
-		strCurrentRuleName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulename", "");
+		if(style == 0) {
+			strCurrentFileName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulefile", "");
+			strCurrentRuleName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulename", "");
+		} else {
+			strCurrentFileName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulefile." + style, "");
+			strCurrentRuleName = NullpoMinoSDL.propGlobal.getProperty(player + ".rulename." + style, "");
+		}
+
+		cursor = 0;
 		for(int i = 0; i < list.length; i++) {
 			if(strCurrentFileName.equals(list[i])) {
 				cursor = i;
@@ -139,8 +149,8 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
 		NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
 
-		NormalFontSDL.printFontGrid(1, 26, "FILE:" + list[cursor].toUpperCase(), NormalFontSDL.COLOR_CYAN);
-		NormalFontSDL.printFontGrid(1, 27, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
+		NormalFontSDL.printFontGrid(1, 26, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
+		NormalFontSDL.printFontGrid(9, 27, strCurrentFileName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
 
 		NormalFontSDL.printFontGrid(1, 28, "A:OK", NormalFontSDL.COLOR_GREEN);
 	}
@@ -158,18 +168,24 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	protected boolean onDecide() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
 		NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
-		NullpoMinoSDL.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
-		NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", list[cursor]);
-		NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", strRuleNameList[cursor]);
+		if(style == 0) {
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rule", strFilePathList[cursor]);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", list[cursor]);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", strRuleNameList[cursor]);
+		} else {
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rule." + style, strFilePathList[cursor]);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile." + style, list[cursor]);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename." + style, strRuleNameList[cursor]);
+		}
 		NullpoMinoSDL.saveConfig();
-		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
 		else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		return true;
 	}
 
 	@Override
 	protected boolean onCancel() throws SDLException {
-		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
 		return true;
 	}
 
@@ -177,11 +193,17 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	protected boolean onPushButtonD() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
 		NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
-		NullpoMinoSDL.propGlobal.setProperty(player + ".rule", "");
-		NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", "");
-		NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", "");
+		if(style == 0) {
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rule", "");
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", "");
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", "");
+		} else {
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rule." + style, "");
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile." + style, "");
+			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename." + style, "");
+		}
 		NullpoMinoSDL.saveConfig();
-		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
 		else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		return true;
 	}

@@ -114,8 +114,8 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 			game.enterState(StateConfigGeneral.ID);
 			break;
 		case 1:
-			NullpoMinoSlick.stateConfigRuleSelect.player = player;
-			game.enterState(StateConfigRuleSelect.ID);
+			NullpoMinoSlick.stateConfigRuleStyleSelect.player = player;
+			game.enterState(StateConfigRuleStyleSelect.ID);
 			break;
 		case 2:
 			NullpoMinoSlick.stateConfigGameTuning.player = player;

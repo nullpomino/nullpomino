@@ -43,7 +43,9 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
+import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.util.CustomProperties;
 
 import org.apache.log4j.Logger;
@@ -74,13 +76,16 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	protected String[] strRuleNameList;
 
 	/** Current ルールファイル */
-	protected String strCurrentFileName;
+	protected String[] strCurrentFileName;
 
 	/** Current Rule name */
-	protected String strCurrentRuleName;
+	protected String[] strCurrentRuleName;
 
-	/** ルール一覧リストボックス */
-	protected JList listboxRule;
+	/** Rule select listbox */
+	protected JList[] listboxRule;
+
+	/** Tab */
+	protected JTabbedPane tabPane;
 
 	/**
 	 * Constructor
@@ -114,18 +119,28 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 
 		setTitle(NullpoMinoSwing.getUIText("Title_RuleSelect") + " (" + (playerID+1) + "P)");
 
-		strCurrentFileName = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulefile", "");
-		strCurrentRuleName = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulename", "");
+		strCurrentFileName = new String[listboxRule.length];
+		strCurrentRuleName = new String[listboxRule.length];
 
-		for(int i = 0; i < strFileNameList.length; i++) {
-			if(strCurrentFileName.equals(strFileNameList[i])) {
-				listboxRule.setSelectedIndex(i);
+		for(int i = 0; i < listboxRule.length; i++) {
+			if(i == 0) {
+				strCurrentFileName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulefile", "");
+				strCurrentRuleName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulename", "");
+			} else {
+				strCurrentFileName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulefile." + i, "");
+				strCurrentRuleName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulename." + i, "");
+			}
+
+			for(int j = 0; j < strFileNameList.length; j++) {
+				if(strCurrentFileName[i].equals(strFileNameList[j])) {
+					listboxRule[i].setSelectedIndex(j);
+				}
 			}
 		}
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				listboxRule.requestFocusInWindow();
+				listboxRule[0].requestFocusInWindow();
 			}
 		});
 	}
@@ -136,16 +151,25 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		// ルールリスト
+		// Tab
+		tabPane = new JTabbedPane();
+		tabPane.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(tabPane);
+
+		// Rules
 		String[] strList = new String[strFileNameList.length];
 		for(int i = 0; i < strFileNameList.length; i++) {
 			strList[i] = strRuleNameList[i] + " (" + strFileNameList[i] + ")";
 		}
-		listboxRule = new JList(strList);
-		JScrollPane scpaneRule = new JScrollPane(listboxRule);
-		scpaneRule.setPreferredSize(new Dimension(380, 250));
-		scpaneRule.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(scpaneRule);
+
+		listboxRule = new JList[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			listboxRule[i] = new JList(strList);
+			JScrollPane scpaneRule = new JScrollPane(listboxRule[i]);
+			scpaneRule.setPreferredSize(new Dimension(380, 250));
+			scpaneRule.setAlignmentX(LEFT_ALIGNMENT);
+			tabPane.addTab(GameEngine.GAMESTYLE_NAMES[i], scpaneRule);
+		}
 
 		//  default に戻す button
 		JButton btnUseDefault = new JButton(NullpoMinoSwing.getUIText("RuleSelect_UseDefault"));
@@ -227,21 +251,39 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "RuleSelect_OK") {
-			int id = listboxRule.getSelectedIndex();
-			if(id >= 0) {
-				NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", strFilePathList[id]);
-				NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", strFileNameList[id]);
-				NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename", strRuleNameList[id]);
-			} else {
-				NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", "");
-				NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", "");
-				NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename", "");
+			for(int i = 0; i < listboxRule.length; i++) {
+				int id = listboxRule[i].getSelectedIndex();
+
+				if(i == 0) {
+					if(id >= 0) {
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", strFilePathList[id]);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", strFileNameList[id]);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename", strRuleNameList[id]);
+					} else {
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", "");
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", "");
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename", "");
+					}
+				} else {
+					if(id >= 0) {
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule." + i, strFilePathList[id]);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile." + i, strFileNameList[id]);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename." + i, strRuleNameList[id]);
+					} else {
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule." + i, "");
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile." + i, "");
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename." + i, "");
+					}
+				}
 			}
 			NullpoMinoSwing.saveConfig();
 			this.setVisible(false);
 		}
 		else if(e.getActionCommand() == "RuleSelect_UseDefault") {
-			listboxRule.clearSelection();
+			int id = tabPane.getSelectedIndex();
+			if((id >= 0) && (id < listboxRule.length)) {
+				listboxRule[id].clearSelection();
+			}
 		}
 		else if(e.getActionCommand() == "RuleSelect_Cancel") {
 			this.setVisible(false);

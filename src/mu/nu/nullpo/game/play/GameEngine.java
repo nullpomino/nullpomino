@@ -56,6 +56,18 @@ public class GameEngine {
 	/** Log (Apache log4j) */
 	static Logger log = Logger.getLogger(GameEngine.class);
 
+	/** Constants of game style (Currently not directly used by GameEngine, but from game modes) */
+	public static final int GAMESTYLE_TETROMINO = 0,
+							GAMESTYLE_AVALANCHE = 1,
+							GAMESTYLE_PHYSICIAN = 2,
+							GAMESTYLE_SPF = 3;
+
+	/** Max number of game style */
+	public static final int MAX_GAMESTYLE = 4;
+
+	/** Game style names */
+	public static final String[] GAMESTYLE_NAMES = {"TETROMINO", "AVALANCHE", "PHYSICIAN", "SPF"};
+
 	/** Constants of main game status */
 	public static final int STAT_NOTHING = -1,
 							STAT_SETTING = 0,
