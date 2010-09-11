@@ -4,10 +4,15 @@ import mu.nu.nullpo.game.component.Piece;
 
 public class BagNoSZORandomizer extends BagRandomizer {
 
-	boolean firstBag = true;
+	boolean firstBag;
 
 	public BagNoSZORandomizer() {
 		super();
+	}
+	
+	public void init() {
+		firstBag = true;
+		super.init();
 	}
 
 	public BagNoSZORandomizer(boolean[] pieceEnable, long seed) {
