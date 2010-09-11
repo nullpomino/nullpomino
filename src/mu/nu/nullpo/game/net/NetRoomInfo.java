@@ -124,19 +124,19 @@ public class NetRoomInfo implements Serializable {
 	/** ゲーム中 flag */
 	public boolean playing = false;
 
-	/** ゲーム開始直後のNumber of players */
+	/** Start game直後のNumber of players */
 	public int startPlayers = 0;
 
 	/** 死亡カウント */
 	public int deadCount = 0;
 
-	/** 自動スタートタイマーが動いているときはtrue */
+	/** Automatically start timerが動いているときはtrue */
 	public boolean autoStartActive = false;
 
 	/** 誰かOK表示を出したあとCancelしたらtrue */
 	public boolean isSomeoneCancelled = false;
 
-	/** 3人以上生きている場合に攻撃力を減らす */
+	/** 3人以上生きている場合に Attack 力を減らす */
 	public boolean reduceLineSend = false;
 
 	/** Rate of change of garbage holes */
@@ -151,22 +151,22 @@ public class NetRoomInfo implements Serializable {
 	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
 	public int hurryupInterval = 5;
 
-	/** 自動スタートタイマー type(false=NullpoMino true=TNET2) */
+	/** Automatically start timer type(false=NullpoMino true=TNET2) */
 	public boolean autoStartTNET2 = false;
 
-	/** 誰かOK表示を出したあとCancelしたらタイマー無効化 */
+	/** 誰かOK表示を出したあとCancelしたらTimer無効化 */
 	public boolean disableTimerAfterSomeoneCancelled = false;
 
-	/** マップ有効 */
+	/** Map is enabled */
 	public boolean useMap = false;
 
-	/** マップをすべて受信したらtrue */
+	/** Mapをすべて受信したらtrue */
 	public boolean mapReceived = false;
 
-	/** 前回のマップ */
+	/** 前回のMap */
 	public int mapPrevious = -1;
 
-	/** 新しい断片的邪魔Blockシステムを使う */
+	/** 新しい断片的garbage blockシステムを使う */
 	public boolean useFractionalGarbage = false;
 
 	/** Mode name */
@@ -175,7 +175,7 @@ public class NetRoomInfo implements Serializable {
 	/** Single player flag */
 	public boolean singleplayer = false;
 
-	/** マップリスト */
+	/** Mapリスト */
 	public LinkedList<String> mapList = new LinkedList<String>();
 
 	/** ルームにいる人のリスト */
@@ -184,7 +184,7 @@ public class NetRoomInfo implements Serializable {
 	/** ゲーム席 */
 	public LinkedList<NetPlayerInfo> playerSeat = new LinkedList<NetPlayerInfo>();
 
-	/** ゲーム席(ゲーム開始時にのみ更新・新しい人が入ってきたり誰かが出ていったりしても変わりません) */
+	/** ゲーム席(Start game時にのみ更新・新しい人が入ってきたり誰かが出ていったりしても変わりません) */
 	public LinkedList<NetPlayerInfo> playerSeatNowPlaying = new LinkedList<NetPlayerInfo>();
 
 	/** 待ち行列 */
@@ -596,7 +596,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * ゲーム開始時に呼び出す処理
+	 * Start game時に呼び出す処理
 	 */
 	public void gameStart() {
 		updatePlayerCount();

@@ -66,7 +66,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Meter表示 */
 	protected JCheckBox chkboxShowMeter;
 
-	/** フィールドのBlockの絵を表示 ( check なしの場合は枠線だけ) */
+	/** fieldのBlockの絵を表示 ( check なしの場合は枠線だけ) */
 	protected JCheckBox chkboxShowFieldBlockGraphics;
 
 	/** シンプルな絵柄のBlockを使う */
@@ -81,10 +81,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/**  frame ステップ */
 	protected JCheckBox chkboxEnableFrameStep;
 
-	/** ゴーストピースの上にNEXT表示 */
+	/** ghost ピースの上にNEXT表示 */
 	protected JCheckBox chkboxNextShadow;
 
-	/** 枠線型ゴーストピース */
+	/** 枠線型ghost ピース */
 	protected JCheckBox chkboxOutlineGhost;
 
 	/** Side piece preview */

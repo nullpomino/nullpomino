@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * COMBO RACE mode
+ * COMBO RACE Mode
  */
 public class ComboRaceMode extends DummyMode {
 	/** Current version */
@@ -610,7 +610,7 @@ public class ComboRaceMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
-		// 攻撃
+		//  Attack 
 		if(lines > 0) {
 			scgettime = 0;
 

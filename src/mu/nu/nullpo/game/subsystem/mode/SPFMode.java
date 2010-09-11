@@ -207,10 +207,10 @@ public class SPFMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** 溜まっている邪魔Blockのcount */
+	/** 溜まっているojama blockのcount */
 	private int[] ojama;
 
-	/** 送った邪魔Blockのcount */
+	/** 送ったojama blockのcount */
 	private int[] ojamaSent;
 
 	/** Time to display the most recent increase in score */
@@ -225,13 +225,13 @@ public class SPFMode extends DummyMode {
 	/** Sound effectsON/OFF */
 	private boolean[] enableSE;
 
-	/** マップ使用 flag */
+	/** Map使用 flag */
 	private boolean[] useMap;
 
-	/** 使用するマップセット number */
+	/** 使用するMapセット number */
 	private int[] mapSet;
 
-	/** マップ number(-1でランダム) */
+	/** Map number(-1でランダム) */
 	private int[] mapNumber;
 
 	/** Last preset number used */
@@ -240,16 +240,16 @@ public class SPFMode extends DummyMode {
 	/** 勝者 */
 	private int winnerID;
 
-	/** マップセットのProperty file */
+	/** MapセットのProperty file */
 	private CustomProperties[] propMap;
 
-	/** Maximumマップ number */
+	/** MaximumMap number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
+	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
 	private Field[] fldBackup;
 
-	/** マップ選択用乱count */
+	/** Map選択用乱count */
 	private Random randMap;
 
 	/** Version */
@@ -319,7 +319,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/*
-	 * Mode  initialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -395,7 +395,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を読み込み
+	 * Load settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 */
@@ -416,7 +416,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を保存
+	 * Save settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 */
@@ -437,8 +437,8 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * マップ読み込み
-	 * @param field フィールド
+	 * Map読み込み
+	 * @param field field
 	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
@@ -452,8 +452,8 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * マップ保存
-	 * @param field フィールド
+	 * Map保存
+	 * @param field field
 	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
@@ -463,11 +463,11 @@ public class SPFMode extends DummyMode {
 	}
 
 	/**
-	 * プレビュー用にマップを読み込み
+	 * プレビュー用にMapを読み込み
 	 * @param engine GameEngine
 	 * @param playerID Player number
-	 * @param id マップID
-	 * @param forceReload trueにするとマップファイルを強制再読み込み
+	 * @param id MapID
+	 * @param forceReload trueにするとMapファイルを強制再読み込み
 	 */
 	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
@@ -729,12 +729,12 @@ public class SPFMode extends DummyMode {
 				engine.quitflag = true;
 			}
 
-			// プレビュー用マップ読み込み
+			// プレビュー用Map読み込み
 			if(useMap[playerID] && (engine.statc[3] == 0)) {
 				loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 			}
 
-			// ランダムマッププレビュー
+			// Random map preview
 			if(useMap[playerID] && (propMap[playerID] != null) && (mapNumber[playerID] < 0)) {
 				if(engine.statc[3] % 30 == 0) {
 					engine.statc[5]++;
@@ -855,7 +855,7 @@ public class SPFMode extends DummyMode {
 		}
 	}
 	/*
-	 * Readyの時のCalled at initialization (Initialization前）
+	 * Called for initialization during Ready (before initialization)
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -868,7 +868,7 @@ public class SPFMode extends DummyMode {
 			attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
 			defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
 
-			// マップ読み込み・リプレイ保存用にバックアップ
+			// Map読み込み・リプレイ保存用にバックアップ
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
 					engine.createFieldIfNeeded();
@@ -908,7 +908,7 @@ public class SPFMode extends DummyMode {
 	}
 
 	/*
-	 * ゲーム開始時の処理
+	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -931,7 +931,7 @@ public class SPFMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// ステータス表示
+		// Status display
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1, 0, "SPF VS", EventReceiver.COLOR_GREEN);
 
@@ -1467,13 +1467,13 @@ public class SPFMode extends DummyMode {
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
 			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
-				// 引き分け
+				// Draw
 				winnerID = -1;
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
-				// 1P勝利
+				// 1P win
 				winnerID = 0;
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
@@ -1482,7 +1482,7 @@ public class SPFMode extends DummyMode {
 				owner.engine[0].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
-				// 2P勝利
+				// 2P win
 				winnerID = 1;
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;

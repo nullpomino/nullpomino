@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * DIG RACEMode
+ * DIG RACE Mode
  */
 public class DigRaceMode extends DummyMode {
 	/** Current version */

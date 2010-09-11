@@ -45,7 +45,7 @@ import mu.nu.nullpo.util.CustomProperties;
 //import org.apache.log4j.Logger;
 
 /**
- * ゲームのイベント処理と描画処理 (Swing版）
+ * ゲームの event 処理と描画処理 (Swing版）
  */
 public class RendererSwing extends EventReceiver {
 	/** Log */
@@ -54,13 +54,13 @@ public class RendererSwing extends EventReceiver {
 	/** 描画先サーフェイス */
 	protected Graphics2D graphics;
 
-	/** フィールドのBlockを表示 (falseなら枠線だけ表示) */
+	/** fieldのBlockを表示 (falseなら枠線だけ表示) */
 	protected boolean showfieldblockgraphics;
 
 	/** 操作Blockの絵柄をシンプルにする */
 	protected boolean simpleblock;
 
-	/** ゴーストピースの上にNEXT表示 */
+	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
 	/**
@@ -85,8 +85,8 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * Blockの色IDに応じてAWT用Colorオブジェクトを作成・取得
-	 * @param colorID Blockの色ID
+	 * Block colorIDに応じてAWT用Colorオブジェクトを作成・取得
+	 * @param colorID Block colorID
 	 * @return AWT用Colorオブジェクト
 	 */
 	public static Color getColorByID(int colorID) {
@@ -501,7 +501,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースのゴーストを描画
+	 * 現在操作中のBlockピースのghost を描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -718,7 +718,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
-	 * フィールドのBlockを描画
+	 * fieldのBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -1277,7 +1277,7 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
-	 * フィールドエディット画面の描画処理
+	 * fieldエディット画面の描画処理
 	 */
 	@Override
 	public void renderFieldEdit(GameEngine engine, int playerID) {

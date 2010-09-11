@@ -39,7 +39,7 @@ public class Block implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -7126899262733374545L;
 
-	/** Blockの色の定count */
+	/** Block colorの定count */
 	public static final int BLOCK_COLOR_INVALID = -1,
 							BLOCK_COLOR_NONE = 0,
 							BLOCK_COLOR_GRAY = 1,
@@ -84,10 +84,10 @@ public class Block implements Serializable {
 
 	public static final int MAX_ITEM = 1;
 
-	/** 通常のBlockの色のMaximumcount */
+	/** 通常のBlock colorのMaximumcount */
 	public static final int BLOCK_COLOR_COUNT = 9;
 
-	/** 通常＋宝石Blockの色のMaximumcount */
+	/** 通常＋宝石Block colorのMaximumcount */
 	public static final int BLOCK_COLOR_EXT_COUNT = 16;
 
 	/** Block表示あり */
@@ -117,7 +117,7 @@ public class Block implements Serializable {
 	/** 壊れたピースの一部分 */
 	public static final int BLOCK_ATTRIBUTE_BROKEN = 256;
 
-	/** 邪魔Block */
+	/** ojama block */
 	public static final int BLOCK_ATTRIBUTE_GARBAGE = 512;
 
 	/** 壁 */
@@ -135,7 +135,7 @@ public class Block implements Serializable {
 	/** Anti-gravity flag (The block will not fall by gravity) */
 	public static final int BLOCK_ATTRIBUTE_ANTIGRAVITY = 16384;
 
-	/** Blockの色 */
+	/** Block color */
 	public int color;
 
 	/** Blockの絵柄 */
@@ -153,7 +153,7 @@ public class Block implements Serializable {
 	/** 透明度 (1.0fで不透明, 0.0fで完全に透明) */
 	public float alpha;
 
-	/** ゲームが始まってから何番目に置いたBlockか (負countだったら初期配置や邪魔Block) */
+	/** ゲームが始まってから何番目に置いたBlockか (負countだったら初期配置やgarbage block) */
 	public int pieceNum;
 
 	/** アイテム number */
@@ -183,7 +183,7 @@ public class Block implements Serializable {
 
 	/**
 	 * 色指定可能なConstructor
-	 * @param color Blockの色
+	 * @param color Block color
 	 */
 	public Block(int color) {
 		reset();
@@ -192,7 +192,7 @@ public class Block implements Serializable {
 
 	/**
 	 * 色と絵柄の指定が可能なConstructor
-	 * @param color Blockの色
+	 * @param color Block color
 	 * @param skin Blockの絵柄
 	 */
 	public Block(int color, int skin) {
@@ -203,7 +203,7 @@ public class Block implements Serializable {
 
 	/**
 	 * 色と絵柄と属性の指定が可能なConstructor
-	 * @param color Blockの色
+	 * @param color Block color
 	 * @param skin Blockの絵柄
 	 * @param attribute Blockの属性
 	 */
@@ -260,7 +260,7 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 指定した属性の状態を調べる
+	 * 指定した属性 stateを調べる
 	 * @param attr 調べたい属性
 	 * @return 指定した属性がすべてセットされている場合はtrue
 	 */
@@ -271,7 +271,7 @@ public class Block implements Serializable {
 	/**
 	 * 属性を変更する
 	 * @param attr 変更したい属性
-	 * @param status 変更後の状態
+	 * @param status 変更後 state
 	 */
 	public void setAttribute(int attr, boolean status) {
 		if(status) attribute |= attr;

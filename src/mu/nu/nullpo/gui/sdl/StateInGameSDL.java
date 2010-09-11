@@ -60,7 +60,7 @@ public class StateInGameSDL extends BaseStateSDL {
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/**  frame ステップ有効 flag */
+	/**  frame ステップ is enabled flag */
 	protected boolean enableframestep = false;
 
 	/** 倍速Mode */

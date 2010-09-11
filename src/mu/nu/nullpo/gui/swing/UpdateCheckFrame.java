@@ -84,7 +84,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	/** ブラウザでダウンロードボタン */
 	protected JButton btnOpenDownloadURL;
 
-	/** 更新 check 有効 */
+	/** 更新 check  is enabled */
 	protected JCheckBox chkboxEnable;
 
 	/** XMLのURL */
@@ -198,7 +198,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		spSetting.setLayout(new BoxLayout(spSetting, BoxLayout.Y_AXIS));
 		pSetting.add(spSetting, BorderLayout.NORTH);
 
-		// * 更新 check 有効
+		// * 更新 check  is enabled
 		chkboxEnable = new JCheckBox(NullpoMinoSwing.getUIText("UpdateCheck_CheckBox_Enable"));
 		chkboxEnable.setAlignmentX(0f);
 		chkboxEnable.setMnemonic('E');

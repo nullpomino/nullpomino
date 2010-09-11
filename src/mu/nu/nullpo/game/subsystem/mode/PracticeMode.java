@@ -42,7 +42,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * PRACTICEMode
+ * PRACTICE Mode
  */
 public class PracticeMode extends DummyMode {
 	/** Log */
@@ -162,7 +162,7 @@ public class PracticeMode extends DummyMode {
 	/** Preset number */
 	private int presetNumber;
 
-	/** マップ number */
+	/** Map number */
 	private int mapNumber;
 
 	/** Current version */
@@ -180,7 +180,7 @@ public class PracticeMode extends DummyMode {
 	/** Hard drop bonus */
 	private int harddropBonus;
 
-	/** Levelストップ音 */
+	/** levelstop sound */
 	private boolean lvstopse;
 
 	/** クリアになる level */
@@ -195,10 +195,10 @@ public class PracticeMode extends DummyMode {
 	/** 出現可能ピースの配列 */
 	private boolean[] pieceEnable;
 
-	/** マップ使用 flag */
+	/** Map使用 flag */
 	private boolean useMap;
 
-	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
+	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
 	private Field fldBackup;
 
 	/** 残り time */
@@ -333,8 +333,8 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/**
-	 * マップ読み込み
-	 * @param field フィールド
+	 * Map読み込み
+	 * @param field field
 	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
@@ -347,8 +347,8 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/**
-	 * マップ保存
-	 * @param field フィールド
+	 * Map保存
+	 * @param field field
 	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
@@ -528,11 +528,11 @@ public class PracticeMode extends DummyMode {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 34) {
-					// フィールドエディット
+					// fieldエディット
 					engine.enterFieldEdit();
 					return true;
 				} else if(engine.statc[2] == 35) {
-					// マップ読み込み
+					// Map読み込み
 					engine.createFieldIfNeeded();
 					engine.field.reset();
 
@@ -542,7 +542,7 @@ public class PracticeMode extends DummyMode {
 						engine.field.setAllSkin(engine.getSkin());
 					}
 				} else if(engine.statc[2] == 36) {
-					// マップ保存
+					// Map保存
 					if(engine.field != null) {
 						CustomProperties prop = new CustomProperties();
 						saveMap(engine.field, prop, 0);
@@ -556,7 +556,7 @@ public class PracticeMode extends DummyMode {
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
-					// ゲーム開始
+					// Start game
 					owner.modeConfig.setProperty("practice.presetNumber", presetNumber);
 					owner.modeConfig.setProperty("practice.mapNumber", mapNumber);
 					savePreset(engine, owner.modeConfig, -1);
@@ -688,7 +688,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (Initialization前）
+	 * Called for initialization during Ready (before initialization)
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -706,7 +706,7 @@ public class PracticeMode extends DummyMode {
 				}
 			}
 
-			// マップ読み込み・リプレイ保存用にバックアップ
+			// Map読み込み・リプレイ保存用にバックアップ
 			if(version >= 2) {
 				if(useMap) {
 					if(owner.replayMode) {
@@ -731,7 +731,7 @@ public class PracticeMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (ゲーム開始直前）
+	 * Readyの時のCalled at initialization (Start game直前）
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -782,7 +782,7 @@ public class PracticeMode extends DummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_YELLOW);
 
 		if(engine.stat == GameEngine.STAT_FIELDEDIT) {
-			// フィールドエディットのとき
+			// fieldエディットのとき
 
 			// 座標
 			receiver.drawScoreFont(engine, playerID, 0, 2, "X POS", EventReceiver.COLOR_BLUE);
@@ -898,7 +898,7 @@ public class PracticeMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 21, GeneralUtil.getTime(remainTime), ((remainTime > 0) && (remainTime < 10 * 60)));
 			}
 
-			// Line clearイベント
+			// Line clear event 
 			if((lastevent != EVENT_NONE) && (scgettime < 120)) {
 				String strPieceName = Piece.getPieceName(lastpiece);
 
@@ -970,7 +970,7 @@ public class PracticeMode extends DummyMode {
 		} else {
 			if((timelimitTimer > 0) && (engine.timerActive == true)) timelimitTimer--;
 
-			//  time切れ
+			// Out of time
 			if((timelimit > 0) && (timelimitTimer <= 0) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;

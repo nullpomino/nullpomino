@@ -72,7 +72,7 @@ public class NetPlayerInfo implements Serializable {
 	/** プレイ中ならtrue */
 	public boolean playing = false;
 
-	/** 正常に接続されているならtrue */
+	/** 正 always 接続されているならtrue */
 	public boolean connected = false;
 
 	/**

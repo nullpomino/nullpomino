@@ -119,7 +119,7 @@ public class GameFrame extends JFrame implements Runnable {
 	/** Screenshot用Image */
 	protected Image ssImage = null;
 
-	/**  frame ステップ有効 flag */
+	/**  frame ステップ is enabled flag */
 	protected boolean enableframestep = false;
 
 	/** FPS表示 */
@@ -675,7 +675,7 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 
 	/**
-	 * ウィンドウイベントの処理
+	 * ウィンドウ event の処理
 	 */
 	protected class GameFrameWindowEvent extends WindowAdapter {
 		@Override
@@ -685,7 +685,7 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 
 	/**
-	 * キーボードイベントの処理
+	 * キーボード event の処理
 	 */
 	protected class GameFrameKeyEvent extends KeyAdapter {
 		@Override

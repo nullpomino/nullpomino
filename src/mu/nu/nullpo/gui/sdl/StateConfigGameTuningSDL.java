@@ -44,7 +44,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	/** Cursor position */
 	protected int cursor;
 
-	/** A buttonでのrotationDirectionを -1=ルールに従う 0=常に左rotation 1=常に右rotation */
+	/** A buttonでのrotationDirectionを -1=ルールに従う 0= always 左rotation 1= always 右rotation */
 	protected int owRotateButtonDefaultRight;
 
 	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */

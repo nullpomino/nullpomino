@@ -114,16 +114,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Rule name */
 	private JTextField txtfldRuleName;
 
-	/** NEXT表示countのテキストフィールド */
+	/** NEXT表示countのテキストfield */
 	private JTextField txtfldNextDisplay;
 
 	/** 絵柄のComboボックス */
 	private JComboBox comboboxSkin;
 
-	/** ゴースト有効 */
+	/** ghost  is enabled */
 	private JCheckBox chkboxGhost;
 
-	/** Blockピースがフィールド枠外から出現 */
+	/** Blockピースがfield枠外から出現 */
 	private JCheckBox chkboxEnterAboveField;
 
 	/** 出現予定地が埋まっているときにY-coordinateを上にずらすMaximum count */
@@ -139,30 +139,30 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JButton btnResetRandomizer;
 
 	//----------------------------------------------------------------------
-	/* フィールド設定パネル */
+	/* field設定パネル */
 
-	/** フィールドの幅 */
+	/** fieldの幅 */
 	private JTextField txtfldFieldWidth;
 
 	/** Field height */
 	private JTextField txtfldFieldHeight;
 
-	/** フィールドの見えない部分の高さ */
+	/** fieldの見えない部分の高さ */
 	private JTextField txtfldFieldHiddenHeight;
 
-	/** フィールドの天井 */
+	/** fieldの天井 */
 	private JCheckBox chkboxFieldCeiling;
 
-	/** フィールド枠内に置けないと死亡 */
+	/** field枠内に置けないと死亡 */
 	private JCheckBox chkboxFieldLockoutDeath;
 
-	/** フィールド枠外にはみ出しただけで死亡 */
+	/** field枠外にはみ出しただけで死亡 */
 	private JCheckBox chkboxFieldPartialLockoutDeath;
 
 	//----------------------------------------------------------------------
 	/* ホールド設定パネル */
 
-	/** ホールド有効 */
+	/** ホールド is enabled */
 	private JCheckBox chkboxHoldEnable;
 
 	/** 先行ホールド */
@@ -225,7 +225,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** 上DirectionへのWallkickができる count (-1:無限) */
 	private JTextField txtfldRotateMaxUpwardWallkick;
 
-	/** falseなら左が正rotation, trueなら右が正rotation */
+	/** falseなら左が正rotation, When true,右が正rotation */
 	private JCheckBox chkboxRotateButtonDefaultRight;
 
 	/** 逆rotationを許可 (falseなら正rotationと同じ) */
@@ -261,7 +261,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** rotationで固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetRotate;
 
-	/** 横移動カウンタとrotationカウンタを共有 (横移動カウンタだけ使う) */
+	/** 横移動 counterとrotation counterを共有 (横移動 counterだけ使う) */
 	private JCheckBox chkboxLockDelayLockResetLimitShareCount;
 
 	/** 横移動 count制限 */
@@ -270,13 +270,13 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** rotation count制限 */
 	private JTextField txtfldLockDelayLockResetLimitRotate;
 
-	/** 横移動カウンタかrotationカウンタが超過したら固定 timeリセットを無効にする */
+	/** 横移動 counterかrotation counterが超過したら固定 timeリセットを無効にする */
 	private JRadioButton radioLockDelayLockResetLimitOverNoReset;
 
-	/** 横移動カウンタかrotationカウンタが超過したら即座に固定する */
+	/** 横移動 counterかrotation counterが超過したら即座に固定する */
 	private JRadioButton radioLockDelayLockResetLimitOverInstant;
 
-	/** 横移動カウンタかrotationカウンタが超過したらWallkick無効にする */
+	/** 横移動 counterかrotation counterが超過したらWallkick無効にする */
 	private JRadioButton radioLockDelayLockResetLimitOverNoWallkick;
 
 	//----------------------------------------------------------------------
@@ -628,11 +628,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		comboboxSkin.setPreferredSize(new Dimension(190, 30));
 		pSkin.add(comboboxSkin);
 
-		// ゴースト
+		// ghost 
 		chkboxGhost = new JCheckBox(getUIText("Basic_Ghost"));
 		panelBasic.add(chkboxGhost);
 
-		// フィールド枠外から出現
+		// field枠外から出現
 		chkboxEnterAboveField = new JCheckBox(getUIText("Basic_EnterAboveField"));
 		panelBasic.add(chkboxEnterAboveField);
 
@@ -664,12 +664,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		btnResetRandomizer.addActionListener(this);
 		pRandomizer.add(btnResetRandomizer);
 
-		// フィールドタブ --------------------------------------------------
+		// fieldタブ --------------------------------------------------
 		JPanel panelField = new JPanel();
 		panelField.setLayout(new BoxLayout(panelField, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Field"), panelField);
 
-		// フィールドの幅
+		// fieldの幅
 		JPanel pFieldWidth = new JPanel();
 		panelField.add(pFieldWidth);
 
@@ -689,7 +689,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldFieldHeight = new JTextField("", 5);
 		pFieldHeight.add(txtfldFieldHeight);
 
-		// フィールドの見えない部分の高さ
+		// fieldの見えない部分の高さ
 		JPanel pFieldHiddenHeight = new JPanel();
 		panelField.add(pFieldHiddenHeight);
 
@@ -699,15 +699,15 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldFieldHiddenHeight = new JTextField("", 5);
 		pFieldHiddenHeight.add(txtfldFieldHiddenHeight);
 
-		// フィールドの天井
+		// fieldの天井
 		chkboxFieldCeiling = new JCheckBox(getUIText("Field_FieldCeiling"));
 		panelField.add(chkboxFieldCeiling);
 
-		// フィールド枠内に置けないと死亡
+		// field枠内に置けないと死亡
 		chkboxFieldLockoutDeath = new JCheckBox(getUIText("Field_FieldLockoutDeath"));
 		panelField.add(chkboxFieldLockoutDeath);
 
-		// フィールド枠外にはみ出しただけで死亡
+		// field枠外にはみ出しただけで死亡
 		chkboxFieldPartialLockoutDeath = new JCheckBox(getUIText("Field_FieldPartialLockoutDeath"));
 		panelField.add(chkboxFieldPartialLockoutDeath);
 
@@ -716,7 +716,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		panelHold.setLayout(new BoxLayout(panelHold, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Hold"), panelHold);
 
-		// ホールド有効
+		// ホールド is enabled
 		chkboxHoldEnable = new JCheckBox(getUIText("Hold_HoldEnable"));
 		panelHold.add(chkboxHoldEnable);
 
@@ -877,7 +877,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLockDelayLockResetRotate = new JCheckBox(getUIText("LockDelay_LockResetRotate"));
 		panelLockDelay.add(chkboxLockDelayLockResetRotate);
 
-		// 横移動カウンタとrotationカウンタを共有 (横移動カウンタだけ使う）
+		// 横移動 counterとrotation counterを共有 (横移動 counterだけ使う）
 		chkboxLockDelayLockResetLimitShareCount = new JCheckBox(getUIText("LockDelay_LockDelayLockResetLimitShareCount"));
 		panelLockDelay.add(chkboxLockDelayLockResetLimitShareCount);
 
@@ -1672,9 +1672,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストフィールドからint型の値を取得
-	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したら0
+	 * テキストfieldからint型の値を取得
+	 * @param txtfld テキストfield
+	 * @return テキストfieldから値を取得できた場合はその値, 失敗したら0
 	 */
 	public int getIntTextField(JTextField txtfld) {
 		int v = 0;
@@ -1687,9 +1687,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストフィールドからfloat型の値を取得
-	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したら0f
+	 * テキストfieldからfloat型の値を取得
+	 * @param txtfld テキストfield
+	 * @return テキストfieldから値を取得できた場合はその値, 失敗したら0f
 	 */
 	public float getFloatTextField(JTextField txtfld) {
 		float v = 0f;

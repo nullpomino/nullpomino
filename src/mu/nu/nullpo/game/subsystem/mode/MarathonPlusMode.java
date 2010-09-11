@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * MARATHON+Mode
+ * MARATHON+ Mode
  */
 public class MarathonPlusMode extends DummyMode {
 	/** Current version */

@@ -347,13 +347,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Hurryup後に何回Blockを置くたびに床をせり上げるか(Create room screen) */
 	protected JSpinner spinnerCreateRoomHurryupInterval;
 
-	/** マップセットID(Create room screen) */
+	/** MapセットID(Create room screen) */
 	protected JSpinner spinnerCreateRoomMapSetID;
 
 	/** Rate of change of garbage holes */
 	protected JSpinner spinnerCreateRoomGarbagePercent;
 
-	/** マップ有効(Create room screen) */
+	/** Map is enabled(Create room screen) */
 	protected JCheckBox chkboxCreateRoomUseMap;
 
 	/** 全員のルール固定(Create room screen) */
@@ -383,7 +383,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Allow EZ spins */
 	protected JCheckBox chkboxCreateRoomTSpinEnableEZ;
 
-	/** 3人以上生きている場合に攻撃力を減らす(Create room screen) */
+	/** 3人以上生きている場合に Attack 力を減らす(Create room screen) */
 	protected JCheckBox chkboxCreateRoomReduceLineSend;
 
 	/** Set garbage type */
@@ -392,13 +392,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** B2B chunk type */
 	protected JCheckBox chkboxCreateRoomB2BChunk;
 
-	/** 断片的邪魔Blockシステムを使う(Create room screen) */
+	/** 断片的garbage blockシステムを使う(Create room screen) */
 	protected JCheckBox chkboxCreateRoomUseFractionalGarbage;
 
-	/** TNET2タイプの自動スタートタイマーを使う(Create room screen) */
+	/** TNET2タイプのAutomatically start timerを使う(Create room screen) */
 	protected JCheckBox chkboxCreateRoomAutoStartTNET2;
 
-	/** 誰かCancelしたらタイマー無効化(Create room screen) */
+	/** 誰かCancelしたらTimer無効化(Create room screen) */
 	protected JCheckBox chkboxCreateRoomDisableTimerAfterSomeoneCancelled;
 
 	/** OK button(Create room screen) */
@@ -914,7 +914,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		TableColumnModel tm2 = tableGameStat.getColumnModel();
 		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat.width.rank", 30));			// 順位
 		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat.width.name", 100));			// Name
-		tm2.getColumn(2).setPreferredWidth(propConfig.getProperty("tableGameStat.width.attack", 55));		// 攻撃count
+		tm2.getColumn(2).setPreferredWidth(propConfig.getProperty("tableGameStat.width.attack", 55));		//  Attack count
 		tm2.getColumn(3).setPreferredWidth(propConfig.getProperty("tableGameStat.width.apm", 55));			// APM
 		tm2.getColumn(4).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lines", 55));			// 消去count
 		tm2.getColumn(5).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lpm", 55));			// LPM
@@ -1120,22 +1120,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomHurryupInterval.setToolTipText(getUIText("CreateRoom_HurryupInterval_Tip"));
 		subpanelHurryupInterval.add(spinnerCreateRoomHurryupInterval, BorderLayout.EAST);
 
-		// ** マップセットIDパネル
+		// ** MapセットIDパネル
 		JPanel subpanelMapSetID = new JPanel(new BorderLayout());
 		containerpanelCreateRoomMain.add(subpanelMapSetID);
 
-		// *** 「マップセットID:」ラベル
+		// *** 「MapセットID:」ラベル
 		JLabel labelMapSetID = new JLabel(getUIText("CreateRoom_MapSetID"));
 		subpanelMapSetID.add(labelMapSetID, BorderLayout.WEST);
 
-		// *** マップセットID
+		// *** MapセットID
 		int defaultMapSetID = propConfig.getProperty("createroom.defaultMapSetID", 0);
 		spinnerCreateRoomMapSetID = new JSpinner(new SpinnerNumberModel(defaultMapSetID, 0, 99, 1));
 		spinnerCreateRoomMapSetID.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomMapSetID.setToolTipText(getUIText("CreateRoom_MapSetID_Tip"));
 		subpanelMapSetID.add(spinnerCreateRoomMapSetID, BorderLayout.EAST);
 
-		// ** マップ有効
+		// ** Map is enabled
 		chkboxCreateRoomUseMap = new JCheckBox(getUIText("CreateRoom_UseMap"));
 		chkboxCreateRoomUseMap.setMnemonic('P');
 		chkboxCreateRoomUseMap.setSelected(propConfig.getProperty("createroom.defaultUseMap", false));
@@ -1377,14 +1377,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomCounter.setToolTipText(getUIText("CreateRoom_Counter_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomCounter);
 
-		// ** 3人以上生きている場合に攻撃力を減らす
+		// ** 3人以上生きている場合に Attack 力を減らす
 		chkboxCreateRoomReduceLineSend = new JCheckBox(getUIText("CreateRoom_ReduceLineSend"));
 		chkboxCreateRoomReduceLineSend.setMnemonic('R');
 		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", false));
 		chkboxCreateRoomReduceLineSend.setToolTipText(getUIText("CreateRoom_ReduceLineSend_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomReduceLineSend);
 
-		// ** 断片的邪魔Blockシステムを使う
+		// ** 断片的garbage blockシステムを使う
 		chkboxCreateRoomUseFractionalGarbage = new JCheckBox(getUIText("CreateRoom_UseFractionalGarbage"));
 		chkboxCreateRoomUseFractionalGarbage.setMnemonic('F');
 		chkboxCreateRoomUseFractionalGarbage.setSelected(propConfig.getProperty("createroom.defaultUseFractionalGarbage", false));
@@ -1413,14 +1413,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomAutoStartSeconds.setToolTipText(getUIText("CreateRoom_AutoStartSeconds_Tip"));
 		subpanelAutoStartSeconds.add(spinnerCreateRoomAutoStartSeconds, BorderLayout.EAST);
 
-		// ** TNET2タイプの自動スタートタイマーを使う
+		// ** TNET2タイプのAutomatically start timerを使う
 		chkboxCreateRoomAutoStartTNET2 = new JCheckBox(getUIText("CreateRoom_AutoStartTNET2"));
 		chkboxCreateRoomAutoStartTNET2.setMnemonic('A');
 		chkboxCreateRoomAutoStartTNET2.setSelected(propConfig.getProperty("createroom.defaultAutoStartTNET2", false));
 		chkboxCreateRoomAutoStartTNET2.setToolTipText(getUIText("CreateRoom_AutoStartTNET2_Tip"));
 		containerpanelCreateRoomMisc.add(chkboxCreateRoomAutoStartTNET2);
 
-		// ** 誰かCancelしたらタイマー無効化
+		// ** 誰かCancelしたらTimer無効化
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled = new JCheckBox(getUIText("CreateRoom_DisableTimerAfterSomeoneCancelled"));
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setMnemonic('D');
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(propConfig.getProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", false));
@@ -1779,8 +1779,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム画面の buttonの有効状態を変更
-	 * @param b trueなら有効, falseなら無効
+	 * ルーム画面の buttonの is enabled状態を変更
+	 * @param b When true, is enabled, falseなら無効
 	 */
 	public void setRoomButtonsEnabled(boolean b) {
 		btnRoomButtonsTeamChange.setEnabled(b);
@@ -1821,7 +1821,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/**
 	 * 指定したルームに入る
 	 * @param roomID ルームID
-	 * @param watch trueなら観戦のみ
+	 * @param watch When true,観戦のみ
 	 */
 	public void joinRoom(int roomID, boolean watch) {
 		tabLobbyAndRoom.setEnabledAt(1, true);
@@ -1838,7 +1838,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/**
 	 * ルーム作成画面のMode 切り替え
-	 * @param isDetailMode falseなら作成Mode , trueなら詳細Mode
+	 * @param isDetailMode falseなら作成Mode , When true,詳細Mode
 	 * @param roomInfo ルーム情報(isDetailMode == trueのときだけ使用)
 	 */
 	public void setCreateRoomUIType(boolean isDetailMode, NetRoomInfo roomInfo) {
@@ -2342,8 +2342,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * Playerが選択したマップセットIDを取得
-	 * @return マップセットID
+	 * PlayerがSelectedMapセットIDを取得
+	 * @return MapセットID
 	 */
 	public int getCurrentSelectedMapSetID() {
 		if(spinnerCreateRoomMapSetID != null) {
@@ -2866,7 +2866,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				changeCurrentScreenCard(SCREENCARD_LOBBY);
 			}
 		}
-		// マップ送信
+		// Map送信
 		if(message[0].equals("roomcreatemapready")) {
 			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_RoomCreateMapReady"), Color.blue);
 		}
@@ -3000,12 +3000,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				}
 			});
 		}
-		// 自動スタートタイマー開始
+		// Automatically start timer開始
 		if(message[0].equals("autostartbegin")) {
 			String strTemp = String.format(getUIText("SysMsg_AutoStartBegin"), message[1]);
 			addSystemChatLogLater(txtpaneRoomChatLog, strTemp, new Color(64, 128, 0));
 		}
-		// ゲームスタート
+		// game start
 		if(message[0].equals("start")) {
 			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_GameStart"), new Color(0, 128, 0));
 			tablemodelGameStat.setRowCount(0);
@@ -3038,7 +3038,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			rowdata[0] = Integer.toString(myRank);			// 順位
 			rowdata[1] = convTripCode(NetUtil.urlDecode(message[3]));	// Name
-			rowdata[2] = message[5];						// 攻撃count
+			rowdata[2] = message[5];						//  Attack count
 			rowdata[3] = message[6];						// APM
 			rowdata[4] = message[7];						// 消去count
 			rowdata[5] = message[8];						// LPM
@@ -3073,7 +3073,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				writerRoomLog.flush();
 			}
 		}
-		// ゲーム終了
+		// game finished
 		if(message[0].equals("finish")) {
 			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_GameEnd"), new Color(0, 128, 0));
 

@@ -112,7 +112,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 * 他のControllerの状態をコピー
+	 * 他のController stateをコピー
 	 * @param c Copy source
 	 */
 	public void copy(Controller c) {
@@ -194,7 +194,7 @@ public class Controller implements Serializable {
 	/**
 	 *  buttonを押した状態を設定
 	 * @param key Button number
-	 * @param pressed trueなら押した, falseなら押してない
+	 * @param pressed When true,押した, falseなら押してない
 	 */
 	public void setButtonState(int key, boolean pressed) {
 		if((key >= 0) && (key < buttonPress.length)) buttonPress[key] = pressed;

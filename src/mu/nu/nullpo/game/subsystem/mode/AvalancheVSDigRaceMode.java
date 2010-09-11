@@ -61,7 +61,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Mode  initialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -70,7 +70,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を読み込み
+	 * Load settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 */
@@ -83,7 +83,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を保存
+	 * Save settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 */
@@ -364,7 +364,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (Initialization前）
+	 * Called for initialization during Ready (before initialization)
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -385,7 +385,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * ゲーム開始時の処理
+	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -424,7 +424,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// ステータス表示
+		// Status display
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
 
@@ -497,17 +497,17 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			if (!p2Lose && owner.engine[0].field != null && owner.engine[0].stat != GameEngine.STAT_READY)
 				p2Lose = (owner.engine[0].field.getHowManyGems() == 0);
 			if(p1Lose && p2Lose) {
-				// 引き分け
+				// Draw
 				winnerID = -1;
 				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
 				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
 			} else if(p2Lose && !p1Lose) {
-				// 1P勝利
+				// 1P win
 				winnerID = 0;
 				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
 				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
 			} else if(p1Lose && !p2Lose) {
-				// 2P勝利
+				// 2P win
 				winnerID = 1;
 				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
 				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;

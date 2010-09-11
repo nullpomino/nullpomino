@@ -74,7 +74,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/** FPS表示 */
 	protected boolean showfps;
 
-	/**  frame ステップ有効 */
+	/**  frame ステップ is enabled */
 	protected boolean enableframestep;
 
 	/** MaximumFPS */
@@ -86,7 +86,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールドBackgroundの明るさ */
+	/** fieldBackgroundの明るさ */
 	protected int fieldbgbright;
 
 	/** NEXT欄を暗くする */
@@ -101,16 +101,16 @@ public class StateConfigGeneral extends BasicGameState {
 	/** Joystick input の検出法 */
 	protected int joyMethod;
 
-	/** フィールド右側にMeterを表示 */
+	/** field右側にMeterを表示 */
 	protected boolean showmeter;
 
 	/** 垂直同期を待つ */
 	protected boolean vsync;
 
-	/** ゴーストピースの上にNEXT表示 */
+	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
-	/** 枠線型ゴーストピース */
+	/** 枠線型ghost ピース */
 	protected boolean outlineghost;
 
 	/** Side piece preview */

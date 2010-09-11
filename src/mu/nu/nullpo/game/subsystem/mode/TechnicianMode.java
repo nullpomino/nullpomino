@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * TECHNICIANMode
+ * TECHNICIAN Mode
  */
 public class TechnicianMode extends DummyMode {
 	/** Current version */
@@ -116,7 +116,7 @@ public class TechnicianMode extends DummyMode {
 	/** この levelでの経過 time */
 	private int levelTimer;
 
-	/** この levelでタイマーが切れていたらtrue */
+	/** この levelでTimerが切れていたらtrue */
 	private boolean levelTimeOut;
 
 	/** ゲーム全体の制限 time */
@@ -553,7 +553,7 @@ public class TechnicianMode extends DummyMode {
 			levelTimer++;
 			int remainTime = TIMELIMIT_LEVEL - levelTimer;
 
-			//  timeMeter
+			// Time meter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / TIMELIMIT_LEVEL;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainTime <= 60*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
@@ -561,7 +561,7 @@ public class TechnicianMode extends DummyMode {
 			if(remainTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			if(levelTimer >= TIMELIMIT_LEVEL) {
-				//  time切れ
+				// Out of time
 				levelTimeOut = true;
 
 				if((gametype == GAMETYPE_LV15_HARD) || (gametype == GAMETYPE_10MIN_HARD)) {
@@ -585,7 +585,7 @@ public class TechnicianMode extends DummyMode {
 		if(engine.gameActive && engine.timerActive && (gametype != GAMETYPE_LV15_EASY) && (gametype != GAMETYPE_LV15_HARD)) {
 			totalTimer--;
 
-			//  timeMeter
+			// Time meter
 			if(gametype == GAMETYPE_SPECIAL) {
 				engine.meterValue = (totalTimer * receiver.getMeterMax(engine)) / (5 * 3600);
 				engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -595,7 +595,7 @@ public class TechnicianMode extends DummyMode {
 			}
 
 			if(totalTimer < 0) {
-				//  time切れ
+				// Out of time
 				engine.gameActive = false;
 				engine.timerActive = false;
 				engine.resetStatc();
@@ -617,7 +617,7 @@ public class TechnicianMode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			//  timeMeter
+			// Time meter
 			int remainRollTime = TIMELIMIT_ROLL - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / TIMELIMIT_ROLL;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;

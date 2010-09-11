@@ -70,7 +70,7 @@ public class ModeManager {
 
 	/**
 	 * Mode のcountを取得
-	 * @param netplay falseなら通常Mode だけ, trueならネットプレイ用Mode だけcountえる
+	 * @param netplay falseなら通常Mode だけ, When true,ネットプレイ用Mode だけcountえる
 	 * @return Modeのcount
 	 */
 	public int getNumberOfModes(boolean netplay) {
@@ -102,7 +102,7 @@ public class ModeManager {
 
 	/**
 	 * 読み込まれているMode nameを取得
-	 * @param netplay falseなら通常Mode だけ, trueならネットプレイ用Mode だけ取得
+	 * @param netplay falseなら通常Mode だけ, When true,ネットプレイ用Mode だけ取得
 	 * @return Mode nameの配列
 	 */
 	public String[] getModeNames(boolean netplay) {

@@ -76,9 +76,9 @@ public class GameKeySDL extends GameKeyDummy {
 	 *  button input状態を更新
 	 * @param keyboard キーボードのキーが押されているかどうかの配列
 	 * @param joyButton Joystick の buttonが押されているかどうかの配列 (nullにしても問題なし）
-	 * @param joyX Joystick のX軸の状態
-	 * @param joyY Joystick のY軸の状態
-	 * @param hat ハットスイッチの状態 (nullにしても問題なし）
+	 * @param joyX Joystick のX軸 state
+	 * @param joyY Joystick のY軸 state
+	 * @param hat ハットスイッチ state (nullにしても問題なし）
 	 */
 	public void update(boolean[] keyboard, boolean[] joyButton, int joyX, int joyY, HatState hat) {
 		for(int i = 0; i < MAX_BUTTON; i++) {

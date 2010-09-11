@@ -49,7 +49,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * LINE RACEMode
+ * LINE RACE Mode
  */
 public class LineRaceMode extends NetDummyMode {
 	/** Logger */

@@ -59,10 +59,10 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	/** Player number */
 	protected int playerID;
 
-	/** キーイベント受け取り用クラス */
+	/** キー event 受け取り用クラス */
 	protected KeyConfigKeyEventListener keyEventListener;
 
-	/** マウスイベント受け取り用クラス */
+	/** マウス event 受け取り用クラス */
 	protected KeyConfigMouseEventListener mouseEventListener;
 
 	/** キー設定用テキストボックス */
@@ -186,7 +186,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストボックスでキーを押したときのイベント処理用クラス
+	 * テキストボックスでキーを押したときの event 処理用クラス
 	 */
 	protected class KeyConfigKeyEventListener extends KeyAdapter {
 		@Override
@@ -214,7 +214,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストボックスでマウス buttonを押したときのイベント処理用クラス
+	 * テキストボックスでマウス buttonを押したときの event 処理用クラス
 	 */
 	protected class KeyConfigMouseEventListener extends MouseAdapter {
 		@Override

@@ -174,7 +174,7 @@ public class Piece implements Serializable {
 	/** BigBlock */
 	public boolean big;
 
-	/** 相対X位置と相対Y位置がオリジナルの状態からずらされているならtrue */
+	/** 相対X位置と相対Y位置がオリジナル stateからずらされているならtrue */
 	public boolean offsetApplied;
 
 	/** 相対X位置のずれ幅 */
@@ -281,7 +281,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの状態をbと同じに設定
+	 * すべてのBlock stateをbと同じに設定
 	 * @param b 設定するBlock
 	 */
 	public void setBlock(Block b) {
@@ -289,7 +289,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの色を変更
+	 * すべてのBlock colorを変更
 	 * @param color 色
 	 */
 	public void setColor(int color) {
@@ -408,7 +408,7 @@ public class Piece implements Serializable {
 	/**
 	 * すべてのBlockの属性を設定
 	 * @param attr 変更したい属性
-	 * @param status 変更後の状態
+	 * @param status 変更後 state
 	 */
 	public void setAttribute(int attr, boolean status) {
 		for(int i = 0; i < block.length; i++) block[i].setAttribute(attr, status);
@@ -505,12 +505,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockがフィールド枠外に置かれるかどうか判定
+	 * 1つ以上Blockがfield枠外に置かれるかどうか判定
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
-	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockがfield枠外に置かれるならtrue, そうでないならfalse
 	 */
 	public boolean isPartialLockOut(int x, int y, int rt, Field fld) {
 		// Bigでは専用処理
@@ -527,12 +527,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockがフィールド枠外に置かれるかどうか判定(Big用)
+	 * 1つ以上Blockがfield枠外に置かれるかどうか判定(Big用)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
-	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockがfield枠外に置かれるならtrue, そうでないならfalse
 	 */
 	protected boolean isPartialLockOutBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -551,23 +551,23 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockがフィールド枠外に置かれるかどうか判定
+	 * 1つ以上Blockがfield枠外に置かれるかどうか判定
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param fld フィールド
-	 * @return 1つ以上Blockがフィールド枠外に置かれるならtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockがfield枠外に置かれるならtrue, そうでないならfalse
 	 */
 	public boolean isPartialLockOut(int x, int y, Field fld) {
 		return isPartialLockOut(x, y, direction, fld);
 	}
 
 	/**
-	 * 1つ以上Blockをフィールド枠内に置けるかどうか判定(フィールドに変更は加えません)
+	 * 1つ以上Blockをfield枠内に置けるかどうか判定(fieldに変更は加えません)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockをfield枠内に置けるならtrue, そうでないならfalse
 	 */
 	public boolean canPlaceToVisibleField(int x, int y, int rt, Field fld) {
 		// Bigでは専用処理
@@ -584,12 +584,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockをフィールド枠内に置けるかどうか判定(フィールドに変更は加えません。Big用)
+	 * 1つ以上Blockをfield枠内に置けるかどうか判定(fieldに変更は加えません。Big用)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockをfield枠内に置けるならtrue, そうでないならfalse
 	 */
 	protected boolean canPlaceToVisibleFieldBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -608,23 +608,23 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockをフィールド枠内に置けるかどうか判定(フィールドに変更は加えません)
+	 * 1つ以上Blockをfield枠内に置けるかどうか判定(fieldに変更は加えません)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けるならtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockをfield枠内に置けるならtrue, そうでないならfalse
 	 */
 	public boolean canPlaceToVisibleField(int x, int y, Field fld) {
 		return canPlaceToVisibleField(x, y, direction, fld);
 	}
 
 	/**
-	 * フィールドにピースを置く
+	 * fieldにピースを置く
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockをfield枠内に置けたらtrue, そうでないならfalse
 	 */
 	public boolean placeToField(int x, int y, int rt, Field fld) {
 		updateConnectData();
@@ -645,12 +645,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * フィールドのピースを置く (Big用）
+	 * fieldのピースを置く (Big用）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockをfield枠内に置けたらtrue, そうでないならfalse
 	 */
 	protected boolean placeToFieldBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -672,11 +672,11 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * フィールドにピースを置く
+	 * fieldにピースを置く
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param fld フィールド
-	 * @return 1つ以上Blockをフィールド枠内に置けたらtrue, そうでないならfalse
+	 * @param fld field
+	 * @return 1つ以上Blockをfield枠内に置けたらtrue, そうでないならfalse
 	 */
 	public boolean placeToField(int x, int y, Field fld) {
 		return placeToField(x, y, direction, fld);
@@ -686,7 +686,7 @@ public class Piece implements Serializable {
 	 * ピースの当たり判定
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
 	 */
 	public boolean checkCollision(int x, int y, Field fld) {
@@ -698,7 +698,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
 	 */
 	public boolean checkCollision(int x, int y, int rt, Field fld) {
@@ -731,7 +731,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
 	 */
 	protected boolean checkCollisionBig(int x, int y, int rt, Field fld) {
@@ -767,7 +767,7 @@ public class Piece implements Serializable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return ピースをそのまま落とした場合のY-coordinate
 	 */
 	public int getBottom(int x, int y, int rt, Field fld) {
@@ -784,7 +784,7 @@ public class Piece implements Serializable {
 	 * ピースをそのまま落とした場合のY-coordinateを取得
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return ピースをそのまま落とした場合のY-coordinate
 	 */
 	public int getBottom(int x, int y, Field fld) {
@@ -914,7 +914,7 @@ public class Piece implements Serializable {
 	 * @param nowX 現在X位置
 	 * @param nowY 現在Y位置
 	 * @param rt ピースのDirection
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return 移動可能なもっとも左の位置
 	 */
 	public int getMostMovableLeft(int nowX, int nowY, int rt, Field fld) {
@@ -928,7 +928,7 @@ public class Piece implements Serializable {
 	 * @param nowX 現在X位置
 	 * @param nowY 現在Y位置
 	 * @param rt ピースのDirection
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return 移動可能なもっとも右の位置
 	 */
 	public int getMostMovableRight(int nowX, int nowY, int rt, Field fld) {

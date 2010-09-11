@@ -130,7 +130,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Mode  initialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -153,7 +153,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を読み込み
+	 * Load settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 */
@@ -173,7 +173,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を保存
+	 * Save settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 */
@@ -457,12 +457,12 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 				engine.quitflag = true;
 			}
 
-			// プレビュー用マップ読み込み
+			// プレビュー用Map読み込み
 			if(useMap[playerID] && (engine.statc[3] == 0)) {
 				loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 			}
 
-			// ランダムマッププレビュー
+			// Random map preview
 			if(useMap[playerID] && (propMap[playerID] != null) && (mapNumber[playerID] < 0)) {
 				if(engine.statc[3] % 30 == 0) {
 					engine.statc[5]++;
@@ -585,7 +585,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (Initialization前）
+	 * Called for initialization during Ready (before initialization)
 	 */
 	@Override
 	public boolean readyInit(GameEngine engine, int playerID) {
@@ -607,7 +607,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// ステータス表示
+		// Status display
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1, 0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
 

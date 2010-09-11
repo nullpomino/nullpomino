@@ -148,7 +148,7 @@ public class WaveEngine implements LineListener {
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
 			// 空のクリップを作成
 			Clip clip = (Clip) AudioSystem.getLine(info);
-			// クリップのイベントを監視
+			// クリップの event を監視
 			clip.addLineListener(this);
 			// オーディオストリームをクリップとして開く
 			clip.open(stream);
@@ -196,7 +196,7 @@ public class WaveEngine implements LineListener {
 	}
 
 	/*
-	 * Linesの状態変化
+	 * Lines state変化
 	 */
 	public void update(LineEvent event) {
 		// ストップか最後まで再生された場合

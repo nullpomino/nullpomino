@@ -159,7 +159,7 @@ public class NullpoMinoSDL {
 	/** Joystick のハットスイッチのcount */
 	public static int[] joyMaxHat;
 
-	/** Joystick のハットスイッチの状態 */
+	/** Joystick のハットスイッチ state */
 	public static HatState[] joyHatState;
 
 	/** Joystick の buttonのcount */
@@ -383,7 +383,7 @@ public class NullpoMinoSDL {
 
 		// メインループ
 		while(quit == false) {
-			// イベント処理
+			//  event 処理
 			processEvent();
 
 			// Joystick の更新
@@ -594,7 +594,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * イベント処理
+	 *  event 処理
 	 * @throws SDLException SDLのエラーが発生した場合
 	 */
 	protected static void processEvent() throws SDLException {
@@ -621,7 +621,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * Joystick の状態の更新
+	 * Joystick  stateの更新
 	 */
 	protected static void joyUpdate() {
 		try {

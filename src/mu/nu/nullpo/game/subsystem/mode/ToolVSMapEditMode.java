@@ -49,16 +49,16 @@ public class ToolVSMapEditMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** マップ dataの入ったProperty file */
+	/** Map dataの入ったProperty file */
 	private CustomProperties propMap;
 
-	/** Current マップファイルに入っている全フィールド data */
+	/** Current Mapファイルに入っている全field data */
 	private LinkedList<Field> listFields;
 
-	/** Current マップセットID */
+	/** Current MapセットID */
 	private int nowMapSetID;
 
-	/** Current マップID */
+	/** Current MapID */
 	private int nowMapID;
 
 	/*
@@ -70,7 +70,7 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/*
-	 * Mode  initialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -83,8 +83,8 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/**
-	 * マップ読み込み
-	 * @param field フィールド
+	 * Map読み込み
+	 * @param field field
 	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
@@ -98,8 +98,8 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/**
-	 * マップ保存
-	 * @param field フィールド
+	 * Map保存
+	 * @param field field
 	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
@@ -109,8 +109,8 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/**
-	 * 全マップ読み込み
-	 * @param setID マップセットID
+	 * 全Map読み込み
+	 * @param setID MapセットID
 	 */
 	private void loadAllMaps(int setID) {
 		propMap = receiver.loadProperties("config/map/vsbattle/" + setID + ".map");
@@ -127,8 +127,8 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/**
-	 * 全マップ保存
-	 * @param setID マップセットID
+	 * 全Map保存
+	 * @param setID MapセットID
 	 */
 	private void saveAllMaps(int setID) {
 		propMap = new CustomProperties();
@@ -294,7 +294,7 @@ public class ToolVSMapEditMode extends DummyMode {
 	}
 
 	/*
-	 * フィールドエディット画面
+	 * fieldエディット画面
 	 */
 	@Override
 	public void renderFieldEdit(GameEngine engine, int playerID) {

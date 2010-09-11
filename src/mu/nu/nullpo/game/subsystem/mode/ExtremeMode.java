@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * EXTREMEMode
+ * EXTREME Mode
  */
 public class ExtremeMode extends DummyMode {
 	/** Current version */
@@ -454,7 +454,7 @@ public class ExtremeMode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			//  timeMeter
+			// Time meter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			if(remainRollTime < 0) remainRollTime = 0;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;

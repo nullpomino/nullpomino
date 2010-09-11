@@ -44,7 +44,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 /**
- * ゲームのイベント処理と描画処理 (Slick版）
+ * ゲームの event 処理と描画処理 (Slick版）
  */
 public class RendererSlick extends EventReceiver {
 	/** Log */
@@ -62,18 +62,18 @@ public class RendererSlick extends EventReceiver {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールドBackgroundの明るさ */
+	/** fieldBackgroundの明るさ */
 	protected float fieldbgbright;
 
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
 
-	/** ゴーストピースの上にNEXT表示 */
+	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
 	/**
-	 * Blockの色IDに応じてSlick用Colorオブジェクトを作成・取得
-	 * @param colorID Blockの色ID
+	 * Block colorIDに応じてSlick用Colorオブジェクトを作成・取得
+	 * @param colorID Block colorID
 	 * @return Slick用Colorオブジェクト
 	 */
 	public static Color getColorByID(int colorID) {
@@ -423,7 +423,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースのゴーストを描画
+	 * 現在操作中のBlockピースのghost を描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -656,7 +656,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * フィールドのBlockを描画
+	 * fieldのBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -773,7 +773,7 @@ public class RendererSlick extends EventReceiver {
 			offsetX = engine.framecolor * 16;
 		}
 
-		// フィールドBackground
+		// fieldBackground
 		if((fieldbgbright > 0) && (showbg)) {
 			Color filter = new Color(Color.black);
 			filter.a = fieldbgbright;
@@ -1324,7 +1324,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * フィールドエディット画面の描画処理
+	 * fieldエディット画面の描画処理
 	 */
 	@Override
 	public void renderFieldEdit(GameEngine engine, int playerID) {

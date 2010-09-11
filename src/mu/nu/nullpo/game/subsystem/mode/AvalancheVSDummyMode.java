@@ -41,7 +41,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * AVALANCHE VS DUMMY mode
+ * AVALANCHE VS DUMMY Mode
  */
 public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Enabled piece types */
@@ -105,10 +105,10 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Rule settings for countering ojama not yet dropped */
 	protected int[] ojamaCounterMode;
 
-	/** 溜まっている邪魔Blockのcount */
+	/** 溜まっているojama blockのcount */
 	protected int[] ojama;
 
-	/** 送った邪魔Blockのcount */
+	/** 送ったojama blockのcount */
 	protected int[] ojamaSent;
 
 	/** Time to display the most recent increase in score */
@@ -123,13 +123,13 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Sound effectsON/OFF */
 	protected boolean[] enableSE;
 
-	/** マップ使用 flag */
+	/** Map使用 flag */
 	protected boolean[] useMap;
 
-	/** 使用するマップセット number */
+	/** 使用するMapセット number */
 	protected int[] mapSet;
 
-	/** マップ number(-1でランダム) */
+	/** Map number(-1でランダム) */
 	protected int[] mapNumber;
 
 	/** Last preset number used */
@@ -138,16 +138,16 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** 勝者 */
 	protected int winnerID;
 
-	/** マップセットのProperty file */
+	/** MapセットのProperty file */
 	protected CustomProperties[] propMap;
 
-	/** Maximumマップ number */
+	/** MaximumMap number */
 	protected int[] mapMaxNo;
 
-	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
+	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
 	protected Field[] fldBackup;
 
-	/** マップ選択用乱count */
+	/** Map選択用乱count */
 	protected Random randMap;
 
 	/** Flag for all clear */
@@ -253,7 +253,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Mode  initialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -348,7 +348,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を読み込み
+	 * Load settings not related to speeds
 	 * Note: Subclasses need to load ojamaRate and ojamaHard, since default values vary.
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
@@ -378,7 +378,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を保存
+	 * Save settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 */
@@ -409,8 +409,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/**
-	 * マップ読み込み
-	 * @param field フィールド
+	 * Map読み込み
+	 * @param field field
 	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
@@ -424,8 +424,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/**
-	 * マップ保存
-	 * @param field フィールド
+	 * Map保存
+	 * @param field field
 	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
@@ -435,11 +435,11 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/**
-	 * プレビュー用にマップを読み込み
+	 * プレビュー用にMapを読み込み
 	 * @param engine GameEngine
 	 * @param playerID Player number
-	 * @param id マップID
-	 * @param forceReload trueにするとマップファイルを強制再読み込み
+	 * @param id MapID
+	 * @param forceReload trueにするとMapファイルを強制再読み込み
 	 */
 	protected void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
@@ -502,7 +502,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (Initialization前）
+	 * Called for initialization during Ready (before initialization)
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -532,7 +532,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		}
 		else if (feverMapSet[playerID] >= 0 && feverMapSet[playerID] < FEVER_MAPS.length)
 			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
-		// マップ読み込み・リプレイ保存用にバックアップ
+		// Map読み込み・リプレイ保存用にバックアップ
 		if(useMap[playerID]) {
 			if(owner.replayMode) {
 				engine.createFieldIfNeeded();
@@ -568,7 +568,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	/*
-	 * ゲーム開始時の処理
+	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -774,17 +774,17 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
 			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
 			if(p1Lose && p2Lose) {
-				// 引き分け
+				// Draw
 				winnerID = -1;
 				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
 				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
 			} else if(p2Lose && !p1Lose) {
-				// 1P勝利
+				// 1P win
 				winnerID = 0;
 				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
 				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
 			} else if(p1Lose && !p2Lose) {
-				// 2P勝利
+				// 2P win
 				winnerID = 1;
 				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
 				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;

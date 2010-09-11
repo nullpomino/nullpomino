@@ -39,13 +39,13 @@ public class RuleOptions implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 5781310758989780350L;
 
-	/** 横移動カウンタかrotationカウンタが超過したら固定 timeリセットを無効にする */
+	/** 横移動 counterかrotation counterが超過したら固定 timeリセットを無効にする */
 	public static final int LOCKRESET_LIMIT_OVER_NORESET = 0;
 
-	/** 横移動カウンタかrotationカウンタが超過したら即座に固定する */
+	/** 横移動 counterかrotation counterが超過したら即座に固定する */
 	public static final int LOCKRESET_LIMIT_OVER_INSTANT = 1;
 
-	/** 横移動カウンタかrotationカウンタが超過したらWallkick無効にする */
+	/** 横移動 counterかrotation counterが超過したらWallkick無効にする */
 	public static final int LOCKRESET_LIMIT_OVER_NOWALLKICK = 2;
 
 	/** このルールのName */
@@ -75,34 +75,34 @@ public class RuleOptions implements Serializable {
 	/** BlockピースのBig時の出現Y-coordinate補正 (11ピース×4Direction) */
 	public int[][] pieceSpawnYBig;
 
-	/** Blockピースの色 */
+	/** Blockピース color */
 	public int[] pieceColor;
 
 	/** Blockピースの初期Direction */
 	public int[] pieceDefaultDirection;
 
-	/** フィールドより上から出現 */
+	/** fieldより上から出現 */
 	public boolean pieceEnterAboveField;
 
 	/** 出現予定地が埋まっているときにY-coordinateを上にずらすMaximum count */
 	public int pieceEnterMaxDistanceY;
 
-	/** フィールドの幅 */
+	/** fieldの幅 */
 	public int fieldWidth;
 
 	/** Field height */
 	public int fieldHeight;
 
-	/** フィールドより上の見えない部分の高さ */
+	/** fieldより上の見えない部分の高さ */
 	public int fieldHiddenHeight;
 
-	/** フィールドの天井の有無 */
+	/** fieldの天井の有無 */
 	public boolean fieldCeiling;
 
-	/** フィールド枠内に置けなかったら死ぬかどうか */
+	/** field枠内に置けなかったら死ぬかどうか */
 	public boolean fieldLockoutDeath;
 
-	/** フィールド枠外にはみ出しただけで死ぬかどうか */
+	/** field枠外にはみ出しただけで死ぬかどうか */
 	public boolean fieldPartialLockoutDeath;
 
 	/** NEXTのcount */
@@ -165,7 +165,7 @@ public class RuleOptions implements Serializable {
 	/** 上DirectionへのWallkickができる count (-1:無限) */
 	public int rotateMaxUpwardWallkick;
 
-	/** falseなら左が正rotation, trueなら右が正rotation */
+	/** falseなら左が正rotation, When true,右が正rotation */
 	public boolean rotateButtonDefaultRight;
 
 	/** 逆rotationを許可 (falseなら正rotationと同じ) */
@@ -189,10 +189,10 @@ public class RuleOptions implements Serializable {
 	/** rotation count制限 (-1:無限) */
 	public int lockresetLimitRotate;
 
-	/** 横移動カウンタとrotationカウンタを共有 (横移動カウンタだけ使う) */
+	/** 横移動 counterとrotation counterを共有 (横移動 counterだけ使う) */
 	public boolean lockresetLimitShareCount;
 
-	/** 横移動カウンタかrotationカウンタが超過したときの処理 (LOCKRESET_LIMIT_OVER_で始まる定countを使う) */
+	/** 横移動 counterかrotation counterが超過したときの処理 (LOCKRESET_LIMIT_OVER_で始まる定countを使う) */
 	public int lockresetLimitOver;
 
 	/** 固定した瞬間光る frame count */
@@ -293,7 +293,7 @@ public class RuleOptions implements Serializable {
 	/** Blockの絵柄 */
 	public int skin;
 
-	/** ゴーストの有無 (falseならMode 側でゴーストを有効にしていても非表示) */
+	/** ghost の有無 (falseならMode 側でghost を is enabledにしていても非表示) */
 	public boolean ghost;
 
 	/**

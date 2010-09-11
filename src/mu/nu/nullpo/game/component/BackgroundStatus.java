@@ -31,7 +31,7 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * Background画像の状態
+ * Background画像 state
  */
 public class BackgroundStatus implements Serializable {
 	/** Serial version ID */
@@ -43,7 +43,7 @@ public class BackgroundStatus implements Serializable {
 	/** Background fade flag */
 	public boolean fadesw;
 
-	/** Background fadeの状態 (false for fadeout, true for fade-in) */
+	/** Background fade state (false for fadeout, true for fade-in) */
 	public boolean fadestat;
 
 	/** Background fade usage counter */

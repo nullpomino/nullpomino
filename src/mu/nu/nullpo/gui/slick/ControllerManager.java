@@ -55,7 +55,7 @@ public class ControllerManager {
 	/** Joystick 状態検出法 */
 	public static int method = CONTROLLER_METHOD_SLICK_DEFAULT;
 
-	/** Joystick の状態 */
+	/** Joystick  state */
 	public static ArrayList<Controller> controllers;
 
 	/** 各Playerが使用するJoystick の number */

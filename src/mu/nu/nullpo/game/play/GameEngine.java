@@ -50,7 +50,7 @@ import net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
- * 各Playerのゲームの処理
+ * Each player's ゲームの処理
  */
 public class GameEngine {
 	/** Log (Apache log4j) */
@@ -859,7 +859,7 @@ public class GameEngine {
 
 		rainbowAnimate = false;
 
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			owner.mode.playerInit(this, playerID);
 			if(owner.replayMode) owner.mode.loadReplay(this, playerID, owner.replayProp);
@@ -891,7 +891,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * ステータスカウンタInitialization
+	 * ステータス counterInitialization
 	 */
 	public void resetStatc() {
 		for(int i = 0; i < statc.length; i++) statc[i] = 0;
@@ -1027,7 +1027,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * 見え／消えRoll 状態のフィールドを通常状態に戻す
+	 * 見え／消えRoll 状態のfieldを通常状態に戻す
 	 */
 	public void resetFieldVisible() {
 		if(field != null) {
@@ -1234,7 +1234,7 @@ public class GameEngine {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param piece Current Blockピース
-	 * @param fld フィールド
+	 * @param fld field
 	 */
 	public void setAllSpin(int x, int y, Piece piece, Field fld) {
 		tspin = false;
@@ -1321,7 +1321,7 @@ public class GameEngine {
 
 	/**
 	 * ピースが出現するX-coordinateを取得
-	 * @param fld フィールド
+	 * @param fld field
 	 * @param piece Piece
 	 * @return 出現位置のX-coordinate
 	 */
@@ -1407,7 +1407,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * フィールドのBlockの状態を更新
+	 * fieldのBlock stateを更新
 	 */
 	public void fieldUpdate() {
 		if(field != null) {
@@ -1549,7 +1549,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * フィールドエディット画面に入る処理
+	 * fieldエディット画面に入る処理
 	 */
 	public void enterFieldEdit() {
 		fldeditPreviousStat = stat;
@@ -1563,7 +1563,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * フィールドをInitialization (まだ存在しない場合）
+	 * fieldをInitialization (まだ存在しない場合）
 	 */
 	public void createFieldIfNeeded() {
 		if(fieldWidth < 0) fieldWidth = ruleopt.fieldWidth;
@@ -1573,7 +1573,7 @@ public class GameEngine {
 	}
 
 	/**
-	 * ゲームの状態の更新
+	 * ゲーム stateの更新
 	 */
 	public void update() {
 		if(gameActive) {
@@ -1663,7 +1663,7 @@ public class GameEngine {
 			}
 		}
 
-		// フィールドのBlockの状態や統計情報を更新
+		// fieldのBlock stateや統計情報を更新
 		fieldUpdate();
 		if((ending == 0) || (staffrollEnableStatistics)) statistics.update();
 
@@ -1672,7 +1672,7 @@ public class GameEngine {
 		owner.receiver.onLast(this, playerID);
 		if((ai != null) && (!owner.replayMode || owner.replayRerecord)) ai.onLast(this, playerID);
 
-		// タイマー増加
+		// Timer増加
 		if(gameActive && timerActive) {
 			statistics.time++;
 		}
@@ -1680,7 +1680,7 @@ public class GameEngine {
 
 	/**
 	 * Draw the screen
-	 *  (各Mode やイベント処理クラスのイベントを呼び出すだけで, それ以外にGameEngine自身は何もしません）
+	 *  (各Mode や event 処理クラスの event を呼び出すだけで, それ以外にGameEngine自身は何もしません）
 	 */
 	public void render() {
 		// 最初の処理
@@ -1755,7 +1755,7 @@ public class GameEngine {
 	 * 開始前の設定画面のときの処理
 	 */
 	public void statSetting() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onSetting(this, playerID) == true) return;
 		}
@@ -1770,7 +1770,7 @@ public class GameEngine {
 	 * Ready→Goのときの処理
 	 */
 	public void statReady() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onReady(this, playerID) == true) return;
 		}
@@ -1782,7 +1782,7 @@ public class GameEngine {
 
 		// Initialization
 		if(statc[0] == 0) {
-			// フィールドInitialization
+			// fieldInitialization
 			createFieldIfNeeded();
 
 			// NEXTピース作成
@@ -1888,7 +1888,7 @@ public class GameEngine {
 	public void statMove() {
 		dasRepeat = false;
 
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onMove(this, playerID) == true) return;
 		}
@@ -2539,7 +2539,7 @@ public class GameEngine {
 	 * Block固定直後の光っているときの処理
 	 */
 	public void statLockFlash() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onLockFlash(this, playerID) == true) return;
 		}
@@ -2574,7 +2574,7 @@ public class GameEngine {
 	 * Line clear処理
 	 */
 	public void statLineClear() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onLineClear(this, playerID) == true) return;
 		}
@@ -2827,7 +2827,7 @@ public class GameEngine {
 	 * ARE中の処理
 	 */
 	public void statARE() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onARE(this, playerID) == true) return;
 		}
@@ -2880,7 +2880,7 @@ public class GameEngine {
 	 * Ending突入処理
 	 */
 	public void statEndingStart() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onEndingStart(this, playerID) == true) return;
 		}
@@ -2938,7 +2938,7 @@ public class GameEngine {
 	 * 各ゲームMode が自由に使えるステータスの処理
 	 */
 	public void statCustom() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onCustom(this, playerID) == true) return;
 		}
@@ -2949,7 +2949,7 @@ public class GameEngine {
 	 * Ending画面
 	 */
 	public void statExcellent() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onExcellent(this, playerID) == true) return;
 		}
@@ -2982,7 +2982,7 @@ public class GameEngine {
 	 * game overの処理
 	 */
 	public void statGameOver() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onGameOver(this, playerID) == true) return;
 		}
@@ -3080,7 +3080,7 @@ public class GameEngine {
 	 * 結果画面
 	 */
 	public void statResult() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onResult(this, playerID) == true) return;
 		}
@@ -3106,10 +3106,10 @@ public class GameEngine {
 	}
 
 	/**
-	 * フィールドエディット画面
+	 * fieldエディット画面
 	 */
 	public void statFieldEdit() {
-		// イベント発生
+		//  event 発生
 		if(owner.mode != null) {
 			if(owner.mode.onFieldEdit(this, playerID) == true) return;
 		}
@@ -3201,13 +3201,13 @@ public class GameEngine {
 
 	/**
 	 * ミラー処理
-	 * @return trueならミラー処理続行
+	 * @return When true,ミラー処理続行
 	 */
 	public boolean interruptItemMirrorProc() {
 		if(statc[0] == 0) {
-			// フィールドをバックアップにコピー
+			// fieldをバックアップにコピー
 			interruptItemMirrorField = new Field(field);
-			// フィールドのBlockを全部消す
+			// fieldのBlockを全部消す
 			field.reset();
 		} else if((statc[0] >= 21) && (statc[0] < 21 + (field.getWidth() * 2)) && (statc[0] % 2 == 0)) {
 			// 反転

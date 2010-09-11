@@ -59,7 +59,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** FPS表示 */
 	protected boolean showfps;
 
-	/**  frame ステップ有効 */
+	/**  frame ステップ is enabled */
 	protected boolean enableframestep;
 
 	/** MaximumFPS */
@@ -74,7 +74,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールドBackgroundの明るさ */
+	/** fieldBackgroundの明るさ */
 	protected int fieldbgbright;
 
 	/** NEXT欄を暗くする */
@@ -89,13 +89,13 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** 同時再生できるSound effectsのcount */
 	protected int soundChannels;
 
-	/** フィールド右側にMeterを表示 */
+	/** field右側にMeterを表示 */
 	protected boolean showmeter;
 
-	/** ゴーストピースの上にNEXT表示 */
+	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
-	/** 枠線型ゴーストピース */
+	/** 枠線型ghost ピース */
 	protected boolean outlineghost;
 
 	/** Side piece preview */

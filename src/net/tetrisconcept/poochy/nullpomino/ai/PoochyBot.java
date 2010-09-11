@@ -41,7 +41,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** The GameManager that owns this AI */
 	public GameManager gManager;
 
-	/** trueならスレッドにThink routineの実行を指示 */
+	/** When true,スレッドにThink routineの実行を指示 */
 	public boolean thinkRequest;
 
 	/** true when thread is executing the think routine. */
@@ -50,7 +50,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** スレッドを停止させる time */
 	public int thinkDelay;
 
-	/** trueならスレッド動作中 */
+	/** When true,スレッド動作中 */
 	public volatile boolean threadRunning;
 
 	/** Thread for executing the think routine */

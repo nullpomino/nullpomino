@@ -57,7 +57,7 @@ public class UpdateChecker implements Runnable {
 	/** Current 状態 */
 	private static volatile int status = 0;
 
-	/** イベントリスナー */
+	/**  event リスナー */
 	private static LinkedList<UpdateCheckerListener> listeners = null;
 
 	/** アップデート情報が書かれたXMLのURL */
@@ -263,8 +263,8 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * イベントリスナーを追加(もう追加されていると何も起こりません)
-	 * @param l 追加するイベントリスナー
+	 *  event リスナーを追加(もう追加されていると何も起こりません)
+	 * @param l 追加する event リスナー
 	 */
 	public static void addListener(UpdateCheckerListener l) {
 		if(listeners == null) {
@@ -277,8 +277,8 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * イベントリスナーを削除
-	 * @param l 削除するイベントリスナー
+	 *  event リスナーを削除
+	 * @param l 削除する event リスナー
 	 * @return 削除されたらtrue, 最初から登録されていなかったらfalse
 	 */
 	public static boolean removeListener(UpdateCheckerListener l) {

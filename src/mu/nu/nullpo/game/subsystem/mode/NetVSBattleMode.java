@@ -55,13 +55,13 @@ import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
- * NET-VS-BATTLEMode
+ * NET-VS-BATTLE Mode
  */
 public class NetVSBattleMode extends NetDummyMode {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetVSBattleMode.class);
 
-	/** PlayerのMaximumcount */
+	/** Maximum number of players */
 	private static final int MAX_PLAYERS = 6;
 
 	/** Most recent scoring event typeの定count */
@@ -86,7 +86,7 @@ public class NetVSBattleMode extends NetDummyMode {
 							 ATTACK_CATEGORY_GEM = 5,
 							 ATTACK_CATEGORIES = 6;
 
-	/** ゲーム席とゲーム画面上でのフィールド numberの対応表 */
+	/** ゲーム席とゲーム画面上でのfield numberの対応表 */
 	private static final int[][] GAME_SEAT_NUMBERS =
 	{
 		{0,1,2,3,4,5},
@@ -97,7 +97,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		{1,2,3,4,5,0},
 	};
 
-	/** 各Playerの邪魔Blockの色 */
+	/** Each player's garbage block color */
 	private static final int[] PLAYER_COLOR_BLOCK = {
 		Block.BLOCK_COLOR_RED, Block.BLOCK_COLOR_BLUE, Block.BLOCK_COLOR_GREEN,
 		Block.BLOCK_COLOR_YELLOW, Block.BLOCK_COLOR_PURPLE, Block.BLOCK_COLOR_CYAN
@@ -144,7 +144,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		{0,	0, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力 table参照用のインデックス number */
+	/** 攻撃力 table参照用のindex number */
 	private static final int LINE_ATTACK_INDEX_SINGLE = 0,
 							 LINE_ATTACK_INDEX_DOUBLE = 1,
 							 LINE_ATTACK_INDEX_TRIPLE = 2,
@@ -182,7 +182,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 3人以上生きている場合に攻撃力を減らす */
 	private boolean reduceLineSend;
 
-	/** 新しい断片的邪魔Blockシステムを使う */
+	/** 新しい断片的garbage blockシステムを使う */
 	private boolean useFractionalGarbage;
 
 	private int garbagePercent;
@@ -227,10 +227,10 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** まだ生きている人count */
 	private int numAlivePlayers;
 
-	/** 各フィールドのゲーム席の number */
+	/** 各fieldのゲーム席の number */
 	private int[] allPlayerSeatNumbers;
 
-	/** Playerが存在するフィールドならtrue */
+	/** Playerが存在するfieldならtrue */
 	private boolean[] isPlayerExist;
 
 	/** 準備完了状態ならtrue */
@@ -273,13 +273,13 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 練習Mode ならtrue */
 	private boolean isPractice;
 
-	/** 自動スタートタイマー有効 */
+	/** Automatic start timer is enabled */
 	private boolean autoStartActive;
 
-	/** 自動スタートまでの残り time */
+	/** Time left until automatic start */
 	private int autoStartTimer;
 
-	/** 経過 timeカウント有効 */
+	/** 経過 timeカウント is enabled */
 	private boolean netPlayTimerActive;
 
 	/** 経過 time */
@@ -306,13 +306,13 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Most recent scoring eventでのピースID */
 	private int[] lastpiece;
 
-	/** 送った邪魔Blockのcount */
+	/** 送ったgarbage blockのcount */
 	private int[] garbageSent;
 
-	/** 溜まっている邪魔Blockのcount */
+	/** 溜まっているgarbage blockのcount */
 	private int[] garbage;
 
-	/** 敵から送られてきた邪魔Blockのリスト */
+	/** 敵から送られてきたgarbage blockのリスト */
 	private LinkedList<GarbageEntry> garbageEntries;
 
 	/** APM */
@@ -321,28 +321,28 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Hurryup後にBlockを置いた count */
 	private int hurryupCount;
 
-	/** マップリスト */
+	/** Map list */
 	private LinkedList<String> mapList;
 
-	/** 使用するマップ number */
+	/** Map number to use */
 	private int mapNo;
 
-	/** 練習Mode のマップ選択用乱count */
+	/** Practice mode map選択用乱count */
 	private Random randMap;
 
-	/** 練習Mode で前回使ったマップ number */
+	/** Practice mode last used map number */
 	private int mapPreviousPracticeMap;
 
 	/** 最後に攻撃してきた相手のPlayer number */
 	private int lastAttackerUID;
 
-	/** KOcount */
+	/** KO count */
 	private int currentKO;
 
 	/**
-	 * ゲーム席 numberを元にフィールド numberを返す
+	 * ゲーム席 numberを元にfield numberを返す
 	 * @param seat ゲーム席 number
-	 * @return 対応するフィールド number
+	 * @return 対応するfield number
 	 */
 	private int getPlayerIDbySeatID(int seat) {
 		int myseat = playerSeatNumber;
@@ -628,8 +628,8 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 今溜まっている邪魔Blockのcountを返す
-	 * @return 今溜まっている邪魔Blockのcount
+	 * 今溜まっているgarbage blockのcountを返す
+	 * @return 今溜まっているgarbage blockのcount
 	 */
 	private int getTotalGarbageLines() {
 		int count = 0;
@@ -640,7 +640,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * フィールドの状態を送る
+	 * Send field state
 	 * @param engine GameEngine
 	 */
 	private void sendField(GameEngine engine) {
@@ -670,7 +670,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * NEXTとHOLDの状態を送る
+	 * Send NEXT and HOLD states
 	 * @param engine GameEngine
 	 */
 	private void sendNextAndHold(GameEngine engine) {
@@ -701,7 +701,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 練習Mode 開始
+	 * Start practice mode
 	 * @param engine GameEngine
 	 */
 	private void startPractice(GameEngine engine) {
@@ -710,7 +710,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		engine.stat = GameEngine.STAT_READY;
 		engine.resetStatc();
 
-		// マップ
+		// map
 		if((currentRoomInfo != null) && currentRoomInfo.useMap && (mapList.size() > 0)) {
 			if(randMap == null) randMap = new Random();
 
@@ -731,7 +731,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * ゲーム結果送信
+	 * Send game results
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
@@ -834,7 +834,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					}
 				}
 
-				// ランダムマッププレビュー
+				// Random map preview
 				if((currentRoomInfo != null) && currentRoomInfo.useMap && !mapList.isEmpty()) {
 					if(engine.statc[3] % 30 == 0) {
 						engine.statc[5]++;
@@ -848,7 +848,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					}
 				}
 
-				// 練習Mode
+				// Practice mode
 				if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 					engine.playSE("decide");
 					startPractice(engine);
@@ -905,7 +905,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			// マップ
+			// Map
 			if(currentRoomInfo.useMap && (mapNo < mapList.size()) && !isPractice) {
 				engine.createFieldIfNeeded();
 				engine.field.stringToField(mapList.get(mapNo));
@@ -923,7 +923,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * ゲーム開始
+	 * Start game
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -969,7 +969,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// ゲーム開始直後の新規ピース出現時
+		// Start game直後の新規ピース出現時
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) &&
 		   (playerID == 0) && (playerSeatNumber >= 0) && (!isPractice))
 		{
@@ -1023,7 +1023,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * ピース固定
+	 * Called whenever a piece is locked
 	 */
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
@@ -1152,7 +1152,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				pts[ATTACK_CATEGORY_BRAVO] += 6;
 			}
 
-			// 宝石Block攻撃
+			// gem block attack
 			pts[ATTACK_CATEGORY_GEM] += engine.field.getHowManyGemClears();
 
 			lastpiece[playerID] = engine.nowPieceObject.id;
@@ -1168,7 +1168,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 
-			// 攻撃Linescount
+			// Attack lines count
 			for(int i : pts){
 				garbageSent[playerID] += i;
 			}
@@ -1192,7 +1192,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 
-			// 攻撃
+			//  Attack 
 			if(!isPractice && (numPlayers + numSpectators >= 2)) {
 				garbage[playerID] = getTotalGarbageLines();
 
@@ -1209,7 +1209,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		if(((lines == 0) || (!currentRoomInfo.rensaBlock)) && (getTotalGarbageLines() >= GARBAGE_DENOMINATOR) && (!isPractice)) {
 			engine.playSE("garbage");
 
-			int smallGarbageCount = 0;	// 10pts未満の邪魔Blockcountの合計count(後でまとめてせり上げる)
+			int smallGarbageCount = 0;	// 10pts未満のgarbage blockcountの合計count(後でまとめてせり上げる)
 			int hole = lastHole;
 			int newHole;
 			if(hole == -1) {
@@ -1371,10 +1371,10 @@ public class NetVSBattleMode extends NetDummyMode {
 			playerAPM = (tempGarbageSent * 3600) / (engine.statistics.time);
 		}
 
-		// タイマー
+		// Timer
 		if((playerID == 0) && (netPlayTimerActive)) netPlayTimer++;
 
-		// 自動スタートタイマー
+		// Automatically start timer
 		if((playerID == 0) && (currentRoomInfo != null) && (autoStartActive) && (!isNetGameActive)) {
 			if(numPlayers <= 1) {
 				autoStartActive = false;
@@ -1389,7 +1389,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			}
 		}
 
-		// 練習Mode やめる
+		// End practice mode
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive) && (engine.ctrl.isPush(Controller.BUTTON_F))) {
 			engine.timerActive = false;
 			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
@@ -1419,7 +1419,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * 各 frame の最後の描画処理
+	 * Drawing processing at the end of every frame
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
@@ -1479,7 +1479,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 
-			// 邪魔Blockcount
+			// garbage blockcount
 			if((garbage[playerID] > 0) && (useFractionalGarbage)) {
 				String strTempGarbage;
 
@@ -1500,7 +1500,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			}
 		}
 
-		// 練習Mode
+		// Practice mode
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive)) {
 			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120) || (lastcombo[playerID] < 2)) {
 				if(isPractice)
@@ -1514,13 +1514,13 @@ public class NetVSBattleMode extends NetDummyMode {
 			}
 		}
 
-		// 自動スタートタイマー
+		// Automatically start timer
 		if((playerID == 0) && (currentRoomInfo != null) && (autoStartActive) && (!isNetGameActive)) {
 			receiver.drawDirectFont(engine, 0, 496, 16, GeneralUtil.getTime(autoStartTimer),
 									currentRoomInfo.autoStartTNET2, EventReceiver.COLOR_RED, EventReceiver.COLOR_YELLOW);
 		}
 
-		// Line clearイベント表示
+		// Line clear event 表示
 		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
 			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
@@ -1741,7 +1741,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * 死亡後
+	 * After being defeated
 	 */
 	@Override
 	public boolean onCustom(GameEngine engine, int playerID) {
@@ -1827,7 +1827,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			resetFlags();
 			owner.reset();
 		}
-		// 練習Mode
+		// Practice mode
 		if(engine.ctrl.isPush(Controller.BUTTON_F) && (playerID == 0)) {
 			engine.playSE("decide");
 			startPractice(engine);
@@ -1996,7 +1996,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 			log.info("Received rule data (" + newRuleOpt.strRuleName + ")");
 		}
-		// マップ受信
+		// Map受信
 		if(message[0].equals("map")) {
 			String strDecompressed = NetUtil.decompressString(message[1]);
 			String[] strMaps = strDecompressed.split("\t");
@@ -2010,7 +2010,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 			log.debug("Received " + mapList.size() + " maps");
 		}
-		// マップ送信
+		// Map送信
 		if(message[0].equals("roomcreatemapready")) {
 			int setID = lobby.getCurrentSelectedMapSetID();
 			log.debug("MapSetID:" + setID);
@@ -2069,7 +2069,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 		}
-		// 自動スタートタイマー開始
+		// Automatic timer start
 		if(message[0].equals("autostartbegin")) {
 			if(numPlayers >= 2) {
 				int seconds = Integer.parseInt(message[1]);
@@ -2077,11 +2077,11 @@ public class NetVSBattleMode extends NetDummyMode {
 				autoStartActive = true;
 			}
 		}
-		// 自動スタートタイマー中止
+		// Automatic timer stop
 		if(message[0].equals("autostartstop")) {
 			autoStartActive = false;
 		}
-		// ゲームスタート
+		// game start
 		if(message[0].equals("start")) {
 			long randseed = Long.parseLong(message[1], 16);
 			numNowPlayers = Integer.parseInt(message[2]);
@@ -2174,7 +2174,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 		}
-		// ゲーム終了
+		// game finished
 		if(message[0].equals("finish")) {
 			log.debug("Game Finished");
 
@@ -2240,7 +2240,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			updatePlayerExist();
 			updatePlayerNames();
 		}
-		// ゲームメッセージ
+		// game messages
 		if(message[0].equals("game")) {
 			int uid = Integer.parseInt(message[1]);
 			int seatID = Integer.parseInt(message[2]);
@@ -2250,7 +2250,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				owner.engine[playerID].field = new Field();
 			}
 
-			// フィールド
+			// field
 			if(message[3].equals("field")) {
 				if(message.length > 7) {
 					owner.engine[playerID].nowPieceObject = null;
@@ -2330,7 +2330,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				isTank = true;
 				playerTeamsIsTank[playerID] = true;
 			}
-			// 攻撃
+			//  Attack 
 			if(message[3].equals("attack")) {
 				//int pts = Integer.parseInt(message[4]);
 				int[] pts = new int[ATTACK_CATEGORIES];
@@ -2374,7 +2374,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(message[3].equals("garbageupdate")) {
 				garbage[playerID] = Integer.parseInt(message[4]);
 			}
-			// NEXTとHOLD
+			// NEXT and HOLD
 			if(message[3].equals("next")) {
 				int maxNext = Integer.parseInt(message[4]);
 				owner.engine[playerID].ruleopt.nextDisplay = maxNext;
@@ -2423,10 +2423,10 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 敵から送られてきた邪魔Blockの data
+	 * 敵から送られてきたgarbage blockの data
 	 */
 	private class GarbageEntry {
-		/** 邪魔Blockcount */
+		/** garbage blockcount */
 		public int lines = 0;
 
 		/** 送信元(ゲーム用Player number) */
@@ -2444,7 +2444,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔Blockcount
+		 * @param g garbage blockcount
 		 */
 		@SuppressWarnings("unused")
 		public GarbageEntry(int g) {
@@ -2453,7 +2453,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔Blockcount
+		 * @param g garbage blockcount
 		 * @param p 送信元(ゲーム用Player number)
 		 */
 		public GarbageEntry(int g, int p) {
@@ -2463,7 +2463,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔Blockcount
+		 * @param g garbage blockcount
 		 * @param p 送信元(ゲーム用Player number)
 		 * @param s 送信元(ゲーム以外用Player number)
 		 */

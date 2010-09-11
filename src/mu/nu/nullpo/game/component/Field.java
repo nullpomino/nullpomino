@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.apache.log4j.Logger;
 
 /**
- * ゲームフィールド
+ * ゲームfield
  */
 public class Field implements Serializable {
 	/** Log */
@@ -68,19 +68,19 @@ public class Field implements Serializable {
 	/** 座標の属性 (壁) */
 	public static final int COORD_WALL = 3;
 
-	/** フィールドの幅 */
+	/** fieldの幅 */
 	protected int width;
 
 	/** Field height */
 	protected int height;
 
-	/** フィールドより上の見えない部分の高さ */
+	/** fieldより上の見えない部分の高さ */
 	protected int hidden_height;
 
-	/** フィールドのBlock */
+	/** fieldのBlock */
 	protected Block[][] block_field;
 
-	/** フィールド上の見えない部分のBlock */
+	/** field上の見えない部分のBlock */
 	protected Block[][] block_hidden;
 
 	/** Line clear flag */
@@ -112,9 +112,9 @@ public class Field implements Serializable {
 
 	/**
 	 * パラメータ付きConstructor
-	 * @param w フィールドの幅
+	 * @param w fieldの幅
 	 * @param h Field height
-	 * @param hh フィールドより上の見えない部分の高さ
+	 * @param hh fieldより上の見えない部分の高さ
 	 */
 	public Field(int w, int h, int hh) {
 		width = w;
@@ -127,9 +127,9 @@ public class Field implements Serializable {
 
 	/**
 	 * パラメータ付きConstructor
-	 * @param w フィールドの幅
+	 * @param w fieldの幅
 	 * @param h Field height
-	 * @param hh フィールドより上の見えない部分の高さ
+	 * @param hh fieldより上の見えない部分の高さ
 	 * @param c 天井の有無
 	 */
 	public Field(int w, int h, int hh, boolean c) {
@@ -255,8 +255,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールドの幅を取得
-	 * @return フィールドの幅
+	 * fieldの幅を取得
+	 * @return fieldの幅
 	 */
 	public int getWidth() {
 		return width;
@@ -271,8 +271,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールドより上の見えない部分の高さを取得
-	 * @return フィールドより上の見えない部分の高さ
+	 * fieldより上の見えない部分の高さを取得
+	 * @return fieldより上の見えない部分の高さ
 	 */
 	public int getHiddenHeight() {
 		return hidden_height;
@@ -309,7 +309,7 @@ public class Field implements Serializable {
 	 * @return 成功したら指定した座標にあるBlockオブジェクト, 失敗したらnull
 	 */
 	public Block getBlock(int x, int y) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y];
@@ -317,7 +317,7 @@ public class Field implements Serializable {
 				return null;
 			}
 		}
-		// フィールド外
+		// field外
 		int y2 = (y * -1) - 1;
 
 		try {
@@ -335,7 +335,7 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public Block getBlockE(int x, int y) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y];
@@ -343,7 +343,7 @@ public class Field implements Serializable {
 				throw e;
 			}
 		}
-		// フィールド外
+		// field外
 		try {
 			int y2 = (y * -1) - 1;
 			return block_hidden[x][y2];
@@ -360,7 +360,7 @@ public class Field implements Serializable {
 	 * @return true if successful, false if failed
 	 */
 	public boolean setBlock(int x, int y, Block blk) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				block_field[x][y] = blk;
@@ -368,7 +368,7 @@ public class Field implements Serializable {
 				return false;
 			}
 		}
-		// フィールド外
+		// field外
 		else {
 			int y2 = (y * -1) - 1;
 
@@ -390,7 +390,7 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public void setBlockE(int x, int y, Block blk) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				block_field[x][y] = blk;
@@ -398,7 +398,7 @@ public class Field implements Serializable {
 				throw e;
 			}
 		}
-		// フィールド外
+		// field外
 		else {
 			try {
 				int y2 = (y * -1) - 1;
@@ -410,13 +410,13 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockの色を取得
+	 * 指定した座標にあるBlock colorを取得
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockの色 (失敗したらBLOCK_COLOR_INVALID）
+	 * @return 指定した座標にあるBlock color (失敗したらBLOCK_COLOR_INVALID）
 	 */
 	public int getBlockColor(int x, int y) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y].color;
@@ -425,7 +425,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		int y2 = (y * -1) - 1;
 
 		try {
@@ -435,25 +435,25 @@ public class Field implements Serializable {
 		}
 	}
 	/**
-	 * 指定した座標にあるBlockの色を取得
+	 * 指定した座標にあるBlock colorを取得
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param gemSame If true, a gem block will return the color of the corresponding normal block.
-	 * @return 指定した座標にあるBlockの色 (失敗したらBLOCK_COLOR_INVALID）
+	 * @return 指定した座標にあるBlock color (失敗したらBLOCK_COLOR_INVALID）
 	 */
 	public int getBlockColor(int x, int y, boolean gemSame) {
 		return Block.gemToNormalColor(getBlockColor(x, y));
 	}
 
 	/**
-	 * 指定した座標にあるBlockの色を取得 (失敗したら例外送出）
+	 * 指定した座標にあるBlock colorを取得 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockの色
+	 * @return 指定した座標にあるBlock color
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public int getBlockColorE(int x, int y) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y].color;
@@ -462,7 +462,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		try {
 			int y2 = (y * -1) - 1;
 			return block_hidden[x][y2].color;
@@ -472,14 +472,14 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockの色を変更
+	 * 指定した座標にあるBlock colorを変更
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param c 色
 	 * @return true if successful, false if failed
 	 */
 	public boolean setBlockColor(int x, int y, int c) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				block_field[x][y].color = c;
@@ -487,7 +487,7 @@ public class Field implements Serializable {
 				return false;
 			}
 		}
-		// フィールド外
+		// field外
 		else {
 			int y2 = (y * -1) - 1;
 
@@ -502,14 +502,14 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockの色を変更 (失敗したら例外送出）
+	 * 指定した座標にあるBlock colorを変更 (失敗したら例外送出）
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param c 色
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public void setBlockColorE(int x, int y, int c) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				block_field[x][y].color = c;
@@ -517,7 +517,7 @@ public class Field implements Serializable {
 				throw e;
 			}
 		}
-		// フィールド外
+		// field外
 		else {
 			try {
 				int y2 = (y * -1) - 1;
@@ -534,7 +534,7 @@ public class Field implements Serializable {
 	 * @return 消える列ならtrue, そうでないなら (もしくは座標が範囲外なら）false
 	 */
 	public boolean getLineFlag(int y) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return lineflag_field[y];
@@ -543,7 +543,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		int y2 = (y * -1) - 1;
 
 		try {
@@ -560,7 +560,7 @@ public class Field implements Serializable {
 	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合もtrue）
 	 */
 	public boolean getBlockEmpty(int x, int y) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y].isEmpty();
@@ -569,7 +569,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		int y2 = (y * -1) - 1;
 
 		try {
@@ -586,7 +586,7 @@ public class Field implements Serializable {
 	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合はfalse）
 	 */
 	public boolean getBlockEmptyF(int x, int y) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y].isEmpty();
@@ -595,7 +595,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		int y2 = (y * -1) - 1;
 
 		try {
@@ -613,7 +613,7 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public boolean getBlockEmptyE(int x, int y) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return block_field[x][y].isEmpty();
@@ -622,7 +622,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		try {
 			int y2 = (y * -1) - 1;
 			return block_hidden[x][y2].isEmpty();
@@ -638,7 +638,7 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public boolean getLineFlagE(int y) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				return lineflag_field[y];
@@ -647,7 +647,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// フィールド外
+		// field外
 		try {
 			int y2 = (y * -1) - 1;
 			return lineflag_hidden[y2];
@@ -663,7 +663,7 @@ public class Field implements Serializable {
 	 * @return true if successful, false if failed
 	 */
 	public boolean setLineFlag(int y, boolean flag) {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				lineflag_field[y] = flag;
@@ -671,7 +671,7 @@ public class Field implements Serializable {
 				return false;
 			}
 		}
-		// フィールド外
+		// field外
 		else {
 			int y2 = (y * -1) - 1;
 
@@ -692,7 +692,7 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public void setLineFlagE(int y, boolean flag) throws ArrayIndexOutOfBoundsException {
-		// フィールド内
+		// field内
 		if(y >= 0) {
 			try {
 				lineflag_field[y] = flag;
@@ -700,7 +700,7 @@ public class Field implements Serializable {
 				throw e;
 			}
 		}
-		// フィールド外
+		// field外
 		else {
 			try {
 				int y2 = (y * -1) - 1;
@@ -774,7 +774,7 @@ public class Field implements Serializable {
 	public int clearLine() {
 		int lines = 0;
 
-		// フィールド内
+		// field内
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			if(getLineFlag(i)) {
 				lines++;
@@ -1118,7 +1118,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinで消えるLinescountを返す(フィールド全体)
+	 * T-Spinで消えるLinescountを返す(field全体)
 	 * @param big Bigかどうか(未対応)
 	 * @return T-Spinで消えるLinescount(T-Spinじゃない場合などは0)
 	 */
@@ -1137,7 +1137,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinで消えるLinescountを返す(フィールド全体)
+	 * T-Spinで消えるLinescountを返す(field全体)
 	 * @param big Bigかどうか(未対応)
 	 * @param minimum 最低Linescount(2にするとT-Spin Doubleにだけ反応)
 	 * @return T-Spinで消えるLinescount(T-Spinじゃない場合やminimumに満たないLinesなどは0)
@@ -1160,8 +1160,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールド内に何個のBlockがあるか調べる
-	 * @return フィールド内にあるBlockのcount
+	 * field内に何個のBlockがあるか調べる
+	 * @return field内にあるBlockのcount
 	 */
 	public int getHowManyBlocks() {
 		int count = 0;
@@ -1255,8 +1255,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 邪魔Blockが最初に現れるY-coordinateを取得
-	 * @return 邪魔Blockが最初に現れるY-coordinate
+	 * garbage blockが最初に現れるY-coordinateを取得
+	 * @return garbage blockが最初に現れるY-coordinate
 	 */
 	public int getHighestGarbageBlockY() {
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
@@ -1283,8 +1283,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールド内の隙間のcountを調べる
-	 * @return フィールド内の隙間のcount
+	 * field内の隙間のcountを調べる
+	 * @return field内の隙間のcount
 	 */
 	public int getHowManyHoles() {
 		int hole = 0;
@@ -1387,7 +1387,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールド全体を上にずらす
+	 * field全体を上にずらす
 	 * @param lines ずらす段count
 	 */
 	public void pushUp(int lines) {
@@ -1412,14 +1412,14 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールド全体を1段上にずらす
+	 * field全体を1段上にずらす
 	 */
 	public void pushUp() {
 		pushUp(1);
 	}
 
 	/**
-	 * フィールド全体を下にずらす
+	 * field全体を下にずらす
 	 * @param lines ずらす段count
 	 */
 	public void pushDown(int lines) {
@@ -1443,7 +1443,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールド全体を1段下にずらす
+	 * field全体を1段下にずらす
 	 */
 	public void pushDown() {
 		pushDown(1);
@@ -1473,12 +1473,12 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 穴が1箇所だけ開いた邪魔Blockを一番下に追加
+	 * 穴が1箇所だけ開いたgarbage blockを一番下に追加
 	 * @param hole 穴の位置 (-1なら穴なし）
-	 * @param color 邪魔Blockの色
-	 * @param skin 邪魔Blockの絵柄
-	 * @param attribute 邪魔Blockの属性
-	 * @param lines 追加する邪魔BlockのLinescount
+	 * @param color garbage block color
+	 * @param skin garbage blockの絵柄
+	 * @param attribute garbage blockの属性
+	 * @param lines 追加するgarbage blockのLinescount
 	 */
 	public void addSingleHoleGarbage(int hole, int color, int skin, int attribute, int lines) {
 		for(int k = 0; k < lines; k++) {
@@ -1497,11 +1497,11 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 一番下のLinesの形をコピーした邪魔Blockを一番下に追加
-	 * @param color 邪魔Blockの色
-	 * @param skin 邪魔Blockの絵柄
-	 * @param attribute 邪魔Blockの属性
-	 * @param lines 追加する邪魔BlockのLinescount
+	 * 一番下のLinesの形をコピーしたgarbage blockを一番下に追加
+	 * @param color garbage block color
+	 * @param skin garbage blockの絵柄
+	 * @param attribute garbage blockの属性
+	 * @param lines 追加するgarbage blockのLinescount
 	 */
 	public void addBottomCopyGarbage(int color, int skin, int attribute, int lines) {
 		for(int k = 0; k < lines; k++) {
@@ -1558,7 +1558,7 @@ public class Field implements Serializable {
 	/**
 	 * 全てのBlockの属性を変更
 	 * @param attr 変更したい属性
-	 * @param status 変更後の状態
+	 * @param status 変更後 state
 	 */
 	public void setAllAttribute(int attr, boolean status) {
 		for(int i = (hidden_height * -1); i < height; i++) {
@@ -2340,8 +2340,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールドを文字列に変換
-	 * @return 文字列に変換されたフィールド
+	 * fieldを文字列に変換
+	 * @return 文字列に変換されたfield
 	 */
 	public String fieldToString() {
 		String strResult = "";
@@ -2369,7 +2369,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 文字列を元にフィールドを変更
+	 * 文字列を元にfieldを変更
 	 * @param str 文字列
 	 */
 	public void stringToField(String str) {
@@ -2399,10 +2399,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 文字列を元にフィールドを変更
+	 * 文字列を元にfieldを変更
 	 * @param str 文字列
 	 * @param skin Blockの絵柄
-	 * @param highestGarbageY 最も高い邪魔Blockの位置
+	 * @param highestGarbageY 最も高いgarbage blockの位置
 	 * @param highestWallY 最も高いHurryupBlockの位置
 	 */
 	public void stringToField(String str, int skin, int highestGarbageY, int highestWallY) {
@@ -2440,7 +2440,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * フィールドの文字列表現を取得
+	 * fieldの文字列表現を取得
 	 */
 	@Override
 	public String toString() {

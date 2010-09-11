@@ -105,7 +105,7 @@ public class NetServer {
 	/** 作られたルームの合計count */
 	private int roomCount = 0;
 
-	/** マップ選択用乱count */
+	/** Map選択用乱count */
 	private Random rand = new Random();
 
 	/**
@@ -910,7 +910,7 @@ public class NetServer {
 			}
 			return;
 		}
-		// ルーム作成時のマップ data受信
+		// ルーム作成時のMap data受信
 		if(message[0].equals("roommap")) {
 			if((pInfo != null) && (pInfo.roomID != -1)) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1031,7 +1031,7 @@ public class NetServer {
 						send(client, "rulelock\t" + strRuleData + "\n");
 					}
 
-					// マップ送信
+					// Map送信
 					if(newRoom.useMap && !newRoom.mapList.isEmpty()) {
 						String strMapTemp = "";
 						int maxMap = newRoom.mapList.size();
@@ -1275,7 +1275,7 @@ public class NetServer {
 	}
 
 	/**
-	 * 自動スタートタイマーの開始と停止
+	 * Automatically start timerの開始と停止
 	 * @param roomInfo ルーム情報
 	 */
 	private void autoStartTimerCheck(NetRoomInfo roomInfo) throws IOException {
@@ -1304,7 +1304,7 @@ public class NetServer {
 	/**
 	 * 全員が準備完了状態か check し, 条件を満たしていればゲームを開始する
 	 * @param roomInfo ルーム情報
-	 * @return ゲーム開始したらtrue, しなかったらfalse
+	 * @return Start gameしたらtrue, しなかったらfalse
 	 */
 	private boolean gameStartIfPossible(NetRoomInfo roomInfo) throws IOException {
 		// 全員が準備完了状態になったら
@@ -1353,9 +1353,9 @@ public class NetServer {
 	}
 
 	/**
-	 * ゲーム終了かどうか check し, 終了条件を満たしていればルーム内の全員に通知する
+	 * game finishedかどうか check し, 終了条件を満たしていればルーム内の全員に通知する
 	 * @param roomInfo ルーム情報
-	 * @return ゲーム終了したらtrue, 終了前・すでに終了後ならfalse
+	 * @return game finishedしたらtrue, 終了前・すでに終了後ならfalse
 	 */
 	private boolean gameFinished(NetRoomInfo roomInfo) throws IOException {
 		int startPlayers = roomInfo.startPlayers;
@@ -1363,7 +1363,7 @@ public class NetServer {
 		boolean isTeamWin = roomInfo.isTeamWin();
 
 		if( (roomInfo != null) && (roomInfo.playing) && ( (nowPlaying < 1) || ((startPlayers >= 2) && (nowPlaying < 2)) || (isTeamWin) ) ) {
-			// ゲーム終了通知
+			// game finished通知
 			NetPlayerInfo winner = roomInfo.getWinner();
 			String msg = "finish\t";
 

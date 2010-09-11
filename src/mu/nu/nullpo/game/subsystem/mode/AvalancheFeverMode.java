@@ -116,7 +116,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	/** Fast-forward settings for debug use */
 	private int fastenable;
 
-	/** Flag set when fast-forward is in use */
+	/** Flag set when fast-forward is enabled */
 	private boolean fastinuse;
 
 	/** Indices for map previews */
@@ -450,7 +450,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if (timeLimitAddDisplay > 0)
 			timeLimitAddDisplay--;
 
-		//  timeMeter
+		// Time meter
 		engine.meterValue = (timeLimit * receiver.getMeterMax(engine)) / TIME_LIMIT;
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		if(timeLimit <= 1800) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
@@ -538,7 +538,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			}
 		}
 
-		//  time切れ
+		// Out of time
 		if((timeLimit <= 0) && (engine.timerActive == true)) {
 			engine.gameActive = false;
 			engine.timerActive = false;

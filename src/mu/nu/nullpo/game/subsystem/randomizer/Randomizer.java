@@ -36,7 +36,7 @@ import java.util.Random;
 public interface Randomizer {
 	/**
 	 * Blockピースの出現順を生成
-	 * @param pieceEnable 出現可能なピース (pieceEnable[id]がtrueなら出現可能なピース）
+	 * @param pieceEnable 出現可能なピース (pieceEnable[id]がWhen true,出現可能なピース）
 	 * @param random ランダム number生成用
 	 * @param arrayMax 生成すべきBlockピースの配列のサイズ (必要なら無視してもOK）
 	 * @return Blockピースの出現順の配列 (ピースのIDだけ）

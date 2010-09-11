@@ -43,7 +43,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * VS-BATTLEMode
+ * VS-BATTLE Mode
  */
 public class VSBattleMode extends DummyMode {
 	/** Current version */
@@ -65,22 +65,22 @@ public class VSBattleMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_EZ = 10;
 
-	/** Comboの攻撃力 */
+	/** Comboの Attack 力 */
 	private final int[] COMBO_ATTACK_TABLE = {0,0,1,1,2,2,3,3,4,4,4,5};
 
-	/** 邪魔Blockの穴の位置が普通にランダムに変わる */
+	/** garbage blockの穴の位置が普通にランダムに変わる */
 	private final int GARBAGE_TYPE_NORMAL = 0;
 
-	/** 邪魔Blockの穴の位置が1回のせり上がりで変わらない */
+	/** garbage blockの穴の位置が1回のせり上がりで変わらない */
 	private final int GARBAGE_TYPE_NOCHANGE_ONE_RISE = 1;
 
-	/** 邪魔Blockの穴の位置が1回の攻撃で変わらない(2回以上なら変わる) */
+	/** garbage blockの穴の位置が1回の Attack で変わらない(2回以上なら変わる) */
 	private final int GARBAGE_TYPE_NOCHANGE_ONE_ATTACK = 2;
 
-	/** 邪魔Blockタイプの表示名 */
+	/** garbage blockタイプの表示名 */
 	private final String[] GARBAGE_TYPE_STRING = {"NORMAL", "ONE RISE", "1-ATTACK"};
 
-	/** 各Playerの邪魔Blockの色 */
+	/** Each player's garbage block color */
 	private final int[] PLAYER_COLOR_BLOCK = {Block.BLOCK_COLOR_RED, Block.BLOCK_COLOR_BLUE};
 
 	/** Each player's frame color */
@@ -92,7 +92,7 @@ public class VSBattleMode extends DummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** 邪魔Blockのタイプ */
+	/** garbage blockのタイプ */
 	private int[] garbageType;
 
 	/** Rate of change of garbage holes */
@@ -104,10 +104,10 @@ public class VSBattleMode extends DummyMode {
 	/** Allow garbage blocking */
 	private boolean[] garbageBlocking;
 
-	/** 溜まっている邪魔Blockのcount */
+	/** 溜まっているgarbage blockのcount */
 	private int[] garbage;
 
-	/** 送った邪魔Blockのcount */
+	/** 送ったgarbage blockのcount */
 	private int[] garbageSent;
 
 	/** Last garbage hole position */
@@ -164,13 +164,13 @@ public class VSBattleMode extends DummyMode {
 	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
 	private int[] hurryupInterval;
 
-	/** マップ使用 flag */
+	/** Map使用 flag */
 	private boolean[] useMap;
 
-	/** 使用するマップセット number */
+	/** 使用するMapセット number */
 	private int[] mapSet;
 
-	/** マップ number(-1でランダム) */
+	/** Map number(-1でランダム) */
 	private int[] mapNumber;
 
 	/** Last preset number used */
@@ -179,22 +179,22 @@ public class VSBattleMode extends DummyMode {
 	/** 勝者 */
 	private int winnerID;
 
-	/** 敵から送られてきた邪魔Blockのリスト */
+	/** 敵から送られてきたgarbage blockのリスト */
 	private LinkedList<GarbageEntry>[] garbageEntries;
 
 	/** Hurryup後にBlockを置いた count */
 	private int[] hurryupCount;
 
-	/** マップセットのProperty file */
+	/** MapセットのProperty file */
 	private CustomProperties[] propMap;
 
-	/** Maximumマップ number */
+	/** MaximumMap number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用フィールド (マップをリプレイに保存するときに使用) */
+	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
 	private Field[] fldBackup;
 
-	/** マップ選択用乱count */
+	/** Map選択用乱count */
 	private Random randMap;
 
 	/** Version */
@@ -217,7 +217,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * Mode  initialization
+	 * Mode initialization
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
@@ -295,7 +295,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を読み込み
+	 * Load settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 */
@@ -333,7 +333,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * スピード以外の設定を保存
+	 * Save settings not related to speeds
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 */
@@ -362,8 +362,8 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * マップ読み込み
-	 * @param field フィールド
+	 * Map読み込み
+	 * @param field field
 	 * @param prop Property file to read from
 	 * @param preset 任意のID
 	 */
@@ -377,8 +377,8 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * マップ保存
-	 * @param field フィールド
+	 * Map保存
+	 * @param field field
 	 * @param prop Property file to save to
 	 * @param id 任意のID
 	 */
@@ -388,9 +388,9 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * 今溜まっている邪魔Blockのcountを返す
+	 * 今溜まっているgarbage blockのcountを返す
 	 * @param playerID Player ID
-	 * @return 今溜まっている邪魔Blockのcount
+	 * @return 今溜まっているgarbage blockのcount
 	 */
 	private int getTotalGarbageLines(int playerID) {
 		int count = 0;
@@ -401,11 +401,11 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * プレビュー用にマップを読み込み
+	 * プレビュー用にMapを読み込み
 	 * @param engine GameEngine
 	 * @param playerID Player number
-	 * @param id マップID
-	 * @param forceReload trueにするとマップファイルを強制再読み込み
+	 * @param id MapID
+	 * @param forceReload trueにするとMapファイルを強制再読み込み
 	 */
 	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
@@ -632,12 +632,12 @@ public class VSBattleMode extends DummyMode {
 				engine.quitflag = true;
 			}
 
-			// プレビュー用マップ読み込み
+			// プレビュー用Map読み込み
 			if(useMap[playerID] && (engine.statc[3] == 0)) {
 				loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 			}
 
-			// ランダムマッププレビュー
+			// Random map preview
 			if(useMap[playerID] && (propMap[playerID] != null) && (mapNumber[playerID] < 0)) {
 				if(engine.statc[3] % 30 == 0) {
 					engine.statc[5]++;
@@ -735,12 +735,12 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (Initialization前）
+	 * Called for initialization during Ready (before initialization)
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			// マップ読み込み・リプレイ保存用にバックアップ
+			// Map読み込み・リプレイ保存用にバックアップ
 			if(version >= 3) {
 				if(useMap[playerID]) {
 					if(owner.replayMode) {
@@ -780,7 +780,7 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/*
-	 * ゲーム開始時の処理
+	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -817,7 +817,7 @@ public class VSBattleMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// ステータス表示
+		// Status display
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, 0, 0, "VS-BATTLE", EventReceiver.COLOR_ORANGE);
 
@@ -843,7 +843,7 @@ public class VSBattleMode extends DummyMode {
 			}
 		}
 
-		// Line clearイベント表示
+		// Line clear event 表示
 		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
 			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
@@ -900,7 +900,7 @@ public class VSBattleMode extends DummyMode {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 
-		// 攻撃
+		//  Attack 
 		if(lines > 0) {
 			int pts = 0;
 			int ptsB2B = 0;
@@ -993,7 +993,7 @@ public class VSBattleMode extends DummyMode {
 				pts += 6;
 			}
 
-			// 宝石Block攻撃
+			// gem block attack
 			pts += engine.field.getHowManyGemClears();
 
 			lastpiece[playerID] = engine.nowPieceObject.id;
@@ -1011,13 +1011,13 @@ public class VSBattleMode extends DummyMode {
 						garbage[playerID] = 0;
 					}
 				} else {
-					// 攻撃
+					//  Attack 
 					garbage[enemyID] += pts;
 				}
 			}
 			*/
 
-			// 攻撃Linescount
+			// Attack lines count
 			garbageSent[playerID] += pts;
 			if(b2bType[playerID] == 2) garbageSent[playerID] += ptsB2B;
 
@@ -1037,7 +1037,7 @@ public class VSBattleMode extends DummyMode {
 				}
 			}
 
-			// 攻撃
+			//  Attack 
 			if(pts > 0) {
 				garbageEntries[enemyID].add(new GarbageEntry(pts, playerID));
 
@@ -1108,7 +1108,7 @@ public class VSBattleMode extends DummyMode {
 						garbageEntries[playerID].clear();
 						break;
 					} else if(garbageType[playerID] == GARBAGE_TYPE_NOCHANGE_ONE_ATTACK) {
-						// 邪魔Blockの穴の位置が1回の攻撃で変わらない(2回以上なら変わる)
+						// garbage blockの穴の位置が1回の Attack で変わらない(2回以上なら変わる)
 						if(version >= 5) {
 							if(engine.random.nextInt(100) < garbagePercent[playerID]) {
 								int newHole = engine.random.nextInt(engine.field.getWidth() - 1);
@@ -1183,13 +1183,13 @@ public class VSBattleMode extends DummyMode {
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
 			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
-				// 引き分け
+				// Draw
 				winnerID = -1;
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
-				// 1P勝利
+				// 1P win
 				winnerID = 0;
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
@@ -1198,7 +1198,7 @@ public class VSBattleMode extends DummyMode {
 				owner.engine[0].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
-				// 2P勝利
+				// 2P win
 				winnerID = 1;
 				owner.engine[0].gameActive = false;
 				owner.engine[1].gameActive = false;
@@ -1251,10 +1251,10 @@ public class VSBattleMode extends DummyMode {
 	}
 
 	/**
-	 * 敵から送られてきた邪魔Blockの data
+	 * 敵から送られてきたgarbage blockの data
 	 */
 	private class GarbageEntry {
-		/** 邪魔Blockcount */
+		/** garbage blockcount */
 		public int lines = 0;
 
 		/** 送信元 */
@@ -1269,7 +1269,7 @@ public class VSBattleMode extends DummyMode {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔Blockcount
+		 * @param g garbage blockcount
 		 */
 		@SuppressWarnings("unused")
 		public GarbageEntry(int g) {
@@ -1278,7 +1278,7 @@ public class VSBattleMode extends DummyMode {
 
 		/**
 		 * パラメータ付きConstructor
-		 * @param g 邪魔Blockcount
+		 * @param g garbage blockcount
 		 * @param p 送信元
 		 */
 		public GarbageEntry(int g, int p) {

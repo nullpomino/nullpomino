@@ -34,7 +34,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.WallkickResult;
 
 /**
- * WallOnlyWallkick - フィールドの壁しか蹴らないWallkick(すでに置かれているBlockは蹴りません)
+ * WallOnlyWallkick - fieldの壁しか蹴らないWallkick(すでに置かれているBlockは蹴りません)
  */
 public class WallOnlyWallkick implements Wallkick {
 	/*
@@ -67,7 +67,7 @@ public class WallOnlyWallkick implements Wallkick {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return Wallkick可能ならtrue
 	 */
 	private boolean checkCollisionKick(Piece piece, int x, int y, int rt, Field fld) {
@@ -92,7 +92,7 @@ public class WallOnlyWallkick implements Wallkick {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param fld フィールド
+	 * @param fld field
 	 * @return Wallkick可能ならtrue
 	 */
 	private boolean checkCollisionKickBig(Piece piece, int x, int y, int rt, Field fld) {

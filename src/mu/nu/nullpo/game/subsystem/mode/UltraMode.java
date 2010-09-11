@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * ULTRAMode
+ * ULTRA Mode
  */
 public class UltraMode extends DummyMode {
 	/** Current version */
@@ -660,13 +660,13 @@ public class UltraMode extends DummyMode {
 			int limitTime = ((goaltype + 1) * 3600);
 			int remainTime = ((goaltype + 1) * 3600) - engine.statistics.time;
 
-			//  timeMeter
+			// Time meter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / limitTime;
 			if(remainTime <= 30*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			//  time切れ
+			// Out of time
 			if(engine.statistics.time >= limitTime) {
 				engine.gameActive = false;
 				engine.timerActive = false;

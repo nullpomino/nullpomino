@@ -29,7 +29,7 @@
 package mu.nu.nullpo.gui.slick;
 
 /**
- * 各種エフェクトの状態
+ * 各種エフェクト state
  */
 public class EffectObject {
 	/** エフェクト type */
@@ -41,10 +41,10 @@ public class EffectObject {
 	/** Y-coordinate */
 	public int y;
 
-	/** エフェクトのパラメータ (Blockの色など) */
+	/** エフェクトのパラメータ (Block colorなど) */
 	public int param;
 
-	/** アニメーションカウンタ */
+	/** アニメーション counter */
 	public int anim;
 
 	/**
@@ -63,7 +63,7 @@ public class EffectObject {
 	 * @param effect エフェクト type
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param param エフェクトのパラメータ (Blockの色など）
+	 * @param param エフェクトのパラメータ (Block colorなど）
 	 */
 	public EffectObject(int effect, int x, int y, int param) {
 		this.effect = effect;

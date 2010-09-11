@@ -41,7 +41,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.apache.log4j.Logger;
 
 /**
- * GRADE MANIA 3Mode
+ * GRADE MANIA 3 Mode
  */
 public class GradeMania3Mode extends DummyMode {
 	/** Log */
@@ -307,19 +307,19 @@ public class GradeMania3Mode extends DummyMode {
 	/** Level at start */
 	private int startlevel;
 
-	/** trueなら常にゴーストON */
+	/** When true, always ghost ON */
 	private boolean alwaysghost;
 
-	/** trueなら常に20G */
+	/** When true, always 20G */
 	private boolean always20g;
 
-	/** trueなら levelストップ音有効 */
+	/** When true, levelstop sound is enabled */
 	private boolean lvstopse;
 
 	/** BigMode */
 	private boolean big;
 
-	/** trueならSection Time表示有効 */
+	/** When true, section time display is enabled */
 	private boolean showsectiontime;
 
 	/** 段位表示 */
@@ -328,7 +328,7 @@ public class GradeMania3Mode extends DummyMode {
 	/** LV500の足切りTime */
 	private int lv500torikan;
 
-	/** 昇格・降格試験有効 */
+	/** 昇格・降格試験 is enabled */
 	private boolean enableexam;
 
 	/** Version */
@@ -764,7 +764,7 @@ public class GradeMania3Mode extends DummyMode {
 				}
 			}
 
-			// Section Time表示切替
+			//  section time display切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
@@ -850,7 +850,7 @@ public class GradeMania3Mode extends DummyMode {
 	}
 
 	/*
-	 * ゲーム開始時の処理
+	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -1163,7 +1163,7 @@ public class GradeMania3Mode extends DummyMode {
 		// 速度変更
 		setSpeed(engine);
 
-		// LV100到達でゴーストを消す
+		// LV100到達でghost を消す
 		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
 
 		// BGM fadeout
@@ -1475,7 +1475,7 @@ public class GradeMania3Mode extends DummyMode {
 		if((engine.gameActive) && (engine.ending == 2)) {
 			rolltime++;
 
-			//  timeMeter
+			// Time meter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -1692,7 +1692,7 @@ public class GradeMania3Mode extends DummyMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		// Section Time表示切替
+		//  section time display切替
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;

@@ -144,7 +144,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** ゲームのメインクラス */
 	public static GameManager gameManager;
 
-	/** ゲームのイベント処理と描画処理 */
+	/** ゲームの event 処理と描画処理 */
 	public static RendererSwing rendererSwing;
 
 	/** ゲームMode nameの配列 */
@@ -283,10 +283,10 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * テキストフィールドからint型の値を取得
-	 * @param value テキストフィールドから値の取得に失敗したときの値
-	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
+	 * テキストfieldからint型の値を取得
+	 * @param value テキストfieldから値の取得に失敗したときの値
+	 * @param txtfld テキストfield
+	 * @return テキストfieldから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
 	 */
 	public static int getIntTextField(int value, JTextField txtfld) {
 		int v = value;
@@ -299,10 +299,10 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * テキストフィールドからdouble型の値を取得
-	 * @param value テキストフィールドから値の取得に失敗したときの値
-	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
+	 * テキストfieldからdouble型の値を取得
+	 * @param value テキストfieldから値の取得に失敗したときの値
+	 * @param txtfld テキストfield
+	 * @return テキストfieldから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
 	 */
 	public static double getDoubleTextField(double value, JTextField txtfld) {
 		double v = value;
@@ -315,10 +315,10 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * テキストフィールドからfloat型の値を取得
-	 * @param value テキストフィールドから値の取得に失敗したときの値
-	 * @param txtfld テキストフィールド
-	 * @return テキストフィールドから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
+	 * テキストfieldからfloat型の値を取得
+	 * @param value テキストfieldから値の取得に失敗したときの値
+	 * @param txtfld テキストfield
+	 * @return テキストfieldから値を取得できた場合はその値, 失敗したらvalueをそのまま返す
 	 */
 	public static float getFloatTextField(float value, JTextField txtfld) {
 		float v = value;
@@ -570,7 +570,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * オフLinesゲーム開始 buttonが押されたとき
+	 * オフLinesStart game buttonが押されたとき
 	 */
 	protected void onStartOfflineClicked() {
 		String strMode = (String)listboxMode.getSelectedValue();
@@ -594,7 +594,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * Menu 実行時の処理
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// オフLinesゲーム開始
+		// オフLinesStart game
 		if(e.getActionCommand() == "Top_StartOffline") {
 			onStartOfflineClicked();
 		}

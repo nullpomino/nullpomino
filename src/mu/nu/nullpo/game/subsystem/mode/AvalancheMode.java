@@ -363,14 +363,14 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 
 		if (gametype == 1) {
 			int remainTime = ULTRA_MAX_TIME - engine.statistics.time;
-			//  timeMeter
+			// Time meter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / ULTRA_MAX_TIME;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainTime <= 3600) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 1800) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 600) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			//  time切れ
+			// Out of time
 			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
 				engine.gameActive = false;
 				engine.timerActive = false;

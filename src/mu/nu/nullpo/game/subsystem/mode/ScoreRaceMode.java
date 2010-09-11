@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * SCORE RACEMode
+ * SCORE RACE Mode
  */
 public class ScoreRaceMode extends DummyMode {
 	/** Current version */

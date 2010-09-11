@@ -59,7 +59,7 @@ public class NetBaseClient extends Thread {
 	/** trueの間スレッドが動く */
 	public volatile boolean threadRunning;
 
-	/** 正常に接続している間true */
+	/** 正 always 接続している間true */
 	public volatile boolean connectedFlag;
 
 	/** 接続用ソケット */
@@ -80,7 +80,7 @@ public class NetBaseClient extends Thread {
 	/** ping打った count(サーバーからpongメッセージを受信するとリセット) */
 	protected int pingCount;
 
-	/** 自動ping打ちタイマー */
+	/** 自動ping打ちTimer */
 	protected Timer timerPing;
 
 	/**
@@ -129,7 +129,7 @@ public class NetBaseClient extends Thread {
 			socket = new Socket(host, port);
 			connectedFlag = true;
 
-			// ping打ちタイマー準備
+			// ping打ちTimer準備
 			pingCount = 0;
 			TimerTask taskPing = new TimerTask() {
 				@Override
@@ -262,7 +262,7 @@ public class NetBaseClient extends Thread {
 	}
 
 	/**
-	 * @return 正常に接続されているとtrue
+	 * @return 正 always 接続されているとtrue
 	 */
 	public boolean isConnected() {
 		return (socket == null) ? false : (socket.isConnected() && connectedFlag);

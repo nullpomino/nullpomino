@@ -48,21 +48,21 @@ public class EventReceiver {
 	/** Log */
 	static Logger log = Logger.getLogger(EventReceiver.class);
 
-	/** フィールドの表示位置(1人・2人のとき) */
+	/** fieldの表示位置(1人・2人のとき) */
 	public static final int[] FIELD_OFFSET_X = {32, 432, 432, 432, 432, 432},
 							  FIELD_OFFSET_Y = {32, 32, 32, 32, 32, 32};
 
-	/** フィールドの表示位置(3人以上のとき) */
+	/** fieldの表示位置(3人以上のとき) */
 	public static final int[] FIELD_OFFSET_X_MULTI = {119, 247, 375, 503, 247, 375},
 							  FIELD_OFFSET_Y_MULTI = {80, 80, 80, 80, 286, 286};
 
 	/** Background表示 */
 	protected boolean showbg;
 
-	/** フィールド右側にMeterを表示 */
+	/** field右側にMeterを表示 */
 	protected boolean showmeter;
 
-	/** 枠線型ゴーストピース */
+	/** 枠線型ghost ピース */
 	protected boolean outlineghost;
 
 	/** Piece previews on sides */
@@ -115,7 +115,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でMenu 用の文字列を描画
+	 * flagがfalseだったらcolorF color, trueだったらcolorT colorでMenu 用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -179,7 +179,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でMenu 用の文字列をTTF font で描画
+	 * flagがfalseだったらcolorF color, trueだったらcolorT colorでMenu 用の文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -258,7 +258,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でRender score用の文字列を描画
+	 * flagがfalseだったらcolorF color, trueだったらcolorT colorでRender score用の文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -322,7 +322,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色でRender score用の文字列をTTF font で描画
+	 * flagがfalseだったらcolorF color, trueだったらcolorT colorでRender score用の文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -401,7 +401,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色で直接指定した座標へ文字列を描画
+	 * flagがfalseだったらcolorF color, trueだったらcolorT colorで直接指定した座標へ文字列を描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -465,7 +465,7 @@ public class EventReceiver {
 
 	/**
 	 * ※オーバーライドする必要はありません
-	 * flagがfalseだったらcolorFの色, trueだったらcolorTの色で直接指定した座標へ描画できる文字列をTTF font で描画
+	 * flagがfalseだったらcolorF color, trueだったらcolorT colorで直接指定した座標へ描画できる文字列をTTF font で描画
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 * @param x X-coordinate
@@ -521,7 +521,7 @@ public class EventReceiver {
 	 * @param y Y-coordinate
 	 * @param color 色
 	 * @param skin 絵柄
-	 * @param bone trueなら骨Block
+	 * @param bone When true,骨Block
 	 * @param darkness 暗さもしくは明るさ
 	 * @param alpha 透明度
 	 * @param scale 拡大率
@@ -537,9 +537,9 @@ public class EventReceiver {
 	}
 
 	/**
-	 * フィールド右のMeterのMaximum量を取得
+	 * field右のMeterのMaximum量を取得
 	 * @param engine GameEngineのインスタンス
-	 * @return フィールド右のMeterのMaximum量
+	 * @return field右のMeterのMaximum量
 	 */
 	public int getMeterMax(GameEngine engine) {
 		if(!showmeter) return 0;
@@ -582,20 +582,20 @@ public class EventReceiver {
 	}
 
 	/**
-	 * フィールドの表示位置の左端の座標を取得
+	 * fieldの表示位置の左端の座標を取得
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
-	 * @return フィールドの表示位置の左端の座標
+	 * @return fieldの表示位置の左端の座標
 	 */
 	public int getFieldDisplayPositionX(GameEngine engine, int playerID) {
 		return (engine.displaysize == -1) ? FIELD_OFFSET_X_MULTI[playerID] : FIELD_OFFSET_X[playerID];
 	}
 
 	/**
-	 * フィールドの表示位置の上端の座標を取得
+	 * fieldの表示位置の上端の座標を取得
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
-	 * @return フィールドの表示位置の上端の座標
+	 * @return fieldの表示位置の上端の座標
 	 */
 	public int getFieldDisplayPositionY(GameEngine engine, int playerID) {
 		return (engine.displaysize == -1) ? FIELD_OFFSET_Y_MULTI[playerID] : FIELD_OFFSET_Y[playerID];
@@ -705,14 +705,14 @@ public class EventReceiver {
 	public void startGame(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各Playerの最初の処理の時に呼び出される
+	 * Each player's 最初の処理の時に呼び出される
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void onFirst(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各Playerの最後の処理の時に呼び出される
+	 * Each player's 最後の処理の時に呼び出される
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
@@ -796,21 +796,21 @@ public class EventReceiver {
 	public void onResult(GameEngine engine, int playerID) {}
 
 	/**
-	 * フィールドエディット画面の処理
+	 * fieldエディット画面の処理
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void onFieldEdit(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各Playerの最初の描画処理の時に呼び出される
+	 * Each player's 最初の描画処理の時に呼び出される
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
 	public void renderFirst(GameEngine engine, int playerID) {}
 
 	/**
-	 * 各Playerの最後の描画処理の時に呼び出される
+	 * Each player's 最後の描画処理の時に呼び出される
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
@@ -894,7 +894,7 @@ public class EventReceiver {
 	public void renderResult(GameEngine engine, int playerID) {}
 
 	/**
-	 * フィールドエディット画面の描画処理
+	 * fieldエディット画面の描画処理
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
@@ -935,7 +935,7 @@ public class EventReceiver {
 	public void afterHardDropFall(GameEngine engine, int playerID, int fall) {}
 
 	/**
-	 * フィールドエディット画面から出たときの処理
+	 * fieldエディット画面から出たときの処理
 	 * @param engine GameEngineのインスタンス
 	 * @param playerID Player ID
 	 */

@@ -36,7 +36,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * SPEED MANIAMode
+ * SPEED MANIA Mode
  */
 public class SpeedManiaMode extends DummyMode {
 	/** Current version */
@@ -170,7 +170,7 @@ public class SpeedManiaMode extends DummyMode {
 	/** Level at start */
 	private int startlevel;
 
-	/** trueなら levelストップ音有効 */
+	/** When true, levelstop sound is enabled */
 	private boolean lvstopse;
 
 	/** BigMode */
@@ -179,7 +179,7 @@ public class SpeedManiaMode extends DummyMode {
 	/** LV500の足切りTime */
 	private int lv500torikan;
 
-	/** trueならSection Time表示有効 */
+	/** When true, section time display is enabled */
 	private boolean showsectiontime;
 
 	/** Version */
@@ -427,7 +427,7 @@ public class SpeedManiaMode extends DummyMode {
 				}
 			}
 
-			// Section Time表示切替
+			//  section time display切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
@@ -475,7 +475,7 @@ public class SpeedManiaMode extends DummyMode {
 	}
 
 	/*
-	 * ゲーム開始時の処理
+	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -915,7 +915,7 @@ public class SpeedManiaMode extends DummyMode {
 			else
 				rolltime += 1;
 
-			//  timeMeter
+			// Time meter
 			int remainRollTime = ROLLTIMELIMIT - rolltime;
 			engine.meterValue = (remainRollTime * receiver.getMeterMax(engine)) / ROLLTIMELIMIT;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
@@ -1007,7 +1007,7 @@ public class SpeedManiaMode extends DummyMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		// Section Time表示切替
+		//  section time display切替
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;

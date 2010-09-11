@@ -46,7 +46,7 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * ゲームのイベント処理と描画処理 (SDL版）
+ * ゲームの event 処理と描画処理 (SDL版）
  */
 public class RendererSDL extends EventReceiver {
 	/** Log */
@@ -64,13 +64,13 @@ public class RendererSDL extends EventReceiver {
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
 
-	/** フィールドBackgroundの明るさ */
+	/** fieldBackgroundの明るさ */
 	protected int fieldbgbright;
 
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
 
-	/** ゴーストピースの上にNEXT表示 */
+	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
 	/**
@@ -108,8 +108,8 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockの色IDに応じてSDL用カラー値を取得
-	 * @param colorID Blockの色ID
+	 * Block colorIDに応じてSDL用カラー値を取得
+	 * @param colorID Block colorID
 	 * @return SDL用カラー値
 	 */
 	public long getColorByID(int colorID) {
@@ -509,7 +509,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースのゴーストを描画
+	 * 現在操作中のBlockピースのghost を描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -726,7 +726,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * フィールドのBlockを描画
+	 * fieldのBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param engine GameEngineのインスタンス
@@ -1413,7 +1413,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * フィールドエディット画面の描画処理
+	 * fieldエディット画面の描画処理
 	 */
 	@Override
 	public void renderFieldEdit(GameEngine engine, int playerID) {

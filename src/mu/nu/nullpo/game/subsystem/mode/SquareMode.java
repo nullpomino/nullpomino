@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * SQUARE mode
+ * SQUARE Mode
  */
 public class SquareMode extends DummyMode {
 	/** Current version */

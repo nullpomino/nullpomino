@@ -64,7 +64,7 @@ public class StateInGame extends BasicGameState {
 	/** ポーズメッセージ非表示 */
 	protected boolean pauseMessageHide = false;
 
-	/**  frame ステップ有効 flag */
+	/**  frame ステップ is enabled flag */
 	protected boolean enableframestep = false;
 
 	/** 倍速Mode */
@@ -298,7 +298,7 @@ public class StateInGame extends BasicGameState {
 	}
 
 	/*
-	 * ゲームの状態を更新
+	 * ゲーム stateを更新
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {

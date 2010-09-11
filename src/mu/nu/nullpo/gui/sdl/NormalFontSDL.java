@@ -99,7 +99,7 @@ public class NormalFontSDL {
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
 	 * @param fontColor 文字色
-	 * @param scale 拡大率 (1.0fと0.5fのみ有効）
+	 * @param scale 拡大率 (1.0fと0.5fのみ is enabled）
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, int fontColor, float scale) throws SDLException {
@@ -163,7 +163,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画
+	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -192,7 +192,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (拡大率指定可能）
+	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (拡大率指定可能）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
@@ -246,7 +246,7 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrueの色, trueだったらfontColorTrueの色で文字列を描画 (16x16のグリッド単位）
+	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (16x16のグリッド単位）
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
 	 * @param fontStr 文字列
