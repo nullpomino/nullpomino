@@ -1142,7 +1142,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				int cmbindex = engine.combo - 1;
 				if(cmbindex < 0) cmbindex = 0;
 				if(cmbindex >= COMBO_ATTACK_TABLE[attackNumPlayerIndex].length) cmbindex = COMBO_ATTACK_TABLE[attackNumPlayerIndex].length - 1;
-				pts[ATTACK_CATEGORY_B2B] += COMBO_ATTACK_TABLE[attackNumPlayerIndex][cmbindex];
+				pts[ATTACK_CATEGORY_COMBO] += COMBO_ATTACK_TABLE[attackNumPlayerIndex][cmbindex];
 				lastcombo[playerID] = engine.combo;
 			}
 
