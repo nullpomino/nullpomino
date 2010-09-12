@@ -99,6 +99,9 @@ public class NetServer {
 
 	/** Observer list */
 	private LinkedList<SocketChannel> observerList = new LinkedList<SocketChannel>();
+	
+	/** Ban list */
+	private LinkedList<String> banList = new LinkedList<String>();
 
 	/** Selector */
 	private Selector selector;
@@ -295,7 +298,13 @@ public class NetServer {
 			channelList.add(channel);
 
 			String remoteAddr = channel.socket().getRemoteSocketAddress().toString();
-			log.info("Connected:" + remoteAddr);
+			log.info("Connected: " + remoteAddr);
+			
+			if (checkConnectionOnBanlist(channel)) {
+				log.warn("Connection is banned: " + remoteAddr);
+				logout(channel);
+				return;
+			}
 
 			send(channel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n");
 		} catch (IOException e) {
@@ -1661,6 +1670,27 @@ public class NetServer {
 
 			broadcastPlayerInfoUpdate(pInfo);
 		}
+	}
+	
+	private void ban(SocketChannel client) {
+		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
+		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
+		
+		banList.add(remoteAddr);
+		logout(client);
+		log.info("Banned player: "+remoteAddr);
+	}
+	
+	private boolean checkConnectionOnBanlist(SocketChannel client) {
+		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
+		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
+		
+		for (String addr : banList) {
+			if (addr.equals(remoteAddr)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
