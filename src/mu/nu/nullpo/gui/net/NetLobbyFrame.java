@@ -95,9 +95,12 @@ import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
+import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
+import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -144,7 +147,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	public NetPlayerClient netPlayerClient;
 
 	/** Rule data */
-	public RuleOptions ruleOpt;
+	public RuleOptions ruleOptPlayer, ruleOptLock;
+
+	/** Map list */
+	public LinkedList<String> mapList;
 
 	/** Event listeners */
 	protected LinkedList<NetLobbyListener> listeners = new LinkedList<NetLobbyListener>();
@@ -181,6 +187,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** PrintWriter for room log */
 	protected PrintWriter writerRoomLog;
+
+	/** Rated-game rule name list */
+	@SuppressWarnings("rawtypes")
+	protected LinkedList[] listRatedRuleName;
 
 	/** Layout manager for main screen */
 	protected CardLayout contentPaneCardLayout;
@@ -419,6 +429,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Game mode list data (Create room 1P screen) */
 	protected DefaultListModel listmodelCreateRoom1PModeList;
 
+	/** Rule list listbox (Create room 1P screen) */
+	protected JList listboxCreateRoom1PRuleList;
+
+	/** Rule list list data (Create room 1P screen) */
+	protected DefaultListModel listmodelCreateRoom1PRuleList;
+
 	/** OK button (Create room 1P screen) */
 	protected JButton btnCreateRoom1POK;
 
@@ -438,6 +454,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/**
 	 * Initialization
 	 */
+	@SuppressWarnings("rawtypes")
 	public void init() {
 		// 設定ファイル読み込み
 		propConfig = new CustomProperties();
@@ -498,6 +515,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 		});
 
+		// Rated-game rule name list
+		listRatedRuleName = new LinkedList[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			listRatedRuleName[i] = new LinkedList();
+		}
+
+		// Map list
+		mapList = new LinkedList<String>();
+
+		// GUI Init
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setTitle(getUIText("Title_NetLobby"));
 
@@ -1473,28 +1500,48 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 */
 	protected void initCreateRoom1PUI() {
 		// Main panel for Create room 1P
-		JPanel mainpanelCreateRoom1P = new JPanel(new BorderLayout());
+		JPanel mainpanelCreateRoom1P = new JPanel();
+		mainpanelCreateRoom1P.setLayout(new BoxLayout(mainpanelCreateRoom1P, BoxLayout.Y_AXIS));
 		this.getContentPane().add(mainpanelCreateRoom1P, SCREENCARD_NAMES[SCREENCARD_CREATEROOM1P]);
 
-		// * "Game Mode:" label
-		JLabel lCreateRoom1P = new JLabel(getUIText("CreateRoom1P_Label"));
-		mainpanelCreateRoom1P.add(lCreateRoom1P, BorderLayout.NORTH);
+		// * Game mode panel
+		JPanel pModeList = new JPanel(new BorderLayout());
+		mainpanelCreateRoom1P.add(pModeList);
 
-		// * Game mode listbox
+		// ** "Game Mode:" label
+		JLabel lCreateRoom1P = new JLabel(getUIText("CreateRoom1P_Label"));
+		pModeList.add(lCreateRoom1P, BorderLayout.NORTH);
+
+		// ** Game mode listbox
 		listmodelCreateRoom1PModeList = new DefaultListModel();
 		loadListToDefaultListModel(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
 
 		listboxCreateRoom1PModeList = new JList(listmodelCreateRoom1PModeList);
 		listboxCreateRoom1PModeList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PModeList.value", ""), true);
-
 		JScrollPane spCreateRoom1PModeList = new JScrollPane(listboxCreateRoom1PModeList);
+		pModeList.add(spCreateRoom1PModeList, BorderLayout.CENTER);
 
-		mainpanelCreateRoom1P.add(spCreateRoom1PModeList, BorderLayout.CENTER);
+		// * Rule list panel
+		JPanel pRuleList = new JPanel(new BorderLayout());
+		mainpanelCreateRoom1P.add(pRuleList);
+
+		// ** "Rule:" label
+		JLabel lCreateRoom1PRuleList = new JLabel(getUIText("CreateRoom1P_Rule_Label"));
+		pRuleList.add(lCreateRoom1PRuleList, BorderLayout.NORTH);
+
+		// ** Rule list listbox
+		listmodelCreateRoom1PRuleList = new DefaultListModel();
+		listmodelCreateRoom1PRuleList.addElement("(Your rule - not rated)");
+
+		listboxCreateRoom1PRuleList = new JList(listmodelCreateRoom1PRuleList);
+		listboxCreateRoom1PRuleList.setSelectedIndex(0);
+		JScrollPane spCreateRoom1PRuleList = new JScrollPane(listboxCreateRoom1PRuleList);
+		pRuleList.add(spCreateRoom1PRuleList, BorderLayout.CENTER);
 
 		// * Buttons panel
 		JPanel subpanelButtons = new JPanel();
 		subpanelButtons.setLayout(new BoxLayout(subpanelButtons, BoxLayout.X_AXIS));
-		mainpanelCreateRoom1P.add(subpanelButtons, BorderLayout.SOUTH);
+		mainpanelCreateRoom1P.add(subpanelButtons);
 
 		// ** OK button
 		btnCreateRoom1POK = new JButton(getUIText("CreateRoom1P_OK"));
@@ -2094,10 +2141,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * ルール data送信
 	 */
 	public void sendMyRuleDataToServer() {
-		if(ruleOpt == null) ruleOpt = new RuleOptions();
+		if(ruleOptPlayer == null) ruleOptPlayer = new RuleOptions();
 
 		CustomProperties prop = new CustomProperties();
-		ruleOpt.writeProperty(prop, 0);
+		ruleOptPlayer.writeProperty(prop, 0);
 		String strRuleTemp = prop.encode("RuleData");
 		String strRuleData = NetUtil.compressString(strRuleTemp);
 		log.debug("RuleData uncompressed:" + strRuleTemp.length() + " compressed:" + strRuleData.length());
@@ -2342,8 +2389,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * PlayerがSelectedMapセットIDを取得
-	 * @return MapセットID
+	 * Get currenlty selected map set ID
+	 * @return Map set ID
 	 */
 	public int getCurrentSelectedMapSetID() {
 		if(spinnerCreateRoomMapSetID != null) {
@@ -2605,7 +2652,42 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
 				msg += spinCheckType + "\t" + tspinEnableEZ + "\t"  + b2bChunk + "\t";
-				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\n";
+				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t";
+
+				// Map send
+				if(useMap) {
+					int setID = getCurrentSelectedMapSetID();
+					log.debug("MapSetID:" + setID);
+
+					mapList.clear();
+					CustomProperties propMap = new CustomProperties();
+					try {
+						FileInputStream in = new FileInputStream("config/map/vsbattle/" + setID + ".map");
+						propMap.load(in);
+						in.close();
+					} catch (IOException e2) {
+						log.error("Map set " + setID + " not found", e2);
+					}
+
+					int maxMap = propMap.getProperty("map.maxMapNumber", 0);
+					log.debug("Number of maps:" + maxMap);
+
+					String strMap = "";
+
+					for(int i = 0; i < maxMap; i++) {
+						String strMapTemp = propMap.getProperty("map." + i, "");
+						mapList.add(strMapTemp);
+						strMap += strMapTemp;
+						if(i < maxMap - 1) strMap += "\t";
+					}
+
+					String strCompressed = NetUtil.compressString(strMap);
+					log.debug("Map uncompressed:" + strMap.length() + " compressed:" + strCompressed.length());
+
+					msg += strCompressed;
+				}
+
+				msg += "\n";
 
 				txtpaneRoomChatLog.setText("");
 				setRoomButtonsEnabled(false);
@@ -2636,12 +2718,18 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			try {
 				if(listboxCreateRoom1PModeList.getSelectedIndex() != -1) {
 					String strMode = (String)listboxCreateRoom1PModeList.getSelectedValue();
+					String strRule = "";
+					if(listboxCreateRoom1PRuleList.getSelectedIndex() >= 1) {
+						strRule = (String)listboxCreateRoom1PRuleList.getSelectedValue();
+					}
+
 					txtpaneRoomChatLog.setText("");
 					setRoomButtonsEnabled(false);
 					tabLobbyAndRoom.setEnabledAt(1, true);
 					tabLobbyAndRoom.setSelectedIndex(1);
 					changeCurrentScreenCard(SCREENCARD_LOBBY);
-					netPlayerClient.send("singleroomcreate\t" + "\t" + NetUtil.urlEncode(strMode) + "\n");
+
+					netPlayerClient.send("singleroomcreate\t" + "\t" + NetUtil.urlEncode(strMode) + "\t" + NetUtil.urlEncode(strRule) + "\n");
 				}
 			} catch (Exception e2) {
 				log.error("Error on CreateRoom1P_OK", e2);
@@ -2732,6 +2820,36 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// ルール data送信失敗
 		if(message[0].equals("ruledatafail")) {
 			sendMyRuleDataToServer();
+		}
+		// Rule receive (for rule-locked games)
+		if(message[0].equals("rulelock")) {
+			if(ruleOptLock == null) ruleOptLock = new RuleOptions();
+
+			String strRuleData = NetUtil.decompressString(message[1]);
+
+			CustomProperties prop = new CustomProperties();
+			prop.decode(strRuleData);
+			ruleOptLock.readProperty(prop, 0);
+
+			log.info("Received rule data (" + ruleOptLock.strRuleName + ")");
+		}
+		// Rated-game rule list
+		if(message[0].equals("rulelist")) {
+			int style = Integer.parseInt(message[1]);
+
+			if(style < listRatedRuleName.length) {
+				for(int i = 0; i < message.length - 2; i++) {
+					String name = NetUtil.urlDecode(message[2 + i]);
+					listRatedRuleName[style].add(name);
+				}
+			}
+
+			if(style == 0) {
+				for(int i = 0; i < listRatedRuleName[style].size(); i++) {
+					String name = (String)listRatedRuleName[style].get(i);
+					listmodelCreateRoom1PRuleList.addElement(name);
+				}
+			}
 		}
 		// Playerリスト
 		if(message[0].equals("playerlist") || message[0].equals("playerupdate") ||
@@ -2866,10 +2984,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				changeCurrentScreenCard(SCREENCARD_LOBBY);
 			}
 		}
-		// Map送信
-		if(message[0].equals("roomcreatemapready")) {
-			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_RoomCreateMapReady"), Color.blue);
-		}
 		// ルーム作成・入室成功
 		if(message[0].equals("roomcreatesuccess") || message[0].equals("roomjoinsuccess")) {
 			int roomID = Integer.parseInt(message[1]);
@@ -2898,12 +3012,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					setRoomJoinButtonVisible(false);
 				}
 
-				if(netPlayerClient.getRoomInfo(roomID).singleplayer) {
-					btnRoomButtonsJoin.setVisible(false);
-					btnRoomButtonsSitOut.setVisible(false);
-					btnRoomButtonsViewSetting.setVisible(false);
-				} else {
-					btnRoomButtonsViewSetting.setVisible(true);
+				if((netPlayerClient != null) && (netPlayerClient.getRoomInfo(roomID) != null)) {
+					if(netPlayerClient.getRoomInfo(roomID).singleplayer) {
+						btnRoomButtonsJoin.setVisible(false);
+						btnRoomButtonsSitOut.setVisible(false);
+						btnRoomButtonsViewSetting.setVisible(false);
+					} else {
+						btnRoomButtonsViewSetting.setVisible(true);
+					}
 				}
 
 				SwingUtilities.invokeLater(new Runnable() {
@@ -2952,6 +3068,20 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// ルーム入室失敗
 		if(message[0].equals("roomjoinfail")) {
 			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_RoomJoinFail"), Color.red);
+		}
+		// Map receive
+		if(message[0].equals("map")) {
+			String strDecompressed = NetUtil.decompressString(message[1]);
+			String[] strMaps = strDecompressed.split("\t");
+
+			mapList.clear();
+
+			int maxMap = strMaps.length;
+			for(int i = 0; i < maxMap; i++) {
+				mapList.add(strMaps[i]);
+			}
+
+			log.debug("Received " + mapList.size() + " maps");
 		}
 		// Lobby chat
 		if(message[0].equals("lobbychat")) {

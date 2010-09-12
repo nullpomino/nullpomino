@@ -30,6 +30,8 @@ package mu.nu.nullpo.game.subsystem.mode;
 
 import java.io.IOException;
 
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
+
 import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.BGMStatus;
@@ -37,6 +39,7 @@ import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
+import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
@@ -44,6 +47,7 @@ import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
@@ -138,11 +142,37 @@ public class LineRaceMode extends NetDummyMode {
 		super.netplayInit(obj);
 		log.debug("netplayInit");
 
-		netCurrentRoomInfo = netLobby.netPlayerClient.getCurrentRoomInfo();
+		if(obj instanceof NetLobbyFrame) {
+			onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
+		}
+	}
+
+	/**
+	 * NET: When you join the room
+	 * @param lobby NetLobbyFrame
+	 * @param client NetPlayerClient
+	 * @param roomInfo NetRoomInfo
+	 */
+	private void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		log.debug("onJoin");
+
+		netCurrentRoomInfo = roomInfo;
 		netIsNetPlay = true;
 		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
 		netNumSpectators = 0;
 		netUpdatePlayerExist();
+
+		if(roomInfo != null) {
+			// Set to locked rule
+			if((roomInfo.ruleLock) && (netLobby != null) && (netLobby.ruleOptLock != null)) {
+				log.info("Set locked rule");
+				Randomizer randomizer = GeneralUtil.loadRandomizer(netLobby.ruleOptLock.strRandomizer);
+				Wallkick wallkick = GeneralUtil.loadWallkick(netLobby.ruleOptLock.strWallkick);
+				owner.engine[0].ruleopt.copy(netLobby.ruleOptLock);
+				owner.engine[0].randomizer = randomizer;
+				owner.engine[0].wallkick = wallkick;
+			}
+		}
 	}
 
 	/*

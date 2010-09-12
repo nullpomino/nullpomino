@@ -28,8 +28,10 @@
 */
 package mu.nu.nullpo.game.net;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,6 +50,7 @@ import java.util.Random;
 import java.util.zip.Adler32;
 
 import mu.nu.nullpo.game.component.RuleOptions;
+import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 
@@ -56,61 +59,65 @@ import org.apache.log4j.PropertyConfigurator;
 import org.cacas.java.gnu.tools.Crypt;
 
 /**
- * サーバー
- * <a href="http://hondou.homedns.org/pukiwiki/index.php?JavaSE%20%A5%C1%A5%E3%A5%C3%A5%C8%A5%B7%A5%B9%A5%C6%A5%E0%A4%F2%BA%EE%A4%ED%A4%A6">出典</a>
+ * NullpoMino NetServer
+ * <a href="http://hondou.homedns.org/pukiwiki/index.php?JavaSE%20%A5%C1%A5%E3%A5%C3%A5%C8%A5%B7%A5%B9%A5%C6%A5%E0%A4%F2%BA%EE%A4%ED%A4%A6">Source</a>
  */
 public class NetServer {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetServer.class);
 
-	/**  default のポート number */
+	/** Default port number */
 	public static final int DEFAULT_PORT = 9200;
 
-	/** 読み込みバッファのサイズ */
+	/** Read buffer size */
 	public static final int BUF_SIZE = 2048;
 
-	/** ルール送信サイズ */
+	/** Rule data send buffer size */
 	public static final int RULE_BUF_SIZE = 512;
 
-	/** サーバー設定 */
+	/** Server config file */
 	private static CustomProperties propServer;
 
-	/** ソケットチャネルのリスト */
+	/** Rule list for rated game */
+	@SuppressWarnings("rawtypes")
+	private static List[] ruleList;
+
+	/** List of SocketChannel */
 	private List<SocketChannel> channelList = new LinkedList<SocketChannel>();
 
-	/** 送信用バッファ */
+	/** Send buffer */
 	private Map<SocketChannel, ByteArrayOutputStream> bufferMap = new HashMap<SocketChannel, ByteArrayOutputStream>();
 
-	/** 不完全パケット */
+	/** Incomplete packet buffer */
 	private Map<SocketChannel, StringBuilder> notCompletePacketMap = new HashMap<SocketChannel, StringBuilder>();
 
-	/** Player情報 */
+	/** Player info */
 	private Map<SocketChannel, NetPlayerInfo> playerInfoMap = new HashMap<SocketChannel, NetPlayerInfo>();
 
-	/** ルーム情報 */
+	/** Room info list */
 	private LinkedList<NetRoomInfo> roomInfoList = new LinkedList<NetRoomInfo>();
 
-	/** Observerリスト */
+	/** Observer list */
 	private LinkedList<SocketChannel> observerList = new LinkedList<SocketChannel>();
 
-	/** セレクタ */
+	/** Selector */
 	private Selector selector;
 
-	/** 今のポート number */
+	/** Current port number */
 	private int port;
 
-	/** 接続してきたクライアントの合計count */
+	/** Number of players connected so far (Used for assigning player ID) */
 	private int playerCount = 0;
 
-	/** 作られたルームの合計count */
+	/** Number of rooms created so far (Used for room ID) */
 	private int roomCount = 0;
 
-	/** Map選択用乱count */
+	/** RNG for map selection */
 	private Random rand = new Random();
 
 	/**
-	 * メイン関count(CUI)
-	 * @param args 引count
+	 * Main (Entry point)
+	 * @param args Command-line options
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log_server.cfg");
@@ -131,7 +138,71 @@ public class NetServer {
 			} catch (NumberFormatException e) {}
 		}
 
+		loadRuleList();
+
 		new NetServer(port).run();
+	}
+
+	/**
+	 * Load rated-game rule list
+	 */
+	@SuppressWarnings("rawtypes")
+	private static void loadRuleList() {
+		ruleList = new List[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			ruleList[i] = new LinkedList();
+		}
+
+		try {
+			BufferedReader txtRuleList = new BufferedReader(new FileReader("config/etc/netserver_rulelist.lst"));
+			int style = 0;
+
+			String str = null;
+			while((str = txtRuleList.readLine()) != null) {
+				if((str.length() < 1) || str.startsWith("#")) {
+					// Empty or a comment line. Do nothing.
+				} else if(str.startsWith(":")) {
+					// Game style
+					String strStyle = str.substring(1);
+
+					style = -1;
+					for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+						if(strStyle.equalsIgnoreCase(GameEngine.GAMESTYLE_NAMES[i])) {
+							style = i;
+							break;
+						}
+					}
+
+					if(style == -1) {
+						log.warn("{StyleChange} Unknown Style:" + str);
+						style = 0;
+					} else {
+						log.debug("{StyleChange} StyleID:" + style + " StyleName:" + str);
+					}
+				} else {
+					// Rule file
+					try {
+						log.debug("{RuleLoad} StyleID:" + style + " RuleFile:" + str);
+
+						FileInputStream in = new FileInputStream(str);
+						CustomProperties prop = new CustomProperties();
+						prop.load(in);
+						in.close();
+
+						RuleOptions rule = new RuleOptions();
+						rule.readProperty(prop, 0);
+
+						ruleList[style].add(rule);
+					} catch (Exception e2) {
+						log.warn("Failed to load rule file", e2);
+					}
+				}
+			}
+
+			txtRuleList.close();
+		} catch (Exception e) {
+			log.warn("Failed to load rule list", e);
+		}
 	}
 
 	/**
@@ -706,6 +777,7 @@ public class NetServer {
 			playerCount++;
 			send(client, "loginsuccess\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.uid + "\n");
 
+			sendRatedRuleList(client);
 			sendPlayerList(client);
 			sendRoomList(client);
 
@@ -771,6 +843,32 @@ public class NetServer {
 			}
 			return;
 		}
+		// Send rated-game rule data (Server->Client)
+		if(message[0].equals("rulegetrated")) {
+			//rulegetrated\t[STYLE]\t[NAME]
+
+			if(pInfo != null) {
+				int style = Integer.parseInt(message[1]);
+				String name = message[2];
+				RuleOptions rule = getRatedRule(style, name);
+
+				if(rule != null) {
+					CustomProperties prop = new CustomProperties();
+					rule.writeProperty(prop, 0);
+					String strRuleTemp = prop.encode("Rated RuleData " + rule.strRuleName);
+					String strRuleData = NetUtil.compressString(strRuleTemp);
+
+					// Checksum
+					Adler32 checksumObj = new Adler32();
+					checksumObj.update(NetUtil.stringToBytes(strRuleData));
+					long sChecksum = checksumObj.getValue();
+
+					send(client, "rulegetratedsuccess\t" + style + "\t" + name + "\t" + sChecksum + "\t" + strRuleData + "\n");
+				} else {
+					send(client, "rulegetratedfail\t" + style + "\t" + name + "\n");
+				}
+			}
+		}
 		// Lobby chat
 		if(message[0].equals("lobbychat")) {
 			//lobbychat\t[MESSAGE]
@@ -793,7 +891,7 @@ public class NetServer {
 		}
 		// Single player room
 		if(message[0].equals("singleroomcreate")) {
-			//singleroomcreate\t[roomName]\t[mode]
+			//singleroomcreate\t[roomName]\t[mode]\t[rule]
 			if((pInfo != null) && (pInfo.roomID == -1)) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
 
@@ -804,8 +902,18 @@ public class NetServer {
 				if(roomInfo.strName.length() < 1) roomInfo.strName = "Single:" + roomInfo.strMode;
 
 				roomInfo.maxPlayers = 1;
-				roomInfo.ruleName = pInfo.ruleOpt.strRuleName;
-				roomInfo.ruleOpt = new RuleOptions(pInfo.ruleOpt);
+
+				if(message.length > 3) {
+					roomInfo.ruleName = NetUtil.urlDecode(message[3]);
+					roomInfo.ruleOpt = new RuleOptions(getRatedRule(0, roomInfo.ruleName));
+					roomInfo.ruleLock = true;
+					roomInfo.rated = true;
+				} else {
+					roomInfo.ruleName = pInfo.ruleOpt.strRuleName;
+					roomInfo.ruleOpt = new RuleOptions(pInfo.ruleOpt);
+					roomInfo.ruleLock = false;
+					roomInfo.rated = false;
+				}
 
 				roomInfo.roomID = roomCount;
 
@@ -819,6 +927,15 @@ public class NetServer {
 
 				roomInfo.playerList.add(pInfo);
 				pInfo.seatID = roomInfo.joinSeat(pInfo);
+
+				// Send rule data if rated room
+				if(roomInfo.rated) {
+					CustomProperties prop = new CustomProperties();
+					roomInfo.ruleOpt.writeProperty(prop, 0);
+					String strRuleTemp = prop.encode("RuleData");
+					String strRuleData = NetUtil.compressString(strRuleTemp);
+					send(client, "rulelock\t" + strRuleData + "\n");
+				}
 
 				broadcastPlayerInfoUpdate(pInfo);
 				broadcastRoomInfoUpdate(roomInfo, "roomcreate");
@@ -837,7 +954,7 @@ public class NetServer {
 				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
-				msg += strMode + "\n";
+				msg += strMode + "\t" + strMap + "\n";
 			 */
 			if((pInfo != null) && (pInfo.roomID == -1)) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
@@ -884,39 +1001,9 @@ public class NetServer {
 				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
 				roomInfo.strMode = NetUtil.urlDecode(message[30]);
 
-				roomInfo.roomID = roomCount;
-
-				roomCount++;
-				if(roomCount == -1) roomCount = 0;
-
-				roomInfoList.add(roomInfo);
-
-				pInfo.roomID = roomInfo.roomID;
-				pInfo.resetPlayState();
-
-				roomInfo.playerList.add(pInfo);
-				pInfo.seatID = roomInfo.joinSeat(pInfo);
-
-				if(!roomInfo.useMap) {
-					broadcastPlayerInfoUpdate(pInfo);
-					broadcastRoomInfoUpdate(roomInfo, "roomcreate");
-					send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
-				} else {
-					send(client, "roomcreatemapready\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
-				}
-
-				log.info("NewRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName + " RuleLock:" + roomInfo.ruleLock +
-						 " Map:" + roomInfo.useMap + " Mode:" + roomInfo.strMode);
-			}
-			return;
-		}
-		// ルーム作成時のMap data受信
-		if(message[0].equals("roommap")) {
-			if((pInfo != null) && (pInfo.roomID != -1)) {
-				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
-
-				if((roomInfo != null) && (roomInfo.useMap) && (!roomInfo.mapReceived)) {
-					String strDecompressed = NetUtil.decompressString(message[1]);
+				// Set map
+				if(roomInfo.useMap && (message.length > 31)) {
+					String strDecompressed = NetUtil.decompressString(message[31]);
 					String[] strMaps = strDecompressed.split("\t");
 
 					int maxMap = strMaps.length;
@@ -932,13 +1019,37 @@ public class NetServer {
 					} else {
 						log.debug("Room" + roomInfo.roomID + ": Received " + roomInfo.mapList.size() + " maps");
 					}
-
-					roomInfo.mapReceived = true;
-
-					broadcastPlayerInfoUpdate(pInfo);
-					broadcastRoomInfoUpdate(roomInfo, "roomcreate");
-					send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
 				}
+
+				roomInfo.roomID = roomCount;
+
+				roomCount++;
+				if(roomCount == -1) roomCount = 0;
+
+				roomInfoList.add(roomInfo);
+
+				pInfo.roomID = roomInfo.roomID;
+				pInfo.resetPlayState();
+
+				roomInfo.playerList.add(pInfo);
+				pInfo.seatID = roomInfo.joinSeat(pInfo);
+
+				// Send rule data if rule-lock is enabled
+				if(roomInfo.ruleLock || roomInfo.rated) {
+					CustomProperties prop = new CustomProperties();
+					roomInfo.ruleOpt.writeProperty(prop, 0);
+					String strRuleTemp = prop.encode("RuleData");
+					String strRuleData = NetUtil.compressString(strRuleTemp);
+					send(client, "rulelock\t" + strRuleData + "\n");
+					//log.info("rulelock\t" + strRuleData);
+				}
+
+				broadcastPlayerInfoUpdate(pInfo);
+				broadcastRoomInfoUpdate(roomInfo, "roomcreate");
+				send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
+
+				log.info("NewRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName + " RuleLock:" + roomInfo.ruleLock +
+						 " Map:" + roomInfo.useMap + " Mode:" + roomInfo.strMode);
 			}
 			return;
 		}
@@ -1016,22 +1127,23 @@ public class NetServer {
 						}
 					}
 
+					// Send rule data if rule-lock is enabled
+					if(newRoom.ruleLock || newRoom.rated) {
+						CustomProperties prop = new CustomProperties();
+						newRoom.ruleOpt.writeProperty(prop, 0);
+						String strRuleTemp = prop.encode("RuleData");
+						String strRuleData = NetUtil.compressString(strRuleTemp);
+						send(client, "rulelock\t" + strRuleData + "\n");
+						//log.info("rulelock\t" + strRuleData);
+					}
+
 					broadcast("playerenter\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.seatID + "\n",
 							newRoom.roomID, pInfo);
 					broadcastRoomInfoUpdate(newRoom);
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t" + newRoom.roomID + "\t" + pInfo.seatID + "\t" + pInfo.queueID + "\n");
 
-					// ルール固定ならルールを送信
-					if(newRoom.ruleLock) {
-						CustomProperties prop = new CustomProperties();
-						newRoom.ruleOpt.writeProperty(prop, 0);
-						String strRuleTemp = prop.encode("RuleData");
-						String strRuleData = NetUtil.compressString(strRuleTemp);
-						send(client, "rulelock\t" + strRuleData + "\n");
-					}
-
-					// Map送信
+					// Map send
 					if(newRoom.useMap && !newRoom.mapList.isEmpty()) {
 						String strMapTemp = "";
 						int maxMap = newRoom.mapList.size();
@@ -1329,7 +1441,7 @@ public class NetServer {
 
 		int mapNo = 0;
 		int mapMax = roomInfo.mapList.size();
-		if(roomInfo.useMap && roomInfo.mapReceived && (mapMax > 0)) {
+		if(roomInfo.useMap && (mapMax > 0)) {
 			do {
 				mapNo = rand.nextInt(mapMax);
 			} while ((mapNo == roomInfo.mapPrevious) && (mapMax >= 2));
@@ -1551,6 +1663,48 @@ public class NetServer {
 		}
 	}
 
+	/**
+	 * Send rated-game rule list
+	 * @param client Client
+	 * @throws IOException When something bad occurs
+	 */
+	private void sendRatedRuleList(SocketChannel client) throws IOException {
+		for(int style = 0; style < GameEngine.MAX_GAMESTYLE; style++) {
+			String msg = "rulelist\t" + style;
+
+			for(int i = 0; i < ruleList[style].size(); i++) {
+				Object tempObj = ruleList[style].get(i);
+
+				if(tempObj instanceof RuleOptions) {
+					RuleOptions rule = (RuleOptions)tempObj;
+					msg += "\t" + NetUtil.urlEncode(rule.strRuleName);
+				}
+			}
+
+			msg += "\n";
+			send(client, msg);
+		}
+		//send(client, "rulelistend\n");
+	}
+
+	/**
+	 * Get rated-game rule
+	 * @param style Style ID
+	 * @param name Rule Name
+	 * @return Rated-game rule (null if not found)
+	 */
+	private RuleOptions getRatedRule(int style, String name) {
+		for(int i = 0; i < ruleList[style].size(); i++) {
+			RuleOptions rule = (RuleOptions)ruleList[style].get(i);
+
+			if(name.equals(rule.strRuleName)) {
+				return rule;
+			}
+		}
+
+		return null;
+	}
+
 	private void writeServerStatusFile()
 	{
 		if (!propServer.getProperty("netserver.writestatusfile", false))
@@ -1574,5 +1728,4 @@ public class NetServer {
 			e.printStackTrace();
 		}
 	}
-
 }

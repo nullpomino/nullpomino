@@ -1,0 +1,22 @@
+# NetServer Rule List
+
+:TETROMINO
+config/rule/Classic3.rul
+config/rule/ClassicEasyA.rul
+config/rule/ClassicEasyB.rul
+config/rule/Standard.rul
+config/rule/StandardExp.rul
+config/rule/StandardFast.rul
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:AVALANCHE
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:PHYSICIAN
+config/rule/Physician.rul
+
+:SPF
+config/rule/SPF.rul

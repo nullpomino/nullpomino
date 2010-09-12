@@ -36,7 +36,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	public void netplayInit(Object obj) {
 		if(obj instanceof NetLobbyFrame) {
 			netLobby = (NetLobbyFrame)obj;
-			netLobby.ruleOpt = new RuleOptions(owner.engine[0].ruleopt);
+			netLobby.ruleOptPlayer = new RuleOptions(owner.engine[0].ruleopt);
 			netLobby.setNetDummyMode(this);
 		}
 	}

@@ -160,9 +160,6 @@ public class NetRoomInfo implements Serializable {
 	/** Map is enabled */
 	public boolean useMap = false;
 
-	/** Mapをすべて受信したらtrue */
-	public boolean mapReceived = false;
-
 	/** 前回のMap */
 	public int mapPrevious = -1;
 
@@ -175,7 +172,10 @@ public class NetRoomInfo implements Serializable {
 	/** Single player flag */
 	public boolean singleplayer = false;
 
-	/** Mapリスト */
+	/** Rated-game flag */
+	public boolean rated = false;
+
+	/** マップリスト */
 	public LinkedList<String> mapList = new LinkedList<String>();
 
 	/** ルームにいる人のリスト */
@@ -268,13 +268,13 @@ public class NetRoomInfo implements Serializable {
 		autoStartTNET2 = n.autoStartTNET2;
 		disableTimerAfterSomeoneCancelled = n.disableTimerAfterSomeoneCancelled;
 		useMap = n.useMap;
-		mapReceived = n.mapReceived;
 		mapPrevious = n.mapPrevious;
 		useFractionalGarbage = n.useFractionalGarbage;
 		garbageChangePerAttack = n.garbageChangePerAttack;
 		garbagePercent = n.garbagePercent;
 		strMode = n.strMode;
 		singleplayer = n.singleplayer;
+		rated = n.rated;
 
 		mapList.clear();
 		mapList.addAll(n.mapList);
@@ -290,7 +290,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列から data代入(Playerリスト除く)
-	 * @param rdata Stringの配列(String[37])
+	 * @param rdata Stringの配列(String[38])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -330,6 +330,7 @@ public class NetRoomInfo implements Serializable {
 		b2bChunk = Boolean.parseBoolean(rdata[34]);
 		strMode = NetUtil.urlDecode(rdata[35]);
 		singleplayer = Boolean.parseBoolean(rdata[36]);
+		rated = Boolean.parseBoolean(rdata[37]);
 	}
 
 	/**
@@ -342,10 +343,10 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(Playerリスト除く)
-	 * @return Stringの配列(String[37])
+	 * @return Stringの配列(String[38])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[37];
+		String[] rdata = new String[38];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -383,6 +384,7 @@ public class NetRoomInfo implements Serializable {
 		rdata[34] = Boolean.toString(b2bChunk);
 		rdata[35] = NetUtil.urlEncode(strMode);
 		rdata[36] = Boolean.toString(singleplayer);
+		rdata[37] = Boolean.toString(rated);
 		return rdata;
 	}
 

@@ -321,9 +321,6 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Hurryup後にBlockを置いた count */
 	private int hurryupCount;
 
-	/** Map list */
-	private LinkedList<String> mapList;
-
 	/** Map number to use */
 	private int mapNo;
 
@@ -476,7 +473,6 @@ public class NetVSBattleMode extends NetDummyMode {
 		lastpiece = new int[MAX_PLAYERS];
 		garbageSent = new int[MAX_PLAYERS];
 		garbage = new int[MAX_PLAYERS];
-		mapList = new LinkedList<String>();
 		mapPreviousPracticeMap = -1;
 		playerSkin = new int[MAX_PLAYERS];
 		for(int i = 0; i < MAX_PLAYERS; i++) playerSkin[i] = -1;
@@ -577,11 +573,25 @@ public class NetVSBattleMode extends NetDummyMode {
 
 			isNewcomer = roomInfo.playing;
 
-			// Revert rules
 			if(!rulelockFlag) {
-				owner.engine[0].ruleopt.copy(netLobby.ruleOpt);
+				// Revert rules
+				owner.engine[0].ruleopt.copy(netLobby.ruleOptPlayer);
 				owner.engine[0].randomizer = GeneralUtil.loadRandomizer(owner.engine[0].ruleopt.strRandomizer);
 				owner.engine[0].wallkick = GeneralUtil.loadWallkick(owner.engine[0].ruleopt.strWallkick);
+			} else {
+				// Set to locked rule
+				if((netLobby != null) && (netLobby.ruleOptLock != null)) {
+					log.info("Set locked rule");
+					Randomizer randomizer = GeneralUtil.loadRandomizer(netLobby.ruleOptLock.strRandomizer);
+					Wallkick wallkick = GeneralUtil.loadWallkick(netLobby.ruleOptLock.strWallkick);
+					for(int i = 0; i < getPlayers(); i++) {
+						owner.engine[i].ruleopt.copy(netLobby.ruleOptLock);
+						owner.engine[i].randomizer = randomizer;
+						owner.engine[i].wallkick = wallkick;
+					}
+				} else {
+					log.warn("Tried to set locked rule, but rule was not received yet!");
+				}
 			}
 		}
 
@@ -711,18 +721,18 @@ public class NetVSBattleMode extends NetDummyMode {
 		engine.resetStatc();
 
 		// map
-		if((currentRoomInfo != null) && currentRoomInfo.useMap && (mapList.size() > 0)) {
+		if((currentRoomInfo != null) && currentRoomInfo.useMap && (netLobby.mapList.size() > 0)) {
 			if(randMap == null) randMap = new Random();
 
 			int map = 0;
-			int maxMap = mapList.size();
+			int maxMap = netLobby.mapList.size();
 			do {
 				map = randMap.nextInt(maxMap);
 			} while ((map == mapPreviousPracticeMap) && (maxMap >= 2));
 			mapPreviousPracticeMap = map;
 
 			engine.createFieldIfNeeded();
-			engine.field.stringToField(mapList.get(map));
+			engine.field.stringToField(netLobby.mapList.get(map));
 			engine.field.setAllSkin(engine.getSkin());
 			engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 			engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
@@ -835,12 +845,12 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 
 				// Random map preview
-				if((currentRoomInfo != null) && currentRoomInfo.useMap && !mapList.isEmpty()) {
+				if((currentRoomInfo != null) && currentRoomInfo.useMap && !netLobby.mapList.isEmpty()) {
 					if(engine.statc[3] % 30 == 0) {
 						engine.statc[5]++;
-						if(engine.statc[5] >= mapList.size()) engine.statc[5] = 0;
+						if(engine.statc[5] >= netLobby.mapList.size()) engine.statc[5] = 0;
 						engine.createFieldIfNeeded();
-						engine.field.stringToField(mapList.get(engine.statc[5]));
+						engine.field.stringToField(netLobby.mapList.get(engine.statc[5]));
 						engine.field.setAllSkin(engine.getSkin());
 						engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 						engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
@@ -906,9 +916,9 @@ public class NetVSBattleMode extends NetDummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			// Map
-			if(currentRoomInfo.useMap && (mapNo < mapList.size()) && !isPractice) {
+			if(currentRoomInfo.useMap && (mapNo < netLobby.mapList.size()) && !isPractice) {
 				engine.createFieldIfNeeded();
-				engine.field.stringToField(mapList.get(mapNo));
+				engine.field.stringToField(netLobby.mapList.get(mapNo));
 				if((playerID == 0) && (playerSeatNumber >= 0)) {
 					engine.field.setAllSkin(engine.getSkin());
 				} else if(playerSkin[playerID] >= 0) {
@@ -1192,7 +1202,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 
-			//  Attack 
+			//  Attack
 			if(!isPractice && (numPlayers + numSpectators >= 2)) {
 				garbage[playerID] = getTotalGarbageLines();
 
@@ -1977,74 +1987,6 @@ public class NetVSBattleMode extends NetDummyMode {
 				}
 			}
 		}
-		// ルール固定部屋でのルール受信
-		if(message[0].equals("rulelock")) {
-			String strRuleData = NetUtil.decompressString(message[1]);
-
-			CustomProperties prop = new CustomProperties();
-			prop.decode(strRuleData);
-			RuleOptions newRuleOpt = new RuleOptions();
-			newRuleOpt.readProperty(prop, 0);
-
-			Randomizer randomizer = GeneralUtil.loadRandomizer(newRuleOpt.strRandomizer);
-			Wallkick wallkick = GeneralUtil.loadWallkick(newRuleOpt.strWallkick);
-			for(int i = 0; i < getPlayers(); i++) {
-				owner.engine[i].ruleopt.copy(newRuleOpt);
-				owner.engine[i].randomizer = randomizer;
-				owner.engine[i].wallkick = wallkick;
-			}
-
-			log.info("Received rule data (" + newRuleOpt.strRuleName + ")");
-		}
-		// Map受信
-		if(message[0].equals("map")) {
-			String strDecompressed = NetUtil.decompressString(message[1]);
-			String[] strMaps = strDecompressed.split("\t");
-
-			mapList.clear();
-
-			int maxMap = strMaps.length;
-			for(int i = 0; i < maxMap; i++) {
-				mapList.add(strMaps[i]);
-			}
-
-			log.debug("Received " + mapList.size() + " maps");
-		}
-		// Map送信
-		if(message[0].equals("roomcreatemapready")) {
-			int setID = lobby.getCurrentSelectedMapSetID();
-			log.debug("MapSetID:" + setID);
-
-			CustomProperties propMap = receiver.loadProperties("config/map/vsbattle/" + setID + ".map");
-			if(propMap == null) propMap = new CustomProperties();
-
-			int maxMap = propMap.getProperty("map.maxMapNumber", 0);
-			log.debug("Number of maps:" + maxMap);
-
-			String strMap = "";
-
-			for(int i = 0; i < maxMap; i++) {
-				String strMapTemp = propMap.getProperty("map." + i, "");
-				mapList.add(strMapTemp);
-				strMap += strMapTemp;
-				if(i < maxMap - 1) strMap += "\t";
-			}
-
-			String strCompressed = NetUtil.compressString(strMap);
-			log.debug("Map uncompressed:" + strMap.length() + " compressed:" + strCompressed.length());
-			netLobby.netPlayerClient.send("roommap\t" + strCompressed + "\n");
-		}
-		// ルーム作成
-		if(message[0].equals("roomcreatesuccess")) {
-			// ルール固定部屋の場合は全員自分と同じにする
-			if(rulelockFlag) {
-				for(int i = 1; i < getPlayers(); i++) {
-					owner.engine[i].ruleopt.copy(owner.engine[0].ruleopt);
-					owner.engine[i].randomizer = owner.engine[0].randomizer;
-					owner.engine[i].wallkick = owner.engine[0].wallkick;
-				}
-			}
-		}
 		// 誰か来た
 		if(message[0].equals("playerenter")) {
 			int seatID = Integer.parseInt(message[3]);
@@ -2099,8 +2041,8 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(currentRoomInfo != null)
 				currentRoomInfo.playing = true;
 
-			if((playerSeatNumber != -1) && (!rulelockFlag) && (netLobby.ruleOpt != null))
-				owner.engine[0].ruleopt.copy(netLobby.ruleOpt);	// Restore rules
+			if((playerSeatNumber != -1) && (!rulelockFlag) && (netLobby.ruleOptPlayer != null))
+				owner.engine[0].ruleopt.copy(netLobby.ruleOptPlayer);	// Restore rules
 
 			updatePlayerExist();
 			updatePlayerNames();
@@ -2330,7 +2272,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				isTank = true;
 				playerTeamsIsTank[playerID] = true;
 			}
-			//  Attack 
+			//  Attack
 			if(message[3].equals("attack")) {
 				//int pts = Integer.parseInt(message[4]);
 				int[] pts = new int[ATTACK_CATEGORIES];
