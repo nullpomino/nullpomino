@@ -40,6 +40,7 @@ public class StateConfigRuleStyleSelectSDL extends DummyMenuChooseStateSDL {
 	 */
 	@Override
 	protected boolean onDecide() throws SDLException {
+		ResourceHolderSDL.soundManager.play("decide");
 		StateConfigRuleSelectSDL stateR = (StateConfigRuleSelectSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_RULESELECT];
 		stateR.player = player;
 		stateR.style = cursor;

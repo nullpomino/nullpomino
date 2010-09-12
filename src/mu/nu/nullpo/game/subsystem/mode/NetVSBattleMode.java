@@ -33,14 +33,11 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
-
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
-import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
@@ -50,9 +47,10 @@ import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
-import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
+
+import org.apache.log4j.Logger;
 
 /**
  * NET-VS-BATTLE Mode
@@ -921,6 +919,8 @@ public class NetVSBattleMode extends NetDummyMode {
 				engine.field.stringToField(netLobby.mapList.get(mapNo));
 				if((playerID == 0) && (playerSeatNumber >= 0)) {
 					engine.field.setAllSkin(engine.getSkin());
+				} else if(rulelockFlag && (netLobby.ruleOptLock != null)) {
+					engine.field.setAllSkin(netLobby.ruleOptLock.skin);
 				} else if(playerSkin[playerID] >= 0) {
 					engine.field.setAllSkin(playerSkin[playerID]);
 				}
@@ -2356,7 +2356,9 @@ public class NetVSBattleMode extends NetDummyMode {
 			// HurryUp
 			if(message[3].equals("hurryup")) {
 				if(!hurryupStarted && (hurryupSeconds > 0)) {
-					owner.receiver.playSE("hurryup");
+					if((playerSeatNumber != -1) && (owner.engine[0].timerActive)) {
+						owner.receiver.playSE("hurryup");
+					}
 					hurryupStarted = true;
 					hurryupShowFrames = 60 * 5;
 				}

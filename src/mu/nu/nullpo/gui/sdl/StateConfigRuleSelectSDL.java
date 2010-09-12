@@ -149,19 +149,14 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
 		NormalFontSDL.printFontGrid(1, 1, title, NormalFontSDL.COLOR_ORANGE);
 
-		NormalFontSDL.printFontGrid(1, 26, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
-		NormalFontSDL.printFontGrid(9, 27, strCurrentFileName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
+		NormalFontSDL.printFontGrid(1, 25, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
+		NormalFontSDL.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
 
 		NormalFontSDL.printFontGrid(1, 28, "A:OK", NormalFontSDL.COLOR_GREEN);
-	}
-
-	@Override
-	public void render(SDLSurface screen) throws SDLException {
 		if(firstSetupMode)
 			NormalFontSDL.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
 		else
 			NormalFontSDL.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
-		super.render(screen);
 	}
 
 	@Override

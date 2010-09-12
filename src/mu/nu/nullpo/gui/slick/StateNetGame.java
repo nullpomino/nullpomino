@@ -307,6 +307,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	}
 
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
+		strModeToEnter = null;
 	}
 
 	public void netlobbyOnExit(NetLobbyFrame lobby) {

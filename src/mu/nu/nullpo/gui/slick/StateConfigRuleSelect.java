@@ -162,15 +162,6 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	/*
 	 * Draw the screen
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
-		if(firstSetupMode)
-			NormalFont.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
-		else
-			NormalFont.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
-
-		super.render(container, game, graphics);
-	}
-
 	@Override
 	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
 		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
@@ -180,6 +171,10 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		NormalFont.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFont.COLOR_BLUE);
 
 		NormalFont.printFontGrid(1, 28, "A:OK", NormalFont.COLOR_GREEN);
+		if(firstSetupMode)
+			NormalFont.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
+		else
+			NormalFont.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
 	}
 
 	@Override

@@ -97,10 +97,8 @@ import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
-import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
-import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -1509,7 +1507,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		mainpanelCreateRoom1P.add(pModeList);
 
 		// ** "Game Mode:" label
-		JLabel lCreateRoom1P = new JLabel(getUIText("CreateRoom1P_Label"));
+		JLabel lCreateRoom1P = new JLabel(getUIText("CreateRoom1P_Mode_Label"));
 		pModeList.add(lCreateRoom1P, BorderLayout.NORTH);
 
 		// ** Game mode listbox
@@ -1531,10 +1529,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// ** Rule list listbox
 		listmodelCreateRoom1PRuleList = new DefaultListModel();
-		listmodelCreateRoom1PRuleList.addElement("(Your rule - not rated)");
-
 		listboxCreateRoom1PRuleList = new JList(listmodelCreateRoom1PRuleList);
-		listboxCreateRoom1PRuleList.setSelectedIndex(0);
 		JScrollPane spCreateRoom1PRuleList = new JScrollPane(listboxCreateRoom1PRuleList);
 		pRuleList.add(spCreateRoom1PRuleList, BorderLayout.CENTER);
 
@@ -2493,6 +2488,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				netPlayerClient.interrupt();
 				netPlayerClient = null;
 			}
+			tabLobbyAndRoom.setSelectedIndex(0);
+			tabLobbyAndRoom.setEnabledAt(1, false);
+			tabLobbyAndRoom.setTitleAt(1, getUIText("Lobby_Tab_NoRoom"));
+			setLobbyButtonsEnabled(1);
+			setTitle(getUIText("Title_NetLobby"));
 			changeCurrentScreenCard(SCREENCARD_SERVERSELECT);
 		}
 		// チャット送信
@@ -2845,6 +2845,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 
 			if(style == 0) {
+				listmodelCreateRoom1PRuleList.clear();
+				listmodelCreateRoom1PRuleList.addElement(getUIText("CreateRoom1P_YourRule"));
+				listboxCreateRoom1PRuleList.setSelectedIndex(0);
+
 				for(int i = 0; i < listRatedRuleName[style].size(); i++) {
 					String name = (String)listRatedRuleName[style].get(i);
 					listmodelCreateRoom1PRuleList.addElement(name);

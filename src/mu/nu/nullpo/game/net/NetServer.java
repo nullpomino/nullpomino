@@ -1137,12 +1137,6 @@ public class NetServer {
 						//log.info("rulelock\t" + strRuleData);
 					}
 
-					broadcast("playerenter\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.seatID + "\n",
-							newRoom.roomID, pInfo);
-					broadcastRoomInfoUpdate(newRoom);
-					broadcastPlayerInfoUpdate(pInfo);
-					send(client, "roomjoinsuccess\t" + newRoom.roomID + "\t" + pInfo.seatID + "\t" + pInfo.queueID + "\n");
-
 					// Map send
 					if(newRoom.useMap && !newRoom.mapList.isEmpty()) {
 						String strMapTemp = "";
@@ -1154,6 +1148,12 @@ public class NetServer {
 						String strCompressed = NetUtil.compressString(strMapTemp);
 						send(client, "map\t" + strCompressed + "\n");
 					}
+
+					broadcast("playerenter\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.seatID + "\n",
+							newRoom.roomID, pInfo);
+					broadcastRoomInfoUpdate(newRoom);
+					broadcastPlayerInfoUpdate(pInfo);
+					send(client, "roomjoinsuccess\t" + newRoom.roomID + "\t" + pInfo.seatID + "\t" + pInfo.queueID + "\n");
 				} else {
 					// ルームが存在しない
 					send(client, "roomjoinfail\n");

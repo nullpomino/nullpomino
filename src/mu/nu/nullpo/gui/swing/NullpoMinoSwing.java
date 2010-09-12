@@ -1023,6 +1023,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
+		if(gameFrame != null) gameFrame.strModeToEnter = null;
 	}
 
 	public void netlobbyOnExit(NetLobbyFrame lobby) {
