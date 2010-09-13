@@ -32,21 +32,26 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * キーボード設定画面のステート
  */
-public class StateConfigKeyboard extends BasicGameState {
+public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/** This state's ID */
-	public static final int ID = 9;
+	public static final int ID = 16;
 
 	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 30;
 
 	/** Number of keys to set */
-	public static final int NUM_KEYS = 16;
+	public static final int NUM_KEYS = 6;
+	
+	public static final String[] KEY_NAMES = {
+		"UP    ", "DOWN  ", "LEFT  ", "RIGHT ", "SELECT", "CANCEL"
+	};
+	
+	public static final int[] DEFAULT_KEYS = {200, 208, 203, 205, 28, 1};
 
 	/** Player number */
 	public int player = 0;
@@ -66,6 +71,14 @@ public class StateConfigKeyboard extends BasicGameState {
 	/** Button settings */
 	protected int keymap[];
 
+	/** Flag set to true when setting custom keys */
+	protected boolean setCustom;
+
+	public StateConfigKeyboardNavi () {
+		maxCursor = 3;
+		minChoiceY = 3;
+	}
+
 	/*
 	 * Fetch this state's ID
 	 */
@@ -80,14 +93,12 @@ public class StateConfigKeyboard extends BasicGameState {
 	protected void reset() {
 		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
 
-		keynum = 0;
+		keynum = -1;
 		frame = 0;
+		setCustom = false;
 
 		keymap = new int[NUM_KEYS];
-
-		for(int i = 0; i < NUM_KEYS; i++) {
-			keymap[i] = GameKey.gamekey[player].keymap[i];
-		}
+		loadSettings();
 	}
 
 	/*
@@ -113,28 +124,32 @@ public class StateConfigKeyboard extends BasicGameState {
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
-		NormalFont.printFontGrid(1, 1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+		NormalFont.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+		
+		if (!setCustom)
+			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
-		NormalFont.printFontGrid(2,  3, "UP          : " + getKeyName(keymap[GameKey.BUTTON_UP]), (keynum == 0));
-		NormalFont.printFontGrid(2,  4, "DOWN        : " + getKeyName(keymap[GameKey.BUTTON_DOWN]), (keynum == 1));
-		NormalFont.printFontGrid(2,  5, "LEFT        : " + getKeyName(keymap[GameKey.BUTTON_LEFT]), (keynum == 2));
-		NormalFont.printFontGrid(2,  6, "RIGHT       : " + getKeyName(keymap[GameKey.BUTTON_RIGHT]), (keynum == 3));
-		NormalFont.printFontGrid(2,  7, "A (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
-		NormalFont.printFontGrid(2,  8, "B (R/L-ROT) : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
-		NormalFont.printFontGrid(2,  9, "C (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
-		NormalFont.printFontGrid(2, 10, "D (HOLD)    : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
-		NormalFont.printFontGrid(2, 11, "E (180-ROT) : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
-		NormalFont.printFontGrid(2, 12, "F           : " + getKeyName(keymap[GameKey.BUTTON_F]), (keynum == 9));
-		NormalFont.printFontGrid(2, 13, "QUIT        : " + getKeyName(keymap[GameKey.BUTTON_QUIT]), (keynum == 10));
-		NormalFont.printFontGrid(2, 14, "PAUSE       : " + getKeyName(keymap[GameKey.BUTTON_PAUSE]), (keynum == 11));
-		NormalFont.printFontGrid(2, 15, "GIVEUP      : " + getKeyName(keymap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
-		NormalFont.printFontGrid(2, 16, "RETRY       : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
-		NormalFont.printFontGrid(2, 17, "FRAME STEP  : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
-		NormalFont.printFontGrid(2, 18, "SCREEN SHOT : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFont.printFontGrid(2, 3, "DEFAULT", (cursor == 0));
+		NormalFont.printFontGrid(2, 4, "GAME KEYS", (cursor == 1));
+		NormalFont.printFontGrid(2, 5, "CUSTOM", (cursor == 2));
+		NormalFont.printFontGrid(2, 6, "[EDIT CUSTOM]", (cursor == 3));
 
-		if(frame >= KEYACCEPTFRAME) {
+		if (cursor == 0){
+			for(int x = 0; x < NUM_KEYS; x++) {
+				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(DEFAULT_KEYS[x]), (keynum == x));
+			}
+		} else if (cursor == 1) {
+			for(int x = 0; x < NUM_KEYS; x++)
+				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
+						+ getKeyName(GameKey.gamekey[player].keymap[x]));
+		} else {
+			for (int x = 0; x < NUM_KEYS; x++)
+				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(keymap[x]), (keynum == x));
+		}
+
+		if(setCustom && frame >= KEYACCEPTFRAME) {
 			if(keynum < NUM_KEYS) {
-				NormalFont.printFontGrid(1, 3 + keynum, "b", NormalFont.COLOR_RED);
+				NormalFont.printFontGrid(1, 8 + keynum, "b", NormalFont.COLOR_RED);
 
 				NormalFont.printFontGrid(1, 25, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
 				if(!firstSetupMode) NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
@@ -151,14 +166,52 @@ public class StateConfigKeyboard extends BasicGameState {
 	/*
 	 * Update game state
 	 */
+	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
+		if (!setCustom) {
+			super.update(container, game, delta);
+			frame = 0;
+		} else {
+			frame++;
 		}
+	}
 
-		frame++;
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+	@Override
+	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
+		if (cursor == 3) {
+			setCustom = true;
+			keynum = -1;
+			frame = 0;
+			return true;
+		} else if (cursor == 0){
+			for(int i = 0; i < NUM_KEYS; i++) {
+				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = DEFAULT_KEYS[i];
+			}
+		} else if (cursor == 1) {
+			for(int i = 0; i < NUM_KEYS; i++) {
+				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = GameKey.gamekey[player].keymap[i];
+			}
+		} else if (cursor == 2) {
+			for(int i = 0; i < NUM_KEYS; i++) {
+				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = keymap[i];
+			}
+		}
+		GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
+		NullpoMinoSlick.saveConfig();
+
+		ResourceHolder.soundManager.play("decide");
+		NullpoMinoSlick.propConfig.setProperty("option.keyCustomNaviType", cursor);
+		if(!firstSetupMode)
+			gameObj.enterState(StateConfigMainMenu.ID);
+		else
+			gameObj.enterState(StateConfigRuleSelect.ID);
+		return true;
+	}
+
+	@Override
+	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
+		game.enterState(StateConfigMainMenu.ID);
+		return false;
 	}
 
 	/*
@@ -166,16 +219,17 @@ public class StateConfigKeyboard extends BasicGameState {
 	 */
 	@Override
 	public void keyReleased(int key, char c) {
-		if(frame >= KEYACCEPTFRAME) {
-			if(keynum < NUM_KEYS) {
+		if(setCustom && frame >= KEYACCEPTFRAME) {
+			if (keynum < 0)
+				keynum = 0;
+			else if(keynum < NUM_KEYS) {
 				if(key == Input.KEY_DELETE) {
 					ResourceHolder.soundManager.play("move");
 					keymap[keynum] = 0;
 				} else if(key == Input.KEY_BACK) {
-					if(!firstSetupMode) {
-						gameObj.enterState(StateConfigMainMenu.ID);
-						return;
-					}
+					setCustom = false;
+					loadSettings();
+					keynum = -1;
 				} else {
 					ResourceHolder.soundManager.play("move");
 					keymap[keynum] = key;
@@ -186,32 +240,27 @@ public class StateConfigKeyboard extends BasicGameState {
 				if(key == Input.KEY_ENTER) {
 					ResourceHolder.soundManager.play("decide");
 
-					//NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
 					for(int i = 0; i < NUM_KEYS; i++) {
-						GameKey.gamekey[player].keymap[i] = keymap[i];
+						NullpoMinoSlick.propConfig.setProperty("option.keyCustomNavi." + i, keymap[i]);
 					}
-					if(!firstSetupMode && NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0) == 1) {
-						for(int i = 0; i < StateConfigKeyboardNavi.NUM_KEYS; i++) {
-							GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = keymap[i];
-						}
-					}
-					GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
-					NullpoMinoSlick.saveConfig();
-
-					if(!firstSetupMode)
-						gameObj.enterState(StateConfigMainMenu.ID);
-					else
-						gameObj.enterState(StateConfigKeyboardNavi.ID);
+					setCustom = false;
+					keynum = -1;
 				} else if(key == Input.KEY_DELETE) {
 					ResourceHolder.soundManager.play("move");
-					reset();
+					loadSettings();
+					keynum = 0;
 				} else if(key == Input.KEY_BACK) {
-					if(!firstSetupMode) {
-						gameObj.enterState(StateConfigMainMenu.ID);
-						return;
-					}
+					setCustom = false;
+					loadSettings();
+					keynum = -1;
 				}
 			}
+		}
+	}
+	
+	private void loadSettings() {
+		for(int i = 0; i < NUM_KEYS; i++) {
+			keymap[i] = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNavi." + i, DEFAULT_KEYS[i]);
 		}
 	}
 
@@ -221,6 +270,10 @@ public class StateConfigKeyboard extends BasicGameState {
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		reset();
+		cursor = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0);
+		if (firstSetupMode)
+			for(int i = 0; i < NUM_KEYS; i++)
+				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = DEFAULT_KEYS[i];
 	}
 
 	/**

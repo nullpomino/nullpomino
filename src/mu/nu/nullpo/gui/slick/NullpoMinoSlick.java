@@ -121,6 +121,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
+	
+	/** Keyboard menu navigation settings state*/
+	public static StateConfigKeyboardNavi stateConfigKeyboardNavi;
 
 	/** Joystick button設定画面のステート */
 	public static StateConfigJoystickButton stateConfigJoystickButton;
@@ -531,6 +534,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		stateConfigJoystickTest = new StateConfigJoystickTest();
 		stateConfigGameTuning = new StateConfigGameTuning();
 		stateConfigRuleStyleSelect = new StateConfigRuleStyleSelect();
+		stateConfigKeyboardNavi = new StateConfigKeyboardNavi();
 
 		addState(stateLoading);
 		addState(stateTitle);
@@ -548,6 +552,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		addState(stateConfigJoystickTest);
 		addState(stateConfigGameTuning);
 		addState(stateConfigRuleStyleSelect);
+		addState(stateConfigKeyboardNavi);
 	}
 
 	/**

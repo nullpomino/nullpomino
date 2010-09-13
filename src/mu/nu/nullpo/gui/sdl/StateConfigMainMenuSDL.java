@@ -39,7 +39,7 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 	protected int player = 0;
 
 	public StateConfigMainMenuSDL () {
-		maxCursor = 5;
+		maxCursor = 6;
 		minChoiceY = 3;
 	}
 
@@ -59,14 +59,16 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 		NormalFontSDL.printFontGrid(2, 5, "[GAME TUNING]:" + (player + 1) + "P", (cursor == 2));
 		NormalFontSDL.printFontGrid(2, 6, "[AI SETTING]:" + (player + 1) + "P", (cursor == 3));
 		NormalFontSDL.printFontGrid(2, 7, "[KEYBOARD SETTING]:" + (player + 1) + "P", (cursor == 4));
-		NormalFontSDL.printFontGrid(2, 8, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 5));
+		NormalFontSDL.printFontGrid(2, 8, "[KEYBOARD NAVIGATION SETTING]:" + (player + 1) + "P", (cursor == 5));
+		NormalFontSDL.printFontGrid(2, 9, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 6));
 
 		if(cursor == 0) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_General"));
 		if(cursor == 1) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Rule"));
 		if(cursor == 2) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_GameTuning"));
 		if(cursor == 3) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_AI"));
 		if(cursor == 4) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Keyboard"));
-		if(cursor == 5) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Joystick"));
+		if(cursor == 5) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_KeyboardNavi"));
+		if(cursor == 6) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Joystick"));
 	}
 
 	@Override
@@ -106,6 +108,11 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD);
 			break;
 		case 5:
+			StateConfigKeyboardNaviSDL stateKN = (StateConfigKeyboardNaviSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI];
+			stateKN.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
+			break;
+		case 6:
 			StateConfigJoystickMainSDL stateJ = (StateConfigJoystickMainSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN];
 			stateJ.player = player;
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN);

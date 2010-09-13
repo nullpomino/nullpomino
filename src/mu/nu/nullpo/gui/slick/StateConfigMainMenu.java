@@ -47,6 +47,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		"ConfigMainMenu_GameTuning",
 		"ConfigMainMenu_AI",
 		"ConfigMainMenu_Keyboard",
+		"ConfigMainMenu_KeyboardNavi",
 		"ConfigMainMenu_Joystick"
 	};
 
@@ -54,7 +55,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	protected int player = 0;
 
 	public StateConfigMainMenu () {
-		maxCursor = 5;
+		maxCursor = 6;
 		minChoiceY = 3;
 	}
 
@@ -90,7 +91,8 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		NormalFont.printFontGrid(2, 5, "[GAME TUNING]:" + (player + 1) + "P", (cursor == 2));
 		NormalFont.printFontGrid(2, 6, "[AI SETTING]:" + (player + 1) + "P", (cursor == 3));
 		NormalFont.printFontGrid(2, 7, "[KEYBOARD SETTING]:" + (player + 1) + "P", (cursor == 4));
-		NormalFont.printFontGrid(2, 8, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 5));
+		NormalFont.printFontGrid(2, 8, "[KEYBOARD NAVIGATION SETTING]:" + (player + 1) + "P", (cursor == 5));
+		NormalFont.printFontGrid(2, 9, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 6));
 
 		NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 
@@ -130,6 +132,10 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 			game.enterState(StateConfigKeyboard.ID);
 			break;
 		case 5:
+			NullpoMinoSlick.stateConfigKeyboardNavi.player = player;
+			game.enterState(StateConfigKeyboardNavi.ID);
+			break;
+		case 6:
 			NullpoMinoSlick.stateConfigJoystickMain.player = player;
 			game.enterState(StateConfigJoystickMain.ID);
 			break;
