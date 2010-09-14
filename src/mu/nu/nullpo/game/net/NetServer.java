@@ -101,7 +101,7 @@ public class NetServer {
 	private LinkedList<SocketChannel> observerList = new LinkedList<SocketChannel>();
 	
 	/** Ban list */
-	private LinkedList<String> banList = new LinkedList<String>();
+	private LinkedList<NetServerBan> banList = new LinkedList<NetServerBan>();
 
 	/** Selector */
 	private Selector selector;
@@ -1672,21 +1672,40 @@ public class NetServer {
 		}
 	}
 	
-	private void ban(SocketChannel client) {
+	/**
+	 * Sets a ban.
+	 * @param client The remote address to ban.
+	 * @param banLength The length of the ban.
+	 */
+	private void ban(SocketChannel client, int banLength) {
 		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
 		
-		banList.add(remoteAddr);
+		banList.add(new NetServerBan(remoteAddr, banLength));
 		logout(client);
 		log.info("Banned player: "+remoteAddr);
 	}
 	
+	/**
+	 * Checks whether a connection is banned.
+	 * @param client The remote address to check.
+	 * @return true if the connection is banned, false if it is not banned or if the ban
+	 * is expired.
+	 */
 	private boolean checkConnectionOnBanlist(SocketChannel client) {
 		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
 		
-		for (String addr : banList) {
-			if (addr.equals(remoteAddr)) {
+		Iterator<NetServerBan> i = banList.iterator();
+		NetServerBan ban;
+		
+		while (i.hasNext()) {
+			ban = i.next();
+			if (ban.addr.equals(remoteAddr)) {
+				if (ban.isExpired()) {
+					i.remove();
+					return false;
+				}
 				return true;
 			}
 		}
