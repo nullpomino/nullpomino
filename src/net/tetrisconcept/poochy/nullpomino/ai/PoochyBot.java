@@ -1131,7 +1131,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 						holdPts += 30;
 					else if (nowType == Piece.PIECE_S || nowType == Piece.PIECE_Z)
 						holdPts -= 30;
-					else if (holdType == Piece.PIECE_O)
+					else if (nowType == Piece.PIECE_O)
 						holdPts -= 10;
 
 					for(int x = minHoldX; x <= maxHoldX; x+=move)
