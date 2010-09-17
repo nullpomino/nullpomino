@@ -409,6 +409,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** 誰かCancelしたらTimer無効化(Create room screen) */
 	protected JCheckBox chkboxCreateRoomDisableTimerAfterSomeoneCancelled;
 
+	/** Rule list listbox (Create room screen) */
+	protected JList listboxCreateRoomRuleList;
+
+	/** Rule list list data (Create room screen) */
+	protected DefaultListModel listmodelCreateRoomRuleList;
+
 	/** OK button(Create room screen) */
 	protected JButton btnCreateRoomOK;
 
@@ -1079,6 +1085,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel containerpanelCreateRoomMiscOwner = new JPanel(new BorderLayout());
 		tabbedPane.addTab(getUIText("CreateRoom_Tab_Misc"), containerpanelCreateRoomMiscOwner);
 
+		// * Rated Rule tab
+		JPanel containerpanelCreateRoomRatedRuleOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_RatedRule"), containerpanelCreateRoomRatedRuleOwner);
+
 		// general tab
 
 		// * 速度設定パネル(本体)
@@ -1451,6 +1461,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(propConfig.getProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", false));
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setToolTipText(getUIText("CreateRoom_DisableTimerAfterSomeoneCancelled_Tip"));
 		containerpanelCreateRoomMisc.add(chkboxCreateRoomDisableTimerAfterSomeoneCancelled);
+
+		// Rated Rule tab
+		JPanel containerpanelCreateRoomRatedRule = new JPanel(new BorderLayout());
+		containerpanelCreateRoomRatedRuleOwner.add(containerpanelCreateRoomRatedRule);
+
+		listmodelCreateRoomRuleList = new DefaultListModel();
+		listboxCreateRoomRuleList = new JList(listmodelCreateRoomRuleList);
+		JScrollPane spCreateRoomRuleList = new JScrollPane(listboxCreateRoomRuleList);
+		containerpanelCreateRoomRatedRule.add(spCreateRoomRuleList, BorderLayout.CENTER);
 
 		// buttons
 
@@ -1934,6 +1953,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.disableTimerAfterSomeoneCancelled = propConfig.getProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", false);
 				r.useMap = propConfig.getProperty("createroom.defaultUseMap", false);
 				//propConfig.getProperty("createroom.defaultMapSetID", 0);
+				r.ruleName = propConfig.getProperty("createroom.ruleName", "");
 			}
 		}
 
@@ -1967,6 +1987,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
 			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
+			if(r.rated) listboxCreateRoomRuleList.setSelectedValue(r.ruleName, true);
+			else listboxCreateRoomRuleList.setSelectedIndex(0);
 		}
 	}
 
@@ -2000,18 +2022,27 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				String name = getPlayerNameWithTripCode(pInfo);
 				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
 
-				// チーム
+				// Team
 				if(pInfo.strTeam.length() > 0) {
 					name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 				}
+
+				// Rating
+				name += " |" + pInfo.rating[0] + "|";
+				/*
+				name += " |T:" + pInfo.rating[0] + "|";
+				name += "A:" + pInfo.rating[1] + "|";
+				name += "P:" + pInfo.rating[2] + "|";
+				name += "S:" + pInfo.rating[3] + "|";
+				*/
 
 				// Country code
 				if(pInfo.strCountry.length() > 0) {
 					name += " (" + pInfo.strCountry + ")";
 				}
 
-				// ホスト名
+				// Hostname
 				if(pInfo.strHost.length() > 0) {
 					name += " {" + pInfo.strHost + "}";
 				}
@@ -2027,18 +2058,27 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				String name = getPlayerNameWithTripCode(pInfo);
 				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
 
-				// チーム
+				// Team
 				if(pInfo.strTeam.length() > 0) {
 					name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 				}
+
+				// Rating
+				name += " |" + pInfo.rating[0] + "|";
+				/*
+				name += " |T:" + pInfo.rating[0] + "|";
+				name += "A:" + pInfo.rating[1] + "|";
+				name += "P:" + pInfo.rating[2] + "|";
+				name += "S:" + pInfo.rating[3] + "|";
+				*/
 
 				// Country code
 				if(pInfo.strCountry.length() > 0) {
 					name += " (" + pInfo.strCountry + ")";
 				}
 
-				// ホスト名
+				// Hostname
 				if(pInfo.strHost.length() > 0) {
 					name += " {" + pInfo.strHost + "}";
 				}
@@ -2073,23 +2113,26 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				String name = getPlayerNameWithTripCode(pInfo);
 				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
 
-				// チーム
+				// Team
 				if(pInfo.strTeam.length() > 0) {
 					name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 				}
+
+				// Rating
+				name += " |" + pInfo.rating[roomInfo.style] + "|";
 
 				// Country code
 				if(pInfo.strCountry.length() > 0) {
 					name += " (" + pInfo.strCountry + ")";
 				}
 
-				// ホスト名
+				// Hostname
 				if(pInfo.strHost.length() > 0) {
 					name += " {" + pInfo.strHost + "}";
 				}
 
-				// 状態
+				// Status
 				if(pInfo.playing) name += getUIText("RoomUserList_Playing");
 				else if(pInfo.ready) name += getUIText("RoomUserList_Ready");
 
@@ -2652,7 +2695,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
 				msg += spinCheckType + "\t" + tspinEnableEZ + "\t"  + b2bChunk + "\t";
-				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t";
+				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
+
+				// Rule
+				if(listboxCreateRoomRuleList.getSelectedIndex() >= 1) {
+					backupRoomInfo.ruleName = (String)listboxCreateRoomRuleList.getSelectedValue();
+					msg += (String)listboxCreateRoomRuleList.getSelectedValue() + "\t";
+				} else {
+					backupRoomInfo.ruleName = "";
+					msg += "\t";
+				}
 
 				// Map send
 				if(useMap) {
@@ -2845,12 +2897,17 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 
 			if(style == 0) {
+				listmodelCreateRoomRuleList.clear();
+				listmodelCreateRoomRuleList.addElement(getUIText("CreateRoom_YourRule"));
+				listboxCreateRoomRuleList.setSelectedIndex(0);
+
 				listmodelCreateRoom1PRuleList.clear();
 				listmodelCreateRoom1PRuleList.addElement(getUIText("CreateRoom1P_YourRule"));
 				listboxCreateRoom1PRuleList.setSelectedIndex(0);
 
 				for(int i = 0; i < listRatedRuleName[style].size(); i++) {
 					String name = (String)listRatedRuleName[style].get(i);
+					listmodelCreateRoomRuleList.addElement(name);
 					listmodelCreateRoom1PRuleList.addElement(name);
 				}
 			}
@@ -3223,6 +3280,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			btnRoomButtonsSitOut.setEnabled(true);
 			btnRoomButtonsTeamChange.setEnabled(true);
+		}
+		// Rating change
+		if(message[0].equals("rating")) {
+			String strPlayerName = convTripCode(NetUtil.urlDecode(message[3]));
+			int ratingNow = Integer.parseInt(message[4]);
+			int ratingChange = Integer.parseInt(message[5]);
+			String strTemp = String.format(getUIText("SysMsg_Rating"), strPlayerName, ratingNow, ratingChange);
+			addSystemChatLogLater(txtpaneRoomChatLog, strTemp, new Color(0, 128, 0));
 		}
 
 		// Listener呼び出し

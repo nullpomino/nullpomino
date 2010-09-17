@@ -31,13 +31,17 @@ package mu.nu.nullpo.game.net;
 import java.io.Serializable;
 
 import mu.nu.nullpo.game.component.RuleOptions;
+import mu.nu.nullpo.game.play.GameEngine;
 
 /**
- * Player情報
+ * Player information
  */
 public class NetPlayerInfo implements Serializable {
 	/** Serial version */
 	private static final long serialVersionUID = 1L;
+
+	/** Default rating for multiplayer games */
+	public static final int DEFAULT_MULTIPLAYER_RATING = 1500;
 
 	/** Name */
 	public String strName = "";
@@ -45,7 +49,7 @@ public class NetPlayerInfo implements Serializable {
 	/** Country code */
 	public String strCountry = "";
 
-	/** 接続元ホスト */
+	/** Host */
 	public String strHost = "";
 
 	/** Team name */
@@ -54,26 +58,41 @@ public class NetPlayerInfo implements Serializable {
 	/** Rules in use */
 	public RuleOptions ruleOpt = null;
 
-	/** 識別用ID */
+	/** Multiplayer rating */
+	public int[] rating = new int[GameEngine.MAX_GAMESTYLE];
+
+	/** Rating backup (internal use) */
+	public int[] ratingBefore = new int[GameEngine.MAX_GAMESTYLE];
+
+	/** Number of rated multiplayer games played */
+	public int playCount = 0;
+
+	/** Number of rated multiplayer games win */
+	public int winCount = 0;
+
+	/** User ID */
 	public int uid = -1;
 
-	/** 今いるルームのID */
+	/** Current room ID */
 	public int roomID = -1;
 
-	/** ゲーム席 number(いないなら-1) */
+	/** Game seat number (-1 if spectator) */
 	public int seatID = -1;
 
-	/** 順番待ち number(いないなら-1) */
+	/** Join queue number (-1 if not in queue) */
 	public int queueID = -1;
 
-	/** プレイ開始準備完了ならtrue */
+	/** true if "Ready" sign */
 	public boolean ready = false;
 
-	/** プレイ中ならtrue */
+	/** true if playing now */
 	public boolean playing = false;
 
-	/** 正 always 接続されているならtrue */
+	/** true if connected */
 	public boolean connected = false;
+
+	/** true if this player is using tripcode */
+	public boolean isTripUse = false;
 
 	/**
 	 * Constructor
@@ -90,23 +109,23 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列から dataを読み込むConstructor
-	 * @param pdata Stringの配列(String[10])
+	 * String array constructor (Uses importStringArray)
+	 * @param pdata String array (String[12])
 	 */
 	public NetPlayerInfo(String[] pdata) {
 		importStringArray(pdata);
 	}
 
 	/**
-	 * Stringら dataを読み込むConstructor
-	 * @param str String(;で区切り)
+	 * String constructor (Uses importString)
+	 * @param str String(Divided by ;)
 	 */
 	public NetPlayerInfo(String str) {
 		importString(str);
 	}
 
 	/**
-	 * 他のNetPlayerInfoからコピー
+	 * Copy from other NetPlayerInfo
 	 * @param n Copy source
 	 */
 	public void copy(NetPlayerInfo n) {
@@ -121,6 +140,13 @@ public class NetPlayerInfo implements Serializable {
 			ruleOpt = null;
 		}
 
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			rating[i] = n.rating[i];
+			ratingBefore[i] = n.ratingBefore[i];
+		}
+		playCount = n.playCount;
+		winCount = n.winCount;
+
 		uid = n.uid;
 		roomID = n.roomID;
 		seatID = n.seatID;
@@ -128,28 +154,36 @@ public class NetPlayerInfo implements Serializable {
 		ready = n.ready;
 		playing = n.playing;
 		connected = n.connected;
+		isTripUse = n.isTripUse;
 	}
 
 	/**
-	 * Stringの配列から data代入
-	 * @param pdata Stringの配列(String[11])
+	 * Import from String array
+	 * @param pdata String array (String[18])
 	 */
 	public void importStringArray(String[] pdata) {
 		strName = NetUtil.urlDecode(pdata[0]);
 		strCountry = NetUtil.urlDecode(pdata[1]);
 		strHost = NetUtil.urlDecode(pdata[2]);
 		strTeam = NetUtil.urlDecode(pdata[3]);
-		roomID = Integer.parseInt(pdata[4]);
-		uid = Integer.parseInt(pdata[5]);
-		seatID = Integer.parseInt(pdata[6]);
-		queueID = Integer.parseInt(pdata[7]);
-		ready = Boolean.parseBoolean(pdata[8]);
-		playing = Boolean.parseBoolean(pdata[9]);
-		connected = Boolean.parseBoolean(pdata[10]);
+		playCount = Integer.parseInt(pdata[4]);
+		winCount = Integer.parseInt(pdata[5]);
+		roomID = Integer.parseInt(pdata[6]);
+		uid = Integer.parseInt(pdata[7]);
+		seatID = Integer.parseInt(pdata[8]);
+		queueID = Integer.parseInt(pdata[9]);
+		ready = Boolean.parseBoolean(pdata[10]);
+		playing = Boolean.parseBoolean(pdata[11]);
+		connected = Boolean.parseBoolean(pdata[12]);
+		isTripUse = Boolean.parseBoolean(pdata[13]);
+		rating[0] = Integer.parseInt(pdata[14]);
+		rating[1] = Integer.parseInt(pdata[15]);
+		rating[2] = Integer.parseInt(pdata[16]);
+		rating[3] = Integer.parseInt(pdata[17]);
 	}
 
 	/**
-	 * String(;で区切り)から data代入
+	 * Import from String (Divided by ;)
 	 * @param str String
 	 */
 	public void importString(String str) {
@@ -157,27 +191,34 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列に変換
-	 * @return Stringの配列(String[11])
+	 * Export to String array
+	 * @return String array (String[18])
 	 */
 	public String[] exportStringArray() {
-		String[] pdata = new String[11];
+		String[] pdata = new String[18];
 		pdata[0] = NetUtil.urlEncode(strName);
 		pdata[1] = NetUtil.urlEncode(strCountry);
 		pdata[2] = NetUtil.urlEncode(strHost);
 		pdata[3] = NetUtil.urlEncode(strTeam);
-		pdata[4] = Integer.toString(roomID);
-		pdata[5] = Integer.toString(uid);
-		pdata[6] = Integer.toString(seatID);
-		pdata[7] = Integer.toString(queueID);
-		pdata[8] = Boolean.toString(ready);
-		pdata[9] = Boolean.toString(playing);
-		pdata[10] = Boolean.toString(connected);
+		pdata[4] = Integer.toString(playCount);
+		pdata[5] = Integer.toString(winCount);
+		pdata[6] = Integer.toString(roomID);
+		pdata[7] = Integer.toString(uid);
+		pdata[8] = Integer.toString(seatID);
+		pdata[9] = Integer.toString(queueID);
+		pdata[10] = Boolean.toString(ready);
+		pdata[11] = Boolean.toString(playing);
+		pdata[12] = Boolean.toString(connected);
+		pdata[13] = Boolean.toString(isTripUse);
+		pdata[14] = Integer.toString(rating[0]);
+		pdata[15] = Integer.toString(rating[1]);
+		pdata[16] = Integer.toString(rating[2]);
+		pdata[17] = Integer.toString(rating[3]);
 		return pdata;
 	}
 
 	/**
-	 * Stringに変換(;で区切り)
+	 * Export to String (Divided by ;)
 	 * @return String
 	 */
 	public String exportString() {
@@ -193,7 +234,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * プレイ中 flagをリセット
+	 * Reset play flags
 	 */
 	public void resetPlayState() {
 		ready = false;
@@ -201,7 +242,7 @@ public class NetPlayerInfo implements Serializable {
 	}
 
 	/**
-	 * Player消去時の処理
+	 * Delete this player
 	 */
 	public void delete() {
 		ruleOpt = null;

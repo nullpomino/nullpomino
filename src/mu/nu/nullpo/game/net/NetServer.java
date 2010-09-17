@@ -31,6 +31,7 @@ package mu.nu.nullpo.game.net;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -75,8 +76,17 @@ public class NetServer {
 	/** Rule data send buffer size */
 	public static final int RULE_BUF_SIZE = 512;
 
+	/** Used by multiplayer rating */
+	public static final double NORMAL_MAX_DIFF = 16;
+
+	/** Used by multiplayer rating */
+	public static final int PROVISIONAL_GAMES = 50;
+
 	/** Server config file */
 	private static CustomProperties propServer;
+
+	/** Player data list (mainly for rating) */
+	private static CustomProperties propPlayerData;
 
 	/** Rule list for rated game */
 	@SuppressWarnings("rawtypes")
@@ -99,7 +109,7 @@ public class NetServer {
 
 	/** Observer list */
 	private LinkedList<SocketChannel> observerList = new LinkedList<SocketChannel>();
-	
+
 	/** Ban list */
 	private LinkedList<NetServerBan> banList = new LinkedList<NetServerBan>();
 
@@ -125,6 +135,7 @@ public class NetServer {
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log_server.cfg");
 
+		// Load server config file
 		propServer = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/etc/netserver.cfg");
@@ -134,15 +145,27 @@ public class NetServer {
 			log.warn("Failed to load config file", e);
 		}
 
+		// Load player data
+		propPlayerData = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netserver_playerdata.cfg");
+			propPlayerData.load(in);
+			in.close();
+		} catch (IOException e) {}
+
+		// Fetch port number from config file
 		int port = propServer.getProperty("netserver.port", DEFAULT_PORT);
 		if(args.length > 0) {
+			// If command-line option is used, change port number to the new one
 			try {
 				port = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {}
 		}
 
+		// Load rules for rated game
 		loadRuleList();
 
+		// Run
 		new NetServer(port).run();
 	}
 
@@ -299,7 +322,7 @@ public class NetServer {
 
 			String remoteAddr = channel.socket().getRemoteSocketAddress().toString();
 			log.info("Connected: " + remoteAddr);
-			
+
 			if (checkConnectionOnBanlist(channel)) {
 				log.warn("Connection is banned: " + remoteAddr);
 				logout(channel);
@@ -726,6 +749,7 @@ public class NetServer {
 			// トリップ生成
 			String originalName = NetUtil.urlDecode(message[2]);
 			int sharpIndex = originalName.indexOf('#');
+			boolean isTripUse = false;
 
 			if(sharpIndex != -1) {
 				String strTripKey = originalName.substring(sharpIndex + 1);
@@ -737,6 +761,8 @@ public class NetServer {
 				} else {
 					originalName = "!" + strTripCode;
 				}
+
+				isTripUse = true;
 			} else {
 				originalName = originalName.replace('!', '?');
 			}
@@ -757,6 +783,7 @@ public class NetServer {
 			if(message.length > 4) pInfo.strTeam = NetUtil.urlDecode(message[4]);
 			pInfo.uid = playerCount;
 			pInfo.connected = true;
+			pInfo.isTripUse = isTripUse;
 			log.info(pInfo.strName + " has logged in (Host:" + client.socket().getInetAddress().getHostName() + " Team:" + pInfo.strTeam + ")");
 
 			// ホスト名設定
@@ -780,6 +807,9 @@ public class NetServer {
 					pInfo.strHost = pInfo.strHost.substring(pInfo.strHost.length() - maxlen);
 				}
 			}
+
+			// Load rating
+			getPlayerDataFromProperty(pInfo);
 
 			// ログイン成功
 			playerInfoMap.put(client, pInfo);
@@ -963,7 +993,7 @@ public class NetServer {
 				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
 				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
 				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
-				msg += strMode + "\t" + strMap + "\n";
+				msg += strMode + "\t" + style + "\t" + strRule + "\t" strMap + "\n";
 			 */
 			if((pInfo != null) && (pInfo.roomID == -1)) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
@@ -1009,10 +1039,19 @@ public class NetServer {
 				roomInfo.tspinEnableEZ = Boolean.parseBoolean(message[28]);
 				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
 				roomInfo.strMode = NetUtil.urlDecode(message[30]);
+				roomInfo.style = Integer.parseInt(message[31]);
+
+				// Rule
+				if((message.length > 32) && (message[32].length() > 0)) {
+					roomInfo.ruleName = NetUtil.urlDecode(message[32]);
+					roomInfo.ruleOpt = new RuleOptions(getRatedRule(0, roomInfo.ruleName));
+					roomInfo.ruleLock = true;
+					roomInfo.rated = true;
+				}
 
 				// Set map
-				if(roomInfo.useMap && (message.length > 31)) {
-					String strDecompressed = NetUtil.decompressString(message[31]);
+				if(roomInfo.useMap && (message.length > 33)) {
+					String strDecompressed = NetUtil.decompressString(message[33]);
 					String[] strMaps = strDecompressed.split("\t");
 
 					int maxMap = strMaps.length;
@@ -1464,6 +1503,12 @@ public class NetServer {
 			if(p != null) {
 				p.ready = false;
 				p.playing = true;
+
+				if(roomInfo.rated) {
+					p.playCount++;
+					p.ratingBefore[roomInfo.style] = p.rating[roomInfo.style];
+				}
+
 				broadcastPlayerInfoUpdate(p);
 			}
 		}
@@ -1498,9 +1543,45 @@ public class NetServer {
 					if((pInfo != null) && (pInfo.playing)) {
 						pInfo.resetPlayState();
 						broadcastPlayerInfoUpdate(pInfo);
+						roomInfo.playerSeatDead.addFirst(pInfo);
 					}
 				}
 			} else if(winner != null) {
+				roomInfo.playerSeatDead.addFirst(winner);
+
+				// Rated game
+				if(roomInfo.rated) {
+					// Update win count
+					winner.winCount++;
+
+					// Update rating
+					int style = roomInfo.style;
+					int n = roomInfo.playerSeatDead.size();
+					for(int w = 0; w < n - 1; w++) {
+						for(int l = w + 1; l < n; l++) {
+							NetPlayerInfo wp = roomInfo.playerSeatDead.get(w);
+							NetPlayerInfo lp = roomInfo.playerSeatDead.get(l);
+
+							wp.rating[style] += (int) (rankDelta(wp.playCount, wp.rating[style], lp.rating[style], 1) / (n-1));
+							lp.rating[style] += (int) (rankDelta(lp.playCount, lp.rating[style], wp.rating[style], 0) / (n-1));
+						}
+					}
+
+					// Notify/Save
+					for(int i = 0; i < n; i++) {
+						NetPlayerInfo p = roomInfo.playerSeatDead.get(i);
+						int change = p.rating[style] - p.ratingBefore[style];
+						log.info("#" + (i+1) + " Name:" + p.strName + " Rating:" + p.rating[style] + " (" + change + ")");
+						setPlayerDataToProperty(p);
+
+						String msgRatingChange =
+							"rating\t" + p.uid + "\t" + p.seatID + "\t" + NetUtil.urlEncode(p.strName) + "\t" +
+							p.rating[style] + "\t" + change + "\n";
+						broadcast(msgRatingChange, winner.roomID);
+					}
+					writePlayerDataToFile();
+				}
+
 				msg += winner.uid + "\t" + winner.seatID + "\t" + NetUtil.urlEncode(winner.strName) + "\t" + isTeamWin;
 				winner.resetPlayState();
 				broadcastPlayerInfoUpdate(winner);
@@ -1666,12 +1747,13 @@ public class NetServer {
 			broadcast(msg, pInfo.roomID);
 
 			roomInfo.deadCount++;
+			roomInfo.playerSeatDead.addFirst(pInfo);
 			gameFinished(roomInfo);
 
 			broadcastPlayerInfoUpdate(pInfo);
 		}
 	}
-	
+
 	/**
 	 * Sets a ban.
 	 * @param client The remote address to ban.
@@ -1680,12 +1762,12 @@ public class NetServer {
 	private void ban(SocketChannel client, int banLength) {
 		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
-		
+
 		banList.add(new NetServerBan(remoteAddr, banLength));
 		logout(client);
 		log.info("Banned player: "+remoteAddr);
 	}
-	
+
 	/**
 	 * Checks whether a connection is banned.
 	 * @param client The remote address to check.
@@ -1695,10 +1777,10 @@ public class NetServer {
 	private boolean checkConnectionOnBanlist(SocketChannel client) {
 		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
-		
+
 		Iterator<NetServerBan> i = banList.iterator();
 		NetServerBan ban;
-		
+
 		while (i.hasNext()) {
 			ban = i.next();
 			if (ban.addr.equals(remoteAddr)) {
@@ -1754,6 +1836,87 @@ public class NetServer {
 		return null;
 	}
 
+	/**
+	 * Get new rating
+	 * @param playedGames Number of games played by the player
+	 * @param myRank Player's rating
+	 * @param oppRank Opponent's rating
+	 * @param myScore 0:Loss, 1:Win
+	 * @return New rating
+	 */
+	private double rankDelta(int playedGames, double myRank, double oppRank, double myScore) {
+		return maxDelta(playedGames) * (myScore - expectedScore(myRank, oppRank));
+	}
+
+	/**
+	 * Subroutine of rankDelta; Returns expected score.
+	 * @param myRank Player's rating
+	 * @param oppRank Opponent's rating
+	 * @return Expected score
+	 */
+	private double expectedScore(double myRank, double oppRank) {
+		return 1.0 / (1 + Math.pow(10, (oppRank - myRank) / 400.0));
+	}
+
+	/**
+	 * Subroutine of rankDelta; Returns multiplier of rating change
+	 * @param playedGames Number of games played by the player
+	 * @return Multiplier of rating change
+	 */
+	private double maxDelta(int playedGames) {
+		return playedGames > PROVISIONAL_GAMES
+				? NORMAL_MAX_DIFF
+				: NORMAL_MAX_DIFF + 400 / (playedGames + 3);
+	}
+
+	/**
+	 * Get player data from propPlayerData
+	 * @param pInfo NetPlayerInfo
+	 */
+	private void getPlayerDataFromProperty(NetPlayerInfo pInfo) {
+		if(pInfo.isTripUse) {
+			for(int i = 0; i < pInfo.rating.length; i++) {
+				pInfo.rating[i] = propPlayerData.getProperty("p.rating." + i + "." + pInfo.strName, NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
+			}
+			pInfo.playCount = propPlayerData.getProperty("p.playCount." + pInfo.strName, 0);
+			pInfo.winCount = propPlayerData.getProperty("p.winCount." + pInfo.strName, 0);
+		} else {
+			for(int i = 0; i < pInfo.rating.length; i++) {
+				pInfo.rating[i] = NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING;
+			}
+		}
+	}
+
+	/**
+	 * Set player data to propPlayerData
+	 * @param pInfo NetPlayerInfo
+	 */
+	private void setPlayerDataToProperty(NetPlayerInfo pInfo) {
+		if(pInfo.isTripUse) {
+			for(int i = 0; i < pInfo.rating.length; i++) {
+				propPlayerData.setProperty("p.rating." + i + "." + pInfo.strName, pInfo.rating[i]);
+			}
+			propPlayerData.setProperty("p.playCount." + pInfo.strName, pInfo.playCount);
+			propPlayerData.setProperty("p.winCount." + pInfo.strName, pInfo.winCount);
+		}
+	}
+
+	/**
+	 * Write player data properties (propPlayerData) to a file
+	 */
+	private void writePlayerDataToFile() {
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/netserver_playerdata.cfg");
+			propPlayerData.store(out, "NullpoMino NetServer PlayerData");
+			out.close();
+		} catch (IOException e) {
+			log.error("Failed to write player data", e);
+		}
+	}
+
+	/**
+	 * Write server-status file
+	 */
 	private void writeServerStatusFile()
 	{
 		if (!propServer.getProperty("netserver.writestatusfile", false))

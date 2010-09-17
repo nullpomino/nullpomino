@@ -175,6 +175,9 @@ public class NetRoomInfo implements Serializable {
 	/** Rated-game flag */
 	public boolean rated = false;
 
+	/** Game style */
+	public int style = 0;
+
 	/** マップリスト */
 	public LinkedList<String> mapList = new LinkedList<String>();
 
@@ -189,6 +192,9 @@ public class NetRoomInfo implements Serializable {
 
 	/** 待ち行列 */
 	public LinkedList<NetPlayerInfo> playerQueue = new LinkedList<NetPlayerInfo>();
+
+	/** Dead player list (Pushed from front, winner will be the first entry) */
+	public LinkedList<NetPlayerInfo> playerSeatDead = new LinkedList<NetPlayerInfo>();
 
 	/**
 	 * Constructor
@@ -275,6 +281,7 @@ public class NetRoomInfo implements Serializable {
 		strMode = n.strMode;
 		singleplayer = n.singleplayer;
 		rated = n.rated;
+		style = n.style;
 
 		mapList.clear();
 		mapList.addAll(n.mapList);
@@ -286,11 +293,13 @@ public class NetRoomInfo implements Serializable {
 		playerSeatNowPlaying.addAll(n.playerSeatNowPlaying);
 		playerQueue.clear();
 		playerQueue.addAll(n.playerQueue);
+		playerSeatDead.clear();
+		playerSeatDead.addAll(n.playerSeatDead);
 	}
 
 	/**
 	 * Stringの配列から data代入(Playerリスト除く)
-	 * @param rdata Stringの配列(String[38])
+	 * @param rdata Stringの配列(String[39])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -331,6 +340,7 @@ public class NetRoomInfo implements Serializable {
 		strMode = NetUtil.urlDecode(rdata[35]);
 		singleplayer = Boolean.parseBoolean(rdata[36]);
 		rated = Boolean.parseBoolean(rdata[37]);
+		style = Integer.parseInt(rdata[38]);
 	}
 
 	/**
@@ -343,10 +353,10 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(Playerリスト除く)
-	 * @return Stringの配列(String[38])
+	 * @return Stringの配列(String[39])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[38];
+		String[] rdata = new String[39];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -385,6 +395,7 @@ public class NetRoomInfo implements Serializable {
 		rdata[35] = NetUtil.urlEncode(strMode);
 		rdata[36] = Boolean.toString(singleplayer);
 		rdata[37] = Boolean.toString(rated);
+		rdata[38] = Integer.toString(style);
 		return rdata;
 	}
 
@@ -604,6 +615,7 @@ public class NetRoomInfo implements Serializable {
 		updatePlayerCount();
 		playerSeatNowPlaying.clear();
 		playerSeatNowPlaying.addAll(playerSeat);
+		playerSeatDead.clear();
 		startPlayers = playerSeatedCount;
 		deadCount = 0;
 		autoStartActive = false;
@@ -620,5 +632,6 @@ public class NetRoomInfo implements Serializable {
 		playerSeat.clear();
 		playerSeatNowPlaying.clear();
 		playerQueue.clear();
+		playerSeatDead.clear();
 	}
 }
