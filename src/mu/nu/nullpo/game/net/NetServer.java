@@ -76,10 +76,10 @@ public class NetServer {
 	/** Rule data send buffer size */
 	public static final int RULE_BUF_SIZE = 512;
 
-	/** Used by multiplayer rating */
+	/** Default value of ratingNormalMaxDiff */
 	public static final double NORMAL_MAX_DIFF = 16;
 
-	/** Used by multiplayer rating */
+	/** Default value of ratingProvisionalGames */
 	public static final int PROVISIONAL_GAMES = 50;
 
 	/** Server config file */
@@ -87,6 +87,18 @@ public class NetServer {
 
 	/** Player data list (mainly for rating) */
 	private static CustomProperties propPlayerData;
+
+	/** Default rating */
+	private static int ratingDefault;
+
+	/** The maximum possible adjustment per game. (K-value) */
+	private static double ratingNormalMaxDiff;
+
+	/** After playing this number of games, the rating logic will take account of number of games played. */
+	private static int ratingProvisionalGames;
+
+	/** Min/Max range of rating */
+	private static int ratingMin, ratingMax;
 
 	/** Rule list for rated game */
 	@SuppressWarnings("rawtypes")
@@ -161,6 +173,13 @@ public class NetServer {
 				port = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {}
 		}
+
+		// Load rating settings
+		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
+		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
+		ratingProvisionalGames = propServer.getProperty("netserver.ratingProvisionalGames", PROVISIONAL_GAMES);
+		ratingMin = propServer.getProperty("netserver.ratingMin", 0);
+		ratingMax = propServer.getProperty("netserver.ratingMax", 99999);
 
 		// Load rules for rated game
 		loadRuleList();
@@ -1544,7 +1563,18 @@ public class NetServer {
 						pInfo.resetPlayState();
 						broadcastPlayerInfoUpdate(pInfo);
 						roomInfo.playerSeatDead.addFirst(pInfo);
+
+						// Rated game
+						if(roomInfo.rated) {
+							// TODO: Update ratings?
+							pInfo.winCount++;
+							setPlayerDataToProperty(pInfo);
+						}
 					}
+				}
+
+				if(roomInfo.rated) {
+					writePlayerDataToFile();
 				}
 			} else if(winner != null) {
 				roomInfo.playerSeatDead.addFirst(winner);
@@ -1564,6 +1594,11 @@ public class NetServer {
 
 							wp.rating[style] += (int) (rankDelta(wp.playCount, wp.rating[style], lp.rating[style], 1) / (n-1));
 							lp.rating[style] += (int) (rankDelta(lp.playCount, lp.rating[style], wp.rating[style], 0) / (n-1));
+
+							if(wp.rating[style] < ratingMin) wp.rating[style] = ratingMin;
+							if(lp.rating[style] < ratingMin) lp.rating[style] = ratingMin;
+							if(wp.rating[style] > ratingMax) wp.rating[style] = ratingMax;
+							if(lp.rating[style] > ratingMax) lp.rating[style] = ratingMax;
 						}
 					}
 
@@ -1571,7 +1606,7 @@ public class NetServer {
 					for(int i = 0; i < n; i++) {
 						NetPlayerInfo p = roomInfo.playerSeatDead.get(i);
 						int change = p.rating[style] - p.ratingBefore[style];
-						log.info("#" + (i+1) + " Name:" + p.strName + " Rating:" + p.rating[style] + " (" + change + ")");
+						log.debug("#" + (i+1) + " Name:" + p.strName + " Rating:" + p.rating[style] + " (" + change + ")");
 						setPlayerDataToProperty(p);
 
 						String msgRatingChange =
@@ -1864,9 +1899,9 @@ public class NetServer {
 	 * @return Multiplier of rating change
 	 */
 	private double maxDelta(int playedGames) {
-		return playedGames > PROVISIONAL_GAMES
-				? NORMAL_MAX_DIFF
-				: NORMAL_MAX_DIFF + 400 / (playedGames + 3);
+		return playedGames > ratingProvisionalGames
+				? ratingNormalMaxDiff
+				: ratingNormalMaxDiff + 400 / (playedGames + 3);
 	}
 
 	/**
@@ -1876,13 +1911,13 @@ public class NetServer {
 	private void getPlayerDataFromProperty(NetPlayerInfo pInfo) {
 		if(pInfo.isTripUse) {
 			for(int i = 0; i < pInfo.rating.length; i++) {
-				pInfo.rating[i] = propPlayerData.getProperty("p.rating." + i + "." + pInfo.strName, NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
+				pInfo.rating[i] = propPlayerData.getProperty("p.rating." + i + "." + pInfo.strName, ratingDefault);
 			}
 			pInfo.playCount = propPlayerData.getProperty("p.playCount." + pInfo.strName, 0);
 			pInfo.winCount = propPlayerData.getProperty("p.winCount." + pInfo.strName, 0);
 		} else {
 			for(int i = 0; i < pInfo.rating.length; i++) {
-				pInfo.rating[i] = NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING;
+				pInfo.rating[i] = ratingDefault;
 			}
 		}
 	}
