@@ -609,6 +609,48 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
+	 * @return true if it's a team game
+	 */
+	public boolean isTeamGame() {
+		LinkedList<String> teamList = new LinkedList<String>();
+
+		if(startPlayers >= 2) {
+			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
+				if((pInfo != null) && (pInfo.strTeam.length() > 0)) {
+					if(teamList.contains(pInfo.strTeam)) {
+						return true;
+					} else {
+						teamList.add(pInfo.strTeam);
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return true if 2 or more people have same IP
+	 */
+	public boolean hasSameIPPlayers() {
+		LinkedList<String> ipList = new LinkedList<String>();
+
+		if(startPlayers >= 2) {
+			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
+				if((pInfo != null) && (pInfo.strRealIP.length() > 0)) {
+					if(ipList.contains(pInfo.strRealIP)) {
+						return true;
+					} else {
+						ipList.add(pInfo.strRealIP);
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Start game時に呼び出す処理
 	 */
 	public void gameStart() {

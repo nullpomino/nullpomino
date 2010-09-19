@@ -82,11 +82,17 @@ public class NetServer {
 	/** Default value of ratingProvisionalGames */
 	public static final int PROVISIONAL_GAMES = 50;
 
+	/** Default value of maxMPRanking */
+	public static final int DEFAULT_MAX_MPRANKING = 100;
+
 	/** Server config file */
 	private static CustomProperties propServer;
 
-	/** Player data list (mainly for rating) */
+	/** Properties of player data list (mainly for rating) */
 	private static CustomProperties propPlayerData;
+
+	/** Properties of multiplayer leaderboard */
+	private static CustomProperties propMPRanking;
 
 	/** Default rating */
 	private static int ratingDefault;
@@ -100,9 +106,19 @@ public class NetServer {
 	/** Min/Max range of rating */
 	private static int ratingMin, ratingMax;
 
-	/** Rule list for rated game */
+	/** Allow same IP player for rating change */
+	private static boolean ratingAllowSameIP;
+
+	/** Max entry of multiplayer leaderboard */
+	private static int maxMPRanking;
+
+	/** Rule list for rated game. It contains RuleOptions. */
 	@SuppressWarnings("rawtypes")
-	private static List[] ruleList;
+	private static LinkedList[] ruleList;
+
+	/** Multiplayer leaderboard list. It contains NetPlayerInfo. */
+	@SuppressWarnings("rawtypes")
+	private static LinkedList[] mpRankingList;
 
 	/** List of SocketChannel */
 	private List<SocketChannel> channelList = new LinkedList<SocketChannel>();
@@ -157,11 +173,19 @@ public class NetServer {
 			log.warn("Failed to load config file", e);
 		}
 
-		// Load player data
+		// Load player data file
 		propPlayerData = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/setting/netserver_playerdata.cfg");
 			propPlayerData.load(in);
+			in.close();
+		} catch (IOException e) {}
+
+		// Load multiplayer leaderboard file
+		propMPRanking = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netserver_mpranking.cfg");
+			propMPRanking.load(in);
 			in.close();
 		} catch (IOException e) {}
 
@@ -174,15 +198,20 @@ public class NetServer {
 			} catch (NumberFormatException e) {}
 		}
 
-		// Load rating settings
+		// Load settings
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
 		ratingProvisionalGames = propServer.getProperty("netserver.ratingProvisionalGames", PROVISIONAL_GAMES);
 		ratingMin = propServer.getProperty("netserver.ratingMin", 0);
 		ratingMax = propServer.getProperty("netserver.ratingMax", 99999);
+		ratingAllowSameIP = propServer.getProperty("netserver.ratingAllowSameIP", true);
+		maxMPRanking = propServer.getProperty("netserver.maxMPRanking", DEFAULT_MAX_MPRANKING);
 
 		// Load rules for rated game
 		loadRuleList();
+
+		// Load multiplayer leaderboard
+		loadMPRankingList();
 
 		// Run
 		new NetServer(port).run();
@@ -193,7 +222,7 @@ public class NetServer {
 	 */
 	@SuppressWarnings("rawtypes")
 	private static void loadRuleList() {
-		ruleList = new List[GameEngine.MAX_GAMESTYLE];
+		ruleList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			ruleList[i] = new LinkedList();
 		}
@@ -247,6 +276,158 @@ public class NetServer {
 			txtRuleList.close();
 		} catch (Exception e) {
 			log.warn("Failed to load rule list", e);
+		}
+	}
+
+	/**
+	 * Load multiplayer leaderboard
+	 */
+	@SuppressWarnings("rawtypes")
+	private static void loadMPRankingList() {
+		mpRankingList = new LinkedList[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			mpRankingList[i] = new LinkedList();
+		}
+
+		for(int style = 0; style < GameEngine.MAX_GAMESTYLE; style++) {
+			int count = propMPRanking.getProperty(style + ".mpranking.count", 0);
+			if(count > maxMPRanking) count = maxMPRanking;
+
+			for(int i = 0; i < count; i++) {
+				NetPlayerInfo p = new NetPlayerInfo();
+				p.strName = propMPRanking.getProperty(style + ".mpranking.strName." + i, "");
+				p.rating[style] = propMPRanking.getProperty(style + ".mpranking.rating." + i, ratingDefault);
+				p.playCount[style] = propMPRanking.getProperty(style + ".mpranking.playCount." + i, 0);
+				p.winCount[style] = propMPRanking.getProperty(style + ".mpranking.winCount." + i, 0);
+				mpRankingList[style].add(p);
+			}
+		}
+	}
+
+	/**
+	 * Find a player in multiplayer leaderboard.
+	 * @param style Game Style
+	 * @param p NetPlayerInfo
+	 * @return Index in mpRankingList[style] (-1 if not found)
+	 */
+	private static int mpRankingIndexOf(int style, NetPlayerInfo p) {
+		for(int i = 0; i < mpRankingList[style].size(); i++) {
+			NetPlayerInfo p2 = (NetPlayerInfo)mpRankingList[style].get(i);
+			if(p.strName.equals(p2.strName)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Update multiplayer leaderboard.
+	 * @param style Game Style
+	 * @param p NetPlayerInfo
+	 * @return New place (-1 if not ranked)
+	 */
+	private static int mpRankingUpdate(int style, NetPlayerInfo p) {
+		// Remove existing record
+		int prevRecord = mpRankingIndexOf(style, p);
+		if(prevRecord != -1) mpRankingList[style].remove(prevRecord);
+
+		// Insert new record
+		int place = -1;
+		boolean rankin = false;
+		for(int i = 0; i < mpRankingList[style].size(); i++) {
+			NetPlayerInfo p2 = (NetPlayerInfo)mpRankingList[style].get(i);
+			if(p.rating[style] > p2.rating[style]) {
+				mpRankingList[style].add(i, p);
+				place = i;
+				rankin = true;
+				break;
+			}
+		}
+
+		// Couldn't rank in? Add to last.
+		if(!rankin) {
+			mpRankingList[style].addLast(p);
+			place = mpRankingList[style].size() - 1;
+		}
+
+		// Remove anything after maxMPRanking
+		while(mpRankingList[style].size() >= maxMPRanking) mpRankingList[style].removeLast();
+
+		// Done
+		return (place >= maxMPRanking) ? -1 : place;
+	}
+
+	/**
+	 * Write player data properties (propPlayerData) to a file
+	 */
+	private static void writeMPRankingToFile() {
+		for(int style = 0; style < GameEngine.MAX_GAMESTYLE; style++) {
+			int count = mpRankingList[style].size();
+			if(count > maxMPRanking) count = maxMPRanking;
+			propMPRanking.setProperty(style + ".mpranking.count", count);
+
+			for(int i = 0; i < count; i++) {
+				NetPlayerInfo p = (NetPlayerInfo)mpRankingList[style].get(i);
+				propMPRanking.setProperty(style + ".mpranking.strName." + i, p.strName);
+				propMPRanking.setProperty(style + ".mpranking.rating." + i, p.rating[style]);
+				propMPRanking.setProperty(style + ".mpranking.playCount." + i, p.playCount[style]);
+				propMPRanking.setProperty(style + ".mpranking.winCount." + i, p.winCount[style]);
+			}
+		}
+
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/netserver_mpranking.cfg");
+			propMPRanking.store(out, "NullpoMino NetServer Multiplayer Leaderboard");
+			out.close();
+		} catch (IOException e) {
+			log.error("Failed to write player data", e);
+		}
+	}
+
+	/**
+	 * Get player data from propPlayerData
+	 * @param pInfo NetPlayerInfo
+	 */
+	private static void getPlayerDataFromProperty(NetPlayerInfo pInfo) {
+		if(pInfo.isTripUse) {
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+				pInfo.rating[i] = propPlayerData.getProperty("p.rating." + i + "." + pInfo.strName, ratingDefault);
+				pInfo.playCount[i] = propPlayerData.getProperty("p.playCount." + i + "." + pInfo.strName, 0);
+				pInfo.winCount[i] = propPlayerData.getProperty("p.winCount." + i + "." + pInfo.strName, 0);
+			}
+		} else {
+			for(int i = 0; i < pInfo.rating.length; i++) {
+				pInfo.rating[i] = ratingDefault;
+				pInfo.playCount[i] = 0;
+				pInfo.winCount[i] = 0;
+			}
+		}
+	}
+
+	/**
+	 * Set player data to propPlayerData
+	 * @param pInfo NetPlayerInfo
+	 */
+	private static void setPlayerDataToProperty(NetPlayerInfo pInfo) {
+		if(pInfo.isTripUse) {
+			for(int i = 0; i < pInfo.rating.length; i++) {
+				propPlayerData.setProperty("p.rating." + i + "." + pInfo.strName, pInfo.rating[i]);
+				propPlayerData.getProperty("p.playCount." + i + "." + pInfo.strName, pInfo.playCount[i]);
+				propPlayerData.getProperty("p.winCount." + i + "." + pInfo.strName, pInfo.winCount[i]);
+			}
+		}
+	}
+
+	/**
+	 * Write player data properties (propPlayerData) to a file
+	 */
+	private static void writePlayerDataToFile() {
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/netserver_playerdata.cfg");
+			propPlayerData.store(out, "NullpoMino NetServer PlayerData");
+			out.close();
+		} catch (IOException e) {
+			log.error("Failed to write player data", e);
 		}
 	}
 
@@ -595,7 +776,6 @@ public class NetServer {
 	 * @param pInfo 送信先Player
 	 * @param msg 送信するメッセージ
 	 */
-	@SuppressWarnings("unused")
 	private void send(NetPlayerInfo pInfo, String msg) throws IOException {
 		SocketChannel ch = getSocketChannelByPlayer(pInfo);
 		if(ch == null) return;
@@ -806,6 +986,9 @@ public class NetServer {
 			log.info(pInfo.strName + " has logged in (Host:" + client.socket().getInetAddress().getHostName() + " Team:" + pInfo.strTeam + ")");
 
 			// ホスト名設定
+			pInfo.strRealHost = client.socket().getInetAddress().getHostName();
+			pInfo.strRealIP = client.socket().getInetAddress().getHostAddress();
+
 			int showhosttype = propServer.getProperty("netserver.showhosttype", 0);
 			if(showhosttype == 1) {
 				pInfo.strHost = client.socket().getInetAddress().getHostAddress();
@@ -946,6 +1129,31 @@ public class NetServer {
 				log.info("RoomID:" + pInfo.roomID + " Name:" + pInfo.strName + " Msg:" + NetUtil.urlDecode(message[1]));
 			}
 			return;
+		}
+		// Get multiplayer leaderboard
+		if(message[0].equals("mpranking")) {
+			//mpranking\t[STYLE]
+
+			if(pInfo != null) {
+				int style = Integer.parseInt(message[1]);
+				int myRank = mpRankingIndexOf(style, pInfo);
+
+				String strPData = "";
+				for(int i = 0; i < mpRankingList[style].size(); i++) {
+					NetPlayerInfo p = (NetPlayerInfo)mpRankingList[style].get(i);
+					strPData += (i) + ";" + NetUtil.urlEncode(p.strName) + ";" +
+								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
+				}
+				if(myRank == -1) {
+					NetPlayerInfo p = pInfo;
+					strPData += (-1) + ";" + NetUtil.urlEncode(p.strName) + ";" +
+								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
+				}
+				String strPDataC = NetUtil.compressString(strPData);
+
+				String strMsg = "mpranking\t" + style + "\t" + myRank + "\t" + strPDataC + "\n";
+				send(pInfo, strMsg);
+			}
 		}
 		// Single player room
 		if(message[0].equals("singleroomcreate")) {
@@ -1524,7 +1732,7 @@ public class NetServer {
 				p.playing = true;
 
 				if(roomInfo.rated) {
-					p.playCount++;
+					p.playCount[roomInfo.style]++;
 					p.ratingBefore[roomInfo.style] = p.rating[roomInfo.style];
 				}
 
@@ -1565,24 +1773,28 @@ public class NetServer {
 						roomInfo.playerSeatDead.addFirst(pInfo);
 
 						// Rated game
+						/*
 						if(roomInfo.rated) {
 							// TODO: Update ratings?
-							pInfo.winCount++;
+							pInfo.winCount[roomInfo.style]++;
 							setPlayerDataToProperty(pInfo);
 						}
+						*/
 					}
 				}
 
+				/*
 				if(roomInfo.rated) {
 					writePlayerDataToFile();
 				}
+				*/
 			} else if(winner != null) {
 				roomInfo.playerSeatDead.addFirst(winner);
 
 				// Rated game
-				if(roomInfo.rated) {
+				if( roomInfo.rated && !roomInfo.isTeamGame() && (!roomInfo.hasSameIPPlayers() || ratingAllowSameIP) ) {
 					// Update win count
-					winner.winCount++;
+					winner.winCount[roomInfo.style]++;
 
 					// Update rating
 					int style = roomInfo.style;
@@ -1592,8 +1804,8 @@ public class NetServer {
 							NetPlayerInfo wp = roomInfo.playerSeatDead.get(w);
 							NetPlayerInfo lp = roomInfo.playerSeatDead.get(l);
 
-							wp.rating[style] += (int) (rankDelta(wp.playCount, wp.rating[style], lp.rating[style], 1) / (n-1));
-							lp.rating[style] += (int) (rankDelta(lp.playCount, lp.rating[style], wp.rating[style], 0) / (n-1));
+							wp.rating[style] += (int) (rankDelta(wp.playCount[style], wp.rating[style], lp.rating[style], 1) / (n-1));
+							lp.rating[style] += (int) (rankDelta(lp.playCount[style], lp.rating[style], wp.rating[style], 0) / (n-1));
 
 							if(wp.rating[style] < ratingMin) wp.rating[style] = ratingMin;
 							if(lp.rating[style] < ratingMin) lp.rating[style] = ratingMin;
@@ -1615,6 +1827,15 @@ public class NetServer {
 						broadcast(msgRatingChange, winner.roomID);
 					}
 					writePlayerDataToFile();
+
+					// Leaderboard update
+					for(int i = 0; i < n; i++) {
+						NetPlayerInfo p = roomInfo.playerSeatDead.get(i);
+						if(p.isTripUse) {
+							mpRankingUpdate(style, p);
+						}
+					}
+					writeMPRankingToFile();
 				}
 
 				msg += winner.uid + "\t" + winner.seatID + "\t" + NetUtil.urlEncode(winner.strName) + "\t" + isTeamWin;
@@ -1902,51 +2123,6 @@ public class NetServer {
 		return playedGames > ratingProvisionalGames
 				? ratingNormalMaxDiff
 				: ratingNormalMaxDiff + 400 / (playedGames + 3);
-	}
-
-	/**
-	 * Get player data from propPlayerData
-	 * @param pInfo NetPlayerInfo
-	 */
-	private void getPlayerDataFromProperty(NetPlayerInfo pInfo) {
-		if(pInfo.isTripUse) {
-			for(int i = 0; i < pInfo.rating.length; i++) {
-				pInfo.rating[i] = propPlayerData.getProperty("p.rating." + i + "." + pInfo.strName, ratingDefault);
-			}
-			pInfo.playCount = propPlayerData.getProperty("p.playCount." + pInfo.strName, 0);
-			pInfo.winCount = propPlayerData.getProperty("p.winCount." + pInfo.strName, 0);
-		} else {
-			for(int i = 0; i < pInfo.rating.length; i++) {
-				pInfo.rating[i] = ratingDefault;
-			}
-		}
-	}
-
-	/**
-	 * Set player data to propPlayerData
-	 * @param pInfo NetPlayerInfo
-	 */
-	private void setPlayerDataToProperty(NetPlayerInfo pInfo) {
-		if(pInfo.isTripUse) {
-			for(int i = 0; i < pInfo.rating.length; i++) {
-				propPlayerData.setProperty("p.rating." + i + "." + pInfo.strName, pInfo.rating[i]);
-			}
-			propPlayerData.setProperty("p.playCount." + pInfo.strName, pInfo.playCount);
-			propPlayerData.setProperty("p.winCount." + pInfo.strName, pInfo.winCount);
-		}
-	}
-
-	/**
-	 * Write player data properties (propPlayerData) to a file
-	 */
-	private void writePlayerDataToFile() {
-		try {
-			FileOutputStream out = new FileOutputStream("config/setting/netserver_playerdata.cfg");
-			propPlayerData.store(out, "NullpoMino NetServer PlayerData");
-			out.close();
-		} catch (IOException e) {
-			log.error("Failed to write player data", e);
-		}
 	}
 
 	/**

@@ -112,7 +112,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Room-table column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] ROOMTABLE_COLUMNNAMES = {
-		"RoomTable_ID", "RoomTable_Name", "RoomTable_RuleName", "RoomTable_Status", "RoomTable_Players", "RoomTable_Spectators"
+		"RoomTable_ID","RoomTable_Name","RoomTable_Rated","RoomTable_RuleName","RoomTable_Status","RoomTable_Players","RoomTable_Spectators"
 	};
 
 	/** End-of-game statistics column names. These strings will be passed to getUIText(String) subroutine. */
@@ -120,6 +120,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		"StatTable_Rank", "StatTable_Name",
 		"StatTable_Attack", "StatTable_APM", "StatTable_Lines", "StatTable_LPM", "StatTable_Piece", "StatTable_PPS", "StatTable_Time",
 		"StatTable_KO", "StatTable_Wins", "StatTable_Games"
+	};
+
+	/** Multiplayer leaderboard column names. These strings will be passed to getUIText(String) subroutine. */
+	public static final String[] MPRANKING_COLUMNNAMES  = {
+		"MPRanking_Rank", "MPRanking_Name", "MPRanking_Rating", "MPRanking_PlayCount", "MPRanking_WinCount"
 	};
 
 	/** Spin bonus names */
@@ -133,10 +138,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 							SCREENCARD_LOBBY = 1,
 							SCREENCARD_SERVERADD = 2,
 							SCREENCARD_CREATEROOM = 3,
-							SCREENCARD_CREATEROOM1P = 4;
+							SCREENCARD_CREATEROOM1P = 4,
+							SCREENCARD_MPRANKING = 5;
 
 	/** Names for each screen-card */
-	public static final String[] SCREENCARD_NAMES = {"ServerSelect", "Lobby", "ServerAdd", "CreateRoom", "CreateRoom1P"};
+	public static final String[] SCREENCARD_NAMES = {"ServerSelect", "Lobby", "ServerAdd", "CreateRoom", "CreateRoom1P", "MPRanking"};
 
 	/** Log */
 	static final Logger log = Logger.getLogger(NetLobbyFrame.class);
@@ -208,6 +214,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Connect button (Server select screen) */
 	protected JButton btnServerConnect;
 
+	/** Lobby/Room Tab */
+	protected JTabbedPane tabLobbyAndRoom;
+
 	/** JSplitPane (Lobby screen) */
 	protected JSplitPane splitLobby;
 
@@ -228,6 +237,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** チーム変更 button(Lobby screen) */
 	protected JButton btnRoomListTeamChange;
+
+	/** Leaderboard button (Lobby screen) */
+	protected JButton btnRoomListRanking;
 
 	/** Team name input 欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
@@ -270,6 +282,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** View Settings button (Room screen) */
 	protected JButton btnRoomButtonsViewSetting;
+
+	/** Leaderboard button (Room screen) */
+	protected JButton btnRoomButtonsRanking;
 
 	/** 上下を分ける仕切り線(Room screen) */
 	protected JSplitPane splitRoom;
@@ -445,8 +460,20 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Cancel button (Create room 1P screen) */
 	protected JButton btnCreateRoom1PCancel;
 
-	/** Lobby/Room Tab */
-	protected JTabbedPane tabLobbyAndRoom;
+	/** Tab (MPRanking screen) */
+	protected JTabbedPane tabMPRanking;
+
+	/** Column names of multiplayer leaderboard (MPRanking screen) */
+	protected String[] strMPRankingTableColumnNames;
+
+	/** Table of multiplayer leaderboard (MPRanking screen) */
+	protected JTable[] tableMPRanking;
+
+	/** Table data of multiplayer leaderboard (MPRanking screen) */
+	protected DefaultTableModel[] tablemodelMPRanking;
+
+	/** OK button (MPRanking screen) */
+	protected JButton btnMPRankingOK;
 
 	/**
 	 * Constructor
@@ -561,6 +588,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		initServerAddUI();
 		initCreateRoomUI();
 		initCreateRoom1PUI();
+		initMPRankingUI();
 
 		changeCurrentScreenCard(SCREENCARD_SERVERSELECT);
 	}
@@ -740,6 +768,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListTeamChange.setMnemonic('T');
 		subpanelRoomListButtons.add(btnRoomListTeamChange);
 
+		// ***** Leaderboard button
+		btnRoomListRanking = new JButton(getUIText("Lobby_Ranking"));
+		btnRoomListRanking.addActionListener(this);
+		btnRoomListRanking.setActionCommand("Lobby_Ranking");
+		btnRoomListRanking.setMnemonic('L');
+		subpanelRoomListButtons.add(btnRoomListRanking);
+
 		// ***** 切断 button
 		JButton btnRoomListDisconnect = new JButton(getUIText("Lobby_Disconnect"));
 		btnRoomListDisconnect.addActionListener(this);
@@ -791,10 +826,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		TableColumnModel tm = tableRoomList.getColumnModel();
 		tm.getColumn(0).setPreferredWidth(propConfig.getProperty("tableRoomList.width.id", 35));			// ID
 		tm.getColumn(1).setPreferredWidth(propConfig.getProperty("tableRoomList.width.name", 155));			// Name
-		tm.getColumn(2).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rulename", 105));		// Rule name
-		tm.getColumn(3).setPreferredWidth(propConfig.getProperty("tableRoomList.width.status", 55));		// 状態
-		tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableRoomList.width.players", 65));		// 参加者
-		tm.getColumn(5).setPreferredWidth(propConfig.getProperty("tableRoomList.width.spectators", 65));	// 観戦者
+		tm.getColumn(2).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rated", 50));			// Rated
+		tm.getColumn(3).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rulename", 105));		// Rule name
+		tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableRoomList.width.status", 55));		// Status
+		tm.getColumn(5).setPreferredWidth(propConfig.getProperty("tableRoomList.width.players", 65));		// Players
+		tm.getColumn(6).setPreferredWidth(propConfig.getProperty("tableRoomList.width.spectators", 65));	// Spectators
 
 		JScrollPane spTableRoomList = new JScrollPane(tableRoomList);
 		subpanelRoomList.add(spTableRoomList, BorderLayout.CENTER);
@@ -929,6 +965,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsViewSetting.setActionCommand("Room_ViewSetting");
 		btnRoomButtonsViewSetting.setMnemonic('V');
 		subpanelRoomButtons.add(btnRoomButtonsViewSetting);
+
+		// ***** Leaderboard button
+		btnRoomButtonsRanking = new JButton(getUIText("Room_Ranking"));
+		btnRoomButtonsRanking.addActionListener(this);
+		btnRoomButtonsRanking.setActionCommand("Room_Ranking");
+		btnRoomButtonsRanking.setMnemonic('L');
+		btnRoomButtonsRanking.setVisible(false);
+		subpanelRoomButtons.add(btnRoomButtonsRanking);
 
 		// *** ゲーム結果一覧 table
 		strGameStatTableColumnNames = new String[STATTABLE_COLUMNNAMES.length];
@@ -1575,6 +1619,55 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
+	 * MPRanking screen initialization
+	 */
+	protected void initMPRankingUI() {
+		// Main panel for MPRanking
+		JPanel mainpanelMPRanking = new JPanel(new BorderLayout());
+		this.getContentPane().add(mainpanelMPRanking, SCREENCARD_NAMES[SCREENCARD_MPRANKING]);
+
+		// * Tab
+		tabMPRanking = new JTabbedPane();
+		mainpanelMPRanking.add(tabMPRanking, BorderLayout.CENTER);
+
+		// ** Leaderboard Table
+		strMPRankingTableColumnNames = new String[MPRANKING_COLUMNNAMES.length];
+		for(int i = 0; i < strMPRankingTableColumnNames.length; i++) {
+			strMPRankingTableColumnNames[i] = getUIText(MPRANKING_COLUMNNAMES[i]);
+		}
+
+		tableMPRanking = new JTable[GameEngine.MAX_GAMESTYLE];
+		tablemodelMPRanking = new DefaultTableModel[GameEngine.MAX_GAMESTYLE];
+
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			tablemodelMPRanking[i] = new DefaultTableModel(strMPRankingTableColumnNames, 0);
+
+			tableMPRanking[i] = new JTable(tablemodelMPRanking[i]);
+			tableMPRanking[i].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			tableMPRanking[i].setDefaultEditor(Object.class, null);
+			tableMPRanking[i].setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			tableMPRanking[i].getTableHeader().setReorderingAllowed(false);
+
+			TableColumnModel tm = tableMPRanking[i].getColumnModel();
+			tm.getColumn(0).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.rank", 30));	// Rank
+			tm.getColumn(1).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.name", 200));	// Name
+			tm.getColumn(2).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.rating", 60));	// Rating
+			tm.getColumn(3).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.play", 60));	// Play
+			tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.win", 60));	// Win
+
+			JScrollPane spMPRanking = new JScrollPane(tableMPRanking[i]);
+			tabMPRanking.addTab(GameEngine.GAMESTYLE_NAMES[i], spMPRanking);
+		}
+
+		// * OK Button
+		btnMPRankingOK = new JButton(getUIText("MPRanking_OK"));
+		btnMPRankingOK.addActionListener(this);
+		btnMPRankingOK.setActionCommand("MPRanking_OK");
+		btnMPRankingOK.setMnemonic('O');
+		mainpanelMPRanking.add(btnMPRankingOK, BorderLayout.SOUTH);
+	}
+
+	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
 	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
@@ -1618,6 +1711,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			break;
 		case SCREENCARD_CREATEROOM1P:
 			defaultButton = btnCreateRoom1POK;
+			break;
+		case SCREENCARD_MPRANKING:
+			defaultButton = btnMPRankingOK;
 			break;
 		}
 		this.getRootPane().setDefaultButton(defaultButton);
@@ -1869,13 +1965,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * @return 行 data
 	 */
 	public String[] createRoomListRowData(NetRoomInfo r) {
-		String[] rowData = new String[6];
+		String[] rowData = new String[7];
 		rowData[0] = Integer.toString(r.roomID);
 		rowData[1] = r.strName;
-		rowData[2] = r.ruleLock ? r.ruleName.toUpperCase() : getUIText("RoomTable_RuleName_Any");
-		rowData[3] = r.playing ? getUIText("RoomTable_Status_Playing") : getUIText("RoomTable_Status_Waiting");
-		rowData[4] = r.playerSeatedCount + "/" + r.maxPlayers;
-		rowData[5] = Integer.toString(r.spectatorCount);
+		rowData[2] = r.rated ? getUIText("RoomTable_Rated_True") : getUIText("RoomTable_Rated_False");
+		rowData[3] = r.ruleLock ? r.ruleName.toUpperCase() : getUIText("RoomTable_RuleName_Any");
+		rowData[4] = r.playing ? getUIText("RoomTable_Status_Playing") : getUIText("RoomTable_Status_Waiting");
+		rowData[5] = r.playerSeatedCount + "/" + r.maxPlayers;
+		rowData[6] = Integer.toString(r.spectatorCount);
 		return rowData;
 	}
 
@@ -2221,10 +2318,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		TableColumnModel tm = tableRoomList.getColumnModel();
 		propConfig.setProperty("tableRoomList.width.id", tm.getColumn(0).getWidth());
 		propConfig.setProperty("tableRoomList.width.name", tm.getColumn(1).getWidth());
-		propConfig.setProperty("tableRoomList.width.rulename", tm.getColumn(2).getWidth());
-		propConfig.setProperty("tableRoomList.width.status", tm.getColumn(3).getWidth());
-		propConfig.setProperty("tableRoomList.width.players", tm.getColumn(4).getWidth());
-		propConfig.setProperty("tableRoomList.width.spectators", tm.getColumn(5).getWidth());
+		propConfig.setProperty("tableRoomList.width.rated", tm.getColumn(2).getWidth());
+		propConfig.setProperty("tableRoomList.width.rulename", tm.getColumn(3).getWidth());
+		propConfig.setProperty("tableRoomList.width.status", tm.getColumn(4).getWidth());
+		propConfig.setProperty("tableRoomList.width.players", tm.getColumn(5).getWidth());
+		propConfig.setProperty("tableRoomList.width.spectators", tm.getColumn(6).getWidth());
 
 		tm = tableGameStat.getColumnModel();
 		propConfig.setProperty("tableGameStat.width.rank", tm.getColumn(0).getWidth());
@@ -2239,6 +2337,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		propConfig.setProperty("tableGameStat.width.ko", tm.getColumn(9).getWidth());
 		propConfig.setProperty("tableGameStat.width.wins", tm.getColumn(10).getWidth());
 		propConfig.setProperty("tableGameStat.width.games", tm.getColumn(11).getWidth());
+
+		tm = tableMPRanking[0].getColumnModel();
+		propConfig.setProperty("tableMPRanking.width.rank", tm.getColumn(0).getWidth());
+		propConfig.setProperty("tableMPRanking.width.name", tm.getColumn(1).getWidth());
+		propConfig.setProperty("tableMPRanking.width.rating", tm.getColumn(2).getWidth());
+		propConfig.setProperty("tableMPRanking.width.play", tm.getColumn(3).getWidth());
+		propConfig.setProperty("tableMPRanking.width.win", tm.getColumn(4).getWidth());
 
 		if(backupRoomInfo != null) {
 			propConfig.setProperty("createroom.defaultMaxPlayers", backupRoomInfo.maxPlayers);
@@ -2538,6 +2643,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			setTitle(getUIText("Title_NetLobby"));
 			changeCurrentScreenCard(SCREENCARD_SERVERSELECT);
 		}
+		// Multiplayer Leaderboard
+		if((e.getActionCommand() == "Lobby_Ranking") || (e.getActionCommand() == "Room_Ranking")) {
+			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
+				tablemodelMPRanking[0].setRowCount(0);
+				netPlayerClient.send("mpranking\t0\n");
+				changeCurrentScreenCard(SCREENCARD_MPRANKING);
+			}
+		}
 		// チャット送信
 		if((e.getActionCommand() == "Lobby_ChatSend") || (e.getActionCommand() == "Room_ChatSend")) {
 			if((txtfldLobbyChatInput.getText().length() > 0) && (netPlayerClient != null) && netPlayerClient.isConnected()) {
@@ -2789,6 +2902,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// Cancel button (Create Room 1P)
 		if(e.getActionCommand() == "CreateRoom1P_Cancel") {
+			changeCurrentScreenCard(SCREENCARD_LOBBY);
+		}
+		// OK button (MPRanking)
+		if(e.getActionCommand() == "MPRanking_OK") {
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
 	}
@@ -3078,8 +3195,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 						btnRoomButtonsJoin.setVisible(false);
 						btnRoomButtonsSitOut.setVisible(false);
 						btnRoomButtonsViewSetting.setVisible(false);
+						btnRoomButtonsRanking.setVisible(false);
 					} else {
 						btnRoomButtonsViewSetting.setVisible(true);
+						btnRoomButtonsRanking.setVisible(netPlayerClient.getRoomInfo(roomID).rated);
 					}
 				}
 
@@ -3288,6 +3407,39 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			int ratingChange = Integer.parseInt(message[5]);
 			String strTemp = String.format(getUIText("SysMsg_Rating"), strPlayerName, ratingNow, ratingChange);
 			addSystemChatLogLater(txtpaneRoomChatLog, strTemp, new Color(0, 128, 0));
+		}
+		// Multiplayer Leaderboard
+		if(message[0].equals("mpranking")) {
+			int style = Integer.parseInt(message[1]);
+			int myRank = Integer.parseInt(message[2]);
+
+			tablemodelMPRanking[style].setRowCount(0);
+
+			String strPData = NetUtil.decompressString(message[3]);
+			String[] strPDataA = strPData.split("\t");
+
+			for(int i = 0; i < strPDataA.length; i++) {
+				String[] strRankData = strPDataA[i].split(";");
+				String[] strRowData = new String[MPRANKING_COLUMNNAMES.length];
+				int rank = Integer.parseInt(strRankData[0]);
+				if(rank == -1) {
+					strRowData[0] = "N/A";
+				} else {
+					strRowData[0] = Integer.toString(rank + 1);
+				}
+				strRowData[1] = convTripCode(NetUtil.urlDecode(strRankData[1]));
+				strRowData[2] = strRankData[2];
+				strRowData[3] = strRankData[3];
+				strRowData[4] = strRankData[4];
+				tablemodelMPRanking[style].addRow(strRowData);
+			}
+
+			if(myRank == -1) {
+				int tableRowMax = tablemodelMPRanking[style].getRowCount();
+				tableMPRanking[style].getSelectionModel().setSelectionInterval(tableRowMax - 1, tableRowMax - 1);
+			} else {
+				tableMPRanking[style].getSelectionModel().setSelectionInterval(myRank, myRank);
+			}
 		}
 
 		// Listener呼び出し

@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.util.CustomProperties;
@@ -100,6 +102,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	 * @return リプレイファイルのFilenameの配列。ディレクトリがないならnull
 	 */
 	protected String[] getReplayFileList() {
+		// Get file list
 		File dir = new File(NullpoMinoSlick.propGlobal.getProperty("custom.replay.directory", "replay"));
 
 		FilenameFilter filter = new FilenameFilter() {
@@ -109,8 +112,22 @@ public class StateReplaySelect extends DummyMenuScrollState {
 		};
 
 		String[] list = dir.list(filter);
+		String[] sortedArray = list;
 
-		return list;
+		if(!System.getProperty("os.name").startsWith("Windows")) {
+			// Sort if not windows
+			ArrayList<String> aList = new ArrayList<String>();
+			for(int i = 0; i < list.length; i++) {
+				aList.add(list[i]);
+			}
+			Collections.sort(aList);
+			sortedArray = new String[list.length];
+			for(int i = 0; i < sortedArray.length; i++) {
+				sortedArray[i] = aList.get(i);
+			}
+		}
+
+		return sortedArray;
 	}
 
 	/**

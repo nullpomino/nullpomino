@@ -65,10 +65,10 @@ public class NetPlayerInfo implements Serializable {
 	public int[] ratingBefore = new int[GameEngine.MAX_GAMESTYLE];
 
 	/** Number of rated multiplayer games played */
-	public int playCount = 0;
+	public int[] playCount = new int[GameEngine.MAX_GAMESTYLE];
 
 	/** Number of rated multiplayer games win */
-	public int winCount = 0;
+	public int[] winCount = new int[GameEngine.MAX_GAMESTYLE];
 
 	/** User ID */
 	public int uid = -1;
@@ -93,6 +93,12 @@ public class NetPlayerInfo implements Serializable {
 
 	/** true if this player is using tripcode */
 	public boolean isTripUse = false;
+
+	/** Real host name (for internal use) */
+	public String strRealHost = "";
+
+	/** Real IP (for internal use) */
+	public String strRealIP = "";
 
 	/**
 	 * Constructor
@@ -143,9 +149,9 @@ public class NetPlayerInfo implements Serializable {
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			rating[i] = n.rating[i];
 			ratingBefore[i] = n.ratingBefore[i];
+			playCount[i] = n.playCount[i];
+			winCount[i] = n.winCount[i];
 		}
-		playCount = n.playCount;
-		winCount = n.winCount;
 
 		uid = n.uid;
 		roomID = n.roomID;
@@ -155,31 +161,39 @@ public class NetPlayerInfo implements Serializable {
 		playing = n.playing;
 		connected = n.connected;
 		isTripUse = n.isTripUse;
+		strRealHost = n.strRealHost;
+		strRealIP = n.strRealIP;
 	}
 
 	/**
 	 * Import from String array
-	 * @param pdata String array (String[18])
+	 * @param pdata String array (String[24])
 	 */
 	public void importStringArray(String[] pdata) {
 		strName = NetUtil.urlDecode(pdata[0]);
 		strCountry = NetUtil.urlDecode(pdata[1]);
 		strHost = NetUtil.urlDecode(pdata[2]);
 		strTeam = NetUtil.urlDecode(pdata[3]);
-		playCount = Integer.parseInt(pdata[4]);
-		winCount = Integer.parseInt(pdata[5]);
-		roomID = Integer.parseInt(pdata[6]);
-		uid = Integer.parseInt(pdata[7]);
-		seatID = Integer.parseInt(pdata[8]);
-		queueID = Integer.parseInt(pdata[9]);
-		ready = Boolean.parseBoolean(pdata[10]);
-		playing = Boolean.parseBoolean(pdata[11]);
-		connected = Boolean.parseBoolean(pdata[12]);
-		isTripUse = Boolean.parseBoolean(pdata[13]);
-		rating[0] = Integer.parseInt(pdata[14]);
-		rating[1] = Integer.parseInt(pdata[15]);
-		rating[2] = Integer.parseInt(pdata[16]);
-		rating[3] = Integer.parseInt(pdata[17]);
+		roomID = Integer.parseInt(pdata[4]);
+		uid = Integer.parseInt(pdata[5]);
+		seatID = Integer.parseInt(pdata[6]);
+		queueID = Integer.parseInt(pdata[7]);
+		ready = Boolean.parseBoolean(pdata[8]);
+		playing = Boolean.parseBoolean(pdata[9]);
+		connected = Boolean.parseBoolean(pdata[10]);
+		isTripUse = Boolean.parseBoolean(pdata[11]);
+		rating[0] = Integer.parseInt(pdata[12]);
+		rating[1] = Integer.parseInt(pdata[13]);
+		rating[2] = Integer.parseInt(pdata[14]);
+		rating[3] = Integer.parseInt(pdata[15]);
+		playCount[0] = Integer.parseInt(pdata[16]);
+		playCount[1] = Integer.parseInt(pdata[17]);
+		playCount[2] = Integer.parseInt(pdata[18]);
+		playCount[3] = Integer.parseInt(pdata[19]);
+		winCount[0] = Integer.parseInt(pdata[20]);
+		winCount[1] = Integer.parseInt(pdata[21]);
+		winCount[2] = Integer.parseInt(pdata[22]);
+		winCount[3] = Integer.parseInt(pdata[23]);
 	}
 
 	/**
@@ -192,28 +206,34 @@ public class NetPlayerInfo implements Serializable {
 
 	/**
 	 * Export to String array
-	 * @return String array (String[18])
+	 * @return String array (String[24])
 	 */
 	public String[] exportStringArray() {
-		String[] pdata = new String[18];
+		String[] pdata = new String[24];
 		pdata[0] = NetUtil.urlEncode(strName);
 		pdata[1] = NetUtil.urlEncode(strCountry);
 		pdata[2] = NetUtil.urlEncode(strHost);
 		pdata[3] = NetUtil.urlEncode(strTeam);
-		pdata[4] = Integer.toString(playCount);
-		pdata[5] = Integer.toString(winCount);
-		pdata[6] = Integer.toString(roomID);
-		pdata[7] = Integer.toString(uid);
-		pdata[8] = Integer.toString(seatID);
-		pdata[9] = Integer.toString(queueID);
-		pdata[10] = Boolean.toString(ready);
-		pdata[11] = Boolean.toString(playing);
-		pdata[12] = Boolean.toString(connected);
-		pdata[13] = Boolean.toString(isTripUse);
-		pdata[14] = Integer.toString(rating[0]);
-		pdata[15] = Integer.toString(rating[1]);
-		pdata[16] = Integer.toString(rating[2]);
-		pdata[17] = Integer.toString(rating[3]);
+		pdata[4] = Integer.toString(roomID);
+		pdata[5] = Integer.toString(uid);
+		pdata[6] = Integer.toString(seatID);
+		pdata[7] = Integer.toString(queueID);
+		pdata[8] = Boolean.toString(ready);
+		pdata[9] = Boolean.toString(playing);
+		pdata[10] = Boolean.toString(connected);
+		pdata[11] = Boolean.toString(isTripUse);
+		pdata[12] = Integer.toString(rating[0]);
+		pdata[13] = Integer.toString(rating[1]);
+		pdata[14] = Integer.toString(rating[2]);
+		pdata[15] = Integer.toString(rating[3]);
+		pdata[16] = Integer.toString(playCount[0]);
+		pdata[17] = Integer.toString(playCount[1]);
+		pdata[18] = Integer.toString(playCount[2]);
+		pdata[19] = Integer.toString(playCount[3]);
+		pdata[20] = Integer.toString(winCount[0]);
+		pdata[21] = Integer.toString(winCount[1]);
+		pdata[22] = Integer.toString(winCount[2]);
+		pdata[23] = Integer.toString(winCount[3]);
 		return pdata;
 	}
 
