@@ -36,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -218,6 +219,11 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		};
 
 		String[] list = dir.list(filter);
+
+		if(!System.getProperty("os.name").startsWith("Windows")) {
+			// Sort if not windows
+			Arrays.sort(list);
+		}
 
 		return list;
 	}

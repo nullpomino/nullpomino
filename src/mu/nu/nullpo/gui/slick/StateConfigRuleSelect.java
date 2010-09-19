@@ -31,6 +31,7 @@ package mu.nu.nullpo.gui.slick;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 
 import mu.nu.nullpo.util.CustomProperties;
 
@@ -98,6 +99,11 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		};
 
 		String[] list = dir.list(filter);
+		
+		if(!System.getProperty("os.name").startsWith("Windows")) {
+			// Sort if not windows
+			Arrays.sort(list);
+		}
 
 		return list;
 	}

@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import mu.nu.nullpo.game.component.Statistics;
@@ -95,22 +96,13 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 		};
 
 		String[] list = dir.list(filter);
-		String[] sortedArray = list;
-
+		
 		if(!System.getProperty("os.name").startsWith("Windows")) {
 			// Sort if not windows
-			ArrayList<String> aList = new ArrayList<String>();
-			for(int i = 0; i < list.length; i++) {
-				aList.add(list[i]);
-			}
-			Collections.sort(aList);
-			sortedArray = new String[list.length];
-			for(int i = 0; i < sortedArray.length; i++) {
-				sortedArray[i] = aList.get(i);
-			}
+			Arrays.sort(list);
 		}
 
-		return sortedArray;
+		return list;
 	}
 
 	/**

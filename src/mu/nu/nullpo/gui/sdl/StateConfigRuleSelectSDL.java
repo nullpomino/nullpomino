@@ -31,6 +31,7 @@ package mu.nu.nullpo.gui.sdl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 
 import mu.nu.nullpo.util.CustomProperties;
 import sdljava.SDLException;
@@ -86,6 +87,11 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		};
 
 		String[] list = dir.list(filter);
+
+		if(!System.getProperty("os.name").startsWith("Windows")) {
+			// Sort if not windows
+			Arrays.sort(list);
+		}
 
 		return list;
 	}
