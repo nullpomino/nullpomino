@@ -28,6 +28,10 @@
 */
 package mu.nu.nullpo.game.net;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -50,6 +54,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.zip.Adler32;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -63,7 +74,7 @@ import org.cacas.java.gnu.tools.Crypt;
  * NullpoMino NetServer
  * <a href="http://hondou.homedns.org/pukiwiki/index.php?JavaSE%20%A5%C1%A5%E3%A5%C3%A5%C8%A5%B7%A5%B9%A5%C6%A5%E0%A4%F2%BA%EE%A4%ED%A4%A6">Source</a>
  */
-public class NetServer {
+public class NetServer extends JFrame implements ActionListener {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetServer.class);
 
@@ -155,14 +166,23 @@ public class NetServer {
 
 	/** RNG for map selection */
 	private Random rand = new Random();
+	
+	//--------------------------------------------------------------------------------- UI components
+	/** List for showing connections */
+	private JList listboxConnectionList;
+	
+	/** List model for the connection list */
+	private DefaultListModel listmodelConnectionList;
+	
+	/** Button for using the ban command */
+	private JButton btnBanConnection;
 
 	/**
 	 * Main (Entry point)
 	 * @param args Command-line options
 	 */
 	public static void main(String[] args) {
-		PropertyConfigurator.configure("config/etc/log_server.cfg");
-
+		
 		// Load server config file
 		propServer = new CustomProperties();
 		try {
@@ -172,6 +192,35 @@ public class NetServer {
 		} catch (IOException e) {
 			log.warn("Failed to load config file", e);
 		}
+		
+		// Fetch port number from config file
+		int port = propServer.getProperty("netserver.port", DEFAULT_PORT);
+		
+		if(args.length > 0) {
+			// If command-line option is used, change port number to the new one
+			try {
+				port = Integer.parseInt(args[0]);
+			} catch (NumberFormatException e) {}
+		}
+
+		// Run
+		new NetServer(port).run();
+	}
+	
+	/**
+	 * Initialize (default port)
+	 */
+	private void init() {
+		init(DEFAULT_PORT);
+	}
+	
+	/** 
+	 * Initialize
+	 */
+	private void init(int port) {
+		PropertyConfigurator.configure("config/etc/log_server.cfg");
+		
+		this.port = port;
 
 		// Load player data file
 		propPlayerData = new CustomProperties();
@@ -189,15 +238,6 @@ public class NetServer {
 			in.close();
 		} catch (IOException e) {}
 
-		// Fetch port number from config file
-		int port = propServer.getProperty("netserver.port", DEFAULT_PORT);
-		if(args.length > 0) {
-			// If command-line option is used, change port number to the new one
-			try {
-				port = Integer.parseInt(args[0]);
-			} catch (NumberFormatException e) {}
-		}
-
 		// Load settings
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
@@ -212,9 +252,32 @@ public class NetServer {
 
 		// Load multiplayer leaderboard
 		loadMPRankingList();
-
-		// Run
-		new NetServer(port).run();
+		
+		// setTitle(getUIText("Title_NetServer"));
+		setTitle("NullpoMino "+GameManager.getVersionMajor()+" NetServer");
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		initUI();
+		pack();
+	}
+	
+	/**
+	 * Init GUI
+	 */
+	private void initUI() {
+		getContentPane().setLayout(new BorderLayout());
+		
+		// Set up content pane -------------------------------
+		
+		// Connection list
+		JPanel pList = new JPanel();
+		getContentPane().add(pList);
+		
+		listmodelConnectionList = new DefaultListModel();
+		listboxConnectionList = new JList(listmodelConnectionList);
+		JScrollPane spListboxConnectionList = new JScrollPane(listboxConnectionList);
+		spListboxConnectionList.setMinimumSize(new Dimension(0,0));
+		pList.add(spListboxConnectionList);
 	}
 
 	/**
@@ -435,21 +498,21 @@ public class NetServer {
 	 * Default constructor
 	 */
 	public NetServer() {
-		super();
-		port = DEFAULT_PORT;
+		this(DEFAULT_PORT);
 	}
 
 	/**
-	 * ポート number設定可能なConstructor
-	 * @param port ポート number
+	 * ��������� number���������������Constructor
+	 * @param port ��������� number
 	 */
 	public NetServer(int port) {
-		super();
-		this.port = port;
+		init(port);
+		
+		setVisible(true);
 	}
 
 	/*
-	 * サーバーの処理
+	 * ���������������������
 	 */
 	public void run() {
 		ServerSocketChannel serverChannel = null;
@@ -499,8 +562,8 @@ public class NetServer {
 	}
 
 	/**
-	 * 新しいクライアントが接続したとき
-	 * @param daemonChannel サーバソケットチャネル
+	 * ������������������������������������������������
+	 * @param daemonChannel ���������������������������������
 	 */
 	private void doAccept(ServerSocketChannel daemonChannel) {
 		SocketChannel channel = null;
@@ -510,9 +573,9 @@ public class NetServer {
 			log.info("Accept: " + channel);
 			channel.configureBlocking(false);
 
-			// ×× OP_WRITE を監視対象にすると CPU利用率が100%になる ××
-			// 書き込むメッセージがあるときだけ, そのチャンネルの OP_WRITE
-			// を監視する。
+			// ���� OP_WRITE ��������������������������� CPU������������100%��������� ����
+			// ������������������������������������������������, ������������������������ OP_WRITE
+			// ������������������
 			// channel.register(selector,
 			// SelectionKey.OP_READ + SelectionKey.OP_WRITE);
 
@@ -540,8 +603,8 @@ public class NetServer {
 	}
 
 	/**
-	 * クライアントからメッセージを受信したとき
-	 * @param channel ソケットチャネル
+	 * ������������������������������������������������������������
+	 * @param channel ������������������������
 	 */
 	private void doRead(SocketChannel channel) {
 		try {
@@ -560,10 +623,10 @@ public class NetServer {
 				String message = NetUtil.bytesToString(bytes);
 				log.debug(message);
 
-				// 前回の不完全パケット
+				// ������������������������������
 				StringBuilder notCompletePacketBuffer = notCompletePacketMap.remove(channel);
 
-				// 受信したメッセージに応じていろいろ処理をする
+				// ������������������������������������������������������������������
 				StringBuilder packetBuffer = new StringBuilder();
 				if(notCompletePacketBuffer != null) packetBuffer.append(notCompletePacketBuffer);
 				packetBuffer.append(message);
@@ -575,13 +638,13 @@ public class NetServer {
 					packetBuffer = packetBuffer.replace(0, index+1, "");
 				}
 
-				// 不完全パケットがある場合
+				// ������������������������������������
 				if(packetBuffer.length() > 0) {
 					notCompletePacketMap.put(channel, packetBuffer);
 				}
 			}
 		} catch (IOException e) {
-			// Socketが切断された
+			// Socket������������������
 			log.debug("Socket Disconnected on doRead (IOException)", e);
 			logout(channel);
 		} catch (Exception e) {
@@ -591,8 +654,8 @@ public class NetServer {
 	}
 
 	/**
-	 * クライアントにメッセージを送信できるようになったとき
-	 * @param channel ソケットチャネル
+	 * ������������������������������������������������������������������������������
+	 * @param channel ������������������������
 	 */
 	private void doWrite(SocketChannel channel) {
 		ByteArrayOutputStream bout = bufferMap.get(channel);
@@ -605,17 +668,17 @@ public class NetServer {
 				log.debug("Send " + size + "/" + bbuf.limit());
 
 				if (bbuf.hasRemaining()) {
-					// bbufをすべてを送信しきれなかったので, 残りをbufferMapに書き戻す
+					// bbuf������������������������������������������������, ���������bufferMap���������������
 					ByteArrayOutputStream rest = new ByteArrayOutputStream();
 					rest.write(bbuf.array(), bbuf.position(), bbuf.remaining());
 					bufferMap.put(channel, rest);
-					// 宛先チャンネルが Writable になるのを監視し続ける。
-					// 宛先チャンネルが切断されたことを検知するために Readable の監視も行う
+					// ������������������������ Writable ������������������������������������
+					// ��������������������������������������������������������������������� Readable ������������������
 					channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 				} else {
-					// bbufをすべて送信し終わったので, bufferMap今回送信分を削除する
+					// bbuf���������������������������������������, bufferMap������������������������������
 					bufferMap.remove(channel);
-					// 宛先チャンネルが Writable になるのを監視するのをやめる
+					// ������������������������ Writable ������������������������������������������
 					channel.register(selector, SelectionKey.OP_READ);
 				}
 			} catch (IOException e) {
@@ -629,8 +692,8 @@ public class NetServer {
 	}
 
 	/**
-	 * クライアントが切断したとき
-	 * @param channel ソケットチャネル
+	 * ���������������������������������������
+	 * @param channel ������������������������
 	 */
 	private void logout(SocketChannel channel) {
 		if(channel == null) return;
@@ -661,7 +724,7 @@ public class NetServer {
 				pInfo.connected = false;
 				pInfo.ready = false;
 
-				LinkedList<NetRoomInfo> deleteList = new LinkedList<NetRoomInfo>();	// 削除 check 予定リスト
+				LinkedList<NetRoomInfo> deleteList = new LinkedList<NetRoomInfo>();	// ������ check ���������������
 
 				for(NetRoomInfo roomInfo: roomInfoList) {
 					if(roomInfo.playerList.contains(pInfo)) {
@@ -708,7 +771,7 @@ public class NetServer {
 	}
 
 	/**
-	 * 各種リストの掃除
+	 * ������������������������
 	 */
 	private void cleanup() {
 		log.info("Cleanup");
@@ -719,14 +782,15 @@ public class NetServer {
 		observerList.clear();
 		playerInfoMap.clear();
 		roomInfoList.clear();
+		listmodelConnectionList.clear();
 
 		System.gc();
 	}
 
 	/**
-	 * クライアントにメッセージを送信(すぐには送信せずBufferに一旦貯められます)
-	 * @param client 送信先
-	 * @param bytes 送信するメッセージ
+	 * ���������������������������������������������(������������������������Buffer���������������������������)
+	 * @param client ���������
+	 * @param bytes ���������������������������
 	 */
 	private void send(SocketChannel client, byte[] bytes) throws IOException {
 		if(client == null) throw new NullPointerException("client is null");
@@ -734,11 +798,11 @@ public class NetServer {
 
 		log.debug("Send: " + client);
 
-		// ×× ここで Channel に write() しちゃダメ ××
+		// ���� ��������� Channel ��� write() ��������������� ����
 		// client.write(ByteBuffer.wrap(bytes));
 
-		// ※ ここでは, Buffer に貯めておいて, Channel が writable
-		// ※ になったら, 書き出す。
+		// ��� ������������, Buffer ���������������������, Channel ��� writable
+		// ��� ���������������, ���������������
 		ByteArrayOutputStream bout = bufferMap.get(client);
 		if (bout == null) {
 			bout = new ByteArrayOutputStream();
@@ -746,23 +810,23 @@ public class NetServer {
 		}
 		bout.write(bytes);
 
-		// 宛先チャンネルが Writable になるのを監視する
+		// ������������������������ Writable ���������������������������
 		client.register(selector, SelectionKey.OP_WRITE);
 	}
 
 	/**
-	 * クライアントにメッセージを送信(すぐには送信せずBufferに一旦貯められます)
-	 * @param client 送信先
-	 * @param msg 送信するメッセージ
+	 * ���������������������������������������������(������������������������Buffer���������������������������)
+	 * @param client ���������
+	 * @param msg ���������������������������
 	 */
 	private void send(SocketChannel client, String msg) throws IOException  {
 		send(client, NetUtil.stringToBytes(msg));
 	}
 
 	/**
-	 * クライアントにメッセージを送信(すぐには送信せずBufferに一旦貯められます)
-	 * @param pInfo 送信先Player
-	 * @param msg 送信するメッセージ
+	 * ���������������������������������������������(������������������������Buffer���������������������������)
+	 * @param pInfo ���������Player
+	 * @param msg ���������������������������
 	 */
 	@SuppressWarnings("unused")
 	private void send(NetPlayerInfo pInfo, byte[] bytes) throws IOException {
@@ -772,9 +836,9 @@ public class NetServer {
 	}
 
 	/**
-	 * クライアントにメッセージを送信(すぐには送信せずBufferに一旦貯められます)
-	 * @param pInfo 送信先Player
-	 * @param msg 送信するメッセージ
+	 * ���������������������������������������������(������������������������Buffer���������������������������)
+	 * @param pInfo ���������Player
+	 * @param msg ���������������������������
 	 */
 	private void send(NetPlayerInfo pInfo, String msg) throws IOException {
 		SocketChannel ch = getSocketChannelByPlayer(pInfo);
@@ -783,8 +847,8 @@ public class NetServer {
 	}
 
 	/**
-	 * すべてのPlayerにメッセージ送信
-	 * @param msg 送信するメッセージ
+	 * ������������Player������������������������
+	 * @param msg ���������������������������
 	 */
 	private void broadcast(String msg) throws IOException {
 		synchronized(channelList) {
@@ -799,9 +863,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 特定のルームにいる全員のPlayerにメッセージ送信
-	 * @param msg 送信するメッセージ
-	 * @param roomID ルームID
+	 * ������������������������������������Player������������������������
+	 * @param msg ���������������������������
+	 * @param roomID ���������ID
 	 */
 	private void broadcast(String msg, int roomID) throws IOException {
 		synchronized(channelList) {
@@ -816,10 +880,10 @@ public class NetServer {
 	}
 
 	/**
-	 * 特定のルームにいる全員のPlayerにメッセージ送信(送信元Player除く)
-	 * @param msg 送信するメッセージ
-	 * @param roomID ルームID
-	 * @param pInfo 送信元Player
+	 * ������������������������������������Player������������������������(���������Player������)
+	 * @param msg ���������������������������
+	 * @param roomID ���������ID
+	 * @param pInfo ���������Player
 	 */
 	private void broadcast(String msg, int roomID, NetPlayerInfo pInfo) throws IOException {
 		synchronized(channelList) {
@@ -834,8 +898,8 @@ public class NetServer {
 	}
 
 	/**
-	 * すべてのObserverにメッセージ送信
-	 * @param msg 送信するメッセージ
+	 * ������������Observer������������������������
+	 * @param msg ���������������������������
 	 */
 	private void broadcastObserver(String msg) throws IOException {
 		for(SocketChannel ch: observerList) {
@@ -844,7 +908,7 @@ public class NetServer {
 	}
 
 	/**
-	 * ユーザーcount更新を全員(ObserverとPlayer)に伝える
+	 * ������������count���������������(Observer���Player)������������
 	 */
 	private void broadcastUserCountToAll() throws IOException {
 		String msg = "observerupdate\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n";
@@ -854,9 +918,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定したPlayerのSocketChannelを取得
+	 * ������������Player���SocketChannel���������
 	 * @param pInfo Player
-	 * @return 指定したPlayerのSocketChannel
+	 * @return ������������Player���SocketChannel
 	 */
 	private SocketChannel getSocketChannelByPlayer(NetPlayerInfo pInfo) {
 		synchronized(channelList) {
@@ -872,27 +936,30 @@ public class NetServer {
 	}
 
 	/**
-	 * 受信したメッセージに応じていろいろ処理をする
-	 * @param client ソケットチャネル
-	 * @param fullMessage 受信したメッセージ
-	 * @throws IOException 何かエラーがあったとき
+	 * ������������������������������������������������������������������
+	 * @param client ������������������������
+	 * @param fullMessage ���������������������������
+	 * @throws IOException ���������������������������������
 	 */
 	private void processPacket(SocketChannel client, String fullMessage) throws IOException {
-		String[] message = fullMessage.split("\t");	// タブ区切り
-		NetPlayerInfo pInfo = playerInfoMap.get(client);	// Player情報
+		String[] message = fullMessage.split("\t");	// ���������������
+		NetPlayerInfo pInfo = playerInfoMap.get(client);	// Player������
 
-		// サーバー情報取得
+		// ������������������������
 		if(message[0].equals("getinfo")) {
 			int loggedInUsersCount = playerInfoMap.size();
 			int observerCount = observerList.size();
 			send(client, "getinfo\t" + GameManager.getVersionMajor() + "\t" + loggedInUsersCount + "\t" + observerCount + "\n");
 			return;
 		}
-		// 切断
+		// ������
 		if(message[0].equals("disconnect")) {
+			String remoteAddr = client.socket().getRemoteSocketAddress().toString();
+			listmodelConnectionList.removeElement(remoteAddr+" - "+pInfo.strName);
+			
 			throw new IOException("Disconnect requested by the client (this is normal)");
 		}
-		// 接続テスト返答
+		// ���������������������
 		if(message[0].equals("ping")) {
 			//ping\t[ID]
 			if(message.length > 1) {
@@ -903,11 +970,11 @@ public class NetServer {
 			}
 			return;
 		}
-		// Observerログイン
+		// Observer������������
 		if(message[0].equals("observerlogin")) {
 			//observer\t[VERSION]
 
-			// ログイン済みなら無視
+			// ������������������������������
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
@@ -920,7 +987,7 @@ public class NetServer {
 				return;
 			}
 
-			// ログイン成功
+			// ������������������
 			observerList.add(client);
 			send(client, "observerloginsuccess\n");
 			broadcastUserCountToAll();
@@ -928,11 +995,11 @@ public class NetServer {
 			log.info("New observer has logged in (" + client.toString() + ")");
 			return;
 		}
-		// ログイン
+		// ������������
 		if(message[0].equals("login")) {
 			//login\t[VERSION]\t[NAME]\t[COUNTRY]\t[TEAM]
 
-			// ログイン済みなら無視
+			// ������������������������������
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
@@ -945,7 +1012,7 @@ public class NetServer {
 				return;
 			}
 
-			// トリップ生成
+			// ������������������
 			String originalName = NetUtil.urlDecode(message[2]);
 			int sharpIndex = originalName.indexOf('#');
 			boolean isTripUse = false;
@@ -966,7 +1033,7 @@ public class NetServer {
 				originalName = originalName.replace('!', '?');
 			}
 
-			// Player名決定(同じNameの人がいたら後ろにcount字をくっつける)
+			// Player���������(������Name���������������������������count���������������������)
 			if(originalName.length() < 1) originalName = "noname";
 			String name = originalName;
 			int nameCount = 0;
@@ -975,7 +1042,7 @@ public class NetServer {
 				nameCount++;
 			}
 
-			// 情報取得
+			// ������������
 			pInfo = new NetPlayerInfo();
 			pInfo.strName = name;
 			if(message.length > 3) pInfo.strCountry = message[3];
@@ -985,7 +1052,7 @@ public class NetServer {
 			pInfo.isTripUse = isTripUse;
 			log.info(pInfo.strName + " has logged in (Host:" + client.socket().getInetAddress().getHostName() + " Team:" + pInfo.strTeam + ")");
 
-			// ホスト名設定
+			// ������������������
 			pInfo.strRealHost = client.socket().getInetAddress().getHostName();
 			pInfo.strRealIP = client.socket().getInetAddress().getHostAddress();
 
@@ -1013,7 +1080,7 @@ public class NetServer {
 			// Load rating
 			getPlayerDataFromProperty(pInfo);
 
-			// ログイン成功
+			// ������������������
 			playerInfoMap.put(client, pInfo);
 			playerCount++;
 			send(client, "loginsuccess\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.uid + "\n");
@@ -1024,22 +1091,26 @@ public class NetServer {
 
 			broadcastPlayerInfoUpdate(pInfo, "playernew");
 			broadcastUserCountToAll();
+			
+			String remoteAddr = client.socket().getRemoteSocketAddress().toString();
+			listmodelConnectionList.addElement(remoteAddr+" - "+pInfo.strName);
+			
 			return;
 		}
-		// ルール data登録(クライアント→サーバー)
+		// ��������� data������(���������������������������������)
 		if(message[0].equals("ruledata")) {
 			//ruledata\t[ADLER32CHECKSUM]\t[RULEDATA]
 
 			if(pInfo != null) {
 				String strData = message[2];
 
-				// checkサム計算
+				// check������������
 				Adler32 checksumObj = new Adler32();
 				checksumObj.update(NetUtil.stringToBytes(strData));
 				long sChecksum = checksumObj.getValue();
 				long cChecksum = Long.parseLong(message[1]);
 
-				// 一致
+				// ������
 				if(sChecksum == cChecksum) {
 					String strRuleData = NetUtil.decompressString(strData);
 
@@ -1049,14 +1120,14 @@ public class NetServer {
 					pInfo.ruleOpt.readProperty(prop, 0);
 					send(client, "ruledatasuccess\n");
 				}
-				// 不一致
+				// ���������
 				else {
 					send(client, "ruledatafail\t" + sChecksum + "\n");
 				}
 			}
 			return;
 		}
-		// ルール data送信(サーバー→クライアント)
+		// ��������� data������(���������������������������������)
 		if(message[0].equals("ruleget")) {
 			//ruleget\t[UID]
 
@@ -1072,7 +1143,7 @@ public class NetServer {
 					String strRuleTemp = prop.encode("RuleData " + p.strName);
 					String strRuleData = NetUtil.compressString(strRuleTemp);
 
-					// checkサム計算
+					// check������������
 					Adler32 checksumObj = new Adler32();
 					checksumObj.update(NetUtil.stringToBytes(strRuleData));
 					long sChecksum = checksumObj.getValue();
@@ -1210,7 +1281,7 @@ public class NetServer {
 				log.info("NewSingleRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName);
 			}
 		}
-		// ルーム作成
+		// ���������������
 		if(message[0].equals("roomcreate")) {
 			/*
 				String msg;
@@ -1328,7 +1399,7 @@ public class NetServer {
 			}
 			return;
 		}
-		// ルーム入室(ルーム numberを-1にするとロビーに戻る)
+		// ���������������(��������� number���-1������������������������������)
 		if(message[0].equals("roomjoin")) {
 			//roomjoin\t[ROOMID]\t[WATCH]
 
@@ -1339,7 +1410,7 @@ public class NetServer {
 				NetRoomInfo newRoom = getRoomInfo(roomID);
 
 				if(roomID < 0) {
-					// ロビーに戻る
+					// ������������������
 					if(prevRoom != null) {
 						int seatID = pInfo.seatID;
 						broadcast("playerleave\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + seatID + "\n",
@@ -1368,7 +1439,7 @@ public class NetServer {
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t-1\t-1\t-1\n");
 				} else if(newRoom != null) {
-					// 入室
+					// ������
 					if(prevRoom != null) {
 						int seatID = pInfo.seatID;
 						broadcast("playerleave\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + seatID + "\n",
@@ -1430,13 +1501,13 @@ public class NetServer {
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t" + newRoom.roomID + "\t" + pInfo.seatID + "\t" + pInfo.queueID + "\n");
 				} else {
-					// ルームが存在しない
+					// ���������������������������
 					send(client, "roomjoinfail\n");
 				}
 			}
 			return;
 		}
-		// チーム変更
+		// ���������������
 		if(message[0].equals("changeteam")) {
 			//changeteam\t[TEAM]
 			if((pInfo != null) && (!pInfo.playing)) {
@@ -1452,7 +1523,7 @@ public class NetServer {
 				}
 			}
 		}
-		// 参戦状態の変更
+		// ���������������������
 		if(message[0].equals("changestatus")) {
 			//changestatus\t[WATCH]
 			if((pInfo != null) && (!pInfo.playing) && (pInfo.roomID != -1)) {
@@ -1461,7 +1532,7 @@ public class NetServer {
 
 				if(!roomInfo.singleplayer) {
 					if(watch) {
-						// 観戦のみ
+						// ������������
 						int prevSeatID = pInfo.seatID;
 						roomInfo.exitSeat(pInfo);
 						roomInfo.exitQueue(pInfo);
@@ -1472,9 +1543,9 @@ public class NetServer {
 						broadcast("changestatus\twatchonly\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + prevSeatID + "\n",
 								  pInfo.roomID);
 
-						joinAllQueuePlayers(roomInfo);	// 順番待ちの人を入れる
+						joinAllQueuePlayers(roomInfo);	// ������������������������������
 					} else {
-						// 参戦
+						// ������
 						if(roomInfo.canJoinSeat()) {
 							pInfo.seatID = roomInfo.joinSeat(pInfo);
 							pInfo.queueID = -1;
@@ -1512,7 +1583,7 @@ public class NetServer {
 				}
 			}
 		}
-		// 準備完了状態の変更
+		// ���������������������������
 		if(message[0].equals("ready")) {
 			//ready\t[STATE]
 			if(pInfo != null) {
@@ -1525,14 +1596,14 @@ public class NetServer {
 
 					if(!pInfo.ready) roomInfo.isSomeoneCancelled = true;
 
-					// 全員が準備完了状態になったら開始
+					// ������������������������������������������������
 					if(!gameStartIfPossible(roomInfo)) {
 						autoStartTimerCheck(roomInfo);
 					}
 				}
 			}
 		}
-		// 自動スタート
+		// ������������������
 		if(message[0].equals("autostart")) {
 			if(pInfo != null) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1540,7 +1611,7 @@ public class NetServer {
 
 				if((seat != -1) && (roomInfo.autoStartActive) && (!roomInfo.singleplayer)) {
 					if(roomInfo.autoStartTNET2) {
-						// 準備完了でないPlayerを観戦状態にする
+						// ���������������������Player������������������������
 						LinkedList<NetPlayerInfo> pList = new LinkedList<NetPlayerInfo>();
 						pList.addAll(roomInfo.playerSeat);
 
@@ -1557,14 +1628,14 @@ public class NetServer {
 							}
 						}
 
-						joinAllQueuePlayers(roomInfo);	// 順番待ちの人を入れる
+						joinAllQueuePlayers(roomInfo);	// ������������������������������
 					}
 
 					gameStart(roomInfo);
 				}
 			}
 		}
-		// 死亡
+		// ������
 		if(message[0].equals("dead")) {
 			if(pInfo != null) {
 				if(message.length > 1) {
@@ -1576,7 +1647,7 @@ public class NetServer {
 				}
 			}
 		}
-		// ゲーム結果
+		// ���������������
 		if(message[0].equals("gstat")) {
 			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1591,7 +1662,7 @@ public class NetServer {
 				broadcast(msg, roomInfo.roomID);
 			}
 		}
-		// ゲーム関連メッセージ(可変)
+		// ������������������������������(������)
 		if(message[0].equals("game")) {
 			if(pInfo != null) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1613,9 +1684,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定されたIDのルーム情報を返す
-	 * @param roomID ルームID
-	 * @return ルーム情報(存在しないならnull)
+	 * ���������������ID���������������������������
+	 * @param roomID ���������ID
+	 * @return ���������������(���������������������null)
 	 */
 	private NetRoomInfo getRoomInfo(int roomID) {
 		if(roomID == -1) return null;
@@ -1630,8 +1701,8 @@ public class NetServer {
 	}
 
 	/**
-	 * ルームリストを送る
-	 * @param client 送信先
+	 * ���������������������������
+	 * @param client ���������
 	 */
 	private void sendRoomList(SocketChannel client) throws IOException {
 		String msg = "roomlist\t" + roomInfoList.size();
@@ -1646,9 +1717,9 @@ public class NetServer {
 	}
 
 	/**
-	 * ルームが空だったら削除
-	 * @param roomInfo ルーム情報
-	 * @return 削除されたらtrue
+	 * ���������������������������������
+	 * @param roomInfo ���������������
+	 * @return ������������������true
 	 */
 	private boolean deleteRoom(NetRoomInfo roomInfo) throws IOException {
 		if((roomInfo != null) && (roomInfo.playerList.isEmpty())) {
@@ -1662,8 +1733,8 @@ public class NetServer {
 	}
 
 	/**
-	 * Automatically start timerの開始と停止
-	 * @param roomInfo ルーム情報
+	 * Automatically start timer������������������
+	 * @param roomInfo ���������������
 	 */
 	private void autoStartTimerCheck(NetRoomInfo roomInfo) throws IOException {
 		if(roomInfo.autoStartSeconds <= 0) return;
@@ -1689,12 +1760,12 @@ public class NetServer {
 	}
 
 	/**
-	 * 全員が準備完了状態か check し, 条件を満たしていればゲームを開始する
-	 * @param roomInfo ルーム情報
-	 * @return Start gameしたらtrue, しなかったらfalse
+	 * ������������������������������ check ���, ������������������������������������������������������
+	 * @param roomInfo ���������������
+	 * @return Start game���������true, ������������������false
 	 */
 	private boolean gameStartIfPossible(NetRoomInfo roomInfo) throws IOException {
-		// 全員が準備完了状態になったら
+		// ������������������������������������������
 		if(roomInfo.getHowManyPlayersReady() == roomInfo.getNumberOfPlayerSeated()) {
 			gameStart(roomInfo);
 			return true;
@@ -1704,8 +1775,8 @@ public class NetServer {
 	}
 
 	/**
-	 * ゲームを開始する(無条件で)
-	 * @param roomInfo ルーム情報
+	 * ������������������������(������������)
+	 * @param roomInfo ���������������
 	 */
 	private void gameStart(NetRoomInfo roomInfo) throws IOException {
 		if(roomInfo == null) return;
@@ -1746,9 +1817,9 @@ public class NetServer {
 	}
 
 	/**
-	 * game finishedかどうか check し, 終了条件を満たしていればルーム内の全員に通知する
-	 * @param roomInfo ルーム情報
-	 * @return game finishedしたらtrue, 終了前・すでに終了後ならfalse
+	 * game finished������������ check ���, ������������������������������������������������������������������������
+	 * @param roomInfo ���������������
+	 * @return game finished���������true, ������������������������������������false
 	 */
 	private boolean gameFinished(NetRoomInfo roomInfo) throws IOException {
 		int startPlayers = roomInfo.startPlayers;
@@ -1756,7 +1827,7 @@ public class NetServer {
 		boolean isTeamWin = roomInfo.isTeamWin();
 
 		if( (roomInfo != null) && (roomInfo.playing) && ( (nowPlaying < 1) || ((startPlayers >= 2) && (nowPlaying < 2)) || (isTeamWin) ) ) {
-			// game finished通知
+			// game finished������
 			NetPlayerInfo winner = roomInfo.getWinner();
 			String msg = "finish\t";
 
@@ -1765,7 +1836,7 @@ public class NetServer {
 				if(teamName == null) teamName = "";
 				msg += -1 + "\t" + -1 + "\t" + NetUtil.urlEncode(teamName) + "\t" + isTeamWin;
 
-				// Playerのプレイ中 flagを解除
+				// Player��������������� flag���������
 				for(NetPlayerInfo pInfo: roomInfo.playerSeat) {
 					if((pInfo != null) && (pInfo.playing)) {
 						pInfo.resetPlayState();
@@ -1847,7 +1918,7 @@ public class NetServer {
 			msg += "\n";
 			broadcast(msg, roomInfo.roomID);
 
-			// ルーム状態更新
+			// ���������������������
 			roomInfo.playing = false;
 			roomInfo.autoStartActive = false;
 			broadcastRoomInfoUpdate(roomInfo);
@@ -1859,17 +1930,17 @@ public class NetServer {
 	}
 
 	/**
-	 * ルーム情報更新通知を全員に送る(コマンドはroomupdate)
-	 * @param roomInfo ルーム情報
+	 * ���������������������������������������������(���������������roomupdate)
+	 * @param roomInfo ���������������
 	 */
 	private void broadcastRoomInfoUpdate(NetRoomInfo roomInfo) throws IOException {
 		broadcastRoomInfoUpdate(roomInfo, "roomupdate");
 	}
 
 	/**
-	 * ルーム情報更新通知を全員に送る
-	 * @param roomInfo ルーム情報
-	 * @param command コマンド
+	 * ���������������������������������������������
+	 * @param roomInfo ���������������
+	 * @param command ������������
 	 */
 	private void broadcastRoomInfoUpdate(NetRoomInfo roomInfo, String command) throws IOException {
 		roomInfo.updatePlayerCount();
@@ -1880,8 +1951,8 @@ public class NetServer {
 	}
 
 	/**
-	 * Playerリストを送る
-	 * @param client 送信先
+	 * Player������������������
+	 * @param client ���������
 	 */
 	private void sendPlayerList(SocketChannel client) throws IOException {
 		String msg = "playerlist\t" + playerInfoMap.size();
@@ -1900,17 +1971,17 @@ public class NetServer {
 	}
 
 	/**
-	 * Player情報更新通知を全員に送る(コマンドはplayerupdate)
-	 * @param pInfo Player情報
+	 * Player������������������������������������(���������������playerupdate)
+	 * @param pInfo Player������
 	 */
 	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo) throws IOException  {
 		broadcastPlayerInfoUpdate(pInfo, "playerupdate");
 	}
 
 	/**
-	 * Player情報更新通知を全員に送る
-	 * @param pInfo Player情報
-	 * @param command コマンド
+	 * Player������������������������������������
+	 * @param pInfo Player������
+	 * @param command ������������
 	 */
 	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo, String command) throws IOException {
 		String msg = command + "\t";
@@ -1920,9 +1991,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定したNameのPlayerを探す
+	 * ������������Name���Player���������
 	 * @param name Name
-	 * @return 指定したNameのPlayer情報(いなかったらnull)
+	 * @return ������������Name���Player������(������������������null)
 	 */
 	private NetPlayerInfo searchPlayerByName(String name) {
 		for(SocketChannel ch: channelList) {
@@ -1935,9 +2006,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 指定したIDのPlayerを探す
+	 * ������������ID���Player���������
 	 * @param uid ID
-	 * @return 指定したIDのPlayer情報(いなかったらnull)
+	 * @return ������������ID���Player������(������������������null)
 	 */
 	private NetPlayerInfo searchPlayerByUID(int uid) {
 		for(SocketChannel ch: channelList) {
@@ -1950,9 +2021,9 @@ public class NetServer {
 	}
 
 	/**
-	 * 順番待ちのPlayerをすべて空席に参加させる
-	 * @param roomInfo ルーム情報
-	 * @return 席に入れたNumber of players
+	 * ���������������Player������������������������������������
+	 * @param roomInfo ���������������
+	 * @return ���������������Number of players
 	 */
 	private int joinAllQueuePlayers(NetRoomInfo roomInfo) throws IOException {
 		int playerJoinedCount = 0;
@@ -1974,7 +2045,7 @@ public class NetServer {
 	}
 
 	/**
-	 * Player死亡時の処理
+	 * Player������������������
 	 * @param pInfo Player
 	 */
 	private void playerDead(NetPlayerInfo pInfo) throws IOException {
@@ -1982,9 +2053,9 @@ public class NetServer {
 	}
 
 	/**
-	 * Player死亡時の処理
-	 * @param pInfo 被害者
-	 * @param pKOInfo 加害者(null可)
+	 * Player������������������
+	 * @param pInfo ���������
+	 * @param pKOInfo ���������(null���)
 	 */
 	private void playerDead(NetPlayerInfo pInfo, NetPlayerInfo pKOInfo) throws IOException {
 		NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -2150,5 +2221,11 @@ public class NetServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
