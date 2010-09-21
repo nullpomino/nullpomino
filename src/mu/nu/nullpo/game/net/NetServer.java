@@ -480,7 +480,7 @@ public class NetServer extends JFrame implements ActionListener {
 				pInfo.winCount[i] = propPlayerData.getProperty("p.winCount." + i + "." + pInfo.strName, 0);
 			}
 		} else {
-			for(int i = 0; i < pInfo.rating.length; i++) {
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				pInfo.rating[i] = ratingDefault;
 				pInfo.playCount[i] = 0;
 				pInfo.winCount[i] = 0;
@@ -494,10 +494,10 @@ public class NetServer extends JFrame implements ActionListener {
 	 */
 	private static void setPlayerDataToProperty(NetPlayerInfo pInfo) {
 		if(pInfo.isTripUse) {
-			for(int i = 0; i < pInfo.rating.length; i++) {
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				propPlayerData.setProperty("p.rating." + i + "." + pInfo.strName, pInfo.rating[i]);
-				propPlayerData.getProperty("p.playCount." + i + "." + pInfo.strName, pInfo.playCount[i]);
-				propPlayerData.getProperty("p.winCount." + i + "." + pInfo.strName, pInfo.winCount[i]);
+				propPlayerData.setProperty("p.playCount." + i + "." + pInfo.strName, pInfo.playCount[i]);
+				propPlayerData.setProperty("p.winCount." + i + "." + pInfo.strName, pInfo.winCount[i]);
 			}
 		}
 	}
@@ -1101,6 +1101,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 			// Load rating
 			getPlayerDataFromProperty(pInfo);
+			log.info("Play:" + pInfo.playCount[0] + " Win:" + pInfo.winCount[0]);
 
 			// Success
 			playerInfoMap.put(client, pInfo);
@@ -1369,6 +1370,37 @@ public class NetServer extends JFrame implements ActionListener {
 					roomInfo.ruleOpt = new RuleOptions(getRatedRule(0, roomInfo.ruleName));
 					roomInfo.ruleLock = true;
 					roomInfo.rated = true;
+				}
+
+				// If ranked room, overwrite most settings with predefined ones
+				if(roomInfo.rated) {
+					int style = roomInfo.style;
+					int id = 0;		// TODO: Add settings selector
+
+					roomInfo.gravity = propServer.getProperty(style + "." + id + ".ranked.gravity", 1);
+					roomInfo.denominator = propServer.getProperty(style + "." + id + ".ranked.denominator", 60);
+					roomInfo.are = propServer.getProperty(style + "." + id + ".ranked.are", 0);
+					roomInfo.areLine = propServer.getProperty(style + "." + id + ".ranked.areLine", 0);
+					roomInfo.lineDelay = propServer.getProperty(style + "." + id + ".ranked.lineDelay", 0);
+					roomInfo.lockDelay = propServer.getProperty(style + "." + id + ".ranked.lockDelay", 30);
+					roomInfo.das = propServer.getProperty(style + "." + id + ".ranked.das", 12);
+
+					roomInfo.tspinEnableType = propServer.getProperty(style + "." + id + ".ranked.tspinEnableType", 2);
+					roomInfo.b2b = propServer.getProperty(style + "." + id + ".ranked.b2b", true);
+					roomInfo.combo = propServer.getProperty(style + "." + id + ".ranked.combo", true);
+					roomInfo.rensaBlock = propServer.getProperty(style + "." + id + ".ranked.rensaBlock", true);
+					roomInfo.counter = propServer.getProperty(style + "." + id + ".ranked.counter", true);
+					roomInfo.bravo = propServer.getProperty(style + "." + id + ".ranked.bravo", true);
+					roomInfo.reduceLineSend = propServer.getProperty(style + "." + id + ".ranked.reduceLineSend", true);
+					roomInfo.useFractionalGarbage = propServer.getProperty(style + "." + id + ".ranked.useFractionalGarbage", false);
+					roomInfo.garbageChangePerAttack = propServer.getProperty(style + "." + id + ".ranked.garbageChangePerAttack", true);
+					roomInfo.garbagePercent = propServer.getProperty(style + "." + id + ".ranked.garbagePercent", 100);
+					roomInfo.spinCheckType = propServer.getProperty(style + "." + id + ".ranked.spinCheckType", 0);
+					roomInfo.tspinEnableEZ = propServer.getProperty(style + "." + id + ".ranked.tspinEnableEZ", false);
+					roomInfo.b2bChunk = propServer.getProperty(style + "." + id + ".ranked.b2bChunk", false);
+					roomInfo.hurryupSeconds = propServer.getProperty(style + "." + id + ".ranked.hurryupSeconds", -1);
+					roomInfo.hurryupInterval = propServer.getProperty(style + "." + id + ".ranked.hurryupInterval", 5);
+					roomInfo.useMap = false;	// TODO: Add force map to use
 				}
 
 				// Set map
