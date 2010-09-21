@@ -30,6 +30,7 @@ package mu.nu.nullpo.game.net;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -75,6 +76,9 @@ import org.cacas.java.gnu.tools.Crypt;
  * <a href="http://hondou.homedns.org/pukiwiki/index.php?JavaSE%20%A5%C1%A5%E3%A5%C3%A5%C8%A5%B7%A5%B9%A5%C6%A5%E0%A4%F2%BA%EE%A4%ED%A4%A6">Source</a>
  */
 public class NetServer extends JFrame implements ActionListener {
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
+
 	/** Log */
 	static final Logger log = Logger.getLogger(NetServer.class);
 
@@ -104,6 +108,9 @@ public class NetServer extends JFrame implements ActionListener {
 
 	/** Properties of multiplayer leaderboard */
 	private static CustomProperties propMPRanking;
+
+	/** True if GUI is enabled */
+	private static boolean isGUIEnabled;
 
 	/** Default rating */
 	private static int ratingDefault;
@@ -182,6 +189,8 @@ public class NetServer extends JFrame implements ActionListener {
 	 * @param args Command-line options
 	 */
 	public static void main(String[] args) {
+		// Init log system (should be first!)
+		PropertyConfigurator.configure("config/etc/log_server.cfg");
 
 		// Load server config file
 		propServer = new CustomProperties();
@@ -218,8 +227,6 @@ public class NetServer extends JFrame implements ActionListener {
 	 * Initialize
 	 */
 	private void init(int port) {
-		PropertyConfigurator.configure("config/etc/log_server.cfg");
-
 		this.port = port;
 
 		// Load player data file
@@ -239,6 +246,7 @@ public class NetServer extends JFrame implements ActionListener {
 		} catch (IOException e) {}
 
 		// Load settings
+		isGUIEnabled = propServer.getProperty("netserver.isGUIEnabled", true);
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
 		ratingProvisionalGames = propServer.getProperty("netserver.ratingProvisionalGames", PROVISIONAL_GAMES);
@@ -253,12 +261,25 @@ public class NetServer extends JFrame implements ActionListener {
 		// Load multiplayer leaderboard
 		loadMPRankingList();
 
-		// setTitle(getUIText("Title_NetServer"));
-		setTitle("NullpoMino "+GameManager.getVersionMajor()+" NetServer");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		// Disable GUI if window system is not available
+		if(GraphicsEnvironment.isHeadless() && isGUIEnabled) {
+			log.info("Disable GUI because window system cannot be used");
+			isGUIEnabled = false;
+		}
 
-		initUI();
-		pack();
+		// GUI init
+		if(isGUIEnabled) {
+			log.info("GUI is enabled");
+
+			// setTitle(getUIText("Title_NetServer"));
+			setTitle("NullpoMino "+GameManager.getVersionMajor()+" NetServer");
+			setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+			initUI();
+			pack();
+		} else {
+			log.info("GUI is disabled");
+		}
 	}
 
 	/**
@@ -502,17 +523,19 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ��������� number���������������Constructor
-	 * @param port ��������� number
+	 * Constructor
+	 * @param port Port number
 	 */
 	public NetServer(int port) {
 		init(port);
 
-		setVisible(true);
+		if(isGUIEnabled) {
+			setVisible(true);
+		}
 	}
 
-	/*
-	 * ���������������������
+	/**
+	 * Server mainloop
 	 */
 	public void run() {
 		ServerSocketChannel serverChannel = null;
@@ -562,8 +585,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������������������������
-	 * @param daemonChannel ���������������������������������
+	 * Accept a new client
+	 * @param daemonChannel ServerSocketChannel
 	 */
 	private void doAccept(ServerSocketChannel daemonChannel) {
 		SocketChannel channel = null;
@@ -572,12 +595,6 @@ public class NetServer extends JFrame implements ActionListener {
 			channel = daemonChannel.accept();
 			log.info("Accept: " + channel);
 			channel.configureBlocking(false);
-
-			// ���� OP_WRITE ��������������������������� CPU������������100%��������� ����
-			// ������������������������������������������������, ������������������������ OP_WRITE
-			// ������������������
-			// channel.register(selector,
-			// SelectionKey.OP_READ + SelectionKey.OP_WRITE);
 
 			channel.register(selector, SelectionKey.OP_READ);
 
@@ -603,8 +620,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������������������������������������
-	 * @param channel ������������������������
+	 * Receive message(s) from client
+	 * @param channel SocketChannel
 	 */
 	private void doRead(SocketChannel channel) {
 		try {
@@ -623,10 +640,10 @@ public class NetServer extends JFrame implements ActionListener {
 				String message = NetUtil.bytesToString(bytes);
 				log.debug(message);
 
-				// ������������������������������
+				// Previous incomplete packet buffer (null if none are present)
 				StringBuilder notCompletePacketBuffer = notCompletePacketMap.remove(channel);
 
-				// ������������������������������������������������������������������
+				// The new packet buffer
 				StringBuilder packetBuffer = new StringBuilder();
 				if(notCompletePacketBuffer != null) packetBuffer.append(notCompletePacketBuffer);
 				packetBuffer.append(message);
@@ -638,13 +655,12 @@ public class NetServer extends JFrame implements ActionListener {
 					packetBuffer = packetBuffer.replace(0, index+1, "");
 				}
 
-				// ������������������������������������
+				// Place new incomplete packet buffer
 				if(packetBuffer.length() > 0) {
 					notCompletePacketMap.put(channel, packetBuffer);
 				}
 			}
 		} catch (IOException e) {
-			// Socket������������������
 			log.debug("Socket Disconnected on doRead (IOException)", e);
 			logout(channel);
 		} catch (Exception e) {
@@ -654,8 +670,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������������������������������������������������������
-	 * @param channel ������������������������
+	 * When it's ready to send something
+	 * @param channel SocketChannel
 	 */
 	private void doWrite(SocketChannel channel) {
 		ByteArrayOutputStream bout = bufferMap.get(channel);
@@ -668,17 +684,12 @@ public class NetServer extends JFrame implements ActionListener {
 				log.debug("Send " + size + "/" + bbuf.limit());
 
 				if (bbuf.hasRemaining()) {
-					// bbuf������������������������������������������������, ���������bufferMap���������������
 					ByteArrayOutputStream rest = new ByteArrayOutputStream();
 					rest.write(bbuf.array(), bbuf.position(), bbuf.remaining());
 					bufferMap.put(channel, rest);
-					// ������������������������ Writable ������������������������������������
-					// ��������������������������������������������������������������������� Readable ������������������
 					channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 				} else {
-					// bbuf���������������������������������������, bufferMap������������������������������
 					bufferMap.remove(channel);
-					// ������������������������ Writable ������������������������������������������
 					channel.register(selector, SelectionKey.OP_READ);
 				}
 			} catch (IOException e) {
@@ -692,8 +703,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������������������������������
-	 * @param channel ������������������������
+	 * Logout
+	 * @param channel SocketChannel
 	 */
 	private void logout(SocketChannel channel) {
 		if(channel == null) return;
@@ -705,10 +716,18 @@ public class NetServer extends JFrame implements ActionListener {
 
 		try {
 			channel.register(selector, 0);
+		} catch (IOException e) {
+			log.debug("IOException throwed on logout (channel.register)", e);
+		}
+		try {
 			channel.finishConnect();
+		} catch (IOException e) {
+			log.debug("IOException throwed on logout (channel.finishConnect)", e);
+		}
+		try {
 			channel.close();
 		} catch (IOException e) {
-			log.debug("IOException throwed on logout", e);
+			log.debug("IOException throwed on logout (channel.close)", e);
 		}
 
 		try {
@@ -724,7 +743,7 @@ public class NetServer extends JFrame implements ActionListener {
 				pInfo.connected = false;
 				pInfo.ready = false;
 
-				LinkedList<NetRoomInfo> deleteList = new LinkedList<NetRoomInfo>();	// ������ check ���������������
+				LinkedList<NetRoomInfo> deleteList = new LinkedList<NetRoomInfo>();	// Room delete check list
 
 				for(NetRoomInfo roomInfo: roomInfoList) {
 					if(roomInfo.playerList.contains(pInfo)) {
@@ -771,7 +790,7 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������
+	 * Cleanup (after all clients are disconnected)
 	 */
 	private void cleanup() {
 		log.info("Cleanup");
@@ -782,15 +801,19 @@ public class NetServer extends JFrame implements ActionListener {
 		observerList.clear();
 		playerInfoMap.clear();
 		roomInfoList.clear();
-		listmodelConnectionList.clear();
+
+		if(isGUIEnabled) {
+			listmodelConnectionList.clear();
+		}
 
 		System.gc();
 	}
 
 	/**
-	 * ���������������������������������������������(������������������������Buffer���������������������������)
-	 * @param client ���������
-	 * @param bytes ���������������������������
+	 * Send a message
+	 * @param client SocketChannel
+	 * @param bytes Message to send (byte[])
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	private void send(SocketChannel client, byte[] bytes) throws IOException {
 		if(client == null) throw new NullPointerException("client is null");
@@ -798,11 +821,6 @@ public class NetServer extends JFrame implements ActionListener {
 
 		log.debug("Send: " + client);
 
-		// ���� ��������� Channel ��� write() ��������������� ����
-		// client.write(ByteBuffer.wrap(bytes));
-
-		// ��� ������������, Buffer ���������������������, Channel ��� writable
-		// ��� ���������������, ���������������
 		ByteArrayOutputStream bout = bufferMap.get(client);
 		if (bout == null) {
 			bout = new ByteArrayOutputStream();
@@ -810,23 +828,24 @@ public class NetServer extends JFrame implements ActionListener {
 		}
 		bout.write(bytes);
 
-		// ������������������������ Writable ���������������������������
 		client.register(selector, SelectionKey.OP_WRITE);
 	}
 
 	/**
-	 * ���������������������������������������������(������������������������Buffer���������������������������)
-	 * @param client ���������
-	 * @param msg ���������������������������
+	 * Send a message
+	 * @param client SocketChannel
+	 * @param msg Message to send (String)
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	private void send(SocketChannel client, String msg) throws IOException  {
 		send(client, NetUtil.stringToBytes(msg));
 	}
 
 	/**
-	 * ���������������������������������������������(������������������������Buffer���������������������������)
-	 * @param pInfo ���������Player
-	 * @param msg ���������������������������
+	 * Send a message
+	 * @param pInfo NetPlayerInfo
+	 * @param msg Message to send (byte[])
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	@SuppressWarnings("unused")
 	private void send(NetPlayerInfo pInfo, byte[] bytes) throws IOException {
@@ -836,9 +855,10 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������������������������������������(������������������������Buffer���������������������������)
-	 * @param pInfo ���������Player
-	 * @param msg ���������������������������
+	 * Send a message
+	 * @param pInfo NetPlayerInfo
+	 * @param msg Message to send (String)
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	private void send(NetPlayerInfo pInfo, String msg) throws IOException {
 		SocketChannel ch = getSocketChannelByPlayer(pInfo);
@@ -847,8 +867,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������Player������������������������
-	 * @param msg ���������������������������
+	 * Broadcast a message to all players
+	 * @param msg Message to send (String)
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	private void broadcast(String msg) throws IOException {
 		synchronized(channelList) {
@@ -863,9 +884,10 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������������Player������������������������
-	 * @param msg ���������������������������
-	 * @param roomID ���������ID
+	 * Broadcast a message to all players in specific room
+	 * @param msg Message to send (String)
+	 * @param roomID Room ID (-1:Lobby)
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	private void broadcast(String msg, int roomID) throws IOException {
 		synchronized(channelList) {
@@ -880,10 +902,11 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������������Player������������������������(���������Player������)
-	 * @param msg ���������������������������
-	 * @param roomID ���������ID
-	 * @param pInfo ���������Player
+	 * Broadcast a message to all players in specific room, except for the specified player
+	 * @param msg Message to send (String)
+	 * @param roomID Room ID (-1:Lobby)
+	 * @param pInfo The player to avoid sending message
+	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
 	private void broadcast(String msg, int roomID, NetPlayerInfo pInfo) throws IOException {
 		synchronized(channelList) {
@@ -898,8 +921,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������Observer������������������������
-	 * @param msg ���������������������������
+	 * Broadcast a message to all observers
+	 * @param msg Message to send (String)
 	 */
 	private void broadcastObserver(String msg) throws IOException {
 		for(SocketChannel ch: observerList) {
@@ -908,7 +931,7 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������count���������������(Observer���Player)������������
+	 * Broadcast client count (observers and players) to everyone
 	 */
 	private void broadcastUserCountToAll() throws IOException {
 		String msg = "observerupdate\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n";
@@ -918,9 +941,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������Player���SocketChannel���������
+	 * Get SocketChannel from NetPlayerInfo
 	 * @param pInfo Player
-	 * @return ������������Player���SocketChannel
+	 * @return SocketChannel (null if not found)
 	 */
 	private SocketChannel getSocketChannelByPlayer(NetPlayerInfo pInfo) {
 		synchronized(channelList) {
@@ -936,30 +959,31 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������������������������������������������
-	 * @param client ������������������������
-	 * @param fullMessage ���������������������������
-	 * @throws IOException ���������������������������������
+	 * Process a packet.
+	 * @param client The SocketChannel who sent this packet
+	 * @param fullMessage The string of packet
+	 * @throws IOException When something bad happens
 	 */
 	private void processPacket(SocketChannel client, String fullMessage) throws IOException {
-		String[] message = fullMessage.split("\t");	// ���������������
-		NetPlayerInfo pInfo = playerInfoMap.get(client);	// Player������
+		String[] message = fullMessage.split("\t");	// Split by \t
+		NetPlayerInfo pInfo = playerInfoMap.get(client);	// NetPlayerInfo of this client. null if not logged in.
 
-		// ������������������������
+		// Get information of this server.
 		if(message[0].equals("getinfo")) {
 			int loggedInUsersCount = playerInfoMap.size();
 			int observerCount = observerList.size();
 			send(client, "getinfo\t" + GameManager.getVersionMajor() + "\t" + loggedInUsersCount + "\t" + observerCount + "\n");
 			return;
 		}
-		// ������
+		// Disconnect request.
 		if(message[0].equals("disconnect")) {
-			String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-			listmodelConnectionList.removeElement(remoteAddr+" - "+pInfo.strName);
-
+			if(isGUIEnabled) {
+				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
+				listmodelConnectionList.removeElement(remoteAddr+" - "+pInfo.strName);
+			}
 			throw new IOException("Disconnect requested by the client (this is normal)");
 		}
-		// ���������������������
+		// Ping
 		if(message[0].equals("ping")) {
 			//ping\t[ID]
 			if(message.length > 1) {
@@ -970,11 +994,11 @@ public class NetServer extends JFrame implements ActionListener {
 			}
 			return;
 		}
-		// Observer������������
+		// Observer login
 		if(message[0].equals("observerlogin")) {
 			//observer\t[VERSION]
 
-			// ������������������������������
+			// Ignore it if already logged in
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
@@ -987,7 +1011,7 @@ public class NetServer extends JFrame implements ActionListener {
 				return;
 			}
 
-			// ������������������
+			// Success
 			observerList.add(client);
 			send(client, "observerloginsuccess\n");
 			broadcastUserCountToAll();
@@ -995,11 +1019,11 @@ public class NetServer extends JFrame implements ActionListener {
 			log.info("New observer has logged in (" + client.toString() + ")");
 			return;
 		}
-		// ������������
+		// Player login
 		if(message[0].equals("login")) {
 			//login\t[VERSION]\t[NAME]\t[COUNTRY]\t[TEAM]
 
-			// ������������������������������
+			// Ignore it if already logged in
 			if(observerList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
@@ -1012,7 +1036,7 @@ public class NetServer extends JFrame implements ActionListener {
 				return;
 			}
 
-			// ������������������
+			// Tripcode
 			String originalName = NetUtil.urlDecode(message[2]);
 			int sharpIndex = originalName.indexOf('#');
 			boolean isTripUse = false;
@@ -1033,7 +1057,7 @@ public class NetServer extends JFrame implements ActionListener {
 				originalName = originalName.replace('!', '?');
 			}
 
-			// Player���������(������Name���������������������������count���������������������)
+			// Decide name (change to something else if needed)
 			if(originalName.length() < 1) originalName = "noname";
 			String name = originalName;
 			int nameCount = 0;
@@ -1042,7 +1066,7 @@ public class NetServer extends JFrame implements ActionListener {
 				nameCount++;
 			}
 
-			// ������������
+			// Set variables
 			pInfo = new NetPlayerInfo();
 			pInfo.strName = name;
 			if(message.length > 3) pInfo.strCountry = message[3];
@@ -1050,9 +1074,7 @@ public class NetServer extends JFrame implements ActionListener {
 			pInfo.uid = playerCount;
 			pInfo.connected = true;
 			pInfo.isTripUse = isTripUse;
-			log.info(pInfo.strName + " has logged in (Host:" + client.socket().getInetAddress().getHostName() + " Team:" + pInfo.strTeam + ")");
 
-			// ������������������
 			pInfo.strRealHost = client.socket().getInetAddress().getHostName();
 			pInfo.strRealIP = client.socket().getInetAddress().getHostAddress();
 
@@ -1080,10 +1102,11 @@ public class NetServer extends JFrame implements ActionListener {
 			// Load rating
 			getPlayerDataFromProperty(pInfo);
 
-			// ������������������
+			// Success
 			playerInfoMap.put(client, pInfo);
 			playerCount++;
 			send(client, "loginsuccess\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + pInfo.uid + "\n");
+			log.info(pInfo.strName + " has logged in (Host:" + client.socket().getInetAddress().getHostName() + " Team:" + pInfo.strTeam + ")");
 
 			sendRatedRuleList(client);
 			sendPlayerList(client);
@@ -1092,25 +1115,26 @@ public class NetServer extends JFrame implements ActionListener {
 			broadcastPlayerInfoUpdate(pInfo, "playernew");
 			broadcastUserCountToAll();
 
-			String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-			listmodelConnectionList.addElement(remoteAddr+" - "+pInfo.strName);
-
+			if(isGUIEnabled) {
+				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
+				listmodelConnectionList.addElement(remoteAddr+" - "+pInfo.strName);
+			}
 			return;
 		}
-		// ��������� data������(���������������������������������)
+		// Send rule data to server (Client->Server)
 		if(message[0].equals("ruledata")) {
 			//ruledata\t[ADLER32CHECKSUM]\t[RULEDATA]
 
 			if(pInfo != null) {
 				String strData = message[2];
 
-				// check������������
+				// Is checksum correct?
 				Adler32 checksumObj = new Adler32();
 				checksumObj.update(NetUtil.stringToBytes(strData));
 				long sChecksum = checksumObj.getValue();
 				long cChecksum = Long.parseLong(message[1]);
 
-				// ������
+				// OK
 				if(sChecksum == cChecksum) {
 					String strRuleData = NetUtil.decompressString(strData);
 
@@ -1120,14 +1144,14 @@ public class NetServer extends JFrame implements ActionListener {
 					pInfo.ruleOpt.readProperty(prop, 0);
 					send(client, "ruledatasuccess\n");
 				}
-				// ���������
+				// FAIL
 				else {
 					send(client, "ruledatafail\t" + sChecksum + "\n");
 				}
 			}
 			return;
 		}
-		// ��������� data������(���������������������������������)
+		// Get rule data from server (Server->Client)
 		if(message[0].equals("ruleget")) {
 			//ruleget\t[UID]
 
@@ -1143,7 +1167,7 @@ public class NetServer extends JFrame implements ActionListener {
 					String strRuleTemp = prop.encode("RuleData " + p.strName);
 					String strRuleData = NetUtil.compressString(strRuleTemp);
 
-					// check������������
+					// Checksum
 					Adler32 checksumObj = new Adler32();
 					checksumObj.update(NetUtil.stringToBytes(strRuleData));
 					long sChecksum = checksumObj.getValue();
@@ -1281,7 +1305,7 @@ public class NetServer extends JFrame implements ActionListener {
 				log.info("NewSingleRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName);
 			}
 		}
-		// ���������������
+		// Multiplayer room
 		if(message[0].equals("roomcreate")) {
 			/*
 				String msg;
@@ -1399,7 +1423,7 @@ public class NetServer extends JFrame implements ActionListener {
 			}
 			return;
 		}
-		// ���������������(��������� number���-1������������������������������)
+		// Join room (If roomID is -1, the player will return to lobby)
 		if(message[0].equals("roomjoin")) {
 			//roomjoin\t[ROOMID]\t[WATCH]
 
@@ -1410,7 +1434,7 @@ public class NetServer extends JFrame implements ActionListener {
 				NetRoomInfo newRoom = getRoomInfo(roomID);
 
 				if(roomID < 0) {
-					// ������������������
+					// Return to lobby
 					if(prevRoom != null) {
 						int seatID = pInfo.seatID;
 						broadcast("playerleave\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + seatID + "\n",
@@ -1439,7 +1463,7 @@ public class NetServer extends JFrame implements ActionListener {
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t-1\t-1\t-1\n");
 				} else if(newRoom != null) {
-					// ������
+					// Enter a room
 					if(prevRoom != null) {
 						int seatID = pInfo.seatID;
 						broadcast("playerleave\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + seatID + "\n",
@@ -1501,13 +1525,13 @@ public class NetServer extends JFrame implements ActionListener {
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t" + newRoom.roomID + "\t" + pInfo.seatID + "\t" + pInfo.queueID + "\n");
 				} else {
-					// ���������������������������
+					// No such a room
 					send(client, "roomjoinfail\n");
 				}
 			}
 			return;
 		}
-		// ���������������
+		// Change team
 		if(message[0].equals("changeteam")) {
 			//changeteam\t[TEAM]
 			if((pInfo != null) && (!pInfo.playing)) {
@@ -1523,7 +1547,7 @@ public class NetServer extends JFrame implements ActionListener {
 				}
 			}
 		}
-		// ���������������������
+		// Change Player/Spectator status
 		if(message[0].equals("changestatus")) {
 			//changestatus\t[WATCH]
 			if((pInfo != null) && (!pInfo.playing) && (pInfo.roomID != -1)) {
@@ -1532,7 +1556,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 				if(!roomInfo.singleplayer) {
 					if(watch) {
-						// ������������
+						// Change to spectator
 						int prevSeatID = pInfo.seatID;
 						roomInfo.exitSeat(pInfo);
 						roomInfo.exitQueue(pInfo);
@@ -1543,9 +1567,9 @@ public class NetServer extends JFrame implements ActionListener {
 						broadcast("changestatus\twatchonly\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + prevSeatID + "\n",
 								  pInfo.roomID);
 
-						joinAllQueuePlayers(roomInfo);	// ������������������������������
+						joinAllQueuePlayers(roomInfo);	// Let the queue-player to join
 					} else {
-						// ������
+						// Change to player
 						if(roomInfo.canJoinSeat()) {
 							pInfo.seatID = roomInfo.joinSeat(pInfo);
 							pInfo.queueID = -1;
@@ -1583,7 +1607,7 @@ public class NetServer extends JFrame implements ActionListener {
 				}
 			}
 		}
-		// ���������������������������
+		// Ready state change
 		if(message[0].equals("ready")) {
 			//ready\t[STATE]
 			if(pInfo != null) {
@@ -1596,14 +1620,14 @@ public class NetServer extends JFrame implements ActionListener {
 
 					if(!pInfo.ready) roomInfo.isSomeoneCancelled = true;
 
-					// ������������������������������������������������
+					// Start a game if possible
 					if(!gameStartIfPossible(roomInfo)) {
 						autoStartTimerCheck(roomInfo);
 					}
 				}
 			}
 		}
-		// ������������������
+		// Autostart
 		if(message[0].equals("autostart")) {
 			if(pInfo != null) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1611,7 +1635,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 				if((seat != -1) && (roomInfo.autoStartActive) && (!roomInfo.singleplayer)) {
 					if(roomInfo.autoStartTNET2) {
-						// ���������������������Player������������������������
+						// Move all non-ready players to spectators
 						LinkedList<NetPlayerInfo> pList = new LinkedList<NetPlayerInfo>();
 						pList.addAll(roomInfo.playerSeat);
 
@@ -1628,14 +1652,14 @@ public class NetServer extends JFrame implements ActionListener {
 							}
 						}
 
-						joinAllQueuePlayers(roomInfo);	// ������������������������������
+						joinAllQueuePlayers(roomInfo);
 					}
 
 					gameStart(roomInfo);
 				}
 			}
 		}
-		// ������
+		// Dead
 		if(message[0].equals("dead")) {
 			if(pInfo != null) {
 				if(message.length > 1) {
@@ -1647,7 +1671,7 @@ public class NetServer extends JFrame implements ActionListener {
 				}
 			}
 		}
-		// ���������������
+		// End-of-game stats
 		if(message[0].equals("gstat")) {
 			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1662,7 +1686,7 @@ public class NetServer extends JFrame implements ActionListener {
 				broadcast(msg, roomInfo.roomID);
 			}
 		}
-		// ������������������������������(������)
+		// Game messages (NetServer will deliver them to other players but won't modify it)
 		if(message[0].equals("game")) {
 			if(pInfo != null) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
@@ -1684,9 +1708,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������ID���������������������������
-	 * @param roomID ���������ID
-	 * @return ���������������(���������������������null)
+	 * Get NetRoomInfo by using roomID
+	 * @param roomID Room ID
+	 * @return NetRoomInfo (null if not found)
 	 */
 	private NetRoomInfo getRoomInfo(int roomID) {
 		if(roomID == -1) return null;
@@ -1701,8 +1725,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������������������
-	 * @param client ���������
+	 * Send room list to specified client
+	 * @param client Client to send
 	 */
 	private void sendRoomList(SocketChannel client) throws IOException {
 		String msg = "roomlist\t" + roomInfoList.size();
@@ -1717,9 +1741,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������������������������
-	 * @param roomInfo ���������������
-	 * @return ������������������true
+	 * Delete a room
+	 * @param roomInfo Room to delete
+	 * @return true if success, false if fails (room not empty)
 	 */
 	private boolean deleteRoom(NetRoomInfo roomInfo) throws IOException {
 		if((roomInfo != null) && (roomInfo.playerList.isEmpty())) {
@@ -1733,8 +1757,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Automatically start timer������������������
-	 * @param roomInfo ���������������
+	 * Start/Stop auto start timer
+	 * @param roomInfo The room
 	 */
 	private void autoStartTimerCheck(NetRoomInfo roomInfo) throws IOException {
 		if(roomInfo.autoStartSeconds <= 0) return;
@@ -1760,23 +1784,21 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������������������������ check ���, ������������������������������������������������������
-	 * @param roomInfo ���������������
-	 * @return Start game���������true, ������������������false
+	 * Start a game if possible
+	 * @param roomInfo The room
+	 * @return true if started, false if not
 	 */
 	private boolean gameStartIfPossible(NetRoomInfo roomInfo) throws IOException {
-		// ������������������������������������������
 		if(roomInfo.getHowManyPlayersReady() == roomInfo.getNumberOfPlayerSeated()) {
 			gameStart(roomInfo);
 			return true;
 		}
-
 		return false;
 	}
 
 	/**
-	 * ������������������������(������������)
-	 * @param roomInfo ���������������
+	 * Start a game (force start)
+	 * @param roomInfo The room
 	 */
 	private void gameStart(NetRoomInfo roomInfo) throws IOException {
 		if(roomInfo == null) return;
@@ -1802,7 +1824,8 @@ public class NetServer extends JFrame implements ActionListener {
 				p.ready = false;
 				p.playing = true;
 
-				if(roomInfo.rated) {
+				// If ranked room
+				if( roomInfo.rated && !roomInfo.isTeamGame() && (!roomInfo.hasSameIPPlayers() || ratingAllowSameIP) ) {
 					p.playCount[roomInfo.style]++;
 					p.ratingBefore[roomInfo.style] = p.rating[roomInfo.style];
 				}
@@ -1817,9 +1840,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * game finished������������ check ���, ������������������������������������������������������������������������
-	 * @param roomInfo ���������������
-	 * @return game finished���������true, ������������������������������������false
+	 * Check if the game is finished. If finished, it will notify players.
+	 * @param roomInfo The room
+	 * @return true if finished
 	 */
 	private boolean gameFinished(NetRoomInfo roomInfo) throws IOException {
 		int startPlayers = roomInfo.startPlayers;
@@ -1827,16 +1850,16 @@ public class NetServer extends JFrame implements ActionListener {
 		boolean isTeamWin = roomInfo.isTeamWin();
 
 		if( (roomInfo != null) && (roomInfo.playing) && ( (nowPlaying < 1) || ((startPlayers >= 2) && (nowPlaying < 2)) || (isTeamWin) ) ) {
-			// game finished������
+			// Game finished
 			NetPlayerInfo winner = roomInfo.getWinner();
 			String msg = "finish\t";
 
 			if(isTeamWin) {
+				// Winner is a team
 				String teamName = roomInfo.getWinnerTeam();
 				if(teamName == null) teamName = "";
 				msg += -1 + "\t" + -1 + "\t" + NetUtil.urlEncode(teamName) + "\t" + isTeamWin;
 
-				// Player��������������� flag���������
 				for(NetPlayerInfo pInfo: roomInfo.playerSeat) {
 					if((pInfo != null) && (pInfo.playing)) {
 						pInfo.resetPlayState();
@@ -1860,6 +1883,7 @@ public class NetServer extends JFrame implements ActionListener {
 				}
 				*/
 			} else if(winner != null) {
+				// Winner is a player
 				roomInfo.playerSeatDead.addFirst(winner);
 
 				// Rated game
@@ -1913,12 +1937,12 @@ public class NetServer extends JFrame implements ActionListener {
 				winner.resetPlayState();
 				broadcastPlayerInfoUpdate(winner);
 			} else {
+				// No winner(s)
 				msg += -1 + "\t" + -1 + "\t" + "" + "\t" + isTeamWin;
 			}
 			msg += "\n";
 			broadcast(msg, roomInfo.roomID);
 
-			// ���������������������
 			roomInfo.playing = false;
 			roomInfo.autoStartActive = false;
 			broadcastRoomInfoUpdate(roomInfo);
@@ -1930,17 +1954,17 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������������������������������������(���������������roomupdate)
-	 * @param roomInfo ���������������
+	 * Broadcast a room update information (command will be "roomupdate")
+	 * @param roomInfo The room
 	 */
 	private void broadcastRoomInfoUpdate(NetRoomInfo roomInfo) throws IOException {
 		broadcastRoomInfoUpdate(roomInfo, "roomupdate");
 	}
 
 	/**
-	 * ���������������������������������������������
-	 * @param roomInfo ���������������
-	 * @param command ������������
+	 * Broadcast a room update information
+	 * @param roomInfo The room
+	 * @param command Command
 	 */
 	private void broadcastRoomInfoUpdate(NetRoomInfo roomInfo, String command) throws IOException {
 		roomInfo.updatePlayerCount();
@@ -1951,8 +1975,8 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Player������������������
-	 * @param client ���������
+	 * Send player list to specified client
+	 * @param client Client to send
 	 */
 	private void sendPlayerList(SocketChannel client) throws IOException {
 		String msg = "playerlist\t" + playerInfoMap.size();
@@ -1971,17 +1995,17 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Player������������������������������������(���������������playerupdate)
-	 * @param pInfo Player������
+	 * Broadcast a player update information (command will be "playerupdate")
+	 * @param pInfo The player
 	 */
-	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo) throws IOException  {
+	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo) throws IOException {
 		broadcastPlayerInfoUpdate(pInfo, "playerupdate");
 	}
 
 	/**
-	 * Player������������������������������������
-	 * @param pInfo Player������
-	 * @param command ������������
+	 * Broadcast a player update information
+	 * @param pInfo The player
+	 * @param command Command
 	 */
 	private void broadcastPlayerInfoUpdate(NetPlayerInfo pInfo, String command) throws IOException {
 		String msg = command + "\t";
@@ -1991,9 +2015,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������Name���Player���������
+	 * Get NetPlayerInfo by player's name
 	 * @param name Name
-	 * @return ������������Name���Player������(������������������null)
+	 * @return NetPlayerInfo (null if not found)
 	 */
 	private NetPlayerInfo searchPlayerByName(String name) {
 		for(SocketChannel ch: channelList) {
@@ -2006,9 +2030,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ������������ID���Player���������
+	 * Get NetPlayerInfo by player's ID
 	 * @param uid ID
-	 * @return ������������ID���Player������(������������������null)
+	 * @return NetPlayerInfo (null if not found)
 	 */
 	private NetPlayerInfo searchPlayerByUID(int uid) {
 		for(SocketChannel ch: channelList) {
@@ -2021,9 +2045,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ���������������Player������������������������������������
-	 * @param roomInfo ���������������
-	 * @return ���������������Number of players
+	 * Move queue player(s) to the game seat if possible
+	 * @param roomInfo The room
+	 * @return Number of players moved to the game seat
 	 */
 	private int joinAllQueuePlayers(NetRoomInfo roomInfo) throws IOException {
 		int playerJoinedCount = 0;
@@ -2045,7 +2069,7 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Player������������������
+	 * Signal player-dead
 	 * @param pInfo Player
 	 */
 	private void playerDead(NetPlayerInfo pInfo) throws IOException {
@@ -2053,9 +2077,9 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Player������������������
-	 * @param pInfo ���������
-	 * @param pKOInfo ���������(null���)
+	 * Signal player-dead
+	 * @param pInfo Player
+	 * @param pKOInfo Assailant (can be null)
 	 */
 	private void playerDead(NetPlayerInfo pInfo, NetPlayerInfo pKOInfo) throws IOException {
 		NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
