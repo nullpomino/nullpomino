@@ -166,14 +166,14 @@ public class NetServer extends JFrame implements ActionListener {
 
 	/** RNG for map selection */
 	private Random rand = new Random();
-	
+
 	//--------------------------------------------------------------------------------- UI components
 	/** List for showing connections */
 	private JList listboxConnectionList;
-	
+
 	/** List model for the connection list */
 	private DefaultListModel listmodelConnectionList;
-	
+
 	/** Button for using the ban command */
 	private JButton btnBanConnection;
 
@@ -182,7 +182,7 @@ public class NetServer extends JFrame implements ActionListener {
 	 * @param args Command-line options
 	 */
 	public static void main(String[] args) {
-		
+
 		// Load server config file
 		propServer = new CustomProperties();
 		try {
@@ -192,10 +192,10 @@ public class NetServer extends JFrame implements ActionListener {
 		} catch (IOException e) {
 			log.warn("Failed to load config file", e);
 		}
-		
+
 		// Fetch port number from config file
 		int port = propServer.getProperty("netserver.port", DEFAULT_PORT);
-		
+
 		if(args.length > 0) {
 			// If command-line option is used, change port number to the new one
 			try {
@@ -206,20 +206,20 @@ public class NetServer extends JFrame implements ActionListener {
 		// Run
 		new NetServer(port).run();
 	}
-	
+
 	/**
 	 * Initialize (default port)
 	 */
 	private void init() {
 		init(DEFAULT_PORT);
 	}
-	
-	/** 
+
+	/**
 	 * Initialize
 	 */
 	private void init(int port) {
 		PropertyConfigurator.configure("config/etc/log_server.cfg");
-		
+
 		this.port = port;
 
 		// Load player data file
@@ -252,27 +252,27 @@ public class NetServer extends JFrame implements ActionListener {
 
 		// Load multiplayer leaderboard
 		loadMPRankingList();
-		
+
 		// setTitle(getUIText("Title_NetServer"));
 		setTitle("NullpoMino "+GameManager.getVersionMajor()+" NetServer");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		initUI();
 		pack();
 	}
-	
+
 	/**
 	 * Init GUI
 	 */
 	private void initUI() {
 		getContentPane().setLayout(new BorderLayout());
-		
+
 		// Set up content pane -------------------------------
-		
+
 		// Connection list
 		JPanel pList = new JPanel();
 		getContentPane().add(pList);
-		
+
 		listmodelConnectionList = new DefaultListModel();
 		listboxConnectionList = new JList(listmodelConnectionList);
 		JScrollPane spListboxConnectionList = new JScrollPane(listboxConnectionList);
@@ -507,7 +507,7 @@ public class NetServer extends JFrame implements ActionListener {
 	 */
 	public NetServer(int port) {
 		init(port);
-		
+
 		setVisible(true);
 	}
 
@@ -956,7 +956,7 @@ public class NetServer extends JFrame implements ActionListener {
 		if(message[0].equals("disconnect")) {
 			String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 			listmodelConnectionList.removeElement(remoteAddr+" - "+pInfo.strName);
-			
+
 			throw new IOException("Disconnect requested by the client (this is normal)");
 		}
 		// ���������������������
@@ -1091,10 +1091,10 @@ public class NetServer extends JFrame implements ActionListener {
 
 			broadcastPlayerInfoUpdate(pInfo, "playernew");
 			broadcastUserCountToAll();
-			
+
 			String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 			listmodelConnectionList.addElement(remoteAddr+" - "+pInfo.strName);
-			
+
 			return;
 		}
 		// ��������� data������(���������������������������������)
@@ -2223,9 +2223,8 @@ public class NetServer extends JFrame implements ActionListener {
 		}
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
