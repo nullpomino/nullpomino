@@ -122,6 +122,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		"StatTable_KO", "StatTable_Wins", "StatTable_Games"
 	};
 
+	/** 1P end-of-game statistics column names. These strings will be passed to getUIText(String) subroutine. */
+	public static final String[] STATTABLE1P_COLUMNNAMES = {
+		"StatTable1P_Description", "StatTable1P_Value"
+	};
+
 	/** Multiplayer leaderboard column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] MPRANKING_COLUMNNAMES  = {
 		"MPRanking_Rank", "MPRanking_Name", "MPRanking_Rating", "MPRanking_PlayCount", "MPRanking_WinCount"
@@ -298,14 +303,29 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ルーム画面上部パネル */
 	protected JPanel subpanelRoomTopBar;
 
-	/** ゲーム結果 table */
+	/** Game stats panel */
+	protected JPanel subpanelGameStat;
+
+	/** CardLayout for game stats */
+	protected CardLayout gameStatCardLayout;
+
+	/** Multiplayer game stats table */
 	protected JTable tableGameStat;
 
-	/** ゲーム結果 tableのカラム名(翻訳後) */
+	/** Multiplayer game stats table column names */
 	protected String[] strGameStatTableColumnNames;
 
-	/** ゲーム結果 tableの data */
+	/** Multiplayer game stats table data */
 	protected DefaultTableModel tablemodelGameStat;
+
+	/** Multiplayer game stats table */
+	protected JTable tableGameStat1P;
+
+	/** Multiplayer game stats table column names */
+	protected String[] strGameStatTableColumnNames1P;
+
+	/** Multiplayer game stats table data */
+	protected DefaultTableModel tablemodelGameStat1P;
 
 	/** チャットログとPlayerリストの仕切り線(Room screen) */
 	protected JSplitPane splitRoomChat;
@@ -977,7 +997,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsRanking.setVisible(false);
 		subpanelRoomButtons.add(btnRoomButtonsRanking);
 
-		// *** ゲーム結果一覧 table
+		// *** Game stats area
+		gameStatCardLayout = new CardLayout();
+		subpanelGameStat = new JPanel(gameStatCardLayout);
+		subpanelRoomTop.add(subpanelGameStat, BorderLayout.CENTER);
+
+		// **** Multiplayer game stats table
 		strGameStatTableColumnNames = new String[STATTABLE_COLUMNNAMES.length];
 		for(int i = 0; i < strGameStatTableColumnNames.length; i++) {
 			strGameStatTableColumnNames[i] = getUIText(STATTABLE_COLUMNNAMES[i]);
@@ -990,21 +1015,42 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		tableGameStat.getTableHeader().setReorderingAllowed(false);
 
 		TableColumnModel tm2 = tableGameStat.getColumnModel();
-		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat.width.rank", 30));			// 順位
-		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat.width.name", 100));			// Name
-		tm2.getColumn(2).setPreferredWidth(propConfig.getProperty("tableGameStat.width.attack", 55));		//  Attack count
+		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat.width.rank", 30));			// Rank
+		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat.width.name", 100));		// Name
+		tm2.getColumn(2).setPreferredWidth(propConfig.getProperty("tableGameStat.width.attack", 55));		// Attack count
 		tm2.getColumn(3).setPreferredWidth(propConfig.getProperty("tableGameStat.width.apm", 55));			// APM
-		tm2.getColumn(4).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lines", 55));			// 消去count
+		tm2.getColumn(4).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lines", 55));		// Line count
 		tm2.getColumn(5).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lpm", 55));			// LPM
-		tm2.getColumn(6).setPreferredWidth(propConfig.getProperty("tableGameStat.width.piece", 55));			// ピースcount
+		tm2.getColumn(6).setPreferredWidth(propConfig.getProperty("tableGameStat.width.piece", 55));		// Piece count
 		tm2.getColumn(7).setPreferredWidth(propConfig.getProperty("tableGameStat.width.pps", 55));			// PPS
-		tm2.getColumn(8).setPreferredWidth(propConfig.getProperty("tableGameStat.width.time", 65));			//  time
+		tm2.getColumn(8).setPreferredWidth(propConfig.getProperty("tableGameStat.width.time", 65));			// Time
 		tm2.getColumn(9).setPreferredWidth(propConfig.getProperty("tableGameStat.width.ko", 40));			// KO
-		tm2.getColumn(10).setPreferredWidth(propConfig.getProperty("tableGameStat.width.wins", 55));			// 勝count
-		tm2.getColumn(11).setPreferredWidth(propConfig.getProperty("tableGameStat.width.games", 55));		//  count
+		tm2.getColumn(10).setPreferredWidth(propConfig.getProperty("tableGameStat.width.wins", 55));		// Win
+		tm2.getColumn(11).setPreferredWidth(propConfig.getProperty("tableGameStat.width.games", 55));		// Games
 
 		JScrollPane spTableGameStat = new JScrollPane(tableGameStat);
-		subpanelRoomTop.add(spTableGameStat, BorderLayout.CENTER);
+		spTableGameStat.setMinimumSize(new Dimension(0, 0));
+		subpanelGameStat.add(spTableGameStat, "GameStatMP");
+
+		// **** Single player game stats table
+		strGameStatTableColumnNames1P = new String[STATTABLE1P_COLUMNNAMES.length];
+		for(int i = 0; i < strGameStatTableColumnNames1P.length; i++) {
+			strGameStatTableColumnNames1P[i] = getUIText(STATTABLE1P_COLUMNNAMES[i]);
+		}
+		tablemodelGameStat1P = new DefaultTableModel(strGameStatTableColumnNames1P, 0);
+		tableGameStat1P = new JTable(tablemodelGameStat1P);
+		tableGameStat1P.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableGameStat1P.setDefaultEditor(Object.class, null);
+		tableGameStat1P.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableGameStat1P.getTableHeader().setReorderingAllowed(false);
+
+		tm2 = tableGameStat1P.getColumnModel();
+		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat1P.width.description", 100));	// Description
+		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat1P.width.value", 100));	// Value
+
+		JScrollPane spTxtpaneGameStat1P = new JScrollPane(tableGameStat1P);
+		spTxtpaneGameStat1P.setMinimumSize(new Dimension(0, 0));
+		subpanelGameStat.add(spTxtpaneGameStat1P, "GameStat1P");
 
 		// ** チャットパネル(下)
 		JPanel subpanelRoomChat = new JPanel(new BorderLayout());
@@ -1691,7 +1737,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		contentPaneCardLayout.show(this.getContentPane(), SCREENCARD_NAMES[cardNumber]);
 		currentScreenCardNumber = cardNumber;
 
-		//  default  buttonの設定
+		// Set default button
 		JButton defaultButton = null;
 		switch(currentScreenCardNumber) {
 		case SCREENCARD_SERVERSELECT:
@@ -1722,7 +1768,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			defaultButton = btnMPRankingOK;
 			break;
 		}
-		this.getRootPane().setDefaultButton(defaultButton);
+
+		if(defaultButton != null) {
+			this.getRootPane().setDefaultButton(defaultButton);
+		}
 	}
 
 	/**
@@ -2394,6 +2443,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		propConfig.setProperty("tableGameStat.width.wins", tm.getColumn(10).getWidth());
 		propConfig.setProperty("tableGameStat.width.games", tm.getColumn(11).getWidth());
 
+		tm = tableGameStat1P.getColumnModel();
+		propConfig.setProperty("tableGameStat1P.width.description", tm.getColumn(0).getWidth());
+		propConfig.setProperty("tableGameStat1P.width.value", tm.getColumn(1).getWidth());
+
 		tm = tableMPRanking[0].getColumnModel();
 		propConfig.setProperty("tableMPRanking.width.rank", tm.getColumn(0).getWidth());
 		propConfig.setProperty("tableMPRanking.width.name", tm.getColumn(1).getWidth());
@@ -2743,8 +2796,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// 退出 button
 		if(e.getActionCommand() == "Room_Leave") {
-			netPlayerClient.send("roomjoin\t-1\tfalse\n");
+			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
+				netPlayerClient.send("roomjoin\t-1\tfalse\n");
+			}
 			tablemodelGameStat.setRowCount(0);
+			tablemodelGameStat1P.setRowCount(0);
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
 		// 参戦 button
@@ -3259,8 +3315,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 						btnRoomButtonsJoin.setVisible(false);
 						btnRoomButtonsSitOut.setVisible(false);
 						btnRoomButtonsRanking.setVisible(false);
+						gameStatCardLayout.next(subpanelGameStat);
 					} else {
 						btnRoomButtonsRanking.setVisible(netPlayerClient.getRoomInfo(roomID).rated);
+						gameStatCardLayout.previous(subpanelGameStat);
 					}
 				}
 
@@ -3381,6 +3439,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		if(message[0].equals("start")) {
 			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_GameStart"), new Color(0, 128, 0));
 			tablemodelGameStat.setRowCount(0);
+			tablemodelGameStat1P.setRowCount(0);
 
 			if(netPlayerClient.getYourPlayerInfo().seatID != -1) {
 				btnRoomButtonsSitOut.setEnabled(false);
@@ -3403,23 +3462,23 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				btnRoomButtonsTeamChange.setEnabled(true);
 			}
 		}
-		// ゲーム結果
+		// Game stats (Multiplayer)
 		if(message[0].equals("gstat")) {
 			String[] rowdata = new String[12];
 			int myRank = Integer.parseInt(message[4]);
 
-			rowdata[0] = Integer.toString(myRank);			// 順位
+			rowdata[0] = Integer.toString(myRank);						// Rank
 			rowdata[1] = convTripCode(NetUtil.urlDecode(message[3]));	// Name
-			rowdata[2] = message[5];						//  Attack count
-			rowdata[3] = message[6];						// APM
-			rowdata[4] = message[7];						// 消去count
-			rowdata[5] = message[8];						// LPM
-			rowdata[6] = message[9];						// ピースcount
-			rowdata[7] = message[10];						// PPS
-			rowdata[8] = GeneralUtil.getTime(Integer.parseInt(message[11]));	//  time
-			rowdata[9] = message[12];						// KO
-			rowdata[10] = message[13];						// 勝count
-			rowdata[11] = message[14];						//  count
+			rowdata[2] = message[5];									//  Attack count
+			rowdata[3] = message[6];									// APM
+			rowdata[4] = message[7];									// Line count
+			rowdata[5] = message[8];									// LPM
+			rowdata[6] = message[9];									// Piece count
+			rowdata[7] = message[10];									// PPS
+			rowdata[8] = GeneralUtil.getTime(Integer.parseInt(message[11]));	//  Time
+			rowdata[9] = message[12];									// KO
+			rowdata[10] = message[13];									// Win
+			rowdata[11] = message[14];									// Games
 
 			int insertPos = 0;
 			for(int i = 0; i < tablemodelGameStat.getRowCount(); i++) {
@@ -3442,6 +3501,29 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					else writerRoomLog.print("\n");
 				}
 
+				writerRoomLog.flush();
+			}
+		}
+		// Game stats (Single player)
+		if(message[0].equals("gstat1p")) {
+			String strRowData = NetUtil.urlDecode(message[1]);
+			String[] rowData = strRowData.split("\t");
+
+			if(writerRoomLog != null) {
+				writerRoomLog.print("[" + getCurrentTimeAsString() + "]\n");
+			}
+
+			tablemodelGameStat1P.setRowCount(0);
+			for(int i = 0; i < rowData.length; i++) {
+				String[] strTempArray = rowData[i].split(";");
+				tablemodelGameStat1P.addRow(strTempArray);
+
+				if((writerRoomLog != null) && (strTempArray.length > 1)) {
+					writerRoomLog.print(" " + strTempArray[0] + ":" + strTempArray[1] + "\n");
+				}
+			}
+
+			if(writerRoomLog != null) {
 				writerRoomLog.flush();
 			}
 		}

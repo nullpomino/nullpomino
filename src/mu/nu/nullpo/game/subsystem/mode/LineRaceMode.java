@@ -635,6 +635,7 @@ public class LineRaceMode extends NetDummyMode {
 						netSendNextAndHold(engine);
 						netSendStats(engine);
 					}
+					netSendEndGameStats(engine);
 					netLobby.netPlayerClient.send("dead\t-1\n");
 				}
 			} else {
@@ -837,6 +838,22 @@ public class LineRaceMode extends NetDummyMode {
 		msg += engine.statistics.pps + "\t" + rankingRank + "\t" + goaltype + "\t";
 		msg += engine.gameActive + "\t" + engine.timerActive;
 		msg += "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send end-of-game stats
+	 * @param engine GameEngine
+	 */
+	private void netSendEndGameStats(GameEngine engine) {
+		String subMsg = "";
+		subMsg += "LINE;" + engine.statistics.lines + "/" + GOAL_TABLE[goaltype] + "\t";
+		subMsg += "PIECE;" + engine.statistics.totalPieceLocked + "\t";
+		subMsg += "TIME;" + GeneralUtil.getTime(engine.statistics.time) + "\t";
+		subMsg += "LINE/MIN;" + engine.statistics.lpm + "\t";
+		subMsg += "PIECE/SEC;" + engine.statistics.pps + "\t";
+
+		String msg = "gstat1p\t" + NetUtil.urlEncode(subMsg) + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 

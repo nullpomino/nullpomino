@@ -1717,19 +1717,32 @@ public class NetServer extends JFrame implements ActionListener {
 				}
 			}
 		}
-		// End-of-game stats
+		// Multiplayer end-of-game stats
 		if(message[0].equals("gstat")) {
 			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
 
-				String msg = "gstat\t" + pInfo.uid + "\t" + pInfo.seatID + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t";
-				for(int i = 1; i < message.length; i++) {
-					msg += message[i];
-					if(i < message.length - 1) msg += "\t";
-				}
-				msg += "\n";
+				if(!roomInfo.singleplayer) {
+					String msg = "gstat\t" + pInfo.uid + "\t" + pInfo.seatID + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t";
+					for(int i = 1; i < message.length; i++) {
+						msg += message[i];
+						if(i < message.length - 1) msg += "\t";
+					}
+					msg += "\n";
 
-				broadcast(msg, roomInfo.roomID);
+					broadcast(msg, roomInfo.roomID);
+				}
+			}
+		}
+		// Single player end-of-game stats
+		if(message[0].equals("gstat1p")) {
+			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+
+				if(roomInfo.singleplayer) {
+					String msg = "gstat1p\t" + message[1] + "\n";
+					broadcast(msg, roomInfo.roomID);
+				}
 			}
 		}
 		// Game messages (NetServer will deliver them to other players but won't modify it)

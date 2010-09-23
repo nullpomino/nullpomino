@@ -32,9 +32,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.util.CustomProperties;
