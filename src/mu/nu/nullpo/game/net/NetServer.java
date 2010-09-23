@@ -134,6 +134,10 @@ public class NetServer extends JFrame implements ActionListener {
 	@SuppressWarnings("rawtypes")
 	private static LinkedList[] ruleList;
 
+	/** Setting ID list for rated game. It contains Integer. */
+	@SuppressWarnings("rawtypes")
+	private static LinkedList[] ruleSettingIDList;
+
 	/** Multiplayer leaderboard list. It contains NetPlayerInfo. */
 	@SuppressWarnings("rawtypes")
 	private static LinkedList[] mpRankingList;
@@ -307,8 +311,10 @@ public class NetServer extends JFrame implements ActionListener {
 	@SuppressWarnings("rawtypes")
 	private static void loadRuleList() {
 		ruleList = new LinkedList[GameEngine.MAX_GAMESTYLE];
+		ruleSettingIDList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			ruleList[i] = new LinkedList();
+			ruleSettingIDList[i] = new LinkedList();
 		}
 
 		try {
@@ -340,9 +346,15 @@ public class NetServer extends JFrame implements ActionListener {
 				} else {
 					// Rule file
 					try {
-						log.debug("{RuleLoad} StyleID:" + style + " RuleFile:" + str);
+						int settingID = 0;
+						String[] strTempArray = str.split(";");
+						if(strTempArray.length > 1) {
+							settingID = Integer.parseInt(strTempArray[1]);
+						}
 
-						FileInputStream in = new FileInputStream(str);
+						log.debug("{RuleLoad} StyleID:" + style + " RuleFile:" + strTempArray[0] + " SettingID:" + settingID);
+
+						FileInputStream in = new FileInputStream(strTempArray[0]);
 						CustomProperties prop = new CustomProperties();
 						prop.load(in);
 						in.close();
@@ -351,6 +363,7 @@ public class NetServer extends JFrame implements ActionListener {
 						rule.readProperty(prop, 0);
 
 						ruleList[style].add(rule);
+						ruleSettingIDList[style].add(Integer.valueOf(settingID));
 					} catch (Exception e2) {
 						log.warn("Failed to load rule file", e2);
 					}
@@ -1101,7 +1114,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 			// Load rating
 			getPlayerDataFromProperty(pInfo);
-			log.info("Play:" + pInfo.playCount[0] + " Win:" + pInfo.winCount[0]);
+			//log.info("Play:" + pInfo.playCount[0] + " Win:" + pInfo.winCount[0]);
 
 			// Success
 			playerInfoMap.put(client, pInfo);
@@ -1367,7 +1380,7 @@ public class NetServer extends JFrame implements ActionListener {
 				// Rule
 				if((message.length > 32) && (message[32].length() > 0)) {
 					roomInfo.ruleName = NetUtil.urlDecode(message[32]);
-					roomInfo.ruleOpt = new RuleOptions(getRatedRule(0, roomInfo.ruleName));
+					roomInfo.ruleOpt = new RuleOptions(getRatedRule(roomInfo.style, roomInfo.ruleName));
 					roomInfo.ruleLock = true;
 					roomInfo.rated = true;
 				}
@@ -1375,7 +1388,8 @@ public class NetServer extends JFrame implements ActionListener {
 				// If ranked room, overwrite most settings with predefined ones
 				if(roomInfo.rated) {
 					int style = roomInfo.style;
-					int id = 0;		// TODO: Add settings selector
+					// TODO: Add proper settings selector
+					int id = (Integer)ruleSettingIDList[style].get(getRatedRuleIndex(style, roomInfo.ruleName));
 
 					roomInfo.gravity = propServer.getProperty(style + "." + id + ".ranked.gravity", 1);
 					roomInfo.denominator = propServer.getProperty(style + "." + id + ".ranked.denominator", 60);
@@ -2217,6 +2231,24 @@ public class NetServer extends JFrame implements ActionListener {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get rated-game rule index
+	 * @param style Style ID
+	 * @param name Rule Name
+	 * @return Index (-1 if not found)
+	 */
+	private int getRatedRuleIndex(int style, String name) {
+		for(int i = 0; i < ruleList[style].size(); i++) {
+			RuleOptions rule = (RuleOptions)ruleList[style].get(i);
+
+			if(name.equals(rule.strRuleName)) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	/**

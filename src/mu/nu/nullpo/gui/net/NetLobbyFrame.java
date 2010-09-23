@@ -186,6 +186,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** NetRoomInfo for settings backup */
 	protected NetRoomInfo backupRoomInfo;
 
+	/** NetRoomInfo for settings backup (1P) */
+	protected NetRoomInfo backupRoomInfo1P;
+
 	/** PrintWriter for lobby log */
 	protected PrintWriter writerLobbyLog;
 
@@ -1710,7 +1713,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				defaultButton = btnCreateRoomCancel;
 			break;
 		case SCREENCARD_CREATEROOM1P:
-			defaultButton = btnCreateRoom1POK;
+			if(btnCreateRoom1POK.isVisible())
+				defaultButton = btnCreateRoom1POK;
+			else
+				defaultButton = btnCreateRoom1PCancel;
 			break;
 		case SCREENCARD_MPRANKING:
 			defaultButton = btnMPRankingOK;
@@ -1931,6 +1937,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate.setEnabled((mode == 1));
 		btnRoomListRoomCreate1P.setEnabled((mode == 1));
 		btnRoomListTeamChange.setEnabled((mode >= 1));
+		btnRoomListRanking.setEnabled((mode >= 1));
 		btnLobbyChatSend.setEnabled((mode >= 1));
 		txtfldLobbyChatInput.setEnabled((mode >= 1));
 	}
@@ -1944,6 +1951,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsJoin.setEnabled(b);
 		btnRoomButtonsSitOut.setEnabled(b);
 		btnRoomButtonsViewSetting.setEnabled(b);
+		btnRoomButtonsRanking.setEnabled(b);
 		btnRoomChatSend.setEnabled(b);
 		txtfldRoomChatInput.setEnabled(b);
 	}
@@ -1995,9 +2003,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム作成画面のMode 切り替え
-	 * @param isDetailMode falseなら作成Mode , When true,詳細Mode
-	 * @param roomInfo ルーム情報(isDetailMode == trueのときだけ使用)
+	 * Change UI type of multiplayer room create screen
+	 * @param isDetailMode true=View Detail, false=Create Room
+	 * @param roomInfo Room Information (only used when isDetailMode is true)
 	 */
 	public void setCreateRoomUIType(boolean isDetailMode, NetRoomInfo roomInfo) {
 		NetRoomInfo r = null;
@@ -2090,16 +2098,64 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム詳細画面に切り替える
-	 * @param roomID ルームID
+	 * Change UI type of single player room create screen
+	 * @param isDetailMode true=View Detail, false=Create Room
+	 * @param roomInfo Room Information (only used when isDetailMode is true)
+	 */
+	public void setCreateRoom1PUIType(boolean isDetailMode, NetRoomInfo roomInfo) {
+		NetRoomInfo r = null;
+
+		if(isDetailMode) {
+			r = roomInfo;
+
+			if(netPlayerClient.getYourPlayerInfo().roomID == r.roomID) {
+				btnCreateRoom1POK.setVisible(false);
+			} else {
+				btnCreateRoom1POK.setVisible(true);
+				btnCreateRoom1POK.setText(getUIText("CreateRoom1P_OK_Watch"));
+				btnCreateRoom1POK.setMnemonic('W');
+			}
+		} else {
+			btnCreateRoom1POK.setVisible(true);
+			btnCreateRoom1POK.setText(getUIText("CreateRoom1P_OK"));
+			btnCreateRoom1POK.setMnemonic('O');
+
+			if(backupRoomInfo1P != null) {
+				r = backupRoomInfo1P;
+			} else {
+				r = new NetRoomInfo();
+				r.maxPlayers = 1;
+				r.singleplayer = true;
+				r.strMode = propConfig.getProperty("createroom1p.strMode", "");
+				r.ruleName = propConfig.getProperty("createroom1p.ruleName", "");
+			}
+		}
+
+		if(r != null) {
+			listboxCreateRoom1PModeList.setSelectedIndex(0);
+			listboxCreateRoom1PRuleList.setSelectedIndex(0);
+			listboxCreateRoom1PModeList.setSelectedValue(r.strMode, true);
+			listboxCreateRoom1PRuleList.setSelectedValue(r.ruleName, true);
+		}
+	}
+
+	/**
+	 * Switch to room detail screen
+	 * @param roomID Room ID
 	 */
 	public void viewRoomDetail(int roomID) {
 		NetRoomInfo roomInfo = netPlayerClient.getRoomInfo(roomID);
 
 		if(roomInfo != null) {
 			currentViewDetailRoomID = roomID;
-			setCreateRoomUIType(true, roomInfo);
-			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
+
+			if(roomInfo.singleplayer) {
+				setCreateRoom1PUIType(true, roomInfo);
+				changeCurrentScreenCard(SCREENCARD_CREATEROOM1P);
+			} else {
+				setCreateRoomUIType(true, roomInfo);
+				changeCurrentScreenCard(SCREENCARD_CREATEROOM);
+			}
 		}
 	}
 
@@ -2613,9 +2669,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// Create Room 1P
 		if(e.getActionCommand() == "Lobby_RoomCreate1P") {
+			currentViewDetailRoomID = -1;
+			setCreateRoom1PUIType(false, null);
 			changeCurrentScreenCard(SCREENCARD_CREATEROOM1P);
 		}
-		// ルーム作成
+		// Create Room Multiplayer
 		if(e.getActionCommand() == "Lobby_RoomCreate") {
 			currentViewDetailRoomID = -1;
 			setCreateRoomUIType(false, null);
@@ -2875,13 +2933,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// ルーム作成画面でのCancel button
 		if(e.getActionCommand() == "CreateRoom_Cancel") {
+			currentViewDetailRoomID = -1;
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
 		// OK button (Create Room 1P)
 		if(e.getActionCommand() == "CreateRoom1P_OK") {
 			//singleroomcreate\t[roomName]\t[mode]
 			try {
-				if(listboxCreateRoom1PModeList.getSelectedIndex() != -1) {
+				if(currentViewDetailRoomID != -1) {
+					joinRoom(currentViewDetailRoomID, true);
+				} else if(listboxCreateRoom1PModeList.getSelectedIndex() != -1) {
 					String strMode = (String)listboxCreateRoom1PModeList.getSelectedValue();
 					String strRule = "";
 					if(listboxCreateRoom1PRuleList.getSelectedIndex() >= 1) {
@@ -2902,6 +2963,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// Cancel button (Create Room 1P)
 		if(e.getActionCommand() == "CreateRoom1P_Cancel") {
+			currentViewDetailRoomID = -1;
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
 		// OK button (MPRanking)
@@ -3007,6 +3069,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			int style = Integer.parseInt(message[1]);
 
 			if(style < listRatedRuleName.length) {
+				listRatedRuleName[style].clear();
+
 				for(int i = 0; i < message.length - 2; i++) {
 					String name = NetUtil.urlDecode(message[2 + i]);
 					listRatedRuleName[style].add(name);
@@ -3194,10 +3258,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					if(netPlayerClient.getRoomInfo(roomID).singleplayer) {
 						btnRoomButtonsJoin.setVisible(false);
 						btnRoomButtonsSitOut.setVisible(false);
-						btnRoomButtonsViewSetting.setVisible(false);
 						btnRoomButtonsRanking.setVisible(false);
 					} else {
-						btnRoomButtonsViewSetting.setVisible(true);
 						btnRoomButtonsRanking.setVisible(netPlayerClient.getRoomInfo(roomID).rated);
 					}
 				}

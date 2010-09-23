@@ -1,11 +1,16 @@
 # NetServer Rule List
 
+# [Examples]
+# :TETROMINO <- Game Style. Possible styles are "TETROMINO", "AVALANCHE", "PHYSICIAN", and "SPF".
+# config/rule/test0.rul;1 <- Rule filename with room setting ID. It will use room setting #1.
+# config/rule/test1.rul   <- Rule filename. If room setting ID is not specified, it will use room setting #0.
+
 :TETROMINO
-config/rule/Classic3.rul
-config/rule/ClassicEasyA.rul
-config/rule/ClassicEasyB.rul
-config/rule/Standard.rul
-config/rule/StandardExp.rul
+config/rule/Classic3.rul;2
+config/rule/ClassicEasyA.rul;2
+config/rule/ClassicEasyB.rul;2
+config/rule/Standard.rul;1
+config/rule/StandardExp.rul;1
 config/rule/StandardFast.rul
 config/rule/StandardFastB.rul
 config/rule/StandardPlus.rul
