@@ -40,8 +40,8 @@ public class StateSelectMode extends DummyMenuScrollState {
 	/** This state's ID */
 	public static final int ID = 3;
 
-	/** 1画面に表示するMaximumMode count */
-	public static final int PAGE_HEIGHT = 25;
+	/** Number of game modes in one page */
+	public static final int PAGE_HEIGHT = 24;
 
 	public StateSelectMode() {
 		pageHeight = PAGE_HEIGHT;
@@ -84,10 +84,28 @@ public class StateSelectMode extends DummyMenuScrollState {
 		return -1;
 	}
 
+	/**
+	 * Get game mode description
+	 * @param str Mode name
+	 * @return Description
+	 */
+	protected String getModeDesc(String str) {
+		String str2 = str.replace(' ', '_');
+		str2 = str2.replace('(', 'l');
+		str2 = str2.replace(')', 'r');
+		String result = NullpoMinoSlick.propModeDesc.getProperty(str2);
+		if(result == null) {
+			result = NullpoMinoSlick.propDefaultModeDesc.getProperty(str2, str2);
+		}
+		return result;
+	}
+
 	@Override
 	public void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
 		NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
 				NormalFont.COLOR_ORANGE);
+
+		NormalFont.printTTFFont(16, 440, getModeDesc(list[cursor]));
 	}
 
 	@Override

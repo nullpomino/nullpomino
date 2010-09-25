@@ -60,6 +60,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
@@ -134,6 +136,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 	/** 言語ファイル */
 	public static CustomProperties propLang;
+
+	/** Default game mode description file */
+	public static CustomProperties propDefaultModeDesc;
+
+	/** Game mode description file */
+	public static CustomProperties propModeDesc;
 
 	/** Mode 管理 */
 	public static ModeManager modeManager;
@@ -215,6 +223,23 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		try {
 			FileInputStream in = new FileInputStream("config/lang/swing_" + Locale.getDefault().getCountry() + ".properties");
 			propLang.load(in);
+			in.close();
+		} catch(IOException e) {}
+
+		// Game mode description
+		propDefaultModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_default.properties");
+			propDefaultModeDesc.load(in);
+			in.close();
+		} catch(IOException e) {
+			log.error("Couldn't load default mode description file", e);
+		}
+
+		propModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_" + Locale.getDefault().getCountry() + ".properties");
+			propModeDesc.load(in);
 			in.close();
 		} catch(IOException e) {}
 
@@ -331,6 +356,22 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
+	 * Get game mode description
+	 * @param str Mode name
+	 * @return Description
+	 */
+	protected static String getModeDesc(String str) {
+		String str2 = str.replace(' ', '_');
+		str2 = str2.replace('(', 'l');
+		str2 = str2.replace(')', 'r');
+		String result = propModeDesc.getProperty(str2);
+		if(result == null) {
+			result = propDefaultModeDesc.getProperty(str2, str2);
+		}
+		return result;
+	}
+
+	/**
 	 * Constructor
 	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
 	 */
@@ -403,6 +444,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		listboxMode.setSelectedIndex(0);
 		listboxMode.setSelectedValue(propGlobal.getProperty("name.mode", ""), true);
 		listboxMode.addMouseListener(new ListboxModeMouseAdapter());
+		listboxMode.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				String strMode = (String)listboxMode.getSelectedValue();
+				lModeSelect.setText(getModeDesc(strMode));
+			}
+		});
 		JScrollPane scpaneListboxMode = new JScrollPane(listboxMode);
 		scpaneListboxMode.setPreferredSize(new Dimension(300, 375));
 		subpanelModeSelect.add(scpaneListboxMode, BorderLayout.CENTER);

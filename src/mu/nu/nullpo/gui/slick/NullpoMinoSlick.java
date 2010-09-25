@@ -83,6 +83,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
+	/** Default game mode description file */
+	public static CustomProperties propDefaultModeDesc;
+
+	/** Game mode description file */
+	public static CustomProperties propModeDesc;
+
 	/** Screenshot用 */
 	public static BufferedImage ssImage;
 
@@ -121,7 +127,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
-	
+
 	/** Keyboard menu navigation settings state*/
 	public static StateConfigKeyboardNavi stateConfigKeyboardNavi;
 
@@ -237,6 +243,23 @@ public class NullpoMinoSlick extends StateBasedGame {
 		try {
 			FileInputStream in = new FileInputStream("config/lang/slick_" + Locale.getDefault().getCountry() + ".properties");
 			propLang.load(in);
+			in.close();
+		} catch(IOException e) {}
+
+		// Game mode description
+		propDefaultModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_default.properties");
+			propDefaultModeDesc.load(in);
+			in.close();
+		} catch(IOException e) {
+			log.error("Couldn't load default mode description file", e);
+		}
+
+		propModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_" + Locale.getDefault().getCountry() + ".properties");
+			propModeDesc.load(in);
 			in.close();
 		} catch(IOException e) {}
 

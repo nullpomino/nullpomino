@@ -112,6 +112,12 @@ public class NullpoMinoSDL {
 	/** 言語ファイル */
 	public static CustomProperties propLang;
 
+	/** Default game mode description file */
+	public static CustomProperties propDefaultModeDesc;
+
+	/** Game mode description file */
+	public static CustomProperties propModeDesc;
+
 	/** Mode 管理 */
 	public static ModeManager modeManager;
 
@@ -231,6 +237,23 @@ public class NullpoMinoSDL {
 		try {
 			FileInputStream in = new FileInputStream("config/lang/sdl_" + Locale.getDefault().getCountry() + ".properties");
 			propLang.load(in);
+			in.close();
+		} catch(IOException e) {}
+
+		// Game mode description
+		propDefaultModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_default.properties");
+			propDefaultModeDesc.load(in);
+			in.close();
+		} catch(IOException e) {
+			log.error("Couldn't load default mode description file", e);
+		}
+
+		propModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_" + Locale.getDefault().getCountry() + ".properties");
+			propModeDesc.load(in);
 			in.close();
 		} catch(IOException e) {}
 

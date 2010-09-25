@@ -37,8 +37,8 @@ import sdljava.video.SDLSurface;
  * Mode 選択画面のステート
  */
 public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
-	/** 1画面に表示するMaximumMode count */
-	public static final int PAGE_HEIGHT = 25;
+	/** Number of game modes in one page */
+	public static final int PAGE_HEIGHT = 24;
 
 	/**
 	 * Constructor
@@ -70,6 +70,22 @@ public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
 		return -1;
 	}
 
+	/**
+	 * Get game mode description
+	 * @param str Mode name
+	 * @return Description
+	 */
+	protected String getModeDesc(String str) {
+		String str2 = str.replace(' ', '_');
+		str2 = str2.replace('(', 'l');
+		str2 = str2.replace(')', 'r');
+		String result = NullpoMinoSDL.propModeDesc.getProperty(str2);
+		if(result == null) {
+			result = NullpoMinoSDL.propDefaultModeDesc.getProperty(str2, str2);
+		}
+		return result;
+	}
+
 	/*
 	 * Draw the screen
 	 */
@@ -77,6 +93,8 @@ public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
 	public void onRenderSuccess(SDLSurface screen) throws SDLException {
 		NormalFontSDL.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
 									NormalFontSDL.COLOR_ORANGE);
+
+		NormalFontSDL.printTTFFont(16, 440, getModeDesc(list[cursor]));
 	}
 
 	@Override
