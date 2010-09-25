@@ -47,8 +47,8 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	/** This state's ID */
 	public static final int ID = 7;
 
-	/** 1画面に表示するMaximumファイルcount */
-	public static final int PAGE_HEIGHT = 20;
+	/** Number of rules shown at a time */
+	public static final int PAGE_HEIGHT = 21;
 
 	/** Player ID */
 	public int player = 0;
@@ -99,7 +99,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		};
 
 		String[] list = dir.list(filter);
-		
+
 		if(!System.getProperty("os.name").startsWith("Windows")) {
 			// Sort if not windows
 			Arrays.sort(list);
@@ -177,10 +177,8 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		NormalFont.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFont.COLOR_BLUE);
 
 		NormalFont.printFontGrid(1, 28, "A:OK", NormalFont.COLOR_GREEN);
-		if(firstSetupMode)
-			NormalFont.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
-		else
-			NormalFont.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFont.COLOR_GREEN);
+		if(!firstSetupMode)
+			NormalFont.printFontGrid(6, 28, "B:CANCEL", NormalFont.COLOR_GREEN);
 	}
 
 	@Override
@@ -214,26 +212,5 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	protected boolean onPushButtonD(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
-
-		if(style == 0) {
-			NullpoMinoSlick.propGlobal.setProperty(player + ".rule", "");
-			NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile", "");
-			NullpoMinoSlick.propGlobal.setProperty(player + ".rulename", "");
-		} else {
-			NullpoMinoSlick.propGlobal.setProperty(player + ".rule." + style, "");
-			NullpoMinoSlick.propGlobal.setProperty(player + ".rulefile." + style, "");
-			NullpoMinoSlick.propGlobal.setProperty(player + ".rulename." + style, "");
-		}
-
-		NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
-		NullpoMinoSlick.saveConfig();
-		if(!firstSetupMode) game.enterState(StateConfigRuleStyleSelect.ID);
-		else game.enterState(StateTitle.ID);
-		return true;
 	}
 }

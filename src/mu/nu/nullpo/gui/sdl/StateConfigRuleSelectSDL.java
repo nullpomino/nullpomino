@@ -43,8 +43,8 @@ import sdljava.video.SDLSurface;
  * ルール選択画面のステート
  */
 public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
-	/** 1画面に表示するMaximumファイルcount */
-	public static final int PAGE_HEIGHT = 20;
+	/** Number of rules shown at a time */
+	public static final int PAGE_HEIGHT = 21;
 
 	/** Player ID */
 	public int player = 0;
@@ -159,10 +159,8 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		NormalFontSDL.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
 
 		NormalFontSDL.printFontGrid(1, 28, "A:OK", NormalFontSDL.COLOR_GREEN);
-		if(firstSetupMode)
-			NormalFontSDL.printFontGrid(6, 28, "D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
-		else
-			NormalFontSDL.printFontGrid(6, 28, "B:CANCEL D:USE DEFAULT RULE", NormalFontSDL.COLOR_GREEN);
+		if(!firstSetupMode)
+			NormalFontSDL.printFontGrid(6, 28, "B:CANCEL", NormalFontSDL.COLOR_GREEN);
 	}
 
 	@Override
@@ -187,25 +185,6 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	@Override
 	protected boolean onCancel() throws SDLException {
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
-		return true;
-	}
-
-	@Override
-	protected boolean onPushButtonD() throws SDLException {
-		ResourceHolderSDL.soundManager.play("decide");
-		NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
-		if(style == 0) {
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rule", "");
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile", "");
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename", "");
-		} else {
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rule." + style, "");
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rulefile." + style, "");
-			NullpoMinoSDL.propGlobal.setProperty(player + ".rulename." + style, "");
-		}
-		NullpoMinoSDL.saveConfig();
-		if(!firstSetupMode) NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
-		else NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 		return true;
 	}
 }

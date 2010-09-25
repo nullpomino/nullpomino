@@ -179,6 +179,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		btnUseDefault.setActionCommand("RuleSelect_UseDefault");
 		btnUseDefault.setAlignmentX(LEFT_ALIGNMENT);
 		btnUseDefault.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
+		btnUseDefault.setVisible(false);
 		this.add(btnUseDefault);
 
 		//  button類
