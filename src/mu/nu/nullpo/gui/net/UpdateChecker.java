@@ -46,7 +46,7 @@ public class UpdateChecker implements Runnable {
 	static Logger log = Logger.getLogger(UpdateChecker.class);
 
 	/**  default のXMLのURL */
-	public static final String DEFAULT_XML_URL = "http://dl.dropbox.com/u/6118422/NullpoUpdate.xml";
+	public static final String DEFAULT_XML_URL = "http://nullpomino.googlecode.com/svn/trunk/NullpoUpdate.xml";
 
 	/** 状態の定count */
 	public static final int STATUS_INACTIVE = 0,
