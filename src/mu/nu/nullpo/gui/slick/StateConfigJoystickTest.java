@@ -124,6 +124,10 @@ public class StateConfigJoystickTest extends BasicGameState {
 			NormalFont.printFontGrid(1, 23, "ENTER/BACKSPACE: EXIT", NormalFont.COLOR_GREEN);
 		}
 
+		// FPS
+		NullpoMinoSlick.drawFPS(container);
+		// Observer
+		NullpoMinoSlick.drawObserverClient();
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
@@ -138,7 +142,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 
 		frame++;
 
-		// Joystick button判定
+		// Joystick button
 		if(frame >= KEYACCEPTFRAME) {
 			for(int i = 0; i < buttonCount; i++) {
 				try {
@@ -150,14 +154,38 @@ public class StateConfigJoystickTest extends BasicGameState {
 			}
 		}
 
+		// JInput
+		if(NullpoMinoSlick.useJInputKeyboard) {
+			JInputManager.poll();
+
+			if(frame >= KEYACCEPTFRAME) {
+				for(int i = 0; i < JInputManager.MAX_SLICK_KEY; i++) {
+					if(JInputManager.isKeyDown(i)) {
+						onKey(i);
+						break;
+					}
+				}
+			}
+		}
+
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
-	 * Called when a key is pressed
+	 * Called when a key is pressed (Slick native)
 	 */
 	@Override
 	public void keyPressed(int key, char c) {
+		if(!NullpoMinoSlick.useJInputKeyboard) {
+			onKey(key);
+		}
+	}
+
+	/**
+	 * When a key is pressed
+	 * @param key Keycode
+	 */
+	protected void onKey(int key) {
 		if(frame >= KEYACCEPTFRAME) {
 			// Backspace & Enter/Return
 			if((key == Input.KEY_BACK) || (key == Input.KEY_RETURN)) {

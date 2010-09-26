@@ -157,6 +157,8 @@ public class StateConfigKeyboard extends BasicGameState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
+		// Observer
+		NullpoMinoSlick.drawObserverClient();
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 

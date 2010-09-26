@@ -162,6 +162,8 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
+		// Observer
+		NullpoMinoSlick.drawObserverClient();
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
