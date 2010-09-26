@@ -40,6 +40,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.ShadowEffect;
+import org.newdawn.slick.openal.SoundStore;
 
 /**
  * 画像や音声の管理をするクラス
@@ -147,17 +148,14 @@ public class ResourceHolder {
 		}
 
 		// Sound effects
-		/*
-		try {
-			SoundStore.get().init();
-		} catch (Throwable e) {
-			log.error("Sound init failed", e);
-		}
-		//SoundStore.get().soundWorks();
-		*/
-
 		soundManager = new SoundManager();
 		if(NullpoMinoSlick.propConfig.getProperty("option.se", true) == true) {
+			try {
+				SoundStore.get().init();
+			} catch (Throwable e) {
+				log.warn("Sound init failed", e);
+			}
+
 			log.info("Loading Sound Effect");
 			soundManager.load("cursor", skindir + "/se/cursor.wav");
 			soundManager.load("decide", skindir + "/se/decide.wav");

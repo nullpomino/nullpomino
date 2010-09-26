@@ -233,6 +233,9 @@ public class GameFrame extends JFrame implements Runnable {
 			} else if(isVisible() && isActive()) {
 				gameUpdate();
 				gameRender();
+			} else {
+				GameKeySwing.gamekey[0].clear();
+				GameKeySwing.gamekey[1].clear();
 			}
 
 			// 休止・FPS計算処理
@@ -409,13 +412,17 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 
 	/**
-	 * Update game state(ネットプレイ用)
+	 * Update game state (for netplay)
 	 */
 	protected void gameUpdateNet() {
 		if(NullpoMinoSwing.gameManager == null) return;
 
 		try {
-			GameKeySwing.gamekey[0].update();
+			if(isVisible() && isActive()) {
+				GameKeySwing.gamekey[0].update();
+			} else {
+				GameKeySwing.gamekey[0].clear();
+			}
 
 			// ゲームの処理を実行
 			if(NullpoMinoSwing.gameManager != null) {

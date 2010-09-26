@@ -1,5 +1,5 @@
 ﻿NullpoMino
-Version 7.3.0
+Version 7.4.0
 
 1. What is this?
 A falling block puzzle game using Java.
@@ -70,7 +70,21 @@ chmod +x netserver
 
 	Slick version problems:
 		Turn off 3D desktop (such as Beryl) to run smoother.
+
+		Because of a bug (or limitation) of SCIM and LWJGL, the "play_slick" shell script will disable any IME by default.
 		In the "play_slick" shell script, "XMODIFIERS=@im=none" is not needed if your system don't have SCIM.
+
+		If you want to run the game with SCIM enabled, try the following commands (you need access of sudo):
+
+sudo chmod go+r /dev/input/*
+java -cp bin:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib/jorbis-0.0.15.jar:lib/jogg-0.0.7.jar:lib/ibxm.jar:lib/jinput.jar -Djava.library.path=lib mu.nu.nullpo.gui.slick.NullpoMinoSlick -j
+
+		The first command will allow everyone (including the game itself) to read keyboard input directly.
+		You don't have to execute this command again until you reboot/shutdown your operating system.
+		The second command will run the game with "-j" option.
+		Normally, the game will read keyboard input from LWJGL, which conflicts with SCIM.
+		However, when this option is used, the game will try to read keyboard input directly from your operating system.
+		So you can play the game with SCIM enabled.
 
 	SDL version problems:
 		If you tried SDL version but it didn't work, you need to manually install libsdl.
@@ -345,7 +359,6 @@ List of what you can do:
 List of what you can't do & Known problems:
 	* Replay can't be saved
 	* No ID/Password system
-	* No rating system
 	* No password protected rooms
 	* Does not completely keep track your amount of wins
 	* No chat flooding protection
@@ -495,7 +508,6 @@ Also thanks to:
 	SWR
 	hebo-MAI
 	tetrisconcept.net http://www.tetrisconcept.net/
-	 (NullpoMino thread: http://www.tetrisconcept.net/forum/showthread.html?t=1381)
 	Hard Drop http://harddrop.com/
 	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
 	Puyo Nexus http://www.puyonexus.net/
@@ -505,6 +517,10 @@ http://code.google.com/p/nullpomino/
 
 12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
+
+Version 7.4.0 (2010/??/??)
+#This version is NO LONGER compatible with 7.3.0 netplay server.
+[TODO: Insert changelog here]
 
 Version 7.3.0 (2010/08/09)
 #This version is NO LONGER compatible with 7.2.0 netplay server.

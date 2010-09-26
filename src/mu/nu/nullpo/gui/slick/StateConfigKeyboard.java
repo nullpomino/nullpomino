@@ -57,6 +57,9 @@ public class StateConfigKeyboard extends BasicGameState {
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
+	/** true if no key is pressed now (for JInput mode) */
+	protected boolean noPressedKey;
+
 	/** Number of button currently being configured */
 	protected int keynum;
 
@@ -79,6 +82,8 @@ public class StateConfigKeyboard extends BasicGameState {
 	 */
 	protected void reset() {
 		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
+
+		noPressedKey = true;
 
 		keynum = 0;
 		frame = 0;
@@ -114,27 +119,32 @@ public class StateConfigKeyboard extends BasicGameState {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		NormalFont.printFontGrid(1, 1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+		if(!NullpoMinoSlick.useJInputKeyboard) {
+			NormalFont.printFontGrid(1, 2, "SLICK NATIVE MODE", NormalFont.COLOR_CYAN);
+		} else {
+			NormalFont.printFontGrid(1, 2, "JINPUT MODE", NormalFont.COLOR_PINK);
+		}
 
-		NormalFont.printFontGrid(2,  3, "UP          : " + getKeyName(keymap[GameKey.BUTTON_UP]), (keynum == 0));
-		NormalFont.printFontGrid(2,  4, "DOWN        : " + getKeyName(keymap[GameKey.BUTTON_DOWN]), (keynum == 1));
-		NormalFont.printFontGrid(2,  5, "LEFT        : " + getKeyName(keymap[GameKey.BUTTON_LEFT]), (keynum == 2));
-		NormalFont.printFontGrid(2,  6, "RIGHT       : " + getKeyName(keymap[GameKey.BUTTON_RIGHT]), (keynum == 3));
-		NormalFont.printFontGrid(2,  7, "A (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
-		NormalFont.printFontGrid(2,  8, "B (R/L-ROT) : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
-		NormalFont.printFontGrid(2,  9, "C (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
-		NormalFont.printFontGrid(2, 10, "D (HOLD)    : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
-		NormalFont.printFontGrid(2, 11, "E (180-ROT) : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
-		NormalFont.printFontGrid(2, 12, "F           : " + getKeyName(keymap[GameKey.BUTTON_F]), (keynum == 9));
-		NormalFont.printFontGrid(2, 13, "QUIT        : " + getKeyName(keymap[GameKey.BUTTON_QUIT]), (keynum == 10));
-		NormalFont.printFontGrid(2, 14, "PAUSE       : " + getKeyName(keymap[GameKey.BUTTON_PAUSE]), (keynum == 11));
-		NormalFont.printFontGrid(2, 15, "GIVEUP      : " + getKeyName(keymap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
-		NormalFont.printFontGrid(2, 16, "RETRY       : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
-		NormalFont.printFontGrid(2, 17, "FRAME STEP  : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
-		NormalFont.printFontGrid(2, 18, "SCREEN SHOT : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFont.printFontGrid(2,  4, "UP          : " + getKeyName(keymap[GameKey.BUTTON_UP]), (keynum == 0));
+		NormalFont.printFontGrid(2,  5, "DOWN        : " + getKeyName(keymap[GameKey.BUTTON_DOWN]), (keynum == 1));
+		NormalFont.printFontGrid(2,  6, "LEFT        : " + getKeyName(keymap[GameKey.BUTTON_LEFT]), (keynum == 2));
+		NormalFont.printFontGrid(2,  7, "RIGHT       : " + getKeyName(keymap[GameKey.BUTTON_RIGHT]), (keynum == 3));
+		NormalFont.printFontGrid(2,  8, "A (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
+		NormalFont.printFontGrid(2,  9, "B (R/L-ROT) : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
+		NormalFont.printFontGrid(2, 10, "C (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
+		NormalFont.printFontGrid(2, 11, "D (HOLD)    : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
+		NormalFont.printFontGrid(2, 12, "E (180-ROT) : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
+		NormalFont.printFontGrid(2, 13, "F           : " + getKeyName(keymap[GameKey.BUTTON_F]), (keynum == 9));
+		NormalFont.printFontGrid(2, 14, "QUIT        : " + getKeyName(keymap[GameKey.BUTTON_QUIT]), (keynum == 10));
+		NormalFont.printFontGrid(2, 15, "PAUSE       : " + getKeyName(keymap[GameKey.BUTTON_PAUSE]), (keynum == 11));
+		NormalFont.printFontGrid(2, 16, "GIVEUP      : " + getKeyName(keymap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
+		NormalFont.printFontGrid(2, 17, "RETRY       : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
+		NormalFont.printFontGrid(2, 18, "FRAME STEP  : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
+		NormalFont.printFontGrid(2, 19, "SCREEN SHOT : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
 
 		if(frame >= KEYACCEPTFRAME) {
 			if(keynum < NUM_KEYS) {
-				NormalFont.printFontGrid(1, 3 + keynum, "b", NormalFont.COLOR_RED);
+				NormalFont.printFontGrid(1, 4 + keynum, "b", NormalFont.COLOR_RED);
 
 				NormalFont.printFontGrid(1, 25, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
 				if(!firstSetupMode) NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
@@ -145,6 +155,8 @@ public class StateConfigKeyboard extends BasicGameState {
 			}
 		}
 
+		// FPS
+		NullpoMinoSlick.drawFPS(container);
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
@@ -158,14 +170,40 @@ public class StateConfigKeyboard extends BasicGameState {
 		}
 
 		frame++;
+
+		// JInput
+		if(NullpoMinoSlick.useJInputKeyboard) {
+			JInputManager.poll();
+
+			if(frame >= KEYACCEPTFRAME) {
+				for(int i = 0; i < JInputManager.MAX_SLICK_KEY; i++) {
+					if(JInputManager.isKeyDown(i)) {
+						onKey(i);
+						frame = 0;
+						break;
+					}
+				}
+			}
+		}
+
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
-	 * キーを押して離したときの処理
+	 * When a key is released (Slick native)
 	 */
 	@Override
 	public void keyReleased(int key, char c) {
+		if(!NullpoMinoSlick.useJInputKeyboard) {
+			onKey(key);
+		}
+	}
+
+	/**
+	 * When a key is released
+	 * @param key Keycode
+	 */
+	protected void onKey(int key) {
 		if(frame >= KEYACCEPTFRAME) {
 			if(keynum < NUM_KEYS) {
 				if(key == Input.KEY_DELETE) {

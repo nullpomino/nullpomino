@@ -174,11 +174,18 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		try {
+			// Clear input states if game window does not have focus
+			if(!container.hasFocus() || netLobby.isFocused()) {
+				GameKey.gamekey[0].clear();
+			}
+
 			// TTF font 描画
 			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
 			// Update key input states
-			GameKey.gamekey[0].update(container.getInput());
+			if(container.hasFocus() && !netLobby.isFocused()) {
+				GameKey.gamekey[0].update(container.getInput());
+			}
 
 			if((gameManager != null) && (gameManager.mode != null)) {
 				// BGM

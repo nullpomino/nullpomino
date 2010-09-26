@@ -34,17 +34,19 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.newdawn.slick.Input;
 
 /**
- * Key input stateの管理
+ * Key input state manager
  */
 public class GameKey extends GameKeyDummy {
-	/** Key input state (全ステート共通) */
+	/** Key input state (Used by all game states) */
 	public static GameKey[] gamekey;
 
 	/**
-	 * 全ステート共通のKey input stateオブジェクトをInitialization
+	 * Init everything
 	 */
 	public static void initGlobalGameKey() {
 		ControllerManager.initControllers();
+		JInputManager.initKeymap();
+		JInputManager.initKeyboard();
 		gamekey = new GameKey[2];
 		gamekey[0] = new GameKey(0);
 		gamekey[1] = new GameKey(1);
@@ -58,7 +60,7 @@ public class GameKey extends GameKeyDummy {
 	}
 
 	/**
-	 * Player numberを指定できるConstructor
+	 * Constructor with player number param
 	 * @param pl Player number
 	 */
 	public GameKey(int pl) {
@@ -66,12 +68,17 @@ public class GameKey extends GameKeyDummy {
 	}
 
 	/**
-	 *  button input状態を更新
-	 * @param input Inputクラス (container.getInput()で取得可能）
+	 * Update button input status
+	 * @param input Slick's Input class (You can get it with container.getInput())
 	 */
 	public void update(Input input) {
+		if((player == 0) && (NullpoMinoSlick.useJInputKeyboard)) {
+			JInputManager.poll();
+		}
+
 		for(int i = 0; i < MAX_BUTTON; i++) {
-			boolean flag = input.isKeyDown(keymap[i]);
+			boolean flag = NullpoMinoSlick.useJInputKeyboard ?
+								JInputManager.isKeyDown(keymap[i]) : input.isKeyDown(keymap[i]);
 
 			switch(i) {
 			case BUTTON_UP:
@@ -99,7 +106,7 @@ public class GameKey extends GameKeyDummy {
 	}
 
 	/**
-	 * キー設定を読み込み
+	 * Load navigation key settings
 	 * @param prop Property file to read from
 	 */
 	public void loadConfig(CustomProperties prop) {

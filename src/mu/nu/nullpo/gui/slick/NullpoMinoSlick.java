@@ -197,6 +197,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Observerクライアント */
 	public static NetObserverClient netObserverClient;
 
+	/** true if read keyboard input from JInput */
+	public static boolean useJInputKeyboard;
+
 	/**
 	 * メイン関count
 	 * @param args プログラムに渡されたコマンドLines引count
@@ -271,6 +274,14 @@ public class NullpoMinoSlick extends StateBasedGame {
 			txtMode.close();
 		} catch (IOException e) {
 			log.error("Mode list load failed", e);
+		}
+
+		// Use JInput option
+		useJInputKeyboard = false;
+		log.info("args.length:" + args.length);
+		if( (args.length > 0) && (args[0].equals("-j") || args[0].equals("/j")) ) {
+			useJInputKeyboard = true;
+			log.info("-j option is used. Use JInput to read keyboard input.");
 		}
 
 		perfectFPSDelay = System.nanoTime();
@@ -354,6 +365,8 @@ public class NullpoMinoSlick extends StateBasedGame {
 		ControllerManager.ignoreAxis[1] = propConfig.getProperty("joyIgnoreAxis.p1", false);
 		ControllerManager.ignorePOV[0] = propConfig.getProperty("joyIgnorePOV.p0", false);
 		ControllerManager.ignorePOV[1] = propConfig.getProperty("joyIgnorePOV.p1", false);
+
+		//useJInputKeyboard = propConfig.getProperty("option.useJInputKeyboard", true);
 	}
 
 	/**

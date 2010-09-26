@@ -78,6 +78,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException
 	{
 		if(!container.hasFocus()) {
+			GameKey.gamekey[0].clear();
 			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 			return;
 		}

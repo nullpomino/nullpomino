@@ -1,5 +1,5 @@
 NullpoMino ～ぬるぽミノ～
-Version 7.3.0
+Version 7.4.0
 
 【これって何？】
 Javaで作った落ちものアクションパズルゲームもどきです。
@@ -59,9 +59,22 @@ chmod +x netserver
 　　　現時点ではまともに動きません。
 
 　　Slickバージョン固有の問題:
-　　　シェルスクリプト内のコマンドライン最初のXMODIFIERS=@im=noneは、使っているIMEがSCIM以外の場合は不要です。
 　　　3Dデスクトップ機能（Berylとか）は無効にすることをおすすめします。
 　　　一応x64でも動作するようです。
+
+　　　LWJGLおよびSCIMのバグ(もしくは制限)のため、play_slickシェルスクリプトはゲームを起動するときに全てのIMEを無効化します。
+　　　シェルスクリプト内のコマンドライン最初のXMODIFIERS=@im=noneは、使っているIMEがSCIM以外の場合は不要です。
+
+　　　もしSCIMを有効化したままゲームをプレイしたい場合は、以下のコマンドを試してください(sudoを実行できる権限が必要です):
+
+sudo chmod go+r /dev/input/*
+java -cp bin:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib/jorbis-0.0.15.jar:lib/jogg-0.0.7.jar:lib/ibxm.jar:lib/jinput.jar -Djava.library.path=lib mu.nu.nullpo.gui.slick.NullpoMinoSlick -j
+
+　　　最初のコマンドは、すべてのプログラムがキーボード入力を直接読み取れるようにします。
+　　　一度実行すると、次に再起動もしくはシャットダウンするまで再度実行する必要はありません。
+　　　2つ目のコマンドは、ゲームを"-j"オプションを付けて起動します。
+　　　通常、このゲームはキーボード入力をLWJGLから読み取ろうとしますが、SCIMとは相性が悪いです。
+　　　このオプションを使用している場合、ゲームはキーボード入力をシステムから直接読み取りますので、SCIMがあっても問題なく動作するようになります。
 
 　　SDLバージョン固有の問題:
 　　　自分がUbuntu 8.04で試した限りでは、これがLinuxでは最も問題なく動作します。
@@ -485,7 +498,6 @@ A: 無理。
 	SWR
 	hebo-MAI
 	tetrisconcept.net http://www.tetrisconcept.net/
-	 (NullpoMino thread: http://www.tetrisconcept.net/forum/showthread.html?t=1381)
 	Hard Drop http://harddrop.com/
 	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
 	Puyo Nexus http://www.puyonexus.net/
@@ -495,6 +507,10 @@ http://code.google.com/p/nullpomino/
 
 【更新履歴】
 +は新機能、-はバグ修正、*はその他の修正、#はその他メモを意味します。
+
+Version 7.4.0 (2010/??/??)
+#このバージョンから7.3.0のサーバーとの互換性は失われます。
+[TODO: 更新履歴ここに入れる]
 
 Version 7.3.0 (2010/08/09)
 #このバージョンから7.2.0のサーバーとの互換性は失われます。

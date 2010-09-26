@@ -3315,10 +3315,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 						btnRoomButtonsJoin.setVisible(false);
 						btnRoomButtonsSitOut.setVisible(false);
 						btnRoomButtonsRanking.setVisible(false);
-						gameStatCardLayout.next(subpanelGameStat);
+						gameStatCardLayout.show(subpanelGameStat, "GameStat1P");
 					} else {
 						btnRoomButtonsRanking.setVisible(netPlayerClient.getRoomInfo(roomID).rated);
-						gameStatCardLayout.previous(subpanelGameStat);
+						gameStatCardLayout.show(subpanelGameStat, "GameStatMP");
 					}
 				}
 

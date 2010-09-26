@@ -46,11 +46,11 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 	/** Number of keys to set */
 	public static final int NUM_KEYS = 6;
-	
+
 	public static final String[] KEY_NAMES = {
 		"UP    ", "DOWN  ", "LEFT  ", "RIGHT ", "SELECT", "CANCEL"
 	};
-	
+
 	public static final int[] DEFAULT_KEYS = {200, 208, 203, 205, 28, 1};
 
 	/** Player number */
@@ -125,7 +125,7 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		NormalFont.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
-		
+
 		if (!setCustom)
 			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
@@ -160,6 +160,8 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 			}
 		}
 
+		// FPS
+		NullpoMinoSlick.drawFPS(container);
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
@@ -173,14 +175,34 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 			frame = 0;
 		} else {
 			frame++;
+
+			// JInput
+			if(NullpoMinoSlick.useJInputKeyboard) {
+				JInputManager.poll();
+
+				if(frame >= KEYACCEPTFRAME) {
+					for(int i = 0; i < JInputManager.MAX_SLICK_KEY; i++) {
+						if(JInputManager.isKeyDown(i)) {
+							onKey(i);
+							frame = 0;
+							break;
+						}
+					}
+				}
+			}
 		}
+
+		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
+		if(setCustom) return true;
+
 		if (cursor == 3) {
 			setCustom = true;
-			keynum = -1;
+			//keynum = -1;
+			keynum = 0;
 			frame = 0;
 			return true;
 		} else if (cursor == 0){
@@ -210,16 +232,28 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
-		game.enterState(StateConfigMainMenu.ID);
+		if(!setCustom) {
+			game.enterState(StateConfigMainMenu.ID);
+		}
 		return false;
 	}
 
 	/*
-	 * キーを押して離したときの処理
+	 * When a key is released (Slick native)
 	 */
 	@Override
 	public void keyReleased(int key, char c) {
-		if(setCustom && frame >= KEYACCEPTFRAME) {
+		if(setCustom && !NullpoMinoSlick.useJInputKeyboard) {
+			onKey(key);
+		}
+	}
+
+	/**
+	 * When a key is released
+	 * @param key Keycode
+	 */
+	protected void onKey(int key) {
+		if(frame >= KEYACCEPTFRAME) {
 			if (keynum < 0)
 				keynum = 0;
 			else if(keynum < NUM_KEYS) {
@@ -257,7 +291,7 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 			}
 		}
 	}
-	
+
 	private void loadSettings() {
 		for(int i = 0; i < NUM_KEYS; i++) {
 			keymap[i] = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNavi." + i, DEFAULT_KEYS[i]);
