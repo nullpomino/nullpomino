@@ -80,10 +80,10 @@
 
     <complexType name="ExitMenuItemType">
     	<complexContent>
-    		<extension base="tns:MenuType"></extension>
+    		<extension base="tns:MenuItemType"></extension>
     	</complexContent>
     </complexType>
-    
+
     <complexType name="ModeMenuItemType">
     	<complexContent>
     		<extension base="tns:MenuItemType">

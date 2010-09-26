@@ -16,7 +16,7 @@ public class NumericMenuItem extends MenuItem {
 	}
 
 	public NumericMenuItem(String name, int color, int state, int minValue, int maxValue, int step, int arithmeticStyle) {
-		this.name = name;
+		super(name);
 		this.color = color;
 		this.state = state;
 		this.minValue = minValue;

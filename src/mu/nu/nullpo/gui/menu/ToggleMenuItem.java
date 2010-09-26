@@ -11,6 +11,7 @@ public class ToggleMenuItem extends MenuItem {
 	}
 
 	public ToggleMenuItem(String name, int color, int state, int drawStyle) {
+		super(name);
 		this.name = name;
 		this.color = color;
 		this.state = state;
