@@ -226,9 +226,9 @@ public class LineRaceMode extends NetDummyMode {
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("linerace.gravity." + preset, 4);
 		engine.speed.denominator = prop.getProperty("linerace.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("linerace.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("linerace.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("linerace.lineDelay." + preset, 40);
+		engine.speed.are = prop.getProperty("linerace.are." + preset, 0);
+		engine.speed.areLine = prop.getProperty("linerace.areLine." + preset, 0);
+		engine.speed.lineDelay = prop.getProperty("linerace.lineDelay." + preset, 0);
 		engine.speed.lockDelay = prop.getProperty("linerace.lockDelay." + preset, 30);
 		engine.speed.das = prop.getProperty("linerace.das." + preset, 14);
 		bgmno = prop.getProperty("linerace.bgmno." + preset, 0);

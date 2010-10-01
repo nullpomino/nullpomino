@@ -1321,7 +1321,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelARE.add(labelARE, BorderLayout.WEST);
 
 		// *** ARE
-		int defaultARE = propConfig.getProperty("createroom.defaultARE", 30);
+		int defaultARE = propConfig.getProperty("createroom.defaultARE", 0);
 		spinnerCreateRoomARE = new JSpinner(new SpinnerNumberModel(defaultARE, 0, 99, 1));
 		spinnerCreateRoomARE.setPreferredSize(new Dimension(200, 20));
 		subpanelARE.add(spinnerCreateRoomARE, BorderLayout.EAST);
@@ -1335,7 +1335,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelARELine.add(labelARELine, BorderLayout.WEST);
 
 		// *** ARE after line clear
-		int defaultARELine = propConfig.getProperty("createroom.defaultARELine", 30);
+		int defaultARELine = propConfig.getProperty("createroom.defaultARELine", 0);
 		spinnerCreateRoomARELine = new JSpinner(new SpinnerNumberModel(defaultARELine, 0, 99, 1));
 		spinnerCreateRoomARELine.setPreferredSize(new Dimension(200, 20));
 		subpanelARELine.add(spinnerCreateRoomARELine, BorderLayout.EAST);
@@ -1349,7 +1349,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelLineDelay.add(labelLineDelay, BorderLayout.WEST);
 
 		// *** Line clear time
-		int defaultLineDelay = propConfig.getProperty("createroom.defaultLineDelay", 20);
+		int defaultLineDelay = propConfig.getProperty("createroom.defaultLineDelay", 0);
 		spinnerCreateRoomLineDelay = new JSpinner(new SpinnerNumberModel(defaultLineDelay, 0, 99, 1));
 		spinnerCreateRoomLineDelay.setPreferredSize(new Dimension(200, 20));
 		subpanelLineDelay.add(spinnerCreateRoomLineDelay, BorderLayout.EAST);
@@ -1377,7 +1377,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelDAS.add(labelDAS, BorderLayout.WEST);
 
 		// *** 横溜め
-		int defaultDAS = propConfig.getProperty("createroom.defaultDAS", 14);
+		int defaultDAS = propConfig.getProperty("createroom.defaultDAS", 12);
 		spinnerCreateRoomDAS = new JSpinner(new SpinnerNumberModel(defaultDAS, 0, 99, 1));
 		spinnerCreateRoomDAS.setPreferredSize(new Dimension(200, 20));
 		subpanelDAS.add(spinnerCreateRoomDAS, BorderLayout.EAST);
@@ -2082,9 +2082,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.autoStartSeconds = propConfig.getProperty("createroom.defaultAutoStartSeconds", 15);
 				r.gravity = propConfig.getProperty("createroom.defaultGravity", 1);
 				r.denominator = propConfig.getProperty("createroom.defaultDenominator", 60);
-				r.are = propConfig.getProperty("createroom.defaultARE", 30);
-				r.areLine = propConfig.getProperty("createroom.defaultARELine", 30);
-				r.lineDelay = propConfig.getProperty("createroom.defaultLineDelay", 20);
+				r.are = propConfig.getProperty("createroom.defaultARE", 0);
+				r.areLine = propConfig.getProperty("createroom.defaultARELine", 0);
+				r.lineDelay = propConfig.getProperty("createroom.defaultLineDelay", 0);
 				r.lockDelay = propConfig.getProperty("createroom.defaultLockDelay", 30);
 				r.das = propConfig.getProperty("createroom.defaultDAS", 14);
 				r.hurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 90);

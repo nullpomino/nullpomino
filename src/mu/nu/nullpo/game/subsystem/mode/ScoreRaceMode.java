@@ -180,9 +180,9 @@ public class ScoreRaceMode extends DummyMode {
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("scorerace.gravity." + preset, 4);
 		engine.speed.denominator = prop.getProperty("scorerace.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("scorerace.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("scorerace.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("scorerace.lineDelay." + preset, 40);
+		engine.speed.are = prop.getProperty("scorerace.are." + preset, 0);
+		engine.speed.areLine = prop.getProperty("scorerace.areLine." + preset, 0);
+		engine.speed.lineDelay = prop.getProperty("scorerace.lineDelay." + preset, 0);
 		engine.speed.lockDelay = prop.getProperty("scorerace.lockDelay." + preset, 30);
 		engine.speed.das = prop.getProperty("scorerace.das." + preset, 14);
 		bgmno = prop.getProperty("scorerace.bgmno." + preset, 0);

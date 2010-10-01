@@ -183,9 +183,9 @@ public class UltraMode extends DummyMode {
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("ultra.gravity." + preset, 4);
 		engine.speed.denominator = prop.getProperty("ultra.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("ultra.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("ultra.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("ultra.lineDelay." + preset, 40);
+		engine.speed.are = prop.getProperty("ultra.are." + preset, 0);
+		engine.speed.areLine = prop.getProperty("ultra.areLine." + preset, 0);
+		engine.speed.lineDelay = prop.getProperty("ultra.lineDelay." + preset, 0);
 		engine.speed.lockDelay = prop.getProperty("ultra.lockDelay." + preset, 30);
 		engine.speed.das = prop.getProperty("ultra.das." + preset, 14);
 		bgmno = prop.getProperty("ultra.bgmno." + preset, 0);

@@ -271,9 +271,9 @@ public class VSBattleMode extends DummyMode {
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("vsbattle.gravity." + preset, 4);
 		engine.speed.denominator = prop.getProperty("vsbattle.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("vsbattle.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("vsbattle.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("vsbattle.lineDelay." + preset, 10);
+		engine.speed.are = prop.getProperty("vsbattle.are." + preset, 0);
+		engine.speed.areLine = prop.getProperty("vsbattle.areLine." + preset, 0);
+		engine.speed.lineDelay = prop.getProperty("vsbattle.lineDelay." + preset, 0);
 		engine.speed.lockDelay = prop.getProperty("vsbattle.lockDelay." + preset, 30);
 		engine.speed.das = prop.getProperty("vsbattle.das." + preset, 14);
 	}

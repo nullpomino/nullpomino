@@ -269,9 +269,9 @@ public class PracticeMode extends DummyMode {
 	private void loadPreset(GameEngine engine, CustomProperties prop, int preset) {
 		engine.speed.gravity = prop.getProperty("practice.gravity." + preset, 4);
 		engine.speed.denominator = prop.getProperty("practice.denominator." + preset, 256);
-		engine.speed.are = prop.getProperty("practice.are." + preset, 24);
-		engine.speed.areLine = prop.getProperty("practice.areLine." + preset, 24);
-		engine.speed.lineDelay = prop.getProperty("practice.lineDelay." + preset, 40);
+		engine.speed.are = prop.getProperty("practice.are." + preset, 0);
+		engine.speed.areLine = prop.getProperty("practice.areLine." + preset, 0);
+		engine.speed.lineDelay = prop.getProperty("practice.lineDelay." + preset, 0);
 		engine.speed.lockDelay = prop.getProperty("practice.lockDelay." + preset, 30);
 		engine.speed.das = prop.getProperty("practice.das." + preset, 14);
 		bgmno = prop.getProperty("practice.bgmno." + preset, 0);
