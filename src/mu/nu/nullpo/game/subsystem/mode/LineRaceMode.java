@@ -48,6 +48,7 @@ import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
+import mu.nu.nullpo.gui.slick.GameKey;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -362,7 +363,7 @@ public class LineRaceMode extends NetDummyMode {
 			}
 
 			// Confirm
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (!netIsWatch)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5) && (!netIsWatch)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 10) {
@@ -391,7 +392,7 @@ public class LineRaceMode extends NetDummyMode {
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B) && (!netIsNetPlay)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL) && (!netIsNetPlay)) {
 				engine.quitflag = true;
 			}
 

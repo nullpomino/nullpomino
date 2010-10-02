@@ -34,6 +34,7 @@ import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.gui.slick.GameKey;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -303,7 +304,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 31) {
@@ -320,7 +321,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
 				engine.quitflag = true;
 			}
 
@@ -360,7 +361,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 				owner.engine[1].resetStatc();
 			}
 			// Cancel
-			else if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+			else if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
 				engine.statc[4] = 0;
 			}
 		}

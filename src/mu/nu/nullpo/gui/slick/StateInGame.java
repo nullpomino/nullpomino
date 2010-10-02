@@ -332,7 +332,7 @@ public class StateInGame extends BasicGameState {
 		}
 		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
 				cursor--;
 
 				if(cursor < 0) {
@@ -344,7 +344,7 @@ public class StateInGame extends BasicGameState {
 
 				ResourceHolder.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
 				cursor++;
 				if(cursor > 3) cursor = 0;
 
@@ -353,7 +353,7 @@ public class StateInGame extends BasicGameState {
 
 				ResourceHolder.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
 				ResourceHolder.soundManager.play("decide");
 				if(cursor == 0) {
 					// 再開

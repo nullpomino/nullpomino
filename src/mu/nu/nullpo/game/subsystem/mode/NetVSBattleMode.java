@@ -47,6 +47,7 @@ import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
+import mu.nu.nullpo.gui.slick.GameKey;
 import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
@@ -829,13 +830,13 @@ public class NetVSBattleMode extends NetDummyMode {
 			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
 				if(!isReadyChangePending) {
 					// 準備完了ON
-					if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
+					if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
 						engine.playSE("decide");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\ttrue\n");
 					}
 					// 準備完了OFF
-					if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
+					if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL) && (engine.statc[3] >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
 						engine.playSE("change");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\tfalse\n");

@@ -82,16 +82,26 @@ public class GameKey extends GameKeyDummy {
 
 			switch(i) {
 			case BUTTON_UP:
+			case BUTTON_NAV_UP:
 				flag |= ControllerManager.isControllerUp(player, input);
 				break;
 			case BUTTON_DOWN:
+			case BUTTON_NAV_DOWN:
 				flag |= ControllerManager.isControllerDown(player, input);
 				break;
 			case BUTTON_LEFT:
+			case BUTTON_NAV_LEFT:
 				flag |= ControllerManager.isControllerLeft(player, input);
 				break;
 			case BUTTON_RIGHT:
+			case BUTTON_NAV_RIGHT:
 				flag |= ControllerManager.isControllerRight(player, input);
+				break;
+			case BUTTON_NAV_SELECT:
+				flag |= ControllerManager.isControllerButton(player, input, buttonmap[BUTTON_A]);
+				break;
+			case BUTTON_NAV_CANCEL:
+				flag |= ControllerManager.isControllerButton(player, input, buttonmap[BUTTON_B]);
 				break;
 			default:
 				flag |= ControllerManager.isControllerButton(player, input, buttonmap[i]);

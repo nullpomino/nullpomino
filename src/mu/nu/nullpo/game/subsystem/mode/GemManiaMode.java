@@ -35,6 +35,7 @@ import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.gui.slick.GameKey;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -583,7 +584,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				switch(engine.statc[2]) {
@@ -675,7 +676,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 0) {
@@ -689,7 +690,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL) && (engine.statc[3] >= 5)) {
 				editModeScreen = 1;
 				engine.statc[2] = 0;
 				engine.statc[3] = 0;
@@ -770,7 +771,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -778,7 +779,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
 				engine.quitflag = true;
 			}
 
@@ -1314,7 +1315,7 @@ public class GemManiaMode extends DummyMode {
 
 		// Next 画面へ
 		if((engine.statc[0] >= 300) || (engine.ctrl.isPush(Controller.BUTTON_A))) {
-			// トレーニング
+			// Training
 			if(trainingType != 0) {
 				if(clearflag) limittimeNow += timeextendStageClearSeconds * 60;
 				if(skipflag) limittimeNow -= timeextendStageClearSeconds * 60;
@@ -1455,7 +1456,7 @@ public class GemManiaMode extends DummyMode {
 					engine.playSE("cursor");
 				}
 				// 決定
-				if(engine.ctrl.isPush(Controller.BUTTON_A)) {
+				if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
 					if(engine.statc[1] == 0) {
 						// YES
 						limittimeNow = limittimeStart;

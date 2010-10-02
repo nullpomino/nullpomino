@@ -82,10 +82,10 @@ public class GameKeySDL extends GameKeyDummy {
 	 */
 	public void update(boolean[] keyboard, boolean[] joyButton, int joyX, int joyY, HatState hat) {
 		for(int i = 0; i < MAX_BUTTON; i++) {
+			boolean flag = keyboard[keymap[i]];
+			
 			if(i == BUTTON_UP) {
 				// Up
-				boolean flag = keyboard[keymap[i]];
-
 				if( (flag) || (joyY < -joyBorder) || ((hat != null) && (hat.hatUp())) ) {
 					inputstate[i]++;
 				} else {
@@ -93,8 +93,6 @@ public class GameKeySDL extends GameKeyDummy {
 				}
 			} else if(i == BUTTON_DOWN) {
 				// Down
-				boolean flag = keyboard[keymap[i]];
-
 				if( (flag) || (joyY > joyBorder) || ((hat != null) && (hat.hatDown())) ) {
 					inputstate[i]++;
 				} else {
@@ -102,8 +100,6 @@ public class GameKeySDL extends GameKeyDummy {
 				}
 			} else if(i == BUTTON_LEFT) {
 				// 左
-				boolean flag = keyboard[keymap[i]];
-
 				if((flag) || (joyX < -joyBorder) || ((hat != null) && (hat.hatLeft())) ) {
 					inputstate[i]++;
 				} else {
@@ -111,8 +107,6 @@ public class GameKeySDL extends GameKeyDummy {
 				}
 			} else if(i == BUTTON_RIGHT) {
 				// 右
-				boolean flag = keyboard[keymap[i]];
-
 				if((flag) || (joyX > joyBorder) || ((hat != null) && (hat.hatRight())) ) {
 					inputstate[i]++;
 				} else {
@@ -120,12 +114,17 @@ public class GameKeySDL extends GameKeyDummy {
 				}
 			} else {
 				// その他の button
-				boolean flag = keyboard[keymap[i]];
 				boolean flag2 = false;
 
 				if(joyButton != null) {
 					try {
-						flag2 = joyButton[buttonmap[i]];
+						if (i==BUTTON_NAV_SELECT)
+							flag2 = joyButton[buttonmap[BUTTON_A]];
+						else if (i==BUTTON_NAV_CANCEL)
+							flag2 = joyButton[buttonmap[BUTTON_B]];
+						else
+							flag2 = joyButton[buttonmap[i]];
+						
 					} catch (ArrayIndexOutOfBoundsException e) {}
 				}
 
