@@ -62,12 +62,10 @@ public class AIRanksTester {
 			//System.out.println("�chec !!");
 		}*/
 		int [] heights=new int[9];
-		int [] holdPiece={-1};
-		boolean [] holdOK ={true};
 		while (!ranksAI.isGameOver()){
 			totalPieces++;
 			//System.out.println(Arrays.toString(heights));
-			ranksAI.playFictitiousMove(heights,pieces,holdPiece,holdOK);
+			ranksAI.playFictitiousMove(heights,pieces);
 			incrementPieces();
 
 		}

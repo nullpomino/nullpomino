@@ -51,7 +51,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 
 	//public boolean bestHold;
-	
+
 
 	//public int bestX;
 
@@ -358,7 +358,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	 * @param heights Heights of the columns
 	 * @param pieces Current Piece and Next Pieces
 	 */
-	public void playFictitiousMove (int [] heights,int [] pieces,int [] holdPiece,boolean [] holdOK){
+	public void playFictitiousMove (int [] heights,int [] pieces){
 		currentHeightMin=25;
 		currentHeightMax=0;
 		for (int i=0;i<ranks.getStackWidth();i++){
@@ -371,30 +371,23 @@ public class RanksAI extends DummyAI implements Runnable {
 			}
 		}
 
-		thinkBestPosition(heights,pieces,holdPiece,holdOK[0]);
+		thinkBestPosition(heights,pieces);
 		if (bestScore.rankStacking==0){
 			gameOver=true;
 		} else{
-			if (bestHold==true){
-				holdOK[0]=false;
-				
-			}
-			else{
-				holdOK[0]=true;
-				if (bestX==9){
-					for (int i=0;i<heights.length;i++){
-						heights[i]-=4;
-					}
+			if (bestX==9){
+				for (int i=0;i<heights.length;i++){
+					heights[i]-=4;
 				}
-				else {
-					ranks.addToHeights(heights, pieces[0], bestRt, bestX);
-					for (int i=0;i<heights.length;i++){
-						if (heights[i]>20){
-							gameOver=true;
-							break;
-						}
-
+			}
+			else {
+				ranks.addToHeights(heights, pieces[0], bestRt, bestX);
+				for (int i=0;i<heights.length;i++){
+					if (heights[i]>20){
+						gameOver=true;
+						break;
 					}
+
 				}
 			}
 
@@ -436,19 +429,9 @@ public class RanksAI extends DummyAI implements Runnable {
 		 for (int i=1;i<pieces.length;i++){
 			 pieces[i]=engine.getNextObject(engine.nextPieceCount+i-1).id;
 		 }
-		 
-		 int [] holdPiece=new int[1];
-		 if (engine.holdPieceObject==null){
-			 holdPiece[0]=-1;
-		 }
-		 else {
-			 holdPiece[0]=engine.holdPieceObject.id;
-		 }
-		 
-		 boolean holdOK=engine.isHoldOK();
-		 
+
 		 // Call the main method (that actually does the work, on the heights and pieces
-		 thinkBestPosition(heights,pieces,holdPiece,holdOK);
+		 thinkBestPosition(heights,pieces);
 
 		 // Convert the best chosen move to the engine representation
 		 bestX-=(pieceNow.dataOffsetX[bestRt]+Ranks.PIECES_LEFTMOSTS[pieceNow.id][bestRt]);
@@ -457,12 +440,12 @@ public class RanksAI extends DummyAI implements Runnable {
 		 bestY = pieceNow.getBottom(bestX, nowY, bestRt, engine.field);
 		 bestYSub=bestY;
 		 bestYSub=bestY;
-		 
+
 		 // If we cant fit the pieces anymore without creating holes, try hold
-		 //bestHold=false;
+		 bestHold=false;
 		 if (bestScore.rankStacking==0)
-			 threadRunning=false;
-		 	 //bestHold=true;
+			// threadRunning=false;
+		 	 bestHold=true;
 		 thinkLastPieceNo++;
 		 log.debug("nowX : "+engine.nowPieceX+" X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestScore);
 
@@ -474,7 +457,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	  * @param pieces Array containing the current piece and the next pieces.
 	 */
 
-	 public void thinkBestPosition(int heights[],int [] pieces,int [] holdPiece,boolean holdOK) {
+	 public void thinkBestPosition(int heights[],int [] pieces) {
 
 		 // The best* variables contain the chosen best position for the current piece.
 		 // The best*Sub variables are used in case you want to do a twist or a spin or a slide. they give the final position for the best move
@@ -493,10 +476,9 @@ public class RanksAI extends DummyAI implements Runnable {
 
 		 // Variable to temporarily store the score
 		 Score score;
-		 int [] piecesCopy= Arrays.copyOf(pieces, pieces.length);
-			
+
 		 // Current piece
-		 int pieceNow = piecesCopy[0];
+		 int pieceNow = pieces[0];
 
 		 // Number of previews to consider
 		 int numPreviews=MAX_PREVIEWS;
@@ -528,88 +510,63 @@ public class RanksAI extends DummyAI implements Runnable {
 			 bestXSub = bestX;
 			 bestRtSub = -1;
 
-			 // Dummy score so that the AI doesn't think the game is over (can't fit a piece anymore)
+			 // Dummy score so that the AI doesnt think the game is over (can't fit a piece anymore)
 			 bestScore.rankStacking=Integer.MAX_VALUE;
 
 		 }
 
 		 //If we don't have to score a 4-Line, consider other moves.
 		 else {
-			 // Try using hold or not
-			 for (int useHold=0;useHold<(holdOK?2:1);useHold++){
-				 if (useHold==1){
-					 if (holdPiece[0]==-1){
-						 holdPiece[0]=piecesCopy[0];
-						 for (int i=0;i<piecesCopy.length-1;i++)
-							 piecesCopy[i]=piecesCopy[i+1];
-						
-					 
-						 
-						 pieceNow=piecesCopy[0];
-						// numPreviews--;
-						 
-					 }
-					 else{
-						 int tempPiece=piecesCopy[0];
-						 piecesCopy[0]=holdPiece[0];
-						 holdPiece[0]=tempPiece;
-						 pieceNow=piecesCopy[0];
-					 }
-				 }
-				 // try all possible rotations{
-				 for(int rt = 0; rt < Ranks.PIECES_NUM_ROTATIONS[pieceNow]; rt++) {
+			 // try all possible rotations
+			 for(int rt = 0; rt < Ranks.PIECES_NUM_ROTATIONS[pieceNow]; rt++) {
 
-					 // Columns go from 0 to 9 in Ranks representation
-					 int minX=0;
-					 int maxX=ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow][rt];
-					 for(int x = minX; x <= maxX; x++) {
+				 // Columns go from 0 to 9 in Ranks representation
+				 int minX=0;
+				 int maxX=ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow][rt];
+				 for(int x = minX; x <= maxX; x++) {
 
-						 // Run thinkmain on that move to get its score
-						 score = thinkMain( x,  rt,  heights, piecesCopy, holdPiece, (useHold==1)?false:true, numPreviews);
-						 log.debug("MAIN  id="+pieceNow+" posX="+x+" rt="+rt+" hold :"+useHold+" score:"+score);
+					 // Run thinkmain on that move to get its score
+					 score = thinkMain( x,  rt,  heights, pieces, numPreviews);
+					 log.debug("MAIN  id="+pieceNow+" posX="+x+" rt="+rt+" score:"+score);
 
-						 //If the score is better than the previous best score, change it, and record the chosen move for further application by setControl
-						 if(score.compareTo(bestScore)>0) {
-							 log.debug("MAIN new best piece !");
-							 if (pieceNow==Piece.PIECE_I){
-								 bestScore.iPieceUsedInTheStack=true;
-							 }
-							 bestHold = (useHold==1);
-							 bestX = x;
-							 bestRt = rt;
-							 bestXSub = x;
-							 bestRtSub = -1;
-							 bestScore=score;
+					 //If the score is better than the previos best score, change it, and record the chosen move for further application by setControl
+					 if(score.compareTo(bestScore)>0) {
+						 log.debug("MAIN new best piece !");
+						 if (pieceNow==Piece.PIECE_I){
+							 bestScore.iPieceUsedInTheStack=true;
 						 }
-
-					 }
-
-					 // If we can score a 4-Line, try it
-					 if (pieceNow==Piece.PIECE_I && ((rt==1)||(rt==3)) && currentHeightMin>=4){
-
-						 // What are the consequences of scoring a 4-Line ?
-						 score = thinkMain( maxX+1,  rt,  heights, piecesCopy, holdPiece,(useHold==1)?false:true, numPreviews);
-						 log.debug("MAIN (4 Lines) id="+pieceNow+" posX="+(maxX+1)+" rt="+rt+" hold :"+useHold+" score:"+score);
-
-						 //If the score is better than the previous best score, change it, and record the chosen move for further application by setControl
-						 if(score.compareTo(bestScore)>0) {
-							 log.debug("MAIN (4 Lines) new best piece !");
-
-							 bestHold = (useHold==1);
-							 bestX = maxX+1;
-							 bestRt = rt;
-							 bestXSub = maxX+1;
-							 bestRtSub = -1;
-							 bestScore=score;
-						 }
-						 
-						 
+						 bestHold = false;
+						 bestX = x;
+						 bestRt = rt;
+						 bestXSub = x;
+						 bestRtSub = -1;
+						 bestScore=score;
 					 }
 
 				 }
-		 	}
+
+				 // If we can score a 4-Line, try it
+				 if (pieceNow==Piece.PIECE_I && ((rt==1)||(rt==3)) && currentHeightMin>=4){
+
+					 // What are the consequences of scoring a 4-Line ?
+					 score = thinkMain( maxX+1,  rt,  heights, pieces, numPreviews);
+					 log.debug("MAIN (4 Lines) id="+pieceNow+" posX="+(maxX+1)+" rt="+rt+" score:"+score);
+
+					//If the score is better than the previos best score, change it, and record the chosen move for further application by setControl
+					  if(score.compareTo(bestScore)>0) {
+						 log.debug("MAIN (4 Lines) new best piece !");
+
+						 bestHold = false;
+						 bestX = maxX+1;
+						 bestRt = rt;
+						 bestXSub = maxX+1;
+						 bestRtSub = -1;
+						 bestScore=score;
+					 }
+				 }
+
+			 }
 		 }
-		 
 		 if (numPreviews>0)
 			 plannedToUseIPiece=bestScore.iPieceUsedInTheStack;
 
@@ -624,7 +581,7 @@ public class RanksAI extends DummyAI implements Runnable {
  * @param numPreviews Number of previews to consider in the thinking process
  * @return The score for this move (placing the piece in this column, with this rotation)
  */
-	 public Score thinkMain( int x,  int rt,  int[] heights, int pieces[], int holdPiece[],boolean holdOK,int numPreviews) {
+	 public Score thinkMain( int x,  int rt,  int[] heights, int pieces[], int numPreviews) {
 
 		 // Initialize the score with zero
 		 Score score=new Score();
@@ -632,8 +589,8 @@ public class RanksAI extends DummyAI implements Runnable {
 		 // Initialize maximum height and minimum height of the stack with dummy values
 		 int heightMin=99;
 		 int heightMax=0;
-		  ;
-		//Convert the heights to a surface to be able to check if the piece fits the surface
+
+		 //Convert the heights to a surface to be able to check if the piece fits the surface
 		 int []surface=ranks.heightsToSurface(heights);
 
 		 log.debug("piece id : " +pieces[0]+" rot : "+rt+" x :"+x+" surface :"+Arrays.toString(surface));
@@ -690,16 +647,12 @@ public class RanksAI extends DummyAI implements Runnable {
 				 int [] pieces2=new int[pieces.length];
 				 System.arraycopy(pieces, 1, pieces2, 0, pieces.length-1);
 
-				 int [] holdPiece2=new int[1];
-				 holdPiece2[0]=holdPiece[0];
-				 
-				 int numPreviews2=numPreviews-1;
 				 // If current piece is I Piece,  and minimum height is greater 4 and maximum height is greater than threshold, force the 4-Line
 				 if (pieceNow==Piece.PIECE_I && heightMax>=THRESHOLD_FORCE_4LINES && heightMin>=4 &&!plannedToUseIPiece){
 					 int rt2=1;
 					 int maxX2=ranks.getStackWidth()-1;
 					// Recursive call to thinkMain to examine that move
-					 scoreCurrent = thinkMain( maxX2+1,  rt2,  heightsWork, pieces2, holdPiece2,true, numPreviews2);
+					 scoreCurrent = thinkMain( maxX2+1,  rt2,  heightsWork, pieces2, numPreviews-1);
 					 log.debug("SUB (4 Lines)"+ numPreviews+" id="+pieceNow+" posX="+(maxX2+1)+" rt="+rt2+" score:"+scoreCurrent);
 
 					 // if the score is better than the previous best score, replace it.
@@ -714,62 +667,40 @@ public class RanksAI extends DummyAI implements Runnable {
 				 // force the 4-Line because the maximum height is under the threshold, then we test all possible columns
 				 // Let's try all the possible rotations for the currently considered piece.
 				 else {
-					 for (int h2=0;h2<(holdOK?2:1);h2++){
-						 if (h2==1){
-							 if (holdPiece2[0]==-1){
-								 holdPiece2[0]=pieces2[0];
-								 for (int i=0;i<pieces2.length-1;i++)
-									 pieces2[i]=pieces2[i+1];
-								
-							 
-								 
-								 pieceNow=pieces2[0];
-								// numPreviews2--;
-								 
+					 for(int rt2 = 0; rt2 < Ranks.PIECES_NUM_ROTATIONS[pieceNow]; rt2++) {
+
+						 // is the piece a vertical I ?
+						 boolean isVerticalI2=(pieceNow==Piece.PIECE_I && ((rt2==1)||(rt2==3)));
+
+						 // the columns go from 0 to 9 in the representation that Ranks use
+						 int minX2=0;
+						 int maxX2=minX2+ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow][rt2];
+
+						 for(int x2 = minX2; x2 <= maxX2; x2++) {
+
+							 // Recursive call to thinkMain to examine that move
+							 scoreCurrent = thinkMain( x2,  rt2, heightsWork,pieces2,numPreviews-1);
+							 log.debug("SUB "+numPreviews +" id="+pieceNow+" posX="+x2+" rt="+rt2+" score "+scoreCurrent);
+
+							 // if the score is better than the previous best score, replace it.
+							 if(scoreCurrent.compareTo(bestScore)>0) {
+								 log.debug("SUB new best piece !");
+								 bestScore=scoreCurrent;
 							 }
-							 else{
-								 int tempPiece=pieces2[0];
-								 pieces2[0]=holdPiece2[0];
-								 holdPiece2[0]=tempPiece;
-								 pieceNow=pieces2[0];
-							 }
+
 						 }
-				
-						 for(int rt2 = 0; rt2 < Ranks.PIECES_NUM_ROTATIONS[pieceNow]; rt2++) {
 
-							 // is the piece a vertical I ?
-							 boolean isVerticalI2=(pieceNow==Piece.PIECE_I && ((rt2==1)||(rt2==3)));
+						 // If the piece considered is vertical I and if the minimum height is greater than 4, try scoring a 4-Line
+						 if (isVerticalI2 && heightMin>=4){
 
-							 // the columns go from 0 to 9 in the representation that Ranks use
-							 int minX2=0;
-							 int maxX2=minX2+ranks.getStackWidth()-Ranks.PIECES_WIDTHS[pieceNow][rt2];
+							 // Recursive call to thinkMain to examine that move
+							 scoreCurrent = thinkMain( maxX2+1,  rt2,  heightsWork, pieces2, numPreviews-1);
+							 log.debug("SUB (4 Lines)"+ numPreviews+" id="+pieceNow+" posX="+(maxX2+1)+" rt="+rt2+" score:"+scoreCurrent);
+							 // if the score is better than the previous best score, replace it.
+							 if(scoreCurrent.compareTo(bestScore)>0) {
+								 log.debug("SUB new best piece !");
 
-							 for(int x2 = minX2; x2 <= maxX2; x2++) {
-
-								 // Recursive call to thinkMain to examine that move
-								 scoreCurrent = thinkMain( x2,  rt2, heightsWork,pieces2,holdPiece2,(h2==1)?false:true,numPreviews2);
-								 log.debug("SUB "+numPreviews +" id="+pieceNow+" posX="+x2+" rt="+rt2+" hold :"+h2+" score "+scoreCurrent);
-
-								 // if the score is better than the previous best score, replace it.
-								 if(scoreCurrent.compareTo(bestScore)>0) {
-									 log.debug("SUB new best piece !");
-									 bestScore=scoreCurrent;
-								 }
-
-							 }
-
-							 // If the piece considered is vertical I and if the minimum height is greater than 4, try scoring a 4-Line
-							 if (isVerticalI2 && heightMin>=4){
-
-								 // Recursive call to thinkMain to examine that move
-								 scoreCurrent = thinkMain( maxX2+1,  rt2,  heightsWork, pieces2, holdPiece2,(h2==1)?false:true,numPreviews2);
-								 log.debug("SUB (4 Lines)"+ numPreviews+" id="+pieceNow+" posX="+(maxX2+1)+" rt="+rt2+" hold :"+h2+" score:"+scoreCurrent);
-								 // if the score is better than the previous best score, replace it.
-								 if(scoreCurrent.compareTo(bestScore)>0) {
-									 log.debug("SUB new best piece !");
-
-									 bestScore=scoreCurrent;
-								 }
+								 bestScore=scoreCurrent;
 							 }
 						 }
 					 }
@@ -787,7 +718,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				 return bestScore;
 			 }
 
-			 // If numPreviews==0, that is, if there are no previews left to consider, just return the score of the surface resulting from the move.
+			 // If numPreviews==0, that is, if there are no previews left to condier, just return the score of the surface resulting from the move.
 			 else {
 
 				 score.computeScore(heightsWork);
