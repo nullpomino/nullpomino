@@ -187,6 +187,9 @@ public class NullpoMinoSDL {
 	/** Exit button使用許可 */
 	public static boolean allowQuit;
 
+	/** true if disable automatic input update */
+	public static boolean disableAutoInputUpdate;
+
 	/** MaximumFPS */
 	public static int maxFPS;
 
@@ -415,13 +418,15 @@ public class NullpoMinoSDL {
 			if(joystickMax > 0) joyUpdate();
 
 			// Update key input states
-			for(int i = 0; i < 2; i++) {
-				int joynum = joyUseNumber[i];
+			if(!disableAutoInputUpdate) {
+				for(int i = 0; i < 2; i++) {
+					int joynum = joyUseNumber[i];
 
-				if((joystickMax > 0) && (joynum >= 0) && (joynum < joystickMax)) {
-					GameKeySDL.gamekey[i].update(keyPressedState, joyPressedState[joynum], joyAxisX[joynum], joyAxisY[joynum], joyHatState[joynum]);
-				} else {
-					GameKeySDL.gamekey[i].update(keyPressedState);
+					if((joystickMax > 0) && (joynum >= 0) && (joynum < joystickMax)) {
+						GameKeySDL.gamekey[i].update(keyPressedState, joyPressedState[joynum], joyAxisX[joynum], joyAxisY[joynum], joyHatState[joynum]);
+					} else {
+						GameKeySDL.gamekey[i].update(keyPressedState);
+					}
 				}
 			}
 

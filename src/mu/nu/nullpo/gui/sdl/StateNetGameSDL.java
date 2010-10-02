@@ -71,6 +71,8 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	 */
 	@Override
 	public void enter() throws SDLException {
+		NullpoMinoSDL.disableAutoInputUpdate = true;
+
 		// Observer停止
 		NullpoMinoSDL.stopObserverClient();
 
@@ -115,6 +117,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 		// FPS復帰
 		NullpoMinoSDL.maxFPS = NullpoMinoSDL.propConfig.getProperty("option.maxfps", 60);
 		NullpoMinoSDL.allowQuit = true;
+		NullpoMinoSDL.disableAutoInputUpdate = false;
 	}
 
 	/*
@@ -139,6 +142,24 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	@Override
 	public void update() throws SDLException {
 		try {
+			// Update key input states
+			int joynum = NullpoMinoSDL.joyUseNumber[0];
+
+			boolean ingame = (gameManager != null) && (gameManager.engine.length > 0) &&
+							 (gameManager.engine[0] != null) && (gameManager.engine[0].isInGame);
+
+			if((NullpoMinoSDL.joystickMax > 0) && (joynum >= 0) && (joynum < NullpoMinoSDL.joystickMax)) {
+				GameKeySDL.gamekey[0].update(
+						NullpoMinoSDL.keyPressedState,
+						NullpoMinoSDL.joyPressedState[joynum],
+						NullpoMinoSDL.joyAxisX[joynum],
+						NullpoMinoSDL.joyAxisY[joynum],
+						NullpoMinoSDL.joyHatState[joynum],
+						ingame);
+			} else {
+				GameKeySDL.gamekey[0].update(NullpoMinoSDL.keyPressedState, ingame);
+			}
+
 			if(gameManager != null) {
 				// BGM
 				if(ResourceHolderSDL.bgmPlaying != gameManager.bgmStatus.bgm) {

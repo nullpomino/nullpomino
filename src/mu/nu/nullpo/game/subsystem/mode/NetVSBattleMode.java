@@ -830,13 +830,13 @@ public class NetVSBattleMode extends NetDummyMode {
 			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
 				if(!isReadyChangePending) {
 					// 準備完了ON
-					if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
+					if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
 						engine.playSE("decide");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\ttrue\n");
 					}
 					// 準備完了OFF
-					if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL) && (engine.statc[3] >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
+					if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
 						engine.playSE("change");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\tfalse\n");

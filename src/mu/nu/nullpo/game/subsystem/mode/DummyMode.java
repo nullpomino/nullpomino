@@ -29,6 +29,7 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
 import mu.nu.nullpo.game.component.Block;
+import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -205,24 +206,24 @@ public class DummyMode implements GameMode {
 	protected int updateCursor(GameEngine engine, int maxCursor) {
 		return updateCursor(engine, maxCursor, 0);
 	}
-	
+
 	protected int updateCursor (GameEngine engine, int maxCursor, int playerID) {
 		// Up
-		if(GameKey.gamekey[playerID].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 			engine.statc[2]--;
 			if(engine.statc[2] < 0) engine.statc[2] = maxCursor;
 			engine.playSE("cursor");
 		}
 		// Down
-		if(GameKey.gamekey[playerID].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 			engine.statc[2]++;
 			if(engine.statc[2] > maxCursor) engine.statc[2] = 0;
 			engine.playSE("cursor");
 		}
 
 		// Configuration changes
-		if(GameKey.gamekey[playerID].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) return -1;
-		if(GameKey.gamekey[playerID].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) return 1;
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) return -1;
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) return 1;
 		return 0;
 	}
 

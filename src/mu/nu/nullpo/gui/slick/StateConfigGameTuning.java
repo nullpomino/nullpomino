@@ -157,16 +157,12 @@ public class StateConfigGameTuning extends BasicGameState {
 		GameKey.gamekey[0].update(container.getInput());
 
 		// Cursor movement
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
-
-		    cursor--;
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+			cursor--;
 			if(cursor < 0) cursor = 4;
 			ResourceHolder.soundManager.play("cursor");
 		}
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
-
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
 			if(cursor > 4) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
@@ -174,10 +170,8 @@ public class StateConfigGameTuning extends BasicGameState {
 
 		// Configuration changes
 		int change = 0;
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) change = -1;
-		//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) change = 1;
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
+		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
 
 		if(change != 0) {
 			ResourceHolder.soundManager.play("change");
@@ -212,8 +206,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		}
 
 		// 決定 button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			ResourceHolder.soundManager.play("decide");
 
 			saveConfig(NullpoMinoSlick.propGlobal);
@@ -223,9 +216,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		}
 
 		// Cancel button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
-
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
 		    loadConfig(NullpoMinoSlick.propGlobal);
 			game.enterState(StateConfigMainMenu.ID);
 		}

@@ -312,8 +312,14 @@ public class StateInGame extends BasicGameState {
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
 		// Update key input states
-		GameKey.gamekey[0].update(container.getInput());
-		GameKey.gamekey[1].update(container.getInput());
+		for(int i = 0; i < 2; i++) {
+			if((gameManager != null) && (gameManager.engine.length > i) &&
+			   (gameManager.engine[i] != null) && (gameManager.engine[i].isInGame) && (!pause || enableframestep)) {
+				GameKey.gamekey[i].update(container.getInput(), true);
+			} else {
+				GameKey.gamekey[i].update(container.getInput(), false);
+			}
+		}
 
 		// ポーズ
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_PAUSE) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_PAUSE)) {
@@ -332,7 +338,7 @@ public class StateInGame extends BasicGameState {
 		}
 		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 				cursor--;
 
 				if(cursor < 0) {
@@ -344,7 +350,7 @@ public class StateInGame extends BasicGameState {
 
 				ResourceHolder.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 				cursor++;
 				if(cursor > 3) cursor = 0;
 
@@ -353,19 +359,19 @@ public class StateInGame extends BasicGameState {
 
 				ResourceHolder.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 				ResourceHolder.soundManager.play("decide");
 				if(cursor == 0) {
-					// 再開
+					// Continue
 					pause = false;
 					ResourceHolder.bgmResume();
 				} else if(cursor == 1) {
-					// リトライ
+					// Retry
 					ResourceHolder.bgmStop();
 					pause = false;
 					gameManager.reset();
 				} else if(cursor == 2) {
-					// 終了
+					// End
 					ResourceHolder.bgmStop();
 					game.enterState(StateTitle.ID);
 					return;

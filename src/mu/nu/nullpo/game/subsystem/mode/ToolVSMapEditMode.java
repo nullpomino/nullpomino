@@ -204,7 +204,7 @@ public class ToolVSMapEditMode extends DummyMode {
 		}
 
 		// 決定
-		if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+		if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 			engine.playSE("decide");
 
 			if(engine.statc[2] == 0) {

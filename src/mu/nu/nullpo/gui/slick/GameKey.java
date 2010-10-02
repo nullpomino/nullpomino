@@ -34,7 +34,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.newdawn.slick.Input;
 
 /**
- * Key input state manager
+ * Key input state manager (Only use with Slick. Don't use inside game modes!)
  */
 public class GameKey extends GameKeyDummy {
 	/** Key input state (Used by all game states) */
@@ -72,36 +72,37 @@ public class GameKey extends GameKeyDummy {
 	 * @param input Slick's Input class (You can get it with container.getInput())
 	 */
 	public void update(Input input) {
+		update(input, false);
+	}
+
+	/**
+	 * Update button input status
+	 * @param input Slick's Input class (You can get it with container.getInput())
+	 * @param ingame true if ingame
+	 */
+	public void update(Input input, boolean ingame) {
 		if((player == 0) && (NullpoMinoSlick.useJInputKeyboard)) {
 			JInputManager.poll();
 		}
 
 		for(int i = 0; i < MAX_BUTTON; i++) {
+			int[] kmap = ingame ? keymap : keymapNav;
+
 			boolean flag = NullpoMinoSlick.useJInputKeyboard ?
-								JInputManager.isKeyDown(keymap[i]) : input.isKeyDown(keymap[i]);
+								JInputManager.isKeyDown(kmap[i]) : input.isKeyDown(kmap[i]);
 
 			switch(i) {
 			case BUTTON_UP:
-			case BUTTON_NAV_UP:
 				flag |= ControllerManager.isControllerUp(player, input);
 				break;
 			case BUTTON_DOWN:
-			case BUTTON_NAV_DOWN:
 				flag |= ControllerManager.isControllerDown(player, input);
 				break;
 			case BUTTON_LEFT:
-			case BUTTON_NAV_LEFT:
 				flag |= ControllerManager.isControllerLeft(player, input);
 				break;
 			case BUTTON_RIGHT:
-			case BUTTON_NAV_RIGHT:
 				flag |= ControllerManager.isControllerRight(player, input);
-				break;
-			case BUTTON_NAV_SELECT:
-				flag |= ControllerManager.isControllerButton(player, input, buttonmap[BUTTON_A]);
-				break;
-			case BUTTON_NAV_CANCEL:
-				flag |= ControllerManager.isControllerButton(player, input, buttonmap[BUTTON_B]);
 				break;
 			default:
 				flag |= ControllerManager.isControllerButton(player, input, buttonmap[i]);
@@ -121,11 +122,14 @@ public class GameKey extends GameKeyDummy {
 	 */
 	public void loadConfig(CustomProperties prop) {
 		super.loadConfig(prop);
+
+		/*
 		keymap[BUTTON_NAV_UP] = prop.getProperty("key.p" + player + ".navigationup", Input.KEY_UP);
 		keymap[BUTTON_NAV_DOWN] = prop.getProperty("key.p" + player + ".navigationdown", Input.KEY_DOWN);
 		keymap[BUTTON_NAV_LEFT] = prop.getProperty("key.p" + player + ".navigationleft", Input.KEY_LEFT);
 		keymap[BUTTON_NAV_RIGHT] = prop.getProperty("key.p" + player + ".navigationright", Input.KEY_RIGHT);
 		keymap[BUTTON_NAV_SELECT] = prop.getProperty("key.p" + player + ".navigationselect", Input.KEY_ENTER);
 		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationcancel", Input.KEY_ESCAPE);
+		*/
 	}
 }

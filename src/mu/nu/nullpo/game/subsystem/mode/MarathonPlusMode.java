@@ -271,7 +271,7 @@ public class MarathonPlusMode extends DummyMode {
 			}
 
 			// 決定
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -279,7 +279,7 @@ public class MarathonPlusMode extends DummyMode {
 			}
 
 			// Cancel
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
 

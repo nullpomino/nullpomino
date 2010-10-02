@@ -105,6 +105,7 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 		case 4:
 			StateConfigKeyboardSDL stateK = (StateConfigKeyboardSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_KEYBOARD];
 			stateK.player = player;
+			stateK.isNavSetting = false;
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD);
 			break;
 		case 5:

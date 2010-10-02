@@ -129,6 +129,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 			break;
 		case 4:
 			NullpoMinoSlick.stateConfigKeyboard.player = player;
+			NullpoMinoSlick.stateConfigKeyboard.isNavSetting = false;
 			game.enterState(StateConfigKeyboard.ID);
 			break;
 		case 5:

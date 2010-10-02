@@ -584,7 +584,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// 決定
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				switch(engine.statc[2]) {
@@ -676,7 +676,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// 決定
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 0) {
@@ -690,7 +690,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// Cancel
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5)) {
 				editModeScreen = 1;
 				engine.statc[2] = 0;
 				engine.statc[3] = 0;
@@ -771,7 +771,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// 決定
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -779,7 +779,7 @@ public class GemManiaMode extends DummyMode {
 			}
 
 			// Cancel
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
 
@@ -1456,7 +1456,7 @@ public class GemManiaMode extends DummyMode {
 					engine.playSE("cursor");
 				}
 				// 決定
-				if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
+				if(engine.ctrl.isPush(Controller.BUTTON_A)) {
 					if(engine.statc[1] == 0) {
 						// YES
 						limittimeNow = limittimeStart;

@@ -240,25 +240,25 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			}
 
 			if (xyzzy != 573) {
-				if (GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_UP)) {
+				if (engine.ctrl.isPush(Controller.BUTTON_UP)) {
 					if (xyzzy == 1)
 						xyzzy++;
 					else if (xyzzy != 2)
 						xyzzy = 1;
 				}
-				if (GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_DOWN)) {
+				if (engine.ctrl.isPush(Controller.BUTTON_DOWN)) {
 					if (xyzzy == 2 || xyzzy == 3)
 						xyzzy++;
 					else
 						xyzzy = 0;
 				}
-				if (GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_LEFT)) {
+				if (engine.ctrl.isPush(Controller.BUTTON_LEFT)) {
 					if (xyzzy == 4 || xyzzy == 6)
 						xyzzy++;
 					else
 						xyzzy = 0;
 				}
-				if (GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_RIGHT)) {
+				if (engine.ctrl.isPush(Controller.BUTTON_RIGHT)) {
 					if (xyzzy == 5 || xyzzy == 7)
 						xyzzy++;
 					else
@@ -266,7 +266,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 				}
 			}
 
-			if (GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT)) {
+			if (engine.ctrl.isPush(Controller.BUTTON_A)) {
 				if ((xyzzy == 573) && engine.statc[2] > 4) {
 					loadMapSetFever(engine, playerID, mapSet, true);
 					loadFeverMap(engine, playerID, previewChain, previewSubset);
@@ -283,7 +283,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 				}
 			}
 
-			if((GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL))) {
+			if((engine.ctrl.isPush(Controller.BUTTON_B))) {
 				if (xyzzy == 8)
 					xyzzy++;
 				else {

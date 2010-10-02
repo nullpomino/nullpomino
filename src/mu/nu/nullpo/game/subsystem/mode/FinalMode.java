@@ -385,7 +385,7 @@ public class FinalMode extends DummyMode {
 			}
 
 			// Check for A button, when pressed this will begin the game
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				receiver.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -393,7 +393,7 @@ public class FinalMode extends DummyMode {
 			}
 
 			// Check for B button, when pressed this will shutdown the game engine.
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
 

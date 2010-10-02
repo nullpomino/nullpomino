@@ -5,28 +5,30 @@ import mu.nu.nullpo.util.CustomProperties;
 
 public class GameKeyDummy {
 
-	/** Button number定count */
+	/** Button number constants */
 	public static final int BUTTON_UP = 0, BUTTON_DOWN = 1, BUTTON_LEFT = 2, BUTTON_RIGHT = 3, BUTTON_A = 4, BUTTON_B = 5, BUTTON_C = 6,
 			BUTTON_D = 7, BUTTON_E = 8, BUTTON_F = 9, BUTTON_QUIT = 10, BUTTON_PAUSE = 11, BUTTON_GIVEUP = 12, BUTTON_RETRY = 13,
-			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15, BUTTON_NAV_UP = 16, BUTTON_NAV_DOWN = 17, BUTTON_NAV_LEFT = 18,
-			BUTTON_NAV_RIGHT = 19, BUTTON_NAV_SELECT = 20, BUTTON_NAV_CANCEL = 21;
+			BUTTON_FRAMESTEP = 14, BUTTON_SCREENSHOT = 15;
 
-	/** Buttoncountの定count */
-	public static final int MAX_BUTTON = 22;
+	/** Max button number */
+	public static final int MAX_BUTTON = 16;
 
-	/** Key code */
-	public int keymap[];
+	/** Key code (ingame) */
+	public int[] keymap;
 
-	/** Joystick Button number */
-	public int buttonmap[];
+	/** Key code (menu) */
+	public int[] keymapNav;
 
-	/** Joystick direction key が反応する閾値 */
+	/** Joystick button number */
+	public int[] buttonmap;
+
+	/** Joystick direction key border */
 	public int joyBorder;
 
 	/** Player ID */
 	public int player;
 
-	/** Button input flag兼 input  time */
+	/** Button input flag and length */
 	protected int inputstate[];
 
 	/** Button input flag */
@@ -45,6 +47,7 @@ public class GameKeyDummy {
 	 */
 	protected GameKeyDummy(int pl) {
 		keymap = new int[MAX_BUTTON];
+		keymapNav = new int[MAX_BUTTON];
 		buttonmap = new int[MAX_BUTTON];
 		joyBorder = 0;
 		for(int i = 0; i < buttonmap.length; i++) buttonmap[i] = -1;
@@ -111,10 +114,11 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 * キー設定を読み込み
+	 * Load settings
 	 * @param prop Property file to read from
 	 */
-	 	public void loadConfig(CustomProperties prop) {
+	public void loadConfig(CustomProperties prop) {
+		// Keyboard - ingame
 		keymap[BUTTON_UP] = prop.getProperty("key.p" + player + ".up", 0);
 		keymap[BUTTON_DOWN] = prop.getProperty("key.p" + player + ".down", 0);
 		keymap[BUTTON_LEFT] = prop.getProperty("key.p" + player + ".left", 0);
@@ -132,6 +136,25 @@ public class GameKeyDummy {
 		keymap[BUTTON_FRAMESTEP] = prop.getProperty("key.p" + player + ".framestep", 0);
 		keymap[BUTTON_SCREENSHOT] = prop.getProperty("key.p" + player + ".screenshot", 0);
 
+		// Keyboard - menu
+		keymapNav[BUTTON_UP] = prop.getProperty("keynav.p" + player + ".up", keymap[BUTTON_UP]);
+		keymapNav[BUTTON_DOWN] = prop.getProperty("keynav.p" + player + ".down", keymap[BUTTON_DOWN]);
+		keymapNav[BUTTON_LEFT] = prop.getProperty("keynav.p" + player + ".left", keymap[BUTTON_LEFT]);
+		keymapNav[BUTTON_RIGHT] = prop.getProperty("keynav.p" + player + ".right", keymap[BUTTON_RIGHT]);
+		keymapNav[BUTTON_A] = prop.getProperty("keynav.p" + player + ".a", keymap[BUTTON_A]);
+		keymapNav[BUTTON_B] = prop.getProperty("keynav.p" + player + ".b", keymap[BUTTON_B]);
+		keymapNav[BUTTON_C] = prop.getProperty("keynav.p" + player + ".c", keymap[BUTTON_C]);
+		keymapNav[BUTTON_D] = prop.getProperty("keynav.p" + player + ".d", keymap[BUTTON_D]);
+		keymapNav[BUTTON_E] = prop.getProperty("keynav.p" + player + ".e", keymap[BUTTON_E]);
+		keymapNav[BUTTON_F] = prop.getProperty("keynav.p" + player + ".f", keymap[BUTTON_F]);
+		keymapNav[BUTTON_QUIT] = prop.getProperty("keynav.p" + player + ".quit", keymap[BUTTON_QUIT]);
+		keymapNav[BUTTON_PAUSE] = prop.getProperty("keynav.p" + player + ".pause", keymap[BUTTON_PAUSE]);
+		keymapNav[BUTTON_GIVEUP] = prop.getProperty("keynav.p" + player + ".giveup", keymap[BUTTON_GIVEUP]);
+		keymapNav[BUTTON_RETRY] = prop.getProperty("keynav.p" + player + ".retry", keymap[BUTTON_RETRY]);
+		keymapNav[BUTTON_FRAMESTEP] = prop.getProperty("keynav.p" + player + ".framestep", keymap[BUTTON_FRAMESTEP]);
+		keymapNav[BUTTON_SCREENSHOT] = prop.getProperty("keynav.p" + player + ".screenshot", keymap[BUTTON_SCREENSHOT]);
+
+		// Joystick
 		//buttonmap[BUTTON_UP] = prop.getProperty("button.p" + player + ".up", 0);
 		//buttonmap[BUTTON_DOWN] = prop.getProperty("button.p" + player + ".down", 0);
 		//buttonmap[BUTTON_LEFT] = prop.getProperty("button.p" + player + ".left", 0);
@@ -148,21 +171,16 @@ public class GameKeyDummy {
 		buttonmap[BUTTON_RETRY] = prop.getProperty("button.p" + player + ".retry", -1);
 		buttonmap[BUTTON_FRAMESTEP] = prop.getProperty("button.p" + player + ".framestep", -1);
 		buttonmap[BUTTON_SCREENSHOT] = prop.getProperty("button.p" + player + ".screenshot", -1);
-		buttonmap[BUTTON_NAV_UP]=prop.getProperty("button.p" + player + ".navigationup", -1);
-		buttonmap[BUTTON_NAV_DOWN]=prop.getProperty("button.p" + player + ".navigationdown", -1);
-		buttonmap[BUTTON_NAV_LEFT]=prop.getProperty("button.p" + player + ".navigationleft", -1);
-		buttonmap[BUTTON_NAV_RIGHT]=prop.getProperty("button.p" + player + ".navigationright", -1);
-		buttonmap[BUTTON_NAV_SELECT]=prop.getProperty("button.p" + player + ".navigationselect", -1);
-		buttonmap[BUTTON_NAV_CANCEL]=prop.getProperty("button.p" + player + ".navigationcancel", -1);
 
 		joyBorder = prop.getProperty("joyBorder.p" + player, 0);
 	}
 
 	/**
-	 * キー設定を保存
+	 * Save settings
 	 * @param prop Property file to save to
 	 */
 	public void saveConfig(CustomProperties prop) {
+		// Keyboard - ingame
 		prop.setProperty("key.p" + player + ".up", keymap[BUTTON_UP]);
 		prop.setProperty("key.p" + player + ".down", keymap[BUTTON_DOWN]);
 		prop.setProperty("key.p" + player + ".left", keymap[BUTTON_LEFT]);
@@ -179,13 +197,26 @@ public class GameKeyDummy {
 		prop.setProperty("key.p" + player + ".retry", keymap[BUTTON_RETRY]);
 		prop.setProperty("key.p" + player + ".framestep", keymap[BUTTON_FRAMESTEP]);
 		prop.setProperty("key.p" + player + ".screenshot", keymap[BUTTON_SCREENSHOT]);
-        prop.setProperty("key.p" + player + ".navigationup", keymap[BUTTON_NAV_UP]);
-        prop.setProperty("key.p" + player + ".navigationdown", keymap[BUTTON_NAV_DOWN]);
-        prop.setProperty("key.p" + player + ".navigationleft", keymap[BUTTON_NAV_LEFT]);
-        prop.setProperty("key.p" + player + ".navigationright", keymap[BUTTON_NAV_RIGHT]);
-        prop.setProperty("key.p" + player + ".navigationselect", keymap[BUTTON_NAV_SELECT]);
-        prop.setProperty("key.p" + player + ".navigationcancel", keymap[BUTTON_NAV_CANCEL]);
 
+		// Keyboard - menu
+		prop.setProperty("keynav.p" + player + ".up", keymapNav[BUTTON_UP]);
+		prop.setProperty("keynav.p" + player + ".down", keymapNav[BUTTON_DOWN]);
+		prop.setProperty("keynav.p" + player + ".left", keymapNav[BUTTON_LEFT]);
+		prop.setProperty("keynav.p" + player + ".right", keymapNav[BUTTON_RIGHT]);
+		prop.setProperty("keynav.p" + player + ".a", keymapNav[BUTTON_A]);
+		prop.setProperty("keynav.p" + player + ".b", keymapNav[BUTTON_B]);
+		prop.setProperty("keynav.p" + player + ".c", keymapNav[BUTTON_C]);
+		prop.setProperty("keynav.p" + player + ".d", keymapNav[BUTTON_D]);
+		prop.setProperty("keynav.p" + player + ".e", keymapNav[BUTTON_E]);
+		prop.setProperty("keynav.p" + player + ".f", keymapNav[BUTTON_F]);
+		prop.setProperty("keynav.p" + player + ".quit", keymapNav[BUTTON_QUIT]);
+		prop.setProperty("keynav.p" + player + ".pause", keymapNav[BUTTON_PAUSE]);
+		prop.setProperty("keynav.p" + player + ".giveup", keymapNav[BUTTON_GIVEUP]);
+		prop.setProperty("keynav.p" + player + ".retry", keymapNav[BUTTON_RETRY]);
+		prop.setProperty("keynav.p" + player + ".framestep", keymapNav[BUTTON_FRAMESTEP]);
+		prop.setProperty("keynav.p" + player + ".screenshot", keymapNav[BUTTON_SCREENSHOT]);
+
+		// Joystick
 		//prop.setProperty("button.p" + player + ".up", buttonmap[BUTTON_UP]);
 		//prop.setProperty("button.p" + player + ".down", buttonmap[BUTTON_DOWN]);
 		//prop.setProperty("button.p" + player + ".left", buttonmap[BUTTON_LEFT]);
@@ -202,12 +233,6 @@ public class GameKeyDummy {
 		prop.setProperty("button.p" + player + ".retry", buttonmap[BUTTON_RETRY]);
 		prop.setProperty("button.p" + player + ".framestep", buttonmap[BUTTON_FRAMESTEP]);
 		prop.setProperty("button.p" + player + ".screenshot", buttonmap[BUTTON_SCREENSHOT]);
-		prop.setProperty("button.p" + player + ".navigationup", buttonmap[BUTTON_NAV_UP]);
-        prop.setProperty("button.p" + player + ".navigationdown", buttonmap[BUTTON_NAV_DOWN]);
-        prop.setProperty("button.p" + player + ".navigationleft", buttonmap[BUTTON_NAV_LEFT]);
-        prop.setProperty("button.p" + player + ".navigationright", buttonmap[BUTTON_NAV_RIGHT]);
-        prop.setProperty("button.p" + player + ".navigationselect", buttonmap[BUTTON_NAV_SELECT]);
-        prop.setProperty("button.p" + player + ".navigationcancel", buttonmap[BUTTON_NAV_CANCEL]);
 
         prop.setProperty("joyBorder.p" + player, joyBorder);
 
@@ -224,7 +249,8 @@ public class GameKeyDummy {
 	}
 
 	public static boolean isNavKey(int key) {
-		return (key >= BUTTON_NAV_UP) && (key <= BUTTON_NAV_CANCEL);
+		//return (key >= BUTTON_NAV_UP) && (key <= BUTTON_NAV_CANCEL);
+		return false;
 	}
 
 }

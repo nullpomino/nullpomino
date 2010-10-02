@@ -30,7 +30,6 @@ package mu.nu.nullpo.gui.slick;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -62,20 +61,8 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
-	/** Number of button currently being configured */
-	protected int keynum;
-
-	/** 経過 frame count */
-	protected int frame;
-
-	/** Button settings */
-	protected int keymap[];
-
-	/** Flag set to true when setting custom keys */
-	protected boolean setCustom;
-
 	public StateConfigKeyboardNavi () {
-		maxCursor = 3;
+		maxCursor = 2;
 		minChoiceY = 3;
 	}
 
@@ -92,13 +79,6 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	 */
 	protected void reset() {
 		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
-
-		keynum = -1;
-		frame = 0;
-		setCustom = false;
-
-		keymap = new int[NUM_KEYS];
-		loadSettings();
 	}
 
 	/*
@@ -126,38 +106,24 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 		NormalFont.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
 
-		if (!setCustom)
-			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
 		NormalFont.printFontGrid(2, 3, "DEFAULT", (cursor == 0));
 		NormalFont.printFontGrid(2, 4, "GAME KEYS", (cursor == 1));
-		NormalFont.printFontGrid(2, 5, "CUSTOM", (cursor == 2));
-		NormalFont.printFontGrid(2, 6, "[EDIT CUSTOM]", (cursor == 3));
+		NormalFont.printFontGrid(2, 5, "[CUSTOM]", (cursor == 2));
 
 		if (cursor == 0){
 			for(int x = 0; x < NUM_KEYS; x++) {
-				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(DEFAULT_KEYS[x]), (keynum == x));
+				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(DEFAULT_KEYS[x]));
 			}
 		} else if (cursor == 1) {
 			for(int x = 0; x < NUM_KEYS; x++)
 				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
 						+ getKeyName(GameKey.gamekey[player].keymap[x]));
 		} else {
-			for (int x = 0; x < NUM_KEYS; x++)
-				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(keymap[x]), (keynum == x));
-		}
-
-		if(setCustom && frame >= KEYACCEPTFRAME) {
-			if(keynum < NUM_KEYS) {
-				NormalFont.printFontGrid(1, 8 + keynum, "b", NormalFont.COLOR_RED);
-
-				NormalFont.printFontGrid(1, 25, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
-				if(!firstSetupMode) NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
-			} else {
-				NormalFont.printFontGrid(1, 25, "ENTER:     OK", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFont.COLOR_GREEN);
-				if(!firstSetupMode) NormalFont.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
-			}
+			for(int x = 0; x < NUM_KEYS; x++)
+				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
+						+ getKeyName(GameKey.gamekey[player].keymapNav[x]));
 		}
 
 		// FPS
@@ -167,57 +133,20 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
-	/*
-	 * Update game state
-	 */
-	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if (!setCustom) {
-			super.update(container, game, delta);
-			frame = 0;
-		} else {
-			frame++;
-
-			// JInput
-			if(NullpoMinoSlick.useJInputKeyboard) {
-				JInputManager.poll();
-
-				if(frame >= KEYACCEPTFRAME) {
-					for(int i = 0; i < JInputManager.MAX_SLICK_KEY; i++) {
-						if(JInputManager.isKeyDown(i)) {
-							onKey(i);
-							frame = 0;
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-	}
-
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		if(setCustom) return true;
-
-		if (cursor == 3) {
-			setCustom = true;
-			//keynum = -1;
-			keynum = 0;
-			frame = 0;
+		if (cursor == 2) {
+			NullpoMinoSlick.stateConfigKeyboard.player = player;
+			NullpoMinoSlick.stateConfigKeyboard.isNavSetting = true;
+			game.enterState(StateConfigKeyboard.ID);
 			return true;
 		} else if (cursor == 0){
 			for(int i = 0; i < NUM_KEYS; i++) {
-				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = DEFAULT_KEYS[i];
+				GameKey.gamekey[player].keymapNav[i] = DEFAULT_KEYS[i];
 			}
 		} else if (cursor == 1) {
-			for(int i = 0; i < NUM_KEYS; i++) {
-				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = GameKey.gamekey[player].keymap[i];
-			}
-		} else if (cursor == 2) {
-			for(int i = 0; i < NUM_KEYS; i++) {
-				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = keymap[i];
+			for(int i = 0; i < GameKey.MAX_BUTTON; i++) {
+				GameKey.gamekey[player].keymapNav[i] = GameKey.gamekey[player].keymap[i];
 			}
 		}
 		GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
@@ -234,70 +163,8 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
-		if(!setCustom) {
-			game.enterState(StateConfigMainMenu.ID);
-		}
+		game.enterState(StateConfigMainMenu.ID);
 		return false;
-	}
-
-	/*
-	 * When a key is released (Slick native)
-	 */
-	@Override
-	public void keyReleased(int key, char c) {
-		if(setCustom && !NullpoMinoSlick.useJInputKeyboard) {
-			onKey(key);
-		}
-	}
-
-	/**
-	 * When a key is released
-	 * @param key Keycode
-	 */
-	protected void onKey(int key) {
-		if(frame >= KEYACCEPTFRAME) {
-			if (keynum < 0)
-				keynum = 0;
-			else if(keynum < NUM_KEYS) {
-				if(key == Input.KEY_DELETE) {
-					ResourceHolder.soundManager.play("move");
-					keymap[keynum] = 0;
-				} else if(key == Input.KEY_BACK) {
-					setCustom = false;
-					loadSettings();
-					keynum = -1;
-				} else {
-					ResourceHolder.soundManager.play("move");
-					keymap[keynum] = key;
-				}
-
-				keynum++;
-			} else {
-				if(key == Input.KEY_ENTER) {
-					ResourceHolder.soundManager.play("decide");
-
-					for(int i = 0; i < NUM_KEYS; i++) {
-						NullpoMinoSlick.propConfig.setProperty("option.keyCustomNavi." + i, keymap[i]);
-					}
-					setCustom = false;
-					keynum = -1;
-				} else if(key == Input.KEY_DELETE) {
-					ResourceHolder.soundManager.play("move");
-					loadSettings();
-					keynum = 0;
-				} else if(key == Input.KEY_BACK) {
-					setCustom = false;
-					loadSettings();
-					keynum = -1;
-				}
-			}
-		}
-	}
-
-	private void loadSettings() {
-		for(int i = 0; i < NUM_KEYS; i++) {
-			keymap[i] = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNavi." + i, DEFAULT_KEYS[i]);
-		}
 	}
 
 	/**
@@ -309,7 +176,7 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 		cursor = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0);
 		if (firstSetupMode)
 			for(int i = 0; i < NUM_KEYS; i++)
-				GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = DEFAULT_KEYS[i];
+				GameKey.gamekey[player].keymapNav[i] = DEFAULT_KEYS[i];
 	}
 
 	/**

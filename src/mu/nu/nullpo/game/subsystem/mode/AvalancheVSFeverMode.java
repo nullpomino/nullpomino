@@ -284,7 +284,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			}
 
 			// 決定
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 26) {
@@ -301,7 +301,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			}
 
 			// Cancel
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
 			engine.statc[3]++;
@@ -326,7 +326,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 				owner.engine[1].resetStatc();
 			}
 			// Cancel
-			else if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+			else if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.statc[4] = 0;
 			}
 		}

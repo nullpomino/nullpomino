@@ -363,7 +363,7 @@ public class LineRaceMode extends NetDummyMode {
 			}
 
 			// Confirm
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5) && (!netIsWatch)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (!netIsWatch)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 10) {
@@ -392,7 +392,7 @@ public class LineRaceMode extends NetDummyMode {
 			}
 
 			// Cancel
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL) && (!netIsNetPlay)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B) && (!netIsNetPlay)) {
 				engine.quitflag = true;
 			}
 

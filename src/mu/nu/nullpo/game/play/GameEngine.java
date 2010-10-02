@@ -213,6 +213,9 @@ public class GameEngine {
 	/** Free status counters */
 	public int[] statc;
 
+	/** true if game play, false if menu. Used for alternate keyboard mappings. */
+	public boolean isInGame;
+
 	/** true if the game is active */
 	public boolean gameActive;
 
@@ -699,6 +702,7 @@ public class GameEngine {
 		stat = STAT_SETTING;
 		statc = new int[MAX_STATC];
 
+		isInGame = false;
 		gameActive = false;
 		timerActive = false;
 		replayTimer = 0;
@@ -1846,6 +1850,7 @@ public class GameEngine {
 				ctrl.reset();
 				// ゲーム中 flagON
 				gameActive = true;
+				isInGame = true;
 			}
 		}
 
@@ -2958,6 +2963,7 @@ public class GameEngine {
 		if(statc[0] == 0) {
 			gameActive = false;
 			timerActive = false;
+			isInGame = false;
 			owner.bgmStatus.fadesw = true;
 			if(ai != null) ai.shutdown(this, playerID);
 
@@ -2996,6 +3002,7 @@ public class GameEngine {
 
 				gameActive = false;
 				timerActive = false;
+				isInGame = false;
 				blockShowOutlineOnly = false;
 				if(owner.getPlayers() < 2) owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 				if(ai != null) ai.shutdown(this, playerID);

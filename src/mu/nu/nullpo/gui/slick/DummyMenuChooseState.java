@@ -96,29 +96,26 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 
 		if (maxCursor >= 0) {
 			// Cursor movement
-			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_UP)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 				cursor--;
 				if(cursor < 0) cursor = maxCursor;
 				ResourceHolder.soundManager.play("cursor");
 			}
-			//if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_DOWN)) {
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			    cursor++;
 				if(cursor > maxCursor) cursor = 0;
 				ResourceHolder.soundManager.play("cursor");
 			}
 
 			int change = 0;
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_LEFT)) change = -1;
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_NAV_RIGHT)) change = 1;
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
 
 			if(change != 0)
 				onChange(container, game, delta, change);
 
-			// 決定 button
-			// if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_SELECT) || mouseConfirm) {
+			// Confirm button
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A) || mouseConfirm) {
 				if (onDecide(container, game, delta))
 					return;
 			}
@@ -130,8 +127,7 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 		}
 
 		// Cancel button
-		//if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) game.enterState(StateTitle.ID);
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_NAV_CANCEL) || MouseInput.mouseInput.isMouseRightClicked()) {
+		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) || MouseInput.mouseInput.isMouseRightClicked()) {
 			if (onCancel(container, game, delta));
 				return;
 		}

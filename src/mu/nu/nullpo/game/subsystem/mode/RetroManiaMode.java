@@ -28,6 +28,7 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
+import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -229,7 +230,7 @@ public class RetroManiaMode extends DummyMode {
 			}
 
 			// Check for A button, when pressed this will begin the game
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_SELECT) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -237,7 +238,7 @@ public class RetroManiaMode extends DummyMode {
 			}
 
 			// Check for B button, when pressed this will shutdown the game engine.
-			if(GameKey.gamekey[playerID].isPushKey(GameKey.BUTTON_NAV_CANCEL)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
 

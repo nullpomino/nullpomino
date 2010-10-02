@@ -48,6 +48,9 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	/** Player number */
 	public int player = 0;
 
+	/** true if navigation key setting mode */
+	public boolean isNavSetting = false;
+
 	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
@@ -76,7 +79,10 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 		previousKeyPressedState = new boolean[NullpoMinoSDL.SDL_KEY_MAX];
 
 		for(int i = 0; i < NUM_KEYS; i++) {
-			keymap[i] = GameKeySDL.gamekey[player].keymap[i];
+			if(!isNavSetting)
+				keymap[i] = GameKeySDL.gamekey[player].keymap[i];
+			else
+				keymap[i] = GameKeySDL.gamekey[player].keymapNav[i];
 		}
 	}
 
@@ -112,17 +118,29 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	public void render(SDLSurface screen) throws SDLException {
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
-		NormalFontSDL.printFontGrid(1,  1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFontSDL.COLOR_ORANGE);
+		if(!isNavSetting) {
+			NormalFontSDL.printFontGrid(1,  1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFontSDL.COLOR_ORANGE);
+		} else {
+			NormalFontSDL.printFontGrid(1,  1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFontSDL.COLOR_ORANGE);
+		}
 
 		NormalFontSDL.printFontGrid(2,  3, "UP          : " + getKeyName(keymap[GameKeySDL.BUTTON_UP]), (keynum == 0));
 		NormalFontSDL.printFontGrid(2,  4, "DOWN        : " + getKeyName(keymap[GameKeySDL.BUTTON_DOWN]), (keynum == 1));
 		NormalFontSDL.printFontGrid(2,  5, "LEFT        : " + getKeyName(keymap[GameKeySDL.BUTTON_LEFT]), (keynum == 2));
 		NormalFontSDL.printFontGrid(2,  6, "RIGHT       : " + getKeyName(keymap[GameKeySDL.BUTTON_RIGHT]), (keynum == 3));
-		NormalFontSDL.printFontGrid(2,  7, "A (L/R-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_A]), (keynum == 4));
-		NormalFontSDL.printFontGrid(2,  8, "B (R/L-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_B]), (keynum == 5));
-		NormalFontSDL.printFontGrid(2,  9, "C (L/R-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_C]), (keynum == 6));
-		NormalFontSDL.printFontGrid(2, 10, "D (HOLD)    : " + getKeyName(keymap[GameKeySDL.BUTTON_D]), (keynum == 7));
-		NormalFontSDL.printFontGrid(2, 11, "E (180-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_E]), (keynum == 8));
+		if(!isNavSetting) {
+			NormalFontSDL.printFontGrid(2,  7, "A (L/R-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_A]), (keynum == 4));
+			NormalFontSDL.printFontGrid(2,  8, "B (R/L-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_B]), (keynum == 5));
+			NormalFontSDL.printFontGrid(2,  9, "C (L/R-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_C]), (keynum == 6));
+			NormalFontSDL.printFontGrid(2, 10, "D (HOLD)    : " + getKeyName(keymap[GameKeySDL.BUTTON_D]), (keynum == 7));
+			NormalFontSDL.printFontGrid(2, 11, "E (180-ROT) : " + getKeyName(keymap[GameKeySDL.BUTTON_E]), (keynum == 8));
+		} else {
+			NormalFontSDL.printFontGrid(2,  7, "A (SELECT)  : " + getKeyName(keymap[GameKeySDL.BUTTON_A]), (keynum == 4));
+			NormalFontSDL.printFontGrid(2,  8, "B (CANCEL)  : " + getKeyName(keymap[GameKeySDL.BUTTON_B]), (keynum == 5));
+			NormalFontSDL.printFontGrid(2,  9, "C           : " + getKeyName(keymap[GameKeySDL.BUTTON_C]), (keynum == 6));
+			NormalFontSDL.printFontGrid(2, 10, "D           : " + getKeyName(keymap[GameKeySDL.BUTTON_D]), (keynum == 7));
+			NormalFontSDL.printFontGrid(2, 11, "E           : " + getKeyName(keymap[GameKeySDL.BUTTON_E]), (keynum == 8));
+		}
 		NormalFontSDL.printFontGrid(2, 12, "F           : " + getKeyName(keymap[GameKeySDL.BUTTON_F]), (keynum == 9));
 		NormalFontSDL.printFontGrid(2, 13, "QUIT        : " + getKeyName(keymap[GameKeySDL.BUTTON_QUIT]), (keynum == 10));
 		NormalFontSDL.printFontGrid(2, 14, "PAUSE       : " + getKeyName(keymap[GameKeySDL.BUTTON_PAUSE]), (keynum == 11));
@@ -179,20 +197,25 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 
 					//NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
 					for(int i = 0; i < NUM_KEYS; i++) {
-						GameKeySDL.gamekey[player].keymap[i] = keymap[i];
+						if(!isNavSetting)
+							GameKeySDL.gamekey[player].keymap[i] = keymap[i];
+						else
+							GameKeySDL.gamekey[player].keymapNav[i] = keymap[i];
 					}
+					/*
 					if(!firstSetupMode && NullpoMinoSDL.propConfig.getProperty("option.keyCustomNaviType", 0) == 1) {
 						for(int i = 0; i < StateConfigKeyboardNaviSDL.NUM_KEYS; i++) {
 							GameKeySDL.gamekey[player].keymap[i+GameKeySDL.BUTTON_NAV_UP] = keymap[i];
 						}
 					}
+					*/
 					GameKeySDL.gamekey[player].saveConfig(NullpoMinoSDL.propConfig);
 					NullpoMinoSDL.saveConfig();
 
-					if(!firstSetupMode)
-						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+					if(firstSetupMode)
+						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 					else
-						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
+						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 
 					return;
 				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_DELETE]) {

@@ -30,18 +30,17 @@ package mu.nu.nullpo.gui.sdl;
 
 import mu.nu.nullpo.gui.GameKeyDummy;
 import mu.nu.nullpo.util.CustomProperties;
-import sdljava.event.SDLKey;
 import sdljava.joystick.HatState;
 
 /**
- * Key input stateの管理
+ * Key input state manager for SDL
  */
 public class GameKeySDL extends GameKeyDummy {
-	/** Key input state (全ステート共通) */
+	/** Key input state (Used by all game states) */
 	public static GameKeySDL gamekey[];
 
 	/**
-	 * 全ステート共通のKey input stateオブジェクトをInitialization
+	 * Init everything
 	 */
 	public static void initGlobalGameKeySDL() {
 		gamekey = new GameKeySDL[2];
@@ -57,7 +56,7 @@ public class GameKeySDL extends GameKeyDummy {
 	}
 
 	/**
-	 * Player numberを指定できるConstructor
+	 * Constructor with player number param
 	 * @param pl Player number
 	 */
 	public GameKeySDL(int pl) {
@@ -65,25 +64,48 @@ public class GameKeySDL extends GameKeyDummy {
 	}
 
 	/**
-	 *  button input状態を更新
-	 * @param keyboard キーボードのキーが押されているかどうかの配列
+	 * Update button input status
+	 * @param keyboard Keyboard input array
 	 */
 	public void update(boolean[] keyboard) {
-		update(keyboard, null, 0, 0, null);
+		update(keyboard, null, 0, 0, null, false);
 	}
 
 	/**
-	 *  button input状態を更新
-	 * @param keyboard キーボードのキーが押されているかどうかの配列
-	 * @param joyButton Joystick の buttonが押されているかどうかの配列 (nullにしても問題なし）
-	 * @param joyX Joystick のX軸 state
-	 * @param joyY Joystick のY軸 state
-	 * @param hat ハットスイッチ state (nullにしても問題なし）
+	 * Update button input status
+	 * @param keyboard Keyboard input array
+	 * @param ingame true if ingame
+	 */
+	public void update(boolean[] keyboard, boolean ingame) {
+		update(keyboard, null, 0, 0, null, ingame);
+	}
+
+	/**
+	 * Update button input status
+	 * @param keyboard Keyboard input array
+	 * @param joyButton Joystick button input array (Can be null)
+	 * @param joyX Joystick X
+	 * @param joyY Joystick Y
+	 * @param hat Joystick HatState (Can be null)
 	 */
 	public void update(boolean[] keyboard, boolean[] joyButton, int joyX, int joyY, HatState hat) {
+		update(keyboard, joyButton, joyX, joyY, hat, false);
+	}
+
+	/**
+	 * Update button input status
+	 * @param keyboard Keyboard input array
+	 * @param joyButton Joystick button input array (Can be null)
+	 * @param joyX Joystick X
+	 * @param joyY Joystick Y
+	 * @param hat Joystick HatState (Can be null)
+	 * @param ingame true if ingame
+	 */
+	public void update(boolean[] keyboard, boolean[] joyButton, int joyX, int joyY, HatState hat, boolean ingame) {
 		for(int i = 0; i < MAX_BUTTON; i++) {
-			boolean flag = keyboard[keymap[i]];
-			
+			int[] kmap = ingame ? keymap : keymapNav;
+			boolean flag = keyboard[kmap[i]];
+
 			if(i == BUTTON_UP) {
 				// Up
 				if( (flag) || (joyY < -joyBorder) || ((hat != null) && (hat.hatUp())) ) {
@@ -99,32 +121,26 @@ public class GameKeySDL extends GameKeyDummy {
 					inputstate[i] = 0;
 				}
 			} else if(i == BUTTON_LEFT) {
-				// 左
+				// Left
 				if((flag) || (joyX < -joyBorder) || ((hat != null) && (hat.hatLeft())) ) {
 					inputstate[i]++;
 				} else {
 					inputstate[i] = 0;
 				}
 			} else if(i == BUTTON_RIGHT) {
-				// 右
+				// Right
 				if((flag) || (joyX > joyBorder) || ((hat != null) && (hat.hatRight())) ) {
 					inputstate[i]++;
 				} else {
 					inputstate[i] = 0;
 				}
 			} else {
-				// その他の button
+				// Misc buttons
 				boolean flag2 = false;
 
 				if(joyButton != null) {
 					try {
-						if (i==BUTTON_NAV_SELECT)
-							flag2 = joyButton[buttonmap[BUTTON_A]];
-						else if (i==BUTTON_NAV_CANCEL)
-							flag2 = joyButton[buttonmap[BUTTON_B]];
-						else
-							flag2 = joyButton[buttonmap[i]];
-						
+						flag2 = joyButton[buttonmap[i]];
 					} catch (ArrayIndexOutOfBoundsException e) {}
 				}
 
@@ -138,19 +154,11 @@ public class GameKeySDL extends GameKeyDummy {
 	}
 
 	/**
-	 * キー設定を読み込み
+	 * Load key settings
 	 * @param prop Property file to read from
 	 */
 	public void loadConfig(CustomProperties prop) {
 		super.loadConfig(prop);
-
-		keymap[BUTTON_NAV_UP] = prop.getProperty("key.p" + player + ".navigationup", SDLKey.SDLK_UP);
-		keymap[BUTTON_NAV_DOWN] = prop.getProperty("key.p" + player + ".navigationdown", SDLKey.SDLK_DOWN);
-		keymap[BUTTON_NAV_LEFT] = prop.getProperty("key.p" + player + ".navigationleft", SDLKey.SDLK_LEFT);
-		keymap[BUTTON_NAV_RIGHT] = prop.getProperty("key.p" + player + ".navigationright", SDLKey.SDLK_RIGHT);
-		keymap[BUTTON_NAV_SELECT] = prop.getProperty("key.p" + player + ".navigationselect", SDLKey.SDLK_RETURN);
-		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationcancel", SDLKey.SDLK_ESCAPE);
-
 		joyBorder = prop.getProperty("joyBorder.p" + player, 0);
 	}
 }

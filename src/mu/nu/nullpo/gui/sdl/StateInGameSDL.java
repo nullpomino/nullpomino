@@ -74,6 +74,7 @@ public class StateInGameSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void enter() throws SDLException {
+		NullpoMinoSDL.disableAutoInputUpdate = true;
 		enableframestep = NullpoMinoSDL.propConfig.getProperty("option.enableframestep", false);
 		fastforward = 0;
 		cursor = 0;
@@ -227,6 +228,7 @@ public class StateInGameSDL extends BaseStateSDL {
 	public void leave() throws SDLException {
 		gameManager.shutdown();
 		gameManager = null;
+		NullpoMinoSDL.disableAutoInputUpdate = false;
 	}
 
 	/*
@@ -266,6 +268,27 @@ public class StateInGameSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void update() throws SDLException {
+		// Update key input states
+		for(int i = 0; i < 2; i++) {
+			int joynum = NullpoMinoSDL.joyUseNumber[i];
+
+			boolean ingame = (gameManager != null) && (gameManager.engine.length > i) &&
+							 (gameManager.engine[i] != null) && (gameManager.engine[i].isInGame) &&
+							 (!pause || enableframestep);
+
+			if((NullpoMinoSDL.joystickMax > 0) && (joynum >= 0) && (joynum < NullpoMinoSDL.joystickMax)) {
+				GameKeySDL.gamekey[i].update(
+						NullpoMinoSDL.keyPressedState,
+						NullpoMinoSDL.joyPressedState[joynum],
+						NullpoMinoSDL.joyAxisX[joynum],
+						NullpoMinoSDL.joyAxisY[joynum],
+						NullpoMinoSDL.joyHatState[joynum],
+						ingame);
+			} else {
+				GameKeySDL.gamekey[i].update(NullpoMinoSDL.keyPressedState, ingame);
+			}
+		}
+
 		// ポーズ
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_PAUSE) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_PAUSE)) {
 			if(!pause) {

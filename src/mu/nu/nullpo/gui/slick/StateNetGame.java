@@ -184,7 +184,12 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 			// Update key input states
 			if(container.hasFocus() && !netLobby.isFocused()) {
-				GameKey.gamekey[0].update(container.getInput());
+				if((gameManager != null) && (gameManager.engine.length > 0) &&
+				   (gameManager.engine[0] != null) && (gameManager.engine[0].isInGame)) {
+					GameKey.gamekey[0].update(container.getInput(), true);
+				} else {
+					GameKey.gamekey[0].update(container.getInput(), false);
+				}
 			}
 
 			if((gameManager != null) && (gameManager.mode != null)) {
