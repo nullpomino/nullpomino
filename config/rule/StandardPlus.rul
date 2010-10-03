@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Tue Aug 03 14:27:06 CEST 2010
+#Sun Oct 03 03:34:24 CEST 2010
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.StandardWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -100,7 +100,7 @@
 0.ruleopt.softdropMultiplyNativeSpeed=false
 0.ruleopt.lineCancelRotate=false
 0.ruleopt.softdropSpeed=2.0
-0.ruleopt.maxLineDelay=0
+0.ruleopt.maxLineDelay=-1
 0.ruleopt.pieceSpawnY.10.3=0
 0.ruleopt.fieldLockoutDeath=true
 0.ruleopt.pieceSpawnY.10.2=0
@@ -325,7 +325,7 @@
 0.ruleopt.pieceOffsetY.3.0=0
 0.ruleopt.fieldWidth=10
 0.ruleopt.holdInitial=false
-0.ruleopt.minLineDelay=0
+0.ruleopt.minLineDelay=-1
 0.ruleopt.pieceOffsetX.7.3=0
 0.ruleopt.pieceOffsetX.7.2=0
 0.ruleopt.pieceOffsetX.7.1=0
