@@ -1227,7 +1227,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelHurryupSeconds.add(labelHurryupSeconds, BorderLayout.WEST);
 
 		// *** Hurryup秒count
-		int defaultHurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 90);
+		int defaultHurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 180);
 		spinnerCreateRoomHurryupSeconds = new JSpinner(new SpinnerNumberModel(defaultHurryupSeconds, -1, 999, 1));
 		spinnerCreateRoomHurryupSeconds.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomHurryupSeconds.setToolTipText(getUIText("CreateRoom_HurryupSeconds_Tip"));
@@ -1377,7 +1377,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelDAS.add(labelDAS, BorderLayout.WEST);
 
 		// *** 横溜め
-		int defaultDAS = propConfig.getProperty("createroom.defaultDAS", 12);
+		int defaultDAS = propConfig.getProperty("createroom.defaultDAS", 11);
 		spinnerCreateRoomDAS = new JSpinner(new SpinnerNumberModel(defaultDAS, 0, 99, 1));
 		spinnerCreateRoomDAS.setPreferredSize(new Dimension(200, 20));
 		subpanelDAS.add(spinnerCreateRoomDAS, BorderLayout.EAST);
@@ -1508,7 +1508,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// ** 3人以上生きている場合に Attack 力を減らす
 		chkboxCreateRoomReduceLineSend = new JCheckBox(getUIText("CreateRoom_ReduceLineSend"));
 		chkboxCreateRoomReduceLineSend.setMnemonic('R');
-		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", false));
+		chkboxCreateRoomReduceLineSend.setSelected(propConfig.getProperty("createroom.defaultReduceLineSend", true));
 		chkboxCreateRoomReduceLineSend.setToolTipText(getUIText("CreateRoom_ReduceLineSend_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomReduceLineSend);
 
@@ -2086,8 +2086,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.areLine = propConfig.getProperty("createroom.defaultARELine", 0);
 				r.lineDelay = propConfig.getProperty("createroom.defaultLineDelay", 0);
 				r.lockDelay = propConfig.getProperty("createroom.defaultLockDelay", 30);
-				r.das = propConfig.getProperty("createroom.defaultDAS", 14);
-				r.hurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 90);
+				r.das = propConfig.getProperty("createroom.defaultDAS", 11);
+				r.hurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 180);
 				r.hurryupInterval = propConfig.getProperty("createroom.defaultHurryupInterval", 5);
 				r.garbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 100);
 				r.ruleLock = propConfig.getProperty("createroom.defaultRuleLock", false);
@@ -2099,7 +2099,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.rensaBlock = propConfig.getProperty("createroom.defaultRensaBlock", true);
 				r.counter = propConfig.getProperty("createroom.defaultCounter", true);
 				r.bravo = propConfig.getProperty("createroom.defaultBravo", true);
-				r.reduceLineSend = propConfig.getProperty("createroom.defaultReduceLineSend", false);
+				r.reduceLineSend = propConfig.getProperty("createroom.defaultReduceLineSend", true);
 				r.garbageChangePerAttack = propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true);
 				r.b2bChunk = propConfig.getProperty("createroom.defaultB2BChunk", false);
 				r.useFractionalGarbage = propConfig.getProperty("createroom.defaultUseFractionalGarbage", false);
