@@ -1,4 +1,5 @@
 #NullpoMino RuleData
+#Tue Oct 05 00:16:14 JST 2010
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.AvalancheWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -99,6 +100,7 @@
 0.ruleopt.softdropMultiplyNativeSpeed=false
 0.ruleopt.lineCancelRotate=false
 0.ruleopt.softdropSpeed=0.5
+0.ruleopt.style=1
 0.ruleopt.maxLineDelay=-1
 0.ruleopt.pieceSpawnY.10.3=0
 0.ruleopt.fieldLockoutDeath=false

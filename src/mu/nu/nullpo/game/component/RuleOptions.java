@@ -57,6 +57,9 @@ public class RuleOptions implements Serializable {
 	/** 使用する出現順補正アルゴリズムのクラス名 (空文字列なら完全ランダム) */
 	public String strRandomizer;
 
+	/** Game Style */
+	public int style;
+
 	/** BlockピースのrotationパターンのX-coordinate補正 (11ピース×4Direction) */
 	public int[][] pieceOffsetX;
 
@@ -319,6 +322,8 @@ public class RuleOptions implements Serializable {
 		strWallkick = "";
 		strRandomizer = "";
 
+		style = 0;
+
 		pieceOffsetX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
 		pieceOffsetY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
 		pieceSpawnX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
@@ -442,6 +447,8 @@ public class RuleOptions implements Serializable {
 		strRuleName = r.strRuleName;
 		strWallkick = r.strWallkick;
 		strRandomizer = r.strRandomizer;
+
+		style = r.style;
 
 		pieceOffsetX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
 		pieceOffsetY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
@@ -568,6 +575,8 @@ public class RuleOptions implements Serializable {
 		if(strWallkick != r.strWallkick) return false;
 		if(strRandomizer != r.strRandomizer) return false;
 
+		if(style != r.style) return false;
+
 		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
 			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {
 				if(pieceOffsetX[i][j] != r.pieceOffsetX[i][j]) return false;
@@ -686,6 +695,8 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.strWallkick", strWallkick);
 		p.setProperty(id + ".ruleopt.strRandomizer", strRandomizer);
 
+		p.setProperty(id + ".ruleopt.style", style);
+
 		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
 			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {
 				p.setProperty(id + ".ruleopt.pieceOffsetX." + i + "." + j, pieceOffsetX[i][j]);
@@ -801,6 +812,8 @@ public class RuleOptions implements Serializable {
 		strRuleName = p.getProperty(id + ".ruleopt.strRuleName", strRuleName);
 		strWallkick = p.getProperty(id + ".ruleopt.strWallkick", strWallkick);
 		strRandomizer = p.getProperty(id + ".ruleopt.strRandomizer", strRandomizer);
+
+		style = p.getProperty(id + ".ruleopt.style", 0);
 
 		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
 			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {

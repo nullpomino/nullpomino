@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -61,58 +62,55 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	/** Log */
 	static Logger log = Logger.getLogger(RuleSelectFrame.class);
 
-	/** 親ウィンドウ */
+	/** Owner window */
 	protected NullpoMinoSwing owner;
 
 	/** Player number */
 	protected int playerID;
 
 	/** Filename */
-	protected String[] strFileNameList;
-
-	/** ファイルパス一覧 */
-	protected String[] strFilePathList;
-
-	/** Rule name一覧 */
-	protected String[] strRuleNameList;
+	private String[] strFileNameList;
 
 	/** Current ルールファイル */
-	protected String[] strCurrentFileName;
+	private String[] strCurrentFileName;
 
 	/** Current Rule name */
-	protected String[] strCurrentRuleName;
+	private String[] strCurrentRuleName;
+
+	/** Rule entries */
+	private LinkedList<RuleEntry> ruleEntries;
 
 	/** Rule select listbox */
-	protected JList[] listboxRule;
+	private JList[] listboxRule;
 
 	/** Tab */
-	protected JTabbedPane tabPane;
+	private JTabbedPane tabPane;
 
 	/**
 	 * Constructor
-	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
+	 * @param owner Owner window
+	 * @throws HeadlessException If GUI cannot be used
 	 */
 	public RuleSelectFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
 		this.owner = owner;
 
-		// ルール一覧取得
+		// Get rule list
 		strFileNameList = getRuleFileList();
 		if(strFileNameList == null) {
 			log.error("Rule file directory not found");
+		} else {
+			createRuleEntries(strFileNameList);
 		}
 
-		updateDetails();
-
-		// GUIのInitialization
+		// GUI Initialization
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		initUI();
 		pack();
 	}
 
 	/**
-	 * 現在選択しているルールを読み込み
+	 * Setup rule selector
 	 * @param pl Player number
 	 */
 	public void load(int pl) {
@@ -120,10 +118,10 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 
 		setTitle(NullpoMinoSwing.getUIText("Title_RuleSelect") + " (" + (playerID+1) + "P)");
 
-		strCurrentFileName = new String[listboxRule.length];
-		strCurrentRuleName = new String[listboxRule.length];
+		strCurrentFileName = new String[GameEngine.MAX_GAMESTYLE];
+		strCurrentRuleName = new String[GameEngine.MAX_GAMESTYLE];
 
-		for(int i = 0; i < listboxRule.length; i++) {
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			if(i == 0) {
 				strCurrentFileName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulefile", "");
 				strCurrentRuleName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulename", "");
@@ -132,8 +130,10 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 				strCurrentRuleName[i] = NullpoMinoSwing.propGlobal.getProperty(playerID + ".rulename." + i, "");
 			}
 
-			for(int j = 0; j < strFileNameList.length; j++) {
-				if(strCurrentFileName[i].equals(strFileNameList[j])) {
+			LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
+
+			for(int j = 0; j < subEntries.size(); j++) {
+				if(subEntries.get(j).filename.equals(strCurrentFileName[i])) {
 					listboxRule[i].setSelectedIndex(j);
 				}
 			}
@@ -158,14 +158,9 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		this.add(tabPane);
 
 		// Rules
-		String[] strList = new String[strFileNameList.length];
-		for(int i = 0; i < strFileNameList.length; i++) {
-			strList[i] = strRuleNameList[i] + " (" + strFileNameList[i] + ")";
-		}
-
 		listboxRule = new JList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			listboxRule[i] = new JList(strList);
+			listboxRule[i] = new JList(extractRuleNameListFromRuleEntries(i));
 			JScrollPane scpaneRule = new JScrollPane(listboxRule[i]);
 			scpaneRule.setPreferredSize(new Dimension(380, 250));
 			scpaneRule.setAlignmentX(LEFT_ALIGNMENT);
@@ -207,10 +202,10 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ルールファイル一覧を取得
-	 * @return ルールファイルのFilenameの配列。ディレクトリがないならnull
+	 * Get rule file list
+	 * @return Rule file list. null if directory doesn't exist.
 	 */
-	protected String[] getRuleFileList() {
+	private String[] getRuleFileList() {
 		File dir = new File("config/rule");
 
 		FilenameFilter filter = new FilenameFilter() {
@@ -230,27 +225,64 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 詳細情報を更新
+	 * Create rule entries
+	 * @param filelist Rule file list
 	 */
-	protected void updateDetails() {
-		strFilePathList = new String[strFileNameList.length];
-		strRuleNameList = new String[strFileNameList.length];
+	private void createRuleEntries(String[] filelist) {
+		ruleEntries = new LinkedList<RuleEntry>();
 
-		for(int i = 0; i < strFileNameList.length; i++) {
-			File file = new File("config/rule/" + strFileNameList[i]);
-			strFilePathList[i] = file.getPath();
+		for(int i = 0; i < filelist.length; i++) {
+			RuleEntry entry = new RuleEntry();
+
+			File file = new File("config/rule/" + filelist[i]);
+			entry.filename = filelist[i];
+			entry.filepath = file.getPath();
 
 			CustomProperties prop = new CustomProperties();
-
 			try {
-				FileInputStream in = new FileInputStream("config/rule/" + strFileNameList[i]);
+				FileInputStream in = new FileInputStream("config/rule/" + filelist[i]);
 				prop.load(in);
 				in.close();
-				strRuleNameList[i] = prop.getProperty("0.ruleopt.strRuleName", "");
+				entry.rulename = prop.getProperty("0.ruleopt.strRuleName", "");
+				entry.style = prop.getProperty("0.ruleopt.style", 0);
 			} catch (Exception e) {
-				strRuleNameList[i] = "";
+				entry.rulename = "";
+				entry.style = -1;
+			}
+
+			ruleEntries.add(entry);
+		}
+	}
+
+	/**
+	 * Get subset of rule entries
+	 * @param currentStyle Current style
+	 * @return Subset of rule entries
+	 */
+	private LinkedList<RuleEntry> getSubsetEntries(int currentStyle) {
+		LinkedList<RuleEntry> subEntries = new LinkedList<RuleEntry>();
+		for(int i = 0; i < ruleEntries.size(); i++) {
+			if(ruleEntries.get(i).style == currentStyle) {
+				subEntries.add(ruleEntries.get(i));
 			}
 		}
+		return subEntries;
+	}
+
+	/**
+	 * Get rule name list as String[]
+	 * @param currentStyle Current style
+	 * @return Rule name list
+	 */
+	private String[] extractRuleNameListFromRuleEntries(int currentStyle) {
+		LinkedList<RuleEntry> subEntries = getSubsetEntries(currentStyle);
+
+		String[] result = new String[subEntries.size()];
+		for(int i = 0; i < subEntries.size(); i++) {
+			result[i] = subEntries.get(i).rulename;
+		}
+
+		return result;
 	}
 
 	/*
@@ -258,14 +290,16 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "RuleSelect_OK") {
-			for(int i = 0; i < listboxRule.length; i++) {
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				int id = listboxRule[i].getSelectedIndex();
+				LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
+				RuleEntry entry = subEntries.get(id);
 
 				if(i == 0) {
 					if(id >= 0) {
-						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", strFilePathList[id]);
-						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", strFileNameList[id]);
-						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename", strRuleNameList[id]);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", entry.filepath);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", entry.filename);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename", entry.rulename);
 					} else {
 						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule", "");
 						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile", "");
@@ -273,9 +307,9 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 					}
 				} else {
 					if(id >= 0) {
-						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule." + i, strFilePathList[id]);
-						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile." + i, strFileNameList[id]);
-						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename." + i, strRuleNameList[id]);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule." + i, entry.filepath);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile." + i, entry.filename);
+						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulename." + i, entry.rulename);
 					} else {
 						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rule." + i, "");
 						NullpoMinoSwing.propGlobal.setProperty(playerID + ".rulefile." + i, "");
@@ -295,5 +329,19 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		else if(e.getActionCommand() == "RuleSelect_Cancel") {
 			this.setVisible(false);
 		}
+	}
+
+	/**
+	 * Rule entry
+	 */
+	private class RuleEntry {
+		/** File name */
+		public String filename;
+		/** File path */
+		public String filepath;
+		/** Rule name */
+		public String rulename;
+		/** Game style */
+		public int style;
 	}
 }

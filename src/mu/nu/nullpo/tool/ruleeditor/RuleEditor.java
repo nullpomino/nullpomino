@@ -77,6 +77,7 @@ import javax.swing.filechooser.FileFilter;
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.RuleOptions;
+import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.util.CustomProperties;
 
 import org.apache.log4j.Logger;
@@ -116,6 +117,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 
 	/** NEXT表示countのテキストfield */
 	private JTextField txtfldNextDisplay;
+
+	/** Game style combobox */
+	private JComboBox comboboxStyle;
 
 	/** 絵柄のComboボックス */
 	private JComboBox comboboxSkin;
@@ -612,6 +616,17 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldNextDisplay = new JTextField("", 5);
 		pNextDisplay.add(txtfldNextDisplay);
 
+		// Game style
+		JPanel pStyle = new JPanel();
+		panelBasic.add(pStyle);
+
+		JLabel lStyle = new JLabel(getUIText("Basic_Style"));
+		pStyle.add(lStyle);
+
+		comboboxStyle = new JComboBox(GameEngine.GAMESTYLE_NAMES);
+		comboboxStyle.setPreferredSize(new Dimension(100, 30));
+		pStyle.add(comboboxStyle);
+
 		// 絵柄
 		JPanel pSkin = new JPanel();
 		panelBasic.add(pSkin);
@@ -628,7 +643,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		comboboxSkin.setPreferredSize(new Dimension(190, 30));
 		pSkin.add(comboboxSkin);
 
-		// ghost 
+		// ghost
 		chkboxGhost = new JCheckBox(getUIText("Basic_Ghost"));
 		panelBasic.add(chkboxGhost);
 
@@ -1396,6 +1411,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	public void readRuleToUI(RuleOptions r) {
 		txtfldRuleName.setText(String.valueOf(r.strRuleName));
 		txtfldNextDisplay.setText(String.valueOf(r.nextDisplay));
+		comboboxStyle.setSelectedIndex(r.style);
 		comboboxSkin.setSelectedIndex(r.skin);
 		chkboxGhost.setSelected(r.ghost);
 		chkboxEnterAboveField.setSelected(r.pieceEnterAboveField);
@@ -1511,6 +1527,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	public void writeRuleFromUI(RuleOptions r) {
 		r.strRuleName = txtfldRuleName.getText();
 		r.nextDisplay = getIntTextField(txtfldNextDisplay);
+		r.style = comboboxStyle.getSelectedIndex();
 		r.skin = comboboxSkin.getSelectedIndex();
 		r.ghost = chkboxGhost.isSelected();
 		r.pieceEnterAboveField = chkboxEnterAboveField.isSelected();
