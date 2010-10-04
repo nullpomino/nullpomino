@@ -243,12 +243,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			in.close();
 		} catch(IOException e) {}
 
-		// キーボードLoad settings
+		// Load keyboard settings
 		GameKeySwing.initGlobalGameKeySwing();
 		GameKeySwing.gamekey[0].loadConfig(propConfig);
 		GameKeySwing.gamekey[1].loadConfig(propConfig);
 
-		// Look&Feel設定
+		// Look&Feel
 		if(propConfig.getProperty("option.usenativelookandfeel", true) == true) {
 			try {
 				UIManager.getInstalledLookAndFeels();
@@ -258,14 +258,25 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			}
 		}
 
-		// 画像読み込み
+		// Load images
 		try {
 			ResourceHolderSwing.load();
 		} catch (Exception e) {
 			log.error("Image load failed", e);
 		}
 
-		// メインウィンドウInitialization
+		// First run?
+		if(propConfig.getProperty("option.firstSetupMode", true) == true) {
+			// Set various default settings here
+			GameKeySwing.gamekey[0].loadDefaultKeymap();
+			GameKeySwing.gamekey[0].saveConfig(propConfig);
+			propConfig.setProperty("option.firstSetupMode", false);
+
+			// Save settings
+			saveConfig();
+		}
+
+		// Create and display main window
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainFrame = new NullpoMinoSwing();
@@ -801,7 +812,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			// チューニング設定
-			gameManager.engine[i].owRotateButtonDefaultRight = propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", -1);
+			gameManager.engine[i].owRotateButtonDefaultRight = propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", 0);
 			gameManager.engine[i].owSkin = propGlobal.getProperty(i + ".tuning.owSkin", -1);
 			gameManager.engine[i].owMinDAS = propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
 			gameManager.engine[i].owMaxDAS = propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
@@ -960,7 +971,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameManager.init();
 
 			// Tuning
-			gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1);
+			gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", 0);
 			gameManager.engine[0].owSkin = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owSkin", -1);
 			gameManager.engine[0].owMinDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
 			gameManager.engine[0].owMaxDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);

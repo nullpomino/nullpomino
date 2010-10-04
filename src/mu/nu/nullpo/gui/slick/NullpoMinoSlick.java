@@ -128,9 +128,6 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
 
-	/** Keyboard menu navigation settings state*/
-	public static StateConfigKeyboardNavi stateConfigKeyboardNavi;
-
 	/** Joystick button設定画面のステート */
 	public static StateConfigJoystickButton stateConfigJoystickButton;
 
@@ -148,6 +145,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 	/** Style select state */
 	public static StateConfigRuleStyleSelect stateConfigRuleStyleSelect;
+
+	/** Keyboard menu navigation settings state */
+	public static StateConfigKeyboardNavi stateConfigKeyboardNavi;
+
+	/** Keyboard Reset menu state */
+	public static StateConfigKeyboardReset stateConfigKeyboardReset;
 
 	/** Timing of alternate FPS sleep (false=render true=update) */
 	public static boolean alternateFPSTiming;
@@ -278,7 +281,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		// Use JInput option
 		useJInputKeyboard = false;
-		log.info("args.length:" + args.length);
+		log.debug("args.length:" + args.length);
 		if( (args.length > 0) && (args[0].equals("-j") || args[0].equals("/j")) ) {
 			useJInputKeyboard = true;
 			log.info("-j option is used. Use JInput to read keyboard input.");
@@ -571,6 +574,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		stateConfigGameTuning = new StateConfigGameTuning();
 		stateConfigRuleStyleSelect = new StateConfigRuleStyleSelect();
 		stateConfigKeyboardNavi = new StateConfigKeyboardNavi();
+		stateConfigKeyboardReset = new StateConfigKeyboardReset();
 
 		addState(stateLoading);
 		addState(stateTitle);
@@ -589,6 +593,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		addState(stateConfigGameTuning);
 		addState(stateConfigRuleStyleSelect);
 		addState(stateConfigKeyboardNavi);
+		addState(stateConfigKeyboardReset);
 	}
 
 	/**

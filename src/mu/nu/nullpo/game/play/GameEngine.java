@@ -681,7 +681,7 @@ public class GameEngine {
 			randSeed = Long.parseLong(tempRand, 16);
 			random = new Random(randSeed);
 
-			owRotateButtonDefaultRight = owner.replayProp.getProperty(playerID + ".tuning.owRotateButtonDefaultRight", -1);
+			owRotateButtonDefaultRight = owner.replayProp.getProperty(playerID + ".tuning.owRotateButtonDefaultRight", 0);
 			owSkin = owner.replayProp.getProperty(playerID + ".tuning.owSkin", -1);
 			owMinDAS = owner.replayProp.getProperty(playerID + ".tuning.owMinDAS", -1);
 			owMaxDAS = owner.replayProp.getProperty(playerID + ".tuning.owMaxDAS", -1);

@@ -132,4 +132,132 @@ public class GameKey extends GameKeyDummy {
 		keymap[BUTTON_NAV_CANCEL] = prop.getProperty("key.p" + player + ".navigationcancel", Input.KEY_ESCAPE);
 		*/
 	}
+
+	/**
+	 * Reset keyboard settings to default (Uses Blockbox type settings)
+	 */
+	public void loadDefaultKeymap() {
+		loadDefaultKeymap(0);
+	}
+
+	/**
+	 * Reset keyboard settings to default
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultKeymap(int type) {
+		// Blockbox type
+		if(type == 0) {
+			// Ingame
+			keymap[BUTTON_UP]         = Input.KEY_UP;
+			keymap[BUTTON_DOWN]       = Input.KEY_DOWN;
+			keymap[BUTTON_LEFT]       = Input.KEY_LEFT;
+			keymap[BUTTON_RIGHT]      = Input.KEY_RIGHT;
+			keymap[BUTTON_A]          = Input.KEY_Z;
+			keymap[BUTTON_B]          = Input.KEY_X;
+			keymap[BUTTON_C]          = Input.KEY_A;
+			keymap[BUTTON_D]          = Input.KEY_SPACE;
+			keymap[BUTTON_E]          = Input.KEY_D;
+			keymap[BUTTON_F]          = Input.KEY_S;
+			keymap[BUTTON_QUIT]       = Input.KEY_F12;
+			keymap[BUTTON_PAUSE]      = Input.KEY_ESCAPE;
+			keymap[BUTTON_GIVEUP]     = Input.KEY_F11;
+			keymap[BUTTON_RETRY]      = Input.KEY_F10;
+			keymap[BUTTON_FRAMESTEP]  = Input.KEY_N;
+			keymap[BUTTON_SCREENSHOT] = Input.KEY_F5;
+
+			// Menu
+			keymapNav[BUTTON_UP]         = Input.KEY_UP;
+			keymapNav[BUTTON_DOWN]       = Input.KEY_DOWN;
+			keymapNav[BUTTON_LEFT]       = Input.KEY_LEFT;
+			keymapNav[BUTTON_RIGHT]      = Input.KEY_RIGHT;
+			keymapNav[BUTTON_A]          = Input.KEY_ENTER;
+			keymapNav[BUTTON_B]          = Input.KEY_ESCAPE;
+			keymapNav[BUTTON_C]          = Input.KEY_A;
+			keymapNav[BUTTON_D]          = Input.KEY_SPACE;
+			keymapNav[BUTTON_E]          = Input.KEY_D;
+			keymapNav[BUTTON_F]          = Input.KEY_S;
+			keymapNav[BUTTON_QUIT]       = Input.KEY_F12;
+			keymapNav[BUTTON_PAUSE]      = Input.KEY_F1;
+			keymapNav[BUTTON_GIVEUP]     = Input.KEY_F11;
+			keymapNav[BUTTON_RETRY]      = Input.KEY_F10;
+			keymapNav[BUTTON_FRAMESTEP]  = Input.KEY_N;
+			keymapNav[BUTTON_SCREENSHOT] = Input.KEY_F5;
+		}
+		// Guideline games type
+		if(type == 1) {
+			// Ingame
+			keymap[BUTTON_UP]         = Input.KEY_SPACE;
+			keymap[BUTTON_DOWN]       = Input.KEY_DOWN;
+			keymap[BUTTON_LEFT]       = Input.KEY_LEFT;
+			keymap[BUTTON_RIGHT]      = Input.KEY_RIGHT;
+			keymap[BUTTON_A]          = Input.KEY_Z;
+			keymap[BUTTON_B]          = Input.KEY_UP;
+			keymap[BUTTON_C]          = Input.KEY_X;
+			keymap[BUTTON_D]          = Input.KEY_LSHIFT;
+			keymap[BUTTON_E]          = Input.KEY_C;
+			keymap[BUTTON_F]          = Input.KEY_V;
+			keymap[BUTTON_QUIT]       = Input.KEY_F12;
+			keymap[BUTTON_PAUSE]      = Input.KEY_ESCAPE;
+			keymap[BUTTON_GIVEUP]     = Input.KEY_F11;
+			keymap[BUTTON_RETRY]      = Input.KEY_F10;
+			keymap[BUTTON_FRAMESTEP]  = Input.KEY_N;
+			keymap[BUTTON_SCREENSHOT] = Input.KEY_F5;
+
+			// Menu
+			keymapNav[BUTTON_UP]         = Input.KEY_UP;
+			keymapNav[BUTTON_DOWN]       = Input.KEY_DOWN;
+			keymapNav[BUTTON_LEFT]       = Input.KEY_LEFT;
+			keymapNav[BUTTON_RIGHT]      = Input.KEY_RIGHT;
+			keymapNav[BUTTON_A]          = Input.KEY_ENTER;
+			keymapNav[BUTTON_B]          = Input.KEY_ESCAPE;
+			keymapNav[BUTTON_C]          = Input.KEY_X;
+			keymapNav[BUTTON_D]          = Input.KEY_LSHIFT;
+			keymapNav[BUTTON_E]          = Input.KEY_C;
+			keymapNav[BUTTON_F]          = Input.KEY_V;
+			keymapNav[BUTTON_QUIT]       = Input.KEY_F12;
+			keymapNav[BUTTON_PAUSE]      = Input.KEY_F1;
+			keymapNav[BUTTON_GIVEUP]     = Input.KEY_F11;
+			keymapNav[BUTTON_RETRY]      = Input.KEY_F10;
+			keymapNav[BUTTON_FRAMESTEP]  = Input.KEY_N;
+			keymapNav[BUTTON_SCREENSHOT] = Input.KEY_F5;
+		}
+		// NullpoMino classic type
+		if(type == 2) {
+			// Ingame
+			keymap[BUTTON_UP]         = Input.KEY_UP;
+			keymap[BUTTON_DOWN]       = Input.KEY_DOWN;
+			keymap[BUTTON_LEFT]       = Input.KEY_LEFT;
+			keymap[BUTTON_RIGHT]      = Input.KEY_RIGHT;
+			keymap[BUTTON_A]          = Input.KEY_A;
+			keymap[BUTTON_B]          = Input.KEY_S;
+			keymap[BUTTON_C]          = Input.KEY_D;
+			keymap[BUTTON_D]          = Input.KEY_Z;
+			keymap[BUTTON_E]          = Input.KEY_X;
+			keymap[BUTTON_F]          = Input.KEY_C;
+			keymap[BUTTON_QUIT]       = Input.KEY_ESCAPE;
+			keymap[BUTTON_PAUSE]      = Input.KEY_F1;
+			keymap[BUTTON_GIVEUP]     = Input.KEY_F12;
+			keymap[BUTTON_RETRY]      = Input.KEY_F11;
+			keymap[BUTTON_FRAMESTEP]  = Input.KEY_N;
+			keymap[BUTTON_SCREENSHOT] = Input.KEY_F10;
+
+			// Menu
+			keymapNav[BUTTON_UP]         = Input.KEY_UP;
+			keymapNav[BUTTON_DOWN]       = Input.KEY_DOWN;
+			keymapNav[BUTTON_LEFT]       = Input.KEY_LEFT;
+			keymapNav[BUTTON_RIGHT]      = Input.KEY_RIGHT;
+			keymapNav[BUTTON_A]          = Input.KEY_A;
+			keymapNav[BUTTON_B]          = Input.KEY_S;
+			keymapNav[BUTTON_C]          = Input.KEY_D;
+			keymapNav[BUTTON_D]          = Input.KEY_Z;
+			keymapNav[BUTTON_E]          = Input.KEY_X;
+			keymapNav[BUTTON_F]          = Input.KEY_C;
+			keymapNav[BUTTON_QUIT]       = Input.KEY_ESCAPE;
+			keymapNav[BUTTON_PAUSE]      = Input.KEY_F1;
+			keymapNav[BUTTON_GIVEUP]     = Input.KEY_F12;
+			keymapNav[BUTTON_RETRY]      = Input.KEY_F11;
+			keymapNav[BUTTON_FRAMESTEP]  = Input.KEY_N;
+			keymapNav[BUTTON_SCREENSHOT] = Input.KEY_F10;
+		}
+	}
 }

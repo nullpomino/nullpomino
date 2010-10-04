@@ -44,37 +44,44 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 /**
- * キーコンフィグ画面の frame
+ * Key config frame
  */
 public class KeyConfigFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
-	/** 親ウィンドウ */
+	/** Owner window */
 	protected NullpoMinoSwing owner;
 
 	/** Player number */
 	protected int playerID;
 
-	/** キー event 受け取り用クラス */
+	/** Key event receiver */
 	protected KeyConfigKeyEventListener keyEventListener;
 
-	/** マウス event 受け取り用クラス */
+	/** Mouse event receiver */
 	protected KeyConfigMouseEventListener mouseEventListener;
 
-	/** キー設定用テキストボックス */
+	/** Key config textbox */
 	protected JTextField[] txtfldGameKeys;
 
-	/** Key code */
+	/** Menu key config textbox */
+	protected JTextField[] txtfldGameKeysNav;
+
+	/** Key codes */
 	protected int[] keyCodes;
+
+	/** Menu key codes */
+	protected int[] keyCodesNav;
 
 	/**
 	 * Constructor
-	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
+	 * @param owner Owner window (NullpoMinoSwing)
+	 * @throws HeadlessException When GUI cannot be used
 	 */
 	public KeyConfigFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -86,13 +93,14 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 		keyEventListener = new KeyConfigKeyEventListener();
 		mouseEventListener = new KeyConfigMouseEventListener();
 		keyCodes = new int[GameKeySwing.MAX_BUTTON];
+		keyCodesNav = new int[GameKeySwing.MAX_BUTTON];
 
 		initUI();
 		pack();
 	}
 
 	/**
-	 * キーボード設定を読み込み
+	 * Load keyboard settings
 	 * @param pl Player number
 	 */
 	public void load(int pl) {
@@ -101,43 +109,57 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 
 		for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
 			keyCodes[i] = GameKeySwing.gamekey[playerID].keymap[i];
-
 			if(keyCodes[i] == 0) {
 				txtfldGameKeys[i].setText("");
 			} else {
 				txtfldGameKeys[i].setText(KeyEvent.getKeyText(keyCodes[i]));
 			}
+
+			keyCodesNav[i] = GameKeySwing.gamekey[playerID].keymapNav[i];
+			if(keyCodesNav[i] == 0) {
+				txtfldGameKeysNav[i].setText("");
+			} else {
+				txtfldGameKeysNav[i].setText(KeyEvent.getKeyText(keyCodesNav[i]));
+			}
 		}
 	}
 
 	/**
-	 * 保存
+	 * Save
 	 */
 	protected void save() {
 		for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
 			GameKeySwing.gamekey[playerID].keymap[i] = keyCodes[i];
+			GameKeySwing.gamekey[playerID].keymapNav[i] = keyCodesNav[i];
 		}
 		GameKeySwing.gamekey[playerID].saveConfig(NullpoMinoSwing.propConfig);
 		NullpoMinoSwing.saveConfig();
 	}
 
 	/**
-	 * GUIをInitialization
+	 * GUI init
 	 */
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
+		// Hint labels
 		JLabel labelHelp1 = new JLabel(NullpoMinoSwing.getUIText("KeyConfig_LabelHelp1"));
 		labelHelp1.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(labelHelp1, BorderLayout.NORTH);
+		this.add(labelHelp1);
 		JLabel labelHelp2 = new JLabel(NullpoMinoSwing.getUIText("KeyConfig_LabelHelp2"));
 		labelHelp2.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(labelHelp2, BorderLayout.SOUTH);
+		this.add(labelHelp2);
 
+		// Tab
+		JTabbedPane tabKeySetting = new JTabbedPane();
+		tabKeySetting.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(tabKeySetting);
+
+		// Ingame tab
 		JPanel pKeySetting = new JPanel();
 		pKeySetting.setLayout(new BoxLayout(pKeySetting, BoxLayout.Y_AXIS));
 		pKeySetting.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(pKeySetting);
+		tabKeySetting.addTab(NullpoMinoSwing.getUIText("KeyConfig_Tab_Ingame"), pKeySetting);
 
 		txtfldGameKeys = new JTextField[GameKeySwing.MAX_BUTTON];
 		for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
@@ -154,6 +176,42 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 			psKeyTemp.add(txtfldGameKeys[i], BorderLayout.EAST);
 		}
 
+		// Menu tab
+		JPanel pKeySettingNav = new JPanel();
+		pKeySettingNav.setLayout(new BoxLayout(pKeySettingNav, BoxLayout.Y_AXIS));
+		pKeySettingNav.setAlignmentX(LEFT_ALIGNMENT);
+		tabKeySetting.addTab(NullpoMinoSwing.getUIText("KeyConfig_Tab_Menu"), pKeySettingNav);
+
+		txtfldGameKeysNav = new JTextField[GameKeySwing.MAX_BUTTON];
+		for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
+			JPanel psKeyTemp = new JPanel();
+			pKeySettingNav.add(psKeyTemp);
+			psKeyTemp.setLayout(new BorderLayout());
+
+			psKeyTemp.add(new JLabel(NullpoMinoSwing.getUIText("KeyConfig_LabelKey" + i)), BorderLayout.WEST);
+
+			txtfldGameKeysNav[i] = new JTextField(20);
+			txtfldGameKeysNav[i].addKeyListener(keyEventListener);
+			txtfldGameKeysNav[i].addMouseListener(mouseEventListener);
+			txtfldGameKeysNav[i].setFocusTraversalKeysEnabled(false);
+			psKeyTemp.add(txtfldGameKeysNav[i], BorderLayout.EAST);
+		}
+
+		// Reset tab
+		JPanel pKeyReset = new JPanel();
+		pKeyReset.setLayout(new BoxLayout(pKeyReset, BoxLayout.Y_AXIS));
+		pKeyReset.setAlignmentX(LEFT_ALIGNMENT);
+		tabKeySetting.addTab(NullpoMinoSwing.getUIText("KeyConfig_Tab_Reset"), pKeyReset);
+
+		for(int i = 0; i < 3; i++) {
+			JButton btnReset = new JButton(NullpoMinoSwing.getUIText("KeyConfig_Reset" + i));
+			btnReset.addActionListener(this);
+			btnReset.setActionCommand("KeyConfig_Reset" + i);
+			btnReset.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
+			pKeyReset.add(btnReset);
+		}
+
+		// Bottom buttons
 		JPanel pButtons = new JPanel();
 		pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -173,7 +231,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * Menu 実行時の処理
+	 * Called when a button is pressed
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "KeyConfig_OK") {
@@ -183,10 +241,19 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 		else if(e.getActionCommand() == "KeyConfig_Cancel") {
 			this.setVisible(false);
 		}
+		else if(e.getActionCommand().startsWith("KeyConfig_Reset")) {
+			String strTemp = e.getActionCommand().replaceFirst("KeyConfig_Reset", "");
+			int id = Integer.parseInt(strTemp);
+
+			GameKeySwing.gamekey[playerID].loadDefaultKeymap(id);
+			GameKeySwing.gamekey[playerID].saveConfig(NullpoMinoSwing.propConfig);
+			NullpoMinoSwing.saveConfig();
+			load(playerID);
+		}
 	}
 
 	/**
-	 * テキストボックスでキーを押したときの event 処理用クラス
+	 * KeyAdapter for key config textboxes
 	 */
 	protected class KeyConfigKeyEventListener extends KeyAdapter {
 		@Override
@@ -196,6 +263,10 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 				if(c == txtfldGameKeys[i]) {
 					keyCodes[i] = e.getKeyCode();
 					txtfldGameKeys[i].setText(KeyEvent.getKeyText(e.getKeyCode()));
+					break;
+				} else if(c == txtfldGameKeysNav[i]) {
+					keyCodesNav[i] = e.getKeyCode();
+					txtfldGameKeysNav[i].setText(KeyEvent.getKeyText(e.getKeyCode()));
 					break;
 				}
 			}
@@ -214,7 +285,7 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストボックスでマウス buttonを押したときの event 処理用クラス
+	 * MouseAdapter for key config textboxes
 	 */
 	protected class KeyConfigMouseEventListener extends MouseAdapter {
 		@Override
@@ -234,6 +305,9 @@ public class KeyConfigFrame extends JFrame implements ActionListener {
 					if(c == txtfldGameKeys[i]) {
 						keyCodes[i] = 0;
 						txtfldGameKeys[i].setText("");
+					} else if(c == txtfldGameKeysNav[i]) {
+						keyCodes[i] = 0;
+						txtfldGameKeysNav[i].setText("");
 					}
 				}
 			}

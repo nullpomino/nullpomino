@@ -83,10 +83,11 @@ public class NullpoMinoSDL {
 							STATE_CONFIG_JOYSTICK_TEST = 12,
 							STATE_CONFIG_GAMETUNING = 13,
 							STATE_CONFIG_RULESTYLESELECT = 14,
-							STATE_CONFIG_KEYBOARD_NAVI = 15;
+							STATE_CONFIG_KEYBOARD_NAVI = 15,
+							STATE_CONFIG_KEYBOARD_RESET = 16;
 
 	/** ゲームステートのcount */
-	public static final int STATE_MAX = 16;
+	public static final int STATE_MAX = 17;
 
 	/** 認識するキーのMaximum値 */
 	public static final int SDL_KEY_MAX = 322;
@@ -296,6 +297,7 @@ public class NullpoMinoSDL {
 		gameStates[STATE_CONFIG_GAMETUNING] = new StateConfigGameTuningSDL();
 		gameStates[STATE_CONFIG_RULESTYLESELECT] = new StateConfigRuleStyleSelectSDL();
 		gameStates[STATE_CONFIG_KEYBOARD_NAVI] = new StateConfigKeyboardNaviSDL();
+		gameStates[STATE_CONFIG_KEYBOARD_RESET] = new StateConfigKeyboardResetSDL();
 
 		// SDLのInitializationと開始
 		try {
@@ -401,11 +403,21 @@ public class NullpoMinoSDL {
 		ResourceHolderSDL.load();
 		NormalFontSDL.dest = surface;
 
+		// First run
 		if(propConfig.getProperty("option.firstSetupMode", true) == true) {
-			// 初期設定
-			enterState(STATE_CONFIG_KEYBOARD);
-		} else {
-			// タイトルステートに入る
+			// Set various default settings here
+			GameKeySDL.gamekey[0].loadDefaultKeymap();
+			GameKeySDL.gamekey[0].saveConfig(propConfig);
+			propConfig.setProperty("option.firstSetupMode", false);
+
+			// Save settings
+			saveConfig();
+
+			// Go to title screen
+			enterState(STATE_TITLE);
+		}
+		// Second+ run
+		else {
 			enterState(STATE_TITLE);
 		}
 

@@ -227,7 +227,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 		setTitle(NullpoMinoSwing.getUIText("Title_GameTuning") + " (" + (playerID+1) + "P)");
 
-		int owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owRotateButtonDefaultRight", -1);
+		int owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owRotateButtonDefaultRight", 0);
 		if(owRotateButtonDefaultRight == -1) radioRotateButtonDefaultRightAuto.setSelected(true);
 		if(owRotateButtonDefaultRight ==  0) radioRotateButtonDefaultRightLeft.setSelected(true);
 		if(owRotateButtonDefaultRight ==  1) radioRotateButtonDefaultRightRight.setSelected(true);

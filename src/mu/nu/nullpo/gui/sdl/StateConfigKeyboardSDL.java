@@ -51,9 +51,6 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	/** true if navigation key setting mode */
 	public boolean isNavSetting = false;
 
-	/** 初期設定Mode */
-	protected boolean firstSetupMode;
-
 	/** Number of button currently being configured */
 	protected int keynum;
 
@@ -70,8 +67,6 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	 * Button settings initialization
 	 */
 	protected void reset() {
-		firstSetupMode = NullpoMinoSDL.propConfig.getProperty("option.firstSetupMode", true);
-
 		keynum = 0;
 		frame = 0;
 
@@ -155,11 +150,11 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 
 				NormalFontSDL.printFontGrid(1, 25, "DELETE:    NO SET", NormalFontSDL.COLOR_GREEN);
 
-				if(!firstSetupMode) NormalFontSDL.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
 			} else {
 				NormalFontSDL.printFontGrid(1, 25, "ENTER:     OK", NormalFontSDL.COLOR_GREEN);
 				NormalFontSDL.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFontSDL.COLOR_GREEN);
-				if(!firstSetupMode) NormalFontSDL.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
 			}
 		}
 	}
@@ -177,10 +172,12 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 					keynum++;
 					frame = 0;
 				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_BACKSPACE]) {
-					if(!firstSetupMode) {
+					if(isNavSetting)
+						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
+					else
 						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-						return;
-					}
+
+					return;
 				} else {
 					int key = getPressedKeyNumber(previousKeyPressedState, NullpoMinoSDL.keyPressedState);
 
@@ -212,20 +209,18 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 					GameKeySDL.gamekey[player].saveConfig(NullpoMinoSDL.propConfig);
 					NullpoMinoSDL.saveConfig();
 
-					if(firstSetupMode)
-						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
-					else
-						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-
+					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 					return;
 				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_DELETE]) {
 					ResourceHolderSDL.soundManager.play("move");
 					reset();
 				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_BACKSPACE]) {
-					if(!firstSetupMode) {
+					if(isNavSetting)
+						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
+					else
 						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-						return;
-					}
+
+					return;
 				}
 			}
 		}

@@ -125,6 +125,9 @@ public class GameFrame extends JFrame implements Runnable {
 	/** FPS表示 */
 	protected boolean showfps = true;
 
+	/** Ingame flag */
+	public boolean[] isInGame;
+
 	/** ネットプレイならtrue */
 	public boolean isNetPlay = false;
 
@@ -213,6 +216,7 @@ public class GameFrame extends JFrame implements Runnable {
 		pauseMessageHide = false;
 		fastforward = 0;
 		cursor = 0;
+		isInGame = new boolean[2];
 		GameKeySwing.gamekey[0].clear();
 		GameKeySwing.gamekey[1].clear();
 
@@ -286,10 +290,26 @@ public class GameFrame extends JFrame implements Runnable {
 	protected void gameUpdate() {
 		if(NullpoMinoSwing.gameManager == null) return;
 
+		// Set ingame flag
+		for(int i = 0; i < 2; i++) {
+			boolean prevInGame = isInGame[i];
+
+			if((NullpoMinoSwing.gameManager.engine != null) && (NullpoMinoSwing.gameManager.engine.length > i)) {
+				isInGame[i] = NullpoMinoSwing.gameManager.engine[i].isInGame;
+			}
+			if(pause && !enableframestep) {
+				isInGame[i] = false;
+			}
+
+			if(prevInGame != isInGame[i]) {
+				GameKeySwing.gamekey[i].clear();
+			}
+		}
+
 		GameKeySwing.gamekey[0].update();
 		GameKeySwing.gamekey[1].update();
 
-		// ポーズ button
+		// Pause button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_PAUSE) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_PAUSE)) {
 			if(!pause) {
 				if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.isGameActive())) {
@@ -397,8 +417,8 @@ public class GameFrame extends JFrame implements Runnable {
 
 			// Return to title
 			if(NullpoMinoSwing.gameManager.getQuitFlag() ||
-			   GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_QUIT) ||
-			   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_QUIT))
+			   GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_GIVEUP) ||
+			   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_GIVEUP))
 			{
 				shutdown();
 				return;
@@ -408,6 +428,15 @@ public class GameFrame extends JFrame implements Runnable {
 		// Screenshot button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_SCREENSHOT) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_SCREENSHOT)) {
 			ssflag = true;
+		}
+
+		// Quit button
+		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_QUIT) ||
+		   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_QUIT))
+		{
+			shutdown();
+			System.exit(0);
+			return;
 		}
 	}
 
@@ -707,8 +736,10 @@ public class GameFrame extends JFrame implements Runnable {
 
 		protected void setButtonPressedState(int keyCode, boolean pressed) {
 			for(int playerID = 0; playerID < GameKeySwing.gamekey.length; playerID++) {
+				int[] kmap = isInGame[playerID] ? GameKeySwing.gamekey[playerID].keymap : GameKeySwing.gamekey[playerID].keymapNav;
+
 				for(int i = 0; i < GameKeySwing.MAX_BUTTON; i++) {
-					if(keyCode == GameKeySwing.gamekey[playerID].keymap[i]) {
+					if(keyCode == kmap[i]) {
 						//log.debug("KeyCode:" + keyCode + " pressed:" + pressed + " button:" + i);
 						GameKeySwing.gamekey[playerID].setPressState(i, pressed);
 					}

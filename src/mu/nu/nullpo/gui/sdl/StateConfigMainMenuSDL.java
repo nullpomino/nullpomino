@@ -35,11 +35,23 @@ import sdljava.video.SDLSurface;
  * 設定画面のステート
  */
 public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
+	/** UI Text identifier Strings */
+	private static final String[] UI_TEXT = {
+		"ConfigMainMenu_General",
+		"ConfigMainMenu_Rule",
+		"ConfigMainMenu_GameTuning",
+		"ConfigMainMenu_AI",
+		"ConfigMainMenu_Keyboard",
+		"ConfigMainMenu_KeyboardNavi",
+		"ConfigMainMenu_KeyboardReset",
+		"ConfigMainMenu_Joystick"
+	};
+
 	/** Player number */
 	protected int player = 0;
 
 	public StateConfigMainMenuSDL () {
-		maxCursor = 6;
+		maxCursor = 7;
 		minChoiceY = 3;
 	}
 
@@ -60,15 +72,10 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 		NormalFontSDL.printFontGrid(2, 6, "[AI SETTING]:" + (player + 1) + "P", (cursor == 3));
 		NormalFontSDL.printFontGrid(2, 7, "[KEYBOARD SETTING]:" + (player + 1) + "P", (cursor == 4));
 		NormalFontSDL.printFontGrid(2, 8, "[KEYBOARD NAVIGATION SETTING]:" + (player + 1) + "P", (cursor == 5));
-		NormalFontSDL.printFontGrid(2, 9, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 6));
+		NormalFontSDL.printFontGrid(2, 9, "[KEYBOARD RESET]:" + (player + 1) + "P", (cursor == 6));
+		NormalFontSDL.printFontGrid(2, 10, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 7));
 
-		if(cursor == 0) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_General"));
-		if(cursor == 1) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Rule"));
-		if(cursor == 2) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_GameTuning"));
-		if(cursor == 3) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_AI"));
-		if(cursor == 4) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Keyboard"));
-		if(cursor == 5) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_KeyboardNavi"));
-		if(cursor == 6) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigMainMenu_Joystick"));
+		NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
 	}
 
 	@Override
@@ -114,6 +121,11 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
 			break;
 		case 6:
+			StateConfigKeyboardResetSDL stateKR = (StateConfigKeyboardResetSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_KEYBOARD_RESET];
+			stateKR.player = player;
+			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_RESET);
+			break;
+		case 7:
 			StateConfigJoystickMainSDL stateJ = (StateConfigJoystickMainSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN];
 			stateJ.player = player;
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_JOYSTICK_MAIN);

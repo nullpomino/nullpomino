@@ -139,21 +139,30 @@ public class StateLoading extends BasicGameState {
 	}
 
 	/*
-	 * ゲームの内部状態の更新
+	 * Update game
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(preloadSet > 2) {
-			// タイトルバー更新
+			// Change title bar caption
 			if(container instanceof AppGameContainer) {
 				((AppGameContainer) container).setTitle("NullpoMino version" + GameManager.getVersionString());
 				((AppGameContainer) container).setUpdateOnlyWhenVisible(true);
 			}
 
-			// 初期設定
+			// First run
 			if(NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true) == true) {
-				game.enterState(StateConfigKeyboard.ID);
+				// Set various default settings here
+				GameKey.gamekey[0].loadDefaultKeymap();
+				GameKey.gamekey[0].saveConfig(NullpoMinoSlick.propConfig);
+				NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
+
+				// Save settings
+				NullpoMinoSlick.saveConfig();
+
+				// Go to title screen
+				game.enterState(StateTitle.ID);
 			}
-			// タイトル
+			// Second+ run
 			else {
 				game.enterState(StateTitle.ID);
 			}

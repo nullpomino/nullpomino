@@ -30,6 +30,7 @@ package mu.nu.nullpo.gui.sdl;
 
 import mu.nu.nullpo.gui.GameKeyDummy;
 import mu.nu.nullpo.util.CustomProperties;
+import sdljava.event.SDLKey;
 import sdljava.joystick.HatState;
 
 /**
@@ -160,5 +161,133 @@ public class GameKeySDL extends GameKeyDummy {
 	public void loadConfig(CustomProperties prop) {
 		super.loadConfig(prop);
 		joyBorder = prop.getProperty("joyBorder.p" + player, 0);
+	}
+
+	/**
+	 * Reset keyboard settings to default (Uses Blockbox type settings)
+	 */
+	public void loadDefaultKeymap() {
+		loadDefaultKeymap(0);
+	}
+
+	/**
+	 * Reset keyboard settings to default
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultKeymap(int type) {
+		// Blockbox type
+		if(type == 0) {
+			// Ingame
+			keymap[BUTTON_UP]         = SDLKey.SDLK_UP;		// Up
+			keymap[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;	// Down
+			keymap[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;	// Left
+			keymap[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;	// Right
+			keymap[BUTTON_A]          = SDLKey.SDLK_z;		// Z
+			keymap[BUTTON_B]          = SDLKey.SDLK_x;		// X
+			keymap[BUTTON_C]          = SDLKey.SDLK_a;		// A
+			keymap[BUTTON_D]          = SDLKey.SDLK_SPACE;	// Space
+			keymap[BUTTON_E]          = SDLKey.SDLK_d;		// D
+			keymap[BUTTON_F]          = SDLKey.SDLK_s;		// S
+			keymap[BUTTON_QUIT]       = SDLKey.SDLK_F12;	// F12
+			keymap[BUTTON_PAUSE]      = SDLKey.SDLK_ESCAPE;	// Escape
+			keymap[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;	// F11
+			keymap[BUTTON_RETRY]      = SDLKey.SDLK_F10;	// F10
+			keymap[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;		// N
+			keymap[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;		// F5
+
+			// Menu
+			keymapNav[BUTTON_UP]         = SDLKey.SDLK_UP;		// Up
+			keymapNav[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;	// Down
+			keymapNav[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;	// Left
+			keymapNav[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;	// Right
+			keymapNav[BUTTON_A]          = SDLKey.SDLK_RETURN;	// Return
+			keymapNav[BUTTON_B]          = SDLKey.SDLK_ESCAPE;	// Escape
+			keymapNav[BUTTON_C]          = SDLKey.SDLK_a;		// A
+			keymapNav[BUTTON_D]          = SDLKey.SDLK_SPACE;	// Space
+			keymapNav[BUTTON_E]          = SDLKey.SDLK_d;		// D
+			keymapNav[BUTTON_F]          = SDLKey.SDLK_s;		// S
+			keymapNav[BUTTON_QUIT]       = SDLKey.SDLK_F12;		// F12
+			keymapNav[BUTTON_PAUSE]      = SDLKey.SDLK_F1;		// F1
+			keymapNav[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;		// F11
+			keymapNav[BUTTON_RETRY]      = SDLKey.SDLK_F10;		// F10
+			keymapNav[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;		// N
+			keymapNav[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;		// F5
+		}
+		// Guideline games type
+		if(type == 1) {
+			// Ingame
+			keymap[BUTTON_UP]         = SDLKey.SDLK_SPACE;
+			keymap[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
+			keymap[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
+			keymap[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
+			keymap[BUTTON_A]          = SDLKey.SDLK_z;
+			keymap[BUTTON_B]          = SDLKey.SDLK_UP;
+			keymap[BUTTON_C]          = SDLKey.SDLK_x;
+			keymap[BUTTON_D]          = SDLKey.SDLK_LSHIFT;
+			keymap[BUTTON_E]          = SDLKey.SDLK_c;
+			keymap[BUTTON_F]          = SDLKey.SDLK_v;
+			keymap[BUTTON_QUIT]       = SDLKey.SDLK_F12;
+			keymap[BUTTON_PAUSE]      = SDLKey.SDLK_ESCAPE;
+			keymap[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;
+			keymap[BUTTON_RETRY]      = SDLKey.SDLK_F10;
+			keymap[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
+			keymap[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;
+
+			// Menu
+			keymapNav[BUTTON_UP]         = SDLKey.SDLK_UP;
+			keymapNav[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
+			keymapNav[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
+			keymapNav[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
+			keymapNav[BUTTON_A]          = SDLKey.SDLK_RETURN;
+			keymapNav[BUTTON_B]          = SDLKey.SDLK_ESCAPE;
+			keymapNav[BUTTON_C]          = SDLKey.SDLK_x;
+			keymapNav[BUTTON_D]          = SDLKey.SDLK_LSHIFT;
+			keymapNav[BUTTON_E]          = SDLKey.SDLK_c;
+			keymapNav[BUTTON_F]          = SDLKey.SDLK_v;
+			keymapNav[BUTTON_QUIT]       = SDLKey.SDLK_F12;
+			keymapNav[BUTTON_PAUSE]      = SDLKey.SDLK_F1;
+			keymapNav[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;
+			keymapNav[BUTTON_RETRY]      = SDLKey.SDLK_F10;
+			keymapNav[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
+			keymapNav[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;
+		}
+		// NullpoMino classic type
+		if(type == 2) {
+			// Ingame
+			keymap[BUTTON_UP]         = SDLKey.SDLK_UP;
+			keymap[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
+			keymap[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
+			keymap[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
+			keymap[BUTTON_A]          = SDLKey.SDLK_a;
+			keymap[BUTTON_B]          = SDLKey.SDLK_s;
+			keymap[BUTTON_C]          = SDLKey.SDLK_d;
+			keymap[BUTTON_D]          = SDLKey.SDLK_z;
+			keymap[BUTTON_E]          = SDLKey.SDLK_x;
+			keymap[BUTTON_F]          = SDLKey.SDLK_c;
+			keymap[BUTTON_QUIT]       = SDLKey.SDLK_ESCAPE;
+			keymap[BUTTON_PAUSE]      = SDLKey.SDLK_F1;
+			keymap[BUTTON_GIVEUP]     = SDLKey.SDLK_F12;
+			keymap[BUTTON_RETRY]      = SDLKey.SDLK_F11;
+			keymap[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
+			keymap[BUTTON_SCREENSHOT] = SDLKey.SDLK_F10;
+
+			// Menu
+			keymapNav[BUTTON_UP]         = SDLKey.SDLK_UP;
+			keymapNav[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
+			keymapNav[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
+			keymapNav[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
+			keymapNav[BUTTON_A]          = SDLKey.SDLK_a;
+			keymapNav[BUTTON_B]          = SDLKey.SDLK_s;
+			keymapNav[BUTTON_C]          = SDLKey.SDLK_d;
+			keymapNav[BUTTON_D]          = SDLKey.SDLK_z;
+			keymapNav[BUTTON_E]          = SDLKey.SDLK_x;
+			keymapNav[BUTTON_F]          = SDLKey.SDLK_c;
+			keymapNav[BUTTON_QUIT]       = SDLKey.SDLK_ESCAPE;
+			keymapNav[BUTTON_PAUSE]      = SDLKey.SDLK_F1;
+			keymapNav[BUTTON_GIVEUP]     = SDLKey.SDLK_F12;
+			keymapNav[BUTTON_RETRY]      = SDLKey.SDLK_F11;
+			keymapNav[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
+			keymapNav[BUTTON_SCREENSHOT] = SDLKey.SDLK_F10;
+		}
 	}
 }

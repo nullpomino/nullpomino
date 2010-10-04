@@ -54,9 +54,6 @@ public class StateConfigKeyboard extends BasicGameState {
 	/** true if navigation key setting mode */
 	public boolean isNavSetting = false;
 
-	/** 初期設定Mode */
-	protected boolean firstSetupMode;
-
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
@@ -84,8 +81,6 @@ public class StateConfigKeyboard extends BasicGameState {
 	 * Button settings initialization
 	 */
 	protected void reset() {
-		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
-
 		noPressedKey = true;
 
 		keynum = 0;
@@ -165,11 +160,11 @@ public class StateConfigKeyboard extends BasicGameState {
 				NormalFont.printFontGrid(1, 4 + keynum, "b", NormalFont.COLOR_RED);
 
 				NormalFont.printFontGrid(1, 25, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
-				if(!firstSetupMode) NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 			} else {
 				NormalFont.printFontGrid(1, 25, "ENTER:     OK", NormalFont.COLOR_GREEN);
 				NormalFont.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFont.COLOR_GREEN);
-				if(!firstSetupMode) NormalFont.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 			}
 		}
 
@@ -230,10 +225,11 @@ public class StateConfigKeyboard extends BasicGameState {
 					ResourceHolder.soundManager.play("move");
 					keymap[keynum] = 0;
 				} else if(key == Input.KEY_BACK) {
-					if(!firstSetupMode) {
+					if(isNavSetting)
+						gameObj.enterState(StateConfigKeyboardNavi.ID);
+					else
 						gameObj.enterState(StateConfigMainMenu.ID);
-						return;
-					}
+					return;
 				} else {
 					ResourceHolder.soundManager.play("move");
 					keymap[keynum] = key;
@@ -261,17 +257,15 @@ public class StateConfigKeyboard extends BasicGameState {
 					GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
 					NullpoMinoSlick.saveConfig();
 
-					if(firstSetupMode)
-						gameObj.enterState(StateTitle.ID);
-					else
-						gameObj.enterState(StateConfigMainMenu.ID);
+					gameObj.enterState(StateConfigMainMenu.ID);
 				} else if(key == Input.KEY_DELETE) {
 					ResourceHolder.soundManager.play("move");
 					reset();
 				} else if(key == Input.KEY_BACK) {
-					if(!firstSetupMode) {
+					if(isNavSetting)
+						gameObj.enterState(StateConfigKeyboardNavi.ID);
+					else
 						gameObj.enterState(StateConfigMainMenu.ID);
-					}
 				}
 			}
 		}
