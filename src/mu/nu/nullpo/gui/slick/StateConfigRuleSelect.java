@@ -57,8 +57,14 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	/** Game style ID */
 	public int style = 0;
 
-	/** Rule file list */
+	/** Rule file list (for loading) */
 	private String[] strFileList;
+
+	/** Rule name list */
+	private String[] strRuleNameList;
+
+	/** Rule file list (for list display) */
+	private String[] strRuleFileList;
 
 	/** Current Rule File name */
 	private String strCurrentFileName;
@@ -156,6 +162,20 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		return result;
 	}
 
+	/**
+	 * Get rule file name list as String[]
+	 * @return Rule name list
+	 */
+	private String[] extractFileNameListFromRuleEntries() {
+		String[] result = new String[ruleEntries.size()];
+
+		for(int i = 0; i < ruleEntries.size(); i++) {
+			result[i] = ruleEntries.get(i).filename;
+		}
+
+		return result;
+	}
+
 	/*
 	 * Called when entering this state
 	 */
@@ -163,7 +183,9 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		strFileList = getRuleFileList();
 		createRuleEntries(strFileList, style);
-		list = extractRuleNameListFromRuleEntries();
+		strRuleNameList = extractRuleNameListFromRuleEntries();
+		strRuleFileList = extractFileNameListFromRuleEntries();
+		list = strRuleNameList;
 		maxCursor = list.length-1;
 
 		if(style == 0) {
@@ -199,8 +221,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 		NormalFont.printFontGrid(1, 25, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFont.COLOR_BLUE);
 		NormalFont.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFont.COLOR_BLUE);
 
-		NormalFont.printFontGrid(1, 28, "A:OK", NormalFont.COLOR_GREEN);
-		NormalFont.printFontGrid(6, 28, "B:CANCEL", NormalFont.COLOR_GREEN);
+		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL D:TOGGLE-VIEW", NormalFont.COLOR_GREEN);
 	}
 
 	/*
@@ -234,6 +255,20 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
 		game.enterState(StateConfigRuleStyleSelect.ID);
 		return true;
+	}
+
+	/*
+	 * D button
+	 */
+	@Override
+	protected boolean onPushButtonD(GameContainer container, StateBasedGame game, int delta) {
+		ResourceHolder.soundManager.play("change");
+		if(list == strRuleNameList) {
+			list = strRuleFileList;
+		} else {
+			list = strRuleNameList;
+		}
+		return false;
 	}
 
 	/**

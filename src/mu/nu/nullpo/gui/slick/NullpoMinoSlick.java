@@ -41,6 +41,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import mu.nu.nullpo.game.net.NetObserverClient;
+import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.ModeManager;
 
@@ -279,9 +280,37 @@ public class NullpoMinoSlick extends StateBasedGame {
 			log.error("Mode list load failed", e);
 		}
 
+		// Set default rule selections
+		try {
+			CustomProperties propDefaultRule = new CustomProperties();
+			FileInputStream in = new FileInputStream("config/list/global_defaultrule.properties");
+			propDefaultRule.load(in);
+			in.close();
+
+			for(int pl = 0; pl < 2; pl++)
+				for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+					// TETROMINO
+					if(i == 0) {
+						if(propGlobal.getProperty(pl + ".rule") == null) {
+							propGlobal.setProperty(pl + ".rule", propDefaultRule.getProperty("default.rule", ""));
+							propGlobal.setProperty(pl + ".rulefile", propDefaultRule.getProperty("default.rulefile", ""));
+							propGlobal.setProperty(pl + ".rulename", propDefaultRule.getProperty("default.rulename", ""));
+						}
+					}
+					// etc
+					else {
+						if(propGlobal.getProperty(pl + ".rule." + i) == null) {
+							propGlobal.setProperty(pl + ".rule." + i, propDefaultRule.getProperty("default.rule." + i, ""));
+							propGlobal.setProperty(pl + ".rulefile." + i, propDefaultRule.getProperty("default.rulefile." + i, ""));
+							propGlobal.setProperty(pl + ".rulename." + i, propDefaultRule.getProperty("default.rulename." + i, ""));
+						}
+					}
+				}
+		} catch (Exception e) {}
+
 		// Use JInput option
 		useJInputKeyboard = false;
-		log.debug("args.length:" + args.length);
+		//log.debug("args.length:" + args.length);
 		if( (args.length > 0) && (args[0].equals("-j") || args[0].equals("/j")) ) {
 			useJInputKeyboard = true;
 			log.info("-j option is used. Use JInput to read keyboard input.");

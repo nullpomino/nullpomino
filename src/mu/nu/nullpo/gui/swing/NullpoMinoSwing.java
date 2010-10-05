@@ -71,6 +71,7 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.net.NetObserverClient;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
+import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
@@ -242,6 +243,34 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			propModeDesc.load(in);
 			in.close();
 		} catch(IOException e) {}
+
+		// Set default rule selections
+		try {
+			CustomProperties propDefaultRule = new CustomProperties();
+			FileInputStream in = new FileInputStream("config/list/global_defaultrule.properties");
+			propDefaultRule.load(in);
+			in.close();
+
+			for(int pl = 0; pl < 2; pl++)
+				for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+					// TETROMINO
+					if(i == 0) {
+						if(propGlobal.getProperty(pl + ".rule") == null) {
+							propGlobal.setProperty(pl + ".rule", propDefaultRule.getProperty("default.rule", ""));
+							propGlobal.setProperty(pl + ".rulefile", propDefaultRule.getProperty("default.rulefile", ""));
+							propGlobal.setProperty(pl + ".rulename", propDefaultRule.getProperty("default.rulename", ""));
+						}
+					}
+					// etc
+					else {
+						if(propGlobal.getProperty(pl + ".rule." + i) == null) {
+							propGlobal.setProperty(pl + ".rule." + i, propDefaultRule.getProperty("default.rule." + i, ""));
+							propGlobal.setProperty(pl + ".rulefile." + i, propDefaultRule.getProperty("default.rulefile." + i, ""));
+							propGlobal.setProperty(pl + ".rulename." + i, propDefaultRule.getProperty("default.rulename." + i, ""));
+						}
+					}
+				}
+		} catch (Exception e) {}
 
 		// Load keyboard settings
 		GameKeySwing.initGlobalGameKeySwing();

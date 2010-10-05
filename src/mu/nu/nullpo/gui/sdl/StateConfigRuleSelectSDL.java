@@ -53,8 +53,14 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	/** Game style */
 	public int style = 0;
 
-	/** Rule file list */
+	/** Rule file list (for loading) */
 	private String[] strFileList;
+
+	/** Rule name list */
+	private String[] strRuleNameList;
+
+	/** Rule file list (for list display) */
+	private String[] strRuleFileList;
 
 	/** Current Rule File name */
 	private String strCurrentFileName;
@@ -141,6 +147,20 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		return result;
 	}
 
+	/**
+	 * Get rule file name list as String[]
+	 * @return Rule name list
+	 */
+	private String[] extractFileNameListFromRuleEntries() {
+		String[] result = new String[ruleEntries.size()];
+
+		for(int i = 0; i < ruleEntries.size(); i++) {
+			result[i] = ruleEntries.get(i).filename;
+		}
+
+		return result;
+	}
+
 	/*
 	 * Called when entering this state
 	 */
@@ -148,7 +168,9 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	public void enter() throws SDLException {
 		strFileList = getRuleFileList();
 		createRuleEntries(strFileList, style);
-		list = extractRuleNameListFromRuleEntries();
+		strRuleNameList = extractRuleNameListFromRuleEntries();
+		strRuleFileList = extractFileNameListFromRuleEntries();
+		list = strRuleNameList;
 		maxCursor = list.length-1;
 
 		if(style == 0) {
@@ -178,8 +200,7 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 		NormalFontSDL.printFontGrid(1, 25, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
 		NormalFontSDL.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFontSDL.COLOR_BLUE);
 
-		NormalFontSDL.printFontGrid(1, 28, "A:OK", NormalFontSDL.COLOR_GREEN);
-		NormalFontSDL.printFontGrid(6, 28, "B:CANCEL", NormalFontSDL.COLOR_GREEN);
+		NormalFontSDL.printFontGrid(1, 28, "A:OK B:CANCEL D:TOGGLE-VIEW", NormalFontSDL.COLOR_GREEN);
 	}
 
 	/*
@@ -210,6 +231,20 @@ public class StateConfigRuleSelectSDL extends DummyMenuScrollStateSDL {
 	protected boolean onCancel() throws SDLException {
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESTYLESELECT);
 		return true;
+	}
+
+	/*
+	 * D button
+	 */
+	@Override
+	protected boolean onPushButtonD() throws SDLException {
+		ResourceHolderSDL.soundManager.play("change");
+		if(list == strRuleNameList) {
+			list = strRuleFileList;
+		} else {
+			list = strRuleNameList;
+		}
+		return false;
 	}
 
 	/**
