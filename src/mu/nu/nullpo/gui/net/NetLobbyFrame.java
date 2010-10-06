@@ -1478,7 +1478,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelGarbagePercent.add(labelGarbagePercent, BorderLayout.WEST);
 
 		// ** Spinner for garbage change rate
-		int defaultGarbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 100);
+		int defaultGarbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 90);
 		spinnerCreateRoomGarbagePercent = new JSpinner(new SpinnerNumberModel(defaultGarbagePercent, 0, 100, 10));
 		spinnerCreateRoomGarbagePercent.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomGarbagePercent.setToolTipText(getUIText("CreateRoom_GarbagePercent_Tip"));
@@ -2136,7 +2136,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.das = propConfig.getProperty("createroom.defaultDAS", 11);
 				r.hurryupSeconds = propConfig.getProperty("createroom.defaultHurryupSeconds", 180);
 				r.hurryupInterval = propConfig.getProperty("createroom.defaultHurryupInterval", 5);
-				r.garbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 100);
+				r.garbagePercent = propConfig.getProperty("createroom.defaultGarbagePercent", 90);
 				r.ruleLock = propConfig.getProperty("createroom.defaultRuleLock", false);
 				r.tspinEnableType = propConfig.getProperty("createroom.defaultTSpinEnableType", 1);
 				r.spinCheckType = propConfig.getProperty("createroom.defaultSpinCheckType", 0);
