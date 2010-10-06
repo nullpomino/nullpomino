@@ -48,7 +48,6 @@ import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
-import mu.nu.nullpo.gui.slick.GameKey;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
