@@ -1248,9 +1248,15 @@ public class NetServer extends JFrame implements ActionListener {
 				int myRank = mpRankingIndexOf(style, pInfo);
 
 				String strPData = "";
+				int prevRating = -1;
+				int nowRank = 0;
 				for(int i = 0; i < mpRankingList[style].size(); i++) {
 					NetPlayerInfo p = (NetPlayerInfo)mpRankingList[style].get(i);
-					strPData += (i) + ";" + NetUtil.urlEncode(p.strName) + ";" +
+					if((i == 0) || (p.rating[style] < prevRating)) {
+						prevRating = p.rating[style];
+						nowRank = i;
+					}
+					strPData += (nowRank) + ";" + NetUtil.urlEncode(p.strName) + ";" +
 								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
 				}
 				if(myRank == -1) {

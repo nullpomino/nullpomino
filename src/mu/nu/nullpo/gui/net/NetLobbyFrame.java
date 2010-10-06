@@ -453,6 +453,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Rule list list data (Create room screen) */
 	protected DefaultListModel listmodelCreateRoomRuleList;
 
+	/** Preset number (Create room screen) */
+	protected JSpinner spinnerCreateRoomPresetID;
+
 	/** OK button(Create room screen) */
 	protected JButton btnCreateRoomOK;
 
@@ -1182,6 +1185,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel containerpanelCreateRoomRatedRuleOwner = new JPanel(new BorderLayout());
 		tabbedPane.addTab(getUIText("CreateRoom_Tab_RatedRule"), containerpanelCreateRoomRatedRuleOwner);
 
+		// * Preset tab
+		JPanel containerpanelCreateRoomPresetOwner = new JPanel(new BorderLayout());
+		tabbedPane.addTab(getUIText("CreateRoom_Tab_Preset"), containerpanelCreateRoomPresetOwner);
+
 		// general tab
 
 		// * 速度設定パネル(本体)
@@ -1563,6 +1570,46 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		listboxCreateRoomRuleList = new JList(listmodelCreateRoomRuleList);
 		JScrollPane spCreateRoomRuleList = new JScrollPane(listboxCreateRoomRuleList);
 		containerpanelCreateRoomRatedRule.add(spCreateRoomRuleList, BorderLayout.CENTER);
+
+		// Preset tab
+
+		// * Preset panel
+		JPanel containerpanelCreateRoomPreset = new JPanel();
+		containerpanelCreateRoomPreset.setLayout(new BoxLayout(containerpanelCreateRoomPreset, BoxLayout.Y_AXIS));
+		containerpanelCreateRoomPresetOwner.add(containerpanelCreateRoomPreset, BorderLayout.NORTH);
+
+		// ** Preset number panel
+		JPanel subpanelPresetID = new JPanel(new BorderLayout());
+		subpanelPresetID.setAlignmentX(0f);
+		containerpanelCreateRoomPreset.add(subpanelPresetID);
+
+		// *** "Preset number:" Label
+		JLabel labelPresetID = new JLabel(getUIText("CreateRoom_PresetID"));
+		subpanelPresetID.add(labelPresetID, BorderLayout.WEST);
+
+		// *** Preset number selector
+		int defaultPresetID = propConfig.getProperty("createroom.defaultPresetID", 0);
+		spinnerCreateRoomPresetID = new JSpinner(new SpinnerNumberModel(defaultPresetID, 0, 999, 1));
+		spinnerCreateRoomPresetID.setPreferredSize(new Dimension(200, 20));
+		subpanelPresetID.add(spinnerCreateRoomPresetID, BorderLayout.EAST);
+
+		// ** Save button
+		JButton btnPresetSave = new JButton(getUIText("CreateRoom_PresetSave"));
+		btnPresetSave.setAlignmentX(0f);
+		btnPresetSave.addActionListener(this);
+		btnPresetSave.setActionCommand("CreateRoom_PresetSave");
+		btnPresetSave.setMnemonic('S');
+		btnPresetSave.setMaximumSize(new Dimension(Short.MAX_VALUE, btnPresetSave.getMaximumSize().height));
+		containerpanelCreateRoomPreset.add(btnPresetSave);
+
+		// ** Load button
+		JButton btnPresetLoad = new JButton(getUIText("CreateRoom_PresetLoad"));
+		btnPresetLoad.setAlignmentX(0f);
+		btnPresetLoad.addActionListener(this);
+		btnPresetLoad.setActionCommand("CreateRoom_PresetLoad");
+		btnPresetLoad.setMnemonic('L');
+		btnPresetLoad.setMaximumSize(new Dimension(Short.MAX_VALUE, btnPresetLoad.getMaximumSize().height));
+		containerpanelCreateRoomPreset.add(btnPresetLoad);
 
 		// buttons
 
@@ -2111,39 +2158,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 		}
 
-		if(r != null) {
-			txtfldCreateRoomName.setText(r.strName);
-			spinnerCreateRoomMaxPlayers.setValue(r.maxPlayers);
-			spinnerCreateRoomAutoStartSeconds.setValue(r.autoStartSeconds);
-			spinnerCreateRoomGravity.setValue(r.gravity);
-			spinnerCreateRoomDenominator.setValue(r.denominator);
-			spinnerCreateRoomARE.setValue(r.are);
-			spinnerCreateRoomARELine.setValue(r.areLine);
-			spinnerCreateRoomLineDelay.setValue(r.lineDelay);
-			spinnerCreateRoomLockDelay.setValue(r.lockDelay);
-			spinnerCreateRoomDAS.setValue(r.das);
-			spinnerCreateRoomHurryupSeconds.setValue(r.hurryupSeconds);
-			spinnerCreateRoomHurryupInterval.setValue(r.hurryupInterval);
-			spinnerCreateRoomGarbagePercent.setValue(r.garbagePercent);
-			chkboxCreateRoomUseMap.setSelected(r.useMap);
-			chkboxCreateRoomRuleLock.setSelected(r.ruleLock);
-			comboboxCreateRoomTSpinEnableType.setSelectedIndex(r.tspinEnableType);
-			comboboxCreateRoomSpinCheckType.setSelectedIndex(r.spinCheckType);
-			chkboxCreateRoomTSpinEnableEZ.setSelected(r.tspinEnableEZ);
-			chkboxCreateRoomB2B.setSelected(r.b2b);
-			chkboxCreateRoomCombo.setSelected(r.combo);
-			chkboxCreateRoomRensaBlock.setSelected(r.rensaBlock);
-			chkboxCreateRoomCounter.setSelected(r.counter);
-			chkboxCreateRoomBravo.setSelected(r.bravo);
-			chkboxCreateRoomReduceLineSend.setSelected(r.reduceLineSend);
-			chkboxCreateRoomGarbageChangePerAttack.setSelected(r.garbageChangePerAttack);
-			chkboxCreateRoomB2BChunk.setSelected(r.b2bChunk);
-			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
-			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
-			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
-			if(r.rated) listboxCreateRoomRuleList.setSelectedValue(r.ruleName, true);
-			else listboxCreateRoomRuleList.setSelectedIndex(0);
-		}
+		importRoomInfoToCreateRoomScreen(r);
 	}
 
 	/**
@@ -2493,6 +2508,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom1p.listboxCreateRoom1PModeList.value", "");
 		}
 
+		propConfig.setProperty("createroom.defaultPresetID", (Integer)spinnerCreateRoomPresetID.getValue());
+
 		try {
 			FileOutputStream out = new FileOutputStream("config/setting/netlobby.cfg");
 			propConfig.store(out, "NullpoMino NetLobby Config");
@@ -2666,6 +2683,121 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			netPlayerClient.send("chat\t" + NetUtil.urlEncode(msg) + "\n");
 		} else {
 			netPlayerClient.send("lobbychat\t" + NetUtil.urlEncode(msg) + "\n");
+		}
+	}
+
+	/**
+	 * Creates NetRoomInfo from Create Room screen
+	 * @return NetRoomInfo
+	 */
+	public NetRoomInfo exportRoomInfoFromCreateRoomScreen() {
+		try {
+			NetRoomInfo roomInfo = new NetRoomInfo();
+
+			String roomName = txtfldCreateRoomName.getText();
+			Integer integerMaxPlayers = (Integer)spinnerCreateRoomMaxPlayers.getValue();
+			Integer integerAutoStartSeconds = (Integer)spinnerCreateRoomAutoStartSeconds.getValue();
+			Integer integerGravity = (Integer)spinnerCreateRoomGravity.getValue();
+			Integer integerDenominator = (Integer)spinnerCreateRoomDenominator.getValue();
+			Integer integerARE = (Integer)spinnerCreateRoomARE.getValue();
+			Integer integerARELine = (Integer)spinnerCreateRoomARELine.getValue();
+			Integer integerLineDelay = (Integer)spinnerCreateRoomLineDelay.getValue();
+			Integer integerLockDelay = (Integer)spinnerCreateRoomLockDelay.getValue();
+			Integer integerDAS = (Integer)spinnerCreateRoomDAS.getValue();
+			Integer integerHurryupSeconds = (Integer)spinnerCreateRoomHurryupSeconds.getValue();
+			Integer integerHurryupInterval = (Integer)spinnerCreateRoomHurryupInterval.getValue();
+			boolean rulelock = chkboxCreateRoomRuleLock.isSelected();
+			int tspinEnableType = comboboxCreateRoomTSpinEnableType.getSelectedIndex();
+			int spinCheckType = comboboxCreateRoomSpinCheckType.getSelectedIndex();
+			boolean tspinEnableEZ = chkboxCreateRoomTSpinEnableEZ.isSelected();
+			boolean b2b = chkboxCreateRoomB2B.isSelected();
+			boolean combo = chkboxCreateRoomCombo.isSelected();
+			boolean rensaBlock = chkboxCreateRoomRensaBlock.isSelected();
+			boolean counter = chkboxCreateRoomCounter.isSelected();
+			boolean bravo = chkboxCreateRoomBravo.isSelected();
+			boolean reduceLineSend = chkboxCreateRoomReduceLineSend.isSelected();
+			boolean autoStartTNET2 = chkboxCreateRoomAutoStartTNET2.isSelected();
+			boolean disableTimerAfterSomeoneCancelled = chkboxCreateRoomDisableTimerAfterSomeoneCancelled.isSelected();
+			boolean useMap = chkboxCreateRoomUseMap.isSelected();
+			boolean useFractionalGarbage = chkboxCreateRoomUseFractionalGarbage.isSelected();
+			boolean garbageChangePerAttack = chkboxCreateRoomGarbageChangePerAttack.isSelected();
+			Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
+			boolean b2bChunk = chkboxCreateRoomB2BChunk.isSelected();
+
+			roomInfo.strName = roomName;
+			roomInfo.maxPlayers = integerMaxPlayers;
+			roomInfo.autoStartSeconds = integerAutoStartSeconds;
+			roomInfo.gravity = integerGravity;
+			roomInfo.denominator = integerDenominator;
+			roomInfo.are = integerARE;
+			roomInfo.areLine = integerARELine;
+			roomInfo.lineDelay = integerLineDelay;
+			roomInfo.lockDelay = integerLockDelay;
+			roomInfo.das = integerDAS;
+			roomInfo.hurryupSeconds = integerHurryupSeconds;
+			roomInfo.hurryupInterval = integerHurryupInterval;
+			roomInfo.ruleLock = rulelock;
+			roomInfo.tspinEnableType = tspinEnableType;
+			roomInfo.spinCheckType = spinCheckType;
+			roomInfo.tspinEnableEZ = tspinEnableEZ;
+			roomInfo.b2b = b2b;
+			roomInfo.combo = combo;
+			roomInfo.rensaBlock = rensaBlock;
+			roomInfo.counter = counter;
+			roomInfo.bravo = bravo;
+			roomInfo.reduceLineSend = reduceLineSend;
+			roomInfo.autoStartTNET2 = autoStartTNET2;
+			roomInfo.disableTimerAfterSomeoneCancelled = disableTimerAfterSomeoneCancelled;
+			roomInfo.useMap = useMap;
+			roomInfo.useFractionalGarbage = useFractionalGarbage;
+			roomInfo.garbageChangePerAttack = garbageChangePerAttack;
+			roomInfo.garbagePercent = integerGarbagePercent;
+			roomInfo.b2bChunk = b2bChunk;
+
+			return roomInfo;
+		} catch (Exception e) {
+			log.error("Exception on exportRoomInfoFromCreateRoomScreen", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Import NetRoomInfo to Create Room screen
+	 * @param r NetRoomInfo
+	 */
+	public void importRoomInfoToCreateRoomScreen(NetRoomInfo r) {
+		if(r != null) {
+			txtfldCreateRoomName.setText(r.strName);
+			spinnerCreateRoomMaxPlayers.setValue(r.maxPlayers);
+			spinnerCreateRoomAutoStartSeconds.setValue(r.autoStartSeconds);
+			spinnerCreateRoomGravity.setValue(r.gravity);
+			spinnerCreateRoomDenominator.setValue(r.denominator);
+			spinnerCreateRoomARE.setValue(r.are);
+			spinnerCreateRoomARELine.setValue(r.areLine);
+			spinnerCreateRoomLineDelay.setValue(r.lineDelay);
+			spinnerCreateRoomLockDelay.setValue(r.lockDelay);
+			spinnerCreateRoomDAS.setValue(r.das);
+			spinnerCreateRoomHurryupSeconds.setValue(r.hurryupSeconds);
+			spinnerCreateRoomHurryupInterval.setValue(r.hurryupInterval);
+			spinnerCreateRoomGarbagePercent.setValue(r.garbagePercent);
+			chkboxCreateRoomUseMap.setSelected(r.useMap);
+			chkboxCreateRoomRuleLock.setSelected(r.ruleLock);
+			comboboxCreateRoomTSpinEnableType.setSelectedIndex(r.tspinEnableType);
+			comboboxCreateRoomSpinCheckType.setSelectedIndex(r.spinCheckType);
+			chkboxCreateRoomTSpinEnableEZ.setSelected(r.tspinEnableEZ);
+			chkboxCreateRoomB2B.setSelected(r.b2b);
+			chkboxCreateRoomCombo.setSelected(r.combo);
+			chkboxCreateRoomRensaBlock.setSelected(r.rensaBlock);
+			chkboxCreateRoomCounter.setSelected(r.counter);
+			chkboxCreateRoomBravo.setSelected(r.bravo);
+			chkboxCreateRoomReduceLineSend.setSelected(r.reduceLineSend);
+			chkboxCreateRoomGarbageChangePerAttack.setSelected(r.garbageChangePerAttack);
+			chkboxCreateRoomB2BChunk.setSelected(r.b2bChunk);
+			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
+			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
+			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
+			if(r.rated) listboxCreateRoomRuleList.setSelectedValue(r.ruleName, true);
+			else listboxCreateRoomRuleList.setSelectedIndex(0);
 		}
 	}
 
@@ -2852,76 +2984,18 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// ルーム作成画面でのOK button
 		if(e.getActionCommand() == "CreateRoom_OK") {
 			try {
-				String roomName = txtfldCreateRoomName.getText();
-				Integer integerMaxPlayers = (Integer)spinnerCreateRoomMaxPlayers.getValue();
-				Integer integerAutoStartSeconds = (Integer)spinnerCreateRoomAutoStartSeconds.getValue();
-				Integer integerGravity = (Integer)spinnerCreateRoomGravity.getValue();
-				Integer integerDenominator = (Integer)spinnerCreateRoomDenominator.getValue();
-				Integer integerARE = (Integer)spinnerCreateRoomARE.getValue();
-				Integer integerARELine = (Integer)spinnerCreateRoomARELine.getValue();
-				Integer integerLineDelay = (Integer)spinnerCreateRoomLineDelay.getValue();
-				Integer integerLockDelay = (Integer)spinnerCreateRoomLockDelay.getValue();
-				Integer integerDAS = (Integer)spinnerCreateRoomDAS.getValue();
-				Integer integerHurryupSeconds = (Integer)spinnerCreateRoomHurryupSeconds.getValue();
-				Integer integerHurryupInterval = (Integer)spinnerCreateRoomHurryupInterval.getValue();
-				boolean rulelock = chkboxCreateRoomRuleLock.isSelected();
-				int tspinEnableType = comboboxCreateRoomTSpinEnableType.getSelectedIndex();
-				int spinCheckType = comboboxCreateRoomSpinCheckType.getSelectedIndex();
-				boolean tspinEnableEZ = chkboxCreateRoomTSpinEnableEZ.isSelected();
-				boolean b2b = chkboxCreateRoomB2B.isSelected();
-				boolean combo = chkboxCreateRoomCombo.isSelected();
-				boolean rensaBlock = chkboxCreateRoomRensaBlock.isSelected();
-				boolean counter = chkboxCreateRoomCounter.isSelected();
-				boolean bravo = chkboxCreateRoomBravo.isSelected();
-				boolean reduceLineSend = chkboxCreateRoomReduceLineSend.isSelected();
-				boolean autoStartTNET2 = chkboxCreateRoomAutoStartTNET2.isSelected();
-				boolean disableTimerAfterSomeoneCancelled = chkboxCreateRoomDisableTimerAfterSomeoneCancelled.isSelected();
-				boolean useMap = chkboxCreateRoomUseMap.isSelected();
-				boolean useFractionalGarbage = chkboxCreateRoomUseFractionalGarbage.isSelected();
-				boolean garbageChangePerAttack = chkboxCreateRoomGarbageChangePerAttack.isSelected();
-				Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
-				boolean b2bChunk = chkboxCreateRoomB2BChunk.isSelected();
-
-				if(backupRoomInfo == null) backupRoomInfo = new NetRoomInfo();
-				backupRoomInfo.strName = roomName;
-				backupRoomInfo.maxPlayers = integerMaxPlayers;
-				backupRoomInfo.autoStartSeconds = integerAutoStartSeconds;
-				backupRoomInfo.gravity = integerGravity;
-				backupRoomInfo.denominator = integerDenominator;
-				backupRoomInfo.are = integerARE;
-				backupRoomInfo.areLine = integerARELine;
-				backupRoomInfo.lineDelay = integerLineDelay;
-				backupRoomInfo.lockDelay = integerLockDelay;
-				backupRoomInfo.das = integerDAS;
-				backupRoomInfo.hurryupSeconds = integerHurryupSeconds;
-				backupRoomInfo.hurryupInterval = integerHurryupInterval;
-				backupRoomInfo.ruleLock = rulelock;
-				backupRoomInfo.tspinEnableType = tspinEnableType;
-				backupRoomInfo.spinCheckType = spinCheckType;
-				backupRoomInfo.tspinEnableEZ = tspinEnableEZ;
-				backupRoomInfo.b2b = b2b;
-				backupRoomInfo.combo = combo;
-				backupRoomInfo.rensaBlock = rensaBlock;
-				backupRoomInfo.counter = counter;
-				backupRoomInfo.bravo = bravo;
-				backupRoomInfo.reduceLineSend = reduceLineSend;
-				backupRoomInfo.autoStartTNET2 = autoStartTNET2;
-				backupRoomInfo.disableTimerAfterSomeoneCancelled = disableTimerAfterSomeoneCancelled;
-				backupRoomInfo.useMap = useMap;
-				backupRoomInfo.useFractionalGarbage = useFractionalGarbage;
-				backupRoomInfo.garbageChangePerAttack = garbageChangePerAttack;
-				backupRoomInfo.garbagePercent = integerGarbagePercent;
-				backupRoomInfo.b2bChunk = b2bChunk;
+				NetRoomInfo r = exportRoomInfoFromCreateRoomScreen();
+				backupRoomInfo = r;
 
 				String msg;
-				msg = "roomcreate\t" + roomName + "\t" + integerMaxPlayers + "\t" + integerAutoStartSeconds + "\t";
-				msg += integerGravity + "\t" + integerDenominator + "\t" + integerARE + "\t" + integerARELine + "\t";
-				msg += integerLineDelay + "\t" + integerLockDelay + "\t" + integerDAS + "\t" + rulelock + "\t";
-				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + rensaBlock + "\t";
-				msg += counter + "\t" + bravo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
-				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
-				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
-				msg += spinCheckType + "\t" + tspinEnableEZ + "\t"  + b2bChunk + "\t";
+				msg = "roomcreate\t" + NetUtil.urlEncode(r.strName) + "\t" + r.maxPlayers + "\t" + r.autoStartSeconds + "\t";
+				msg += r.gravity + "\t" + r.denominator + "\t" + r.are + "\t" + r.areLine + "\t";
+				msg += r.lineDelay + "\t" + r.lockDelay + "\t" + r.das + "\t" + r.ruleLock + "\t";
+				msg += r.tspinEnableType + "\t" + r.b2b + "\t" + r.combo + "\t" + r.rensaBlock + "\t";
+				msg += r.counter + "\t" + r.bravo + "\t" + r.reduceLineSend + "\t" + r.hurryupSeconds + "\t";
+				msg += r.hurryupInterval + "\t" + r.autoStartTNET2 + "\t" + r.disableTimerAfterSomeoneCancelled + "\t";
+				msg += r.useMap + "\t" + r.useFractionalGarbage + "\t" + r.garbageChangePerAttack + "\t" + r.garbagePercent + "\t";
+				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t";
 				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
 
 				// Rule
@@ -2934,7 +3008,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				}
 
 				// Map send
-				if(useMap) {
+				if(r.useMap) {
 					int setID = getCurrentSelectedMapSetID();
 					log.debug("MapSetID:" + setID);
 
@@ -2977,6 +3051,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				netPlayerClient.send(msg);
 			} catch (Exception e2) {
 				log.error("Error on CreateRoom_OK", e2);
+			}
+		}
+		// Save Preset (Create Room)
+		if(e.getActionCommand() == "CreateRoom_PresetSave") {
+			NetRoomInfo r = exportRoomInfoFromCreateRoomScreen();
+			Integer id = (Integer)spinnerCreateRoomPresetID.getValue();
+			propConfig.setProperty("0.preset." + id, NetUtil.compressString(r.exportString()));
+		}
+		// Load Preset (Create Room)
+		if(e.getActionCommand() == "CreateRoom_PresetLoad") {
+			Integer id = (Integer)spinnerCreateRoomPresetID.getValue();
+			String strPresetC = propConfig.getProperty("0.preset." + id);
+			if(strPresetC != null) {
+				String strPreset = NetUtil.decompressString(strPresetC);
+				NetRoomInfo r = new NetRoomInfo(strPreset);
+				importRoomInfoToCreateRoomScreen(r);
 			}
 		}
 		// ルーム作成画面での参戦 button
