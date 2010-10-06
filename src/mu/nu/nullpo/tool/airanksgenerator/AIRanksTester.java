@@ -59,13 +59,15 @@ public class AIRanksTester {
 	private void playGame(){
 		init();
 		/*if ((pieces[0]==Piece.PIECE_S) || (pieces[0]==Piece.PIECE_Z) || (pieces[0]==Piece.PIECE_O)){
-			//System.out.println("�chec !!");
+			//System.out.println("・ｽchec !!");
 		}*/
 		int [] heights=new int[9];
+		int [] holdPiece={-1};
+		boolean [] holdOK ={true};
 		while (!ranksAI.isGameOver()){
 			totalPieces++;
 			//System.out.println(Arrays.toString(heights));
-			ranksAI.playFictitiousMove(heights,pieces);
+			ranksAI.playFictitiousMove(heights,pieces,holdPiece,holdOK);
 			incrementPieces();
 
 		}
