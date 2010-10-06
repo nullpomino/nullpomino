@@ -160,7 +160,7 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 		// Rules
 		listboxRule = new JList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			listboxRule[i] = new JList(extractRuleNameListFromRuleEntries(i));
+			listboxRule[i] = new JList(extractRuleListFromRuleEntries(i));
 			JScrollPane scpaneRule = new JScrollPane(listboxRule[i]);
 			scpaneRule.setPreferredSize(new Dimension(380, 250));
 			scpaneRule.setAlignmentX(LEFT_ALIGNMENT);
@@ -270,16 +270,17 @@ public class RuleSelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Get rule name list as String[]
+	 * Get rule name + file name list as String[]
 	 * @param currentStyle Current style
-	 * @return Rule name list
+	 * @return Rule name + file name list
 	 */
-	private String[] extractRuleNameListFromRuleEntries(int currentStyle) {
+	private String[] extractRuleListFromRuleEntries(int currentStyle) {
 		LinkedList<RuleEntry> subEntries = getSubsetEntries(currentStyle);
 
 		String[] result = new String[subEntries.size()];
 		for(int i = 0; i < subEntries.size(); i++) {
-			result[i] = subEntries.get(i).rulename;
+			RuleEntry entry = subEntries.get(i);
+			result[i] = entry.rulename + " (" + entry.filename + ")";
 		}
 
 		return result;
