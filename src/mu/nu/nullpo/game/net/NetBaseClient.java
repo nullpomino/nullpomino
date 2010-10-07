@@ -191,7 +191,11 @@ public class NetBaseClient extends Thread {
 			exDisconnectReason = e;
 		}
 
-		// Listener呼び出し
+		if(timerPing != null) timerPing.cancel();
+		connectedFlag = false;
+		threadRunning = false;
+
+		// Listener
 		for(int i = 0; i < listeners.size(); i++) {
 			try {
 				listeners.get(i).netOnDisconnect(this, exDisconnectReason);
@@ -199,10 +203,6 @@ public class NetBaseClient extends Thread {
 				log.debug("Uncaught Exception on NetMessageListener #" + i + " (disconnect event)", e2);
 			}
 		}
-
-		if(timerPing != null) timerPing.cancel();
-		connectedFlag = false;
-		threadRunning = false;
 	}
 
 	/**

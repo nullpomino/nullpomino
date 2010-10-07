@@ -41,6 +41,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -66,10 +67,13 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
+import net.clarenceho.crypto.RC4;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.cacas.java.gnu.tools.Crypt;
+
+import biz.source_code.base64Coder.Base64Coder;
 
 /**
  * NullpoMino NetServer
@@ -142,6 +146,9 @@ public class NetServer extends JFrame implements ActionListener {
 	@SuppressWarnings("rawtypes")
 	private static LinkedList[] mpRankingList;
 
+	/** Encryption algorithm */
+	private static RC4 rc4;
+
 	/** List of SocketChannel */
 	private List<SocketChannel> channelList = new LinkedList<SocketChannel>();
 
@@ -159,6 +166,9 @@ public class NetServer extends JFrame implements ActionListener {
 
 	/** Observer list */
 	private LinkedList<SocketChannel> observerList = new LinkedList<SocketChannel>();
+
+	/** Admin list */
+	private LinkedList<SocketChannel> adminList = new LinkedList<SocketChannel>();
 
 	/** Ban list */
 	private LinkedList<NetServerBan> banList = new LinkedList<NetServerBan>();
@@ -783,6 +793,9 @@ public class NetServer extends JFrame implements ActionListener {
 			if(observerList.remove(channel) == true) {
 				log.info("Observer logout (" + channel.toString() + ")");
 			}
+			if(adminList.remove(channel) == true) {
+				log.info("Admin logout (" + channel.toString() + ")");
+			}
 
 			if(pInfo != null) {
 				broadcastPlayerInfoUpdate(pInfo, "playerlogout");
@@ -812,6 +825,7 @@ public class NetServer extends JFrame implements ActionListener {
 		bufferMap.clear();
 		notCompletePacketMap.clear();
 		observerList.clear();
+		adminList.clear();
 		playerInfoMap.clear();
 		roomInfoList.clear();
 
@@ -990,7 +1004,7 @@ public class NetServer extends JFrame implements ActionListener {
 		}
 		// Disconnect request.
 		if(message[0].equals("disconnect")) {
-			if(isGUIEnabled) {
+			if(isGUIEnabled && (pInfo != null)) {
 				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 				listmodelConnectionList.removeElement(remoteAddr+" - "+pInfo.strName);
 			}
@@ -1013,6 +1027,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 			// Ignore it if already logged in
 			if(observerList.contains(client)) return;
+			if(adminList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
 			// Version check
@@ -1038,6 +1053,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 			// Ignore it if already logged in
 			if(observerList.contains(client)) return;
+			if(adminList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
 			// Version check
@@ -1769,6 +1785,53 @@ public class NetServer extends JFrame implements ActionListener {
 					}
 				}
 			}
+		}
+		// ADMIN: Admin Login
+		if(message[0].equals("adminlogin")) {
+			// Ignore it if already logged in
+			if(observerList.contains(client)) return;
+			if(adminList.contains(client)) return;
+			if(playerInfoMap.containsKey(client)) return;
+
+			// Check version
+			float serverVer = GameManager.getVersionMajor();
+			float clientVer = Float.parseFloat(message[1]);
+			if(serverVer != clientVer) {
+				logout(client);
+				return;
+			}
+
+			// Check username and password
+			String strServerUsername = propServer.getProperty("netserver.admin.username", "");
+			String strServerPassword = propServer.getProperty("netserver.admin.password", "");
+			if((strServerUsername.length() == 0) || (strServerPassword.length() == 0)) {
+				log.warn(client.toString() + " has tried to access admin, but admin is disabled");
+				send(client, "adminloginfail\tDISABLE\n");
+				return;
+			}
+
+			String strClientUsername = message[2];
+			if(!strClientUsername.equals(strServerUsername)) {
+				log.warn(client.toString() + " has tried to access admin with incorrect username (" + strClientUsername + ")");
+				send(client, "adminloginfail\tFAIL\n");
+				return;
+			}
+
+			if(rc4 == null) rc4 = new RC4(strServerPassword);
+			byte[] bPass = Base64Coder.decode(message[3]);
+			byte[] bPass2 = rc4.rc4(bPass);
+			String strClientPasswordCheckData = NetUtil.bytesToString(bPass2);
+			if(!strClientPasswordCheckData.equals(strServerUsername)) {
+				log.warn(client.toString() + " has tried to access admin with incorrect password (Username:" + strClientUsername + ")");
+				send(client, "adminloginfail\tFAIL\n");
+				return;
+			}
+
+			// Login successful
+			adminList.add(client);
+			InetAddress addr = client.socket().getInetAddress();
+			send(client, "adminloginsuccess\t" + addr.getHostAddress() + "\t" + addr.getHostName() + "\n");
+			log.info("Admin has logged in (" + client.toString() + ")");
 		}
 	}
 
