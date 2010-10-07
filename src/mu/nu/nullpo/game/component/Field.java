@@ -77,6 +77,16 @@ public class Field implements Serializable {
 	/** fieldより上の見えない部分の高さ */
 	protected int hidden_height;
 
+	/*
+	 *	Oct. 6th, 2010: Changed block_field[][] and block_hidden[][] to [row][column] format,
+	 *  and updated all relevant functions to match.
+	 * 	This should facilitate referencing rows within the field.
+	 *	It appears the unfinished flipVertical() was written assuming this was possible,
+	 *	and it would greatly ease some of the work I'm currently doing without having
+	 *	any visible effects outside this function.
+	 *				-Kitaru
+	 */
+	
 	/** fieldのBlock */
 	protected Block[][] block_field;
 
@@ -109,6 +119,12 @@ public class Field implements Serializable {
 
 	/** List of colors of lines cleared in most recent line color clear */
 	public ArrayList<Integer> lineColorsCleared;
+	
+	/** List of last rows cleared in most recent horizontal line clear. */
+	public ArrayList<Block[]> lastLinesCleared;
+	
+	/** Used for TGM garbage, can later be extended to all types */
+	//public ArrayList<Block[]> pendingGarbage;
 
 	/**
 	 * パラメータ付きConstructor
@@ -155,9 +171,9 @@ public class Field implements Serializable {
 	/**
 	 * Called at initialization
 	 */
-	public void reset() {
-		block_field = new Block[width][height];
-		block_hidden = new Block[width][hidden_height];
+	public void reset() {		
+		block_field = new Block[height][width];
+		block_hidden = new Block[hidden_height][width];
 		lineflag_field = new boolean[height];
 		lineflag_hidden = new boolean[hidden_height];
 		hurryupFloorLines = 0;
@@ -166,14 +182,15 @@ public class Field implements Serializable {
 		colorsCleared = 0;
 		gemsCleared = 0;
 		lineColorsCleared = null;
+		lastLinesCleared = null;
 		garbageCleared = 0;
 
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				block_field[i][j] = new Block();
+				block_field[j][i] = new Block();
 			}
 			for(int j = 0; j < hidden_height; j++) {
-				block_hidden[i][j] = new Block();
+				block_hidden[j][i] = new Block();
 			}
 		}
 	}
@@ -188,8 +205,8 @@ public class Field implements Serializable {
 		hidden_height = f.hidden_height;
 		ceiling = f.ceiling;
 
-		block_field = new Block[width][height];
-		block_hidden = new Block[width][hidden_height];
+		block_field = new Block[height][width];
+		block_hidden = new Block[hidden_height][width];
 		lineflag_field = new boolean[height];
 		lineflag_hidden = new boolean[hidden_height];
 		hurryupFloorLines = f.hurryupFloorLines;
@@ -198,14 +215,15 @@ public class Field implements Serializable {
 		colorsCleared = f.colorsCleared;
 		gemsCleared = f.gemsCleared = 0;
 		lineColorsCleared = f.lineColorsCleared;
+		lastLinesCleared = f.lastLinesCleared;
 		garbageCleared = f.garbageCleared;
 
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				block_field[i][j] = new Block(f.getBlock(i, j));
+				block_field[j][i] = new Block(f.getBlock(i, j));
 			}
 			for(int j = 0; j < hidden_height; j++) {
-				block_hidden[i][j] = new Block(f.getBlock(i, -j-1));
+				block_hidden[j][i] = new Block(f.getBlock(i, -j-1));
 			}
 		}
 	}
@@ -301,7 +319,41 @@ public class Field implements Serializable {
 		// 置いたBlockが消える
 		return COORD_VANISH;
 	}
-
+	
+	/**
+	 * @param y height of the row in the field
+	 * @return a reference to the row
+	 */
+	public Block[] getRow(int y) {
+		try {
+			return getRowE(y);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * @param y height of the row in the field
+	 * @return a reference to the row
+	 * @throws ArrayIndexOutOfBoundsException
+	 */
+	public Block[] getRowE(int y) throws ArrayIndexOutOfBoundsException {
+		if(y >= 0) {
+			try {
+				return block_field[y];
+			} catch(ArrayIndexOutOfBoundsException e) {
+				throw e;
+			}
+		}
+		// field外
+		try {
+			int y2 = (y * -1) - 1;
+			return block_hidden[y2];
+		} catch(ArrayIndexOutOfBoundsException e) {
+			throw e;
+		}
+	}
+	
 	/**
 	 * 指定した座標にあるBlockを取得
 	 * @param x X-coordinate
@@ -309,24 +361,13 @@ public class Field implements Serializable {
 	 * @return 成功したら指定した座標にあるBlockオブジェクト, 失敗したらnull
 	 */
 	public Block getBlock(int x, int y) {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y];
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return null;
-			}
-		}
-		// field外
-		int y2 = (y * -1) - 1;
-
 		try {
-			return block_hidden[x][y2];
+			return getBlockE(x, y);
 		} catch(ArrayIndexOutOfBoundsException e) {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * 指定した座標にあるBlockを取得 (失敗したら例外送出）
 	 * @param x X-coordinate
@@ -335,18 +376,8 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public Block getBlockE(int x, int y) throws ArrayIndexOutOfBoundsException {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y];
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
-		}
-		// field外
 		try {
-			int y2 = (y * -1) - 1;
-			return block_hidden[x][y2];
+			return getRowE(y)[x];
 		} catch(ArrayIndexOutOfBoundsException e) {
 			throw e;
 		}
@@ -360,23 +391,10 @@ public class Field implements Serializable {
 	 * @return true if successful, false if failed
 	 */
 	public boolean setBlock(int x, int y, Block blk) {
-		// field内
-		if(y >= 0) {
-			try {
-				block_field[x][y] = blk;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return false;
-			}
-		}
-		// field外
-		else {
-			int y2 = (y * -1) - 1;
-
-			try {
-				block_hidden[x][y2] = blk;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return false;
-			}
+		try {
+			setBlockE(x, y, blk);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			return false;
 		}
 
 		return true;
@@ -390,22 +408,10 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public void setBlockE(int x, int y, Block blk) throws ArrayIndexOutOfBoundsException {
-		// field内
-		if(y >= 0) {
-			try {
-				block_field[x][y] = blk;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
-		}
-		// field外
-		else {
-			try {
-				int y2 = (y * -1) - 1;
-				block_hidden[x][y2] = blk;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
+		try {
+			getBlock(x,y).copy(blk);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			throw e;
 		}
 	}
 
@@ -416,24 +422,13 @@ public class Field implements Serializable {
 	 * @return 指定した座標にあるBlock color (失敗したらBLOCK_COLOR_INVALID）
 	 */
 	public int getBlockColor(int x, int y) {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y].color;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return Block.BLOCK_COLOR_INVALID;
-			}
-		}
-
-		// field外
-		int y2 = (y * -1) - 1;
-
 		try {
-			return block_hidden[x][y2].color;
+			return getBlockColorE(x, y);
 		} catch(ArrayIndexOutOfBoundsException e) {
 			return Block.BLOCK_COLOR_INVALID;
 		}
 	}
+	
 	/**
 	 * 指定した座標にあるBlock colorを取得
 	 * @param x X-coordinate
@@ -453,19 +448,8 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public int getBlockColorE(int x, int y) throws ArrayIndexOutOfBoundsException {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y].color;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
-		}
-
-		// field外
 		try {
-			int y2 = (y * -1) - 1;
-			return block_hidden[x][y2].color;
+			return getBlockE(x,y).color;
 		} catch(ArrayIndexOutOfBoundsException e) {
 			throw e;
 		}
@@ -479,23 +463,10 @@ public class Field implements Serializable {
 	 * @return true if successful, false if failed
 	 */
 	public boolean setBlockColor(int x, int y, int c) {
-		// field内
-		if(y >= 0) {
-			try {
-				block_field[x][y].color = c;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return false;
-			}
-		}
-		// field外
-		else {
-			int y2 = (y * -1) - 1;
-
-			try {
-				block_hidden[x][y2].color = c;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return false;
-			}
+		try {
+			setBlockColorE(x, y, c);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			return false;
 		}
 
 		return true;
@@ -509,22 +480,10 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public void setBlockColorE(int x, int y, int c) throws ArrayIndexOutOfBoundsException {
-		// field内
-		if(y >= 0) {
-			try {
-				block_field[x][y].color = c;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
-		}
-		// field外
-		else {
-			try {
-				int y2 = (y * -1) - 1;
-				block_hidden[x][y2].color = c;
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
+		try {
+			getBlockE(x,y).color = c;
+		} catch(ArrayIndexOutOfBoundsException e) {
+			throw e;
 		}
 	}
 
@@ -560,20 +519,8 @@ public class Field implements Serializable {
 	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合もtrue）
 	 */
 	public boolean getBlockEmpty(int x, int y) {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y].isEmpty();
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return true;
-			}
-		}
-
-		// field外
-		int y2 = (y * -1) - 1;
-
 		try {
-			return block_hidden[x][y2].isEmpty();
+			return getBlock(x,y).isEmpty();
 		} catch(ArrayIndexOutOfBoundsException e) {
 			return true;
 		}
@@ -586,20 +533,8 @@ public class Field implements Serializable {
 	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合はfalse）
 	 */
 	public boolean getBlockEmptyF(int x, int y) {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y].isEmpty();
-			} catch(ArrayIndexOutOfBoundsException e) {
-				return false;
-			}
-		}
-
-		// field外
-		int y2 = (y * -1) - 1;
-
 		try {
-			return block_hidden[x][y2].isEmpty();
+			return getBlockEmptyE(x,y);
 		} catch(ArrayIndexOutOfBoundsException e) {
 			return false;
 		}
@@ -613,19 +548,8 @@ public class Field implements Serializable {
 	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
 	 */
 	public boolean getBlockEmptyE(int x, int y) throws ArrayIndexOutOfBoundsException {
-		// field内
-		if(y >= 0) {
-			try {
-				return block_field[x][y].isEmpty();
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
-			}
-		}
-
-		// field外
 		try {
-			int y2 = (y * -1) - 1;
-			return block_hidden[x][y2].isEmpty();
+			return getBlockE(x,y).isEmpty();
 		} catch(ArrayIndexOutOfBoundsException e) {
 			throw e;
 		}
@@ -717,11 +641,19 @@ public class Field implements Serializable {
 	 */
 	public int checkLine() {
 		int lines = 0;
+		
+		if (lastLinesCleared == null){
+			lastLinesCleared = new ArrayList<Block[]>();
+		}
+		lastLinesCleared.clear();
+		
+		Block[] row = new Block[width];
 
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			boolean flag = true;
 
 			for(int j = 0; j < width; j++) {
+				row[j] = new Block(getBlock(j, i));
 				if((getBlockEmpty(j, i) == true) || (getBlock(j, i).getAttribute(Block.BLOCK_ATTRIBUTE_WALL) == true)) {
 					flag = false;
 					break;
@@ -732,6 +664,7 @@ public class Field implements Serializable {
 
 			if(flag) {
 				lines++;
+				lastLinesCleared.add(row);
 
 				for(int j = 0; j < width; j++) {
 					getBlock(j, i).setAttribute(Block.BLOCK_ATTRIBUTE_ERASE, true);
@@ -1472,6 +1405,32 @@ public class Field implements Serializable {
 		}
 	}
 
+
+	/**
+	 * @return an ArrayList of rows representing the TGM attack of the last line clear action
+	 * The TGM attack is the lines of the last line clear flipped vertically and without the blocks that caused it.
+	 */
+	public ArrayList<Block[]> getLastLinesAsTGMAttack(){
+		ArrayList<Block[]> attack = new ArrayList<Block[]>();
+		
+		for(Block[] row : lastLinesCleared){
+			Block[] row2 = new Block[getWidth()];
+			for(int i = 0; i < getWidth(); i++){
+				Block b = row[i];
+				//Put an empty block if the original block was in the last commit to the field.
+				if(b.getAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT)){
+					row2[i] = new Block();
+				}
+				else{
+					row2[i] = row[i];
+				}
+			}
+			attack.add(0, row2);
+		}
+		
+		return attack;
+	}
+	
 	/**
 	 * 穴が1箇所だけ開いたgarbage blockを一番下に追加
 	 * @param hole 穴の位置 (-1なら穴なし）
@@ -2108,6 +2067,7 @@ public class Field implements Serializable {
 	}
 
 	public boolean doCascadeGravity(int type) {
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, false);
 		if (type == GameEngine.LINE_GRAVITY_CASCADE_SLOW)
 			return doCascadeSlow();
 		else
@@ -2162,6 +2122,7 @@ public class Field implements Serializable {
 								{
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, true);
+									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, true);
 									setBlock(l, k + 1, bTemp);
 									setBlock(l, k, new Block());
 								}
@@ -2232,6 +2193,7 @@ public class Field implements Serializable {
 								{
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, true);
+									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, true);
 									setBlock(l, k + 1, bTemp);
 									setBlock(l, k, new Block());
 								}
@@ -2340,6 +2302,20 @@ public class Field implements Serializable {
 	}
 
 	/**
+	 * @param row Row of blocks
+	 * @return a String representing the row
+	 */
+	public String rowToString(Block[] row){
+		String strResult = "";
+		
+		for(int x = 0; x < row.length; x++) {
+			strResult += row[x];
+		}
+		
+		return strResult;
+	}
+	
+	/**
 	 * fieldを文字列に変換
 	 * @return 文字列に変換されたfield
 	 */
@@ -2347,17 +2323,7 @@ public class Field implements Serializable {
 		String strResult = "";
 
 		for(int i = getHeight() - 1; i >= Math.max(-1, getHighestBlockY()); i--) {
-			for(int j = 0; j < getWidth(); j++) {
-				int blkColor = getBlockColor(j, i);
-				if(blkColor < 0) blkColor = Block.BLOCK_COLOR_NONE;
-
-				if(blkColor >= 10) {
-					char c = (char)(0x41 + (blkColor - 10));
-					strResult += c;
-				} else {
-					strResult += Integer.toString(blkColor);
-				}
-			}
+			strResult += rowToString(getRow(i));
 		}
 
 		// 終わりの0を取り除く
@@ -2368,34 +2334,58 @@ public class Field implements Serializable {
 		return strResult;
 	}
 
+	public Block[] stringToRow(String str){
+		return stringToRow(str, 0, false, false);
+	}
+	
+	/**
+	 * @param str String representing field state
+	 * @param skin Block skin being used in this field
+	 * @param isGarbage Row is a garbage row
+	 * @param isWall Row is a wall (i.e. hurry-up rows)
+	 * @return
+	 */
+	public Block[] stringToRow(String str, int skin, boolean isGarbage, boolean isWall){
+		Block[] row = new Block[getWidth()];
+		for(int j = 0; j < getWidth(); j++) {
+			
+			int blkColor = Block.BLOCK_COLOR_NONE;
+
+			/*
+			 * NullNoname's original approach from the old stringToField:
+			 * If a character outside the row string is referenced,
+			 * default to an empty block by ignoring the exception.
+			 */
+			try {
+				char c = str.charAt(j);
+				blkColor = Block.charToBlockColor(c);
+			} catch (Exception e) {}
+
+			row[j] = new Block();
+			row[j].color = blkColor;
+			row[j].skin = skin;
+			row[j].elapsedFrames = -1;
+			row[j].setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+			row[j].setAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
+
+			if(isGarbage) { //TODO: This may need extension when garbage does not only sport one hole (i.e. TGM garbage)
+				row[j].setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+			}
+			if(isWall) {
+				row[j].setAttribute(Block.BLOCK_ATTRIBUTE_WALL, true);
+			}
+		}
+		
+		return row;
+	}
+		
+	
 	/**
 	 * 文字列を元にfieldを変更
 	 * @param str 文字列
 	 */
 	public void stringToField(String str) {
-		for(int i = -1; i < getHeight(); i++) {
-			for(int j = 0; j < getWidth(); j++) {
-				int index = (getHeight() - 1 - i) * getWidth() + j;
-				int blkColor = Block.BLOCK_COLOR_NONE;
-
-				try {
-					char c = str.charAt(index);
-					blkColor = Character.digit(c, 10);
-
-					if(blkColor == -1) {
-						blkColor = (c - 0x41) + 10;
-					}
-				} catch (Exception e) {}
-
-				Block blk = new Block();
-				blk.color = blkColor;
-				blk.elapsedFrames = -1;
-				blk.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
-				blk.setAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
-
-				setBlock(j, i, blk);
-			}
-		}
+		stringToField(str, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 
 	/**
@@ -2405,36 +2395,24 @@ public class Field implements Serializable {
 	 * @param highestGarbageY 最も高いgarbage blockの位置
 	 * @param highestWallY 最も高いHurryupBlockの位置
 	 */
-	public void stringToField(String str, int skin, int highestGarbageY, int highestWallY) {
+	public void stringToField(String str, int skin, int highestGarbageY, int highestWallY) {		
 		for(int i = -1; i < getHeight(); i++) {
-			for(int j = 0; j < getWidth(); j++) {
-				int index = (getHeight() - 1 - i) * getWidth() + j;
-				int blkColor = Block.BLOCK_COLOR_NONE;
-
-				try {
-					char c = str.charAt(index);
-					blkColor = Character.digit(c, 10);
-
-					if(blkColor == -1) {
-						blkColor = (c - 0x41) + 10;
-					}
-				} catch (Exception e) {}
-
-				Block blk = new Block();
-				blk.color = blkColor;
-				blk.skin = skin;
-				blk.elapsedFrames = -1;
-				blk.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
-				blk.setAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
-
-				if(i >= highestGarbageY) {
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
+			int index = (getHeight() - 1 - i) * getWidth();
+			/*
+			 * Much like NullNoname's try/catch from the old stringToField that is now in stringToRow,
+			 * we need to skip over substrings referenced outside the field string -- empty rows.
+			 */
+			try{
+				String substr = str.substring(index, Math.min(str.length(), index+getWidth()));
+				Block[] row = stringToRow(substr, skin, (i >= highestGarbageY), (i >= highestWallY));
+				for(int j = 0; j < getWidth(); j++){
+					setBlock(j, i, row[j]);
 				}
-				if(i >= highestWallY) {
-					blk.setAttribute(Block.BLOCK_ATTRIBUTE_WALL, true);
+			}
+			catch(Exception e){
+				for(int j = 0; j < getWidth(); j++){
+					setBlock(j, i, new Block(Block.BLOCK_COLOR_NONE));
 				}
-
-				setBlock(j, i, blk);
 			}
 		}
 	}
@@ -3090,7 +3068,7 @@ public class Field implements Serializable {
 
 	public void flipVertical() {
 		Block[] temp;
-		for (int yMin = getHighestBlockY(), yMax = height-1; yMin < yMax; yMin--, yMax--)
+		for (int yMin = getHighestBlockY(), yMax = height-1; yMin < yMax; yMin--, yMax++)
 		{
 			if (yMin < 0)
 			{

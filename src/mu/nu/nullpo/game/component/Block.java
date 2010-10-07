@@ -134,6 +134,9 @@ public class Block implements Serializable {
 
 	/** Anti-gravity flag (The block will not fall by gravity) */
 	public static final int BLOCK_ATTRIBUTE_ANTIGRAVITY = 16384;
+	
+	/** Last commit flag -- block was part of last placement or cascade **/
+	public static final int BLOCK_ATTRIBUTE_LAST_COMMIT = 32768;
 
 	/** Block color */
 	public int color;
@@ -328,6 +331,42 @@ public class Block implements Serializable {
 			return color;
 	}
 
+	/**
+	 * @return the character representing the color of this block
+	 */
+	public char blockToChar(){	
+		//'0'-'9','A'-'Z' represent colors 0-35.
+		//Colors beyond that would follow the ASCII table starting at '['.
+		if(color >= 10) {
+			return (char)('A' + (color - 10));
+		}
+		return (char)('0' + Math.max(0, color));
+	}
+	
+	public String toString(){
+		return ""+blockToChar();
+	}
+	
+	/**
+	 * @param c A character representing a block
+	 * @return The int representing the block's color
+	 */
+	public static int charToBlockColor(char c){
+		int blkColor = 0;
+		
+		//With a radix of 36, the digits encompass '0'-'9','A'-'Z'.
+		//With a radix higher than 36, we can also have characters 'a'-'z' represent digits.
+		blkColor = Character.digit(c, 36);
+
+		//Given the current implementation of other functions, I assumed that
+		//if we needed additional BLOCK_COLOR values, it would follow from 'Z'->'['
+		//in the ASCII chart.
+		if(blkColor == -1) {
+			blkColor = (c - '[') + 36;
+		}
+		return blkColor;
+	}
+	
 	public static void updateRainbowPhase(int time) {
 		rainbowPhase = time%21;
 	}

@@ -629,42 +629,31 @@ public class Piece implements Serializable {
 	public boolean placeToField(int x, int y, int rt, Field fld) {
 		updateConnectData();
 
-		// Bigでは専用処理
-		if(big == true) return placeToFieldBig(x, y, rt, fld);
+		//On a Big piece, double its size.
+		int size = 1;
+		if(big == true) size = 2;
 
 		boolean placed = false;
 
 		for(int i = 0; i < getMaxBlock(); i++) {
-			int x2 = x + dataX[rt][i];
-			int y2 = y + dataY[rt][i];
-			fld.setBlock(x2, y2, new Block(block[i]));
-			if(y2 >= 0) placed = true;
-		}
-
-		return placed;
-	}
-
-	/**
-	 * fieldのピースを置く (Big用）
-	 * @param x X-coordinate
-	 * @param y Y-coordinate
-	 * @param rt Direction
-	 * @param fld field
-	 * @return 1つ以上Blockをfield枠内に置けたらtrue, そうでないならfalse
-	 */
-	protected boolean placeToFieldBig(int x, int y, int rt, Field fld) {
-		boolean placed = false;
-
-		for(int i = 0; i < getMaxBlock(); i++) {
-			int x2 = (x + dataX[rt][i] * 2);
-			int y2 = (y + dataY[rt][i] * 2);
-
-			// 4Block分置く
-			for(int k = 0; k < 2; k++)for(int l = 0; l < 2; l++) {
-				int x3 = x2 + k;
-				int y3 = y2 + l;
-				fld.setBlock(x3, y3, new Block(block[i]));
-				if(y3 >= 0) placed = true;
+			int x2 = x + dataX[rt][i] * size; //Multiply co-ordinate offset by piece size.
+			int y2 = y + dataY[rt][i] * size;
+			
+			fld.setAllAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, false);
+			block[i].setAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, true);
+			
+			/*
+			 * Loop through width/height of the block, setting cells in the field.
+			 * If the piece is normal (size == 1), a standard, 1x1 space is allotted per block.
+			 * If the piece is big (size == 2), a 2x2 space is allotted per block.
+			 */
+			for(int k = 0; k < size; k++){
+				for(int l = 0; l < size; l++){
+					int x3 = x2 + k;
+					int y3 = y2 + l;
+					fld.setBlock(x3, y3, new Block(block[i]));
+					if(y3 >= 0) placed = true;
+				}
 			}
 		}
 
