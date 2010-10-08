@@ -414,10 +414,11 @@ public class NetServer extends JFrame implements ActionListener {
 	/**
 	 * Find a player in multiplayer leaderboard.
 	 * @param style Game Style
-	 * @param p NetPlayerInfo
+	 * @param p NetPlayerInfo (can be null, returns -1 if so)
 	 * @return Index in mpRankingList[style] (-1 if not found)
 	 */
 	private static int mpRankingIndexOf(int style, NetPlayerInfo p) {
+		if(p == null) return -1;
 		for(int i = 0; i < mpRankingList[style].size(); i++) {
 			NetPlayerInfo p2 = (NetPlayerInfo)mpRankingList[style].get(i);
 			if(p.strName.equals(p2.strName)) {
@@ -633,6 +634,7 @@ public class NetServer extends JFrame implements ActionListener {
 			}
 
 			send(channel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n");
+			adminSendClientList();
 		} catch (IOException e) {
 			log.info("IOException throwed on doAccept", e);
 			logout(channel);
@@ -732,8 +734,9 @@ public class NetServer extends JFrame implements ActionListener {
 	private void logout(SocketChannel channel) {
 		if(channel == null) return;
 
+		String remoteAddr = "";
 		try {
-			String remoteAddr = channel.socket().getRemoteSocketAddress().toString();
+			remoteAddr = channel.socket().getRemoteSocketAddress().toString();
 			log.info("Logout: " + remoteAddr);
 		} catch (Exception e) {}
 
@@ -791,10 +794,10 @@ public class NetServer extends JFrame implements ActionListener {
 				}
 			}
 			if(observerList.remove(channel) == true) {
-				log.info("Observer logout (" + channel.toString() + ")");
+				log.info("Observer logout (" + remoteAddr + ")");
 			}
 			if(adminList.remove(channel) == true) {
-				log.info("Admin logout (" + channel.toString() + ")");
+				log.info("Admin logout (" + remoteAddr + ")");
 			}
 
 			if(pInfo != null) {
@@ -802,6 +805,7 @@ public class NetServer extends JFrame implements ActionListener {
 				pInfo.delete();
 			}
 			broadcastUserCountToAll();
+			adminSendClientList();
 
 			log.debug("Channel close success");
 		} catch (Exception e) {
@@ -968,6 +972,17 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
+	 * Broadcast a message to all admins
+	 * @param msg Message to send (String)
+	 * @throws IOException If something fails
+	 */
+	private void broadcastAdmin(String msg) throws IOException {
+		for(SocketChannel ch: adminList) {
+			send(ch, msg);
+		}
+	}
+
+	/**
 	 * Get SocketChannel from NetPlayerInfo
 	 * @param pInfo Player
 	 * @return SocketChannel (null if not found)
@@ -1043,6 +1058,7 @@ public class NetServer extends JFrame implements ActionListener {
 			observerList.add(client);
 			send(client, "observerloginsuccess\n");
 			broadcastUserCountToAll();
+			adminSendClientList();
 
 			log.info("New observer has logged in (" + client.toString() + ")");
 			return;
@@ -1144,6 +1160,7 @@ public class NetServer extends JFrame implements ActionListener {
 
 			broadcastPlayerInfoUpdate(pInfo, "playernew");
 			broadcastUserCountToAll();
+			adminSendClientList();
 
 			if(isGUIEnabled) {
 				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
@@ -1259,7 +1276,7 @@ public class NetServer extends JFrame implements ActionListener {
 		if(message[0].equals("mpranking")) {
 			//mpranking\t[STYLE]
 
-			if(pInfo != null) {
+			if((pInfo != null) || adminList.contains(client)) {
 				int style = Integer.parseInt(message[1]);
 				int myRank = mpRankingIndexOf(style, pInfo);
 
@@ -1275,7 +1292,7 @@ public class NetServer extends JFrame implements ActionListener {
 					strPData += (nowRank) + ";" + NetUtil.urlEncode(p.strName) + ";" +
 								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
 				}
-				if(myRank == -1) {
+				if((myRank == -1) && (pInfo != null)) {
 					NetPlayerInfo p = pInfo;
 					strPData += (-1) + ";" + NetUtil.urlEncode(p.strName) + ";" +
 								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
@@ -1283,7 +1300,7 @@ public class NetServer extends JFrame implements ActionListener {
 				String strPDataC = NetUtil.compressString(strPData);
 
 				String strMsg = "mpranking\t" + style + "\t" + myRank + "\t" + strPDataC + "\n";
-				send(pInfo, strMsg);
+				send(client, strMsg);
 			}
 		}
 		// Single player room
@@ -1793,6 +1810,8 @@ public class NetServer extends JFrame implements ActionListener {
 			if(adminList.contains(client)) return;
 			if(playerInfoMap.containsKey(client)) return;
 
+			String strRemoteAddr = client.socket().getInetAddress().getHostName();
+
 			// Check version
 			float serverVer = GameManager.getVersionMajor();
 			float clientVer = Float.parseFloat(message[1]);
@@ -1805,14 +1824,14 @@ public class NetServer extends JFrame implements ActionListener {
 			String strServerUsername = propServer.getProperty("netserver.admin.username", "");
 			String strServerPassword = propServer.getProperty("netserver.admin.password", "");
 			if((strServerUsername.length() == 0) || (strServerPassword.length() == 0)) {
-				log.warn(client.toString() + " has tried to access admin, but admin is disabled");
+				log.warn(strRemoteAddr + " has tried to access admin, but admin is disabled");
 				send(client, "adminloginfail\tDISABLE\n");
 				return;
 			}
 
 			String strClientUsername = message[2];
 			if(!strClientUsername.equals(strServerUsername)) {
-				log.warn(client.toString() + " has tried to access admin with incorrect username (" + strClientUsername + ")");
+				log.warn(strRemoteAddr + " has tried to access admin with incorrect username (" + strClientUsername + ")");
 				send(client, "adminloginfail\tFAIL\n");
 				return;
 			}
@@ -1822,7 +1841,7 @@ public class NetServer extends JFrame implements ActionListener {
 			byte[] bPass2 = rc4.rc4(bPass);
 			String strClientPasswordCheckData = NetUtil.bytesToString(bPass2);
 			if(!strClientPasswordCheckData.equals(strServerUsername)) {
-				log.warn(client.toString() + " has tried to access admin with incorrect password (Username:" + strClientUsername + ")");
+				log.warn(strRemoteAddr + " has tried to access admin with incorrect password (Username:" + strClientUsername + ")");
 				send(client, "adminloginfail\tFAIL\n");
 				return;
 			}
@@ -1831,7 +1850,102 @@ public class NetServer extends JFrame implements ActionListener {
 			adminList.add(client);
 			InetAddress addr = client.socket().getInetAddress();
 			send(client, "adminloginsuccess\t" + addr.getHostAddress() + "\t" + addr.getHostName() + "\n");
-			log.info("Admin has logged in (" + client.toString() + ")");
+			adminSendClientList();
+			log.info("Admin has logged in (" + strRemoteAddr + ")");
+		}
+		// ADMIN: Admin commands
+		if(message[0].equals("admin")) {
+			if(adminList.contains(client)) {
+				String strAdminCommandTemp = NetUtil.decompressString(message[1]);
+				String[] strAdminCommandArray = strAdminCommandTemp.split("\t");
+				processAdminCommand(client, strAdminCommandArray);
+			} else {
+				String strRemoteAddr = client.socket().getInetAddress().getHostName();
+				log.warn(strRemoteAddr + " has tried to access admin command without login");
+				logout(client);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Process admin command
+	 * @param client The SocketChannel who sent this packet
+	 * @param message The String array of the command
+	 * @throws IOException When something bad happens
+	 */
+	private void processAdminCommand(SocketChannel client, String[] message) throws IOException {
+		// Client list (force update)
+		if(message[0].equals("clientlist")) {
+			adminSendClientList(client);
+		}
+		// Ban
+		if(message[0].equals("ban")) {
+			// ban\t[IP]\t(Length)
+			if(message.length > 2)
+				ban(message[1], Integer.parseInt(message[2]));
+			else
+				ban(message[1], -1);
+		}
+	}
+
+	/**
+	 * Send admin command result
+	 * @param client The admin
+	 * @param msg Message to send
+	 * @throws IOException When something bad happens
+	 */
+	private void sendAdminResult(SocketChannel client, String msg) throws IOException {
+		send(client, "adminresult\t" + NetUtil.compressString(msg) + "\n");
+	}
+
+	/**
+	 * Broadcast admin command result to all admins
+	 * @param msg Message to send
+	 * @throws IOException When something bad happens
+	 */
+	private void broadcastAdminResult(String msg) throws IOException {
+		broadcastAdmin("adminresult\t" + NetUtil.compressString(msg) + "\n");
+	}
+
+	/**
+	 * Send client list to all admins
+	 * @throws IOException When something bad happens
+	 */
+	private void adminSendClientList() throws IOException {
+		adminSendClientList(null);
+	}
+
+	/**
+	 * Send client list to admin
+	 * @param client The admin. If null, it will broadcast to all admins.
+	 * @throws IOException When something bad happens
+	 */
+	private void adminSendClientList(SocketChannel client) throws IOException {
+		String strMsg = "clientlist";
+
+		for(SocketChannel ch: channelList) {
+			String strIP = ch.socket().getInetAddress().getHostAddress();
+			String strHost = ch.socket().getInetAddress().getHostName();
+			NetPlayerInfo pInfo = playerInfoMap.get(ch);
+
+			int type = 0;	// Type of client. 0:Not logged in
+			if(pInfo != null) type = 1;	// 1:Player
+			else if(observerList.contains(ch)) type = 2;	// 2:Observer
+			else if(adminList.contains(ch)) type = 3;	// 3:Admin
+
+			String strClientData = strIP + "|" + strHost + "|" + type;
+			if(pInfo != null) {
+				strClientData += "|" + pInfo.exportString();
+			}
+
+			strMsg += "\t" + strClientData;
+		}
+
+		if(client == null) {
+			broadcastAdminResult(strMsg);
+		} else {
+			sendAdminResult(client, strMsg);
 		}
 	}
 
@@ -2234,17 +2348,41 @@ public class NetServer extends JFrame implements ActionListener {
 	}
 
 	/**
+	 * Sets a ban by IP address.
+	 * @param strIP IP address
+	 * @param banLength The length of the ban. (-1: Kick only, not ban)
+	 */
+	private void ban(String strIP, int banLength) {
+		LinkedList<SocketChannel> banChannels = new LinkedList<SocketChannel>();
+
+		for(SocketChannel ch: channelList) {
+			String ip = ch.socket().getInetAddress().getHostAddress();
+			if(ip.equals(strIP)) {
+				banChannels.add(ch);
+			}
+		}
+		for(SocketChannel ch: banChannels) {
+			ban(ch, banLength);
+		}
+	}
+
+	/**
 	 * Sets a ban.
 	 * @param client The remote address to ban.
-	 * @param banLength The length of the ban.
+	 * @param banLength The length of the ban. (-1: Kick only, not ban)
 	 */
 	private void ban(SocketChannel client, int banLength) {
 		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
 		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
 
-		banList.add(new NetServerBan(remoteAddr, banLength));
+		if(banLength < 0) {
+			log.info("Kicked player: "+remoteAddr);
+		} else {
+			banList.add(new NetServerBan(remoteAddr, banLength));
+			log.info("Banned player: "+remoteAddr);
+		}
+
 		logout(client);
-		log.info("Banned player: "+remoteAddr);
 	}
 
 	/**
