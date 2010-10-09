@@ -28,9 +28,6 @@
 */
 package mu.nu.nullpo.game.net;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -55,13 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.zip.Adler32;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameEngine;
@@ -112,9 +102,6 @@ public class NetServer implements ActionListener {
 
 	/** Properties of multiplayer leaderboard */
 	private static CustomProperties propMPRanking;
-
-	/** True if GUI is enabled */
-	private static boolean isGUIEnabled;
 
 	/** Default rating */
 	private static int ratingDefault;
@@ -250,7 +237,6 @@ public class NetServer implements ActionListener {
 		} catch (IOException e) {}
 
 		// Load settings
-		isGUIEnabled = propServer.getProperty("netserver.isGUIEnabled", true);
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
 		ratingProvisionalGames = propServer.getProperty("netserver.ratingProvisionalGames", PROVISIONAL_GAMES);
@@ -573,7 +559,13 @@ public class NetServer implements ActionListener {
 
 			String remoteAddr = channel.socket().getRemoteSocketAddress().toString();
 			log.info("Connected: " + remoteAddr);
-
+			
+			/*
+			for (NetServerBan b : banList) {
+				log.debug("Connection on banlist: " + b.addr);
+			}
+			*/
+			
 			if (checkConnectionOnBanlist(channel)) {
 				log.warn("Connection is banned: " + remoteAddr);
 				logout(channel);
@@ -962,9 +954,6 @@ public class NetServer implements ActionListener {
 		}
 		// Disconnect request.
 		if(message[0].equals("disconnect")) {
-			if(isGUIEnabled && (pInfo != null)) {
-				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-			}
 			throw new IOException("Disconnect requested by the client (this is normal)");
 		}
 		// Ping
@@ -1103,10 +1092,6 @@ public class NetServer implements ActionListener {
 			broadcastPlayerInfoUpdate(pInfo, "playernew");
 			broadcastUserCountToAll();
 			adminSendClientList();
-
-			if(isGUIEnabled) {
-				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-			}
 			return;
 		}
 		// Send rule data to server (Client->Server)

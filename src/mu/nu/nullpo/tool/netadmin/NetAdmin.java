@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -23,6 +24,8 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -47,6 +50,7 @@ import javax.swing.text.StyleConstants;
 import mu.nu.nullpo.game.net.NetBaseClient;
 import mu.nu.nullpo.game.net.NetMessageListener;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
+import mu.nu.nullpo.game.net.NetServerBan;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -887,6 +891,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	private class UserPopupMenu extends JPopupMenu {
 		
 		private Action kickAction;
+		private Action banAction;
 		
 		public UserPopupMenu(final JTable table) {
 			super();
@@ -899,6 +904,62 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 					requestBanFromGUI(strIP, -1);
 				}
 			});
+			add(banAction = new AbstractAction(getUIText("Popup_Ban")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent evt) {
+					int rowNumber = table.getSelectedRow();
+					final String strIP = (String)table.getValueAt(rowNumber, 0);
+					
+					// Dialog box
+					final JDialog dialogBan = new JDialog();
+					dialogBan.setTitle("Title_BanDialog");
+					dialogBan.getContentPane().setLayout(new BoxLayout(dialogBan.getContentPane(), BoxLayout.Y_AXIS));
+					
+					// Options
+					final JPanel pOptions = new JPanel();
+					dialogBan.getContentPane().add(pOptions);
+					
+					// Ban length
+					final JLabel lBanLength = new JLabel(getUIText("Ban_Length"));
+					pOptions.add(lBanLength);
+					
+					final JComboBox comboboxBanLength = new JComboBox();
+					comboboxBanLength.setToolTipText(getUIText("Ban_Length_Tip"));
+					for (int i = 0; i < NetServerBan.BANLENGTH_TOTAL; i++) {
+						comboboxBanLength.addItem(getUIText("BanType"+i));
+					}
+					pOptions.add(comboboxBanLength);
+					
+					// Buttons
+					final JPanel pButtons = new JPanel();
+					dialogBan.getContentPane().add(pButtons);
+					
+					final JButton btnConfirm = new JButton(getUIText("Ban_Confirm"));
+					btnConfirm.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							requestBanFromGUI(strIP,comboboxBanLength.getSelectedIndex());
+							dialogBan.dispose();
+						}
+					});
+					pButtons.add(btnConfirm);
+					
+					final JButton btnCancel = new JButton(getUIText("Ban_Cancel"));
+					btnCancel.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							dialogBan.dispose();
+						}
+					});
+					pButtons.add(btnCancel);
+					
+					// Set frame vitals
+					dialogBan.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialogBan.setLocationRelativeTo(null);
+					dialogBan.setModal(true);
+					dialogBan.setResizable(false);
+					dialogBan.pack();
+					dialogBan.setVisible(true);
+				}
+			});
 		}
 		
 		@Override
@@ -906,6 +967,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			JTable table = (JTable) c;
 			boolean flg = table.getSelectedRow() != -1;
 			kickAction.setEnabled(flg);
+			banAction.setEnabled(flg);
 			super.show(c, x, y);
 		}
 	}

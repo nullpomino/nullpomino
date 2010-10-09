@@ -17,6 +17,8 @@ public class NetServerBan {
 							BANLENGTH_1MONTH = 4,
 							BANLENGTH_1YEAR = 5,
 							BANLENGTH_PERMANENT = 6;
+	
+	public static final int BANLENGTH_TOTAL = 7;
 
 	/**
 	 * Creates a new NetServerBan object representing a permanent ban starting now.
