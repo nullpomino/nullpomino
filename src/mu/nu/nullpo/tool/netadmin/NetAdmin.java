@@ -401,6 +401,9 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		tableUsers.setDefaultEditor(Object.class, null);
 		tableUsers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tableUsers.getTableHeader().setReorderingAllowed(false);
+		
+		tableUsers.setComponentPopupMenu(new UserPopupMenu(tableUsers));
+		/*
 		tableUsers.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -413,7 +416,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				}
 			}
 		});
-
+		 */
 		JScrollPane sUsers = new JScrollPane(tableUsers);
 		spUsers.add(sUsers, BorderLayout.CENTER);
 
@@ -877,6 +880,32 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			boolean flg = field.getSelectedText() != null;
 			copyAction.setEnabled(flg);
 			selectAllAction.setEnabled(field.isFocusOwner());
+			super.show(c, x, y);
+		}
+	}
+	
+	private class UserPopupMenu extends JPopupMenu {
+		
+		private Action kickAction;
+		
+		public UserPopupMenu(final JTable table) {
+			super();
+
+			add(kickAction = new AbstractAction(getUIText("Popup_Kick")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent evt) {
+					int rowNumber = table.getSelectedRow();
+					String strIP = (String)table.getValueAt(rowNumber, 0);
+					requestBanFromGUI(strIP, -1);
+				}
+			});
+		}
+		
+		@Override
+		public void show(Component c, int x, int y) {
+			JTable table = (JTable) c;
+			boolean flg = table.getSelectedRow() != -1;
+			kickAction.setEnabled(flg);
 			super.show(c, x, y);
 		}
 	}

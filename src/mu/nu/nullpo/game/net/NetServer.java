@@ -79,7 +79,7 @@ import biz.source_code.base64Coder.Base64Coder;
  * NullpoMino NetServer
  * <a href="http://hondou.homedns.org/pukiwiki/index.php?JavaSE%20%A5%C1%A5%E3%A5%C3%A5%C8%A5%B7%A5%B9%A5%C6%A5%E0%A4%F2%BA%EE%A4%ED%A4%A6">Source</a>
  */
-public class NetServer extends JFrame implements ActionListener {
+public class NetServer implements ActionListener {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
@@ -188,16 +188,6 @@ public class NetServer extends JFrame implements ActionListener {
 	/** RNG for map selection */
 	private Random rand = new Random();
 
-	//--------------------------------------------------------------------------------- UI components
-	/** List for showing connections */
-	private JList listboxConnectionList;
-
-	/** List model for the connection list */
-	private DefaultListModel listmodelConnectionList;
-
-	/** Button for using the ban command */
-	private JButton btnBanConnection;
-
 	/**
 	 * Main (Entry point)
 	 * @param args Command-line options
@@ -274,45 +264,6 @@ public class NetServer extends JFrame implements ActionListener {
 
 		// Load multiplayer leaderboard
 		loadMPRankingList();
-
-		// Disable GUI if window system is not available
-		if(GraphicsEnvironment.isHeadless() && isGUIEnabled) {
-			log.info("Disable GUI because window system cannot be used");
-			isGUIEnabled = false;
-		}
-
-		// GUI init
-		if(isGUIEnabled) {
-			log.info("GUI is enabled");
-
-			// setTitle(getUIText("Title_NetServer"));
-			setTitle("NullpoMino "+GameManager.getVersionMajor()+" NetServer");
-			setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-			initUI();
-			pack();
-		} else {
-			log.info("GUI is disabled");
-		}
-	}
-
-	/**
-	 * Init GUI
-	 */
-	private void initUI() {
-		getContentPane().setLayout(new BorderLayout());
-
-		// Set up content pane -------------------------------
-
-		// Connection list
-		JPanel pList = new JPanel();
-		getContentPane().add(pList);
-
-		listmodelConnectionList = new DefaultListModel();
-		listboxConnectionList = new JList(listmodelConnectionList);
-		JScrollPane spListboxConnectionList = new JScrollPane(listboxConnectionList);
-		spListboxConnectionList.setMinimumSize(new Dimension(0,0));
-		pList.add(spListboxConnectionList);
 	}
 
 	/**
@@ -552,10 +503,6 @@ public class NetServer extends JFrame implements ActionListener {
 	 */
 	public NetServer(int port) {
 		init(port);
-
-		if(isGUIEnabled) {
-			setVisible(true);
-		}
 	}
 
 	/**
@@ -833,10 +780,6 @@ public class NetServer extends JFrame implements ActionListener {
 		playerInfoMap.clear();
 		roomInfoList.clear();
 
-		if(isGUIEnabled) {
-			listmodelConnectionList.clear();
-		}
-
 		System.gc();
 	}
 
@@ -1021,7 +964,6 @@ public class NetServer extends JFrame implements ActionListener {
 		if(message[0].equals("disconnect")) {
 			if(isGUIEnabled && (pInfo != null)) {
 				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-				listmodelConnectionList.removeElement(remoteAddr+" - "+pInfo.strName);
 			}
 			throw new IOException("Disconnect requested by the client (this is normal)");
 		}
@@ -1164,7 +1106,6 @@ public class NetServer extends JFrame implements ActionListener {
 
 			if(isGUIEnabled) {
 				String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-				listmodelConnectionList.addElement(remoteAddr+" - "+pInfo.strName);
 			}
 			return;
 		}
