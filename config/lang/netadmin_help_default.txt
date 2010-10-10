@@ -43,3 +43,9 @@ unban <IP>
 	Remove a ban
 unban ALL
 	Remove all bans
+
+***** List of player data related commands *****
+playerdelete <PlayerName>
+	Delete the player's data (Rating, Number of games, and Number of wins)
+pdel <PlayerName>
+	Same as 'playerdelete'

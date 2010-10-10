@@ -1016,6 +1016,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		tableGameStat.setDefaultEditor(Object.class, null);
 		tableGameStat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tableGameStat.getTableHeader().setReorderingAllowed(false);
+		tableGameStat.setComponentPopupMenu(new TablePopupMenu(tableGameStat));
 
 		TableColumnModel tm2 = tableGameStat.getColumnModel();
 		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat.width.rank", 30));			// Rank
@@ -1046,6 +1047,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		tableGameStat1P.setDefaultEditor(Object.class, null);
 		tableGameStat1P.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tableGameStat1P.getTableHeader().setReorderingAllowed(false);
+		tableGameStat1P.setComponentPopupMenu(new TablePopupMenu(tableGameStat1P));
 
 		tm2 = tableGameStat1P.getColumnModel();
 		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat1P.width.description", 100));	// Description
@@ -1743,6 +1745,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			tableMPRanking[i].setDefaultEditor(Object.class, null);
 			tableMPRanking[i].setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			tableMPRanking[i].getTableHeader().setReorderingAllowed(false);
+			tableMPRanking[i].setComponentPopupMenu(new TablePopupMenu(tableMPRanking[i]));
 
 			TableColumnModel tm = tableMPRanking[i].getColumnModel();
 			tm.getColumn(0).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.rank", 30));	// Rank
@@ -4088,6 +4091,53 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		@Override
 		public void keyTyped(KeyEvent e) {
 			e.consume();
+		}
+	}
+
+	/**
+	 * Popup menu for any table
+	 */
+	protected class TablePopupMenu extends JPopupMenu {
+		private static final long serialVersionUID = 1L;
+
+		private Action copyAction;
+
+		public TablePopupMenu(final JTable table) {
+			super();
+
+			add(copyAction = new AbstractAction(getUIText("Popup_Copy")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent e) {
+					int row = table.getSelectedRow();
+
+					if(row != -1) {
+						String strCopy = "";
+
+						for(int column = 0; column < table.getColumnCount(); column++) {
+							Object selectedObject = table.getValueAt(row, column);
+							if(selectedObject instanceof String) {
+								if(column == 0) {
+									strCopy += (String)selectedObject;
+								} else {
+									strCopy += "," + (String)selectedObject;
+								}
+							}
+						}
+
+						StringSelection ss = new StringSelection(strCopy);
+						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+						clipboard.setContents(ss, ss);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void show(Component c, int x, int y) {
+			JTable table = (JTable) c;
+			boolean flg = table.getSelectedRow() != -1;
+			copyAction.setEnabled(flg);
+			super.show(c, x, y);
 		}
 	}
 }

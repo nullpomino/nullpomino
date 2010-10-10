@@ -5,6 +5,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -170,10 +173,13 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	private JTable tableUsers;
 
 	/** MPRanking table data */
-	private DefaultTableModel[] tablemodelMPRankings;
+	private DefaultTableModel[] tablemodelMPRanking;
 
 	/** MPRanking table component */
-	private JTable[] tableMPRankings;
+	private JTable[] tableMPRanking;
+
+	/** Load/Refresh Ranking button */
+	private JButton btnRankingLoad;
 
 	/**
 	 * Constructor
@@ -449,28 +455,36 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			strMPRankingColumnNames[i] = getUIText(MPRANKING_COLUMNNAMES[i]);
 		}
 
-		tableMPRankings = new JTable[GameEngine.MAX_GAMESTYLE];
-		tablemodelMPRankings = new DefaultTableModel[GameEngine.MAX_GAMESTYLE];
+		tableMPRanking = new JTable[GameEngine.MAX_GAMESTYLE];
+		tablemodelMPRanking = new DefaultTableModel[GameEngine.MAX_GAMESTYLE];
 
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			tablemodelMPRankings[i] = new DefaultTableModel(strMPRankingColumnNames, 0);
+			tablemodelMPRanking[i] = new DefaultTableModel(strMPRankingColumnNames, 0);
 
-			tableMPRankings[i] = new JTable(tablemodelMPRankings[i]);
-			tableMPRankings[i].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			tableMPRankings[i].setDefaultEditor(Object.class, null);
-			tableMPRankings[i].setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tableMPRankings[i].getTableHeader().setReorderingAllowed(false);
+			tableMPRanking[i] = new JTable(tablemodelMPRanking[i]);
+			tableMPRanking[i].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			tableMPRanking[i].setDefaultEditor(Object.class, null);
+			tableMPRanking[i].setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			tableMPRanking[i].getTableHeader().setReorderingAllowed(false);
+			tableMPRanking[i].setComponentPopupMenu(new MPRankingPopupMenu(tableMPRanking[i]));
 
-			TableColumnModel tm = tableMPRankings[i].getColumnModel();
+			TableColumnModel tm = tableMPRanking[i].getColumnModel();
 			tm.getColumn(0).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.rank", 30));	// Rank
 			tm.getColumn(1).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.name", 200));	// Name
 			tm.getColumn(2).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.rating", 60));	// Rating
 			tm.getColumn(3).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.play", 60));	// Play
 			tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableMPRanking.width.win", 60));	// Win
 
-			JScrollPane sMPRanking = new JScrollPane(tableMPRankings[i]);
+			JScrollPane sMPRanking = new JScrollPane(tableMPRanking[i]);
 			tabMPRanking.addTab(GameEngine.GAMESTYLE_NAMES[i], sMPRanking);
 		}
+
+		// *** Load/Refresh Ranking button
+		btnRankingLoad = new JButton(getUIText("MPRanking_Button_LoadRanking"));
+		btnRankingLoad.setMnemonic('L');
+		btnRankingLoad.setActionCommand("MPRanking_Button_LoadRanking");
+		btnRankingLoad.addActionListener(this);
+		spMPRanking.add(btnRankingLoad, BorderLayout.SOUTH);
 	}
 
 	/**
@@ -489,7 +503,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		propConfig.setProperty("tableUsers.width.name", tmUsers.getColumn(3).getWidth());
 
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			TableColumnModel tm = tableMPRankings[i].getColumnModel();
+			TableColumnModel tm = tableMPRanking[i].getColumnModel();
 			propConfig.setProperty("tableMPRanking.width.rank", tm.getColumn(0).getWidth());
 			propConfig.setProperty("tableMPRanking.width.name", tm.getColumn(1).getWidth());
 			propConfig.setProperty("tableMPRanking.width.rating", tm.getColumn(2).getWidth());
@@ -727,6 +741,14 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				addConsoleLog(getUIText("Console_UnBan_NoParams"));
 			}
 		}
+		// playerdelete
+		else if(commands[0].equalsIgnoreCase("playerdelete")||commands[0].equalsIgnoreCase("pdel")) {
+			if(commands.length > 1) {
+				sendCommand("playerdelete\t" + commands[1]);
+			} else {
+				addConsoleLog(getUIText("Console_PlayerDelete_NoParams"));
+			}
+		}
 		// Invalid
 		else {
 			addConsoleLog(String.format(getUIText("Console_UnknownCommand"), commands[0]));
@@ -909,6 +931,11 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			executeConsoleCommand(commands, commandline);
 			txtfldConsoleCommand.setText("");
 		}
+		// Load/Refresh Ranking
+		if(e.getActionCommand() == "MPRanking_Button_LoadRanking") {
+			btnRankingLoad.setEnabled(false);
+			client.send("mpranking\t0\n");
+		}
 	}
 
 	/*
@@ -984,6 +1011,36 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 					changeCurrentScreenCard(SCREENCARD_LOBBY);
 				}
 			});
+		}
+		// Multiplayer Leaderboard
+		if(message[0].equals("mpranking")) {
+			btnRankingLoad.setEnabled(true);
+
+			int style = Integer.parseInt(message[1]);
+
+			tablemodelMPRanking[style].setRowCount(0);
+
+			String strPData = NetUtil.decompressString(message[3]);
+			String[] strPDataA = strPData.split("\t");
+
+			for(int i = 0; i < strPDataA.length; i++) {
+				String[] strRankData = strPDataA[i].split(";");
+
+				if(strRankData.length >= MPRANKING_COLUMNNAMES.length) {
+					String[] strRowData = new String[MPRANKING_COLUMNNAMES.length];
+					int rank = Integer.parseInt(strRankData[0]);
+					if(rank == -1) {
+						strRowData[0] = "N/A";
+					} else {
+						strRowData[0] = Integer.toString(rank + 1);
+					}
+					strRowData[1] = NetUtil.urlDecode(strRankData[1]);
+					strRowData[2] = strRankData[2];
+					strRowData[3] = strRankData[3];
+					strRowData[4] = strRankData[4];
+					tablemodelMPRanking[style].addRow(strRowData);
+				}
+			}
 		}
 		// Admin command result
 		if(message[0].equals("adminresult")) {
@@ -1111,6 +1168,12 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				addConsoleLog(String.format(getUIText("Console_UnBan_Result"), message[1], message[2]), new Color(0, 64, 64));
 			}
 		}
+		// Player Delete
+		if(message[0].equals("playerdelete")) {
+			if(message.length > 1) {
+				addConsoleLog(String.format(getUIText("Console_PlayerDelete_Result"), message[1]), new Color(0, 64, 64));
+			}
+		}
 	}
 
 	/*
@@ -1236,15 +1299,44 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 	}
 
+	/**
+	 * Popup menu for users table
+	 */
 	private class UserPopupMenu extends JPopupMenu {
 		private static final long serialVersionUID = 1L;
 
+		private Action copyAction;
 		private Action kickAction;
 		private Action banAction;
 
 		public UserPopupMenu(final JTable table) {
 			super();
 
+			add(copyAction = new AbstractAction(getUIText("Popup_Copy")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent e) {
+					int row = table.getSelectedRow();
+
+					if(row != -1) {
+						String strCopy = "";
+
+						for(int column = 0; column < table.getColumnCount(); column++) {
+							Object selectedObject = table.getValueAt(row, column);
+							if(selectedObject instanceof String) {
+								if(column == 0) {
+									strCopy += (String)selectedObject;
+								} else {
+									strCopy += "," + (String)selectedObject;
+								}
+							}
+						}
+
+						StringSelection ss = new StringSelection(strCopy);
+						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+						clipboard.setContents(ss, ss);
+					}
+				}
+			});
 			add(kickAction = new AbstractAction(getUIText("Popup_Kick")) {
 				private static final long serialVersionUID = 1L;
 				public void actionPerformed(ActionEvent evt) {
@@ -1267,8 +1359,67 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		public void show(Component c, int x, int y) {
 			JTable table = (JTable) c;
 			boolean flg = table.getSelectedRow() != -1;
+			copyAction.setEnabled(flg);
 			kickAction.setEnabled(flg);
 			banAction.setEnabled(flg);
+			super.show(c, x, y);
+		}
+	}
+
+	/**
+	 * Popup menu for leaderboard table
+	 */
+	private class MPRankingPopupMenu extends JPopupMenu {
+		private static final long serialVersionUID = 1L;
+
+		private Action copyAction;
+		private Action deleteAction;
+
+		public MPRankingPopupMenu(final JTable table) {
+			super();
+
+			add(copyAction = new AbstractAction(getUIText("Popup_Copy")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent e) {
+					int row = table.getSelectedRow();
+
+					if(row != -1) {
+						String strCopy = "";
+
+						for(int column = 0; column < table.getColumnCount(); column++) {
+							Object selectedObject = table.getValueAt(row, column);
+							if(selectedObject instanceof String) {
+								if(column == 0) {
+									strCopy += (String)selectedObject;
+								} else {
+									strCopy += "," + (String)selectedObject;
+								}
+							}
+						}
+
+						StringSelection ss = new StringSelection(strCopy);
+						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+						clipboard.setContents(ss, ss);
+					}
+				}
+			});
+			add(deleteAction = new AbstractAction(getUIText("Popup_Delete")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent evt) {
+					int rowNumber = table.getSelectedRow();
+					String strName = (String)table.getValueAt(rowNumber, 1);
+					sendCommand("playerdelete\t" + strName);
+					client.send("mpranking\t0\n");
+				}
+			});
+		}
+
+		@Override
+		public void show(Component c, int x, int y) {
+			JTable table = (JTable) c;
+			boolean flg = table.getSelectedRow() != -1;
+			copyAction.setEnabled(flg);
+			deleteAction.setEnabled(flg);
 			super.show(c, x, y);
 		}
 	}

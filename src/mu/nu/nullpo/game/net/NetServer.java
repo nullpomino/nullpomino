@@ -356,9 +356,20 @@ public class NetServer implements ActionListener {
 	 */
 	private static int mpRankingIndexOf(int style, NetPlayerInfo p) {
 		if(p == null) return -1;
+		return mpRankingIndexOf(style, p.strName);
+	}
+
+	/**
+	 * Find a player in multiplayer leaderboard.
+	 * @param style Game Style
+	 * @param name Player name in String (can be null, returns -1 if so)
+	 * @return Index in mpRankingList[style] (-1 if not found)
+	 */
+	private static int mpRankingIndexOf(int style, String name) {
+		if(name == null) return -1;
 		for(int i = 0; i < mpRankingList[style].size(); i++) {
 			NetPlayerInfo p2 = (NetPlayerInfo)mpRankingList[style].get(i);
-			if(p.strName.equals(p2.strName)) {
+			if(name.equals(p2.strName)) {
 				return i;
 			}
 		}
@@ -1862,6 +1873,42 @@ public class NetServer implements ActionListener {
 			}
 
 			sendAdminResult(client, "banlist" + strResult);
+		}
+		// Player delete
+		if(message[0].equals("playerdelete")) {
+			// playerdelete\t<Name>
+
+			String strName = message[1];
+			NetPlayerInfo pInfo = searchPlayerByName(strName);
+
+			boolean playerDataChange = false;
+			boolean rankingDataChange = false;
+
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+				if(propPlayerData.getProperty("p.rating." + i + "." + strName) != null) {
+					propPlayerData.setProperty("p.rating." + i + "." + strName, ratingDefault);
+					propPlayerData.setProperty("p.playCount." + i + "." + strName, 0);
+					propPlayerData.setProperty("p.winCount." + i + "." + strName, 0);
+					playerDataChange = true;
+				}
+
+				if(pInfo != null) {
+					pInfo.rating[i] = ratingDefault;
+					pInfo.playCount[i] = 0;
+					pInfo.winCount[i] = 0;
+				}
+
+				int mpIndex = mpRankingIndexOf(i, strName);
+				if(mpIndex != -1) {
+					mpRankingList[i].remove(mpIndex);
+					rankingDataChange = true;
+				}
+			}
+
+			sendAdminResult(client, "playerdelete\t" + strName);
+
+			if(playerDataChange) writePlayerDataToFile();
+			if(rankingDataChange) writeMPRankingToFile();
 		}
 	}
 
