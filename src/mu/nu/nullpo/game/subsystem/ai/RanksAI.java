@@ -104,6 +104,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	private boolean gameOver;
 	private boolean plannedToUseIPiece;
 	private String currentRanksFile="";
+	private boolean allowHold;
 
 	public class Score{
 
@@ -173,6 +174,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		} catch (IOException e) {}
 		String file=propRanksAI.getProperty("ranksai.file");
 		MAX_PREVIEWS=propRanksAI.getProperty("ranksai.numpreviews", 2);
+		allowHold=propRanksAI.getProperty("ranksai.allowhold", false);
 		// If no ranks file has been loaded yet, try to load it
 		if (ranks==null || !(currentRanksFile.equals(file))){
 			currentRanksFile=file;
@@ -447,6 +449,9 @@ public class RanksAI extends DummyAI implements Runnable {
 
 		 boolean holdOK=engine.isHoldOK();
 
+		 allowHold&=engine.ruleopt.holdEnable;
+		 
+
 		 // Call the main method (that actually does the work, on the heights and pieces
 		 thinkBestPosition(heights,pieces,holdPiece,holdOK);
 
@@ -520,7 +525,8 @@ public class RanksAI extends DummyAI implements Runnable {
 
 		 // If we are able to score a 4-Line and if the maximum height is dangerously high, then force doing a tetris
 		 if (pieceNow==Piece.PIECE_I &&currentHeightMax>=THRESHOLD_FORCE_4LINES && currentHeightMin>=4 &&!plannedToUseIPiece){
-
+			 
+			 bestHold=false;
 			 //Rightmost column
 			 bestX = ranks.getStackWidth();
 
@@ -538,7 +544,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		 //If we don't have to score a 4-Line, consider other moves.
 		 else {
 			 // Try using hold or not
-			 for (int useHold=0;useHold<(holdOK?2:1);useHold++){
+			 for (int useHold=0;useHold<((holdOK&&allowHold)?2:1);useHold++){
 				 if (useHold==1){
 					 if (holdPiece[0]==-1){
 						 holdPiece[0]=piecesCopy[0];
@@ -716,7 +722,7 @@ public class RanksAI extends DummyAI implements Runnable {
 				 // force the 4-Line because the maximum height is under the threshold, then we test all possible columns
 				 // Let's try all the possible rotations for the currently considered piece.
 				 else {
-					 for (int h2=0;h2<(holdOK?2:1);h2++){
+					 for (int h2=0;h2<((holdOK&&allowHold)?2:1);h2++){
 						 if (h2==1){
 							 if (holdPiece2[0]==-1){
 								 holdPiece2[0]=pieces2[0];

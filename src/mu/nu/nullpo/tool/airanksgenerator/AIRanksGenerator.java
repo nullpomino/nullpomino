@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -46,10 +47,12 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 	private JFormattedTextField outputFileField;
 	private JLabel numIterationsLabel;
 	private JLabel numPreviewsLabel;
+	private JLabel allowHoldLabel;
 	private SpinnerNumberModel spinModel;
 	private JSpinner numIterationsSpinner;
 	private SpinnerNumberModel numPreviewsSpinModel;
 	private JSpinner numPreviewsSpinner;
+	private JCheckBox allowHoldCheckBox;
 	private JButton goButton;
 	private JButton viewBestsButton;
 	private JButton viewWorstsButton;
@@ -80,6 +83,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		} catch (IOException e) {}
 		String file=propRanksAI.getProperty("ranksai.file");
 		int numPreviews=propRanksAI.getProperty("ranksai.numpreviews", 2);
+		boolean allowHold=propRanksAI.getProperty("ranksai.allowhold", false);
 		String [] children=new File(RANKSAI_DIR).list();
 		String []ranksList;
 		int fileIndex=0;
@@ -134,6 +138,11 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 
 		numPreviewsSpinner.setToolTipText(getUIText("Main_Num_Previews_Tip"));
 		
+		allowHoldCheckBox= new JCheckBox();
+		allowHoldCheckBox.setSelected(allowHold);
+		allowHoldLabel=new JLabel(getUIText("Main_Allow_Hold"));
+		allowHoldCheckBox.setToolTipText(getUIText("Main_Allow_Hold_Tip"));
+		
 		goButton = new JButton(getUIText("Main_Go_Label"));
 		goButton.setActionCommand("go");
 		goButton.addActionListener(this);
@@ -164,12 +173,14 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		labelPane.add(outputFileLabel);
 		labelPane.add(numIterationsLabel);
 		labelPane.add(numPreviewsLabel);
+		labelPane.add(allowHoldLabel);
 		JPanel fieldPane = new JPanel(new GridLayout(0, 1));
 
 		fieldPane.add(inputFileComboBox);
 		fieldPane.add(outputFileField);
 		fieldPane.add(numIterationsSpinner);
 		fieldPane.add(numPreviewsSpinner);
+		fieldPane.add(allowHoldCheckBox);
 		
 		JPanel pane = new JPanel(new BorderLayout());
 		
@@ -296,6 +307,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		CustomProperties ranksAIConfig=new CustomProperties();
 		ranksAIConfig.setProperty("ranksai.file",file );
 		ranksAIConfig.setProperty("ranksai.numpreviews",(Integer) numPreviewsSpinner.getValue());
+		ranksAIConfig.setProperty("ranksai.allowhold", allowHoldCheckBox.isSelected());
 		try {
 			FileOutputStream out = new FileOutputStream(RANKSAI_CONFIG_FILE);
 			ranksAIConfig.store(out, "Ranks AI Config");
