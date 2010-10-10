@@ -2275,25 +2275,28 @@ public class GameEngine {
 			}
 
 			// Soft drop
-			if( (ctrl.isPress(Controller.BUTTON_DOWN) == true) &&
-				(softdropContinuousUse == false) &&
-				(ruleopt.softdropEnable == true) &&
-				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
-				((ruleopt.moveUpAndDown == true) || (updown == false)) )
-			{
-				if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0))
-					gcount += (int)(speed.gravity * ruleopt.softdropSpeed);
-				else
-					gcount += (int)(speed.denominator * ruleopt.softdropSpeed);
-
+			if(ctrl.isPress(Controller.BUTTON_DOWN) && !softdropContinuousUse &&
+				ruleopt.softdropEnable && (ruleopt.moveDiagonal || !sidemoveflag) &&
+				(ruleopt.moveUpAndDown || !updown) && (ruleopt.softdropMultiplyNativeSpeed || 
+				(speed.gravity < (int)(speed.denominator * ruleopt.softdropSpeed)))) {
+				
+				if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0)) {
+					// gcount += (int)(speed.gravity * ruleopt.softdropSpeed);
+					gcount = (int)(speed.gravity * ruleopt.softdropSpeed);
+				} else {
+					// gcount += (int)(speed.denominator * ruleopt.softdropSpeed);
+					gcount = (int)(speed.denominator * ruleopt.softdropSpeed);
+				}
+				
 				softdropUsed = true;
+			} else {
+				// 落下
+				// This prevents soft drop from adding to the gravity speed.
+				gcount += speed.gravity;
 			}
 
 			if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceActiveTime++;
 		}
-
-		// 落下
-		gcount += speed.gravity;
 
 		while((gcount >= speed.denominator) || (speed.gravity < 0)) {
 			if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field) == false) {
