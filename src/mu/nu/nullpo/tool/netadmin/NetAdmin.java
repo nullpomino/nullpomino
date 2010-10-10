@@ -5,7 +5,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -14,21 +13,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -39,6 +40,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -109,9 +111,6 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 	/** true if disconnection is intended (If false, it will display error message) */
 	private static boolean isWantedDisconnect;
-
-	/** Encryption algorithm */
-	private static RC4 rc4;
 
 	/** Hostname of the server */
 	private static String strServerHost;
@@ -286,6 +285,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 		// ** Server textbox
 		txtfldServer = new JTextField(30);
+		txtfldServer.setText(propConfig.getProperty("login.server", ""));
 		txtfldServer.setComponentPopupMenu(new TextComponentPopupMenu(txtfldServer));
 		spServer.add(txtfldServer, BorderLayout.EAST);
 
@@ -300,6 +300,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 		// ** Username textbox
 		txtfldUsername = new JTextField(30);
+		txtfldUsername.setText(propConfig.getProperty("login.username", ""));
 		txtfldUsername.setComponentPopupMenu(new TextComponentPopupMenu(txtfldUsername));
 		spUsername.add(txtfldUsername, BorderLayout.EAST);
 
@@ -314,16 +315,22 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 		// ** Password textbox
 		passfldPassword = new JPasswordField(30);
+		String strPassword = propConfig.getProperty("login.password", "");
+		if(strPassword.length() > 0) {
+			passfldPassword.setText(NetUtil.decompressString(strPassword));
+		}
 		passfldPassword.setComponentPopupMenu(new TextComponentPopupMenu(passfldPassword));
 		spPassword.add(passfldPassword, BorderLayout.EAST);
 
 		// * Remember Username checkbox
 		chkboxRememberUsername = new JCheckBox(getUIText("Login_RememberUsername"));
+		chkboxRememberUsername.setSelected(propConfig.getProperty("login.rememberUsername", false));
 		chkboxRememberUsername.setAlignmentX(0f);
 		mpLogin.add(chkboxRememberUsername);
 
 		// * Remember Password checkbox
 		chkboxRememberPassword = new JCheckBox(getUIText("Login_RememberPassword"));
+		chkboxRememberPassword.setSelected(propConfig.getProperty("login.rememberPassword", false));
 		chkboxRememberPassword.setAlignmentX(0f);
 		mpLogin.add(chkboxRememberPassword);
 
@@ -405,9 +412,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		tableUsers.setDefaultEditor(Object.class, null);
 		tableUsers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tableUsers.getTableHeader().setReorderingAllowed(false);
-		
 		tableUsers.setComponentPopupMenu(new UserPopupMenu(tableUsers));
-		/*
 		tableUsers.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -415,12 +420,18 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 					int rowNumber = tableUsers.getSelectedRow();
 					if(rowNumber != -1) {
 						String strIP = (String)tableUsers.getValueAt(rowNumber, 0);
-						requestBanFromGUI(strIP, -1);
+						openBanDialog(strIP);
 					}
 				}
 			}
 		});
-		 */
+
+		TableColumnModel tmUsers = tableUsers.getColumnModel();
+		tmUsers.getColumn(0).setPreferredWidth(propConfig.getProperty("tableUsers.width.ip", 90));	// IP
+		tmUsers.getColumn(1).setPreferredWidth(propConfig.getProperty("tableUsers.width.host", 140));	// Hostname
+		tmUsers.getColumn(2).setPreferredWidth(propConfig.getProperty("tableUsers.width.type", 60));	// Type
+		tmUsers.getColumn(3).setPreferredWidth(propConfig.getProperty("tableUsers.width.name", 150));	// Name
+
 		JScrollPane sUsers = new JScrollPane(tableUsers);
 		spUsers.add(sUsers, BorderLayout.CENTER);
 
@@ -459,6 +470,39 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 			JScrollPane sMPRanking = new JScrollPane(tableMPRankings[i]);
 			tabMPRanking.addTab(GameEngine.GAMESTYLE_NAMES[i], sMPRanking);
+		}
+	}
+
+	/**
+	 * Save settings
+	 */
+	private void saveConfig() {
+		propConfig.setProperty("mainwindow.width", this.getSize().width);
+		propConfig.setProperty("mainwindow.height", this.getSize().height);
+		propConfig.setProperty("mainwindow.x", this.getLocation().x);
+		propConfig.setProperty("mainwindow.y", this.getLocation().y);
+
+		TableColumnModel tmUsers = tableUsers.getColumnModel();
+		propConfig.setProperty("tableUsers.width.ip", tmUsers.getColumn(0).getWidth());
+		propConfig.setProperty("tableUsers.width.host", tmUsers.getColumn(1).getWidth());
+		propConfig.setProperty("tableUsers.width.type", tmUsers.getColumn(2).getWidth());
+		propConfig.setProperty("tableUsers.width.name", tmUsers.getColumn(3).getWidth());
+
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			TableColumnModel tm = tableMPRankings[i].getColumnModel();
+			propConfig.setProperty("tableMPRanking.width.rank", tm.getColumn(0).getWidth());
+			propConfig.setProperty("tableMPRanking.width.name", tm.getColumn(1).getWidth());
+			propConfig.setProperty("tableMPRanking.width.rating", tm.getColumn(2).getWidth());
+			propConfig.setProperty("tableMPRanking.width.play", tm.getColumn(3).getWidth());
+			propConfig.setProperty("tableMPRanking.width.win", tm.getColumn(4).getWidth());
+		}
+
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/netadmin.cfg");
+			propConfig.store(out, "NullpoMino NetAdmin Config");
+			out.close();
+		} catch (IOException e) {
+			log.warn("Failed to save netlobby config file", e);
 		}
 	}
 
@@ -513,10 +557,12 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			client = null;
 		}
 
-		setLoginUIEnabled(true);
-		if(currentScreenCardNumber != SCREENCARD_LOGIN) {
-			changeCurrentScreenCard(SCREENCARD_LOGIN);
-		}
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setLoginUIEnabled(true);
+				changeCurrentScreenCard(SCREENCARD_LOGIN);
+			}
+		});
 	}
 
 	/**
@@ -524,6 +570,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	 */
 	public void shutdown() {
 		logout();
+		saveConfig();
 		this.dispose();
 	}
 
@@ -565,6 +612,128 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	}
 
 	/**
+	 * Execute a console command
+	 * @param commands Command line (split by every single space)
+	 * @param fullCommandLine Command line (raw String)
+	 */
+	private void executeConsoleCommand(String[] commands, String fullCommandLine) {
+		if(commands.length == 0 || fullCommandLine.length() == 0) return;
+
+		addConsoleLog(">" + fullCommandLine, Color.blue);
+
+		// help/h/?
+		if(commands[0].equalsIgnoreCase("help")||commands[0].equalsIgnoreCase("h")||commands[0].equalsIgnoreCase("?")) {
+			try {
+				FileReader filereaderHelp = null;
+				try {
+					filereaderHelp = new FileReader("config/lang/netadmin_help_" + Locale.getDefault().getCountry() + ".txt");
+				} catch (IOException e2) {
+					filereaderHelp = new FileReader("config/lang/netadmin_help_default.txt");
+				}
+
+				BufferedReader txtHelp = new BufferedReader(filereaderHelp);
+
+				String str;
+				while((str = txtHelp.readLine()) != null) {
+					addConsoleLog(str);
+				}
+
+				filereaderHelp.close();
+			} catch (IOException e) {
+				log.error("Failed to load help file", e);
+				addConsoleLog(String.format(getUIText("Console_Help_Error"), e.toString()), Color.red);
+			}
+		}
+		// echo
+		else if(commands[0].equalsIgnoreCase("echo")) {
+			String strTemp = "";
+			for(int i = 0; i < commands.length - 1; i++) {
+				if(i >= 1) strTemp += " " + commands[i + 1];
+				else strTemp += commands[i + 1];
+			}
+			addConsoleLog(strTemp);
+		}
+		// cls
+		else if(commands[0].equalsIgnoreCase("cls")) {
+			txtpaneConsoleLog.setText(null);
+		}
+		// logout/logoff/disconnect
+		else if(commands[0].equalsIgnoreCase("logout")||commands[0].equalsIgnoreCase("logoff")||commands[0].equalsIgnoreCase("disconnect")) {
+			addConsoleLog("Logout");
+			labelLoginMessage.setForeground(Color.black);
+			labelLoginMessage.setText(getUIText("Login_Message_LoggingOut"));
+			logout();
+		}
+		// quit/exit/shutdown
+		else if(commands[0].equalsIgnoreCase("quit")||commands[0].equalsIgnoreCase("exit")||commands[0].equalsIgnoreCase("shutdown")) {
+			shutdown();
+		}
+		// myip
+		else if(commands[0].equalsIgnoreCase("myip")) {
+			addConsoleLog(strMyIP);
+		}
+		// myhost
+		else if(commands[0].equalsIgnoreCase("myhost")) {
+			addConsoleLog(strMyHostname);
+		}
+		// serverhost
+		else if(commands[0].equalsIgnoreCase("serverhost")) {
+			addConsoleLog(strServerHost);
+		}
+		// serverport
+		else if(commands[0].equalsIgnoreCase("serverport")) {
+			addConsoleLog(Integer.toString(serverPort));
+		}
+		// bangui
+		else if(commands[0].equalsIgnoreCase("bangui")) {
+			if(commands.length > 1) {
+				openBanDialog(commands[1]);
+			} else {
+				openBanDialog("");
+			}
+		}
+		// ban
+		else if(commands[0].equalsIgnoreCase("ban")) {
+			if(commands.length > 2) {
+				int banLength = -1;
+				try {
+					banLength = Integer.parseInt(commands[2]);
+				} catch (NumberFormatException e) {
+					addConsoleLog(String.format(getUIText("Console_Ban_InvalidLength"), commands[2]));
+					return;
+				}
+				if((banLength < -1) || (banLength > 6)) {
+					addConsoleLog(String.format(getUIText("Console_Ban_InvalidLength"), commands[2]));
+					return;
+				}
+				requestBanFromGUI(commands[1], banLength, false);
+			}
+			else if(commands.length > 1) {
+				requestBanFromGUI(commands[1], -1, false);
+			}
+			else {
+				addConsoleLog(getUIText("Console_Ban_NoParams"));
+			}
+		}
+		// banlist
+		else if(commands[0].equalsIgnoreCase("banlist")) {
+			sendCommand("banlist");
+		}
+		// unban
+		else if(commands[0].equalsIgnoreCase("unban")) {
+			if(commands.length > 1) {
+				sendCommand("unban\t" + commands[1]);
+			} else {
+				addConsoleLog(getUIText("Console_UnBan_NoParams"));
+			}
+		}
+		// Invalid
+		else {
+			addConsoleLog(String.format(getUIText("Console_UnknownCommand"), commands[0]));
+		}
+	}
+
+	/**
 	 * Get translated GUI text
 	 * @param str String
 	 * @return Translated GUI text
@@ -586,30 +755,114 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		new NetAdmin();
 	}
 
-	private void requestBanFromGUI(String strIP, int banLength) {
+	/**
+	 * Sets a ban.
+	 * @param strIP IP
+	 * @param banLength Length of ban (-1:Kick only)
+	 * @param showMessage true if display a confirm dialog
+	 */
+	private void requestBanFromGUI(String strIP, int banLength, boolean showMessage) {
 		if((strIP == null) || (strIP.length() == 0)) return;
 
 		if(banLength == -1) {
-			int answer = JOptionPane.showConfirmDialog(
+			int answer = JOptionPane.YES_OPTION;
+
+			if(showMessage) {
+				answer = JOptionPane.showConfirmDialog(
 						this,
 						getUIText("Message_ConfirmKick") + "\n" + strIP,
 						getUIText("Title_ConfirmKick"),
 						JOptionPane.YES_NO_OPTION);
+			}
 
 			if(answer == JOptionPane.YES_OPTION) {
 				sendCommand("ban\t" + strIP);
 			}
 		} else {
-			int answer = JOptionPane.showConfirmDialog(
+			int answer = JOptionPane.YES_OPTION;
+
+			if(showMessage) {
+				answer = JOptionPane.showConfirmDialog(
 						this,
 						String.format(getUIText("Message_ConfirmBan"), getUIText("BanType" + banLength)) + "\n" + strIP,
 						getUIText("Title_ConfirmBan"),
 						JOptionPane.YES_NO_OPTION);
+			}
 
 			if(answer == JOptionPane.YES_OPTION) {
 				sendCommand("ban\t" + strIP + "\t" + banLength);
 			}
 		}
+	}
+
+	/**
+	 * Open ban dialog
+	 * @param strIP Default IP
+	 */
+	private void openBanDialog(String strIP) {
+		// Dialog box
+		final JDialog dialogBan = new JDialog();
+		dialogBan.setTitle(getUIText("Title_BanDialog"));
+		dialogBan.getContentPane().setLayout(new BoxLayout(dialogBan.getContentPane(), BoxLayout.Y_AXIS));
+
+		// IP options
+		final JPanel pBanIP = new JPanel();
+		dialogBan.getContentPane().add(pBanIP);
+
+		final JLabel lBanIP = new JLabel(getUIText("Ban_IP"));
+		pBanIP.add(lBanIP);
+
+		final JTextField txtfldBanIP = new JTextField(16);
+		if(strIP != null) txtfldBanIP.setText(strIP);
+		txtfldBanIP.setComponentPopupMenu(new TextComponentPopupMenu(txtfldBanIP));
+		pBanIP.add(txtfldBanIP);
+
+		// Ban length Options
+		final JPanel pBanLength = new JPanel();
+		dialogBan.getContentPane().add(pBanLength);
+
+		// Ban length
+		final JLabel lBanLength = new JLabel(getUIText("Ban_Length"));
+		pBanLength.add(lBanLength);
+
+		final JComboBox comboboxBanLength = new JComboBox();
+		comboboxBanLength.setToolTipText(getUIText("Ban_Length_Tip"));
+		for (int i = -1; i < NetServerBan.BANLENGTH_TOTAL; i++) {
+			comboboxBanLength.addItem(getUIText("BanType"+i));
+		}
+		pBanLength.add(comboboxBanLength);
+
+		// Buttons
+		final JPanel pButtons = new JPanel();
+		dialogBan.getContentPane().add(pButtons);
+
+		final JButton btnConfirm = new JButton(getUIText("Ban_Confirm"));
+		btnConfirm.setMnemonic('O');
+		btnConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				requestBanFromGUI(txtfldBanIP.getText(),comboboxBanLength.getSelectedIndex() - 1, false);
+				dialogBan.dispose();
+			}
+		});
+		pButtons.add(btnConfirm);
+
+		final JButton btnCancel = new JButton(getUIText("Ban_Cancel"));
+		btnCancel.setMnemonic('C');
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dialogBan.dispose();
+			}
+		});
+		pButtons.add(btnCancel);
+
+		// Set frame vitals
+		dialogBan.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialogBan.setLocationRelativeTo(null);
+		dialogBan.setModal(true);
+		dialogBan.setResizable(false);
+		dialogBan.getRootPane().setDefaultButton(btnConfirm);
+		dialogBan.pack();
+		dialogBan.setVisible(true);
 	}
 
 	/*
@@ -651,6 +904,10 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// Execute console command
 		if(e.getActionCommand() == "Lobby_Console_Execute") {
+			String commandline = txtfldConsoleCommand.getText();
+			String[] commands = commandline.split(" ");
+			executeConsoleCommand(commands, commandline);
+			txtfldConsoleCommand.setText("");
 		}
 	}
 
@@ -680,12 +937,12 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			// Send login message
 			String strUsername = txtfldUsername.getText();
 
-			rc4 = new RC4(passfldPassword.getPassword());
+			RC4 rc4 = new RC4(passfldPassword.getPassword());
 			byte[] ePassword = rc4.rc4(NetUtil.stringToBytes(strUsername));
 			char[] b64Password = Base64Coder.encode(ePassword);
 
 			String strLogin = "adminlogin\t" + clientVer + "\t" + strUsername + "\t" + new String(b64Password) + "\n";
-			log.info("Send login message:" + strLogin);
+			log.debug("Send login message:" + strLogin);
 			client.send(strLogin);
 		}
 		// Login failed
@@ -702,10 +959,31 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// Login successful
 		if(message[0].equals("adminloginsuccess")) {
-			changeCurrentScreenCard(SCREENCARD_LOBBY);
 			strMyIP = message[1];
 			strMyHostname = message[2];
-			addConsoleLog("Your IP:" + strMyIP + ", Your Hostname:" + strMyHostname);
+
+			propConfig.setProperty("login.rememberUsername", chkboxRememberUsername.isSelected());
+			propConfig.setProperty("login.rememberPassword", chkboxRememberPassword.isSelected());
+
+			propConfig.setProperty("login.server", txtfldServer.getText());
+			if(chkboxRememberUsername.isSelected()) {
+				propConfig.setProperty("login.username", txtfldUsername.getText());
+			} else {
+				propConfig.setProperty("login.username", "");
+			}
+			if(chkboxRememberPassword.isSelected()) {
+				propConfig.setProperty("login.password", NetUtil.compressString(new String(passfldPassword.getPassword())));
+			} else {
+				propConfig.setProperty("login.password", "");
+			}
+
+			addConsoleLog(String.format(getUIText("Console_LoginOK"), strServerHost, serverPort));
+
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					changeCurrentScreenCard(SCREENCARD_LOBBY);
+				}
+			});
 		}
 		// Admin command result
 		if(message[0].equals("adminresult")) {
@@ -726,6 +1004,16 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	private void onAdminResultMessage(NetBaseClient client, String[] message) throws IOException {
 		// Client list
 		if(message[0].equals("clientlist")) {
+			// Get current selected IP and Type
+			String strSelectedIP = null;
+			String strSelectedType = null;
+			if(tableUsers.getSelectedRow() != -1) {
+				strSelectedIP   = (String)tablemodelUsers.getValueAt(tableUsers.getSelectedRow(), 0);
+				strSelectedType = (String)tablemodelUsers.getValueAt(tableUsers.getSelectedRow(), 2);
+			}
+			tableUsers.getSelectionModel().clearSelection();
+
+			// Set number of rows
 			if(tablemodelUsers.getRowCount() > message.length - 1) {
 				tablemodelUsers.setRowCount(message.length - 1);
 			}
@@ -733,34 +1021,94 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			for(int i = 1; i < message.length; i++) {
 				String[] strClientData = message[i].split("\\|");
 
-				String strIP = strClientData[0];
-				String strHost = strClientData[1];
+				String strIP = strClientData[0];		// IP
+				String strHost = strClientData[1];		// Hostname
 
+				// Type of the client
 				int type = Integer.parseInt(strClientData[2]);
 				String strType = getUIText(USERTABLE_USERTYPES[type]);
 				if(strIP.equals(strMyIP) && strHost.equals(strMyHostname) && (type == 3))
 					strType = "*" + getUIText(USERTABLE_USERTYPES[type]);
 
+				// Player info
 				NetPlayerInfo pInfo = null;
 				if((type == 1) && (strClientData.length > 3)) {
 					String strPlayerInfoTemp = strClientData[3];
 					pInfo = new NetPlayerInfo(strPlayerInfoTemp);
 				}
 
+				// Create a row data
 				String[] strTableData = new String[tablemodelUsers.getColumnCount()];
 				strTableData[0] = strIP;
 				strTableData[1] = strHost;
 				strTableData[2] = strType;
 				strTableData[3] = (pInfo != null) ? pInfo.strName : "";
 
+				// Add the row data
 				int rowNumber = i - 1;
-				if(rowNumber < tablemodelUsers.getRowCount()) {
+				int maxRow = tablemodelUsers.getRowCount();
+				if(rowNumber < maxRow) {
+					// Modify an existing row
 					for(int j = 0; j < strTableData.length; j++) {
 						tablemodelUsers.setValueAt(strTableData[j], rowNumber, j);
 					}
+
+					// Set selected row
+					if((strSelectedIP != null) && (strSelectedType != null) &&
+						strSelectedIP.equals(strIP) && strSelectedType.equals(strType))
+					{
+						tableUsers.getSelectionModel().setSelectionInterval(rowNumber, rowNumber);
+						strSelectedIP = null;
+						strSelectedType = null;
+					}
 				} else {
+					// Add an new row
 					tablemodelUsers.addRow(strTableData);
+
+					// Set selected row
+					if((strSelectedIP != null) && (strSelectedType != null) &&
+						strSelectedIP.equals(strIP) && strSelectedType.equals(strType))
+					{
+						tableUsers.getSelectionModel().setSelectionInterval(maxRow, maxRow);
+						strSelectedIP = null;
+						strSelectedType = null;
+					}
 				}
+			}
+		}
+		// Ban
+		if(message[0].equals("ban")) {
+			if(message.length > 3) {
+				String strBanLength = getUIText("BanType" + message[2]);
+				addConsoleLog(String.format(getUIText("Console_Ban_Result"),message[1],strBanLength,message[3]), new Color(0, 64, 64));
+			}
+		}
+		// Ban List
+		if(message[0].equals("banlist")) {
+			if(message.length < 2) {
+				addConsoleLog(getUIText("Console_BanList_Result_None"), new Color(0, 64, 64));
+			} else {
+				for(int i = 0; i < message.length - 1; i++) {
+					NetServerBan ban = new NetServerBan();
+					ban.importString(message[i + 1]);
+
+					String strBanLength = getUIText("BanType" + ban.banLength);
+					String strDate = "";
+					if(ban.startDate != null) {
+						Calendar d = ban.startDate;
+						strDate = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+								d.get(Calendar.YEAR), d.get(Calendar.MONTH) + 1, d.get(Calendar.DATE),
+								d.get(Calendar.HOUR_OF_DAY), d.get(Calendar.MINUTE), d.get(Calendar.SECOND));
+					}
+
+					addConsoleLog(String.format(getUIText("Console_BanList_Result"), ban.addr, strBanLength, strDate), new Color(0, 64, 64));
+				}
+			}
+		}
+		// Un-Ban
+		if(message[0].equals("unban")) {
+			if(message.length > 2) {
+				addConsoleLog(String.format(getUIText("Console_UnBan_Result"), message[1], message[2]), new Color(0, 64, 64));
 			}
 		}
 	}
@@ -887,12 +1235,13 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			super.show(c, x, y);
 		}
 	}
-	
+
 	private class UserPopupMenu extends JPopupMenu {
-		
+		private static final long serialVersionUID = 1L;
+
 		private Action kickAction;
 		private Action banAction;
-		
+
 		public UserPopupMenu(final JTable table) {
 			super();
 
@@ -901,7 +1250,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				public void actionPerformed(ActionEvent evt) {
 					int rowNumber = table.getSelectedRow();
 					String strIP = (String)table.getValueAt(rowNumber, 0);
-					requestBanFromGUI(strIP, -1);
+					requestBanFromGUI(strIP, -1, true);
 				}
 			});
 			add(banAction = new AbstractAction(getUIText("Popup_Ban")) {
@@ -909,59 +1258,11 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				public void actionPerformed(ActionEvent evt) {
 					int rowNumber = table.getSelectedRow();
 					final String strIP = (String)table.getValueAt(rowNumber, 0);
-					
-					// Dialog box
-					final JDialog dialogBan = new JDialog();
-					dialogBan.setTitle("Title_BanDialog");
-					dialogBan.getContentPane().setLayout(new BoxLayout(dialogBan.getContentPane(), BoxLayout.Y_AXIS));
-					
-					// Options
-					final JPanel pOptions = new JPanel();
-					dialogBan.getContentPane().add(pOptions);
-					
-					// Ban length
-					final JLabel lBanLength = new JLabel(getUIText("Ban_Length"));
-					pOptions.add(lBanLength);
-					
-					final JComboBox comboboxBanLength = new JComboBox();
-					comboboxBanLength.setToolTipText(getUIText("Ban_Length_Tip"));
-					for (int i = 0; i < NetServerBan.BANLENGTH_TOTAL; i++) {
-						comboboxBanLength.addItem(getUIText("BanType"+i));
-					}
-					pOptions.add(comboboxBanLength);
-					
-					// Buttons
-					final JPanel pButtons = new JPanel();
-					dialogBan.getContentPane().add(pButtons);
-					
-					final JButton btnConfirm = new JButton(getUIText("Ban_Confirm"));
-					btnConfirm.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							requestBanFromGUI(strIP,comboboxBanLength.getSelectedIndex());
-							dialogBan.dispose();
-						}
-					});
-					pButtons.add(btnConfirm);
-					
-					final JButton btnCancel = new JButton(getUIText("Ban_Cancel"));
-					btnCancel.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							dialogBan.dispose();
-						}
-					});
-					pButtons.add(btnCancel);
-					
-					// Set frame vitals
-					dialogBan.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialogBan.setLocationRelativeTo(null);
-					dialogBan.setModal(true);
-					dialogBan.setResizable(false);
-					dialogBan.pack();
-					dialogBan.setVisible(true);
+					openBanDialog(strIP);
 				}
 			});
 		}
-		
+
 		@Override
 		public void show(Component c, int x, int y) {
 			JTable table = (JTable) c;

@@ -1,0 +1,45 @@
+***** List of system commands *****
+help
+	Display this help message
+h
+	Same as 'help'
+?
+	Same as 'help'
+echo <String>
+	Display any message
+cls
+	Clear console log
+logout
+	Logout from the server
+logoff
+	Same as 'logout'
+disconnect
+	Same as 'logout'
+quit
+	Quit this application
+exit
+	Same as 'quit'
+shutdown
+	Same as 'quit'
+
+***** List of network commands *****
+myip
+	Display your IP
+myhost
+	Display your hostname
+serverhost
+	Display this server's hostname
+serverport
+	Display this server's port number
+
+***** List of ban-related commands *****
+bangui (IP)
+	Open the Ban GUI dialog
+ban <IP> (Length;-1 to 6)
+	Sets a ban
+banlist
+	Display the list of ban
+unban <IP>
+	Remove a ban
+unban ALL
+	Remove all bans

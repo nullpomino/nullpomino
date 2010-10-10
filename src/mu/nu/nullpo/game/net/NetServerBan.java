@@ -1,9 +1,18 @@
 package mu.nu.nullpo.game.net;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.log4j.Logger;
+
+import biz.source_code.base64Coder.Base64Coder;
+
 public class NetServerBan {
+	static Logger log = Logger.getLogger(NetServerBan.class);
 
 	public String addr;
 
@@ -17,8 +26,14 @@ public class NetServerBan {
 							BANLENGTH_1MONTH = 4,
 							BANLENGTH_1YEAR = 5,
 							BANLENGTH_PERMANENT = 6;
-	
+
 	public static final int BANLENGTH_TOTAL = 7;
+
+	/**
+	 * Empty Constructor
+	 */
+	public NetServerBan() {
+	}
 
 	/**
 	 * Creates a new NetServerBan object representing a permanent ban starting now.
@@ -68,5 +83,63 @@ public class NetServerBan {
 		} else {
 			return Calendar.getInstance(TimeZone.getTimeZone("GMT")).after(getEndDate());
 		}
+	}
+
+	/**
+	 * Export startDate to String
+	 * @return String (null if fails)
+	 */
+	public String exportStartDate() {
+		try {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(bout);
+			oos.writeObject(startDate);
+			byte[] bTemp = NetUtil.compressByteArray(bout.toByteArray());
+			char[] cTemp = Base64Coder.encode(bTemp);
+			return new String(cTemp);
+		} catch (Exception e) {
+			log.error("Failed to export startDate", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Import startDate from String
+	 * @param strInput String
+	 * @return true if success
+	 */
+	public boolean importStartDate(String strInput) {
+		try {
+			byte[] bTemp = Base64Coder.decode(strInput);
+			byte[] bTemp2 = NetUtil.decompressByteArray(bTemp);
+			ByteArrayInputStream bin = new ByteArrayInputStream(bTemp2);
+			ObjectInputStream oin = new ObjectInputStream(bin);
+			startDate = (Calendar)oin.readObject();
+			return true;
+		} catch (Exception e) {
+			log.error("Failed to import startDate", e);
+		}
+		return false;
+	}
+
+	/**
+	 * Export to String
+	 * @return String
+	 */
+	public String exportString() {
+		String strStartDate = exportStartDate();
+		if(strStartDate == null) strStartDate = "";
+		return addr + ";" + banLength + ";" + strStartDate;
+	}
+
+	/**
+	 * Import from String
+	 * @param strInput String
+	 */
+	public void importString(String strInput) {
+		String[] strArray = strInput.split(";");
+		addr = strArray[0];
+		banLength = Integer.parseInt(strArray[1]);
+		importStartDate(strArray[2]);
 	}
 }

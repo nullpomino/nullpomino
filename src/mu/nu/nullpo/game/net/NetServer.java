@@ -133,9 +133,6 @@ public class NetServer implements ActionListener {
 	@SuppressWarnings("rawtypes")
 	private static LinkedList[] mpRankingList;
 
-	/** Encryption algorithm */
-	private static RC4 rc4;
-
 	/** List of SocketChannel */
 	private List<SocketChannel> channelList = new LinkedList<SocketChannel>();
 
@@ -250,6 +247,9 @@ public class NetServer implements ActionListener {
 
 		// Load multiplayer leaderboard
 		loadMPRankingList();
+
+		// Load ban list
+		loadBanList();
 	}
 
 	/**
@@ -559,13 +559,13 @@ public class NetServer implements ActionListener {
 
 			String remoteAddr = channel.socket().getRemoteSocketAddress().toString();
 			log.info("Connected: " + remoteAddr);
-			
+
 			/*
 			for (NetServerBan b : banList) {
 				log.debug("Connection on banlist: " + b.addr);
 			}
 			*/
-			
+
 			if (checkConnectionOnBanlist(channel)) {
 				log.warn("Connection is banned: " + remoteAddr);
 				logout(channel);
@@ -1762,7 +1762,7 @@ public class NetServer implements ActionListener {
 				return;
 			}
 
-			if(rc4 == null) rc4 = new RC4(strServerPassword);
+			RC4 rc4 = new RC4(strServerPassword);
 			byte[] bPass = Base64Coder.decode(message[3]);
 			byte[] bPass2 = rc4.rc4(bPass);
 			String strClientPasswordCheckData = NetUtil.bytesToString(bPass2);
@@ -1808,10 +1808,60 @@ public class NetServer implements ActionListener {
 		// Ban
 		if(message[0].equals("ban")) {
 			// ban\t[IP]\t(Length)
-			if(message.length > 2)
-				ban(message[1], Integer.parseInt(message[2]));
-			else
-				ban(message[1], -1);
+			int kickCount = 0;
+
+			int banLength = -1;
+			if(message.length > 2) banLength = Integer.parseInt(message[2]);
+
+			kickCount = ban(message[1], banLength);
+
+			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
+
+			saveBanList();
+		}
+		// Un-Ban
+		if(message[0].equals("unban")) {
+			// unban\t[IP]
+			int count = 0;
+
+			if(message[1].equalsIgnoreCase("ALL")) {
+				count = banList.size();
+				banList.clear();
+			} else {
+				LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
+				tempList.addAll(banList);
+
+				for(NetServerBan ban: tempList) {
+					if(ban.addr.equals(message[1])) {
+						banList.remove(ban);
+						count++;
+					}
+				}
+			}
+
+			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
+
+			saveBanList();
+		}
+		// Ban List
+		if(message[0].equals("banlist")) {
+			// Cleanup expired bans
+			LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
+			tempList.addAll(banList);
+
+			for(NetServerBan ban: tempList) {
+				if(ban.isExpired()) {
+					banList.remove(ban);
+				}
+			}
+
+			// Create list
+			String strResult = "";
+			for(NetServerBan ban: banList) {
+				strResult += "\t" + ban.exportString();
+			}
+
+			sendAdminResult(client, "banlist" + strResult);
 		}
 	}
 
@@ -2277,8 +2327,9 @@ public class NetServer implements ActionListener {
 	 * Sets a ban by IP address.
 	 * @param strIP IP address
 	 * @param banLength The length of the ban. (-1: Kick only, not ban)
+	 * @return Number of players kicked
 	 */
-	private void ban(String strIP, int banLength) {
+	private int ban(String strIP, int banLength) {
 		LinkedList<SocketChannel> banChannels = new LinkedList<SocketChannel>();
 
 		for(SocketChannel ch: channelList) {
@@ -2290,16 +2341,22 @@ public class NetServer implements ActionListener {
 		for(SocketChannel ch: banChannels) {
 			ban(ch, banLength);
 		}
+		if(banChannels.isEmpty() && (banLength >= 0)) {
+			// Add ban entry manually
+			banList.add(new NetServerBan(strIP, banLength));
+		}
+
+		return banChannels.size();
 	}
 
 	/**
 	 * Sets a ban.
 	 * @param client The remote address to ban.
 	 * @param banLength The length of the ban. (-1: Kick only, not ban)
+	 * @return Number of players kicked (always 1 in this routine)
 	 */
-	private void ban(SocketChannel client, int banLength) {
-		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
+	private int ban(SocketChannel client, int banLength) {
+		String remoteAddr = client.socket().getInetAddress().getHostAddress();
 
 		if(banLength < 0) {
 			log.info("Kicked player: "+remoteAddr);
@@ -2309,6 +2366,47 @@ public class NetServer implements ActionListener {
 		}
 
 		logout(client);
+		return 1;
+	}
+
+	/**
+	 * Write ban list to a file
+	 */
+	private void saveBanList() {
+		try {
+			FileWriter outFile = new FileWriter("config/setting/netserver_banlist.cfg");
+			PrintWriter out = new PrintWriter(outFile);
+
+			for(NetServerBan ban: banList) {
+				out.println(ban.exportString());
+			}
+
+			out.close();
+		} catch (Exception e) {
+			log.error("Failed to save ban list", e);
+		}
+	}
+
+	/**
+	 * Load ban list from a file
+	 */
+	private void loadBanList() {
+		try {
+			BufferedReader txtBanList = new BufferedReader(new FileReader("config/setting/netserver_banlist.cfg"));
+
+			String str;
+			while((str = txtBanList.readLine()) != null) {
+				if(str.length() > 0) {
+					NetServerBan ban = new NetServerBan();
+					ban.importString(str);
+					if(!ban.isExpired()) banList.add(ban);
+				}
+			}
+		} catch (IOException e) {
+			log.debug("Ban list file doesn't exist");
+		} catch (Exception e) {
+			log.warn("Failed to load ban list", e);
+		}
 	}
 
 	/**
@@ -2318,8 +2416,7 @@ public class NetServer implements ActionListener {
 	 * is expired.
 	 */
 	private boolean checkConnectionOnBanlist(SocketChannel client) {
-		String remoteAddr = client.socket().getRemoteSocketAddress().toString();
-		remoteAddr = remoteAddr.substring(0,remoteAddr.indexOf(':'));
+		String remoteAddr = client.socket().getInetAddress().getHostAddress();
 
 		Iterator<NetServerBan> i = banList.iterator();
 		NetServerBan ban;
