@@ -28,6 +28,8 @@
 */
 package mu.nu.nullpo.gui.slick;
 
+import mu.nu.nullpo.util.GeneralUtil;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -36,14 +38,14 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * キーボード設定画面のステート
+ * Keyboard config screen state
  */
 public class StateConfigKeyboard extends BasicGameState {
 	/** This state's ID */
 	public static final int ID = 9;
 
-	/** Key input を受付可能になるまでの frame count */
-	public static final int KEYACCEPTFRAME = 30;
+	/** Number of frames you have to wait */
+	public static final int KEYACCEPTFRAME = 15;
 
 	/** Number of keys to set */
 	public static final int NUM_KEYS = 16;
@@ -63,11 +65,14 @@ public class StateConfigKeyboard extends BasicGameState {
 	/** Number of button currently being configured */
 	protected int keynum;
 
-	/** 経過 frame count */
+	/** Frame counter */
 	protected int frame;
 
+	/** Nunber of frames left in key-set mode */
+	protected int keyConfigRestFrame;
+
 	/** Button settings */
-	protected int keymap[];
+	protected int[] keymap;
 
 	/*
 	 * Fetch this state's ID
@@ -85,6 +90,7 @@ public class StateConfigKeyboard extends BasicGameState {
 
 		keynum = 0;
 		frame = 0;
+		keyConfigRestFrame = 0;
 
 		keymap = new int[NUM_KEYS];
 
@@ -104,9 +110,9 @@ public class StateConfigKeyboard extends BasicGameState {
 	}
 
 	/**
-	 * キーのNameを取得
-	 * @param key キー
-	 * @return キーのName
+	 * Get key name
+	 * @param key Keycode
+	 * @return Key name
 	 */
 	protected String getKeyName(int key) {
 		String str = org.lwjgl.input.Keyboard.getKeyName(key);
@@ -154,17 +160,22 @@ public class StateConfigKeyboard extends BasicGameState {
 		NormalFont.printFontGrid(2, 17, "RETRY       : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
 		NormalFont.printFontGrid(2, 18, "FRAME STEP  : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
 		NormalFont.printFontGrid(2, 19, "SCREEN SHOT : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFont.printFontGrid(2, 20, "[SAVE & EXIT]", (keynum == 16));
+
+		NormalFont.printFontGrid(1, 4 + keynum, "b", NormalFont.COLOR_RED);
 
 		if(frame >= KEYACCEPTFRAME) {
-			if(keynum < NUM_KEYS) {
-				NormalFont.printFontGrid(1, 4 + keynum, "b", NormalFont.COLOR_RED);
-
-				NormalFont.printFontGrid(1, 25, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+			if(keyConfigRestFrame > 0) {
+				NormalFont.printFontGrid(1, 22, "PUSH KEY... " + GeneralUtil.getTime(keyConfigRestFrame), NormalFont.COLOR_PINK);
+			} else if(keynum < NUM_KEYS) {
+				NormalFont.printFontGrid(1, 22, "UP/DOWN:   MOVE CURSOR", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 23, "ENTER:     SET KEY", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 24, "DELETE:    SET TO NONE", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 25, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 			} else {
-				NormalFont.printFontGrid(1, 25, "ENTER:     OK", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 22, "UP/DOWN:   MOVE CURSOR", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 23, "ENTER:     SAVE & EXIT", NormalFont.COLOR_GREEN);
+				NormalFont.printFontGrid(1, 24, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
 			}
 		}
 
@@ -185,6 +196,7 @@ public class StateConfigKeyboard extends BasicGameState {
 		}
 
 		frame++;
+		if(keyConfigRestFrame > 0) keyConfigRestFrame--;
 
 		// JInput
 		if(NullpoMinoSlick.useJInputKeyboard) {
@@ -220,48 +232,56 @@ public class StateConfigKeyboard extends BasicGameState {
 	 */
 	protected void onKey(int key) {
 		if(frame >= KEYACCEPTFRAME) {
-			if(keynum < NUM_KEYS) {
-				if(key == Input.KEY_DELETE) {
-					ResourceHolder.soundManager.play("move");
-					keymap[keynum] = 0;
-				} else if(key == Input.KEY_BACK) {
-					if(isNavSetting)
-						gameObj.enterState(StateConfigKeyboardNavi.ID);
-					else
-						gameObj.enterState(StateConfigMainMenu.ID);
-					return;
-				} else {
-					ResourceHolder.soundManager.play("move");
-					keymap[keynum] = key;
+			if(keyConfigRestFrame > 0) {
+				// Key-set mode
+				ResourceHolder.soundManager.play("move");
+				keymap[keynum] = key;
+				keyConfigRestFrame = 0;
+			} else {
+				// Menu mode
+				if(key == Input.KEY_UP) {
+					ResourceHolder.soundManager.play("cursor");
+					keynum--;
+					if(keynum < 0) keynum = NUM_KEYS;
+				}
+				if(key == Input.KEY_DOWN) {
+					ResourceHolder.soundManager.play("cursor");
+					keynum++;
+					if(keynum > NUM_KEYS) keynum = 0;
 				}
 
-				keynum++;
-			} else {
+				// Enter
 				if(key == Input.KEY_ENTER) {
 					ResourceHolder.soundManager.play("decide");
 
-					//NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
-					for(int i = 0; i < NUM_KEYS; i++) {
-						if(!isNavSetting)
-							GameKey.gamekey[player].keymap[i] = keymap[i];
-						else
-							GameKey.gamekey[player].keymapNav[i] = keymap[i];
-					}
-					/*
-					if(!firstSetupMode && NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0) == 1) {
-						for(int i = 0; i < StateConfigKeyboardNavi.NUM_KEYS; i++) {
-							GameKey.gamekey[player].keymap[i+GameKey.BUTTON_NAV_UP] = keymap[i];
+					if(keynum >= NUM_KEYS) {
+						// Save & Exit
+						for(int i = 0; i < NUM_KEYS; i++) {
+							if(!isNavSetting)
+								GameKey.gamekey[player].keymap[i] = keymap[i];
+							else
+								GameKey.gamekey[player].keymapNav[i] = keymap[i];
 						}
+						GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
+						NullpoMinoSlick.saveConfig();
+						gameObj.enterState(StateConfigMainMenu.ID);
+					} else {
+						// Set key
+						keyConfigRestFrame = 60 * 5;
 					}
-					*/
-					GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
-					NullpoMinoSlick.saveConfig();
+					return;
+				}
 
-					gameObj.enterState(StateConfigMainMenu.ID);
-				} else if(key == Input.KEY_DELETE) {
-					ResourceHolder.soundManager.play("move");
-					reset();
-				} else if(key == Input.KEY_BACK) {
+				// Delete
+				if(key == Input.KEY_DELETE) {
+					if((keynum < NUM_KEYS) && (keymap[keynum] != 0)) {
+						ResourceHolder.soundManager.play("change");
+						keymap[keynum] = 0;
+					}
+				}
+
+				// Backspace
+				if(key == Input.KEY_BACK) {
 					if(isNavSetting)
 						gameObj.enterState(StateConfigKeyboardNavi.ID);
 					else

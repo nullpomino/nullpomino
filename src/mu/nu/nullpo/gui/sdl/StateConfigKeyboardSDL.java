@@ -29,6 +29,7 @@
 package mu.nu.nullpo.gui.sdl;
 
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.util.GeneralUtil;
 
 import sdljava.SDLException;
 import sdljava.event.SDLKey;
@@ -36,11 +37,11 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * キーボード設定画面のステート
+ * Keyboard config screen state
  */
 public class StateConfigKeyboardSDL extends BaseStateSDL {
-	/** Key input を受付可能になるまでの frame count */
-	public static final int KEYACCEPTFRAME = 30;
+	/** Number of frames you have to wait */
+	public static final int KEYACCEPTFRAME = 15;
 
 	/** Number of keys to set */
 	public static final int NUM_KEYS = 16;
@@ -54,14 +55,17 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	/** Number of button currently being configured */
 	protected int keynum;
 
-	/** 経過 frame count */
+	/** Frame counter */
 	protected int frame;
 
-	/** Button settings */
-	protected int keymap[];
+	/** Nunber of frames left in key-set mode */
+	protected int keyConfigRestFrame;
 
-	/** 前の frame のKey input state */
-	protected boolean previousKeyPressedState[];
+	/** Button settings */
+	protected int[] keymap;
+
+	/** Previous key input state */
+	protected boolean[] previousKeyPressedState;
 
 	/**
 	 * Button settings initialization
@@ -69,6 +73,7 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	protected void reset() {
 		keynum = 0;
 		frame = 0;
+		keyConfigRestFrame = 0;
 
 		keymap = new int[NUM_KEYS];
 		previousKeyPressedState = new boolean[NullpoMinoSDL.SDL_KEY_MAX];
@@ -82,10 +87,10 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 押されたキーの numberを返す
-	 * @param prev 前の frame での input 状態
-	 * @param now この frame での input 状態
-	 * @return 押されたキーの number, 無いならSDLKey.SDLK_UNKNOWN
+	 * Get newly pressed key code
+	 * @param prev Previous input state
+	 * @param now New input state
+	 * @return The newly pressed key code. It will return SDLKey.SDLK_UNKNOWN if none are pressed.
 	 */
 	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {
 		for(int i = 0; i < now.length; i++) {
@@ -98,12 +103,12 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * キーのNameを取得
-	 * @param key キー
-	 * @return キーのName
+	 * Get key name
+	 * @param key Keycode
+	 * @return Key name
 	 */
 	protected String getKeyName(int key) {
-		if((key < 0) || (key > NullpoMinoSDL.SDL_KEYNAMES.length)) {
+		if((key < 0) || (key >= NullpoMinoSDL.SDL_KEYNAMES.length)) {
 			return "(" + key + ")";
 		}
 		return NullpoMinoSDL.SDL_KEYNAMES[key];
@@ -146,18 +151,22 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 16, "RETRY       : " + getKeyName(keymap[GameKeySDL.BUTTON_RETRY]), (keynum == 13));
 		NormalFontSDL.printFontGrid(2, 17, "FRAME STEP  : " + getKeyName(keymap[GameKeySDL.BUTTON_FRAMESTEP]), (keynum == 14));
 		NormalFontSDL.printFontGrid(2, 18, "SCREEN SHOT : " + getKeyName(keymap[GameKeySDL.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFontSDL.printFontGrid(2, 19, "[SAVE & EXIT]", (keynum == 16));
+
+		NormalFontSDL.printFontGrid(1, 3 + keynum, "b", NormalFontSDL.COLOR_RED);
 
 		if(frame >= KEYACCEPTFRAME) {
-			if(keynum < NUM_KEYS) {
-				NormalFontSDL.printFontGrid(1, 3 + keynum, "b", NormalFontSDL.COLOR_RED);
-
-				NormalFontSDL.printFontGrid(1, 25, "DELETE:    NO SET", NormalFontSDL.COLOR_GREEN);
-
-				NormalFontSDL.printFontGrid(1, 26, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
+			if(keyConfigRestFrame > 0) {
+				NormalFontSDL.printFontGrid(1, 21, "PUSH KEY... " + GeneralUtil.getTime(keyConfigRestFrame), NormalFontSDL.COLOR_PINK);
+			} else if(keynum < NUM_KEYS) {
+				NormalFontSDL.printFontGrid(1, 21, "UP/DOWN:   MOVE CURSOR", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 22, "ENTER:     SET KEY", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 23, "DELETE:    SET TO NONE", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 24, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
 			} else {
-				NormalFontSDL.printFontGrid(1, 25, "ENTER:     OK", NormalFontSDL.COLOR_GREEN);
-				NormalFontSDL.printFontGrid(1, 26, "DELETE:    AGAIN", NormalFontSDL.COLOR_GREEN);
-				NormalFontSDL.printFontGrid(1, 27, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 21, "UP/DOWN:   MOVE CURSOR", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 22, "ENTER:     SAVE & EXIT", NormalFontSDL.COLOR_GREEN);
+				NormalFontSDL.printFontGrid(1, 23, "BACKSPACE: CANCEL", NormalFontSDL.COLOR_GREEN);
 			}
 		}
 	}
@@ -168,61 +177,71 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	@Override
 	public void update() throws SDLException {
 		if(frame >= KEYACCEPTFRAME) {
-			if(keynum < NUM_KEYS) {
-				if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_DELETE]) {
-					ResourceHolderSDL.soundManager.play("move");
-					keymap[keynum] = 0;
-					keynum++;
+			if(keyConfigRestFrame > 0) {
+				// Key-set mode
+				int key = getPressedKeyNumber(previousKeyPressedState, NullpoMinoSDL.keyPressedState);
+
+				if(key != SDLKey.SDLK_UNKNOWN) {
+					ResourceHolderSDL.soundManager.play("change");
+					keymap[keynum] = key;
 					frame = 0;
-				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_BACKSPACE]) {
-					if(isNavSetting)
-						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
-					else
-						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-
+					keyConfigRestFrame = 0;
 					return;
-				} else {
-					int key = getPressedKeyNumber(previousKeyPressedState, NullpoMinoSDL.keyPressedState);
-
-					if(key != SDLKey.SDLK_UNKNOWN) {
-						ResourceHolderSDL.soundManager.play("move");
-						keymap[keynum] = key;
-						keynum++;
-						frame = 0;
-					}
 				}
+
+				keyConfigRestFrame--;
 			} else {
+				// Menu mode
+				if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_UP]) {
+					frame = 0;
+					ResourceHolderSDL.soundManager.play("cursor");
+					keynum--;
+					if(keynum < 0) keynum = NUM_KEYS;
+				}
+				if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_DOWN]) {
+					frame = 0;
+					ResourceHolderSDL.soundManager.play("cursor");
+					keynum++;
+					if(keynum > NUM_KEYS) keynum = 0;
+				}
+
+				// Enter
 				if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_RETURN]) {
 					ResourceHolderSDL.soundManager.play("decide");
 
-					//NullpoMinoSDL.propConfig.setProperty("option.firstSetupMode", false);
-					for(int i = 0; i < NUM_KEYS; i++) {
-						if(!isNavSetting)
-							GameKeySDL.gamekey[player].keymap[i] = keymap[i];
-						else
-							GameKeySDL.gamekey[player].keymapNav[i] = keymap[i];
-					}
-					/*
-					if(!firstSetupMode && NullpoMinoSDL.propConfig.getProperty("option.keyCustomNaviType", 0) == 1) {
-						for(int i = 0; i < StateConfigKeyboardNaviSDL.NUM_KEYS; i++) {
-							GameKeySDL.gamekey[player].keymap[i+GameKeySDL.BUTTON_NAV_UP] = keymap[i];
+					if(keynum >= NUM_KEYS) {
+						// Save & Exit
+						for(int i = 0; i < NUM_KEYS; i++) {
+							if(!isNavSetting)
+								GameKeySDL.gamekey[player].keymap[i] = keymap[i];
+							else
+								GameKeySDL.gamekey[player].keymapNav[i] = keymap[i];
 						}
+						GameKeySDL.gamekey[player].saveConfig(NullpoMinoSDL.propConfig);
+						NullpoMinoSDL.saveConfig();
+						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
+					} else {
+						// Set Key
+						frame = 0;
+						keyConfigRestFrame = 60 * 5;
 					}
-					*/
-					GameKeySDL.gamekey[player].saveConfig(NullpoMinoSDL.propConfig);
-					NullpoMinoSDL.saveConfig();
-
-					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 					return;
-				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_DELETE]) {
-					ResourceHolderSDL.soundManager.play("move");
-					reset();
-				} else if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_BACKSPACE]) {
+				}
+
+				// Delete
+				if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_DELETE]) {
+					if((keynum < NUM_KEYS) && (keymap[keynum] != SDLKey.SDLK_UNKNOWN)) {
+						ResourceHolderSDL.soundManager.play("change");
+						keymap[keynum] = SDLKey.SDLK_UNKNOWN;
+					}
+				}
+
+				// Backspace
+				if(NullpoMinoSDL.keyPressedState[SDLKey.SDLK_BACKSPACE]) {
 					if(isNavSetting)
 						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD_NAVI);
 					else
 						NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-
 					return;
 				}
 			}
