@@ -285,7 +285,7 @@ public class SpeedManiaMode extends DummyMode {
 		lvstopse = prop.getProperty("speedmania.lvstopse", false);
 		showsectiontime = prop.getProperty("speedmania.showsectiontime", false);
 		big = prop.getProperty("speedmania.big", false);
-		lv500torikan = prop.getProperty("speedmania.lv500torikan", 13200);
+		lv500torikan = prop.getProperty("speedmania.lv500torikan", 12300);
 	}
 
 	/**
