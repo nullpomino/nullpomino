@@ -1,0 +1,3 @@
+#!/bin/sh
+cd `dirname $0`
+java -cp bin:NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.tool.netadmin.NetAdmin

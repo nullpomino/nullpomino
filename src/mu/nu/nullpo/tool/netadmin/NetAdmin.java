@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -641,21 +643,23 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		// help/h/?
 		if(commands[0].equalsIgnoreCase("help")||commands[0].equalsIgnoreCase("h")||commands[0].equalsIgnoreCase("?")) {
 			try {
-				FileReader filereaderHelp = null;
+				InputStreamReader reader = null;
 				try {
-					filereaderHelp = new FileReader("config/lang/netadmin_help_" + Locale.getDefault().getCountry() + ".txt");
+					reader = new InputStreamReader(
+						new FileInputStream("config/lang/netadmin_help_" + Locale.getDefault().getCountry() + ".txt"), "UTF-8"
+					);
 				} catch (IOException e2) {
-					filereaderHelp = new FileReader("config/lang/netadmin_help_default.txt");
+					reader = new InputStreamReader(new FileInputStream("config/lang/netadmin_help_default.txt"), "UTF-8");
 				}
 
-				BufferedReader txtHelp = new BufferedReader(filereaderHelp);
+				BufferedReader txtHelp = new BufferedReader(reader);
 
 				String str;
 				while((str = txtHelp.readLine()) != null) {
 					addConsoleLog(str);
 				}
 
-				filereaderHelp.close();
+				reader.close();
 			} catch (IOException e) {
 				log.error("Failed to load help file", e);
 				addConsoleLog(String.format(getUIText("Console_Help_Error"), e.toString()), Color.red);

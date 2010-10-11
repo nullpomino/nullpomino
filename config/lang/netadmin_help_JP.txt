@@ -1,0 +1,53 @@
+***** システムコマンド一覧 *****
+help
+	このヘルプを表示
+h
+	'help'と同じ
+?
+	'help'と同じ
+echo <String>
+	任意のメッセージを表示
+cls
+	ログ消去
+logout
+	サーバーからログアウト
+logoff
+	'logout'と同じ
+disconnect
+	'logout'と同じ
+quit
+	NetAdminを終了
+exit
+	'quit'と同じ
+
+***** ネットワークコマンド一覧 *****
+shutdown
+	サーバーを終了させる
+announce
+	管理人メッセージを全員のプレイヤーに送信
+myip
+	自分のIPを表示
+myhost
+	自分のホスト名を表示
+serverhost
+	サーバーのホスト名を表示
+serverport
+	サーバーのポート番号を表示
+
+***** アクセス規制関連のコマンド一覧 *****
+bangui (IP)
+	アクセス規制追加ダイアログを表示
+ban <IP> (規制期間;-1～6)
+	アクセス規制を追加
+banlist
+	アクセス規制の一覧を表示
+unban <IP>
+	指定したIPのアクセス規制を解除
+unban ALL
+	全てのアクセス規制を解除
+
+***** プレイヤーデータ関連のコマンド一覧 *****
+playerdelete <プレイヤーの名前>
+	指定したプレイヤーのデータ(レート、プレイ回数、勝利数)を削除
+pdel <PlayerName>
+	'playerdelete'と同じ
