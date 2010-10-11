@@ -29,10 +29,14 @@ myip
 	自分のIPを表示
 myhost
 	自分のホスト名を表示
+serverip
+	サーバーのIPを表示
 serverhost
 	サーバーのホスト名を表示
 serverport
 	サーバーのポート番号を表示
+version
+	NetAdmin側とサーバー側のバージョンを表示
 
 ***** アクセス規制関連のコマンド一覧 *****
 bangui (IP)

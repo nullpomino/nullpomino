@@ -29,10 +29,14 @@ myip
 	Display your IP
 myhost
 	Display your hostname
+serverip
+	Display this server's IP
 serverhost
 	Display this server's hostname
 serverport
 	Display this server's port number
+version
+	Display version info
 
 ***** List of ban-related commands *****
 bangui (IP)

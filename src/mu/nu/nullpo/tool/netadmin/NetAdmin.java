@@ -132,6 +132,9 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	/** Your Hostname */
 	private static String strMyHostname;
 
+	/** Server's version */
+	private static String serverFullVer;
+
 	//***** Main GUI elements *****
 	/** Layout manager for main screen */
 	private CardLayout contentPaneCardLayout;
@@ -716,6 +719,10 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		else if(commands[0].equalsIgnoreCase("myhost")) {
 			addConsoleLog(strMyHostname);
 		}
+		// serverip
+		else if(commands[0].equalsIgnoreCase("serverip")) {
+			addConsoleLog(client.getIP());
+		}
 		// serverhost
 		else if(commands[0].equalsIgnoreCase("serverhost")) {
 			addConsoleLog(strServerHost);
@@ -723,6 +730,11 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		// serverport
 		else if(commands[0].equalsIgnoreCase("serverport")) {
 			addConsoleLog(Integer.toString(serverPort));
+		}
+		// version
+		else if(commands[0].equalsIgnoreCase("version")) {
+			addConsoleLog("Client:" + GameManager.getVersionString());
+			addConsoleLog("Server:" + serverFullVer);
 		}
 		// bangui
 		else if(commands[0].equalsIgnoreCase("bangui")) {
@@ -977,16 +989,17 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			labelLoginMessage.setText(getUIText("Login_Message_LoggingIn"));
 
 			// Version check
-			float clientVer = GameManager.getVersionMajor();
-			float serverVer = Float.parseFloat(message[1]);
+			float clientMajorVer = GameManager.getVersionMajor();
+			float serverMajorVer = Float.parseFloat(message[1]);
 
-			if(clientVer != serverVer) {
+			if(clientMajorVer != serverMajorVer) {
 				labelLoginMessage.setForeground(Color.red);
-				labelLoginMessage.setText(String.format(getUIText("Login_Message_VersionError"), clientVer, serverVer));
+				labelLoginMessage.setText(String.format(getUIText("Login_Message_VersionError"), clientMajorVer, serverMajorVer));
 				isWantedDisconnect = true;
 				logout();
 				return;
 			}
+			serverFullVer = message[5];
 
 			// Send login message
 			String strUsername = txtfldUsername.getText();
@@ -995,7 +1008,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			byte[] ePassword = rc4.rc4(NetUtil.stringToBytes(strUsername));
 			char[] b64Password = Base64Coder.encode(ePassword);
 
-			String strLogin = "adminlogin\t" + clientVer + "\t" + strUsername + "\t" + new String(b64Password) + "\n";
+			String strLogin = "adminlogin\t" + clientMajorVer + "\t" + strUsername + "\t" + new String(b64Password) + "\n";
 			log.debug("Send login message:" + strLogin);
 			client.send(strLogin);
 		}

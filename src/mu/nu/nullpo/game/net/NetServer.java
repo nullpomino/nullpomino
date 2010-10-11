@@ -586,7 +586,8 @@ public class NetServer implements ActionListener {
 				return;
 			}
 
-			send(channel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\n");
+			send(channel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\t" +
+				GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\n");
 			adminSendClientList();
 		} catch (IOException e) {
 			log.info("IOException throwed on doAccept", e);
@@ -1831,10 +1832,9 @@ public class NetServer implements ActionListener {
 			if(message.length > 2) banLength = Integer.parseInt(message[2]);
 
 			kickCount = ban(message[1], banLength);
+			saveBanList();
 
 			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
-
-			saveBanList();
 		}
 		// Un-Ban
 		if(message[0].equals("unban")) {
@@ -1855,10 +1855,9 @@ public class NetServer implements ActionListener {
 					}
 				}
 			}
+			saveBanList();
 
 			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
-
-			saveBanList();
 		}
 		// Ban List
 		if(message[0].equals("banlist")) {
@@ -2457,7 +2456,10 @@ public class NetServer implements ActionListener {
 				out.println(ban.exportString());
 			}
 
+			out.flush();
 			out.close();
+
+			log.info("Ban list saved");
 		} catch (Exception e) {
 			log.error("Failed to save ban list", e);
 		}

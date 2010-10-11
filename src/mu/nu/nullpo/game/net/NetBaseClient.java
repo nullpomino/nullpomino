@@ -71,6 +71,9 @@ public class NetBaseClient extends Thread {
 	/** 接続先ポート number */
 	protected int port;
 
+	/** IP address */
+	protected String ip;
+
 	/** 前回の不完全パケット */
 	protected StringBuilder notCompletePacketBuffer;
 
@@ -128,6 +131,7 @@ public class NetBaseClient extends Thread {
 			// 接続
 			socket = new Socket(host, port);
 			connectedFlag = true;
+			ip = socket.getInetAddress().getHostAddress();
 
 			// ping打ちTimer準備
 			pingCount = 0;
@@ -280,6 +284,13 @@ public class NetBaseClient extends Thread {
 	 */
 	public int getPort() {
 		return port;
+	}
+
+	/**
+	 * @return Server's IP address
+	 */
+	public String getIP() {
+		return ip;
 	}
 
 	/**
