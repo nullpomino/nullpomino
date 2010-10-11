@@ -81,9 +81,17 @@ public class StateInGameSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 新しいゲームの開始処理
+	 * Start a new game (Rule will be user-selected one))
 	 */
 	public void startNewGame() {
+		startNewGame(null);
+	}
+
+	/**
+	 * Start a new game
+	 * @param strRulePath Rule file path (null if you want to use user-selected one)
+	 */
+	public void startNewGame(String strRulePath) {
 		gameManager = new GameManager(new RendererSDL());
 		pause = false;
 
@@ -116,9 +124,12 @@ public class StateInGameSDL extends BaseStateSDL {
 
 			// ルール
 			RuleOptions ruleopt = null;
-			String rulename = NullpoMinoSDL.propGlobal.getProperty(i + ".rule", "");
-			if(gameManager.mode.getGameStyle() > 0) {
-				rulename = NullpoMinoSDL.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			String rulename = strRulePath;
+			if(rulename == null) {
+				rulename = NullpoMinoSDL.propGlobal.getProperty(i + ".rule", "");
+				if(gameManager.mode.getGameStyle() > 0) {
+					rulename = NullpoMinoSDL.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+				}
 			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.debug("Load rule options from " + rulename);

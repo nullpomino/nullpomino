@@ -102,12 +102,7 @@ public class StateSelectModeSDL extends DummyMenuScrollStateSDL {
 		ResourceHolderSDL.soundManager.play("decide");
 		NullpoMinoSDL.propGlobal.setProperty("name.mode", list[cursor]);
 		NullpoMinoSDL.saveConfig();
-
-		StateInGameSDL s = (StateInGameSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_INGAME];
-		s.startNewGame();
-
-		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_INGAME);
-
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_SELECTRULEFROMLIST);
 		return false;
 	}
 

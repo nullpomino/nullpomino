@@ -113,8 +113,7 @@ public class StateSelectMode extends DummyMenuScrollState {
 		ResourceHolder.soundManager.play("decide");
 		NullpoMinoSlick.propGlobal.setProperty("name.mode", list[cursor]);
 		NullpoMinoSlick.saveConfig();
-		NullpoMinoSlick.stateInGame.startNewGame();
-		game.enterState(StateInGame.ID);
+		game.enterState(StateSelectRuleFromList.ID);
 		return false;
 	}
 

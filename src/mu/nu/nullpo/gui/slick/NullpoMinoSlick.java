@@ -153,6 +153,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Keyboard Reset menu state */
 	public static StateConfigKeyboardReset stateConfigKeyboardReset;
 
+	/** Rule select (after mode selection) */
+	public static StateSelectRuleFromList stateSelectRuleFromList;
+
 	/** Timing of alternate FPS sleep (false=render true=update) */
 	public static boolean alternateFPSTiming;
 
@@ -604,6 +607,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		stateConfigRuleStyleSelect = new StateConfigRuleStyleSelect();
 		stateConfigKeyboardNavi = new StateConfigKeyboardNavi();
 		stateConfigKeyboardReset = new StateConfigKeyboardReset();
+		stateSelectRuleFromList = new StateSelectRuleFromList();
 
 		addState(stateLoading);
 		addState(stateTitle);
@@ -623,6 +627,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		addState(stateConfigRuleStyleSelect);
 		addState(stateConfigKeyboardNavi);
 		addState(stateConfigKeyboardReset);
+		addState(stateSelectRuleFromList);
 	}
 
 	/**

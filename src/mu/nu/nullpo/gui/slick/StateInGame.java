@@ -105,9 +105,17 @@ public class StateInGame extends BasicGameState {
 	}
 
 	/**
-	 * 新しいゲームの開始処理
+	 * Start a new game (Rule will be user-selected one))
 	 */
 	public void startNewGame() {
+		startNewGame(null);
+	}
+
+	/**
+	 * Start a new game
+	 * @param strRulePath Rule file path (null if you want to use user-selected one)
+	 */
+	public void startNewGame(String strRulePath) {
 		gameManager = new GameManager(new RendererSlick());
 		pause = false;
 
@@ -136,9 +144,12 @@ public class StateInGame extends BasicGameState {
 
 			// ルール
 			RuleOptions ruleopt = null;
-			String rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule", "");
-			if(gameManager.mode.getGameStyle() > 0) {
-				rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			String rulename = strRulePath;
+			if(rulename == null) {
+				rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule", "");
+				if(gameManager.mode.getGameStyle() > 0) {
+					rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+				}
 			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.info("Load rule options from " + rulename);

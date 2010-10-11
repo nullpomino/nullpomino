@@ -1,0 +1,160 @@
+#Recommended Rules List
+
+:MARATHON
+config/rule/Standard.rul
+config/rule/StandardFastB.rul
+config/rule/StandardFriends.rul
+config/rule/StandardJ.rul
+
+:MARATHON+
+config/rule/StandardFriends.rul
+config/rule/Standard.rul
+config/rule/StandardFastB.rul
+config/rule/StandardJ.rul
+
+:EXTREME
+config/rule/Standard.rul
+config/rule/StandardHard.rul
+config/rule/StandardHard128.rul
+
+:LINE RACE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:SCORE RACE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:DIG RACE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:COMBO RACE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:ULTRA
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:TECHNICIAN
+config/rule/Standard.rul
+config/rule/StandardFastB.rul
+config/rule/StandardFriends.rul
+config/rule/StandardJ.rul
+
+:SQUARE
+config/rule/Square.rul
+config/rule/Standard.rul
+
+:RETRO MARATHON
+config/rule/NintendoR.rul
+
+:RETRO MASTERY
+config/rule/NintendoR.rul
+
+:RETRO MANIA
+config/rule/Classic0.rul
+config/rule/Classic068K.rul
+config/rule/ClassicS.rul
+
+:GRADE MANIA
+config/rule/Classic1.rul
+
+:GRADE MANIA 2
+config/rule/Classic2.rul
+
+:GRADE MANIA 3
+config/rule/Classic3.rul
+config/rule/StandardHard.rul
+
+:SCORE ATTACK
+config/rule/Classic2.rul
+
+:SPEED MANIA
+config/rule/Classic2.rul
+
+:SPEED MANIA 2
+config/rule/Classic3.rul
+config/rule/StandardHard.rul
+
+:GARBAGE MANIA
+config/rule/Classic2.rul
+
+:PHANTOM MANIA
+config/rule/Classic2.rul
+config/rule/Classic3.rul
+config/rule/StandardHard.rul
+
+:FINAL
+config/rule/StandardHard128.rul
+config/rule/Classic3.rul
+config/rule/StandardHard.rul
+
+:TIME ATTACK
+config/rule/StandardHard128.rul
+config/rule/ClassicEasyA.rul
+config/rule/ClassicEasyB.rul
+
+:PRACTICE
+config/rule/Standard.rul
+config/rule/StandardFastB.rul
+config/rule/StandardHard.rul
+config/rule/StandardHard128.rul
+config/rule/Classic2.rul
+config/rule/Classic3.rul
+config/rule/ClassicEasyA.rul
+config/rule/ClassicEasyB.rul
+
+:GEM MANIA
+config/rule/Classic3.rul
+config/rule/StandardHard.rul
+
+:VS-BATTLE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:TOOL-VS MAP EDIT
+
+:AVALANCHE 1P (RC2)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:AVALANCHE 1P FEVER MARATHON (RC2)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:AVALANCHE VS-BATTLE (RC1)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:AVALANCHE VS FEVER MARATHON (RC1)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:AVALANCHE VS DIG RACE (RC1)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:AVALANCHE VS BOMB BATTLE (RC1)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:AVALANCHE-SPF VS BATTLE (BETA)
+config/rule/Avalanche.rul
+config/rule/AvalancheClassic.rul
+
+:PHYSICIAN (RC1)
+config/rule/Physician.rul
+
+:PHYSICIAN VS-BATTLE (RC1)
+config/rule/Physician.rul
+
+:SPF VS-BATTLE (BETA)
+config/rule/SPF.rul

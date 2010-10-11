@@ -116,10 +116,11 @@ public class NullpoMinoSDL {
 							STATE_CONFIG_GAMETUNING = 13,
 							STATE_CONFIG_RULESTYLESELECT = 14,
 							STATE_CONFIG_KEYBOARD_NAVI = 15,
-							STATE_CONFIG_KEYBOARD_RESET = 16;
+							STATE_CONFIG_KEYBOARD_RESET = 16,
+							STATE_SELECTRULEFROMLIST = 17;
 
 	/** ゲームステートのcount */
-	public static final int STATE_MAX = 17;
+	public static final int STATE_MAX = 18;
 
 	/** 認識するキーのMaximum値 */
 	public static final int SDL_KEY_MAX = 322;
@@ -358,6 +359,7 @@ public class NullpoMinoSDL {
 		gameStates[STATE_CONFIG_RULESTYLESELECT] = new StateConfigRuleStyleSelectSDL();
 		gameStates[STATE_CONFIG_KEYBOARD_NAVI] = new StateConfigKeyboardNaviSDL();
 		gameStates[STATE_CONFIG_KEYBOARD_RESET] = new StateConfigKeyboardResetSDL();
+		gameStates[STATE_SELECTRULEFROMLIST] = new StateSelectRuleFromListSDL();
 
 		// SDLのInitializationと開始
 		try {
