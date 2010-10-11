@@ -2038,7 +2038,7 @@ public class NetServer implements ActionListener {
 	}
 
 	/**
-	 * Start/Stop auto start timer
+	 * Start/Stop auto start timer. It also turn-off the Ready status if there is only 1 player.
 	 * @param roomInfo The room
 	 */
 	private void autoStartTimerCheck(NetRoomInfo roomInfo) throws IOException {
@@ -2046,6 +2046,7 @@ public class NetServer implements ActionListener {
 
 		int minPlayers = (roomInfo.autoStartTNET2) ? 2 : 1;
 
+		// Stop
 		if((roomInfo.getNumberOfPlayerSeated() <= 1) ||
 		   (roomInfo.isSomeoneCancelled && roomInfo.disableTimerAfterSomeoneCancelled) ||
 		   (roomInfo.getHowManyPlayersReady() < minPlayers) || (roomInfo.getHowManyPlayersReady() < roomInfo.getNumberOfPlayerSeated() / 2))
@@ -2055,12 +2056,23 @@ public class NetServer implements ActionListener {
 			}
 			roomInfo.autoStartActive = false;
 		}
+		// Start
 		else if((roomInfo.autoStartActive == false) &&
 				(!roomInfo.isSomeoneCancelled || !roomInfo.disableTimerAfterSomeoneCancelled) &&
 				(roomInfo.getHowManyPlayersReady() >= minPlayers) && (roomInfo.getHowManyPlayersReady() >= roomInfo.getNumberOfPlayerSeated() / 2))
 		{
 			broadcast("autostartbegin\t" + roomInfo.autoStartSeconds + "\n", roomInfo.roomID);
 			roomInfo.autoStartActive = true;
+		}
+
+		// Turn-off ready status if there is only 1 player
+		if(roomInfo.getNumberOfPlayerSeated() == 1) {
+			for(NetPlayerInfo p: roomInfo.playerSeat) {
+				if((p != null) && (p.ready == true)) {
+					p.ready = false;
+					broadcastPlayerInfoUpdate(p);
+				}
+			}
 		}
 	}
 
@@ -2070,7 +2082,7 @@ public class NetServer implements ActionListener {
 	 * @return true if started, false if not
 	 */
 	private boolean gameStartIfPossible(NetRoomInfo roomInfo) throws IOException {
-		if(roomInfo.getHowManyPlayersReady() == roomInfo.getNumberOfPlayerSeated()) {
+		if((roomInfo.getHowManyPlayersReady() == roomInfo.getNumberOfPlayerSeated()) && (roomInfo.getNumberOfPlayerSeated() >= 2)) {
 			gameStart(roomInfo);
 			return true;
 		}
@@ -2084,6 +2096,7 @@ public class NetServer implements ActionListener {
 	private void gameStart(NetRoomInfo roomInfo) throws IOException {
 		if(roomInfo == null) return;
 		if(roomInfo.getNumberOfPlayerSeated() <= 0) return;
+		if((roomInfo.getNumberOfPlayerSeated() <= 1) && (!roomInfo.singleplayer)) return;
 		if(roomInfo.playing) return;
 
 		roomInfo.gameStart();

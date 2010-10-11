@@ -827,14 +827,14 @@ public class NetVSBattleMode extends NetDummyMode {
 			engine.enableSE = true;
 
 			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
-				if(!isReadyChangePending) {
-					// 準備完了ON
+				if((!isReadyChangePending) && (numPlayers >= 2)) {
+					// Ready ON
 					if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
 						engine.playSE("decide");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\ttrue\n");
 					}
-					// 準備完了OFF
+					// Ready OFF
 					if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
 						engine.playSE("change");
 						isReadyChangePending = true;
@@ -893,7 +893,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					receiver.drawDirectFont(engine, playerID, x + 36, y + 80, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
 			}
 
-			if((playerID == 0) && (playerSeatNumber >= 0) && (!isReadyChangePending)) {
+			if((playerID == 0) && (playerSeatNumber >= 0) && (!isReadyChangePending) && (numPlayers >= 2)) {
 				if(!isReady[playerID]) {
 					receiver.drawMenuFont(engine, playerID, 1, 18, "A: READY", EventReceiver.COLOR_CYAN);
 				} else {
@@ -1400,7 +1400,10 @@ public class NetVSBattleMode extends NetDummyMode {
 		}
 
 		// End practice mode
-		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive) && (engine.ctrl.isPush(Controller.BUTTON_F))) {
+		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) &&
+		   ( engine.timerActive || ((engine.stat == GameEngine.STAT_READY) && (engine.statc[0] >= engine.goStart / 2)) ) &&
+		   (engine.ctrl.isPush(Controller.BUTTON_F)))
+		{
 			engine.timerActive = false;
 			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 

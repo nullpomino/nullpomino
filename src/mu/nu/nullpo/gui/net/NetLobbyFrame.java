@@ -1222,7 +1222,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// *** 参加人count選択
 		int defaultMaxPlayers = propConfig.getProperty("createroom.defaultMaxPlayers", 6);
-		spinnerCreateRoomMaxPlayers = new JSpinner(new SpinnerNumberModel(defaultMaxPlayers, 1, 6, 1));
+		spinnerCreateRoomMaxPlayers = new JSpinner(new SpinnerNumberModel(defaultMaxPlayers, 2, 6, 1));
 		spinnerCreateRoomMaxPlayers.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRoomMaxPlayers.setToolTipText(getUIText("CreateRoom_MaxPlayers_Tip"));
 		subpanelMaxPlayers.add(spinnerCreateRoomMaxPlayers, BorderLayout.EAST);
