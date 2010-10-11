@@ -103,7 +103,10 @@ public class StateConfigKeyboardSDL extends BaseStateSDL {
 	 * @return キーのName
 	 */
 	protected String getKeyName(int key) {
-		return "(" + key + ")";
+		if((key < 0) || (key > NullpoMinoSDL.SDL_KEYNAMES.length)) {
+			return "(" + key + ")";
+		}
+		return NullpoMinoSDL.SDL_KEYNAMES[key];
 	}
 
 	/*

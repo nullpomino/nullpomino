@@ -59,9 +59,6 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	/** 初期設定Mode */
 	protected boolean firstSetupMode;
 
-	/** Number of button currently being configured */
-	private int keynum;
-
 	public StateConfigKeyboardNaviSDL () {
 		maxCursor = 2;
 		minChoiceY = 3;
@@ -96,7 +93,10 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	 * @return キーのName
 	 */
 	protected String getKeyName(int key) {
-		return "(" + key + ")";
+		if((key < 0) || (key > NullpoMinoSDL.SDL_KEYNAMES.length)) {
+			return "(" + key + ")";
+		}
+		return NullpoMinoSDL.SDL_KEYNAMES[key];
 	}
 
 	/*
