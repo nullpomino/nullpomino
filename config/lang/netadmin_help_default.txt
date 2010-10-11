@@ -19,10 +19,12 @@ quit
 	Quit this application
 exit
 	Same as 'quit'
-shutdown
-	Same as 'quit'
 
 ***** List of network commands *****
+shutdown
+	Shutdown the server
+announce
+	Send an announcement message to all players
 myip
 	Display your IP
 myhost

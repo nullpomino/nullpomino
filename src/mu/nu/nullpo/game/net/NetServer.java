@@ -172,6 +172,9 @@ public class NetServer implements ActionListener {
 	/** RNG for map selection */
 	private Random rand = new Random();
 
+	/** true if shutdown is requested by the admin */
+	private boolean shutdownRequested = false;
+
 	/**
 	 * Main (Entry point)
 	 * @param args Command-line options
@@ -520,7 +523,7 @@ public class NetServer implements ActionListener {
 			serverChannel.socket().bind(new InetSocketAddress(port));
 			serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-			while(selector.select() > 0) {
+			while((selector.select() > 0) && (!shutdownRequested)) {
 				Iterator<SelectionKey> keyIt = selector.selectedKeys().iterator();
 
 				while(keyIt.hasNext()) {
@@ -635,6 +638,9 @@ public class NetServer implements ActionListener {
 					notCompletePacketMap.put(channel, packetBuffer);
 				}
 			}
+		} catch (NetServerDisconnectRequestedException e) {
+			log.debug("Diconnect requested by the client");
+			logout(channel);
 		} catch (IOException e) {
 			log.debug("Socket Disconnected on doRead (IOException)", e);
 			logout(channel);
@@ -965,7 +971,7 @@ public class NetServer implements ActionListener {
 		}
 		// Disconnect request.
 		if(message[0].equals("disconnect")) {
-			throw new IOException("Disconnect requested by the client (this is normal)");
+			throw new NetServerDisconnectRequestedException("Disconnect requested by the client (this is normal)");
 		}
 		// Ping
 		if(message[0].equals("ping")) {
@@ -1797,7 +1803,7 @@ public class NetServer implements ActionListener {
 				String[] strAdminCommandArray = strAdminCommandTemp.split("\t");
 				processAdminCommand(client, strAdminCommandArray);
 			} else {
-				String strRemoteAddr = client.socket().getInetAddress().getHostName();
+				String strRemoteAddr = client.socket().getInetAddress().toString();
 				log.warn(strRemoteAddr + " has tried to access admin command without login");
 				logout(client);
 				return;
@@ -1909,6 +1915,16 @@ public class NetServer implements ActionListener {
 
 			if(playerDataChange) writePlayerDataToFile();
 			if(rankingDataChange) writeMPRankingToFile();
+		}
+		// Shutdown
+		if(message[0].equals("shutdown")) {
+			log.warn("Shutdown requested by the admin (" + client.socket().getInetAddress().toString() + ")");
+			shutdownRequested = true;
+		}
+		// Announce
+		if(message[0].equals("announce")) {
+			// announce\t[Message]
+			broadcast("announce\t" + message[1] + "\n");
 		}
 	}
 

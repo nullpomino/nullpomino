@@ -3678,6 +3678,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				tableMPRanking[style].getSelectionModel().setSelectionInterval(myRank, myRank);
 			}
 		}
+		// Announcement from the admin
+		if(message[0].equals("announce")) {
+			String strTime = getCurrentTimeAsString();
+			String strMessage = "[" + strTime + "]<ADMIN>:" + NetUtil.urlDecode(message[1]);
+			addSystemChatLogLater(getCurrentChatLogTextPane(), strMessage, new Color(255,32,0));
+		}
 
 		// Listener呼び出し
 		if(listeners != null) {

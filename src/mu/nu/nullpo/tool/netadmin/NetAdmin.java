@@ -115,6 +115,9 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	/** true if disconnection is intended (If false, it will display error message) */
 	private static boolean isWantedDisconnect;
 
+	/** true if server shutdown is requested */
+	private static boolean isShutdownRequested;
+
 	/** Hostname of the server */
 	private static String strServerHost;
 
@@ -673,14 +676,33 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// logout/logoff/disconnect
 		else if(commands[0].equalsIgnoreCase("logout")||commands[0].equalsIgnoreCase("logoff")||commands[0].equalsIgnoreCase("disconnect")) {
-			addConsoleLog("Logout");
+			addConsoleLog(getUIText("Console_Logout"));
 			labelLoginMessage.setForeground(Color.black);
 			labelLoginMessage.setText(getUIText("Login_Message_LoggingOut"));
 			logout();
 		}
 		// quit/exit/shutdown
-		else if(commands[0].equalsIgnoreCase("quit")||commands[0].equalsIgnoreCase("exit")||commands[0].equalsIgnoreCase("shutdown")) {
+		else if(commands[0].equalsIgnoreCase("quit")||commands[0].equalsIgnoreCase("exit")) {
 			shutdown();
+		}
+		// shutdown
+		else if(commands[0].equalsIgnoreCase("shutdown")) {
+			addConsoleLog(getUIText("Console_Shutdown"));
+			isWantedDisconnect = true;
+			isShutdownRequested = true;
+			sendCommand("shutdown");
+		}
+		// announce
+		else if(commands[0].equalsIgnoreCase("announce")) {
+			String strTemp = "";
+			for(int i = 0; i < commands.length - 1; i++) {
+				if(i >= 1) strTemp += " " + commands[i + 1];
+				else strTemp += commands[i + 1];
+			}
+			if(strTemp.length() > 0) {
+				sendCommand("announce\t" + NetUtil.urlEncode(strTemp));
+				addConsoleLog(getUIText("Console_Announce") + strTemp);
+			}
 		}
 		// myip
 		else if(commands[0].equalsIgnoreCase("myip")) {
@@ -914,6 +936,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 				// Begin connect
 				isWantedDisconnect = false;
+				isShutdownRequested = false;
 				client = new NetBaseClient(strServerHost, serverPort);
 				client.setDaemon(true);
 				client.addListener(this);
@@ -1180,8 +1203,12 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	 * Disconnected
 	 */
 	public void netOnDisconnect(NetBaseClient client, Throwable ex) {
-		if(isWantedDisconnect) {
-			log.info("Disconnected");
+		if(isShutdownRequested) {
+			log.info("Server shutdown completed");
+			labelLoginMessage.setForeground(Color.black);
+			labelLoginMessage.setText(getUIText("Login_Message_Shutdown"));
+		} else if(isWantedDisconnect) {
+			log.info("Disconnected from the server");
 		} else {
 			labelLoginMessage.setForeground(Color.red);
 			if(ex == null) {
