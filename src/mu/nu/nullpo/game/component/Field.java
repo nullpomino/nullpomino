@@ -520,7 +520,7 @@ public class Field implements Serializable {
 	 */
 	public boolean getBlockEmpty(int x, int y) {
 		try {
-			return getBlock(x,y).isEmpty();
+			return getBlockEmptyE(x,y);
 		} catch(ArrayIndexOutOfBoundsException e) {
 			return true;
 		}

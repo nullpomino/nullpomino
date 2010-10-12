@@ -575,6 +575,9 @@ public class GameEngine {
 
 	/** DAS delay (-1=Auto 0orAbove=Fixed) */
 	public int owDasDelay;
+	
+	/** Reverse roles of up/down keys in-game */
+	public boolean owReverseUpDown;
 
 	/** Clear mode selection */
 	public int clearMode;
@@ -632,6 +635,7 @@ public class GameEngine {
 		owMinDAS = -1;
 		owMaxDAS = -1;
 		owDasDelay = -1;
+		owReverseUpDown = false;
 	}
 
 	/**
@@ -686,6 +690,7 @@ public class GameEngine {
 			owMinDAS = owner.replayProp.getProperty(playerID + ".tuning.owMinDAS", -1);
 			owMaxDAS = owner.replayProp.getProperty(playerID + ".tuning.owMaxDAS", -1);
 			owDasDelay = owner.replayProp.getProperty(playerID + ".tuning.owDasDelay", -1);
+			owReverseUpDown = owner.replayProp.getProperty(playerID + ".tuning.owReverseUpDown", false);
 
 			// Fixing old replays to accomodate for new DAS notation
 			if (versionMajor < 7.3) {
@@ -996,6 +1001,20 @@ public class GameEngine {
 		if((speed.das > ruleopt.maxDAS) && (ruleopt.maxDAS >= 0)) return ruleopt.maxDAS;
 		return speed.das;
 	}
+	
+	/**
+	 * @return Controller.BUTTON_UP if controls are normal, Controller.BUTTON_DOWN if up/down are reversed
+	 */
+	public int getUp() {
+		return owReverseUpDown ? Controller.BUTTON_DOWN : Controller.BUTTON_UP;
+	}
+	
+	/**
+	 * @return Controller.BUTTON_DOWN if controls are normal, Controller.BUTTON_UP if up/down are reversed
+	 */
+	public int getDown(){
+		return owReverseUpDown ? Controller.BUTTON_UP : Controller.BUTTON_DOWN;
+	}
 
 	/**
 	 * Current 横移動速度を取得
@@ -1055,9 +1074,9 @@ public class GameEngine {
 	 */
 	public void checkDropContinuousUse() {
 		if(gameActive) {
-			if((!ctrl.isPress(Controller.BUTTON_DOWN)) || (!ruleopt.softdropLimit))
+			if((!ctrl.isPress(getDown())) || (!ruleopt.softdropLimit))
 				softdropContinuousUse = false;
-			if((!ctrl.isPress(Controller.BUTTON_UP)) || (!ruleopt.harddropLimit))
+			if((!ctrl.isPress(getUp())) || (!ruleopt.harddropLimit))
 				harddropContinuousUse = false;
 			if((!ctrl.isPress(Controller.BUTTON_D)) || (!ruleopt.holdInitialLimit))
 				initialHoldContinuousUse = false;
@@ -1548,6 +1567,7 @@ public class GameEngine {
 		owner.replayProp.setProperty(playerID + ".tuning.owMinDAS", owMinDAS);
 		owner.replayProp.setProperty(playerID + ".tuning.owMaxDAS", owMaxDAS);
 		owner.replayProp.setProperty(playerID + ".tuning.owDasDelay", owDasDelay);
+		owner.replayProp.setProperty(playerID + ".tuning.owReverseUpDown", owReverseUpDown);
 
 		if(owner.mode != null) owner.mode.saveReplay(this, playerID, owner.replayProp);
 	}
@@ -2036,7 +2056,7 @@ public class GameEngine {
 		int softdropFallNow = 0; // この frame のSoft dropで落下した段count
 
 		boolean updown = false; // Up下同時押し flag
-		if(ctrl.isPress(Controller.BUTTON_UP) && ctrl.isPress(Controller.BUTTON_DOWN)) updown = true;
+		if(ctrl.isPress(getUp()) && ctrl.isPress(getDown())) updown = true;
 
 		if(!dasInstant) {
 
@@ -2248,7 +2268,7 @@ public class GameEngine {
 			}
 
 			// Hard drop
-			if( (ctrl.isPress(Controller.BUTTON_UP) == true) &&
+			if( (ctrl.isPress(getUp()) == true) &&
 				(harddropContinuousUse == false) &&
 				(ruleopt.harddropEnable == true) &&
 				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
@@ -2275,7 +2295,7 @@ public class GameEngine {
 			}
 
 			// Old Soft Drop codes
-			if( (ctrl.isPress(Controller.BUTTON_DOWN) == true) &&
+			if( (ctrl.isPress(getDown()) == true) &&
 				(softdropContinuousUse == false) &&
 				(ruleopt.softdropEnable == true) &&
 				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
@@ -2291,7 +2311,7 @@ public class GameEngine {
 
 			// New Soft Drop codes. Currently disabled because New Soft Drop doesn't work in several modes.
 			/*
-			if(ctrl.isPress(Controller.BUTTON_DOWN) && !softdropContinuousUse &&
+			if(ctrl.isPress(getDown()) && !softdropContinuousUse &&
 				ruleopt.softdropEnable && (ruleopt.moveDiagonal || !sidemoveflag) &&
 				(ruleopt.moveUpAndDown || !updown) && (ruleopt.softdropMultiplyNativeSpeed ||
 				(speed.gravity < (int)(speed.denominator * ruleopt.softdropSpeed)))) {
@@ -2377,7 +2397,7 @@ public class GameEngine {
 			boolean instantlock = false;
 
 			// Hard drop固定
-			if( (ctrl.isPress(Controller.BUTTON_UP) == true) &&
+			if( (ctrl.isPress(getUp()) == true) &&
 				(harddropContinuousUse == false) &&
 				(ruleopt.harddropEnable == true) &&
 				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
@@ -2390,7 +2410,7 @@ public class GameEngine {
 			}
 
 			// Soft drop固定
-			if( (ctrl.isPress(Controller.BUTTON_DOWN) == true) &&
+			if( (ctrl.isPress(getDown()) == true) &&
 				(softdropContinuousUse == false) &&
 				(ruleopt.softdropEnable == true) &&
 				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
@@ -2403,7 +2423,7 @@ public class GameEngine {
 			}
 
 			// 接地状態でソフドドロップ固定
-			if( (ctrl.isPush(Controller.BUTTON_DOWN) == true) &&
+			if( (ctrl.isPush(getDown()) == true) &&
 				(ruleopt.softdropEnable == true) &&
 				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
 				((ruleopt.moveUpAndDown == true) || (updown == false)) &&
@@ -2761,8 +2781,8 @@ public class GameEngine {
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
 
-		boolean moveCancel = ruleopt.lineCancelMove && (ctrl.isPush(Controller.BUTTON_UP) ||
-			ctrl.isPush(Controller.BUTTON_DOWN) || delayCancelMoveLeft || delayCancelMoveRight);
+		boolean moveCancel = ruleopt.lineCancelMove && (ctrl.isPush(getUp()) ||
+			ctrl.isPush(getDown()) || delayCancelMoveLeft || delayCancelMoveRight);
 		boolean rotateCancel = ruleopt.lineCancelRotate && (ctrl.isPush(Controller.BUTTON_A) ||
 			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
 			ctrl.isPush(Controller.BUTTON_E));
@@ -2868,8 +2888,8 @@ public class GameEngine {
 		delayCancelMoveLeft = ctrl.isPush(Controller.BUTTON_LEFT);
 		delayCancelMoveRight = ctrl.isPush(Controller.BUTTON_RIGHT);
 
-		boolean moveCancel = ruleopt.areCancelMove && (ctrl.isPush(Controller.BUTTON_UP) ||
-			ctrl.isPush(Controller.BUTTON_DOWN) || delayCancelMoveLeft || delayCancelMoveRight);
+		boolean moveCancel = ruleopt.areCancelMove && (ctrl.isPush(getUp()) ||
+			ctrl.isPush(getDown()) || delayCancelMoveLeft || delayCancelMoveRight);
 		boolean rotateCancel = ruleopt.areCancelRotate && (ctrl.isPush(Controller.BUTTON_A) ||
 			ctrl.isPush(Controller.BUTTON_B) || ctrl.isPush(Controller.BUTTON_C) ||
 			ctrl.isPush(Controller.BUTTON_E));
@@ -3157,12 +3177,12 @@ public class GameEngine {
 			fldeditX++;
 			if(fldeditX > fieldWidth - 1) fldeditX = 0;
 		}
-		if(ctrl.isMenuRepeatKey(Controller.BUTTON_UP, false)) {
+		if(ctrl.isMenuRepeatKey(getUp(), false)) {
 			playSE("move");
 			fldeditY--;
 			if(fldeditY < 0) fldeditY = fieldHeight - 1;
 		}
-		if(ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN, false)) {
+		if(ctrl.isMenuRepeatKey(getDown(), false)) {
 			playSE("move");
 			fldeditY++;
 			if(fldeditY > fieldHeight - 1) fldeditY = 0;

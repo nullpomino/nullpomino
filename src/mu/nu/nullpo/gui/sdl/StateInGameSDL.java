@@ -121,6 +121,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			gameManager.engine[i].owMinDAS = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
 			gameManager.engine[i].owMaxDAS = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
 			gameManager.engine[i].owDasDelay = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
+			gameManager.engine[0].owReverseUpDown = NullpoMinoSDL.propGlobal.getProperty(0 + ".tuning.owReverseUpDown", false);
 
 			// ルール
 			RuleOptions ruleopt = null;

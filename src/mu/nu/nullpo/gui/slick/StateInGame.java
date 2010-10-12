@@ -141,7 +141,8 @@ public class StateInGame extends BasicGameState {
 			gameManager.engine[i].owMinDAS = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
 			gameManager.engine[i].owMaxDAS = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
 			gameManager.engine[i].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
-
+			gameManager.engine[i].owReverseUpDown = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owReverseUpDown", false);
+			
 			// ルール
 			RuleOptions ruleopt = null;
 			String rulename = strRulePath;

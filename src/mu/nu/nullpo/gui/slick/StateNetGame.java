@@ -267,6 +267,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			gameManager.engine[0].owMinDAS = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
 			gameManager.engine[0].owMaxDAS = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);
 			gameManager.engine[0].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
+			gameManager.engine[0].owReverseUpDown = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owReverseUpDown", false);
 
 			// Rule
 			RuleOptions ruleopt = null;

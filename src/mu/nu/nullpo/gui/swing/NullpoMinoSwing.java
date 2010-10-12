@@ -83,6 +83,7 @@ import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.gui.net.NetLobbyListener;
 import mu.nu.nullpo.gui.net.UpdateChecker;
 import mu.nu.nullpo.gui.net.UpdateCheckerListener;
+import mu.nu.nullpo.gui.sdl.NullpoMinoSDL;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 import mu.nu.nullpo.util.ModeManager;
@@ -961,6 +962,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameManager.engine[i].owMinDAS = propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
 			gameManager.engine[i].owMaxDAS = propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
 			gameManager.engine[i].owDasDelay = propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
+			gameManager.engine[i].owReverseUpDown = propGlobal.getProperty(i + ".tuning.owReverseUpDown", false);
 
 			// ルール
 			RuleOptions ruleopt = null;

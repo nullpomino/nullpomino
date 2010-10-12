@@ -42,6 +42,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -83,6 +84,9 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 	/** 横移動速度 */
 	protected JTextField txtfldDasDelay;
+	
+	/** Checkbox to enable swapping the roles of up/down buttons in-game */
+	protected JCheckBox chkboxReverseUpDown;
 
 	/**
 	 * Constructor
@@ -184,6 +188,17 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 		txtfldDasDelay = new JTextField(5);
 		pDasDelay.add(txtfldDasDelay);
+		
+		// ---------- Reverse Up/Down ----------
+		JPanel pReverseUpDown = new JPanel();
+		pReverseUpDown.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(pReverseUpDown);
+
+		JLabel lReverseUpDown = new JLabel(NullpoMinoSwing.getUIText("GameTuning_ReverseUpDown_Label"));
+		pReverseUpDown.add(lReverseUpDown);
+
+		chkboxReverseUpDown = new JCheckBox();
+		pReverseUpDown.add(chkboxReverseUpDown);
 
 		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
@@ -238,6 +253,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		txtfldMinDAS.setText(NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owMinDAS", "-1"));
 		txtfldMaxDAS.setText(NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owMaxDAS", "-1"));
 		txtfldDasDelay.setText(NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owDasDelay", "-1"));
+		chkboxReverseUpDown.setSelected(NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owReverseUpDown", false));
 	}
 
 	/**
@@ -259,6 +275,8 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owMaxDAS", owMaxDAS);
 		int owDasDelay = NullpoMinoSwing.getIntTextField(-1, txtfldDasDelay);
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owDasDelay", owDasDelay);
+		boolean owReverseUpDown = chkboxReverseUpDown.isSelected();
+		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owReverseUpDown", owReverseUpDown);
 
 		NullpoMinoSwing.saveConfig();
 	}

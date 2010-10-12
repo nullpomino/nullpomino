@@ -29,6 +29,7 @@
 package mu.nu.nullpo.gui.slick;
 
 import mu.nu.nullpo.util.CustomProperties;
+import mu.nu.nullpo.util.GeneralUtil;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -60,6 +61,9 @@ public class StateConfigGameTuning extends BasicGameState {
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */
 	protected int owDasDelay;
+	
+	/** Reverse the roles of up/down keys in-game */
+	protected boolean owReverseUpDown;
 
 	/*
 	 * Fetch this state's ID
@@ -85,6 +89,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		owMinDAS = prop.getProperty(player + ".tuning.owMinDAS", -1);
 		owMaxDAS = prop.getProperty(player + ".tuning.owMaxDAS", -1);
 		owDasDelay = prop.getProperty(player + ".tuning.owDasDelay", -1);
+		owReverseUpDown = prop.getProperty(player + ".tuning.owReverseUpDown", false);
 	}
 
 	/**
@@ -97,6 +102,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		prop.setProperty(player + ".tuning.owMinDAS", owMinDAS);
 		prop.setProperty(player + ".tuning.owMaxDAS", owMaxDAS);
 		prop.setProperty(player + ".tuning.owDasDelay", owDasDelay);
+		prop.setProperty(player + ".tuning.owReverseUpDown", owReverseUpDown);
 	}
 
 	/*
@@ -131,6 +137,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		NormalFont.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
 		NormalFont.printFontGrid(2, 6, "MAX DAS:" + ((owMaxDAS == -1) ? "AUTO" : String.valueOf(owMaxDAS)), (cursor == 3));
 		NormalFont.printFontGrid(2, 7, "DAS DELAY:" + ((owDasDelay == -1) ? "AUTO" : String.valueOf(owDasDelay)), (cursor == 4));
+		NormalFont.printFontGrid(2, 8, "REVERSE UP/DOWN:" + GeneralUtil.getOorX(owReverseUpDown), (cursor == 5));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -159,12 +166,12 @@ public class StateConfigGameTuning extends BasicGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 4;
+			if(cursor < 0) cursor = 5;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 4) cursor = 0;
+			if(cursor > 5) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -201,6 +208,9 @@ public class StateConfigGameTuning extends BasicGameState {
 				owDasDelay += change;
 				if(owDasDelay < -1) owDasDelay = 99;
 				if(owDasDelay > 99) owDasDelay = -1;
+				break;
+			case 5:
+				owReverseUpDown ^= true;
 				break;
 			}
 		}
