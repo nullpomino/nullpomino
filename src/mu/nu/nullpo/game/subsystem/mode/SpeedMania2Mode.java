@@ -42,7 +42,13 @@ import mu.nu.nullpo.util.GeneralUtil;
  */
 public class SpeedMania2Mode extends DummyMode {
 	/** Current version */
-	private static final int CURRENT_VERSION = 1;
+	private static final int CURRENT_VERSION = 2;
+
+	/** Default torikan time for non-classic rules */
+	private static final int DEFAULT_TORIKAN = 10980;
+
+	/** Default torikan time for classic rules */
+	private static final int DEFAULT_TORIKAN_CLASSIC = 8880;
 
 	/** ARE table */
 	private static final int[] tableARE       = { 8,  8,  8,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2};
@@ -254,7 +260,7 @@ public class SpeedMania2Mode extends DummyMode {
 		startlevel = 0;
 		lvstopse = false;
 		big = false;
-		torikan = 10980;
+		torikan = DEFAULT_TORIKAN;
 		showsectiontime = false;
 		gradedisp = false;
 
@@ -275,15 +281,15 @@ public class SpeedMania2Mode extends DummyMode {
 		engine.staffrollNoDeath = false;
 
 		if(owner.replayMode == false) {
-			loadSetting(owner.modeConfig);
-			loadRanking(owner.modeConfig, engine.ruleopt.strRuleName);
 			version = CURRENT_VERSION;
+			loadSetting(owner.modeConfig, engine.ruleopt.strRuleName);
+			loadRanking(owner.modeConfig, engine.ruleopt.strRuleName);
 		} else {
+			version = owner.replayProp.getProperty("speedmania2.version", 0);
 			for(int i = 0; i < SECTION_MAX; i++) {
 				bestSectionTime[i] = DEFAULT_SECTION_TIME;
 			}
-			loadSetting(owner.replayProp);
-			version = owner.replayProp.getProperty("speedmania2.version", 0);
+			loadSetting(owner.replayProp, engine.ruleopt.strRuleName);
 		}
 
 		owner.backgroundStatus.bg = startlevel;
@@ -292,26 +298,38 @@ public class SpeedMania2Mode extends DummyMode {
 	/**
 	 * Load settings from property file
 	 * @param prop Property file
+	 * @param strRuleName Rule name
 	 */
-	private void loadSetting(CustomProperties prop) {
+	private void loadSetting(CustomProperties prop, String strRuleName) {
 		startlevel = prop.getProperty("speedmania2.startlevel", 0);
 		lvstopse = prop.getProperty("speedmania2.lvstopse", true);
 		showsectiontime = prop.getProperty("speedmania2.showsectiontime", false);
 		big = prop.getProperty("speedmania2.big", false);
-		torikan = prop.getProperty("speedmania2.torikan", 10980);
+		if(version >= 2) {
+			int defaultTorikan = DEFAULT_TORIKAN;
+			if(strRuleName.contains("CLASSIC")) defaultTorikan = DEFAULT_TORIKAN_CLASSIC;
+			torikan = prop.getProperty("speedmania2.torikan." + strRuleName, defaultTorikan);
+		} else {
+			torikan = prop.getProperty("speedmania2.torikan", DEFAULT_TORIKAN);
+		}
 		gradedisp = prop.getProperty("speedmania2.gradedisp", false);
 	}
 
 	/**
 	 * Save settings to property file
 	 * @param prop Property file
+	 * @param strRuleName Rule name
 	 */
-	private void saveSetting(CustomProperties prop) {
+	private void saveSetting(CustomProperties prop, String strRuleName) {
 		prop.setProperty("speedmania2.startlevel", startlevel);
 		prop.setProperty("speedmania2.lvstopse", lvstopse);
 		prop.setProperty("speedmania2.showsectiontime", showsectiontime);
 		prop.setProperty("speedmania2.big", big);
-		prop.setProperty("speedmania2.torikan", torikan);
+		if(version >= 2) {
+			prop.setProperty("speedmania2.torikan." + strRuleName, torikan);
+		} else {
+			prop.setProperty("speedmania2.torikan", torikan);
+		}
 		prop.setProperty("speedmania2.gradedisp", gradedisp);
 	}
 
@@ -441,7 +459,7 @@ public class SpeedMania2Mode extends DummyMode {
 			// 決定
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
-				saveSetting(owner.modeConfig);
+				saveSetting(owner.modeConfig, engine.ruleopt.strRuleName);
 				receiver.saveModeConfig(owner.modeConfig);
 
 				sectionscomp = 0;
@@ -1048,7 +1066,7 @@ public class SpeedMania2Mode extends DummyMode {
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
-		saveSetting(owner.replayProp);
+		saveSetting(owner.replayProp, engine.ruleopt.strRuleName);
 		owner.replayProp.setProperty("speedmania2.version", version);
 
 		// Update rankings
