@@ -153,7 +153,11 @@ public class StateSelectRuleFromListSDL extends DummyMenuScrollStateSDL {
 	@Override
 	protected boolean onDecide() throws SDLException {
 		ResourceHolderSDL.soundManager.play("decide");
-		NullpoMinoSDL.propGlobal.setProperty("lastrule." + strCurrentMode, list[cursor]);
+		if(cursor >= 1) {
+			NullpoMinoSDL.propGlobal.setProperty("lastrule." + strCurrentMode, list[cursor]);
+		} else {
+			NullpoMinoSDL.propGlobal.setProperty("lastrule." + strCurrentMode, "");
+		}
 		NullpoMinoSDL.saveConfig();
 
 		String strRulePath = null;

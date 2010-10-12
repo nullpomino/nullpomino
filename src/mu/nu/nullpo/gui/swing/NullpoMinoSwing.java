@@ -36,14 +36,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -55,7 +61,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -63,9 +68,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.net.NetObserverClient;
@@ -85,6 +87,9 @@ import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 import mu.nu.nullpo.util.ModeManager;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * NullpoMino SwingVersion
@@ -162,6 +167,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	/** Mode 選択リストボックス */
 	public static JList listboxMode;
 
+	/** Rule select listmodel */
+	public static DefaultListModel listmodelRule;
+
+	/** Rule select listbox */
+	public static JList listboxRule;
+
 	/** リプレイファイル選択ダイアログ */
 	public static JFileChooser replayFileChooser;
 
@@ -173,6 +184,9 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 	/** Mode セレクト画面のラベル(新Versionがある場合は切り替わる) */
 	public static JLabel lModeSelect;
+
+	/** HashMap of rules (ModeName->RuleEntry) */
+	protected HashMap<String, RuleEntry> mapRuleEntries;
 
 	/**
 	 * メイン関count
@@ -418,11 +432,24 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	public NullpoMinoSwing() throws HeadlessException {
 		super();
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				shutdown();
+			}
+		});
+
 		setTitle(getUIText("Title_Main") + " version" + GameManager.getVersionString());
+		loadRecommendedRuleList();
 
 		initUI();
 		pack();
+
+		if(propConfig.getProperty("mainwindow.width") != null)
+			this.setSize(propConfig.getProperty("mainwindow.width", 500), propConfig.getProperty("mainwindow.height", 470));
+		if(propConfig.getProperty("mainwindow.x") != null)
+			this.setLocation(propConfig.getProperty("mainwindow.x", 0), propConfig.getProperty("mainwindow.y", 0));
 
 		setVisible(true);
 
@@ -459,92 +486,68 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		mainLayout = new CardLayout();
 		this.setLayout(mainLayout);
 
-		// トップ画面
+		// Top screen
 		JPanel panelTop = new JPanel();
 		initTopScreenUI(panelTop);
 		this.add(panelTop, "top");
 	}
 
 	/**
-	 * トップ画面のGUIをInitialization
+	 * Init top screen
 	 */
 	protected void initTopScreenUI(JComponent p) {
-		p.setLayout(new BorderLayout());
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-		// Modeセレクト
+		// Label
+		lModeSelect = new JLabel(getUIText("Top_ModeSelect"));
+		lModeSelect.setAlignmentX(0f);
+		p.add(lModeSelect);
+
+		// Mode & rule select panel
 		JPanel subpanelModeSelect = new JPanel(new BorderLayout());
 		subpanelModeSelect.setBorder(new EtchedBorder());
-		p.add(subpanelModeSelect, BorderLayout.CENTER);
+		subpanelModeSelect.setAlignmentX(0f);
+		p.add(subpanelModeSelect);
 
-		// ラベル
-		lModeSelect = new JLabel(getUIText("Top_ModeSelect"));
-		subpanelModeSelect.add(lModeSelect, BorderLayout.PAGE_START);
-
+		// * Mode select listbox
 		listboxMode = new JList(modeList);
-		listboxMode.setSelectedIndex(0);
-		listboxMode.setSelectedValue(propGlobal.getProperty("name.mode", ""), true);
 		listboxMode.addMouseListener(new ListboxModeMouseAdapter());
 		listboxMode.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				String strMode = (String)listboxMode.getSelectedValue();
 				lModeSelect.setText(getModeDesc(strMode));
+				prepareRuleList(strMode);
 			}
 		});
 		JScrollPane scpaneListboxMode = new JScrollPane(listboxMode);
-		scpaneListboxMode.setPreferredSize(new Dimension(300, 375));
-		subpanelModeSelect.add(scpaneListboxMode, BorderLayout.CENTER);
+		scpaneListboxMode.setPreferredSize(new Dimension(280, 375));
+		subpanelModeSelect.add(scpaneListboxMode, BorderLayout.WEST);
 
-		// 開始 button
+		// * Rule select listbox
+		listmodelRule = new DefaultListModel();
+		listboxRule = new JList(listmodelRule);
+		listboxRule.addMouseListener(new ListboxModeMouseAdapter());
+		JScrollPane scpaneListBoxRule = new JScrollPane(listboxRule);
+		scpaneListBoxRule.setPreferredSize(new Dimension(150, 375));
+		subpanelModeSelect.add(scpaneListBoxRule, BorderLayout.CENTER);
+
+		// * Set default selected index
+		listboxMode.setSelectedValue(propGlobal.getProperty("name.mode", ""), true);
+		if(listboxMode.getSelectedIndex() == -1) listboxMode.setSelectedIndex(0);
+		prepareRuleList((String)listboxMode.getSelectedValue());
+
+		// Start button
 		JButton buttonStartOffline = new JButton(getUIText("Top_StartOffline"));
 		buttonStartOffline.setMnemonic('S');
 		buttonStartOffline.addActionListener(this);
 		buttonStartOffline.setActionCommand("Top_StartOffline");
-		subpanelModeSelect.add(buttonStartOffline, BorderLayout.PAGE_END);
+		buttonStartOffline.setAlignmentX(0f);
+		buttonStartOffline.setMaximumSize(new Dimension(Short.MAX_VALUE, buttonStartOffline.getMaximumSize().height));
+		p.add(buttonStartOffline);
 		this.getRootPane().setDefaultButton(buttonStartOffline);
 
 		// Menu
 		initMenu();
-	}
-
-	/**
-	 * ルーム画面のGUIをInitialization
-	 * @param p
-	 */
-	protected void initRoomScreenUI(JComponent p) {
-		p.setLayout(new BorderLayout());
-
-		// ルームチャット
-		JPanel panelChat = new JPanel();
-		panelChat.setLayout(new BorderLayout());
-		p.add(panelChat, BorderLayout.CENTER);
-
-		JList listboxUsers = new JList();
-		listboxUsers.setPreferredSize(new Dimension(120, 200));
-		listboxUsers.setBorder(new EtchedBorder());
-		panelChat.add(listboxUsers, BorderLayout.EAST);
-
-		JTextArea txtareaChat = new JTextArea();
-		txtareaChat.setBorder(new EtchedBorder());
-		panelChat.add(txtareaChat, BorderLayout.CENTER);
-
-		JTextField txtfldMessage = new JTextField();
-		panelChat.add(txtfldMessage, BorderLayout.PAGE_END);
-
-		// 画面下の button
-		JPanel panelButtons = new JPanel();
-		p.add(panelButtons, BorderLayout.PAGE_END);
-
-		JButton buttonReady = new JButton(getUIText("Room_Ready"));
-		buttonReady.setMnemonic('R');
-		buttonReady.addActionListener(this);
-		buttonReady.setActionCommand("Room_Ready");
-		panelButtons.add(buttonReady);
-
-		JButton buttonLeave = new JButton(getUIText("Room_Leave"));
-		buttonLeave.setMnemonic('L');
-		buttonLeave.addActionListener(this);
-		buttonLeave.setActionCommand("Room_Leave");
-		panelButtons.add(buttonLeave);
 	}
 
 	/**
@@ -657,13 +660,104 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
+	 * Load list file
+	 */
+	protected void loadRecommendedRuleList() {
+		mapRuleEntries = new HashMap<String, RuleEntry>();
+
+		try {
+			BufferedReader in = new BufferedReader(new FileReader("config/list/recommended_rules.lst"));
+			String strMode = "";
+
+			String str;
+			while((str = in.readLine()) != null) {
+				str = str.trim();	// Trim the space
+
+				if(str.startsWith("#")) {
+					// Commment-line. Ignore it.
+				} else if(str.startsWith(":")) {
+					// Mode change
+					strMode = str.substring(1);
+				} else {
+					// File Path
+					File file = new File(str);
+					if(file.exists() && file.isFile()) {
+						try {
+							FileInputStream ruleIn = new FileInputStream(file);
+							CustomProperties propRule = new CustomProperties();
+							propRule.load(ruleIn);
+							ruleIn.close();
+
+							String strRuleName = propRule.getProperty("0.ruleopt.strRuleName", "");
+							if(strRuleName.length() > 0) {
+								RuleEntry entry = mapRuleEntries.get(strMode);
+								if(entry == null) {
+									entry = new RuleEntry();
+									mapRuleEntries.put(strMode, entry);
+								}
+								entry.listName.add(strRuleName);
+								entry.listPath.add(str);
+							}
+						} catch (IOException e2) {
+							log.error("File " + str + " doesn't exist", e2);
+						}
+					}
+				}
+			}
+
+			in.close();
+		} catch (IOException e) {
+			log.error("Failed to load recommended rules list", e);
+		}
+	}
+
+	/**
+	 * Prepare rule list
+	 */
+	protected void prepareRuleList(String strCurrentMode) {
+		listmodelRule.clear();
+		listmodelRule.addElement(getUIText("Top_CurrentRule"));
+
+		if(strCurrentMode != null) {
+			RuleEntry entry = mapRuleEntries.get(strCurrentMode);
+
+			if(entry != null) {
+				for(int i = 0; i < entry.listName.size(); i++) {
+					listmodelRule.addElement(entry.listName.get(i));
+				}
+			}
+		}
+
+		listboxRule.setSelectedIndex(0);
+		String strLastRule = propGlobal.getProperty("lastrule." + strCurrentMode);
+		if((strLastRule != null) && (strLastRule.length() > 0)) {
+			listboxRule.setSelectedValue(strLastRule, true);
+		}
+	}
+
+	/**
 	 * オフLinesStart game buttonが押されたとき
 	 */
 	protected void onStartOfflineClicked() {
 		String strMode = (String)listboxMode.getSelectedValue();
 		propGlobal.setProperty("name.mode", strMode);
+
+		String strRulePath = null;
+		if(listboxRule.getSelectedIndex() >= 1) {
+			int index = listboxRule.getSelectedIndex();
+			String strRuleName = (String)listboxRule.getSelectedValue();
+			RuleEntry entry = mapRuleEntries.get(strMode);
+			if(entry != null) {
+				strRulePath = entry.listPath.get(index - 1);
+				propGlobal.setProperty("lastrule." + strMode, strRuleName);
+			}
+		} else {
+			propGlobal.setProperty("lastrule." + strMode, "");
+		}
+
 		saveConfig();
-		startNewGame();
+
+		startNewGame(strRulePath);
 		if(gameFrame == null) {
 			gameFrame = new GameFrame(this);
 		}
@@ -675,6 +769,19 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		hideAllSubWindows();
 		this.setVisible(false);
 		gameFrame.displayWindow();
+	}
+
+	/**
+	 * Shutdown this application
+	 */
+	public void shutdown() {
+		log.debug("Main shutdown() called");
+		propConfig.setProperty("mainwindow.width", getSize().width);
+		propConfig.setProperty("mainwindow.height", getSize().height);
+		propConfig.setProperty("mainwindow.x", getLocation().x);
+		propConfig.setProperty("mainwindow.y", getLocation().y);
+		saveConfig();
+		System.exit(0);
 	}
 
 	/*
@@ -804,7 +911,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		}
 		// 終了
 		else if(e.getActionCommand() == "Menu_Exit") {
-			System.exit(0);
+			shutdown();
 		}
 	}
 
@@ -821,9 +928,17 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	}
 
 	/**
-	 * 新しいゲームの開始処理
+	 * Start a new game (Rule will be user-selected one))
 	 */
 	public void startNewGame() {
+		startNewGame(null);
+	}
+
+	/**
+	 * Start a new game
+	 * @param strRulePath Rule file path (null if you want to use user-selected one)
+	 */
+	public void startNewGame(String strRulePath) {
 		rendererSwing = new RendererSwing();
 		gameManager = new GameManager(rendererSwing);
 
@@ -849,9 +964,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 			// ルール
 			RuleOptions ruleopt = null;
-			String rulename = propGlobal.getProperty(i + ".rule", "");
-			if(gameManager.mode.getGameStyle() > 0) {
-				rulename = propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			String rulename = strRulePath;
+			if(rulename == null) {
+				rulename = propGlobal.getProperty(i + ".rule", "");
+				if(gameManager.mode.getGameStyle() > 0) {
+					rulename = propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+				}
 			}
 			if((rulename != null) && (rulename.length() > 0)) {
 				log.debug("Load rule options from " + rulename);
@@ -1189,5 +1307,13 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				onStartOfflineClicked();
 			}
 		}
+	}
+
+	/**
+	 * RuleEntry
+	 */
+	protected class RuleEntry {
+		public LinkedList<String> listPath = new LinkedList<String>();
+		public LinkedList<String> listName = new LinkedList<String>();
 	}
 }

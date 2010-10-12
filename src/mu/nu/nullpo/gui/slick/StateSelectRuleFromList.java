@@ -171,7 +171,11 @@ public class StateSelectRuleFromList extends DummyMenuScrollState {
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
-		NullpoMinoSlick.propGlobal.setProperty("lastrule." + strCurrentMode, list[cursor]);
+		if(cursor >= 1) {
+			NullpoMinoSlick.propGlobal.setProperty("lastrule." + strCurrentMode, list[cursor]);
+		} else {
+			NullpoMinoSlick.propGlobal.setProperty("lastrule." + strCurrentMode, "");
+		}
 		NullpoMinoSlick.saveConfig();
 
 		String strRulePath = null;

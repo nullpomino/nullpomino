@@ -435,7 +435,7 @@ public class GameFrame extends JFrame implements Runnable {
 		   GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_QUIT))
 		{
 			shutdown();
-			System.exit(0);
+			owner.shutdown();
 			return;
 		}
 	}
