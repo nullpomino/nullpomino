@@ -90,6 +90,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Side piece preview */
 	protected JCheckBox chkboxSideNext;
 
+	/** Use bigger side piece preview */
+	protected JCheckBox chkboxBigSideNext;
+
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
@@ -180,6 +183,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxSideNext.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxSideNext);
 
+		chkboxBigSideNext = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_BigSideNext"));
+		chkboxBigSideNext.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(chkboxBigSideNext);
+
 		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -215,6 +222,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxNextShadow.setSelected(NullpoMinoSwing.propConfig.getProperty("option.nextshadow", false));
 		chkboxOutlineGhost.setSelected(NullpoMinoSwing.propConfig.getProperty("option.outlineghost", false));
 		chkboxSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.sidenext", false));
+		chkboxBigSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false));
 	}
 
 	/*
@@ -240,6 +248,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.nextshadow", chkboxNextShadow.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.outlineghost", chkboxOutlineGhost.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.sidenext", chkboxSideNext.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.bigsidenext", chkboxBigSideNext.isSelected());
 
 			NullpoMinoSwing.saveConfig();
 			ResourceHolderSwing.soundManager.setVolume(sevolume);

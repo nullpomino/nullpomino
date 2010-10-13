@@ -184,8 +184,8 @@ public class RendererSlick extends EventReceiver {
 		if(graphics == null) return;
 		if(engine.owner.menuOnly) return;
 
-		int dx1 = getFieldDisplayPositionX(engine, playerID) + 222 + (x * 16);
-		int dy1 = getFieldDisplayPositionY(engine, playerID) + 48 + 6 + (y * 16);
+		int dx1 = getScoreDisplayPositionX(engine, playerID) + 6 + (x * 16);
+		int dy1 = getScoreDisplayPositionY(engine, playerID) + 6 + (y * 16);
 
 		graphics.setColor(Color.black);
 		graphics.drawRect(dx1, dy1, 41, 3);

@@ -63,7 +63,7 @@ public class EventReceiver {
 
 	/** Field X position (Big side preview) */
 	public static final int[][] NEW_FIELD_OFFSET_X_BSP = {
-		{119, 320, 432, 544, 320, 432}, // Small
+		{208, 320, 432, 544, 320, 432}, // Small
 		{ 64, 400, 400, 400, 400, 400}, // Normal
 		{ 16, 352, 352, 352, 352, 352}, // Big
 	};

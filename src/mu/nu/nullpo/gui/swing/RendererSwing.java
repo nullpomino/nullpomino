@@ -130,6 +130,7 @@ public class RendererSwing extends EventReceiver {
 		nextshadow = NullpoMinoSwing.propConfig.getProperty("option.nextshadow", false);
 		outlineghost = NullpoMinoSwing.propConfig.getProperty("option.outlineghost", false);
 		sidenext = NullpoMinoSwing.propConfig.getProperty("option.sidenext", false);
+		bigsidenext = NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false);
 	}
 
 	/*
@@ -186,8 +187,8 @@ public class RendererSwing extends EventReceiver {
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		if(engine.owner.menuOnly) return;
-		NormalFontSwing.printFont(getFieldDisplayPositionX(engine, playerID) + 216 + (x * 16),
-								  getFieldDisplayPositionY(engine, playerID) + 48 + (y * 16), str, color, scale);
+		NormalFontSwing.printFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
+								  getScoreDisplayPositionY(engine, playerID) + (y * 16), str, color, scale);
 	}
 
 	/*
@@ -199,8 +200,8 @@ public class RendererSwing extends EventReceiver {
 
 		graphics.setColor(getFontColorAsColor(color));
 		graphics.drawString(str,
-						    getFieldDisplayPositionX(engine, playerID) + 216 + (x * 16),
-						    getFieldDisplayPositionY(engine, playerID) + 48 + (y * 16));
+						    getScoreDisplayPositionX(engine, playerID) + (x * 16),
+						    getScoreDisplayPositionY(engine, playerID) + (y * 16));
 		graphics.setColor(Color.white);
 	}
 
@@ -230,8 +231,8 @@ public class RendererSwing extends EventReceiver {
 		if(graphics == null) return;
 		if(engine.owner.menuOnly) return;
 
-		int dx1 = getFieldDisplayPositionX(engine, playerID) + 222 + (x * 16);
-		int dy1 = getFieldDisplayPositionY(engine, playerID) + 48 + 6 + (y * 16);
+		int dx1 = getScoreDisplayPositionX(engine, playerID) + 6 + (x * 16);
+		int dy1 = getScoreDisplayPositionY(engine, playerID) + 6 + (y * 16);
 
 		graphics.setColor(Color.black);
 		graphics.drawRect(dx1, dy1, 41, 3);
@@ -959,10 +960,33 @@ public class RendererSwing extends EventReceiver {
 	protected void drawNext(int x, int y, GameEngine engine) {
 		if(graphics == null) return;
 
+		int fldWidth = 10;
+		int fldBlkSize = 16;
+		int meterWidth = showmeter ? 8 : 0;
+		if((engine != null) && (engine.field != null)) {
+			fldWidth = engine.field.getWidth();
+			if(engine.displaysize == 1) fldBlkSize = 32;
+		}
+
 		if(engine.isNextVisible) {
-			if(sidenext) {
+			if(getNextDisplayType() == 2) {
 				if(engine.ruleopt.nextDisplay >= 1) {
-					int x2 = showmeter ? (x + 176) : (x + 168);
+					int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
+					NormalFontSwing.printFont(x2 + 16, y + 40, NullpoMinoSwing.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+
+					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
+						Piece piece = engine.getNextObject(engine.nextPieceCount + i);
+
+						if(piece != null) {
+							int centerX = ( (64 - ((piece.getWidth() + 1) * 16)) / 2 ) - (piece.getMinimumBlockX() * 16);
+							int centerY = ( (64 - ((piece.getHeight() + 1) * 16)) / 2 ) - (piece.getMinimumBlockY() * 16);
+							drawPiece(x2 + centerX, y + 48 + (i * 64) + centerY, piece, 1.0f);
+						}
+					}
+				}
+			} else if(getNextDisplayType() == 1) {
+				if(engine.ruleopt.nextDisplay >= 1) {
+					int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
 					NormalFontSwing.printFont(x2, y + 40, NullpoMinoSwing.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
 					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
@@ -1019,6 +1043,7 @@ public class RendererSwing extends EventReceiver {
 			int holdRemain = engine.ruleopt.holdLimit - engine.holdUsedCount;
 			int x2 = sidenext ? (x - 32) : x;
 			int y2 = sidenext ? (y + 40) : y;
+			if(getNextDisplayType() == 2) x2 = x - 48;
 
 			if( (engine.ruleopt.holdEnable == true) && ((engine.ruleopt.holdLimit < 0) || (holdRemain > 0)) ) {
 				int tempColor = COLOR_GREEN;
@@ -1041,7 +1066,11 @@ public class RendererSwing extends EventReceiver {
 					Piece piece = new Piece(engine.holdPieceObject);
 					piece.resetOffsetArray();
 
-					if(sidenext) {
+					if(getNextDisplayType() == 2) {
+						int centerX = ( (64 - ((piece.getWidth() + 1) * 16)) / 2 ) - (piece.getMinimumBlockX() * 16);
+						int centerY = ( (64 - ((piece.getHeight() + 1) * 16)) / 2 ) - (piece.getMinimumBlockY() * 16);
+						drawPiece((x - 64) + centerX, y + 48 + centerY, piece, 1.0f, dark);
+					} else if(getNextDisplayType() == 1) {
 						int centerX = ( (32 - ((piece.getWidth() + 1) * 8)) / 2 ) - (piece.getMinimumBlockX() * 8);
 						int centerY = ( (32 - ((piece.getHeight() + 1) * 8)) / 2 ) - (piece.getMinimumBlockY() * 8);
 						drawPiece(x2 + centerX, y + 48 + centerY, piece, 0.5f, dark);

@@ -101,6 +101,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** Side piece preview */
 	protected boolean sidenext;
 
+	/** Bigger side piece preview */
+	protected boolean bigsidenext;
+
 	/**
 	 * Constructor
 	 */
@@ -134,6 +137,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
 		sidenext = prop.getProperty("option.sidenext", false);
+		bigsidenext = prop.getProperty("option.bigsidenext", false);
 	}
 
 	/**
@@ -161,6 +165,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
 		prop.setProperty("option.sidenext", sidenext);
+		prop.setProperty("option.bigsidenext", bigsidenext);
 	}
 
 	/*
@@ -194,6 +199,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 20, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 17));
 		NormalFontSDL.printFontGrid(2, 21, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 18));
 		NormalFontSDL.printFontGrid(2, 22, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 19));
+		NormalFontSDL.printFontGrid(2, 23, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 20));
 
 		if(cursor == 0) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_Fullscreen"));
 		if(cursor == 1) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SE"));
@@ -215,6 +221,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		if(cursor == 17) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_NextShadow"));
 		if(cursor == 18) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_OutlineGhost"));
 		if(cursor == 19) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SideNext"));
+		if(cursor == 20) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_BigSideNext"));
 	}
 
 	/*
@@ -225,12 +232,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 19;
+			if(cursor < 0) cursor = 20;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 19) cursor = 0;
+			if(cursor > 20) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -314,6 +321,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 					break;
 				case 19:
 					sidenext = !sidenext;
+					break;
+				case 20:
+					bigsidenext = !bigsidenext;
 					break;
 			}
 		}
