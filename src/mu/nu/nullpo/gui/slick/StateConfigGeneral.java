@@ -44,9 +44,6 @@ public class StateConfigGeneral extends BasicGameState {
 	/** This state's ID */
 	public static final int ID = 6;
 
-	/** Joystick input 検出法の表示名 */
-	protected static final String[] JOYSTICK_METHOD_STRINGS = {"NONE", "SLICK DEFAULT", "SLICK ALTERNATE", "LWJGL"};
-
 	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
@@ -98,9 +95,6 @@ public class StateConfigGeneral extends BasicGameState {
 	/** BGM volume */
 	protected int bgmvolume;
 
-	/** Joystick input の検出法 */
-	protected int joyMethod;
-
 	/** field右側にMeterを表示 */
 	protected boolean showmeter;
 
@@ -115,6 +109,9 @@ public class StateConfigGeneral extends BasicGameState {
 
 	/** Side piece preview */
 	protected boolean sidenext;
+
+	/** Bigger side piece preview */
+	protected boolean bigsidenext;
 
 	/** Timing of alternate FPS sleep (false=render true=update) */
 	protected boolean alternateFPSTiming;
@@ -160,12 +157,12 @@ public class StateConfigGeneral extends BasicGameState {
 		darknextarea = prop.getProperty("option.darknextarea", true);
 		sevolume = prop.getProperty("option.sevolume", 128);
 		bgmvolume = prop.getProperty("option.bgmvolume", 128);
-		joyMethod = prop.getProperty("option.joymethod", ControllerManager.CONTROLLER_METHOD_SLICK_DEFAULT);
 		showmeter = prop.getProperty("option.showmeter", true);
 		vsync = prop.getProperty("option.vsync", false);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
 		sidenext = prop.getProperty("option.sidenext", false);
+		bigsidenext = prop.getProperty("option.bigsidenext", false);
 		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
 		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", false);
@@ -191,12 +188,12 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.darknextarea", darknextarea);
 		prop.setProperty("option.sevolume", sevolume);
 		prop.setProperty("option.bgmvolume", bgmvolume);
-		prop.setProperty("option.joymethod", joyMethod);
 		prop.setProperty("option.showmeter", showmeter);
 		prop.setProperty("option.vsync", vsync);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
 		prop.setProperty("option.sidenext", sidenext);
+		prop.setProperty("option.bigsidenext", bigsidenext);
 		prop.setProperty("option.alternateFPSTiming", alternateFPSTiming);
 		prop.setProperty("option.alternateFPSDynamicAdjust", alternateFPSDynamicAdjust);
 		prop.setProperty("option.alternateFPSPerfectMode", alternateFPSPerfectMode);
@@ -229,12 +226,12 @@ public class StateConfigGeneral extends BasicGameState {
 		NormalFont.printFontGrid(2, 15, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 12));
 		NormalFont.printFontGrid(2, 16, "SE VOLUME:" + sevolume, (cursor == 13));
 		NormalFont.printFontGrid(2, 17, "BGM VOLUME:" + bgmvolume, (cursor == 14));
-		NormalFont.printFontGrid(2, 18, "JOYSTICK METHOD:" + JOYSTICK_METHOD_STRINGS[joyMethod], (cursor == 15));
-		NormalFont.printFontGrid(2, 19, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 16));
-		NormalFont.printFontGrid(2, 20, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 17));
-		NormalFont.printFontGrid(2, 21, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 18));
-		NormalFont.printFontGrid(2, 22, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 19));
-		NormalFont.printFontGrid(2, 23, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 20));
+		NormalFont.printFontGrid(2, 18, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 15));
+		NormalFont.printFontGrid(2, 19, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 16));
+		NormalFont.printFontGrid(2, 20, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 17));
+		NormalFont.printFontGrid(2, 21, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 18));
+		NormalFont.printFontGrid(2, 22, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 19));
+		NormalFont.printFontGrid(2, 23, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 20));
 		NormalFont.printFontGrid(2, 24, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 21));
 		NormalFont.printFontGrid(2, 25, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
 		NormalFont.printFontGrid(2, 26, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 23));
@@ -254,12 +251,12 @@ public class StateConfigGeneral extends BasicGameState {
 		if(cursor == 12) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_DarkNextArea"));
 		if(cursor == 13) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SEVolume"));
 		if(cursor == 14) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BGMVolume"));
-		if(cursor == 15) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_JoyMethod"));
-		if(cursor == 16) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_ShowMeter"));
-		if(cursor == 17) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_VSync"));
-		if(cursor == 18) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_NextShadow"));
-		if(cursor == 19) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_OutlineGhost"));
-		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
+		if(cursor == 15) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_ShowMeter"));
+		if(cursor == 16) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_VSync"));
+		if(cursor == 17) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_NextShadow"));
+		if(cursor == 18) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_OutlineGhost"));
+		if(cursor == 19) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
+		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BigSideNext"));
 		if(cursor == 21) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSTiming"));
 		if(cursor == 22) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSDynamicAdjust"));
 		if(cursor == 23) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSPerfectMode"));
@@ -368,24 +365,22 @@ public class StateConfigGeneral extends BasicGameState {
 					if(bgmvolume > 128) bgmvolume = 0;
 					break;
 				case 15:
-					joyMethod += change;
-					if(joyMethod < 0) joyMethod = ControllerManager.CONTROLLER_METHOD_MAX - 1;
-					if(joyMethod > ControllerManager.CONTROLLER_METHOD_MAX - 1) joyMethod = 0;
-					break;
-				case 16:
 					showmeter = !showmeter;
 					break;
-				case 17:
+				case 16:
 					vsync = !vsync;
 					break;
-				case 18:
+				case 17:
 					nextshadow = !nextshadow;
 					break;
-				case 19:
+				case 18:
 					outlineghost = !outlineghost;
 					break;
-				case 20:
+				case 19:
 					sidenext = !sidenext;
+					break;
+				case 20:
+					bigsidenext = !bigsidenext;
 					break;
 				case 21:
 					alternateFPSTiming = !alternateFPSTiming;

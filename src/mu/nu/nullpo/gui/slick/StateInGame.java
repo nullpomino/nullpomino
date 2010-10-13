@@ -142,7 +142,7 @@ public class StateInGame extends BasicGameState {
 			gameManager.engine[i].owMaxDAS = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
 			gameManager.engine[i].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
 			gameManager.engine[i].owReverseUpDown = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owReverseUpDown", false);
-			
+
 			// ルール
 			RuleOptions ruleopt = null;
 			String rulename = strRulePath;
@@ -273,27 +273,27 @@ public class StateInGame extends BasicGameState {
 		if(gameManager != null) {
 			gameManager.renderAll();
 
-			// Pause menu
-			if(pause && !enableframestep && !pauseMessageHide) {
-				int offsetX = RendererSlick.FIELD_OFFSET_X[0];
-				int offsetY = RendererSlick.FIELD_OFFSET_Y[0];
+			if((gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+				int offsetX = gameManager.receiver.getFieldDisplayPositionX(gameManager.engine[0], 0);
+				int offsetY = gameManager.receiver.getFieldDisplayPositionY(gameManager.engine[0], 0);
 
-				NormalFont.printFont(offsetX + 12, offsetY + 188 + (cursor * 16), "b", NormalFont.COLOR_RED);
+				// Pause menu
+				if(pause && !enableframestep && !pauseMessageHide) {
+					NormalFont.printFont(offsetX + 12, offsetY + 188 + (cursor * 16), "b", NormalFont.COLOR_RED);
 
-				NormalFont.printFont(offsetX + 28, offsetY + 188, "CONTINUE", (cursor == 0));
-				NormalFont.printFont(offsetX + 28, offsetY + 204, "RETRY", (cursor == 1));
-				NormalFont.printFont(offsetX + 28, offsetY + 220, "END", (cursor == 2));
-				if(gameManager.replayMode && !gameManager.replayRerecord)
-					NormalFont.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
+					NormalFont.printFont(offsetX + 28, offsetY + 188, "CONTINUE", (cursor == 0));
+					NormalFont.printFont(offsetX + 28, offsetY + 204, "RETRY", (cursor == 1));
+					NormalFont.printFont(offsetX + 28, offsetY + 220, "END", (cursor == 2));
+					if(gameManager.replayMode && !gameManager.replayRerecord)
+						NormalFont.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
+				}
+
+				// Fast forward
+				if(fastforward != 0)
+					NormalFont.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFont.COLOR_ORANGE);
+				if(gameManager.replayShowInvisible)
+					NormalFont.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFont.COLOR_ORANGE);
 			}
-
-			int offsetX = RendererSlick.FIELD_OFFSET_X[0];
-			int offsetY = RendererSlick.FIELD_OFFSET_Y[0];
-			// 早送り
-			if(fastforward != 0)
-				NormalFont.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFont.COLOR_ORANGE);
-			if(gameManager.replayShowInvisible)
-				NormalFont.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFont.COLOR_ORANGE);
 		}
 
 		// FPS

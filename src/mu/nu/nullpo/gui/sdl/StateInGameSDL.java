@@ -251,27 +251,26 @@ public class StateInGameSDL extends BaseStateSDL {
 		if(gameManager != null) {
 			gameManager.renderAll();
 
-			// Pause menu
-			if(pause && !enableframestep && !pauseMessageHide) {
-				int offsetX = RendererSDL.FIELD_OFFSET_X[0];
-				int offsetY = RendererSDL.FIELD_OFFSET_Y[0];
+			if((gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+				int offsetX = gameManager.receiver.getFieldDisplayPositionX(gameManager.engine[0], 0);
+				int offsetY = gameManager.receiver.getFieldDisplayPositionY(gameManager.engine[0], 0);
 
-				NormalFontSDL.printFont(offsetX + 12, offsetY + 188 + (cursor * 16), "b", NormalFontSDL.COLOR_RED);
+				// Pause menu
+				if(pause && !enableframestep && !pauseMessageHide) {
+					NormalFontSDL.printFont(offsetX + 12, offsetY + 188 + (cursor * 16), "b", NormalFontSDL.COLOR_RED);
 
-				NormalFontSDL.printFont(offsetX + 28, offsetY + 188, "CONTINUE", (cursor == 0));
-				NormalFontSDL.printFont(offsetX + 28, offsetY + 204, "RETRY", (cursor == 1));
-				NormalFontSDL.printFont(offsetX + 28, offsetY + 220, "END", (cursor == 2));
-				if(gameManager.replayMode && !gameManager.replayRerecord)
-					NormalFontSDL.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
+					NormalFontSDL.printFont(offsetX + 28, offsetY + 188, "CONTINUE", (cursor == 0));
+					NormalFontSDL.printFont(offsetX + 28, offsetY + 204, "RETRY", (cursor == 1));
+					NormalFontSDL.printFont(offsetX + 28, offsetY + 220, "END", (cursor == 2));
+					if(gameManager.replayMode && !gameManager.replayRerecord)
+						NormalFontSDL.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
+				}
+				// Fast forward
+				if(fastforward != 0)
+					NormalFontSDL.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFontSDL.COLOR_ORANGE);
+				if(gameManager.replayShowInvisible)
+					NormalFontSDL.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFontSDL.COLOR_ORANGE);
 			}
-
-			int offsetX = RendererSDL.FIELD_OFFSET_X[0];
-			int offsetY = RendererSDL.FIELD_OFFSET_Y[0];
-			// 早送り
-			if(fastforward != 0)
-				NormalFontSDL.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFontSDL.COLOR_ORANGE);
-			if(gameManager.replayShowInvisible)
-				NormalFontSDL.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFontSDL.COLOR_ORANGE);
 		}
 	}
 

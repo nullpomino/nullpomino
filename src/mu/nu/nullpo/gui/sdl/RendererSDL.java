@@ -146,9 +146,8 @@ public class RendererSDL extends EventReceiver {
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		try {
-			int size = (int)(16 * scale);
-			int x2 = x * size;
-			int y2 = y * size;
+			int x2 = x * 16;
+			int y2 = y * 16;
 			if(!engine.owner.menuOnly) {
 				x2 += getFieldDisplayPositionX(engine, playerID) + 4;
 				y2 += getFieldDisplayPositionY(engine, playerID) + 52;
@@ -185,9 +184,8 @@ public class RendererSDL extends EventReceiver {
 		if(engine.owner.menuOnly) return;
 
 		try {
-			int size = (int)(16 * scale);
-			NormalFontSDL.printFont(getFieldDisplayPositionX(engine, playerID) + 216 + (x * size),
-									getFieldDisplayPositionY(engine, playerID) + 48 + (y * size),
+			NormalFontSDL.printFont(getFieldDisplayPositionX(engine, playerID) + 216 + (x * 16),
+									getFieldDisplayPositionY(engine, playerID) + 48 + (y * 16),
 									str, color, scale);
 		} catch (SDLException e) {
 			log.debug("SDLException thrown", e);

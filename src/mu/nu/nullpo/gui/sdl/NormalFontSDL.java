@@ -111,7 +111,10 @@ public class NormalFontSDL {
 
 			if(stringChar == 0x0A) {
 				// 改行 (\n）
-				if(scale == 1.0f) {
+				if(scale == 2.0f) {
+					dy = dy + 32;
+					dx = fontX;
+				} else if(scale == 1.0f) {
 					dy = dy + 16;
 					dx = fontX;
 				} else {
@@ -120,7 +123,14 @@ public class NormalFontSDL {
 				}
 			} else {
 				// 文字出力
-				if(scale == 1.0f) {
+				if(scale == 2.0f) {
+					int sx = ((stringChar - 32) % 32) * 32;
+					int sy = ((stringChar - 32) / 32) * 32 + fontColor * 96;
+					SDLRect rectSrc = new SDLRect(sx, sy, 32, 32);
+					SDLRect rectDst = new SDLRect(dx, dy, 32, 32);
+					ResourceHolderSDL.imgFontBig.blitSurface(rectSrc, dest, rectDst);
+					dx = dx + 32;
+				} else if(scale == 1.0f) {
 					int sx = ((stringChar - 32) % 32) * 16;
 					int sy = ((stringChar - 32) / 32) * 16 + fontColor * 48;
 					SDLRect rectSrc = new SDLRect(sx, sy, 16, 16);

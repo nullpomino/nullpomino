@@ -557,6 +557,11 @@ public class LineRaceMode extends NetDummyMode {
 			if((remainLines <= 20) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_ORANGE;
 			if((remainLines <= 10) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_RED;
 			receiver.drawScoreFont(engine, playerID, 0, 4, strLines, fontcolor);
+			if(strLines.length() == 1) {
+				receiver.drawMenuFont(engine, playerID, 4, 21, strLines, fontcolor, 2.0f);
+			} else {
+				receiver.drawMenuFont(engine, playerID, 3, 21, strLines, fontcolor, 2.0f);
+			}
 
 			receiver.drawScoreFont(engine, playerID, 0, 6, "PIECE", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 7, String.valueOf(engine.statistics.totalPieceLocked));

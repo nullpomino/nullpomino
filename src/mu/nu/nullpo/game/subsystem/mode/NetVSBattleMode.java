@@ -334,6 +334,9 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** KO count */
 	private int currentKO;
 
+	/** true if can exit from practice game */
+	private boolean isPracticeExitAllowed;
+
 	/**
 	 * ゲーム席 numberを元にfield numberを返す
 	 * @param seat ゲーム席 number
@@ -714,6 +717,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	private void startPractice(GameEngine engine) {
 		isPractice = true;
+		isPracticeExitAllowed = false;
 		engine.init();
 		engine.stat = GameEngine.STAT_READY;
 		engine.resetStatc();
@@ -929,6 +933,11 @@ public class NetVSBattleMode extends NetDummyMode {
 				engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_SELFPLACED, false);
 			}
 		}
+
+		if(isPractice && (engine.statc[0] >= 10)) {
+			isPracticeExitAllowed = true;
+		}
+
 		return false;
 	}
 
@@ -1400,12 +1409,10 @@ public class NetVSBattleMode extends NetDummyMode {
 		}
 
 		// End practice mode
-		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) &&
-		   ( engine.timerActive || ((engine.stat == GameEngine.STAT_READY) && (engine.statc[0] >= engine.goStart / 2)) ) &&
-		   (engine.ctrl.isPush(Controller.BUTTON_F)))
-		{
+		if((playerID == 0) && ((isPractice) && (isPracticeExitAllowed)) && (engine.ctrl.isPush(Controller.BUTTON_F))) {
 			engine.timerActive = false;
 			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+			isPracticeExitAllowed = false;
 
 			if(isPractice) {
 				isPractice = false;
@@ -1440,18 +1447,19 @@ public class NetVSBattleMode extends NetDummyMode {
 		if((playerID == getPlayers() - 1) && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected()) &&
 		   (!owner.engine[1].isVisible || owner.engine[1].displaysize == -1 || !isNetGameActive))
 		{
+			int x = (owner.receiver.getNextDisplayType() == 2) ? 544 : 503;
 			if(currentRoomID != -1) {
-				receiver.drawDirectFont(engine, 0, 503, 286, "PLAYERS", EventReceiver.COLOR_CYAN, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 294, "" + numPlayers, EventReceiver.COLOR_WHITE, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 302, "SPECTATORS", EventReceiver.COLOR_CYAN, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 310, "" + numSpectators, EventReceiver.COLOR_WHITE, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 318, "MATCHES", EventReceiver.COLOR_CYAN, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 326, "" + numGames, EventReceiver.COLOR_WHITE, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 334, "WINS", EventReceiver.COLOR_CYAN, 0.5f);
-				receiver.drawDirectFont(engine, 0, 503, 342, "" + numWins, EventReceiver.COLOR_WHITE, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 286, "PLAYERS", EventReceiver.COLOR_CYAN, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 294, "" + numPlayers, EventReceiver.COLOR_WHITE, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 302, "SPECTATORS", EventReceiver.COLOR_CYAN, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 310, "" + numSpectators, EventReceiver.COLOR_WHITE, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 318, "MATCHES", EventReceiver.COLOR_CYAN, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 326, "" + numGames, EventReceiver.COLOR_WHITE, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 334, "WINS", EventReceiver.COLOR_CYAN, 0.5f);
+				receiver.drawDirectFont(engine, 0, x, 342, "" + numWins, EventReceiver.COLOR_WHITE, 0.5f);
 			}
-			receiver.drawDirectFont(engine, 0, 503, 358, "ALL ROOMS", EventReceiver.COLOR_GREEN, 0.5f);
-			receiver.drawDirectFont(engine, 0, 503, 366, "" + netLobby.netPlayerClient.getRoomInfoList().size(), EventReceiver.COLOR_WHITE, 0.5f);
+			receiver.drawDirectFont(engine, 0, x, 358, "ALL ROOMS", EventReceiver.COLOR_GREEN, 0.5f);
+			receiver.drawDirectFont(engine, 0, x, 366, "" + netLobby.netPlayerClient.getRoomInfoList().size(), EventReceiver.COLOR_WHITE, 0.5f);
 		}
 
 		// All number of players
@@ -1514,15 +1522,12 @@ public class NetVSBattleMode extends NetDummyMode {
 		}
 
 		// Practice mode
-		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (engine.timerActive)) {
+		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (isPracticeExitAllowed)) {
 			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120) || (lastcombo[playerID] < 2)) {
-				if(isPractice)
-					receiver.drawMenuFont(engine, 0, -2, 22, "F:END PRACTICE", EventReceiver.COLOR_PURPLE);
-				else
-					receiver.drawMenuFont(engine, 0, 0, 22, "F:END GAME", EventReceiver.COLOR_BLUE);
+				receiver.drawMenuFont(engine, 0, 0, 22, "F:END GAME", EventReceiver.COLOR_PURPLE);
 			}
 
-			if(isPractice) {
+			if(isPractice && engine.timerActive) {
 				receiver.drawDirectFont(engine, 0, 256, 32, GeneralUtil.getTime(engine.statistics.time), EventReceiver.COLOR_PURPLE);
 			}
 		}
@@ -1652,6 +1657,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		engine.gameActive = false;
 		engine.timerActive = false;
 		engine.allowTextRenderByReceiver = false;
+		isPracticeExitAllowed = false;
 
 		if((playerID == 0) && (isPractice)) {
 			if(engine.statc[0] < engine.field.getHeight() + 1) {

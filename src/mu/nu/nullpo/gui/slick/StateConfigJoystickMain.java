@@ -47,6 +47,20 @@ public class StateConfigJoystickMain extends BasicGameState {
 	/** Key input を受付可能になるまでの frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
+	/** Joystick method names */
+	protected static final String[] JOYSTICK_METHOD_STRINGS = {"NONE", "SLICK DEFAULT", "SLICK ALTERNATE", "LWJGL"};
+
+	/** UI Text identifier Strings */
+	protected static final String[] UI_TEXT = {
+		"ConfigJoystickMain_ButtonSetting",
+		"ConfigJoystickMain_InputTest",
+		"ConfigJoystickMain_JoyUseNumber",
+		"ConfigJoystickMain_JoyBorder",
+		"ConfigJoystickMain_JoyIgnoreAxis",
+		"ConfigJoystickMain_JoyIgnorePOV",
+		"ConfigJoystickMain_JoyMethod",
+	};
+
 	/** Player number */
 	public int player = 0;
 
@@ -68,6 +82,9 @@ public class StateConfigJoystickMain extends BasicGameState {
 	/** ハットスイッチ無視 */
 	protected boolean joyIgnorePOV;
 
+	/** Joystick input method */
+	protected int joyMethod;
+
 	/*
 	 * Fetch this state's ID
 	 */
@@ -85,6 +102,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 		joyBorder = prop.getProperty("joyBorder.p" + player, 0);
 		joyIgnoreAxis = prop.getProperty("joyIgnoreAxis.p" + player, false);
 		joyIgnorePOV = prop.getProperty("joyIgnorePOV.p" + player, false);
+		joyMethod = prop.getProperty("option.joymethod", ControllerManager.CONTROLLER_METHOD_SLICK_DEFAULT);
 	}
 
 	/**
@@ -96,6 +114,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 		prop.setProperty("joyBorder.p" + player, joyBorder);
 		prop.setProperty("joyIgnoreAxis.p" + player, joyIgnoreAxis);
 		prop.setProperty("joyIgnorePOV.p" + player, joyIgnorePOV);
+		prop.setProperty("option.joymethod", joyMethod);
 	}
 
 	/*
@@ -129,13 +148,9 @@ public class StateConfigJoystickMain extends BasicGameState {
 		NormalFont.printFontGrid(2, 6, "JOYSTICK BORDER:" + joyBorder, (cursor == 3));
 		NormalFont.printFontGrid(2, 7, "IGNORE AXIS:" + GeneralUtil.getONorOFF(joyIgnoreAxis), (cursor == 4));
 		NormalFont.printFontGrid(2, 8, "IGNORE POV:" + GeneralUtil.getONorOFF(joyIgnorePOV), (cursor == 5));
+		NormalFont.printFontGrid(2, 9, "JOYSTICK METHOD:" + JOYSTICK_METHOD_STRINGS[joyMethod], (cursor == 6));
 
-		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigJoystickMain_ButtonSetting"));
-		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigJoystickMain_InputTest"));
-		if(cursor == 2) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigJoystickMain_JoyUseNumber"));
-		if(cursor == 3) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigJoystickMain_JoyBorder"));
-		if(cursor == 4) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigJoystickMain_JoyIgnoreAxis"));
-		if(cursor == 5) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigJoystickMain_JoyIgnorePOV"));
+		if(cursor < UI_TEXT.length) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -168,12 +183,12 @@ public class StateConfigJoystickMain extends BasicGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 5;
+			if(cursor < 0) cursor = 6;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 5) cursor = 0;
+			if(cursor > 6) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -201,6 +216,11 @@ public class StateConfigJoystickMain extends BasicGameState {
 				break;
 			case 5:
 				joyIgnorePOV = !joyIgnorePOV;
+				break;
+			case 6:
+				joyMethod += change;
+				if(joyMethod < 0) joyMethod = ControllerManager.CONTROLLER_METHOD_MAX - 1;
+				if(joyMethod > ControllerManager.CONTROLLER_METHOD_MAX - 1) joyMethod = 0;
 				break;
 			}
 		}

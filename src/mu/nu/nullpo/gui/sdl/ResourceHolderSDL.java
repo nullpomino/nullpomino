@@ -67,7 +67,7 @@ public class ResourceHolderSDL {
 	//public static SDLSurface imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
 
 	/** Regular font */
-	public static SDLSurface imgFont, imgFontSmall;
+	public static SDLSurface imgFont, imgFontSmall, imgFontBig;
 
 	/** 小物画像 */
 	public static SDLSurface imgSprite;
@@ -127,6 +127,7 @@ public class ResourceHolderSDL {
 		 */
 		imgFont = loadImage(skindir + "/graphics/font.png");
 		imgFontSmall = loadImage(skindir + "/graphics/font_small.png");
+		imgFontBig = loadImage(skindir + "/graphics/font_big.png");
 		imgSprite = loadImage(skindir + "/graphics/sprite.png");
 		imgTitle = loadImage(skindir + "/graphics/title.png");
 		imgMenu = loadImage(skindir + "/graphics/menu.png");

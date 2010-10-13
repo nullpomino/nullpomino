@@ -107,6 +107,7 @@ public class RendererSlick extends EventReceiver {
 		nextshadow = NullpoMinoSlick.propConfig.getProperty("option.nextshadow", false);
 		outlineghost = NullpoMinoSlick.propConfig.getProperty("option.outlineghost", false);
 		sidenext = NullpoMinoSlick.propConfig.getProperty("option.sidenext", false);
+		bigsidenext = NullpoMinoSlick.propConfig.getProperty("option.bigsidenext", false);
 	}
 
 	/*
@@ -114,9 +115,8 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
-		int size = (int)(16 * scale);
-		int x2 = x * size;
-		int y2 = y * size;
+		int x2 = x * 16;
+		int y2 = y * 16;
 		if(!engine.owner.menuOnly) {
 			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
 			y2 += getFieldDisplayPositionY(engine, playerID) + 52;
@@ -144,9 +144,8 @@ public class RendererSlick extends EventReceiver {
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		if(engine.owner.menuOnly) return;
-		int size = (int)(16 * scale);
-		NormalFont.printFont(getFieldDisplayPositionX(engine, playerID) + 216 + (x * size),
-							 getFieldDisplayPositionY(engine, playerID) + 48 + (y * size),
+		NormalFont.printFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
+							 getScoreDisplayPositionY(engine, playerID) + (y * 16),
 							 str, color, scale);
 	}
 
@@ -156,8 +155,8 @@ public class RendererSlick extends EventReceiver {
 	@Override
 	public void drawTTFScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
 		if(engine.owner.menuOnly) return;
-		NormalFont.printTTFFont(getFieldDisplayPositionX(engine, playerID) + 216 + (x * 16),
-								getFieldDisplayPositionY(engine, playerID) + 48 + (y * 16),
+		NormalFont.printTTFFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
+								getScoreDisplayPositionY(engine, playerID) + (y * 16),
 								str, color);
 	}
 
@@ -904,13 +903,58 @@ public class RendererSlick extends EventReceiver {
 	protected void drawNext(int x, int y, GameEngine engine) {
 		if(graphics == null) return;
 
-		// NEXT欄Background
+		int fldWidth = 10;
+		int fldBlkSize = 16;
+		int meterWidth = showmeter ? 8 : 0;
+		if((engine != null) && (engine.field != null)) {
+			fldWidth = engine.field.getWidth();
+			if(engine.displaysize == 1) fldBlkSize = 32;
+		}
+
+		// NEXT area background
 		if(showbg && darknextarea) {
 			Color filter = new Color(Color.black);
 			graphics.setColor(filter);
 
-			if(sidenext) {
-				int x2 = showmeter ? (x + 176) : (x + 168);
+			if(getNextDisplayType() == 2) {
+				int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
+				int maxNext = engine.isNextVisible ? engine.ruleopt.nextDisplay : 0;
+
+				// HOLD area
+				if(engine.ruleopt.holdEnable && engine.isHoldVisible) {
+					graphics.fillRect(x - 64, y + 48 + 8, 64, 64 - 16);
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x - 64, y + 47 + i, 64, 1);
+					}
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x - 64, y + 112 - i, 64, 1);
+					}
+				}
+
+				// NEXT area
+				if(maxNext > 0) {
+					graphics.fillRect(x2, y + 48 + 8, 64, (64 * maxNext) - 16);
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x2, y + 47 + i, 64, 1);
+					}
+					for(int i = 0; i <= 8; i++) {
+						Color filter2 = new Color(Color.black);
+						filter2.a = ((float)i / (float)8);
+						graphics.setColor(filter2);
+						graphics.fillRect(x2, y + 48 + (64 * maxNext) - i, 64, 1);
+					}
+				}
+			} else if(getNextDisplayType() == 1) {
+				int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
 				int maxNext = engine.isNextVisible ? engine.ruleopt.nextDisplay : 0;
 
 				// HOLD area
@@ -967,9 +1011,24 @@ public class RendererSlick extends EventReceiver {
 		}
 
 		if(engine.isNextVisible) {
-			if(sidenext) {
+			if(getNextDisplayType() == 2) {
 				if(engine.ruleopt.nextDisplay >= 1) {
-					int x2 = showmeter ? (x + 176) : (x + 168);
+					int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
+					NormalFont.printFont(x2 + 16, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+
+					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
+						Piece piece = engine.getNextObject(engine.nextPieceCount + i);
+
+						if(piece != null) {
+							int centerX = ( (64 - ((piece.getWidth() + 1) * 16)) / 2 ) - (piece.getMinimumBlockX() * 16);
+							int centerY = ( (64 - ((piece.getHeight() + 1) * 16)) / 2 ) - (piece.getMinimumBlockY() * 16);
+							drawPiece(x2 + centerX, y + 48 + (i * 64) + centerY, piece, 1.0f);
+						}
+					}
+				}
+			} else if(getNextDisplayType() == 1) {
+				if(engine.ruleopt.nextDisplay >= 1) {
+					int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
 					NormalFont.printFont(x2, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
 					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
@@ -1026,6 +1085,7 @@ public class RendererSlick extends EventReceiver {
 			int holdRemain = engine.ruleopt.holdLimit - engine.holdUsedCount;
 			int x2 = sidenext ? (x - 32) : x;
 			int y2 = sidenext ? (y + 40) : y;
+			if(getNextDisplayType() == 2) x2 = x - 48;
 
 			if( (engine.ruleopt.holdEnable == true) && ((engine.ruleopt.holdLimit < 0) || (holdRemain > 0)) ) {
 				int tempColor = COLOR_GREEN;
@@ -1048,7 +1108,11 @@ public class RendererSlick extends EventReceiver {
 					Piece piece = new Piece(engine.holdPieceObject);
 					piece.resetOffsetArray();
 
-					if(sidenext) {
+					if(getNextDisplayType() == 2) {
+						int centerX = ( (64 - ((piece.getWidth() + 1) * 16)) / 2 ) - (piece.getMinimumBlockX() * 16);
+						int centerY = ( (64 - ((piece.getHeight() + 1) * 16)) / 2 ) - (piece.getMinimumBlockY() * 16);
+						drawPiece((x - 64) + centerX, y + 48 + centerY, piece, 1.0f, dark);
+					} else if(getNextDisplayType() == 1) {
 						int centerX = ( (32 - ((piece.getWidth() + 1) * 8)) / 2 ) - (piece.getMinimumBlockX() * 8);
 						int centerY = ( (32 - ((piece.getHeight() + 1) * 8)) / 2 ) - (piece.getMinimumBlockY() * 8);
 						drawPiece(x2 + centerX, y + 48 + centerY, piece, 0.5f, dark);

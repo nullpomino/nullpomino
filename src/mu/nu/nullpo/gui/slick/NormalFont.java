@@ -101,7 +101,7 @@ public class NormalFont {
 			if(stringChar == 0x0A) {
 				// 改行 (\n）
 				if(scale == 1.0f) {
-					dy = dy + 16;
+					dy = (int)(dy + 16 * scale);
 					dx = fontX;
 				} else {
 					dy = dy + 8;
@@ -121,7 +121,7 @@ public class NormalFont {
 					//SDLRect rectDst = new SDLRect(dx, dy, 16, 16);
 					//ResourceHolderSDL.imgFont.blitSurface(rectSrc, dest, rectDst);
 					ResourceHolder.imgFont.draw(dx, dy, dx + (16 * scale), dy + (16 * scale), sx, sy, sx + 16, sy + 16);
-					dx = dx + 16;
+					dx = (int)(dx + 16 * scale);
 				}
 			}
 		}

@@ -48,13 +48,31 @@ public class EventReceiver {
 	/** Log */
 	static Logger log = Logger.getLogger(EventReceiver.class);
 
-	/** fieldの表示位置(1人・2人のとき) */
-	public static final int[] FIELD_OFFSET_X = {32, 432, 432, 432, 432, 432},
-							  FIELD_OFFSET_Y = {32, 32, 32, 32, 32, 32};
+	/** Field X position */
+	public static final int[][] NEW_FIELD_OFFSET_X = {
+		{119, 247, 375, 503, 247, 375}, // Small
+		{ 32, 432, 432, 432, 432, 432}, // Normal
+		{ 16, 416, 416, 416, 416, 416}, // Big
+	};
+	/** Field Y position */
+	public static final int[][] NEW_FIELD_OFFSET_Y = {
+		{ 80,  80,  80,  80, 286, 286}, // Small
+		{ 32,  32,  32,  32,  32,  32}, // Normal
+		{  8,   8,   8,   8,   8,   8}, // Big
+	};
 
-	/** fieldの表示位置(3人以上のとき) */
-	public static final int[] FIELD_OFFSET_X_MULTI = {119, 247, 375, 503, 247, 375},
-							  FIELD_OFFSET_Y_MULTI = {80, 80, 80, 80, 286, 286};
+	/** Field X position (Big side preview) */
+	public static final int[][] NEW_FIELD_OFFSET_X_BSP = {
+		{119, 320, 432, 544, 320, 432}, // Small
+		{ 64, 400, 400, 400, 400, 400}, // Normal
+		{ 16, 352, 352, 352, 352, 352}, // Big
+	};
+	/** Field Y position (Big side preview) */
+	public static final int[][] NEW_FIELD_OFFSET_Y_BSP = {
+		{ 80,  80,  80,  80, 286, 286}, // Small
+		{ 32,  32,  32,  32,  32,  32}, // Normal
+		{  8,   8,   8,   8,   8,   8}, // Big
+	};
 
 	/** Background表示 */
 	protected boolean showbg;
@@ -67,6 +85,9 @@ public class EventReceiver {
 
 	/** Piece previews on sides */
 	protected boolean sidenext;
+
+	/** Use bigger side previews */
+	protected boolean bigsidenext;
 
 	/**
 	 * 文字色の定count
@@ -582,23 +603,56 @@ public class EventReceiver {
 	}
 
 	/**
-	 * fieldの表示位置の左端の座標を取得
-	 * @param engine GameEngineのインスタンス
+	 * Get X position of field
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return fieldの表示位置の左端の座標
+	 * @return X position of field
 	 */
 	public int getFieldDisplayPositionX(GameEngine engine, int playerID) {
-		return (engine.displaysize == -1) ? FIELD_OFFSET_X_MULTI[playerID] : FIELD_OFFSET_X[playerID];
+		if(getNextDisplayType() == 2) return NEW_FIELD_OFFSET_X_BSP[engine.displaysize + 1][playerID];
+		return NEW_FIELD_OFFSET_X[engine.displaysize + 1][playerID];
 	}
 
 	/**
-	 * fieldの表示位置の上端の座標を取得
-	 * @param engine GameEngineのインスタンス
+	 * Get Y position of field
+	 * @param engine GameEngine
 	 * @param playerID Player ID
-	 * @return fieldの表示位置の上端の座標
+	 * @return Y position of field
 	 */
 	public int getFieldDisplayPositionY(GameEngine engine, int playerID) {
-		return (engine.displaysize == -1) ? FIELD_OFFSET_Y_MULTI[playerID] : FIELD_OFFSET_Y[playerID];
+		if(getNextDisplayType() == 2) return NEW_FIELD_OFFSET_Y_BSP[engine.displaysize + 1][playerID];
+		return NEW_FIELD_OFFSET_Y[engine.displaysize + 1][playerID];
+	}
+
+	/**
+	 * Get X position of score display area
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @return X position of score display area
+	 */
+	public int getScoreDisplayPositionX(GameEngine engine, int playerID) {
+		int xOffset = (getNextDisplayType() == 2) ? 256 : 216;
+		return getFieldDisplayPositionX(engine, playerID) + xOffset;
+	}
+
+	/**
+	 * Get Y position of score display area
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @return Y position of score display area
+	 */
+	public int getScoreDisplayPositionY(GameEngine engine, int playerID) {
+		return getFieldDisplayPositionY(engine, playerID) + 48;
+	}
+
+	/**
+	 * Get type of piece preview
+	 * @return 0=Above 1=Side Small 2=Side Big
+	 */
+	public int getNextDisplayType() {
+		if(sidenext && bigsidenext) return 2;
+		if(sidenext && !bigsidenext) return 1;
+		return 0;
 	}
 
 	/**

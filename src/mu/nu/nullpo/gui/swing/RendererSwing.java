@@ -155,12 +155,11 @@ public class RendererSwing extends EventReceiver {
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
-		int size = (int)(16 * scale);
-		int x2 = x * size;
-		int y2 = y * size;
+		int x2 = x * 16;
+		int y2 = y * 16;
 		if(!engine.owner.menuOnly) {
-			x2 += FIELD_OFFSET_X[playerID] + 4;
-			y2 += FIELD_OFFSET_Y[playerID] + 52;
+			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
+			y2 += getFieldDisplayPositionY(engine, playerID) + 52;
 		}
 		NormalFontSwing.printFont(x2, y2, str, color, scale);
 	}
@@ -187,8 +186,8 @@ public class RendererSwing extends EventReceiver {
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		if(engine.owner.menuOnly) return;
-		int size = (int)(16 * scale);
-		NormalFontSwing.printFont(FIELD_OFFSET_X[playerID] + 216 + (x * size), FIELD_OFFSET_Y[playerID] + 48 + (y * size), str, color, scale);
+		NormalFontSwing.printFont(getFieldDisplayPositionX(engine, playerID) + 216 + (x * 16),
+								  getFieldDisplayPositionY(engine, playerID) + 48 + (y * 16), str, color, scale);
 	}
 
 	/*
@@ -231,8 +230,8 @@ public class RendererSwing extends EventReceiver {
 		if(graphics == null) return;
 		if(engine.owner.menuOnly) return;
 
-		int dx1 = FIELD_OFFSET_X[engine.playerID] + 222 + (x * 16);
-		int dy1 = FIELD_OFFSET_Y[engine.playerID] + 48 + 6 + (y * 16);
+		int dx1 = getFieldDisplayPositionX(engine, playerID) + 222 + (x * 16);
+		int dy1 = getFieldDisplayPositionY(engine, playerID) + 48 + 6 + (y * 16);
 
 		graphics.setColor(Color.black);
 		graphics.drawRect(dx1, dy1, 41, 3);

@@ -487,6 +487,7 @@ public class NullpoMinoSDL {
 		while(quit == false) {
 			//  event 処理
 			processEvent();
+			if(quit == true) break;
 
 			// Joystick の更新
 			if(joystickMax > 0) joyUpdate();

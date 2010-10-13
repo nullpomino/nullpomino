@@ -818,7 +818,15 @@ public class VSBattleMode extends DummyMode {
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		// Status display
-		if(playerID == 0) {
+		if((playerID == 0) && (owner.receiver.getNextDisplayType() == 2)) {
+			receiver.drawDirectFont(engine, playerID, 256, 16, GeneralUtil.getTime(engine.statistics.time));
+
+			if((hurryupSeconds[playerID] >= 0) && (engine.timerActive) &&
+			   (engine.statistics.time >= hurryupSeconds[playerID] * 60) && (engine.statistics.time < (hurryupSeconds[playerID] + 5) * 60))
+			{
+				receiver.drawDirectFont(engine, playerID, 258 - 8, 32, "HURRY UP!", (engine.statistics.time % 2 == 0));
+			}
+		} else if((playerID == 0) && (owner.receiver.getNextDisplayType() != 2)) {
 			receiver.drawScoreFont(engine, playerID, 0, 0, "VS-BATTLE", EventReceiver.COLOR_ORANGE);
 
 			receiver.drawScoreFont(engine, playerID, 0, 2, "1P GARBAGE", EventReceiver.COLOR_RED);
@@ -900,7 +908,7 @@ public class VSBattleMode extends DummyMode {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 
-		//  Attack 
+		//  Attack
 		if(lines > 0) {
 			int pts = 0;
 			int ptsB2B = 0;
@@ -1011,7 +1019,7 @@ public class VSBattleMode extends DummyMode {
 						garbage[playerID] = 0;
 					}
 				} else {
-					//  Attack 
+					//  Attack
 					garbage[enemyID] += pts;
 				}
 			}
@@ -1037,7 +1045,7 @@ public class VSBattleMode extends DummyMode {
 				}
 			}
 
-			//  Attack 
+			//  Attack
 			if(pts > 0) {
 				garbageEntries[enemyID].add(new GarbageEntry(pts, playerID));
 

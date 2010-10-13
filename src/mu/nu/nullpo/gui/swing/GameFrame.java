@@ -517,27 +517,27 @@ public class GameFrame extends JFrame implements Runnable {
 		NullpoMinoSwing.gameManager.receiver.setGraphics(g);
 		NullpoMinoSwing.gameManager.renderAll();
 
-		// Pause menu
-		if(pause && !enableframestep && !pauseMessageHide) {
-			int offsetX = RendererSwing.FIELD_OFFSET_X[0];
-			int offsetY = RendererSwing.FIELD_OFFSET_Y[0];
+		if((NullpoMinoSwing.gameManager.engine.length > 0) && (NullpoMinoSwing.gameManager.engine[0] != null)) {
+			int offsetX = NullpoMinoSwing.gameManager.receiver.getFieldDisplayPositionX(NullpoMinoSwing.gameManager.engine[0], 0);
+			int offsetY = NullpoMinoSwing.gameManager.receiver.getFieldDisplayPositionY(NullpoMinoSwing.gameManager.engine[0], 0);
 
-			NormalFontSwing.printFont(offsetX + 12, offsetY + 188 + (cursor * 16), "b", NormalFontSwing.COLOR_RED);
+			// Pause menu
+			if(pause && !enableframestep && !pauseMessageHide) {
+				NormalFontSwing.printFont(offsetX + 12, offsetY + 188 + (cursor * 16), "b", NormalFontSwing.COLOR_RED);
 
-			NormalFontSwing.printFont(offsetX + 28, offsetY + 188, "CONTINUE", (cursor == 0));
-			NormalFontSwing.printFont(offsetX + 28, offsetY + 204, "RETRY", (cursor == 1));
-			NormalFontSwing.printFont(offsetX + 28, offsetY + 220, "END", (cursor == 2));
-			if(NullpoMinoSwing.gameManager.replayMode && !NullpoMinoSwing.gameManager.replayRerecord)
-				NormalFontSwing.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
+				NormalFontSwing.printFont(offsetX + 28, offsetY + 188, "CONTINUE", (cursor == 0));
+				NormalFontSwing.printFont(offsetX + 28, offsetY + 204, "RETRY", (cursor == 1));
+				NormalFontSwing.printFont(offsetX + 28, offsetY + 220, "END", (cursor == 2));
+				if(NullpoMinoSwing.gameManager.replayMode && !NullpoMinoSwing.gameManager.replayRerecord)
+					NormalFontSwing.printFont(offsetX + 28, offsetY + 236, "RERECORD", (cursor == 3));
+			}
+
+			// Fast forward
+			if(fastforward != 0)
+				NormalFontSwing.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFontSwing.COLOR_ORANGE);
+			if(NullpoMinoSwing.gameManager.replayShowInvisible)
+				NormalFontSwing.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFontSwing.COLOR_ORANGE);
 		}
-
-		int offsetX = RendererSwing.FIELD_OFFSET_X[0];
-		int offsetY = RendererSwing.FIELD_OFFSET_Y[0];
-		// 早送り
-		if(fastforward != 0)
-			NormalFontSwing.printFont(offsetX, offsetY + 376, "e" + (fastforward + 1), NormalFontSwing.COLOR_ORANGE);
-		if(NullpoMinoSwing.gameManager.replayShowInvisible)
-			NormalFontSwing.printFont(offsetX, offsetY + 392, "SHOW INVIS", NormalFontSwing.COLOR_ORANGE);
 
 		// FPS表示
 		if(showfps) {
