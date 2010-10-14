@@ -191,7 +191,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		// Menu
 		if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, (xyzzy == 573) ? 6 : 3);
+			int change = updateCursor(engine, (xyzzy == 573) ? 7 : 4);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -220,16 +220,19 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					if(chainDisplayType > 2) chainDisplayType = 0;
 					break;
 				case 4:
+					bigDisplay = !bigDisplay;
+					break;
+				case 5:
 					fastenable += change;
 					if(fastenable < 0) fastenable = 2;
 					if(fastenable > 2) fastenable = 0;
 					break;
-				case 5:
+				case 6:
 					previewSubset += change;
 					if(previewSubset < 0) previewSubset = mapSubsets.length-1;
 					if(previewSubset >= mapSubsets.length) previewSubset = 0;
 					break;
-				case 6:
+				case 7:
 					previewChain += change;
 					if(previewChain < feverChainMin) previewChain = feverChainMax;
 					if(previewChain > feverChainMax) previewChain = feverChainMin;
@@ -305,6 +308,20 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	}
 
 	/*
+	 * When the piece is movable
+	 */
+	@Override
+	public void renderMove(GameEngine engine, int playerID) {
+		if(engine.displaysize == 1) {
+			receiver.drawMenuFont(engine, playerID, 4, 0, String.format("%02d",(timeLimit+59)/60),
+					timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE, 2.0f);
+		} else {
+			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%02d",(timeLimit+59)/60),
+					timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
+		}
+	}
+
+	/*
 	 * Render the settings screen
 	 */
 	@Override
@@ -314,18 +331,19 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if(outlinetype == 1) strOutline = "COLOR";
 		if(outlinetype == 2) strOutline = "NONE";
 
-		if (engine.statc[2] <= 4) {
+		if (engine.statc[2] <= 5) {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),
 					"OUTLINE", strOutline,
 					"COLORS", String.valueOf(numColors),
-					"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType]);
+					"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType],
+					"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
 			if (xyzzy == 573)
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE, 4, "FAST", FAST_NAMES[fastenable]);
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_BLUE, 5, "FAST", FAST_NAMES[fastenable]);
 		} else {
 			receiver.drawMenuFont(engine, playerID, 0, 13, "MAP PREVIEW", EventReceiver.COLOR_YELLOW);
 			receiver.drawMenuFont(engine, playerID, 0, 14, "A:DISPLAY", EventReceiver.COLOR_GREEN);
-			drawMenu(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, 5,
+			drawMenu(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, 6,
 					"SUBSET", mapSubsets[previewSubset].toUpperCase(),
 					"CHAIN", String.valueOf(previewChain));
 		}
@@ -342,12 +360,15 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE      TIME", EventReceiver.COLOR_BLUE);
+				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+				int topY = (receiver.getNextDisplayType() == 2) ? 6 : 4;
+
+				receiver.drawScoreFont(engine, playerID, 3, topY-1, "SCORE      TIME", EventReceiver.COLOR_BLUE, scale);
 
 				for(int i = 0; i < RANKING_MAX; i++) {
-					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[numColors-3][mapSet][i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 14, 4 + i, GeneralUtil.getTime(rankingTime[numColors-3][mapSet][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
+					receiver.drawScoreFont(engine, playerID, 3, topY+i, String.valueOf(rankingScore[numColors-3][mapSet][i]), (i == rankingRank), scale);
+					receiver.drawScoreFont(engine, playerID, 14, topY+i, GeneralUtil.getTime(rankingTime[numColors-3][mapSet][i]), (i == rankingRank), scale);
 				}
 			}
 		} else {
@@ -372,9 +393,6 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			if (timeLimitAddDisplay > 0)
 				receiver.drawScoreFont(engine, playerID, 0, 14, "(+" + (timeLimitAdd/60) + " SEC.)");
 
-			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%2d",(timeLimit+59)/60),
-					timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
-
 			receiver.drawScoreFont(engine, playerID, 11, 6, "BOARDS", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 7, String.valueOf(boardsPlayed));
 
@@ -394,12 +412,26 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 18, "CLEARED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 19, String.valueOf(blocksCleared));
 
+			if(engine.stat != GameEngine.STAT_MOVE) {
+				if(engine.displaysize == 1) {
+					receiver.drawMenuFont(engine, playerID, 4, 0, String.format("%02d",(timeLimit+59)/60),
+							timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE, 2.0f);
+				} else {
+					receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%02d",(timeLimit+59)/60),
+							timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
+				}
+			}
+
 			if (!engine.gameActive)
 				return;
 
 			int textHeight = 13;
 			if (engine.field != null)
 				textHeight = engine.field.getHeight()+1;
+			if(engine.displaysize == 1)
+				textHeight = 11;
+
+			int baseX = (engine.displaysize == 1) ? 1 : 0;
 			if (chain > 0 && chainDisplay > 0 && chainDisplayType != 0)
 			{
 				int color = EventReceiver.COLOR_YELLOW;
@@ -412,10 +444,10 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					else if (chain < feverChainDisplay-2)
 						color = EventReceiver.COLOR_RED;
 				}
-				receiver.drawMenuFont(engine, playerID, chain > 9 ? 0 : 1, textHeight, chain + " CHAIN!", color);
+				receiver.drawMenuFont(engine, playerID, baseX + (chain > 9 ? 0 : 1), textHeight, chain + " CHAIN!", color);
 			}
 			if (zenKeshiDisplay > 0)
-				receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, baseX, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 		}
 	}
 
@@ -614,6 +646,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		numColors = prop.getProperty("avalanchefever.numcolors", 4);
 		version = prop.getProperty("avalanchefever.version", 0);
 		chainDisplayType = prop.getProperty("avalanchefever.chainDisplayType", 1);
+		bigDisplay = prop.getProperty("avalanchefever.bigDisplay", false);
 	}
 
 	/**
@@ -626,6 +659,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		prop.setProperty("avalanchefever.numcolors", numColors);
 		prop.setProperty("avalanchefever.version", version);
 		prop.setProperty("avalanchefever.chainDisplayType", chainDisplayType);
+		prop.setProperty("avalanchefever.bigDisplay", bigDisplay);
 	}
 
 	private void loadMapSetFever(GameEngine engine, int playerID, int id, boolean forceReload) {

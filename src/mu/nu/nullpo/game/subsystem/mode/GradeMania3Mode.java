@@ -876,13 +876,15 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		receiver.drawScoreFont(engine, playerID, 0, 0, "GRADE MANIA 3 " + (enableexam ? "(+EXAM)" : ""), EventReceiver.COLOR_CYAN);
+		receiver.drawScoreFont(engine, playerID, 0, 0, "GRADE MANIA 3" + (enableexam ? "(+EXAM)" : ""), EventReceiver.COLOR_CYAN);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (!owner.replayMode)) ) {
 			if((startlevel == 0) && (!big) && (!always20g) && (!owner.replayMode) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
-					receiver.drawScoreFont(engine, playerID, 3, 2, "GRADE LEVEL TIME", EventReceiver.COLOR_BLUE);
+					float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+					int topY = (receiver.getNextDisplayType() == 2) ? 5 : 3;
+					receiver.drawScoreFont(engine, playerID, 3, topY-1, "GRADE LEVEL TIME", EventReceiver.COLOR_BLUE, scale);
 
 					for(int i = 0; i < RANKING_MAX; i++) {
 						int type = enableexam ? 1 : 0;
@@ -890,10 +892,10 @@ public class GradeMania3Mode extends DummyMode {
 						if((rankingRollclear[i][type] == 1) || (rankingRollclear[i][type] == 3)) gcolor = EventReceiver.COLOR_GREEN;
 						if((rankingRollclear[i][type] == 2) || (rankingRollclear[i][type] == 4)) gcolor = EventReceiver.COLOR_ORANGE;
 
-						receiver.drawScoreFont(engine, playerID, 0, 3 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-						receiver.drawScoreFont(engine, playerID, 3, 3 + i, getGradeName(rankingGrade[i][type]), gcolor);
-						receiver.drawScoreFont(engine, playerID, 9, 3 + i, String.valueOf(rankingLevel[i][type]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 15, 3 + i, GeneralUtil.getTime(rankingTime[i][type]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
+						receiver.drawScoreFont(engine, playerID, 3, topY+i, getGradeName(rankingGrade[i][type]), gcolor, scale);
+						receiver.drawScoreFont(engine, playerID, 9, topY+i, String.valueOf(rankingLevel[i][type]), (i == rankingRank), scale);
+						receiver.drawScoreFont(engine, playerID, 15, topY+i, GeneralUtil.getTime(rankingTime[i][type]), (i == rankingRank), scale);
 					}
 
 					if(enableexam) {

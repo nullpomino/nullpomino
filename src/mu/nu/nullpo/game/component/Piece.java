@@ -638,10 +638,10 @@ public class Piece implements Serializable {
 		for(int i = 0; i < getMaxBlock(); i++) {
 			int x2 = x + dataX[rt][i] * size; //Multiply co-ordinate offset by piece size.
 			int y2 = y + dataY[rt][i] * size;
-			
+
 			fld.setAllAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, false);
 			block[i].setAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, true);
-			
+
 			/*
 			 * Loop through width/height of the block, setting cells in the field.
 			 * If the piece is normal (size == 1), a standard, 1x1 space is allotted per block.

@@ -133,6 +133,9 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** True to use slower falling animations, false to use faster */
 	protected boolean cascadeSlow;
 
+	/** True to use big field display */
+	protected boolean bigDisplay;
+
 	/** 1 ojama is generated per this many points. */
 	protected int ojamaRate;
 
@@ -237,6 +240,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	protected boolean readyInit(GameEngine engine, int playerID) {
 		engine.numColors = numColors;
 		engine.lineGravityType = cascadeSlow ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
+		engine.displaysize = bigDisplay ? 1 : 0;
 
 		if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 		else if(outlinetype == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;

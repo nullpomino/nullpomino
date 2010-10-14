@@ -415,13 +415,15 @@ public class TechnicianMode extends DummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (big == false) && (startlevel == 0) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE   LINE TIME", EventReceiver.COLOR_BLUE);
+				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+				int topY = (receiver.getNextDisplayType() == 2) ? 6 : 4;
+				receiver.drawScoreFont(engine, playerID, 3, topY-1, "SCORE   LINE TIME", EventReceiver.COLOR_BLUE, scale);
 
 				for(int i = 0; i < RANKING_MAX; i++) {
-					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 11, 4 + i, String.valueOf(rankingLines[gametype][i]), (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 16, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
+					receiver.drawScoreFont(engine, playerID, 3, topY+i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank), scale);
+					receiver.drawScoreFont(engine, playerID, 11, topY+i, String.valueOf(rankingLines[gametype][i]), (i == rankingRank), scale);
+					receiver.drawScoreFont(engine, playerID, 16, topY+i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank), scale);
 				}
 			}
 		} else {

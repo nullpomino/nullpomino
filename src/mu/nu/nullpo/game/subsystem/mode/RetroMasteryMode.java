@@ -339,7 +339,7 @@ public class RetroMasteryMode extends DummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE   LINES LEVEL", EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE    LINE LV.", EventReceiver.COLOR_BLUE);
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
@@ -507,7 +507,7 @@ public class RetroMasteryMode extends DummyMode {
 		drawResultStats(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE,
 				STAT_LEVEL, STAT_TIME);
 		drawResult(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE,
-				"EFFICIENCY", String.format("%5.3f", efficiency));
+				"EFFICIENCY", String.format("%10.3f", efficiency));
 		drawResultRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 

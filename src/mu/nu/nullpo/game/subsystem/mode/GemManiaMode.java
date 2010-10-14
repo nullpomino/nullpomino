@@ -922,7 +922,10 @@ public class GemManiaMode extends DummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((startstage == 0) && (always20g == false) && (trainingType == 0) && (startnextc == 0) && (stageset < 0) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 3, 2, "STAGE CLEAR TIME", EventReceiver.COLOR_PINK);
+				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+				int topY = (receiver.getNextDisplayType() == 2) ? 5 : 3;
+
+				receiver.drawScoreFont(engine, playerID, 3, topY-1, "STAGE CLEAR TIME", EventReceiver.COLOR_PINK, scale);
 				int type = randomnext ? 1 : 0;
 
 				for(int i = 0; i < RANKING_MAX; i++) {
@@ -930,10 +933,10 @@ public class GemManiaMode extends DummyMode {
 					if(rankingAllClear[type][i] == 1) gcolor = EventReceiver.COLOR_GREEN;
 					if(rankingAllClear[type][i] == 2) gcolor = EventReceiver.COLOR_ORANGE;
 
-					receiver.drawScoreFont(engine, playerID, 0, 3 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-					receiver.drawScoreFont(engine, playerID, 3, 3 + i, getStageName(rankingStage[type][i]), gcolor);
-					receiver.drawScoreFont(engine, playerID, 9, 3 + i, rankingClearPer[type][i] + "%", (i == rankingRank));
-					receiver.drawScoreFont(engine, playerID, 15, 3 + i, GeneralUtil.getTime(rankingTime[type][i]), (i == rankingRank));
+					receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
+					receiver.drawScoreFont(engine, playerID, 3, topY+i, getStageName(rankingStage[type][i]), gcolor, scale);
+					receiver.drawScoreFont(engine, playerID, 9, topY+i, rankingClearPer[type][i] + "%", (i == rankingRank), scale);
+					receiver.drawScoreFont(engine, playerID, 15, topY+i, GeneralUtil.getTime(rankingTime[type][i]), (i == rankingRank), scale);
 				}
 			}
 		} else {

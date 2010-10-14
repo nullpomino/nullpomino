@@ -575,7 +575,7 @@ public class GameEngine {
 
 	/** DAS delay (-1=Auto 0orAbove=Fixed) */
 	public int owDasDelay;
-	
+
 	/** Reverse roles of up/down keys in-game */
 	public boolean owReverseUpDown;
 
@@ -1001,14 +1001,14 @@ public class GameEngine {
 		if((speed.das > ruleopt.maxDAS) && (ruleopt.maxDAS >= 0)) return ruleopt.maxDAS;
 		return speed.das;
 	}
-	
+
 	/**
 	 * @return Controller.BUTTON_UP if controls are normal, Controller.BUTTON_DOWN if up/down are reversed
 	 */
 	public int getUp() {
 		return owReverseUpDown ? Controller.BUTTON_DOWN : Controller.BUTTON_UP;
 	}
-	
+
 	/**
 	 * @return Controller.BUTTON_DOWN if controls are normal, Controller.BUTTON_UP if up/down are reversed
 	 */
@@ -1844,12 +1844,12 @@ public class GameEngine {
 					if(nextPieceArrayObject[i].direction >= Piece.DIRECTION_COUNT) {
 						nextPieceArrayObject[i].direction = random.nextInt(Piece.DIRECTION_COUNT);
 					}
+					nextPieceArrayObject[i].connectBlocks = this.connectBlocks;
 					nextPieceArrayObject[i].setColor(ruleopt.pieceColor[nextPieceArrayObject[i].id]);
 					nextPieceArrayObject[i].setSkin(getSkin());
 					nextPieceArrayObject[i].updateConnectData();
 					nextPieceArrayObject[i].setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 					nextPieceArrayObject[i].setAttribute(Block.BLOCK_ATTRIBUTE_BONE, bone);
-					nextPieceArrayObject[i].connectBlocks = this.connectBlocks;
 				}
 				if (randomBlockColor)
 				{
@@ -1861,6 +1861,7 @@ public class GameEngine {
 						for (int j = 0; j < size; j++)
 							colors[j] = blockColors[random.nextInt(numColors)];
 						nextPieceArrayObject[i].setColor(colors);
+						nextPieceArrayObject[i].updateConnectData();
 					}
 				}
 			}

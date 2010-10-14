@@ -115,8 +115,8 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
-		int x2 = x * 16;
-		int y2 = y * 16;
+		int x2 = (scale == 0.5f) ? x * 8 : x * 16;
+		int y2 = (scale == 0.5f) ? y * 8 : y * 16;
 		if(!engine.owner.menuOnly) {
 			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
 			y2 += getFieldDisplayPositionY(engine, playerID) + 52;
@@ -144,8 +144,9 @@ public class RendererSlick extends EventReceiver {
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		if(engine.owner.menuOnly) return;
-		NormalFont.printFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
-							 getScoreDisplayPositionY(engine, playerID) + (y * 16),
+		int size = (scale == 0.5f) ? 8 : 16;
+		NormalFont.printFont(getScoreDisplayPositionX(engine, playerID) + (x * size),
+							 getScoreDisplayPositionY(engine, playerID) + (y * size),
 							 str, color, scale);
 	}
 
@@ -991,7 +992,9 @@ public class RendererSlick extends EventReceiver {
 					}
 				}
 			} else {
-				graphics.fillRect(x + 20, y, 135, 48);
+				int w = (fldWidth * fldBlkSize) + 15;
+
+				graphics.fillRect(x + 20, y, w - 40, 48);
 
 				for(int i = 0; i <= 20; i++) {
 					Color filter2 = new Color(Color.black);
@@ -1003,7 +1006,7 @@ public class RendererSlick extends EventReceiver {
 					Color filter2 = new Color(Color.black);
 					filter2.a = ((float)(20 - i) / (float)20);
 					graphics.setColor(filter2);
-					graphics.fillRect(x + i + 155, y, 1, 48);
+					graphics.fillRect(x + i + (w - 20), y, 1, 48);
 				}
 			}
 
@@ -1044,12 +1047,12 @@ public class RendererSlick extends EventReceiver {
 			} else {
 				// NEXT1
 				if(engine.ruleopt.nextDisplay >= 1) {
-					Piece piece = engine.getNextObject(engine.nextPieceCount);
 					NormalFont.printFont(x + 60, y, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
+					Piece piece = engine.getNextObject(engine.nextPieceCount);
 					if(piece != null) {
 						//int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
-						int x2 = x + 4 + engine.getSpawnPosX(engine.field, piece) * 16; //Rules with spawn x modified were misaligned.
+						int x2 = x + 4 + engine.getSpawnPosX(engine.field, piece) * fldBlkSize; //Rules with spawn x modified were misaligned.
 						int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
 						drawPiece(x2, y2, piece);
 					}

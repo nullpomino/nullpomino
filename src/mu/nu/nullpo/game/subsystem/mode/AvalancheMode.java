@@ -157,14 +157,14 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 8;
+				if(engine.statc[2] < 0) engine.statc[2] = 9;
 				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]--;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 8) engine.statc[2] = 0;
+				if(engine.statc[2] > 9) engine.statc[2] = 0;
 				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]++;
 				engine.playSE("cursor");
 			}
@@ -215,6 +215,10 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 					break;
 				case 8:
 					cascadeSlow = !cascadeSlow;
+					break;
+				case 9:
+					bigDisplay = !bigDisplay;
+					break;
 				}
 			}
 
@@ -269,7 +273,22 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				"X COLUMN", dangerColumnDouble ? "3 AND 4" : "3 ONLY",
 				"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX),
 				"SHOW CHAIN", GeneralUtil.getONorOFF(showChains),
-				"FALL ANIM", cascadeSlow ?  "FEVER" : "CLASSIC");
+				"FALL ANIM", cascadeSlow ?  "FEVER" : "CLASSIC",
+				"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+	}
+
+	/*
+	 * When the piece is movable
+	 */
+	@Override
+	public void renderMove(GameEngine engine, int playerID) {
+		if(dangerColumnShowX) {
+			if(engine.displaysize == 1) {
+				receiver.drawMenuFont(engine, playerID, 4, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED, 2.0f);
+			} else {
+				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
+			}
+		}
 	}
 
 	/*
@@ -285,8 +304,11 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
+				float scale = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 0.5f : 1.0f;
+				int topY = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 6 : 4;
+
 				if (gametype == 0) {
-					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE      TIME", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, 3, topY-1, "SCORE      TIME", EventReceiver.COLOR_BLUE, scale);
 				} else if (gametype == 1) {
 					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE", EventReceiver.COLOR_BLUE);
 				} else if (gametype == 2) {
@@ -294,10 +316,10 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				}
 
 				for(int i = 0; i < RANKING_MAX; i++) {
-					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
+					receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
 					if (gametype == 0) {
-						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[scoreType][numColors-3][gametype][i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 14, 4 + i, GeneralUtil.getTime(rankingTime[scoreType][numColors-3][gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 3, topY+i, String.valueOf(rankingScore[scoreType][numColors-3][gametype][i]), (i == rankingRank), scale);
+						receiver.drawScoreFont(engine, playerID, 14, topY+i, GeneralUtil.getTime(rankingTime[scoreType][numColors-3][gametype][i]), (i == rankingRank), scale);
 					} else if (gametype == 1) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[scoreType][numColors-3][gametype][i]), (i == rankingRank));
 					} else if (gametype == 2) {
@@ -329,25 +351,34 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 12, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 13, GeneralUtil.getTime(engine.statistics.time));
 
-			receiver.drawScoreFont(engine, playerID, 14, 6, "CLEARED", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 7, String.valueOf(blocksCleared));
+			receiver.drawScoreFont(engine, playerID, 11, 6, "CLEARED", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 7, String.valueOf(blocksCleared));
 
-			receiver.drawScoreFont(engine, playerID, 14, 9, "ZENKESHI", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 10, String.valueOf(zenKeshiCount));
+			receiver.drawScoreFont(engine, playerID, 11, 9, "ZENKESHI", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 10, String.valueOf(zenKeshiCount));
 
-			receiver.drawScoreFont(engine, playerID, 14, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 14, 13, String.valueOf(engine.statistics.maxChain));
+			receiver.drawScoreFont(engine, playerID, 11, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 11, 13, String.valueOf(engine.statistics.maxChain));
 
-			if (dangerColumnShowX)
-				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
+			if(dangerColumnShowX && (engine.stat != GameEngine.STAT_MOVE)) {
+				if(engine.displaysize == 1) {
+					receiver.drawMenuFont(engine, playerID, 4, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED, 2.0f);
+				} else {
+					receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
+				}
+			}
 
 			int textHeight = 13;
 			if (engine.field != null)
 				textHeight = engine.field.getHeight()+1;
+			if(engine.displaysize == 1)
+				textHeight = 11;
+
+			int baseX = (engine.displaysize == 1) ? 1 : 0;
 			if (chain > 0 && chainDisplay > 0 && showChains)
-				receiver.drawMenuFont(engine, playerID, chain > 9 ? 0 : 1, textHeight, chain + " CHAIN!", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, baseX + (chain > 9 ? 0 : 1), textHeight, chain + " CHAIN!", EventReceiver.COLOR_YELLOW);
 			if (zenKeshi)
-				receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, baseX, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 		}
 	}
 
@@ -505,6 +536,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		dangerColumnShowX = prop.getProperty("avalanche.dangerColumnShowX", false);
 		showChains = prop.getProperty("avalanche.showChains", true);
 		cascadeSlow = prop.getProperty("avalanche.cascadeSlow", false);
+		bigDisplay = prop.getProperty("avalanche.bigDisplay", false);
 	}
 
 	/**
@@ -522,6 +554,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		prop.setProperty("avalanche.dangerColumnShowX", dangerColumnShowX);
 		prop.setProperty("avalanche.showChains", showChains);
 		prop.setProperty("avalanche.cascadeSlow", cascadeSlow);
+		prop.setProperty("avalanche.bigDisplay", bigDisplay);
 	}
 
 	/**

@@ -315,8 +315,11 @@ public class SquareMode extends DummyMode {
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
+				float scale = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 0.5f : 1.0f;
+				int topY = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 6 : 4;
+
 				if (gametype == 0) {
-					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE SQUARE TIME", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, 3, topY-1, "SCORE SQUARE TIME", EventReceiver.COLOR_BLUE, scale);
 				} else if (gametype == 1) {
 					receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE SQUARE", EventReceiver.COLOR_BLUE);
 				} else if (gametype == 2) {
@@ -324,11 +327,11 @@ public class SquareMode extends DummyMode {
 				}
 
 				for(int i = 0; i < RANKING_MAX; i++) {
-					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
+					receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
 					if (gametype == 0) {
-						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 9, 4 + i, String.valueOf(rankingSquares[gametype][i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 16, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 3, topY+i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank), scale);
+						receiver.drawScoreFont(engine, playerID, 9, topY+i, String.valueOf(rankingSquares[gametype][i]), (i == rankingRank), scale);
+						receiver.drawScoreFont(engine, playerID, 16, topY+i, GeneralUtil.getTime(rankingTime[gametype][i]), (i == rankingRank), scale);
 					} else if (gametype == 1) {
 						receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingScore[gametype][i]), (i == rankingRank));
 						receiver.drawScoreFont(engine, playerID, 9, 4 + i, String.valueOf(rankingSquares[gametype][i]), (i == rankingRank));

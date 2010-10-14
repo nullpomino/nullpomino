@@ -86,7 +86,7 @@ public class Field implements Serializable {
 	 *	any visible effects outside this function.
 	 *				-Kitaru
 	 */
-	
+
 	/** fieldのBlock */
 	protected Block[][] block_field;
 
@@ -119,10 +119,10 @@ public class Field implements Serializable {
 
 	/** List of colors of lines cleared in most recent line color clear */
 	public ArrayList<Integer> lineColorsCleared;
-	
+
 	/** List of last rows cleared in most recent horizontal line clear. */
 	public ArrayList<Block[]> lastLinesCleared;
-	
+
 	/** Used for TGM garbage, can later be extended to all types */
 	//public ArrayList<Block[]> pendingGarbage;
 
@@ -171,7 +171,7 @@ public class Field implements Serializable {
 	/**
 	 * Called at initialization
 	 */
-	public void reset() {		
+	public void reset() {
 		block_field = new Block[height][width];
 		block_hidden = new Block[hidden_height][width];
 		lineflag_field = new boolean[height];
@@ -319,7 +319,7 @@ public class Field implements Serializable {
 		// 置いたBlockが消える
 		return COORD_VANISH;
 	}
-	
+
 	/**
 	 * @param y height of the row in the field
 	 * @return a reference to the row
@@ -331,7 +331,7 @@ public class Field implements Serializable {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @param y height of the row in the field
 	 * @return a reference to the row
@@ -353,7 +353,7 @@ public class Field implements Serializable {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 指定した座標にあるBlockを取得
 	 * @param x X-coordinate
@@ -367,7 +367,7 @@ public class Field implements Serializable {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 指定した座標にあるBlockを取得 (失敗したら例外送出）
 	 * @param x X-coordinate
@@ -384,7 +384,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockを設定
+	 * Set block to specific location
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Block
@@ -395,17 +395,19 @@ public class Field implements Serializable {
 			setBlockE(x, y, blk);
 		} catch(ArrayIndexOutOfBoundsException e) {
 			return false;
+		} catch(NullPointerException e) {
+			return false;	// There is a possible NPE here in avalanche modes
 		}
 
 		return true;
 	}
 
 	/**
-	 * 指定した座標にあるBlockを設定 (失敗したら例外送出）
+	 * Set block to specific location (Throws exception when fails)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Block
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @throws ArrayIndexOutOfBoundsException When the coordinate is invalid
 	 */
 	public void setBlockE(int x, int y, Block blk) throws ArrayIndexOutOfBoundsException {
 		try {
@@ -428,7 +430,7 @@ public class Field implements Serializable {
 			return Block.BLOCK_COLOR_INVALID;
 		}
 	}
-	
+
 	/**
 	 * 指定した座標にあるBlock colorを取得
 	 * @param x X-coordinate
@@ -641,12 +643,12 @@ public class Field implements Serializable {
 	 */
 	public int checkLine() {
 		int lines = 0;
-		
+
 		if (lastLinesCleared == null){
 			lastLinesCleared = new ArrayList<Block[]>();
 		}
 		lastLinesCleared.clear();
-		
+
 		Block[] row = new Block[width];
 
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
@@ -1412,7 +1414,7 @@ public class Field implements Serializable {
 	 */
 	public ArrayList<Block[]> getLastLinesAsTGMAttack(){
 		ArrayList<Block[]> attack = new ArrayList<Block[]>();
-		
+
 		for(Block[] row : lastLinesCleared){
 			Block[] row2 = new Block[getWidth()];
 			for(int i = 0; i < getWidth(); i++){
@@ -1427,10 +1429,10 @@ public class Field implements Serializable {
 			}
 			attack.add(0, row2);
 		}
-		
+
 		return attack;
 	}
-	
+
 	/**
 	 * 穴が1箇所だけ開いたgarbage blockを一番下に追加
 	 * @param hole 穴の位置 (-1なら穴なし）
@@ -2307,14 +2309,14 @@ public class Field implements Serializable {
 	 */
 	public String rowToString(Block[] row){
 		String strResult = "";
-		
+
 		for(int x = 0; x < row.length; x++) {
 			strResult += row[x];
 		}
-		
+
 		return strResult;
 	}
-	
+
 	/**
 	 * fieldを文字列に変換
 	 * @return 文字列に変換されたfield
@@ -2337,7 +2339,7 @@ public class Field implements Serializable {
 	public Block[] stringToRow(String str){
 		return stringToRow(str, 0, false, false);
 	}
-	
+
 	/**
 	 * @param str String representing field state
 	 * @param skin Block skin being used in this field
@@ -2348,7 +2350,7 @@ public class Field implements Serializable {
 	public Block[] stringToRow(String str, int skin, boolean isGarbage, boolean isWall){
 		Block[] row = new Block[getWidth()];
 		for(int j = 0; j < getWidth(); j++) {
-			
+
 			int blkColor = Block.BLOCK_COLOR_NONE;
 
 			/*
@@ -2375,11 +2377,11 @@ public class Field implements Serializable {
 				row[j].setAttribute(Block.BLOCK_ATTRIBUTE_WALL, true);
 			}
 		}
-		
+
 		return row;
 	}
-		
-	
+
+
 	/**
 	 * 文字列を元にfieldを変更
 	 * @param str 文字列
@@ -2395,7 +2397,7 @@ public class Field implements Serializable {
 	 * @param highestGarbageY 最も高いgarbage blockの位置
 	 * @param highestWallY 最も高いHurryupBlockの位置
 	 */
-	public void stringToField(String str, int skin, int highestGarbageY, int highestWallY) {		
+	public void stringToField(String str, int skin, int highestGarbageY, int highestWallY) {
 		for(int i = -1; i < getHeight(); i++) {
 			int index = (getHeight() - 1 - i) * getWidth();
 			/*

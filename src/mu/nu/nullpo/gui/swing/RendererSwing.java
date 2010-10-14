@@ -156,8 +156,8 @@ public class RendererSwing extends EventReceiver {
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
-		int x2 = x * 16;
-		int y2 = y * 16;
+		int x2 = (scale == 0.5f) ? x * 8 : x * 16;
+		int y2 = (scale == 0.5f) ? y * 8 : y * 16;
 		if(!engine.owner.menuOnly) {
 			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
 			y2 += getFieldDisplayPositionY(engine, playerID) + 52;
@@ -187,8 +187,9 @@ public class RendererSwing extends EventReceiver {
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		if(engine.owner.menuOnly) return;
-		NormalFontSwing.printFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
-								  getScoreDisplayPositionY(engine, playerID) + (y * 16), str, color, scale);
+		int size = (scale == 0.5f) ? 8 : 16;
+		NormalFontSwing.printFont(getScoreDisplayPositionX(engine, playerID) + (x * size),
+								  getScoreDisplayPositionY(engine, playerID) + (y * size), str, color, scale);
 	}
 
 	/*
@@ -1007,7 +1008,7 @@ public class RendererSwing extends EventReceiver {
 
 					if(piece != null) {
 						//int x2 = x + 4 + ((-1 + (engine.field.getWidth() - piece.getWidth() + 1) / 2) * 16);
-					   int x2 = x + 4 + engine.getSpawnPosX(engine.field, piece) * 16; //Rules with spawn x modified were misaligned.
+						int x2 = x + 4 + engine.getSpawnPosX(engine.field, piece) * fldBlkSize; //Rules with spawn x modified were misaligned.
 						int y2 = y + 48 - ((piece.getMaximumBlockY() + 1) * 16);
 						drawPiece(x2, y2, piece);
 					}

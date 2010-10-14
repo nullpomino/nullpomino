@@ -465,17 +465,19 @@ public class FinalMode extends DummyMode {
 			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Leaderboard
-					receiver.drawScoreFont(engine, playerID, 3, 2, "GRADE LEVEL TIME", EventReceiver.COLOR_BLUE);
+					float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+					int topY = (receiver.getNextDisplayType() == 2) ? 5 : 3;
+					receiver.drawScoreFont(engine, playerID, 3, topY-1, "GRADE LEVEL TIME", EventReceiver.COLOR_BLUE, scale);
 
 					for(int i = 0; i < RANKING_MAX; i++) {
 						int gcolor = EventReceiver.COLOR_WHITE;
 						if(rankingRollclear[i] == 1) gcolor = EventReceiver.COLOR_GREEN;
 						if(rankingRollclear[i] == 2) gcolor = EventReceiver.COLOR_ORANGE;
 
-						receiver.drawScoreFont(engine, playerID, 0, 3 + i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW);
-						receiver.drawScoreFont(engine, playerID, 3, 3 + i, tableGradeName[rankingGrade[i]], gcolor);
-						receiver.drawScoreFont(engine, playerID, 9, 3 + i, String.valueOf(rankingLevel[i]), (i == rankingRank));
-						receiver.drawScoreFont(engine, playerID, 15, 3 + i, GeneralUtil.getTime(rankingTime[i]), (i == rankingRank));
+						receiver.drawScoreFont(engine, playerID, 0, topY+i, String.format("%2d", i + 1), EventReceiver.COLOR_YELLOW, scale);
+						receiver.drawScoreFont(engine, playerID, 3, topY+i, tableGradeName[rankingGrade[i]], gcolor, scale);
+						receiver.drawScoreFont(engine, playerID, 9, topY+i, String.valueOf(rankingLevel[i]), (i == rankingRank), scale);
+						receiver.drawScoreFont(engine, playerID, 15, topY+i, GeneralUtil.getTime(rankingTime[i]), (i == rankingRank), scale);
 					}
 
 					receiver.drawScoreFont(engine, playerID, 0, 17, "F:VIEW SECTION TIME", EventReceiver.COLOR_GREEN);
