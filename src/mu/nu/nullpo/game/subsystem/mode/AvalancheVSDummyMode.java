@@ -228,6 +228,9 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** True to use slower falling animations, false to use faster */
 	protected boolean[] cascadeSlow;
 
+	/** True to use big field display */
+	protected boolean bigDisplay;
+
 	/*
 	 * Mode name
 	 */
@@ -375,6 +378,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		chainDisplayType[playerID] = prop.getProperty("avalanchevs" + name + ".chainDisplayType.p" + playerID, 1);
 		newChainPower[playerID] = prop.getProperty("avalanchevs" + name + ".newChainPower.p" + playerID, false);
 		cascadeSlow[playerID] = prop.getProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, false);
+		bigDisplay = prop.getProperty("avalanchevs" + name + ".bigDisplay", false);
 	}
 
 	/**
@@ -406,6 +410,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		prop.setProperty("avalanchevs" + name + ".chainDisplayType.p" + playerID, chainDisplayType[playerID]);
 		prop.setProperty("avalanchevs" + name + ".newChainPower.p" + playerID, newChainPower[playerID]);
 		prop.setProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, cascadeSlow[playerID]);
+		prop.setProperty("avalanchevs" + name + ".bigDisplay", bigDisplay);
 	}
 
 	/**
@@ -515,6 +520,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	public boolean readyInit(GameEngine engine, int playerID) {
 		engine.numColors = numColors[playerID];
 		engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
+		engine.displaysize = bigDisplay ? 1 : 0;
 
 		if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 		if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
@@ -856,7 +862,10 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	protected void drawX (GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED);
+		if(engine.displaysize == 1)
+			receiver.drawMenuFont(engine, playerID, 4, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED, 2.0f);
+		else
+			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED);
 	}
 
 	protected void drawHardOjama (GameEngine engine, int playerID) {

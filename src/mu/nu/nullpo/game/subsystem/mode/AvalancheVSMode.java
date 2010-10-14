@@ -221,7 +221,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 39);
+			int change = updateCursor(engine, 40);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -427,7 +427,10 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 					enableSE[playerID] = !enableSE[playerID];
 					break;
 				case 38:
+					bigDisplay = !bigDisplay;
+					break;
 				case 39:
+				case 40:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -439,9 +442,9 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 38) {
+				if(engine.statc[2] == 39) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "");
-				} else if(engine.statc[2] == 39) {
+				} else if(engine.statc[2] == 40) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -571,9 +574,12 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1));
 				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_DARKBLUE, 36,
-						"BGM", String.valueOf(bgmno),
+						"BGM", String.valueOf(bgmno));
+				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_YELLOW, 37,
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_GREEN, 38,
+				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_DARKBLUE, 38,
+						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 39,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
@@ -606,88 +612,129 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	}
 
 	@Override
+	public void renderMove(GameEngine engine, int playerID) {
+		drawXorTimer(engine, playerID);
+	}
+
+	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// Status display
+		int fldPosX = receiver.getFieldDisplayPositionX(engine, playerID);
+		int fldPosY = receiver.getFieldDisplayPositionY(engine, playerID);
+		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		int fontColor = EventReceiver.COLOR_WHITE;
+
+		// Timer
 		if(playerID == 0) {
-			receiver.drawScoreFont(engine, playerID, -1, 0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
-
-			receiver.drawScoreFont(engine, playerID, -1, 2, "OJAMA", EventReceiver.COLOR_PURPLE);
-			String ojamaStr1P = String.valueOf(ojama[0]);
-			if (ojamaAdd[0] > 0 && !(inFever[0] && ojamaAddToFever[0]))
-				ojamaStr1P = ojamaStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
-			String ojamaStr2P = String.valueOf(ojama[1]);
-			if (ojamaAdd[1] > 0 && !(inFever[1] && ojamaAddToFever[1]))
-				ojamaStr2P = ojamaStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
-			receiver.drawScoreFont(engine, playerID, -1, 3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, 3, 3, ojamaStr1P, (ojama[0] > 0));
-			receiver.drawScoreFont(engine, playerID, -1, 4, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 3, 4, ojamaStr2P, (ojama[1] > 0));
-
-			drawAttack(engine, playerID, -1, 6, EventReceiver.COLOR_GREEN);
-			drawScores(engine, playerID, -1, 10, EventReceiver.COLOR_PURPLE);
-
-			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
-
-			if (inFever[0] || inFever[1])
-			{
-				receiver.drawScoreFont(engine, playerID, -1, 17, "FEVER OJAMA", EventReceiver.COLOR_PURPLE);
-				String ojamaFeverStr1P = String.valueOf(ojamaFever[0]);
-				if (ojamaAdd[0] > 0 && inFever[0] && ojamaAddToFever[0])
-					ojamaFeverStr1P = ojamaFeverStr1P + "(+" + String.valueOf(ojamaAdd[0]) + ")";
-				String ojamaFeverStr2P = String.valueOf(ojamaFever[1]);
-				if (ojamaAdd[1] > 0 && inFever[1] && ojamaAddToFever[1])
-					ojamaFeverStr2P = ojamaFeverStr2P + "(+" + String.valueOf(ojamaAdd[1]) + ")";
-				receiver.drawScoreFont(engine, playerID, -1, 18, "1P:", EventReceiver.COLOR_RED);
-				receiver.drawScoreFont(engine, playerID, 3, 18, ojamaFeverStr1P, (ojamaFever[0] > 0));
-				receiver.drawScoreFont(engine, playerID, -1, 19, "2P:", EventReceiver.COLOR_BLUE);
-				receiver.drawScoreFont(engine, playerID, 3, 19, ojamaFeverStr2P, (ojamaFever[1] > 0));
-			}
+			if(receiver.getNextDisplayType() == 0)
+				receiver.drawDirectFont(engine, playerID, 224, 16, GeneralUtil.getTime(engine.statistics.time));
+			else
+				receiver.drawDirectFont(engine, playerID, 256, 16, GeneralUtil.getTime(engine.statistics.time));
 		}
 
-		if (!owner.engine[playerID].gameActive)
-			return;
-		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
-		if (feverThreshold[playerID] > 0)
-		{
-			receiver.drawMenuFont(engine, playerID, 0, 17, "FEVER POINT", playerColor);
-			if (feverShowMeter[playerID])
-			{
-				if (inFever[playerID])
-				{
+		// Ojama Counter
+		fontColor = EventReceiver.COLOR_WHITE;
+		if(ojama[playerID] >= 1) fontColor = EventReceiver.COLOR_YELLOW;
+		if(ojama[playerID] >= 6) fontColor = EventReceiver.COLOR_ORANGE;
+		if(ojama[playerID] >= 12) fontColor = EventReceiver.COLOR_RED;
+		if(ojama[playerID] + ojamaAdd[playerID] > 0) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 32, ""+(ojama[playerID] + ojamaAdd[playerID]), fontColor);
+		}
+		if(ojamaFever[playerID] > 0) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 16, ""+ojamaFever[playerID]);
+		}
+
+		// Score
+		String strScoreMultiplier = "";
+		if((lastscore[playerID] != 0) && (lastmultiplier[playerID] != 0) && (scgettime[playerID] > 0))
+			strScoreMultiplier = "(" + lastscore[playerID] + "e" + lastmultiplier[playerID] + ")";
+
+		if(engine.displaysize == 1) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 440, String.format("%12d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 456, String.format("%12s", strScoreMultiplier), playerColor);
+		} else if(engine.gameActive) {
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 248, String.format("%8d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 264, String.format("%8s", strScoreMultiplier), playerColor);
+		}
+
+		// Fever
+		if(feverThreshold[playerID] > 0) {
+			// Timer
+			if(engine.displaysize == 1) {
+				receiver.drawDirectFont(engine, playerID, fldPosX + 224, fldPosY + 200, "REST", playerColor, 0.5f);
+				receiver.drawDirectFont(engine, playerID, fldPosX + 216, fldPosY + 216, String.format("%2d", feverTime[playerID] / 60));
+				receiver.drawDirectFont(engine, playerID, fldPosX + 248, fldPosY + 224, String.format(".%d", feverTime[playerID] % 60 / 6), 0.5f);
+			} else if(engine.gameActive) {
+				receiver.drawDirectFont(engine, playerID, fldPosX + 128, fldPosY + 184, "REST", playerColor, 0.5f);
+				receiver.drawDirectFont(engine, playerID, fldPosX + 120, fldPosY + 200, String.format("%2d", feverTime[playerID] / 60));
+				receiver.drawDirectFont(engine, playerID, fldPosX + 152, fldPosY + 208, String.format(".%d", feverTime[playerID] % 60 / 6), 0.5f);
+			}
+
+			// Points
+			if(feverShowMeter[playerID] && (engine.displaysize == 1)) {
+				if(inFever[playerID]) {
 					int color = (engine.statistics.time >> 2) % FEVER_METER_COLORS.length;
-					for (int x = 0; x < feverThreshold[playerID]; x++)
-					{
-						if (color == 0)
-							color = FEVER_METER_COLORS.length;
+					for(int i = 0; i < feverThreshold[playerID]; i++) {
+						if(color == 0) color = FEVER_METER_COLORS.length;
 						color--;
-						receiver.drawMenuFont(engine, playerID, x, 18, "d", FEVER_METER_COLORS[color]);
+						receiver.drawDirectFont(engine, playerID, fldPosX + 232, fldPosY + 424 - (i * 16), "d", FEVER_METER_COLORS[color]);
+					}
+				} else {
+					for(int i = feverPoints[playerID]; i < feverThreshold[playerID]; i++) {
+						receiver.drawDirectFont(engine, playerID, fldPosX + 232, fldPosY + 424 - (i * 16), "c");
+					}
+					for(int i = 0; i < feverPoints[playerID]; i++) {
+						int color = feverThreshold[playerID] - 1 - i;
+						receiver.drawDirectFont(engine, playerID, fldPosX + 232, fldPosY + 424 - (i * 16), "d", FEVER_METER_COLORS[color]);
 					}
 				}
-				else
-				{
-					int x = 0;
-					for (x = 0; x < feverPoints[playerID]; x++)
-						receiver.drawMenuFont(engine, playerID, x, 18, "d");
-					for (; x < feverThreshold[playerID]; x++)
-						receiver.drawMenuFont(engine, playerID, x, 18, "c");
-				}
+			} else if(engine.displaysize == 1) {
+				receiver.drawDirectFont(engine, playerID, fldPosX + 220, fldPosY + 240, "FEVER", playerColor, 0.5f);
+				receiver.drawDirectFont(engine, playerID, fldPosX + 228, fldPosY + 256, feverPoints[playerID]+"/"+feverThreshold[playerID], 0.5f);
+			} else if(engine.gameActive) {
+				receiver.drawDirectFont(engine, playerID, fldPosX + 124, fldPosY + 224, "FEVER", playerColor, 0.5f);
+				receiver.drawDirectFont(engine, playerID, fldPosX + 132, fldPosY + 240, feverPoints[playerID]+"/"+feverThreshold[playerID], 0.5f);
 			}
-			else
-				receiver.drawMenuFont(engine, playerID, 0, 18, feverPoints[playerID] + " / " + feverThreshold[playerID], inFever[playerID]);
-			receiver.drawMenuFont(engine, playerID, 0, 19, "FEVER TIME", playerColor);
-			receiver.drawMenuFont(engine, playerID, 0, 20, GeneralUtil.getTime(feverTime[playerID]), inFever[playerID]);
 		}
-		if (inFever[playerID])
-			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%2d",(feverTime[playerID]+59)/60),
-					feverTime[playerID] < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
-		else if (!big[playerID] && dangerColumnShowX[playerID])
-			drawX(engine, playerID);
-		if (ojamaHard[playerID] > 0)
+
+		if((engine.stat != GameEngine.STAT_MOVE) && (engine.gameActive))
+			drawXorTimer(engine, playerID);
+
+		if(ojamaHard[playerID] > 0)
 			drawHardOjama(engine, playerID);
 
-		super.renderLast(engine, playerID);
+		int textHeight = 13;
+		if (engine.field != null) {
+			textHeight = engine.field.getHeight();
+			textHeight += 3;
+		}
+		if(engine.displaysize == 1) textHeight = 11;
 
+		int baseX = (engine.displaysize == 1) ? 1 : -2;
+
+		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
+			receiver.drawMenuFont(engine, playerID, baseX + (chain[playerID] > 9 ? 0 : 1), textHeight,
+					chain[playerID] + " CHAIN!", getChainColor(playerID));
+		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
+			receiver.drawMenuFont(engine, playerID, baseX+1, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+	}
+
+	/**
+	 * Draw X or fever timer
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 */
+	protected void drawXorTimer(GameEngine engine, int playerID) {
+		if(inFever[playerID]) {
+			if(engine.displaysize == 1) {
+				receiver.drawMenuFont(engine, playerID, 4, 0, String.format("%02d",(feverTime[playerID]+59)/60),
+						feverTime[playerID] < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE, 2.0f);
+			} else {
+				receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%02d",(feverTime[playerID]+59)/60),
+						feverTime[playerID] < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
+			}
+		} else if (!big[playerID] && dangerColumnShowX[playerID]) {
+			drawX(engine, playerID);
+		}
 	}
 
 	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {
@@ -877,6 +924,11 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		super.onLast(engine, playerID);
+
+		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
+			if(feverPoints[playerID] < feverThreshold[playerID])
+				feverPoints[playerID]++;
+		}
 
 		if (inFever[playerID] && feverTime[playerID] > 0 && engine.timerActive)
 		{

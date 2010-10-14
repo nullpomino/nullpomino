@@ -176,6 +176,9 @@ public class VSBattleMode extends DummyMode {
 	/** Last preset number used */
 	private int[] presetNumber;
 
+	/** True if display detailed stats */
+	private boolean showStats;
+
 	/** 勝者 */
 	private int winnerID;
 
@@ -196,6 +199,9 @@ public class VSBattleMode extends DummyMode {
 
 	/** Map選択用乱count */
 	private Random randMap;
+
+	/** Win count for each player */
+	private int[] winCount;
 
 	/** Version */
 	private int version;
@@ -258,7 +264,7 @@ public class VSBattleMode extends DummyMode {
 		mapMaxNo = new int[MAX_PLAYERS];
 		fldBackup = new Field[MAX_PLAYERS];
 		randMap = new Random();
-
+		winCount = new int[MAX_PLAYERS];
 		winnerID = -1;
 	}
 
@@ -330,6 +336,7 @@ public class VSBattleMode extends DummyMode {
 		mapSet[playerID] = prop.getProperty("vsbattle.mapSet.p" + playerID, 0);
 		mapNumber[playerID] = prop.getProperty("vsbattle.mapNumber.p" + playerID, -1);
 		presetNumber[playerID] = prop.getProperty("vsbattle.presetNumber.p" + playerID, 0);
+		showStats = prop.getProperty("vsbattle.showStats", true);
 	}
 
 	/**
@@ -359,6 +366,7 @@ public class VSBattleMode extends DummyMode {
 		prop.setProperty("vsbattle.mapSet.p" + playerID, mapSet[playerID]);
 		prop.setProperty("vsbattle.mapNumber.p" + playerID, mapNumber[playerID]);
 		prop.setProperty("vsbattle.presetNumber.p" + playerID, presetNumber[playerID]);
+		prop.setProperty("vsbattle.showStats", showStats);
 	}
 
 	/**
@@ -466,7 +474,7 @@ public class VSBattleMode extends DummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 26, playerID);
+			int change = updateCursor(engine, 27, playerID);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -581,6 +589,9 @@ public class VSBattleMode extends DummyMode {
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
 				case 24:
+					showStats = !showStats;
+					break;
+				case 25:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -588,7 +599,7 @@ public class VSBattleMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 25:
+				case 26:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -597,7 +608,7 @@ public class VSBattleMode extends DummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 26:
+				case 27:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -723,8 +734,9 @@ public class VSBattleMode extends DummyMode {
 						"HURRYUP", (hurryupSeconds[playerID] == -1) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 						"INTERVAL", String.valueOf(hurryupInterval[playerID]));
 				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_PINK, 23,
-						"BGM", String.valueOf(bgmno));
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 24,
+						"BGM", String.valueOf(bgmno),
+						"SHOW STATS", GeneralUtil.getONorOFF(showStats));
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_CYAN, 25,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1));
@@ -818,36 +830,63 @@ public class VSBattleMode extends DummyMode {
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		// Status display
-		if((playerID == 0) && (owner.receiver.getNextDisplayType() == 2)) {
+		if(playerID == 0) {
 			receiver.drawDirectFont(engine, playerID, 256, 16, GeneralUtil.getTime(engine.statistics.time));
 
 			if((hurryupSeconds[playerID] >= 0) && (engine.timerActive) &&
 			   (engine.statistics.time >= hurryupSeconds[playerID] * 60) && (engine.statistics.time < (hurryupSeconds[playerID] + 5) * 60))
 			{
-				receiver.drawDirectFont(engine, playerID, 258 - 8, 32, "HURRY UP!", (engine.statistics.time % 2 == 0));
+				receiver.drawDirectFont(engine, playerID, 256 - 8, 32, "HURRY UP!", (engine.statistics.time % 2 == 0));
 			}
-		} else if((playerID == 0) && (owner.receiver.getNextDisplayType() != 2)) {
+		}
+
+		if((playerID == 0) && (owner.receiver.getNextDisplayType() != 2) && (showStats)) {
 			receiver.drawScoreFont(engine, playerID, 0, 0, "VS-BATTLE", EventReceiver.COLOR_ORANGE);
 
-			receiver.drawScoreFont(engine, playerID, 0, 2, "1P GARBAGE", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, 0, 3, String.valueOf(garbage[0]), (garbage[0] > 0));
+			receiver.drawScoreFont(engine, playerID, 0, 2, "1P ATTACK", EventReceiver.COLOR_RED);
+			receiver.drawScoreFont(engine, playerID, 0, 3, String.valueOf(garbageSent[0]));
 
-			receiver.drawScoreFont(engine, playerID, 0, 5, "2P GARBAGE", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 6, String.valueOf(garbage[1]), (garbage[1] > 0));
+			receiver.drawScoreFont(engine, playerID, 0, 5, "2P ATTACK", EventReceiver.COLOR_BLUE);
+			receiver.drawScoreFont(engine, playerID, 0, 6, String.valueOf(garbageSent[1]));
 
-			receiver.drawScoreFont(engine, playerID, 0, 8, "1P ATTACK", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID, 0, 9, String.valueOf(garbageSent[0]));
+			if(!owner.replayMode) {
+				receiver.drawScoreFont(engine, playerID, 0, 8, "1P WINS", EventReceiver.COLOR_RED);
+				receiver.drawScoreFont(engine, playerID, 0, 9, String.valueOf(winCount[0]));
 
-			receiver.drawScoreFont(engine, playerID, 0, 11, "2P ATTACK", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID, 0, 12, String.valueOf(garbageSent[1]));
+				receiver.drawScoreFont(engine, playerID, 0, 11, "2P WINS", EventReceiver.COLOR_BLUE);
+				receiver.drawScoreFont(engine, playerID, 0, 12, String.valueOf(winCount[1]));
+			}
+		}
 
-			receiver.drawScoreFont(engine, playerID, 0, 14, "TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(engine.statistics.time));
+		if(showStats) {
+			int x = receiver.getFieldDisplayPositionX(engine, playerID);
+			int y = receiver.getFieldDisplayPositionY(engine, playerID);
+			int fontColor = EventReceiver.COLOR_WHITE;
 
-			if((hurryupSeconds[playerID] >= 0) && (engine.timerActive) &&
-			   (engine.statistics.time >= hurryupSeconds[playerID] * 60) && (engine.statistics.time < (hurryupSeconds[playerID] + 5) * 60))
-			{
-				receiver.drawScoreFont(engine, playerID, 0, 17, "HURRY UP!", (engine.statistics.time % 2 == 0));
+			if(garbage[playerID] > 0) {
+				if(garbage[playerID] >= 1) fontColor = EventReceiver.COLOR_YELLOW;
+				if(garbage[playerID] >= 3) fontColor = EventReceiver.COLOR_ORANGE;
+				if(garbage[playerID] >= 4) fontColor = EventReceiver.COLOR_RED;
+
+				String strTempGarbage = String.format("%5d", garbage[playerID]);
+				receiver.drawDirectFont(engine, playerID, x + 96, y + 372, strTempGarbage, fontColor);
+			}
+
+			if(owner.receiver.getNextDisplayType() == 2) {
+				fontColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+
+				receiver.drawDirectFont(engine, playerID, x - 48, y + 120, "TOTAL", fontColor, 0.5f);
+				receiver.drawDirectFont(engine, playerID, x - 52, y + 128, "ATTACK", fontColor, 0.5f);
+				if(garbageSent[playerID] >= 10)
+					receiver.drawDirectFont(engine, playerID, x - 44, y + 142, String.valueOf(garbageSent[playerID]));
+				else
+					receiver.drawDirectFont(engine, playerID, x - 36, y + 142, String.valueOf(garbageSent[playerID]));
+
+				receiver.drawDirectFont(engine, playerID, x - 44, y + 190, "WINS", fontColor, 0.5f);
+				if(winCount[playerID] >= 10)
+					receiver.drawDirectFont(engine, playerID, x - 44, y + 204, String.valueOf(winCount[playerID]));
+				else
+					receiver.drawDirectFont(engine, playerID, x - 36, y + 204, String.valueOf(winCount[playerID]));
 			}
 		}
 
@@ -1205,6 +1244,7 @@ public class VSBattleMode extends DummyMode {
 				owner.engine[0].resetStatc();
 				owner.engine[0].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+				if(!owner.replayMode) winCount[0]++;
 			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
 				// 2P win
 				winnerID = 1;
@@ -1214,6 +1254,7 @@ public class VSBattleMode extends DummyMode {
 				owner.engine[1].resetStatc();
 				owner.engine[1].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+				if(!owner.replayMode) winCount[1]++;
 			}
 		}
 	}

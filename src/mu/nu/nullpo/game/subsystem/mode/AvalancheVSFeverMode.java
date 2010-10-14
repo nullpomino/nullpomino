@@ -139,7 +139,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 27);
+			int change = updateCursor(engine, 28);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -274,7 +274,10 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 					enableSE[playerID] = !enableSE[playerID];
 					break;
 				case 26:
+					bigDisplay = !bigDisplay;
+					break;
 				case 27:
+				case 28:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -286,9 +289,9 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 26) {
+				if(engine.statc[2] == 27) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "fever");
-				} else if(engine.statc[2] == 27) {
+				} else if(engine.statc[2] == 28) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "fever");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -380,9 +383,12 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 24,
-						"BGM", String.valueOf(bgmno),
+						"BGM", String.valueOf(bgmno));
+				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_YELLOW, 25,
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_GREEN, 26,
+				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_PINK, 26,
+						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_GREEN, 27,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 

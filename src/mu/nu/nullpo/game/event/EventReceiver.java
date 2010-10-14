@@ -49,29 +49,97 @@ public class EventReceiver {
 	static Logger log = Logger.getLogger(EventReceiver.class);
 
 	/** Field X position */
-	public static final int[][] NEW_FIELD_OFFSET_X = {
-		{119, 247, 375, 503, 247, 375}, // Small
-		{ 32, 432, 432, 432, 432, 432}, // Normal
-		{ 16, 416, 416, 416, 416, 416}, // Big
+	public static final int[][][] NEW_FIELD_OFFSET_X = {
+		{	// TETROMINO
+			{119, 247, 375, 503, 247, 375}, // Small
+			{ 32, 432, 432, 432, 432, 432}, // Normal
+			{ 16, 416, 416, 416, 416, 416}, // Big
+		},
+		{	// AVALANCHE
+			{119, 247, 375, 503, 247, 375}, // Small
+			{ 32, 432, 432, 432, 432, 432}, // Normal
+			{ 16, 352, 352, 352, 352, 352}, // Big
+		},
+		{	// PHYSICIAN
+			{119, 247, 375, 503, 247, 375}, // Small
+			{ 32, 432, 432, 432, 432, 432}, // Normal
+			{ 16, 416, 416, 416, 416, 416}, // Big
+		},
+		{	// SPF
+			{119, 247, 375, 503, 247, 375}, // Small
+			{ 32, 432, 432, 432, 432, 432}, // Normal
+			{ 16, 416, 416, 416, 416, 416}, // Big
+		},
 	};
 	/** Field Y position */
-	public static final int[][] NEW_FIELD_OFFSET_Y = {
-		{ 80,  80,  80,  80, 286, 286}, // Small
-		{ 32,  32,  32,  32,  32,  32}, // Normal
-		{  8,   8,   8,   8,   8,   8}, // Big
+	public static final int[][][] NEW_FIELD_OFFSET_Y = {
+		{	// TETROMINO
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
+		{	// AVALANCHE
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
+		{	// PHYSICIAN
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
+		{	// SPF
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
 	};
 
 	/** Field X position (Big side preview) */
-	public static final int[][] NEW_FIELD_OFFSET_X_BSP = {
-		{208, 320, 432, 544, 320, 432}, // Small
-		{ 64, 400, 400, 400, 400, 400}, // Normal
-		{ 16, 352, 352, 352, 352, 352}, // Big
+	public static final int[][][] NEW_FIELD_OFFSET_X_BSP = {
+		{	// TETROMINO
+			{208, 320, 432, 544, 320, 432}, // Small
+			{ 64, 400, 400, 400, 400, 400}, // Normal
+			{ 16, 352, 352, 352, 352, 352}, // Big
+		},
+		{	// AVALANCHE
+			{208, 320, 432, 544, 320, 432}, // Small
+			{ 64, 400, 400, 400, 400, 400}, // Normal
+			{ 16, 352, 352, 352, 352, 352}, // Big
+		},
+		{	// PHYSICIAN
+			{208, 320, 432, 544, 320, 432}, // Small
+			{ 64, 400, 400, 400, 400, 400}, // Normal
+			{ 16, 352, 352, 352, 352, 352}, // Big
+		},
+		{	// SPF
+			{208, 320, 432, 544, 320, 432}, // Small
+			{ 64, 400, 400, 400, 400, 400}, // Normal
+			{ 16, 352, 352, 352, 352, 352}, // Big
+		},
 	};
 	/** Field Y position (Big side preview) */
-	public static final int[][] NEW_FIELD_OFFSET_Y_BSP = {
-		{ 80,  80,  80,  80, 286, 286}, // Small
-		{ 32,  32,  32,  32,  32,  32}, // Normal
-		{  8,   8,   8,   8,   8,   8}, // Big
+	public static final int[][][] NEW_FIELD_OFFSET_Y_BSP = {
+		{	// TETROMINO
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
+		{	// AVALANCHE
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
+		{	// PHYSICIAN
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
+		{	// SPF
+			{ 80,  80,  80,  80, 286, 286}, // Small
+			{ 32,  32,  32,  32,  32,  32}, // Normal
+			{  8,   8,   8,   8,   8,   8}, // Big
+		},
 	};
 
 	/** Background display */
@@ -118,6 +186,20 @@ public class EventReceiver {
 	 */
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str) {
 		drawMenuFont(engine, playerID, x, y, str, COLOR_WHITE, 1.0f);
+	}
+
+	/**
+	 * [You don't have to override this]
+	 * Draw String inside the field. (Font color is white)
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param str String to draw
+	 * @param scale Font size (0.5f, 1.0f, 2.0f)
+	 */
+	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, float scale) {
+		drawMenuFont(engine, playerID, x, y, str, COLOR_WHITE, scale);
 	}
 
 	/**
@@ -285,6 +367,20 @@ public class EventReceiver {
 
 	/**
 	 * [You don't have to override this]
+	 * Draw String to score display area. (Font color is white)
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param str String to draw
+	 * @param scale Font size (0.5f, 1.0f, 2.0f)
+	 */
+	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, float scale) {
+		drawScoreFont(engine, playerID, x, y, str, COLOR_WHITE, scale);
+	}
+
+	/**
+	 * [You don't have to override this]
 	 * Draw String to score display area.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
@@ -444,6 +540,20 @@ public class EventReceiver {
 	 */
 	public void drawDirectFont(GameEngine engine, int playerID, int x, int y, String str) {
 		drawDirectFont(engine, playerID, x, y, str, COLOR_WHITE, 1.0f);
+	}
+
+	/**
+	 * [You don't have to override this]
+	 * Draw String to any location. (Font color if white)
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param str String to draw
+	 * @param scale Font size (0.5f, 1.0f, 2.0f)
+	 */
+	public void drawDirectFont(GameEngine engine, int playerID, int x, int y, String str, float scale) {
+		drawDirectFont(engine, playerID, x, y, str, COLOR_WHITE, scale);
 	}
 
 	/**
@@ -668,8 +778,8 @@ public class EventReceiver {
 	 * @return X position of field
 	 */
 	public int getFieldDisplayPositionX(GameEngine engine, int playerID) {
-		if(getNextDisplayType() == 2) return NEW_FIELD_OFFSET_X_BSP[engine.displaysize + 1][playerID];
-		return NEW_FIELD_OFFSET_X[engine.displaysize + 1][playerID];
+		if(getNextDisplayType() == 2) return NEW_FIELD_OFFSET_X_BSP[engine.owner.mode.getGameStyle()][engine.displaysize + 1][playerID];
+		return NEW_FIELD_OFFSET_X[engine.owner.mode.getGameStyle()][engine.displaysize + 1][playerID];
 	}
 
 	/**
@@ -679,8 +789,8 @@ public class EventReceiver {
 	 * @return Y position of field
 	 */
 	public int getFieldDisplayPositionY(GameEngine engine, int playerID) {
-		if(getNextDisplayType() == 2) return NEW_FIELD_OFFSET_Y_BSP[engine.displaysize + 1][playerID];
-		return NEW_FIELD_OFFSET_Y[engine.displaysize + 1][playerID];
+		if(getNextDisplayType() == 2) return NEW_FIELD_OFFSET_Y_BSP[engine.owner.mode.getGameStyle()][engine.displaysize + 1][playerID];
+		return NEW_FIELD_OFFSET_Y[engine.owner.mode.getGameStyle()][engine.displaysize + 1][playerID];
 	}
 
 	/**
