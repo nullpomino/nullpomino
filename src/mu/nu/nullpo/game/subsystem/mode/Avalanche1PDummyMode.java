@@ -208,6 +208,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		engine.connectBlocks = false;
 		engine.cascadeDelay = 1;
 		engine.cascadeClearDelay = 10;
+		engine.dominoQuickTurn = true;
 		/*
 		engine.fieldWidth = 6;
 		engine.fieldHeight = 12;

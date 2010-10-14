@@ -487,6 +487,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.blockColors = BLOCK_COLORS;
 		engine.randomBlockColor = true;
 		engine.connectBlocks = false;
+		engine.dominoQuickTurn = true;
 
 		ojama[playerID] = 0;
 		ojamaAdd[playerID] = 0;

@@ -336,6 +336,9 @@ public class GameEngine {
 	/** Number of current piece rotations */
 	public int nowPieceRotateCount;
 
+	/** Number of current piece failed rotations */
+	public int nowPieceRotateFailCount;
+
 	/** Number of movement while touching to the floor */
 	public int extendedMoveCount;
 
@@ -618,6 +621,9 @@ public class GameEngine {
 	/** Set to true to process rainbow block effects, false to skip. */
 	public boolean rainbowAnimate;
 
+	/** If true, the game will execute double rotation to I2 piece when regular rotation fails twice */
+	public boolean dominoQuickTurn;
+
 	/**
 	 * Constructor
 	 * @param owner このゲームエンジンを所有するGameOwnerクラス
@@ -751,6 +757,8 @@ public class GameEngine {
 
 		nowPieceMoveCount = 0;
 		nowPieceRotateCount = 0;
+		nowPieceRotateFailCount = 0;
+
 		extendedMoveCount = 0;
 		extendedRotateCount = 0;
 
@@ -2035,6 +2043,7 @@ public class GameEngine {
 			manualLock = false;
 			nowPieceMoveCount = 0;
 			nowPieceRotateCount = 0;
+			nowPieceRotateFailCount = 0;
 			nowWallkickCount = 0;
 			nowUpwardWallkickCount = 0;
 			lineClearing = 0;
@@ -2140,6 +2149,21 @@ public class GameEngine {
 					}
 				}
 
+				// Domino Quick Turn
+				if(!rotated && dominoQuickTurn && (nowPieceObject.id == Piece.PIECE_I2) && (nowPieceRotateFailCount >= 1)) {
+					rt = getRotateDirection(2);
+					rotated = true;
+					nowPieceObject.direction = rt;
+					nowPieceObject.updateConnectData();
+					nowPieceRotateFailCount = 0;
+
+					if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, rt, field) == true) {
+						nowPieceY--;
+					} else if(onGroundBeforeRotate) {
+						nowPieceY++;
+					}
+				}
+
 				if(rotated == true) {
 					// rotation成功
 					nowPieceBottomY = nowPieceObject.getBottom(nowPieceX, nowPieceY, field);
@@ -2165,6 +2189,7 @@ public class GameEngine {
 				} else {
 					// rotation失敗
 					playSE("rotfail");
+					nowPieceRotateFailCount++;
 				}
 			}
 			initialRotateDirection = 0;
