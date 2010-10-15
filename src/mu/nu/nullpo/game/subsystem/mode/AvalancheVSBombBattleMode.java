@@ -81,7 +81,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		super.loadOtherSetting(engine, prop, "bombbattle");
 		int playerID = engine.playerID;
 		ojamaRate[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaRate.p" + playerID, 60);
-		ojamaHard[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaHard.p" + playerID, 0);
+		ojamaHard[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaHard.p" + playerID, 1);
 		newChainPower[playerID] = prop.getProperty("avalanchevsbombbattle.newChainPower.p" + playerID, false);
 		ojamaCountdown[playerID] = prop.getProperty("avalanchevsbombbattle.ojamaCountdown.p" + playerID, 5);
 	}
