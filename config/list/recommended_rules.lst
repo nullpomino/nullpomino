@@ -146,7 +146,7 @@ config/rule/AvalancheClassic.rul
 config/rule/Avalanche.rul
 config/rule/AvalancheClassic.rul
 
-:AVALANCHE-SPF VS BATTLE (BETA)
+:AVALANCHE-SPF VS-BATTLE (BETA)
 config/rule/Avalanche.rul
 config/rule/AvalancheClassic.rul
 

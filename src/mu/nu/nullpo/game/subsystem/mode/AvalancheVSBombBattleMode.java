@@ -282,8 +282,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 					}
 					break;
 				case 28:
-					//big[playerID] = !big[playerID];
-					big[playerID] = false;
+					bigDisplay = !bigDisplay;
 					break;
 				case 29:
 					bgmno += change;
@@ -420,7 +419,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
-						"BIG", GeneralUtil.getONorOFF(big[playerID]));
+						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
 				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 29,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
@@ -435,47 +434,85 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		}
 	}
 
+	/*
+	 * When the current piece is in action
+	 */
+	@Override
+	public void renderMove(GameEngine engine, int playerID) {
+		if(engine.gameStarted)
+			drawX(engine, playerID);
+	}
+
+	/*
+	 * Render score
+	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// Status display
+		int fldPosX = receiver.getFieldDisplayPositionX(engine, playerID);
+		int fldPosY = receiver.getFieldDisplayPositionY(engine, playerID);
+		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		int fontColor = EventReceiver.COLOR_WHITE;
+
+		// Timer
 		if(playerID == 0) {
-			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
-
-			receiver.drawScoreFont(engine, playerID, -1,  2, "OJAMA", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1,  3, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID,  3,  3, ojama[0]/6 + " " + ojama[0]%6 + "/6", (ojama[0] > 0));
-			if (ojamaAdd[0] > 0)
-				receiver.drawScoreFont(engine, playerID,  1,  4, "(+" + ojamaAdd[0]/6 + " " + ojamaAdd[0]%6 + "/6" + ")", (ojamaAdd[0] > 0));
-			receiver.drawScoreFont(engine, playerID, -1,  5, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID,  3,  5, ojama[1]/6 + " " + ojama[1]%6 + "/6", (ojama[1] > 0));
-			if (ojamaAdd[1] > 0)
-				receiver.drawScoreFont(engine, playerID,  1,  6, "(+" + ojamaAdd[1]/6 + " " + ojamaAdd[1]%6 + "/6" + ")", (ojamaAdd[1] > 0));
-
-			drawAttack(engine, playerID, -1, 8, EventReceiver.COLOR_GREEN);
-			drawScores(engine, playerID, -1, 12, EventReceiver.COLOR_PURPLE);
-
-			receiver.drawScoreFont(engine, playerID, -1, 16, "TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 17, GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawDirectFont(engine, playerID, 224, 8, GeneralUtil.getTime(engine.statistics.time));
 		}
 
-		if (!owner.engine[playerID].gameActive)
-			return;
-		if (dangerColumnShowX[playerID])
+		// Ojama Counter
+		fontColor = EventReceiver.COLOR_WHITE;
+		if(ojama[playerID] >= 1) fontColor = EventReceiver.COLOR_YELLOW;
+		if(ojama[playerID] >= 3) fontColor = EventReceiver.COLOR_ORANGE;
+		if(ojama[playerID] >= 6) fontColor = EventReceiver.COLOR_RED;
+
+		String strOjama = ojama[playerID]/6 + " " + ojama[playerID]%6 + "/6";
+		if(ojamaAdd[playerID] > 0)
+			strOjama = strOjama + "(+" + ojamaAdd[playerID]/6 + " " + ojamaAdd[playerID]%6 + "/6" + ")";
+
+		if((ojama[playerID] > 0) || (ojamaAdd[playerID] > 0)) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 32, strOjama, fontColor);
+		}
+
+		// Score
+		String strScoreMultiplier = "";
+		if((lastscore[playerID] != 0) && (lastmultiplier[playerID] != 0) && (scgettime[playerID] > 0))
+			strScoreMultiplier = "(" + lastscore[playerID] + "e" + lastmultiplier[playerID] + ")";
+
+		if(engine.displaysize == 1) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 440, String.format("%12d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 456, String.format("%12s", strScoreMultiplier), playerColor);
+		} else if(engine.gameStarted) {
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 248, String.format("%8d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 264, String.format("%8s", strScoreMultiplier), playerColor);
+		}
+
+		if((engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted)) {
 			drawX(engine, playerID);
-		if (engine.field != null)
-			for (int x = 0; x < engine.field.getWidth(); x++)
-				for (int y = 0; y < engine.field.getHeight(); y++)
-				{
-					Block b = engine.field.getBlock(x, y);
-					if (b == null)
-						continue;
-					if (b.isEmpty())
-						continue;
-					if (b.hard > 0)
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.hard), EventReceiver.COLOR_YELLOW);
-					if (b.countdown > 0)
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.countdown), EventReceiver.COLOR_RED);
-				}
+		}
+
+		if((engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted)) {
+			if (engine.field != null)
+				for (int x = 0; x < engine.field.getWidth(); x++)
+					for (int y = 0; y < engine.field.getHeight(); y++)
+					{
+						Block b = engine.field.getBlock(x, y);
+						if (b == null)
+							continue;
+						if (b.isEmpty())
+							continue;
+						if (b.hard > 0) {
+							if(engine.displaysize == 1)
+								receiver.drawMenuFont(engine, playerID, x * 2, y * 2, String.valueOf(b.hard), EventReceiver.COLOR_YELLOW, 2.0f);
+							else
+								receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.hard), EventReceiver.COLOR_YELLOW);
+						}
+						if (b.countdown > 0) {
+							if(engine.displaysize == 1)
+								receiver.drawMenuFont(engine, playerID, x * 2, y * 2, String.valueOf(b.countdown), EventReceiver.COLOR_RED, 2.0f);
+							else
+								receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.countdown), EventReceiver.COLOR_RED);
+						}
+					}
+		}
 
 		super.renderLast(engine, playerID);
 	}
@@ -543,7 +580,15 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 				b2.color = Block.BLOCK_COLOR_GRAY;
 				b2.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
 				b2.hard = ojamaHard[playerID];
-				owner.receiver.blockBreak(engine, playerID, x2, y2, b2);
+
+				if(engine.displaysize == 1) {
+					owner.receiver.blockBreak(engine, playerID, 2*x2,   2*y2,   b2);
+					owner.receiver.blockBreak(engine, playerID, 2*x2+1, 2*y2,   b2);
+					owner.receiver.blockBreak(engine, playerID, 2*x2,   2*y2+1, b2);
+					owner.receiver.blockBreak(engine, playerID, 2*x2+1, 2*y2+1, b2);
+				} else {
+					owner.receiver.blockBreak(engine, playerID, x2, y2, b2);
+				}
 			}
 	}
 

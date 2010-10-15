@@ -121,7 +121,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 26);
+			int change = updateCursor(engine, 27);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -251,7 +251,10 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 					enableSE[playerID] = !enableSE[playerID];
 					break;
 				case 25:
+					bigDisplay = !bigDisplay;
+					break;
 				case 26:
+				case 27:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -263,9 +266,9 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 25) {
+				if(engine.statc[2] == 26) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
-				} else if(engine.statc[2] == 26) {
+				} else if(engine.statc[2] == 27) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -326,7 +329,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"FALL DELAY", String.valueOf(engine.cascadeDelay),
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/3", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
@@ -339,8 +342,8 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/3", EventReceiver.COLOR_YELLOW);
-			} else {
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
+			} else if(engine.statc[2] < 26) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
 						"ROWS", String.valueOf(handicapRows[playerID]));
 				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_DARKBLUE, 19,
@@ -350,13 +353,19 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_CYAN, 22,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_PINK, 23,
-						"BGM", String.valueOf(bgmno),
+						"BGM", String.valueOf(bgmno));
+				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_YELLOW, 24,
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 25,
+				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_PINK, 25,
+						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
+			} else {
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 26,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/3", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/4", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
@@ -372,6 +381,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			engine.numColors = numColors[playerID];
 			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 			engine.rainbowAnimate = true;
+			engine.displaysize = bigDisplay ? 1 : 0;
 
 			if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 			if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
@@ -420,25 +430,59 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	}
 
 	/*
+	 * When the current piece is in action
+	 */
+	@Override
+	public void renderMove(GameEngine engine, int playerID) {
+		if(engine.gameStarted)
+			drawX(engine, playerID);
+	}
+
+	/*
 	 * Render score
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// Status display
+		int fldPosX = receiver.getFieldDisplayPositionX(engine, playerID);
+		int fldPosY = receiver.getFieldDisplayPositionY(engine, playerID);
+		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		int fontColor = EventReceiver.COLOR_WHITE;
+
+		// Timer
 		if(playerID == 0) {
-			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
+			receiver.drawDirectFont(engine, playerID, 224, 8, GeneralUtil.getTime(engine.statistics.time));
+		}
 
-			drawOjama(engine, playerID, -1, 2, EventReceiver.COLOR_PURPLE);
-			drawAttack(engine, playerID, -1, 6, EventReceiver.COLOR_GREEN);
-			drawScores(engine, playerID, -1, 10, EventReceiver.COLOR_PURPLE);
+		// Ojama Counter
+		fontColor = EventReceiver.COLOR_WHITE;
+		if(ojama[playerID] >= 1) fontColor = EventReceiver.COLOR_YELLOW;
+		if(ojama[playerID] >= 6) fontColor = EventReceiver.COLOR_ORANGE;
+		if(ojama[playerID] >= 12) fontColor = EventReceiver.COLOR_RED;
 
-			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
+		String strOjama = String.valueOf(ojama[playerID]);
+		if(ojamaAdd[playerID] > 0)
+			strOjama = strOjama + "(+" + String.valueOf(ojamaAdd[playerID]) + ")";
+
+		if(!strOjama.equals("0")) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 32, strOjama, fontColor);
+		}
+
+		// Score
+		String strScoreMultiplier = "";
+		if((lastscore[playerID] != 0) && (lastmultiplier[playerID] != 0) && (scgettime[playerID] > 0))
+			strScoreMultiplier = "(" + lastscore[playerID] + "e" + lastmultiplier[playerID] + ")";
+
+		if(engine.displaysize == 1) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 440, String.format("%12d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 456, String.format("%12s", strScoreMultiplier), playerColor);
+		} else if(engine.gameStarted) {
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 248, String.format("%8d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 264, String.format("%8s", strScoreMultiplier), playerColor);
 		}
 
 		if (!owner.engine[playerID].gameActive)
 			return;
-		if (dangerColumnShowX[playerID])
+		if((engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted))
 			drawX(engine, playerID);
 		drawHardOjama(engine, playerID);
 

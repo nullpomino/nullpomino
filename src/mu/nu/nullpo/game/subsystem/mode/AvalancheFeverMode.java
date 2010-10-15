@@ -312,12 +312,8 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void renderMove(GameEngine engine, int playerID) {
-		if(engine.displaysize == 1) {
-			receiver.drawMenuFont(engine, playerID, 4, 0, String.format("%02d",(timeLimit+59)/60),
-					timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE, 2.0f);
-		} else {
-			receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%02d",(timeLimit+59)/60),
-					timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
+		if(engine.gameStarted) {
+			drawXorTimer(engine, playerID);
 		}
 	}
 
@@ -412,14 +408,8 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 18, "CLEARED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 19, String.valueOf(blocksCleared));
 
-			if(engine.stat != GameEngine.STAT_MOVE) {
-				if(engine.displaysize == 1) {
-					receiver.drawMenuFont(engine, playerID, 4, 0, String.format("%02d",(timeLimit+59)/60),
-							timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE, 2.0f);
-				} else {
-					receiver.drawMenuFont(engine, playerID, 2, 0, String.format("%02d",(timeLimit+59)/60),
-							timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
-				}
+			if(engine.gameStarted && (engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT)) {
+				drawXorTimer(engine, playerID);
 			}
 
 			if (!engine.gameActive)
@@ -448,6 +438,27 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			}
 			if (zenKeshiDisplay > 0)
 				receiver.drawMenuFont(engine, playerID, baseX, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+		}
+	}
+
+	/**
+	 * Draw fever timer on death columns
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 */
+	protected void drawXorTimer(GameEngine engine, int playerID) {
+		String strFeverTimer = String.format("%02d",(timeLimit+59)/60);
+
+		for(int i = 0; i < 2; i++) {
+			if((engine.field == null) || (engine.field.getBlockEmpty(2 + i, 0))) {
+				if(engine.displaysize == 1) {
+					receiver.drawMenuFont(engine, playerID, 4 + (i * 2), 0, ""+strFeverTimer.charAt(i),
+							timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE, 2.0f);
+				} else {
+					receiver.drawMenuFont(engine, playerID, 2 + i, 0, ""+strFeverTimer.charAt(i),
+							timeLimit < 360 ? EventReceiver.COLOR_RED : EventReceiver.COLOR_WHITE);
+				}
+			}
 		}
 	}
 

@@ -1359,7 +1359,7 @@ public class RendererSDL extends EventReceiver {
 	 */
 	@Override
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
-		if(showlineeffect && engine.displaysize != -1) {
+		if(showlineeffect && (blk != null) && engine.displaysize != -1) {
 			int color = blk.getDrawColor();
 			// 通常Block
 			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {

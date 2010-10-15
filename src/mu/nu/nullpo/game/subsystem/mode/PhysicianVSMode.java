@@ -672,7 +672,30 @@ public class PhysicianVSMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// Status display
+		int fldPosX = receiver.getFieldDisplayPositionX(engine, playerID);
+		int fldPosY = receiver.getFieldDisplayPositionY(engine, playerID);
+		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		int tempX = 0;
+
+		// Timer
+		if(playerID == 0) {
+			receiver.drawDirectFont(engine, playerID, 256, 16, GeneralUtil.getTime(engine.statistics.time));
+		}
+
+		if(engine.gameStarted) {
+			// Rest
+			receiver.drawDirectFont(engine, playerID, fldPosX + 160, fldPosY + 241, "REST", playerColor, 0.5f);
+			tempX = (rest[playerID] < 10) ? 8 : 0;
+			receiver.drawDirectFont(engine, playerID, fldPosX + 160 + tempX, fldPosY + 257,
+					String.valueOf(rest[playerID]), (rest[playerID] <= (flash[playerID] ? 1 : 3)),
+					EventReceiver.COLOR_WHITE, EventReceiver.COLOR_RED);
+
+			// Speed
+			receiver.drawDirectFont(engine, playerID, fldPosX + 156, fldPosY + 280, "SPEED", playerColor, 0.5f);
+			receiver.drawDirectFont(engine, playerID, fldPosX + 152, fldPosY + 296, SPEED_NAME[speed[playerID]], SPEED_COLOR[speed[playerID]]);
+		}
+
+		/*
 		if(playerID == 0) {
 			receiver.drawScoreFont(engine, playerID, -1, 0, "PHYSICIAN VS", EventReceiver.COLOR_GREEN);
 
@@ -694,24 +717,8 @@ public class PhysicianVSMode extends DummyMode {
 
 			receiver.drawScoreFont(engine, playerID, -1, 14, "TIME", EventReceiver.COLOR_GREEN);
 			receiver.drawScoreFont(engine, playerID, -1, 15, GeneralUtil.getTime(engine.statistics.time));
-
-			/*
-			receiver.drawScoreFont(engine, playerID, -1, 17, "OJAMA", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1, 18, "1P:", EventReceiver.COLOR_RED);
-			if (garbageColors[0] != null)
-				receiver.drawScoreFont(engine, playerID, 3, 18, String.valueOf(garbageColors[0].size()), true);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 18, "0", false);
-			receiver.drawScoreFont(engine, playerID, -1, 19, "2P:", EventReceiver.COLOR_BLUE);
-			if (garbageColors[1] != null)
-				receiver.drawScoreFont(engine, playerID, 3, 19, String.valueOf(garbageColors[1].size()), true);
-			else
-				receiver.drawScoreFont(engine, playerID, 3, 19, "0", false);
-			*/
 		}
-
-		if (!owner.engine[playerID].gameActive)
-			return;
+		*/
 	}
 
 	/*

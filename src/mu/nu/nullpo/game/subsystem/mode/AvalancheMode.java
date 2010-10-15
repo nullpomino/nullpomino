@@ -282,12 +282,8 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void renderMove(GameEngine engine, int playerID) {
-		if(dangerColumnShowX) {
-			if(engine.displaysize == 1) {
-				receiver.drawMenuFont(engine, playerID, 4, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED, 2.0f);
-			} else {
-				receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
-			}
+		if(dangerColumnShowX && engine.gameStarted) {
+			drawXorTimer(engine, playerID);
 		}
 	}
 
@@ -360,12 +356,8 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 13, String.valueOf(engine.statistics.maxChain));
 
-			if(dangerColumnShowX && (engine.stat != GameEngine.STAT_MOVE)) {
-				if(engine.displaysize == 1) {
-					receiver.drawMenuFont(engine, playerID, 4, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED, 2.0f);
-				} else {
-					receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble ? "ee" : "e", EventReceiver.COLOR_RED);
-				}
+			if(dangerColumnShowX && engine.gameStarted && (engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT)) {
+				drawXorTimer(engine, playerID);
 			}
 
 			int textHeight = 13;
@@ -379,6 +371,23 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				receiver.drawMenuFont(engine, playerID, baseX + (chain > 9 ? 0 : 1), textHeight, chain + " CHAIN!", EventReceiver.COLOR_YELLOW);
 			if (zenKeshi)
 				receiver.drawMenuFont(engine, playerID, baseX, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+		}
+	}
+
+	/**
+	 * Draw X on death columns
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 */
+	protected void drawXorTimer(GameEngine engine, int playerID) {
+		for(int i = 0; i < (dangerColumnDouble ? 2 : 1); i++) {
+			if((engine.field == null) || (engine.field.getBlockEmpty(2 + i, 0))) {
+				if(engine.displaysize == 1) {
+					receiver.drawMenuFont(engine, playerID, 4 + (i * 2), 0, "e", EventReceiver.COLOR_RED, 2.0f);
+				} else {
+					receiver.drawMenuFont(engine, playerID, 2 + i, 0, "e", EventReceiver.COLOR_RED);
+				}
+			}
 		}
 	}
 

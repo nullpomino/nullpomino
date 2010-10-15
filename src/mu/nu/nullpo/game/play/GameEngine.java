@@ -203,10 +203,18 @@ public class GameEngine {
 	/** Show Hint with AI */
 	public boolean aiShowHint;
 
+	/** AI Hint X position */
 	public int aiHintX;
+
+	/** AI Hint Y position */
 	public int aiHintY;
+
+	/** AI Hint piece direction */
 	public int aiHintRt;
+
+	/** True if AI Hint is ready */
 	public boolean aiHintReady;
+
 	/** Current main game status */
 	public int stat;
 
@@ -221,6 +229,9 @@ public class GameEngine {
 
 	/** true if the timer is active */
 	public boolean timerActive;
+
+	/** true if the game is started (It will not change back to false until the game is reset) */
+	public boolean gameStarted;
 
 	/** Timer for replay */
 	public int replayTimer;
@@ -716,6 +727,7 @@ public class GameEngine {
 		isInGame = false;
 		gameActive = false;
 		timerActive = false;
+		gameStarted = false;
 		replayTimer = 0;
 
 		nowPieceObject = null;
@@ -1879,6 +1891,7 @@ public class GameEngine {
 				ctrl.reset();
 				// ゲーム中 flagON
 				gameActive = true;
+				gameStarted = true;
 				isInGame = true;
 			}
 		}

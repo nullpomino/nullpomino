@@ -423,34 +423,74 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	}
 
 	/*
+	 * When the current piece is in action
+	 */
+	@Override
+	public void renderMove(GameEngine engine, int playerID) {
+		if(engine.gameStarted)
+			drawX(engine, playerID);
+	}
+
+	/*
 	 * Render score
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
-		// Status display
+		int fldPosX = receiver.getFieldDisplayPositionX(engine, playerID);
+		int fldPosY = receiver.getFieldDisplayPositionY(engine, playerID);
+		int playerColor = (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
+		int fontColor = EventReceiver.COLOR_WHITE;
+
+		// Timer
 		if(playerID == 0) {
-			receiver.drawScoreFont(engine, playerID, -1,  0, "AVALANCHE VS", EventReceiver.COLOR_GREEN);
-
-			drawOjama(engine, playerID, -1, 2, EventReceiver.COLOR_PURPLE);
-
-			receiver.drawScoreFont(engine, playerID, -1,  5, "HANDICAP", EventReceiver.COLOR_PURPLE);
-			receiver.drawScoreFont(engine, playerID, -1,  6, "1P:", EventReceiver.COLOR_RED);
-			receiver.drawScoreFont(engine, playerID,  3,  6, String.valueOf(ojamaHandicapLeft[0]), (ojamaHandicapLeft[0] == 0));
-			receiver.drawScoreFont(engine, playerID, -1,  7, "2P:", EventReceiver.COLOR_BLUE);
-			receiver.drawScoreFont(engine, playerID,  3,  7, String.valueOf(ojamaHandicapLeft[1]), (ojamaHandicapLeft[1] == 0));
-
-			drawAttack(engine, playerID, -1, 9, EventReceiver.COLOR_GREEN);
-			drawScores(engine, playerID, -1, 13, EventReceiver.COLOR_PURPLE);
-
-			receiver.drawScoreFont(engine, playerID, -1, 17, "TIME", EventReceiver.COLOR_GREEN);
-			receiver.drawScoreFont(engine, playerID, -1, 18, GeneralUtil.getTime(engine.statistics.time));
+			receiver.drawDirectFont(engine, playerID, 224, 8, GeneralUtil.getTime(engine.statistics.time));
 		}
 
-		if (!owner.engine[playerID].gameActive)
-			return;
-		if (dangerColumnShowX[playerID])
+		// Ojama Counter
+		fontColor = EventReceiver.COLOR_WHITE;
+		if(ojama[playerID] >= 1) fontColor = EventReceiver.COLOR_YELLOW;
+		if(ojama[playerID] >= 6) fontColor = EventReceiver.COLOR_ORANGE;
+		if(ojama[playerID] >= 12) fontColor = EventReceiver.COLOR_RED;
+
+		String strOjama = String.valueOf(ojama[playerID]);
+		if(ojamaAdd[playerID] > 0)
+			strOjama = strOjama + "(+" + String.valueOf(ojamaAdd[playerID]) + ")";
+
+		if(!strOjama.equals("0")) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 32, strOjama, fontColor);
+		}
+
+		// Handicap Counter
+		fontColor = EventReceiver.COLOR_WHITE;
+		if(ojamaHandicapLeft[playerID] < ojamaHandicap[playerID] / 2) fontColor = EventReceiver.COLOR_YELLOW;
+		if(ojamaHandicapLeft[playerID] < ojamaHandicap[playerID] / 3) fontColor = EventReceiver.COLOR_ORANGE;
+		if(ojamaHandicapLeft[playerID] < ojamaHandicap[playerID] / 4) fontColor = EventReceiver.COLOR_RED;
+
+		String strOjamaHandicapLeft = "";
+		if(ojamaHandicapLeft[playerID] > 0)
+			strOjamaHandicapLeft = String.valueOf(ojamaHandicapLeft[playerID]);
+
+		if(!strOjamaHandicapLeft.equals("0")) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 16, strOjamaHandicapLeft, fontColor);
+		}
+
+		// Score
+		String strScoreMultiplier = "";
+		if((lastscore[playerID] != 0) && (lastmultiplier[playerID] != 0) && (scgettime[playerID] > 0))
+			strScoreMultiplier = "(" + lastscore[playerID] + "e" + lastmultiplier[playerID] + ")";
+
+		if(engine.displaysize == 1) {
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 440, String.format("%12d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX + 4, fldPosY + 456, String.format("%12s", strScoreMultiplier), playerColor);
+		} else if(engine.gameStarted) {
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 248, String.format("%8d", score[playerID]), playerColor);
+			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 264, String.format("%8s", strScoreMultiplier), playerColor);
+		}
+
+		if((engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted))
 			drawX(engine, playerID);
-		if (ojamaHard[playerID] > 0)
+
+		if(ojamaHard[playerID] > 0)
 			drawHardOjama(engine, playerID);
 
 		super.renderLast(engine, playerID);

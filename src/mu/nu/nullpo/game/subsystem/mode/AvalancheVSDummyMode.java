@@ -838,18 +838,19 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			return;
 
 		int textHeight = 13;
-		if (engine.field != null)
-		{
+		if (engine.field != null) {
 			textHeight = engine.field.getHeight();
-			if (big[playerID])
-				textHeight <<= 1;
-			textHeight++;
+			textHeight += 3;
 		}
+		if(engine.displaysize == 1) textHeight = 11;
+
+		int baseX = (engine.displaysize == 1) ? 1 : -2;
+
 		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
-			receiver.drawMenuFont(engine, playerID, chain[playerID] > 9 ? 0 : 1, textHeight,
+			receiver.drawMenuFont(engine, playerID, baseX + (chain[playerID] > 9 ? 0 : 1), textHeight,
 					chain[playerID] + " CHAIN!", getChainColor(playerID));
 		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
-			receiver.drawMenuFont(engine, playerID, 0, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
+			receiver.drawMenuFont(engine, playerID, baseX+1, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 	}
 
 	protected int getChainColor (int playerID) {
@@ -862,10 +863,20 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	protected void drawX (GameEngine engine, int playerID) {
-		if(engine.displaysize == 1)
-			receiver.drawMenuFont(engine, playerID, 4, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED, 2.0f);
-		else
-			receiver.drawMenuFont(engine, playerID, 2, 0, dangerColumnDouble[playerID] ? "ee" : "e", EventReceiver.COLOR_RED);
+		if(!dangerColumnShowX[playerID]) return;
+
+		int baseX = big[playerID] ? 1 : 2;
+
+		for(int i = 0; i < ((dangerColumnDouble[playerID] && !big[playerID]) ? 2 : 1); i++) {
+			if((engine.field == null) || (engine.field.getBlockEmpty(baseX + i, 0))) {
+				if(big[playerID])
+					receiver.drawMenuFont(engine, playerID, 2, 0, "e", EventReceiver.COLOR_RED, 2.0f);
+				else if(engine.displaysize == 1)
+					receiver.drawMenuFont(engine, playerID, 4 + (i * 2), 0, "e", EventReceiver.COLOR_RED, 2.0f);
+				else
+					receiver.drawMenuFont(engine, playerID, 2 + i, 0, "e", EventReceiver.COLOR_RED);
+			}
+		}
 	}
 
 	protected void drawHardOjama (GameEngine engine, int playerID) {
@@ -874,8 +885,12 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 				for (int y = 0; y < engine.field.getHeight(); y++)
 				{
 					int hard = engine.field.getBlock(x, y).hard;
-					if (hard > 0)
-						receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
+					if (hard > 0) {
+						if(engine.displaysize == 1)
+							receiver.drawMenuFont(engine, playerID, x * 2, y * 2, String.valueOf(hard), EventReceiver.COLOR_YELLOW, 2.0f);
+						else
+							receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(hard), EventReceiver.COLOR_YELLOW);
+					}
 				}
 	}
 
