@@ -269,7 +269,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			}
 
 			if (engine.ctrl.isPush(Controller.BUTTON_A)) {
-				if ((xyzzy == 573) && engine.statc[2] > 4) {
+				if ((xyzzy == 573) && engine.statc[2] > 5) {
 					loadMapSetFever(engine, playerID, mapSet, true);
 					loadFeverMap(engine, playerID, previewChain, previewSubset);
 				} else if (xyzzy == 9) {
