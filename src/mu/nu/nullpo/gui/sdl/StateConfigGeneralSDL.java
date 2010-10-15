@@ -38,6 +38,32 @@ import sdljava.video.SDLSurface;
  * 全般の設定画面のステート
  */
 public class StateConfigGeneralSDL extends BaseStateSDL {
+	/** UI Text identifier Strings */
+	protected static final String[] UI_TEXT = {
+		"ConfigGeneral_SE",
+		"ConfigGeneral_BGM",
+		"ConfigGeneral_BGMPreload",
+		"ConfigGeneral_SEVolume",
+		"ConfigGeneral_BGMVolume",
+		"ConfigGeneral_Background",
+		"ConfigGeneral_UseBackgroundFade",
+		"ConfigGeneral_ShowLineEffect",
+		"ConfigGeneral_LineEffectSpeed",
+		"ConfigGeneral_ShowMeter",
+		"ConfigGeneral_DarkNextArea",
+		"ConfigGeneral_NextShadow",
+		"ConfigGeneral_SideNext",
+		"ConfigGeneral_BigSideNext",
+		"ConfigGeneral_OutlineGhost",
+		"ConfigGeneral_FieldBGBright",
+		"ConfigGeneral_Fullscreen",
+		"ConfigGeneral_ShowFPS",
+		"ConfigGeneral_MaxFPS",
+		"ConfigGeneral_FrameStep",
+		"ConfigGeneral_SoundBufferSize",
+		"ConfigGeneral_SoundChannels",
+	};
+
 	/** Cursor position */
 	protected int cursor;
 
@@ -67,6 +93,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 
 	/** Line clearエフェクト表示 */
 	protected boolean showlineeffect;
+
+	/** Line clear effect speed */
+	protected int lineeffectspeed;
 
 	/** サウンドバッファサイズ */
 	protected int soundbuffer;
@@ -126,6 +155,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		enableframestep = prop.getProperty("option.enableframestep", false);
 		maxfps = prop.getProperty("option.maxfps", 60);
 		showlineeffect = prop.getProperty("option.showlineeffect", true);
+		lineeffectspeed = prop.getProperty("option.lineeffectspeed", 0);
 		soundbuffer = prop.getProperty("option.soundbuffer", 1024);
 		heavyeffect = prop.getProperty("option.heavyeffect", false);
 		fieldbgbright = prop.getProperty("option.fieldbgbright", 128);
@@ -154,6 +184,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		prop.setProperty("option.enableframestep", enableframestep);
 		prop.setProperty("option.maxfps", maxfps);
 		prop.setProperty("option.showlineeffect", showlineeffect);
+		prop.setProperty("option.lineeffectspeed", lineeffectspeed);
 		prop.setProperty("option.soundbuffer", soundbuffer);
 		prop.setProperty("option.heavyeffect", heavyeffect);
 		prop.setProperty("option.fieldbgbright", fieldbgbright);
@@ -173,55 +204,51 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	 */
 	@Override
 	public void render(SDLSurface screen) throws SDLException {
+		// Background
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
-		NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS", NormalFontSDL.COLOR_ORANGE);
+		// Basic Options
+		if(cursor < 16) {
+			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFontSDL.COLOR_ORANGE);
+			NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
 
-		NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
+			NormalFontSDL.printFontGrid(2,  3, "SE:" + GeneralUtil.getOorX(se), (cursor == 0));
+			NormalFontSDL.printFontGrid(2,  4, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 1));
+			NormalFontSDL.printFontGrid(2,  5, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 2));
+			NormalFontSDL.printFontGrid(2,  6, "SE VOLUME:" + sevolume, (cursor == 3));
+			NormalFontSDL.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume, (cursor == 4));
+			NormalFontSDL.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
+			NormalFontSDL.printFontGrid(2,  9, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 6));
+			NormalFontSDL.printFontGrid(2, 10, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 7));
+			NormalFontSDL.printFontGrid(2, 11, "LINE EFFECT SPEED:" + "X " + (lineeffectspeed+1), (cursor == 8));
+			NormalFontSDL.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
+			NormalFontSDL.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
+			NormalFontSDL.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
+			NormalFontSDL.printFontGrid(2, 15, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 12));
+			NormalFontSDL.printFontGrid(2, 16, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 13));
+			NormalFontSDL.printFontGrid(2, 17, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 14));
+			NormalFontSDL.printFontGrid(2, 18, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 15));
+		}
+		// Advanced Options
+		else if(cursor < 20) {
+			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFontSDL.COLOR_ORANGE);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 16), "b", NormalFontSDL.COLOR_RED);
 
-		NormalFontSDL.printFontGrid(2, 3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 0));
-		NormalFontSDL.printFontGrid(2, 4, "SE:" + GeneralUtil.getOorX(se), (cursor == 1));
-		NormalFontSDL.printFontGrid(2, 5, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 2));
-		NormalFontSDL.printFontGrid(2, 6, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 3));
-		NormalFontSDL.printFontGrid(2, 7, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 4));
-		NormalFontSDL.printFontGrid(2, 8, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 5));
-		NormalFontSDL.printFontGrid(2, 9, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 6));
-		NormalFontSDL.printFontGrid(2, 10, "MAX FPS:" + maxfps, (cursor == 7));
-		NormalFontSDL.printFontGrid(2, 11, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 8));
-		NormalFontSDL.printFontGrid(2, 12, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 9));
-		NormalFontSDL.printFontGrid(2, 13, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 10));
-		NormalFontSDL.printFontGrid(2, 14, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 11));
-		NormalFontSDL.printFontGrid(2, 15, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 12));
-		NormalFontSDL.printFontGrid(2, 16, "SE VOLUME:" + sevolume, (cursor == 13));
-		NormalFontSDL.printFontGrid(2, 17, "BGM VOLUME:" + bgmvolume, (cursor == 14));
-		NormalFontSDL.printFontGrid(2, 18, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 15));
-		NormalFontSDL.printFontGrid(2, 19, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 16));
-		NormalFontSDL.printFontGrid(2, 20, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 17));
-		NormalFontSDL.printFontGrid(2, 21, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 18));
-		NormalFontSDL.printFontGrid(2, 22, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 19));
-		NormalFontSDL.printFontGrid(2, 23, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 20));
+			NormalFontSDL.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 16));
+			NormalFontSDL.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 17));
+			NormalFontSDL.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 18));
+			NormalFontSDL.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 19));
+		}
+		// SDL Options
+		else {
+			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: SDL (3/3)", NormalFontSDL.COLOR_ORANGE);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 20), "b", NormalFontSDL.COLOR_RED);
 
-		if(cursor == 0) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_Fullscreen"));
-		if(cursor == 1) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SE"));
-		if(cursor == 2) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_BGM"));
-		if(cursor == 3) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_BGMPreload"));
-		if(cursor == 4) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_Background"));
-		if(cursor == 5) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_ShowFPS"));
-		if(cursor == 6) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_FrameStep"));
-		if(cursor == 7) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_MaxFPS"));
-		if(cursor == 8) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_ShowLineEffect"));
-		if(cursor == 9) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SoundBufferSize"));
-		if(cursor == 10) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_UseBackgroundFade"));
-		if(cursor == 11) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_FieldBGBright"));
-		if(cursor == 12) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_DarkNextArea"));
-		if(cursor == 13) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SEVolume"));
-		if(cursor == 14) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_BGMVolume"));
-		if(cursor == 15) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SoundChannels"));
-		if(cursor == 16) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_ShowMeter"));
-		if(cursor == 17) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_NextShadow"));
-		if(cursor == 18) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_OutlineGhost"));
-		if(cursor == 19) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_SideNext"));
-		if(cursor == 20) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText("ConfigGeneral_BigSideNext"));
+			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 20));
+			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 21));
+		}
+
+		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
 	}
 
 	/*
@@ -232,12 +259,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 20;
+			if(cursor < 0) cursor = 21;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 20) cursor = 0;
+			if(cursor > 21) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -250,81 +277,86 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			ResourceHolderSDL.soundManager.play("change");
 
 			switch(cursor) {
-				case 0:
-					fullscreen = !fullscreen;
-					break;
-				case 1:
-					se = !se;
-					break;
-				case 2:
-					bgm = !bgm;
-					break;
-				case 3:
-					bgmpreload = !bgmpreload;
-					break;
-				case 4:
-					showbg = !showbg;
-					break;
-				case 5:
-					showfps = !showfps;
-					break;
-				case 6:
-					enableframestep = !enableframestep;
-					break;
-				case 7:
-					maxfps += change;
-					if(maxfps < 0) maxfps = 99;
-					if(maxfps > 99) maxfps = 0;
-					break;
-				case 8:
-					showlineeffect = !showlineeffect;
-					break;
-				case 9:
-					soundbuffer += change * 256;
-					if(soundbuffer < 0) soundbuffer = 65535;
-					if(soundbuffer > 65535) soundbuffer = 0;
-					break;
-				case 10:
-					heavyeffect = !heavyeffect;
-					break;
-				case 11:
-					fieldbgbright += change;
-					if(fieldbgbright < 0) fieldbgbright = 255;
-					if(fieldbgbright > 255) fieldbgbright = 0;
-					break;
-				case 12:
-					darknextarea = !darknextarea;
-					break;
-				case 13:
-					sevolume += change;
-					if(sevolume < 0) sevolume = 128;
-					if(sevolume > 128) sevolume = 0;
-					break;
-				case 14:
-					bgmvolume += change;
-					if(bgmvolume < 0) bgmvolume = 128;
-					if(bgmvolume > 128) bgmvolume = 0;
-					break;
-				case 15:
-					soundChannels += change;
-					if(soundChannels < 0) soundChannels = 50;
-					if(soundChannels > 50) soundChannels = 0;
-					break;
-				case 16:
-					showmeter = !showmeter;
-					break;
-				case 17:
-					nextshadow = !nextshadow;
-					break;
-				case 18:
-					outlineghost = !outlineghost;
-					break;
-				case 19:
-					sidenext = !sidenext;
-					break;
-				case 20:
-					bigsidenext = !bigsidenext;
-					break;
+			case 0:
+				se = !se;
+				break;
+			case 1:
+				bgm = !bgm;
+				break;
+			case 2:
+				bgmpreload = !bgmpreload;
+				break;
+			case 3:
+				sevolume += change;
+				if(sevolume < 0) sevolume = 128;
+				if(sevolume > 128) sevolume = 0;
+				break;
+			case 4:
+				bgmvolume += change;
+				if(bgmvolume < 0) bgmvolume = 128;
+				if(bgmvolume > 128) bgmvolume = 0;
+				break;
+			case 5:
+				showbg = !showbg;
+				break;
+			case 6:
+				heavyeffect = !heavyeffect;
+				break;
+			case 7:
+				showlineeffect = !showlineeffect;
+				break;
+			case 8:
+				lineeffectspeed += change;
+				if(lineeffectspeed < 0) lineeffectspeed = 9;
+				if(lineeffectspeed > 9) lineeffectspeed = 0;
+				break;
+			case 9:
+				showmeter = !showmeter;
+				break;
+			case 10:
+				darknextarea = !darknextarea;
+				break;
+			case 11:
+				nextshadow = !nextshadow;
+				break;
+			case 12:
+				sidenext = !sidenext;
+				break;
+			case 13:
+				bigsidenext = !bigsidenext;
+				break;
+			case 14:
+				outlineghost = !outlineghost;
+				break;
+			case 15:
+				fieldbgbright += change;
+				if(fieldbgbright < 0) fieldbgbright = 255;
+				if(fieldbgbright > 255) fieldbgbright = 0;
+				break;
+			case 16:
+				fullscreen = !fullscreen;
+				break;
+			case 17:
+				showfps = !showfps;
+				break;
+			case 18:
+				maxfps += change;
+				if(maxfps < 0) maxfps = 99;
+				if(maxfps > 99) maxfps = 0;
+				break;
+			case 19:
+				enableframestep = !enableframestep;
+				break;
+			case 20:
+				soundbuffer += change * 256;
+				if(soundbuffer < 0) soundbuffer = 65535;
+				if(soundbuffer > 65535) soundbuffer = 0;
+				break;
+			case 21:
+				soundChannels += change;
+				if(soundChannels < 0) soundChannels = 50;
+				if(soundChannels > 50) soundChannels = 0;
+				break;
 			}
 		}
 
@@ -338,6 +370,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NullpoMinoSDL.showfps = showfps;
 			NullpoMinoSDL.maxFPS = maxfps;
 
+			ResourceHolderSDL.soundManager.changeVolume(sevolume);
 			if(showlineeffect) ResourceHolderSDL.loadLineClearEffectImages();
 			if(showbg) ResourceHolderSDL.loadBackgroundImages();
 

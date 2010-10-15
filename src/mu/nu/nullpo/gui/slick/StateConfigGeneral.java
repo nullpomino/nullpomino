@@ -44,6 +44,35 @@ public class StateConfigGeneral extends BasicGameState {
 	/** This state's ID */
 	public static final int ID = 6;
 
+	/** UI Text identifier Strings */
+	protected static final String[] UI_TEXT = {
+		"ConfigGeneral_SE",
+		"ConfigGeneral_BGM",
+		"ConfigGeneral_BGMPreload",
+		"ConfigGeneral_SEVolume",
+		"ConfigGeneral_BGMVolume",
+		"ConfigGeneral_Background",
+		"ConfigGeneral_UseBackgroundFade",
+		"ConfigGeneral_ShowLineEffect",
+		"ConfigGeneral_LineEffectSpeed",
+		"ConfigGeneral_ShowMeter",
+		"ConfigGeneral_DarkNextArea",
+		"ConfigGeneral_NextShadow",
+		"ConfigGeneral_SideNext",
+		"ConfigGeneral_BigSideNext",
+		"ConfigGeneral_OutlineGhost",
+		"ConfigGeneral_FieldBGBright",
+		"ConfigGeneral_Fullscreen",
+		"ConfigGeneral_ShowFPS",
+		"ConfigGeneral_MaxFPS",
+		"ConfigGeneral_FrameStep",
+		"ConfigGeneral_BGMStreaming",
+		"ConfigGeneral_VSync",
+		"ConfigGeneral_AlternateFPSTiming",
+		"ConfigGeneral_AlternateFPSDynamicAdjust",
+		"ConfigGeneral_AlternateFPSPerfectMode",
+	};
+
 	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
@@ -79,6 +108,9 @@ public class StateConfigGeneral extends BasicGameState {
 
 	/** Line clearエフェクト表示 */
 	protected boolean showlineeffect;
+
+	/** Line clear effect speed */
+	protected int lineeffectspeed;
 
 	/** 重い演出を使う */
 	protected boolean heavyeffect;
@@ -152,6 +184,7 @@ public class StateConfigGeneral extends BasicGameState {
 		enableframestep = prop.getProperty("option.enableframestep", false);
 		maxfps = prop.getProperty("option.maxfps", 60);
 		showlineeffect = prop.getProperty("option.showlineeffect", true);
+		lineeffectspeed = prop.getProperty("option.lineeffectspeed", 0);
 		heavyeffect = prop.getProperty("option.heavyeffect", false);
 		fieldbgbright = prop.getProperty("option.fieldbgbright", 64);
 		darknextarea = prop.getProperty("option.darknextarea", true);
@@ -183,6 +216,7 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.enableframestep", enableframestep);
 		prop.setProperty("option.maxfps", maxfps);
 		prop.setProperty("option.showlineeffect", showlineeffect);
+		prop.setProperty("option.lineeffectspeed", lineeffectspeed);
 		prop.setProperty("option.heavyeffect", heavyeffect);
 		prop.setProperty("option.fieldbgbright", fieldbgbright);
 		prop.setProperty("option.darknextarea", darknextarea);
@@ -206,60 +240,51 @@ public class StateConfigGeneral extends BasicGameState {
 		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
-		// Menu
-		NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS", NormalFont.COLOR_ORANGE);
+		// Basic Options
+		if(cursor < 16) {
+			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFont.COLOR_ORANGE);
+			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+			NormalFont.printFontGrid(2,  3, "SE:" + GeneralUtil.getOorX(se), (cursor == 0));
+			NormalFont.printFontGrid(2,  4, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 1));
+			NormalFont.printFontGrid(2,  5, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 2));
+			NormalFont.printFontGrid(2,  6, "SE VOLUME:" + sevolume, (cursor == 3));
+			NormalFont.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume, (cursor == 4));
+			NormalFont.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
+			NormalFont.printFontGrid(2,  9, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 6));
+			NormalFont.printFontGrid(2, 10, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 7));
+			NormalFont.printFontGrid(2, 11, "LINE EFFECT SPEED:" + "X " + (lineeffectspeed+1), (cursor == 8));
+			NormalFont.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
+			NormalFont.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
+			NormalFont.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
+			NormalFont.printFontGrid(2, 15, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 12));
+			NormalFont.printFontGrid(2, 16, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 13));
+			NormalFont.printFontGrid(2, 17, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 14));
+			NormalFont.printFontGrid(2, 18, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 15));
+		}
+		// Advanced Options
+		else if(cursor < 20) {
+			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFont.COLOR_ORANGE);
+			NormalFont.printFontGrid(1, 3 + (cursor - 16), "b", NormalFont.COLOR_RED);
 
-		NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 0));
-		NormalFont.printFontGrid(2,  4, "SE:" + GeneralUtil.getOorX(se), (cursor == 1));
-		NormalFont.printFontGrid(2,  5, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 2));
-		NormalFont.printFontGrid(2,  6, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 3));
-		NormalFont.printFontGrid(2,  7, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 4));
-		NormalFont.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
-		NormalFont.printFontGrid(2,  9, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 6));
-		NormalFont.printFontGrid(2, 10, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 7));
-		NormalFont.printFontGrid(2, 11, "MAX FPS:" + maxfps, (cursor == 8));
-		NormalFont.printFontGrid(2, 12, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 9));
-		NormalFont.printFontGrid(2, 13, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 10));
-		NormalFont.printFontGrid(2, 14, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 11));
-		NormalFont.printFontGrid(2, 15, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 12));
-		NormalFont.printFontGrid(2, 16, "SE VOLUME:" + sevolume, (cursor == 13));
-		NormalFont.printFontGrid(2, 17, "BGM VOLUME:" + bgmvolume, (cursor == 14));
-		NormalFont.printFontGrid(2, 18, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 15));
-		NormalFont.printFontGrid(2, 19, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 16));
-		NormalFont.printFontGrid(2, 20, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 17));
-		NormalFont.printFontGrid(2, 21, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 18));
-		NormalFont.printFontGrid(2, 22, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 19));
-		NormalFont.printFontGrid(2, 23, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 20));
-		NormalFont.printFontGrid(2, 24, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 21));
-		NormalFont.printFontGrid(2, 25, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
-		NormalFont.printFontGrid(2, 26, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 23));
+			NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 16));
+			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 17));
+			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 18));
+			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 19));
+		}
+		// Slick Options
+		else {
+			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: SLICK (3/3)", NormalFont.COLOR_ORANGE);
+			NormalFont.printFontGrid(1, 3 + (cursor - 20), "b", NormalFont.COLOR_RED);
 
-		if(cursor == 0) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_Fullscreen"));
-		if(cursor == 1) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SE"));
-		if(cursor == 2) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BGM"));
-		if(cursor == 3) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BGMPreload"));
-		if(cursor == 4) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BGMStreaming"));
-		if(cursor == 5) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_Background"));
-		if(cursor == 6) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_ShowFPS"));
-		if(cursor == 7) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_FrameStep"));
-		if(cursor == 8) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_MaxFPS"));
-		if(cursor == 9) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_ShowLineEffect"));
-		if(cursor == 10) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_UseBackgroundFade"));
-		if(cursor == 11) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_FieldBGBright"));
-		if(cursor == 12) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_DarkNextArea"));
-		if(cursor == 13) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SEVolume"));
-		if(cursor == 14) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BGMVolume"));
-		if(cursor == 15) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_ShowMeter"));
-		if(cursor == 16) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_VSync"));
-		if(cursor == 17) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_NextShadow"));
-		if(cursor == 18) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_OutlineGhost"));
-		if(cursor == 19) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_SideNext"));
-		if(cursor == 20) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_BigSideNext"));
-		if(cursor == 21) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSTiming"));
-		if(cursor == 22) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSDynamicAdjust"));
-		if(cursor == 23) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText("ConfigGeneral_AlternateFPSPerfectMode"));
+			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 20));
+			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 21));
+			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 22));
+			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 23));
+			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 24));
+		}
+
+		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -293,12 +318,12 @@ public class StateConfigGeneral extends BasicGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		    cursor--;
-			if(cursor < 0) cursor = 23;
+			if(cursor < 0) cursor = 24;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 23) cursor = 0;
+			if(cursor > 24) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -311,86 +336,91 @@ public class StateConfigGeneral extends BasicGameState {
 			ResourceHolder.soundManager.play("change");
 
 			switch(cursor) {
-				case 0:
-					fullscreen = !fullscreen;
-					break;
-				case 1:
-					se = !se;
-					break;
-				case 2:
-					bgm = !bgm;
-					break;
-				case 3:
-					bgmpreload = !bgmpreload;
-					break;
-				case 4:
-					bgmstreaming = !bgmstreaming;
-					break;
-				case 5:
-					showbg = !showbg;
-					break;
-				case 6:
-					showfps = !showfps;
-					break;
-				case 7:
-					enableframestep = !enableframestep;
-					break;
-				case 8:
-					maxfps += change;
-					if(maxfps < 0) maxfps = 99;
-					if(maxfps > 99) maxfps = 0;
-					break;
-				case 9:
-					showlineeffect = !showlineeffect;
-					break;
-				case 10:
-					heavyeffect = !heavyeffect;
-					break;
-				case 11:
-					fieldbgbright += change;
-					if(fieldbgbright < 0) fieldbgbright = 128;
-					if(fieldbgbright > 128) fieldbgbright = 0;
-					break;
-				case 12:
-					darknextarea = !darknextarea;
-					break;
-				case 13:
-					sevolume += change;
-					if(sevolume < 0) sevolume = 128;
-					if(sevolume > 128) sevolume = 0;
-					break;
-				case 14:
-					bgmvolume += change;
-					if(bgmvolume < 0) bgmvolume = 128;
-					if(bgmvolume > 128) bgmvolume = 0;
-					break;
-				case 15:
-					showmeter = !showmeter;
-					break;
-				case 16:
-					vsync = !vsync;
-					break;
-				case 17:
-					nextshadow = !nextshadow;
-					break;
-				case 18:
-					outlineghost = !outlineghost;
-					break;
-				case 19:
-					sidenext = !sidenext;
-					break;
-				case 20:
-					bigsidenext = !bigsidenext;
-					break;
-				case 21:
-					alternateFPSTiming = !alternateFPSTiming;
-					break;
-				case 22:
-					alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
-					break;
-				case 23:
-					alternateFPSPerfectMode = !alternateFPSPerfectMode;
-					break;
+			case 0:
+				se = !se;
+				break;
+			case 1:
+				bgm = !bgm;
+				break;
+			case 2:
+				bgmpreload = !bgmpreload;
+				break;
+			case 3:
+				sevolume += change;
+				if(sevolume < 0) sevolume = 128;
+				if(sevolume > 128) sevolume = 0;
+				break;
+			case 4:
+				bgmvolume += change;
+				if(bgmvolume < 0) bgmvolume = 128;
+				if(bgmvolume > 128) bgmvolume = 0;
+				break;
+			case 5:
+				showbg = !showbg;
+				break;
+			case 6:
+				heavyeffect = !heavyeffect;
+				break;
+			case 7:
+				showlineeffect = !showlineeffect;
+				break;
+			case 8:
+				lineeffectspeed += change;
+				if(lineeffectspeed < 0) lineeffectspeed = 9;
+				if(lineeffectspeed > 9) lineeffectspeed = 0;
+				break;
+			case 9:
+				showmeter = !showmeter;
+				break;
+			case 10:
+				darknextarea = !darknextarea;
+				break;
+			case 11:
+				nextshadow = !nextshadow;
+				break;
+			case 12:
+				sidenext = !sidenext;
+				break;
+			case 13:
+				bigsidenext = !bigsidenext;
+				break;
+			case 14:
+				outlineghost = !outlineghost;
+				break;
+			case 15:
+				fieldbgbright += change;
+				if(fieldbgbright < 0) fieldbgbright = 128;
+				if(fieldbgbright > 128) fieldbgbright = 0;
+				break;
+			case 16:
+				fullscreen = !fullscreen;
+				break;
+			case 17:
+				showfps = !showfps;
+				break;
+			case 18:
+				maxfps += change;
+				if(maxfps < 0) maxfps = 99;
+				if(maxfps > 99) maxfps = 0;
+				break;
+			case 19:
+				enableframestep = !enableframestep;
+				break;
+			case 20:
+				bgmstreaming = !bgmstreaming;
+				break;
+			case 21:
+				vsync = !vsync;
+				break;
+			case 22:
+				alternateFPSTiming = !alternateFPSTiming;
+				break;
+			case 23:
+				alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
+				break;
+			case 24:
+				alternateFPSPerfectMode = !alternateFPSPerfectMode;
+				break;
 			}
 		}
 

@@ -71,6 +71,9 @@ public class RendererSlick extends EventReceiver {
 	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
+	/** Line clear effect speed */
+	protected int lineeffectspeed;
+
 	/**
 	 * Block colorIDに応じてSlick用Colorオブジェクトを作成・取得
 	 * @param colorID Block colorID
@@ -105,6 +108,7 @@ public class RendererSlick extends EventReceiver {
 		showmeter = NullpoMinoSlick.propConfig.getProperty("option.showmeter", true);
 		darknextarea = NullpoMinoSlick.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSlick.propConfig.getProperty("option.nextshadow", false);
+		lineeffectspeed = NullpoMinoSlick.propConfig.getProperty("option.lineeffectspeed", 0);
 		outlineghost = NullpoMinoSlick.propConfig.getProperty("option.outlineghost", false);
 		sidenext = NullpoMinoSlick.propConfig.getProperty("option.sidenext", false);
 		bigsidenext = NullpoMinoSlick.propConfig.getProperty("option.bigsidenext", false);
@@ -1419,7 +1423,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 画面演出の更新
+	 * Update effects
 	 */
 	protected void effectUpdate() {
 		boolean emptyflag = true;
@@ -1429,14 +1433,14 @@ public class RendererSlick extends EventReceiver {
 
 			if(obj.effect != 0) emptyflag = false;
 
-			// 通常Block
+			// Normal Block
 			if(obj.effect == 1) {
-				obj.anim++;
+				obj.anim += (lineeffectspeed + 1);
 				if(obj.anim >= 36) obj.effect = 0;
 			}
-			// 宝石Block
+			// Gem Block
 			if(obj.effect == 2) {
-				obj.anim++;
+				obj.anim += (lineeffectspeed + 1);
 				if(obj.anim >= 60) obj.effect = 0;
 			}
 		}
@@ -1445,13 +1449,13 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 画面演出を描画
+	 * Render effects
 	 */
 	protected void effectRender() {
 		for(int i = 0; i < effectlist.size(); i++) {
 			EffectObject obj = effectlist.get(i);
 
-			// 通常Block
+			// Normal Block
 			if(obj.effect == 1) {
 				int x = obj.x - 40;
 				int y = obj.y - 15;
@@ -1471,7 +1475,7 @@ public class RendererSlick extends EventReceiver {
 					} catch (Exception e) {}
 				}
 			}
-			// 宝石Block
+			// Gem Block
 			if(obj.effect == 2) {
 				int x = obj.x - 8;
 				int y = obj.y - 8;

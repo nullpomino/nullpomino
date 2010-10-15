@@ -73,6 +73,9 @@ public class RendererSDL extends EventReceiver {
 	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
 
+	/** Line clear effect speed */
+	protected int lineeffectspeed;
+
 	/**
 	 * Constructor
 	 */
@@ -87,6 +90,7 @@ public class RendererSDL extends EventReceiver {
 		showmeter = NullpoMinoSDL.propConfig.getProperty("option.showmeter", true);
 		darknextarea = NullpoMinoSDL.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSDL.propConfig.getProperty("option.nextshadow", false);
+		lineeffectspeed = NullpoMinoSDL.propConfig.getProperty("option.lineeffectspeed", 0);
 		outlineghost = NullpoMinoSDL.propConfig.getProperty("option.outlineghost", false);
 		sidenext = NullpoMinoSDL.propConfig.getProperty("option.sidenext", false);
 		bigsidenext = NullpoMinoSDL.propConfig.getProperty("option.bigsidenext", false);
@@ -1514,7 +1518,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 画面演出の更新
+	 * Update effects
 	 */
 	protected void effectUpdate() {
 		boolean emptyflag = true;
@@ -1524,14 +1528,14 @@ public class RendererSDL extends EventReceiver {
 
 			if(obj.effect != 0) emptyflag = false;
 
-			// 通常Block
+			// Normal Block
 			if(obj.effect == 1) {
-				obj.anim++;
+				obj.anim += (lineeffectspeed + 1);
 				if(obj.anim >= 36) obj.effect = 0;
 			}
-			// 宝石Block
+			// Gem Block
 			if(obj.effect == 2) {
-				obj.anim++;
+				obj.anim += (lineeffectspeed + 1);
 				if(obj.anim >= 60) obj.effect = 0;
 			}
 		}
@@ -1540,13 +1544,13 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 画面演出を描画
+	 * Render effects
 	 */
 	protected void effectRender() {
 		for(int i = 0; i < effectlist.size(); i++) {
 			EffectObjectSDL obj = effectlist.get(i);
 
-			// 通常Block
+			// Normal Block
 			if(obj.effect == 1) {
 				int x = obj.x - 40;
 				int y = obj.y - 15;
@@ -1575,7 +1579,7 @@ public class RendererSDL extends EventReceiver {
 					log.debug("SDLException thrown", e);
 				}
 			}
-			// 宝石Block
+			// Gem Block
 			if(obj.effect == 2) {
 				int x = obj.x - 8;
 				int y = obj.y - 8;

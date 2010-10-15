@@ -29,10 +29,13 @@
 package mu.nu.nullpo.gui.sdl;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
+import sdljava.SDLException;
 import sdljava.mixer.MixChunk;
 import sdljava.mixer.SDLMixer;
 
@@ -152,6 +155,24 @@ public class SoundManagerSDL {
 				channelMap.remove(name);
 			} catch (Exception e) {
 				log.debug("Failed to stop sound:" + name, e);
+			}
+		}
+	}
+
+	/**
+	 * Change sound volume
+	 * @param volume New volume
+	 */
+	public void changeVolume(int volume) {
+		Collection<MixChunk> sounds = clipMap.values();
+		Iterator<MixChunk> it = sounds.iterator();
+
+		while(it.hasNext()) {
+			MixChunk clip = it.next();
+			try {
+				SDLMixer.volumeChunk(clip, volume);
+			} catch (SDLException e) {
+				log.debug("Failed to change volume", e);
 			}
 		}
 	}
