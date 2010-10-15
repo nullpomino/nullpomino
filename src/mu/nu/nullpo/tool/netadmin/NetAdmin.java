@@ -19,10 +19,8 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -57,6 +55,7 @@ import javax.swing.text.StyleConstants;
 import mu.nu.nullpo.game.net.NetBaseClient;
 import mu.nu.nullpo.game.net.NetMessageListener;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
+import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetServerBan;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
@@ -96,6 +95,11 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	/** Multiplayer leaderboard column names. These strings will be passed to getUIText(String) subroutine. */
 	private static final String[] MPRANKING_COLUMNNAMES  = {
 		"MPRanking_Rank", "MPRanking_Name", "MPRanking_Rating", "MPRanking_PlayCount", "MPRanking_WinCount"
+	};
+
+	/** Room-table column names. These strings will be passed to getUIText(String) subroutine. */
+	private static final String[] ROOMTABLE_COLUMNNAMES = {
+		"RoomTable_ID","RoomTable_Name","RoomTable_Rated","RoomTable_RuleName","RoomTable_Status","RoomTable_Players","RoomTable_Spectators"
 	};
 
 	//***** Variables *****
@@ -163,6 +167,13 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 	/** Login button */
 	private JButton btnLogin;
+
+	//***** Room list screen elements *****
+	/** Room list data */
+	private DefaultTableModel tablemodelRoomList;
+
+	/** Room list table */
+	private JTable tableRoomList;
 
 	//***** Lobby screen elements *****
 	/** Console Log textpane */
@@ -456,6 +467,35 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		// *** Game Style tab
 		JTabbedPane tabMPRanking = new JTabbedPane();
 		spMPRanking.add(tabMPRanking, BorderLayout.CENTER);
+
+		// ** Room List tab
+		JPanel spRoomList = new JPanel(new BorderLayout());
+		tabLobby.addTab(getUIText("Lobby_Tab_RoomList"), spRoomList);
+
+		// *** Room list table
+		String[] strTableColumnNames = new String[ROOMTABLE_COLUMNNAMES.length];
+		for(int i = 0; i < strTableColumnNames.length; i++) {
+			strTableColumnNames[i] = getUIText(ROOMTABLE_COLUMNNAMES[i]);
+		}
+		tablemodelRoomList = new DefaultTableModel(strTableColumnNames, 0);
+		tableRoomList = new JTable(tablemodelRoomList);
+		tableRoomList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableRoomList.setDefaultEditor(Object.class, null);
+		tableRoomList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableRoomList.getTableHeader().setReorderingAllowed(false);
+		tableRoomList.setComponentPopupMenu(new RoomTablePopupMenu(tableRoomList));
+
+		TableColumnModel tmRooms = tableRoomList.getColumnModel();
+		tmRooms.getColumn(0).setPreferredWidth(propConfig.getProperty("tableRoomList.width.id", 35));			// ID
+		tmRooms.getColumn(1).setPreferredWidth(propConfig.getProperty("tableRoomList.width.name", 155));		// Name
+		tmRooms.getColumn(2).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rated", 50));		// Rated
+		tmRooms.getColumn(3).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rulename", 105));	// Rule name
+		tmRooms.getColumn(4).setPreferredWidth(propConfig.getProperty("tableRoomList.width.status", 55));		// Status
+		tmRooms.getColumn(5).setPreferredWidth(propConfig.getProperty("tableRoomList.width.players", 65));		// Players
+		tmRooms.getColumn(6).setPreferredWidth(propConfig.getProperty("tableRoomList.width.spectators", 65));	// Spectators
+
+		JScrollPane spTableRoomList = new JScrollPane(tableRoomList);
+		spRoomList.add(spTableRoomList, BorderLayout.CENTER);
 
 		// *** Leaderboard table
 		String[] strMPRankingColumnNames = new String[MPRANKING_COLUMNNAMES.length];
@@ -779,12 +819,20 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				addConsoleLog(getUIText("Console_UnBan_NoParams"));
 			}
 		}
-		// playerdelete
+		// playerdelete/pdel
 		else if(commands[0].equalsIgnoreCase("playerdelete")||commands[0].equalsIgnoreCase("pdel")) {
 			if(commands.length > 1) {
 				sendCommand("playerdelete\t" + commands[1]);
 			} else {
 				addConsoleLog(getUIText("Console_PlayerDelete_NoParams"));
+			}
+		}
+		// roomdelete/rdef
+		else if(commands[0].equalsIgnoreCase("roomdelete")||commands[0].equalsIgnoreCase("rdel")) {
+			if(commands.length > 1) {
+				sendCommand("roomdelete\t" + commands[1]);
+			} else {
+				addConsoleLog(getUIText("Console_RoomDelete_NoParams"));
 			}
 		}
 		// Invalid
@@ -804,6 +852,33 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			result = propLangDefault.getProperty(str, str);
 		}
 		return result;
+	}
+
+	/**
+	 * Copy the selected row to clipboard
+	 * @param table JTable
+	 */
+	private static void copyTableRowToClipboard(final JTable table) {
+		int row = table.getSelectedRow();
+
+		if(row != -1) {
+			String strCopy = "";
+
+			for(int column = 0; column < table.getColumnCount(); column++) {
+				Object selectedObject = table.getValueAt(row, column);
+				if(selectedObject instanceof String) {
+					if(column == 0) {
+						strCopy += (String)selectedObject;
+					} else {
+						strCopy += "," + (String)selectedObject;
+					}
+				}
+			}
+
+			StringSelection ss = new StringSelection(strCopy);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(ss, ss);
+		}
 	}
 
 	/**
@@ -1082,6 +1157,54 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				}
 			}
 		}
+		// Room List
+		if(message[0].equals("roomlist")) {
+			int size = Integer.parseInt(message[1]);
+
+			tablemodelRoomList.setRowCount(0);
+			for(int i = 0; i < size; i++) {
+				NetRoomInfo r = new NetRoomInfo(message[2 + i]);
+				tablemodelRoomList.addRow(createRoomListRowData(r));
+			}
+		}
+		// New room appeared
+		if(message[0].equals("roomcreate")) {
+			NetRoomInfo r = new NetRoomInfo(message[1]);
+			tablemodelRoomList.addRow(createRoomListRowData(r));
+		}
+		// Room update
+		if(message[0].equals("roomupdate")) {
+			NetRoomInfo r = new NetRoomInfo(message[1]);
+			int columnID = tablemodelRoomList.findColumn(getUIText(ROOMTABLE_COLUMNNAMES[0]));
+
+			for(int i = 0; i < tablemodelRoomList.getRowCount(); i++) {
+				String strID = (String)tablemodelRoomList.getValueAt(i, columnID);
+				int roomID = Integer.parseInt(strID);
+
+				if(roomID == r.roomID) {
+					String[] rowData = createRoomListRowData(r);
+					for(int j = 0; j < rowData.length; j++) {
+						tablemodelRoomList.setValueAt(rowData[j], i, j);
+					}
+					break;
+				}
+			}
+		}
+		// Room delete
+		if(message[0].equals("roomdelete")) {
+			NetRoomInfo r = new NetRoomInfo(message[1]);
+			int columnID = tablemodelRoomList.findColumn(getUIText(ROOMTABLE_COLUMNNAMES[0]));
+
+			for(int i = 0; i < tablemodelRoomList.getRowCount(); i++) {
+				String strID = (String)tablemodelRoomList.getValueAt(i, columnID);
+				int roomID = Integer.parseInt(strID);
+
+				if(roomID == r.roomID) {
+					tablemodelRoomList.removeRow(i);
+					break;
+				}
+			}
+		}
 		// Admin command result
 		if(message[0].equals("adminresult")) {
 			if(message.length > 1) {
@@ -1090,6 +1213,23 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				onAdminResultMessage(client, strAdminResultArray);
 			}
 		}
+	}
+
+	/**
+	 * Create a row of room list
+	 * @param r NetRoomInfo
+	 * @return Row data
+	 */
+	private String[] createRoomListRowData(NetRoomInfo r) {
+		String[] rowData = new String[7];
+		rowData[0] = Integer.toString(r.roomID);
+		rowData[1] = r.strName;
+		rowData[2] = r.rated ? getUIText("RoomTable_Rated_True") : getUIText("RoomTable_Rated_False");
+		rowData[3] = r.ruleLock ? r.ruleName.toUpperCase() : getUIText("RoomTable_RuleName_Any");
+		rowData[4] = r.playing ? getUIText("RoomTable_Status_Playing") : getUIText("RoomTable_Status_Waiting");
+		rowData[5] = r.playerSeatedCount + "/" + r.maxPlayers;
+		rowData[6] = Integer.toString(r.spectatorCount);
+		return rowData;
 	}
 
 	/**
@@ -1212,6 +1352,18 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		if(message[0].equals("playerdelete")) {
 			if(message.length > 1) {
 				addConsoleLog(String.format(getUIText("Console_PlayerDelete_Result"), message[1]), new Color(0, 64, 64));
+			}
+		}
+		// Room Delete (OK)
+		if(message[0].equals("roomdeletesuccess")) {
+			if(message.length > 2) {
+				addConsoleLog(String.format(getUIText("Console_RoomDelete_OK"), message[1], message[2]), new Color(0, 64, 64));
+			}
+		}
+		// Room Delete (NG)
+		if(message[0].equals("roomdeletefail")) {
+			if(message.length > 1) {
+				addConsoleLog(String.format(getUIText("Console_RoomDelete_NG"), message[1]), new Color(0, 64, 64));
 			}
 		}
 	}
@@ -1359,26 +1511,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			add(copyAction = new AbstractAction(getUIText("Popup_Copy")) {
 				private static final long serialVersionUID = 1L;
 				public void actionPerformed(ActionEvent e) {
-					int row = table.getSelectedRow();
-
-					if(row != -1) {
-						String strCopy = "";
-
-						for(int column = 0; column < table.getColumnCount(); column++) {
-							Object selectedObject = table.getValueAt(row, column);
-							if(selectedObject instanceof String) {
-								if(column == 0) {
-									strCopy += (String)selectedObject;
-								} else {
-									strCopy += "," + (String)selectedObject;
-								}
-							}
-						}
-
-						StringSelection ss = new StringSelection(strCopy);
-						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-						clipboard.setContents(ss, ss);
-					}
+					copyTableRowToClipboard(table);
 				}
 			});
 			add(kickAction = new AbstractAction(getUIText("Popup_Kick")) {
@@ -1425,26 +1558,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			add(copyAction = new AbstractAction(getUIText("Popup_Copy")) {
 				private static final long serialVersionUID = 1L;
 				public void actionPerformed(ActionEvent e) {
-					int row = table.getSelectedRow();
-
-					if(row != -1) {
-						String strCopy = "";
-
-						for(int column = 0; column < table.getColumnCount(); column++) {
-							Object selectedObject = table.getValueAt(row, column);
-							if(selectedObject instanceof String) {
-								if(column == 0) {
-									strCopy += (String)selectedObject;
-								} else {
-									strCopy += "," + (String)selectedObject;
-								}
-							}
-						}
-
-						StringSelection ss = new StringSelection(strCopy);
-						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-						clipboard.setContents(ss, ss);
-					}
+					copyTableRowToClipboard(table);
 				}
 			});
 			add(deleteAction = new AbstractAction(getUIText("Popup_Delete")) {
@@ -1454,6 +1568,44 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 					String strName = (String)table.getValueAt(rowNumber, 1);
 					sendCommand("playerdelete\t" + strName);
 					client.send("mpranking\t0\n");
+				}
+			});
+		}
+
+		@Override
+		public void show(Component c, int x, int y) {
+			JTable table = (JTable) c;
+			boolean flg = table.getSelectedRow() != -1;
+			copyAction.setEnabled(flg);
+			deleteAction.setEnabled(flg);
+			super.show(c, x, y);
+		}
+	}
+
+	/**
+	 * Popup menu for room list table
+	 */
+	private class RoomTablePopupMenu extends JPopupMenu {
+		private static final long serialVersionUID = 1L;
+
+		private Action copyAction;
+		private Action deleteAction;
+
+		public RoomTablePopupMenu(final JTable table) {
+			super();
+
+			add(copyAction = new AbstractAction(getUIText("Popup_Copy")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent e) {
+					copyTableRowToClipboard(table);
+				}
+			});
+			add(deleteAction = new AbstractAction(getUIText("Popup_Delete")) {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent evt) {
+					int rowNumber = table.getSelectedRow();
+					String strID = (String)table.getValueAt(rowNumber, 0);
+					sendCommand("roomdelete\t" + strID);
 				}
 			});
 		}

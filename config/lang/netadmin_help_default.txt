@@ -55,3 +55,9 @@ playerdelete <PlayerName>
 	Delete the player's data (Rating, Number of games, and Number of wins)
 pdel <PlayerName>
 	Same as 'playerdelete'
+
+***** List of room related commands *****
+roomdelete <RoomID>
+	Delete a room. All players inside the room will be kicked to the lobby.
+rdel <RoomID>
+	Same as 'roomdelete'

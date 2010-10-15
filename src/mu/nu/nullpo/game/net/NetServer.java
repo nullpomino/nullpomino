@@ -1795,6 +1795,7 @@ public class NetServer implements ActionListener {
 			InetAddress addr = client.socket().getInetAddress();
 			send(client, "adminloginsuccess\t" + addr.getHostAddress() + "\t" + addr.getHostName() + "\n");
 			adminSendClientList();
+			sendRoomList(client);
 			log.info("Admin has logged in (" + strRemoteAddr + ")");
 		}
 		// ADMIN: Admin commands
@@ -1915,6 +1916,20 @@ public class NetServer implements ActionListener {
 			if(playerDataChange) writePlayerDataToFile();
 			if(rankingDataChange) writeMPRankingToFile();
 		}
+		// Room delete
+		if(message[0].equals("roomdelete")) {
+			// roomdelete\t[ID]
+			int roomID = Integer.parseInt(message[1]);
+			NetRoomInfo roomInfo = getRoomInfo(roomID);
+
+			if(roomInfo != null) {
+				String strRoomName = roomInfo.strName;
+				forceDeleteRoom(roomInfo);
+				sendAdminResult(client, "roomdeletesuccess\t" + roomID + "\t" + strRoomName);
+			} else {
+				sendAdminResult(client, "roomdeletefail\t" + roomID);
+			}
+		}
 		// Shutdown
 		if(message[0].equals("shutdown")) {
 			log.warn("Shutdown requested by the admin (" + client.socket().getInetAddress().toString() + ")");
@@ -2024,6 +2039,7 @@ public class NetServer implements ActionListener {
 	 * Delete a room
 	 * @param roomInfo Room to delete
 	 * @return true if success, false if fails (room not empty)
+	 * @throws IOException If something bad happens
 	 */
 	private boolean deleteRoom(NetRoomInfo roomInfo) throws IOException {
 		if((roomInfo != null) && (roomInfo.playerList.isEmpty())) {
@@ -2034,6 +2050,32 @@ public class NetServer implements ActionListener {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Force delete a room
+	 * @param roomInfo Room to delete
+	 * @throws IOException If something bad happens
+	 */
+	private void forceDeleteRoom(NetRoomInfo roomInfo) throws IOException {
+		if(roomInfo != null) {
+			if(!roomInfo.playerList.isEmpty()) {
+				LinkedList<NetPlayerInfo> tempList = new LinkedList<NetPlayerInfo>(roomInfo.playerList);
+				for(NetPlayerInfo pInfo: tempList) {
+					if(pInfo != null) {
+						SocketChannel client = getSocketChannelByPlayer(pInfo);
+						if(client != null) {
+							// Packet simulation :p
+							processPacket(client, "roomjoin\t-1\tfalse");
+							// Send message to the kicked player
+							send(client, "roomkicked\t0\t" + roomInfo.roomID + "\t" + NetUtil.urlEncode(roomInfo.strName) + "\n");
+						}
+					}
+				}
+				roomInfo.playerList.clear();
+			}
+			deleteRoom(roomInfo);
+		}
 	}
 
 	/**
@@ -2265,6 +2307,7 @@ public class NetServer implements ActionListener {
 		msg += roomInfo.exportString();
 		msg += "\n";
 		broadcast(msg);
+		broadcastAdmin(msg);
 	}
 
 	/**

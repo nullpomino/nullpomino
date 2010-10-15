@@ -55,3 +55,9 @@ playerdelete <プレイヤーの名前>
 	指定したプレイヤーのデータ(レート、プレイ回数、勝利数)を削除
 pdel <PlayerName>
 	'playerdelete'と同じ
+
+***** ルーム関連のコマンド一覧 *****
+roomdelete <RoomID>
+	ルームを削除(中のプレイヤー全員が強制的にロビーに戻ります)
+rdel <RoomID>
+	'roomdelete'と同じ

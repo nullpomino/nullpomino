@@ -3462,6 +3462,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		if(message[0].equals("roomjoinfail")) {
 			addSystemChatLogLater(txtpaneRoomChatLog, getUIText("SysMsg_RoomJoinFail"), Color.red);
 		}
+		// Kicked from a room
+		if(message[0].equals("roomkicked")) {
+			String strKickMsg = String.format(getUIText("SysMsg_Kicked_" + message[1]), NetUtil.urlDecode(message[3]), message[2]);
+			addSystemChatLogLater(txtpaneLobbyChatLog, strKickMsg, Color.red);
+		}
 		// Map receive
 		if(message[0].equals("map")) {
 			String strDecompressed = NetUtil.decompressString(message[1]);
