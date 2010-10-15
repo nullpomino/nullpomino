@@ -101,6 +101,15 @@ public class GameFrame extends JFrame implements Runnable {
 	/** FPS表示用DecimalFormat */
 	public DecimalFormat df = new DecimalFormat("0.0");
 
+	/** Used by perfect fps mode */
+	public long perfectFPSDelay = 0;
+
+	/** True to use perfect FPS */
+	public boolean perfectFPSMode = false;
+
+	/** True if execute Toolkit.getDefaultToolkit().sync() at the end of each frame */
+	public boolean syncDisplay = true;
+
 	/** ポーズ状態 */
 	protected boolean pause = false;
 
@@ -223,6 +232,8 @@ public class GameFrame extends JFrame implements Runnable {
 		// 設定を反映させる
 		enableframestep = NullpoMinoSwing.propConfig.getProperty("option.enableframestep", false);
 		showfps = NullpoMinoSwing.propConfig.getProperty("option.showfps", true);
+		perfectFPSMode = NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false);
+		syncDisplay = NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true);
 
 		// Observer開始
 		if(!isNetPlay) NullpoMinoSwing.startObserverClient();
@@ -230,6 +241,7 @@ public class GameFrame extends JFrame implements Runnable {
 		// メインループ
 		log.debug("Game thread start");
 		running = true;
+		perfectFPSDelay = System.nanoTime();
 		while(running) {
 			if(isNetPlay) {
 				gameUpdateNet();
@@ -248,7 +260,11 @@ public class GameFrame extends JFrame implements Runnable {
 			// 前回の frame の休止 time誤差も引いておく
 			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
-			if(sleepTime > 0) {
+			if(perfectFPSMode) {
+				// Perfect FPS
+				while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
+				perfectFPSDelay += 1000000000 / maxfps;
+			} else if(sleepTime > 0) {
 				// 休止 timeがとれる場合
 				if(maxfps > 0) {
 					try {
@@ -271,6 +287,7 @@ public class GameFrame extends JFrame implements Runnable {
 			}
 
 			beforeTime = System.nanoTime();
+			if(!perfectFPSMode) perfectFPSDelay = beforeTime;
 
 			// FPSを計算
 			calcFPS(periodCurrent);
@@ -541,7 +558,10 @@ public class GameFrame extends JFrame implements Runnable {
 
 		// FPS表示
 		if(showfps) {
-			NormalFontSwing.printFont(0, 480-16, df.format(actualFPS) + "/" + maxfpsCurrent, NormalFontSwing.COLOR_BLUE, 1.0f);
+			if(perfectFPSMode)
+				NormalFontSwing.printFont(0, 480-16, df.format(actualFPS), NormalFontSwing.COLOR_BLUE, 1.0f);
+			else
+				NormalFontSwing.printFont(0, 480-16, df.format(actualFPS) + "/" + maxfpsCurrent, NormalFontSwing.COLOR_BLUE, 1.0f);
 		}
 
 		// Observer情報
@@ -626,13 +646,13 @@ public class GameFrame extends JFrame implements Runnable {
 				Graphics g2 = getGraphics();
 				g2.drawImage(ssImage, insets.left, insets.top, null);
 				g2.dispose();
-				Toolkit.getDefaultToolkit().sync();
+				if(syncDisplay) Toolkit.getDefaultToolkit().sync();
 			}
 
 			ssflag = false;
 		} else if((bufferStrategy != null) && !bufferStrategy.contentsLost()) {
 			bufferStrategy.show();
-			Toolkit.getDefaultToolkit().sync();
+			if(syncDisplay) Toolkit.getDefaultToolkit().sync();
 		}
 	}
 
@@ -660,7 +680,7 @@ public class GameFrame extends JFrame implements Runnable {
 			prevCalcTime = timeNow;
 
 			// 新しい目標FPSを設定
-			if(maxfps > 0) {
+			if((maxfps > 0) && (!perfectFPSMode)) {
 				if(actualFPS < maxfps - 1) {
 					// 遅すぎ
 					maxfpsCurrent++;

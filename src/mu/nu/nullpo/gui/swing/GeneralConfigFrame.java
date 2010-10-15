@@ -93,6 +93,12 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Use bigger side piece preview */
 	protected JCheckBox chkboxBigSideNext;
 
+	/** Perfect FPS */
+	protected JCheckBox chkboxPerfectFPSMode;
+
+	/** Sync Display */
+	protected JCheckBox chkboxSyncDisplay;
+
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
@@ -187,6 +193,14 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxBigSideNext.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxBigSideNext);
 
+		chkboxPerfectFPSMode = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_PerfectFPSMode"));
+		chkboxPerfectFPSMode.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(chkboxPerfectFPSMode);
+
+		chkboxSyncDisplay = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SyncDisplay"));
+		chkboxSyncDisplay.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(chkboxSyncDisplay);
+
 		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -223,6 +237,8 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxOutlineGhost.setSelected(NullpoMinoSwing.propConfig.getProperty("option.outlineghost", false));
 		chkboxSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.sidenext", false));
 		chkboxBigSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false));
+		chkboxPerfectFPSMode.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false));
+		chkboxSyncDisplay.setSelected(NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true));
 	}
 
 	/*
@@ -249,6 +265,8 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.outlineghost", chkboxOutlineGhost.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.sidenext", chkboxSideNext.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.bigsidenext", chkboxBigSideNext.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.perfectFPSMode", chkboxPerfectFPSMode.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.syncDisplay", chkboxSyncDisplay.isSelected());
 
 			NullpoMinoSwing.saveConfig();
 			ResourceHolderSwing.soundManager.setVolume(sevolume);
