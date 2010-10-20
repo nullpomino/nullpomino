@@ -263,7 +263,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		}
 		chkboxEnable.setSelected(NullpoMinoSwing.propGlobal.getProperty("updatechecker.enable", true));
 		txtfldXMLURL.setText(NullpoMinoSwing.propGlobal.getProperty("updatechecker.url", ""));
-		txtfldStartupMax.setText(NullpoMinoSwing.propGlobal.getProperty("updatechecker.startupMax", "5"));
+		txtfldStartupMax.setText(NullpoMinoSwing.propGlobal.getProperty("updatechecker.startupMax", "20"));
 	}
 
 	/*
@@ -287,7 +287,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		else if(e.getActionCommand() == "Save") {
 			NullpoMinoSwing.propGlobal.setProperty("updatechecker.enable", chkboxEnable.isSelected());
 			NullpoMinoSwing.propGlobal.setProperty("updatechecker.url", txtfldXMLURL.getText());
-			NullpoMinoSwing.propGlobal.setProperty("updatechecker.startupMax", NullpoMinoSwing.getIntTextField(5, txtfldStartupMax));
+			NullpoMinoSwing.propGlobal.setProperty("updatechecker.startupMax", NullpoMinoSwing.getIntTextField(20, txtfldStartupMax));
 			NullpoMinoSwing.saveConfig();
 		}
 		// 閉じる

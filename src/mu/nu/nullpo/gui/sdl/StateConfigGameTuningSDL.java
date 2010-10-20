@@ -28,7 +28,6 @@
 */
 package mu.nu.nullpo.gui.sdl;
 
-import mu.nu.nullpo.gui.slick.NormalFont;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -57,7 +56,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */
 	protected int owDasDelay;
-	
+
 	/** Reverse the roles of up/down keys in-game */
 	protected boolean owReverseUpDown;
 
@@ -74,7 +73,7 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
-		owRotateButtonDefaultRight = prop.getProperty(player + ".tuning.owRotateButtonDefaultRight", 0);
+		owRotateButtonDefaultRight = prop.getProperty(player + ".tuning.owRotateButtonDefaultRight", -1);
 		owSkin = prop.getProperty(player + ".tuning.owSkin", -1);
 		owMinDAS = prop.getProperty(player + ".tuning.owMinDAS", -1);
 		owMaxDAS = prop.getProperty(player + ".tuning.owMaxDAS", -1);

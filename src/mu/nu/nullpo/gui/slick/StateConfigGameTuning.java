@@ -61,7 +61,7 @@ public class StateConfigGameTuning extends BasicGameState {
 
 	/** 横移動速度 -1=ルールに従う 0以上=固定 */
 	protected int owDasDelay;
-	
+
 	/** Reverse the roles of up/down keys in-game */
 	protected boolean owReverseUpDown;
 
@@ -84,7 +84,7 @@ public class StateConfigGameTuning extends BasicGameState {
 	 * @param prop Property file to read from
 	 */
 	protected void loadConfig(CustomProperties prop) {
-		owRotateButtonDefaultRight = prop.getProperty(player + ".tuning.owRotateButtonDefaultRight", 0);
+		owRotateButtonDefaultRight = prop.getProperty(player + ".tuning.owRotateButtonDefaultRight", -1);
 		owSkin = prop.getProperty(player + ".tuning.owSkin", -1);
 		owMinDAS = prop.getProperty(player + ".tuning.owMinDAS", -1);
 		owMaxDAS = prop.getProperty(player + ".tuning.owMaxDAS", -1);

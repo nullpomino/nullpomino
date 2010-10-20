@@ -99,7 +99,7 @@ public class StateTitle extends DummyMenuChooseState {
 			isNewVersionChecked = true;
 
 			int startupCount = NullpoMinoSlick.propGlobal.getProperty("updatechecker.startupCount", 0);
-			int startupMax = NullpoMinoSlick.propGlobal.getProperty("updatechecker.startupMax", 5);
+			int startupMax = NullpoMinoSlick.propGlobal.getProperty("updatechecker.startupMax", 20);
 
 			if(startupCount >= startupMax) {
 				String strURL = NullpoMinoSlick.propGlobal.getProperty("updatechecker.url", "");

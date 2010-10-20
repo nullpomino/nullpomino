@@ -83,7 +83,6 @@ import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.gui.net.NetLobbyListener;
 import mu.nu.nullpo.gui.net.UpdateChecker;
 import mu.nu.nullpo.gui.net.UpdateCheckerListener;
-import mu.nu.nullpo.gui.sdl.NullpoMinoSDL;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 import mu.nu.nullpo.util.ModeManager;
@@ -316,6 +315,16 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			GameKeySwing.gamekey[0].saveConfig(propConfig);
 			propConfig.setProperty("option.firstSetupMode", false);
 
+			// Set default rotation button setting (only for first run)
+			if(propGlobal.getProperty("global.firstSetupMode", true) == true) {
+				for(int pl = 0; pl < 2; pl++) {
+					if(propGlobal.getProperty(pl + ".tuning.owRotateButtonDefaultRight") == null) {
+						propGlobal.setProperty(pl + ".tuning.owRotateButtonDefaultRight", 0);
+					}
+				}
+				propGlobal.setProperty("global.firstSetupMode", false);
+			}
+
 			// Save settings
 			saveConfig();
 		}
@@ -457,7 +466,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		// 新Version check
 		if(propGlobal.getProperty("updatechecker.enable", true)) {
 			int startupCount = propGlobal.getProperty("updatechecker.startupCount", 0);
-			int startupMax = propGlobal.getProperty("updatechecker.startupMax", 5);
+			int startupMax = propGlobal.getProperty("updatechecker.startupMax", 20);
 
 			if(startupCount >= startupMax) {
 				String strURL = propGlobal.getProperty("updatechecker.url", "");
@@ -957,7 +966,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
 			// チューニング設定
-			gameManager.engine[i].owRotateButtonDefaultRight = propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", 0);
+			gameManager.engine[i].owRotateButtonDefaultRight = propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", -1);
 			gameManager.engine[i].owSkin = propGlobal.getProperty(i + ".tuning.owSkin", -1);
 			gameManager.engine[i].owMinDAS = propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
 			gameManager.engine[i].owMaxDAS = propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
@@ -1120,7 +1129,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameManager.init();
 
 			// Tuning
-			gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", 0);
+			gameManager.engine[0].owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1);
 			gameManager.engine[0].owSkin = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owSkin", -1);
 			gameManager.engine[0].owMinDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
 			gameManager.engine[0].owMaxDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);

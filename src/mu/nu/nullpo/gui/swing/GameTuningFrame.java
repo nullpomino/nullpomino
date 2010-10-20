@@ -84,7 +84,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 	/** 横移動速度 */
 	protected JTextField txtfldDasDelay;
-	
+
 	/** Checkbox to enable swapping the roles of up/down buttons in-game */
 	protected JCheckBox chkboxReverseUpDown;
 
@@ -188,7 +188,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 		txtfldDasDelay = new JTextField(5);
 		pDasDelay.add(txtfldDasDelay);
-		
+
 		// ---------- Reverse Up/Down ----------
 		JPanel pReverseUpDown = new JPanel();
 		pReverseUpDown.setAlignmentX(LEFT_ALIGNMENT);
@@ -242,7 +242,7 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 
 		setTitle(NullpoMinoSwing.getUIText("Title_GameTuning") + " (" + (playerID+1) + "P)");
 
-		int owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owRotateButtonDefaultRight", 0);
+		int owRotateButtonDefaultRight = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owRotateButtonDefaultRight", -1);
 		if(owRotateButtonDefaultRight == -1) radioRotateButtonDefaultRightAuto.setSelected(true);
 		if(owRotateButtonDefaultRight ==  0) radioRotateButtonDefaultRightLeft.setSelected(true);
 		if(owRotateButtonDefaultRight ==  1) radioRotateButtonDefaultRightRight.setSelected(true);

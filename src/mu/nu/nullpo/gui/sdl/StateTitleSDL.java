@@ -74,7 +74,7 @@ public class StateTitleSDL extends DummyMenuChooseStateSDL {
 			isNewVersionChecked = true;
 
 			int startupCount = NullpoMinoSDL.propGlobal.getProperty("updatechecker.startupCount", 0);
-			int startupMax = NullpoMinoSDL.propGlobal.getProperty("updatechecker.startupMax", 5);
+			int startupMax = NullpoMinoSDL.propGlobal.getProperty("updatechecker.startupMax", 20);
 
 			if(startupCount >= startupMax) {
 				String strURL = NullpoMinoSDL.propGlobal.getProperty("updatechecker.url", "");

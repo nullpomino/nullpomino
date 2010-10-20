@@ -472,6 +472,16 @@ public class NullpoMinoSDL {
 			GameKeySDL.gamekey[0].saveConfig(propConfig);
 			propConfig.setProperty("option.firstSetupMode", false);
 
+			// Set default rotation button setting (only for first run)
+			if(propGlobal.getProperty("global.firstSetupMode", true) == true) {
+				for(int pl = 0; pl < 2; pl++) {
+					if(propGlobal.getProperty(pl + ".tuning.owRotateButtonDefaultRight") == null) {
+						propGlobal.setProperty(pl + ".tuning.owRotateButtonDefaultRight", 0);
+					}
+				}
+				propGlobal.setProperty("global.firstSetupMode", false);
+			}
+
 			// Save settings
 			saveConfig();
 

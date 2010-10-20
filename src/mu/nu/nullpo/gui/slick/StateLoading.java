@@ -156,6 +156,16 @@ public class StateLoading extends BasicGameState {
 				GameKey.gamekey[0].saveConfig(NullpoMinoSlick.propConfig);
 				NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
 
+				// Set default rotation button setting (only for first run)
+				if(NullpoMinoSlick.propGlobal.getProperty("global.firstSetupMode", true) == true) {
+					for(int pl = 0; pl < 2; pl++) {
+						if(NullpoMinoSlick.propGlobal.getProperty(pl + ".tuning.owRotateButtonDefaultRight") == null) {
+							NullpoMinoSlick.propGlobal.setProperty(pl + ".tuning.owRotateButtonDefaultRight", 0);
+						}
+					}
+					NullpoMinoSlick.propGlobal.setProperty("global.firstSetupMode", false);
+				}
+
 				// Save settings
 				NullpoMinoSlick.saveConfig();
 
