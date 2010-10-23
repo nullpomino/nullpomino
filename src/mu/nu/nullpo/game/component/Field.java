@@ -2991,7 +2991,8 @@ public class Field implements Serializable {
 
 	public void delEven() {
 		for (int y = getHighestBlockY(); y < height; y++)
-			delLine(y);
+			if ((y&1) == 0)
+				delLine(y);
 	}
 
 	public void delLower() {
