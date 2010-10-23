@@ -201,8 +201,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	protected PrintWriter writerRoomLog;
 
 	/** Rated-game rule name list */
-	@SuppressWarnings("rawtypes")
-	protected LinkedList[] listRatedRuleName;
+	protected LinkedList<String>[] listRatedRuleName;
 
 	/** Layout manager for main screen */
 	protected CardLayout contentPaneCardLayout;
@@ -511,7 +510,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/**
 	 * Initialization
 	 */
-	@SuppressWarnings("rawtypes")
 	public void init() {
 		// 設定ファイル読み込み
 		propConfig = new CustomProperties();
@@ -575,7 +573,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// Rated-game rule name list
 		listRatedRuleName = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			listRatedRuleName[i] = new LinkedList();
+			listRatedRuleName[i] = new LinkedList<String>();
 		}
 
 		// Map list

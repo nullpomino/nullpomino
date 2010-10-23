@@ -121,17 +121,14 @@ public class NetServer implements ActionListener {
 	/** Max entry of multiplayer leaderboard */
 	private static int maxMPRanking;
 
-	/** Rule list for rated game. It contains RuleOptions. */
-	@SuppressWarnings("rawtypes")
-	private static LinkedList[] ruleList;
+	/** Rule list for rated game. */
+	private static LinkedList<RuleOptions>[] ruleList;
 
-	/** Setting ID list for rated game. It contains Integer. */
-	@SuppressWarnings("rawtypes")
-	private static LinkedList[] ruleSettingIDList;
+	/** Setting ID list for rated game. */
+	private static LinkedList<Integer>[] ruleSettingIDList;
 
-	/** Multiplayer leaderboard list. It contains NetPlayerInfo. */
-	@SuppressWarnings("rawtypes")
-	private static LinkedList[] mpRankingList;
+	/** Multiplayer leaderboard list. */
+	private static LinkedList<NetPlayerInfo>[] mpRankingList;
 
 	/** List of SocketChannel */
 	private List<SocketChannel> channelList = new LinkedList<SocketChannel>();
@@ -258,13 +255,12 @@ public class NetServer implements ActionListener {
 	/**
 	 * Load rated-game rule list
 	 */
-	@SuppressWarnings("rawtypes")
 	private static void loadRuleList() {
 		ruleList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		ruleSettingIDList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			ruleList[i] = new LinkedList();
-			ruleSettingIDList[i] = new LinkedList();
+			ruleList[i] = new LinkedList<RuleOptions>();
+			ruleSettingIDList[i] = new LinkedList<Integer>();
 		}
 
 		try {
@@ -329,11 +325,10 @@ public class NetServer implements ActionListener {
 	/**
 	 * Load multiplayer leaderboard
 	 */
-	@SuppressWarnings("rawtypes")
 	private static void loadMPRankingList() {
 		mpRankingList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			mpRankingList[i] = new LinkedList();
+			mpRankingList[i] = new LinkedList<NetPlayerInfo>();
 		}
 
 		for(int style = 0; style < GameEngine.MAX_GAMESTYLE; style++) {

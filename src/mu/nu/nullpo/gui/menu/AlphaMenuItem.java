@@ -13,12 +13,7 @@ public class AlphaMenuItem extends NumericMenuItem {
 		state=0;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public AlphaMenuItem(String name, int color, String[] choiceList){
-		this(name,color,new Vector(Arrays.asList(choiceList)));
+		this(name,color,new Vector<String>(Arrays.asList(choiceList)));
 	}
-
-
-
-
 }
