@@ -40,30 +40,22 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/** This state's ID */
 	public static final int ID = 16;
 
-	/** Key input を受付可能になるまでの frame count */
-	public static final int KEYACCEPTFRAME = 30;
-
 	/** Number of keys to set */
 	public static final int NUM_KEYS = 6;
 
 	public static final String[] KEY_NAMES = {
-		"UP    ", "DOWN  ", "LEFT  ", "RIGHT ", "SELECT", "CANCEL"
+		"UP        ", "DOWN      ", "LEFT      ", "RIGHT     ", "A (SELECT)", "B (CANCEL)"
 	};
-
-	public static final int[] DEFAULT_KEYS = {200, 208, 203, 205, 28, 1};
 
 	/** Player number */
 	public int player = 0;
-
-	/** 初期設定Mode */
-	protected boolean firstSetupMode;
 
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
 	public StateConfigKeyboardNavi () {
-		maxCursor = 2;
-		minChoiceY = 3;
+		maxCursor = 1;
+		minChoiceY = 1;
 	}
 
 	/*
@@ -74,13 +66,6 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 		return ID;
 	}
 
-	/**
-	 * Button settings initialization
-	 */
-	protected void reset() {
-		firstSetupMode = NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true);
-	}
-
 	/*
 	 * State initialization
 	 */
@@ -89,9 +74,9 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	}
 
 	/**
-	 * キーのNameを取得
-	 * @param key キー
-	 * @return キーのName
+	 * Get key name
+	 * @param key Keycode
+	 * @return Key name
 	 */
 	protected String getKeyName(int key) {
 		String str = org.lwjgl.input.Keyboard.getKeyName(key);
@@ -108,19 +93,14 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
-		NormalFont.printFontGrid(2, 3, "DEFAULT", (cursor == 0));
-		NormalFont.printFontGrid(2, 4, "GAME KEYS", (cursor == 1));
-		NormalFont.printFontGrid(2, 5, "[CUSTOM]", (cursor == 2));
+		NormalFont.printFontGrid(2, 3, "GAME KEYS", (cursor == 0));
+		NormalFont.printFontGrid(2, 4, "[CUSTOM]", (cursor == 1));
 
-		if (cursor == 0){
-			for(int x = 0; x < NUM_KEYS; x++) {
-				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(DEFAULT_KEYS[x]));
-			}
-		} else if (cursor == 1) {
+		if (cursor == 0) {
 			for(int x = 0; x < NUM_KEYS; x++)
 				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
 						+ getKeyName(GameKey.gamekey[player].keymap[x]));
-		} else {
+		} else if (cursor == 1) {
 			for(int x = 0; x < NUM_KEYS; x++)
 				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
 						+ getKeyName(GameKey.gamekey[player].keymapNav[x]));
@@ -135,29 +115,23 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		if (cursor == 2) {
+		if (cursor == 0) {
+			for(int i = 0; i < GameKey.MAX_BUTTON; i++) {
+				GameKey.gamekey[player].keymapNav[i] = GameKey.gamekey[player].keymap[i];
+			}
+		} else if (cursor == 1) {
 			NullpoMinoSlick.stateConfigKeyboard.player = player;
 			NullpoMinoSlick.stateConfigKeyboard.isNavSetting = true;
 			game.enterState(StateConfigKeyboard.ID);
 			return true;
-		} else if (cursor == 0){
-			for(int i = 0; i < NUM_KEYS; i++) {
-				GameKey.gamekey[player].keymapNav[i] = DEFAULT_KEYS[i];
-			}
-		} else if (cursor == 1) {
-			for(int i = 0; i < GameKey.MAX_BUTTON; i++) {
-				GameKey.gamekey[player].keymapNav[i] = GameKey.gamekey[player].keymap[i];
-			}
 		}
+
 		GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
 		NullpoMinoSlick.saveConfig();
 
 		ResourceHolder.soundManager.play("decide");
 		NullpoMinoSlick.propConfig.setProperty("option.keyCustomNaviType", cursor);
-		if(!firstSetupMode)
-			gameObj.enterState(StateConfigMainMenu.ID);
-		else
-			gameObj.enterState(StateConfigRuleSelect.ID);
+		gameObj.enterState(StateConfigMainMenu.ID);
 		return true;
 	}
 
@@ -172,11 +146,7 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-		reset();
-		cursor = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0);
-		if (firstSetupMode)
-			for(int i = 0; i < NUM_KEYS; i++)
-				GameKey.gamekey[player].keymapNav[i] = DEFAULT_KEYS[i];
+		//cursor = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0);
 	}
 
 	/**
@@ -184,6 +154,5 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		reset();
 	}
 }

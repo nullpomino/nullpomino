@@ -40,6 +40,53 @@ public class GameKey extends GameKeyDummy {
 	/** Key input state (Used by all game states) */
 	public static GameKey[] gamekey;
 
+	/** Default key mappings */
+	public static int[][][] DEFAULTKEYS =
+	{
+		// Ingame
+		{
+			// Blockbox type
+			{
+				Input.KEY_UP,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
+				Input.KEY_Z,Input.KEY_X,Input.KEY_A,Input.KEY_SPACE,Input.KEY_D,Input.KEY_S,
+				Input.KEY_F12,Input.KEY_ESCAPE,Input.KEY_F11,Input.KEY_F10,Input.KEY_N,Input.KEY_F5
+			},
+			// Guideline games type
+			{
+				Input.KEY_SPACE,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
+				Input.KEY_Z,Input.KEY_UP,Input.KEY_X,Input.KEY_LSHIFT,Input.KEY_C,Input.KEY_V,Input.KEY_F12,
+				Input.KEY_ESCAPE,Input.KEY_F11,Input.KEY_F10,Input.KEY_N,Input.KEY_F5
+			},
+			// NullpoMino classic type
+			{
+				Input.KEY_UP,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
+				Input.KEY_A,Input.KEY_S,Input.KEY_D,Input.KEY_Z,Input.KEY_X,Input.KEY_C,
+				Input.KEY_ESCAPE,Input.KEY_F1,Input.KEY_F12,Input.KEY_F11,Input.KEY_N,Input.KEY_F10
+			},
+		},
+		// Menu
+		{
+			// Blockbox type
+			{
+				Input.KEY_UP,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
+				Input.KEY_ENTER,Input.KEY_ESCAPE,Input.KEY_A,Input.KEY_SPACE,Input.KEY_D,Input.KEY_S,
+				Input.KEY_F12,Input.KEY_F1,Input.KEY_F11,Input.KEY_F10,Input.KEY_N,Input.KEY_F5
+			},
+			// Guideline games type
+			{
+				Input.KEY_UP,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
+				Input.KEY_ENTER,Input.KEY_ESCAPE,Input.KEY_X,Input.KEY_LSHIFT,Input.KEY_C,Input.KEY_V,
+				Input.KEY_F12,Input.KEY_F1,Input.KEY_F11,Input.KEY_F10,Input.KEY_N,Input.KEY_F5
+			},
+			// NullpoMino classic type
+			{
+				Input.KEY_UP,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
+				Input.KEY_A,Input.KEY_S,Input.KEY_D,Input.KEY_Z,Input.KEY_X,Input.KEY_C,
+				Input.KEY_ESCAPE,Input.KEY_F1,Input.KEY_F12,Input.KEY_F11,Input.KEY_N,Input.KEY_F10
+			},
+		},
+	};
+
 	/**
 	 * Init everything
 	 */
@@ -145,119 +192,27 @@ public class GameKey extends GameKeyDummy {
 	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
 	 */
 	public void loadDefaultKeymap(int type) {
-		// Blockbox type
-		if(type == 0) {
-			// Ingame
-			keymap[BUTTON_UP]         = Input.KEY_UP;
-			keymap[BUTTON_DOWN]       = Input.KEY_DOWN;
-			keymap[BUTTON_LEFT]       = Input.KEY_LEFT;
-			keymap[BUTTON_RIGHT]      = Input.KEY_RIGHT;
-			keymap[BUTTON_A]          = Input.KEY_Z;
-			keymap[BUTTON_B]          = Input.KEY_X;
-			keymap[BUTTON_C]          = Input.KEY_A;
-			keymap[BUTTON_D]          = Input.KEY_SPACE;
-			keymap[BUTTON_E]          = Input.KEY_D;
-			keymap[BUTTON_F]          = Input.KEY_S;
-			keymap[BUTTON_QUIT]       = Input.KEY_F12;
-			keymap[BUTTON_PAUSE]      = Input.KEY_ESCAPE;
-			keymap[BUTTON_GIVEUP]     = Input.KEY_F11;
-			keymap[BUTTON_RETRY]      = Input.KEY_F10;
-			keymap[BUTTON_FRAMESTEP]  = Input.KEY_N;
-			keymap[BUTTON_SCREENSHOT] = Input.KEY_F5;
+		loadDefaultGameKeymap(type);
+		loadDefaultMenuKeymap(type);
+	}
 
-			// Menu
-			keymapNav[BUTTON_UP]         = Input.KEY_UP;
-			keymapNav[BUTTON_DOWN]       = Input.KEY_DOWN;
-			keymapNav[BUTTON_LEFT]       = Input.KEY_LEFT;
-			keymapNav[BUTTON_RIGHT]      = Input.KEY_RIGHT;
-			keymapNav[BUTTON_A]          = Input.KEY_ENTER;
-			keymapNav[BUTTON_B]          = Input.KEY_ESCAPE;
-			keymapNav[BUTTON_C]          = Input.KEY_A;
-			keymapNav[BUTTON_D]          = Input.KEY_SPACE;
-			keymapNav[BUTTON_E]          = Input.KEY_D;
-			keymapNav[BUTTON_F]          = Input.KEY_S;
-			keymapNav[BUTTON_QUIT]       = Input.KEY_F12;
-			keymapNav[BUTTON_PAUSE]      = Input.KEY_F1;
-			keymapNav[BUTTON_GIVEUP]     = Input.KEY_F11;
-			keymapNav[BUTTON_RETRY]      = Input.KEY_F10;
-			keymapNav[BUTTON_FRAMESTEP]  = Input.KEY_N;
-			keymapNav[BUTTON_SCREENSHOT] = Input.KEY_F5;
+	/**
+	 * Reset in-game keyboard settings to default. Menu keys are unchanged.
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultGameKeymap(int type) {
+		for(int i = 0; i < keymap.length; i++) {
+			keymap[i] = DEFAULTKEYS[0][type][i];
 		}
-		// Guideline games type
-		if(type == 1) {
-			// Ingame
-			keymap[BUTTON_UP]         = Input.KEY_SPACE;
-			keymap[BUTTON_DOWN]       = Input.KEY_DOWN;
-			keymap[BUTTON_LEFT]       = Input.KEY_LEFT;
-			keymap[BUTTON_RIGHT]      = Input.KEY_RIGHT;
-			keymap[BUTTON_A]          = Input.KEY_Z;
-			keymap[BUTTON_B]          = Input.KEY_UP;
-			keymap[BUTTON_C]          = Input.KEY_X;
-			keymap[BUTTON_D]          = Input.KEY_LSHIFT;
-			keymap[BUTTON_E]          = Input.KEY_C;
-			keymap[BUTTON_F]          = Input.KEY_V;
-			keymap[BUTTON_QUIT]       = Input.KEY_F12;
-			keymap[BUTTON_PAUSE]      = Input.KEY_ESCAPE;
-			keymap[BUTTON_GIVEUP]     = Input.KEY_F11;
-			keymap[BUTTON_RETRY]      = Input.KEY_F10;
-			keymap[BUTTON_FRAMESTEP]  = Input.KEY_N;
-			keymap[BUTTON_SCREENSHOT] = Input.KEY_F5;
+	}
 
-			// Menu
-			keymapNav[BUTTON_UP]         = Input.KEY_UP;
-			keymapNav[BUTTON_DOWN]       = Input.KEY_DOWN;
-			keymapNav[BUTTON_LEFT]       = Input.KEY_LEFT;
-			keymapNav[BUTTON_RIGHT]      = Input.KEY_RIGHT;
-			keymapNav[BUTTON_A]          = Input.KEY_ENTER;
-			keymapNav[BUTTON_B]          = Input.KEY_ESCAPE;
-			keymapNav[BUTTON_C]          = Input.KEY_X;
-			keymapNav[BUTTON_D]          = Input.KEY_LSHIFT;
-			keymapNav[BUTTON_E]          = Input.KEY_C;
-			keymapNav[BUTTON_F]          = Input.KEY_V;
-			keymapNav[BUTTON_QUIT]       = Input.KEY_F12;
-			keymapNav[BUTTON_PAUSE]      = Input.KEY_F1;
-			keymapNav[BUTTON_GIVEUP]     = Input.KEY_F11;
-			keymapNav[BUTTON_RETRY]      = Input.KEY_F10;
-			keymapNav[BUTTON_FRAMESTEP]  = Input.KEY_N;
-			keymapNav[BUTTON_SCREENSHOT] = Input.KEY_F5;
-		}
-		// NullpoMino classic type
-		if(type == 2) {
-			// Ingame
-			keymap[BUTTON_UP]         = Input.KEY_UP;
-			keymap[BUTTON_DOWN]       = Input.KEY_DOWN;
-			keymap[BUTTON_LEFT]       = Input.KEY_LEFT;
-			keymap[BUTTON_RIGHT]      = Input.KEY_RIGHT;
-			keymap[BUTTON_A]          = Input.KEY_A;
-			keymap[BUTTON_B]          = Input.KEY_S;
-			keymap[BUTTON_C]          = Input.KEY_D;
-			keymap[BUTTON_D]          = Input.KEY_Z;
-			keymap[BUTTON_E]          = Input.KEY_X;
-			keymap[BUTTON_F]          = Input.KEY_C;
-			keymap[BUTTON_QUIT]       = Input.KEY_ESCAPE;
-			keymap[BUTTON_PAUSE]      = Input.KEY_F1;
-			keymap[BUTTON_GIVEUP]     = Input.KEY_F12;
-			keymap[BUTTON_RETRY]      = Input.KEY_F11;
-			keymap[BUTTON_FRAMESTEP]  = Input.KEY_N;
-			keymap[BUTTON_SCREENSHOT] = Input.KEY_F10;
-
-			// Menu
-			keymapNav[BUTTON_UP]         = Input.KEY_UP;
-			keymapNav[BUTTON_DOWN]       = Input.KEY_DOWN;
-			keymapNav[BUTTON_LEFT]       = Input.KEY_LEFT;
-			keymapNav[BUTTON_RIGHT]      = Input.KEY_RIGHT;
-			keymapNav[BUTTON_A]          = Input.KEY_A;
-			keymapNav[BUTTON_B]          = Input.KEY_S;
-			keymapNav[BUTTON_C]          = Input.KEY_D;
-			keymapNav[BUTTON_D]          = Input.KEY_Z;
-			keymapNav[BUTTON_E]          = Input.KEY_X;
-			keymapNav[BUTTON_F]          = Input.KEY_C;
-			keymapNav[BUTTON_QUIT]       = Input.KEY_ESCAPE;
-			keymapNav[BUTTON_PAUSE]      = Input.KEY_F1;
-			keymapNav[BUTTON_GIVEUP]     = Input.KEY_F12;
-			keymapNav[BUTTON_RETRY]      = Input.KEY_F11;
-			keymapNav[BUTTON_FRAMESTEP]  = Input.KEY_N;
-			keymapNav[BUTTON_SCREENSHOT] = Input.KEY_F10;
+	/**
+	 * Reset menu keyboard settings to default. In-game keys are unchanged.
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultMenuKeymap(int type) {
+		for(int i = 0; i < keymapNav.length; i++) {
+			keymapNav[i] = DEFAULTKEYS[1][type][i];
 		}
 	}
 }

@@ -30,7 +30,6 @@ package mu.nu.nullpo.gui.sdl;
 
 import mu.nu.nullpo.game.play.GameManager;
 import sdljava.SDLException;
-import sdljava.event.SDLKey;
 import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
@@ -41,56 +40,25 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	/** This state's ID */
 	public static final int ID = 16;
 
-	/** Key input を受付可能になるまでの frame count */
-	public static final int KEYACCEPTFRAME = 30;
-
 	/** Number of keys to set */
 	public static final int NUM_KEYS = 6;
 
 	public static final String[] KEY_NAMES = {
-		"UP    ", "DOWN  ", "LEFT  ", "RIGHT ", "SELECT", "CANCEL"
+		"UP        ", "DOWN      ", "LEFT      ", "RIGHT     ", "A (SELECT)", "B (CANCEL)"
 	};
-
-	public static final int[] DEFAULT_KEYS = {273, 274, 276, 275, 13, 27};
 
 	/** Player number */
 	public int player = 0;
 
-	/** 初期設定Mode */
-	protected boolean firstSetupMode;
-
 	public StateConfigKeyboardNaviSDL () {
-		maxCursor = 2;
+		maxCursor = 1;
 		minChoiceY = 3;
 	}
 
 	/**
-	 * Button settings initialization
-	 */
-	protected void reset() {
-		firstSetupMode = NullpoMinoSDL.propConfig.getProperty("option.firstSetupMode", true);
-	}
-
-	/**
-	 * 押されたキーの numberを返す
-	 * @param prev 前の frame での input 状態
-	 * @param now この frame での input 状態
-	 * @return 押されたキーの number, 無いならSDLKey.SDLK_UNKNOWN
-	 */
-	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {
-		for(int i = 0; i < now.length; i++) {
-			if(prev[i] != now[i]) {
-				return i;
-			}
-		}
-
-		return SDLKey.SDLK_UNKNOWN;
-	}
-
-	/**
-	 * キーのNameを取得
-	 * @param key キー
-	 * @return キーのName
+	 * Get key name
+	 * @param key Keycode
+	 * @return Key name
 	 */
 	protected String getKeyName(int key) {
 		if((key < 0) || (key > NullpoMinoSDL.SDL_KEYNAMES.length)) {
@@ -109,19 +77,14 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 
 		NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
 
-		NormalFontSDL.printFontGrid(2, 3, "DEFAULT", (cursor == 0));
-		NormalFontSDL.printFontGrid(2, 4, "GAME KEYS", (cursor == 1));
-		NormalFontSDL.printFontGrid(2, 5, "[CUSTOM]", (cursor == 2));
+		NormalFontSDL.printFontGrid(2, 3, "GAME KEYS", (cursor == 0));
+		NormalFontSDL.printFontGrid(2, 4, "[CUSTOM]", (cursor == 1));
 
-		if (cursor == 0){
-			for(int x = 0; x < NUM_KEYS; x++) {
-				NormalFontSDL.printFontGrid(2, x+8, KEY_NAMES[x] + " : " + getKeyName(DEFAULT_KEYS[x]));
-			}
-		} else if (cursor == 1) {
+		if (cursor == 0) {
 			for(int x = 0; x < NUM_KEYS; x++)
 				NormalFontSDL.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
 						+ getKeyName(GameKeySDL.gamekey[player].keymap[x]));
-		} else {
+		} else if (cursor == 1) {
 			for(int x = 0; x < NUM_KEYS; x++)
 				NormalFontSDL.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
 						+ getKeyName(GameKeySDL.gamekey[player].keymapNav[x]));
@@ -130,30 +93,23 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 
 	@Override
 	protected boolean onDecide() throws SDLException {
-		if (cursor == 2) {
+		if (cursor == 0) {
+			for(int i = 0; i < GameKeySDL.MAX_BUTTON; i++) {
+				GameKeySDL.gamekey[player].keymapNav[i] = GameKeySDL.gamekey[player].keymap[i];
+			}
+		} else if (cursor == 1) {
 			StateConfigKeyboardSDL stateK = (StateConfigKeyboardSDL)NullpoMinoSDL.gameStates[NullpoMinoSDL.STATE_CONFIG_KEYBOARD];
 			stateK.player = player;
 			stateK.isNavSetting = true;
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_KEYBOARD);
 			return true;
-		} else if (cursor == 0){
-			for(int i = 0; i < NUM_KEYS; i++) {
-				GameKeySDL.gamekey[player].keymapNav[i] = DEFAULT_KEYS[i];
-			}
-		} else if (cursor == 1) {
-			for(int i = 0; i < GameKeySDL.MAX_BUTTON; i++) {
-				GameKeySDL.gamekey[player].keymapNav[i] = GameKeySDL.gamekey[player].keymap[i];
-			}
 		}
 		GameKeySDL.gamekey[player].saveConfig(NullpoMinoSDL.propConfig);
 		NullpoMinoSDL.saveConfig();
 
 		ResourceHolderSDL.soundManager.play("decide");
 		NullpoMinoSDL.propConfig.setProperty("option.keyCustomNaviType", cursor);
-		if(!firstSetupMode)
-			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
-		else
-			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_RULESELECT);
+		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		return true;
 	}
 
@@ -168,13 +124,8 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	 */
 	@Override
 	public void enter() throws SDLException {
-		reset();
-		cursor = NullpoMinoSDL.propConfig.getProperty("option.keyCustomNaviType", 0);
-		//NullpoMinoSDL.enableSpecialKeys = false;
+		//cursor = NullpoMinoSDL.propConfig.getProperty("option.keyCustomNaviType", 0);
 		SDLVideo.wmSetCaption("NullpoMino version" + GameManager.getVersionString(), null);
-		if (firstSetupMode)
-			for(int i = 0; i < NUM_KEYS; i++)
-				GameKeySDL.gamekey[player].keymapNav[i] = DEFAULT_KEYS[i];
 	}
 
 	/*
@@ -182,7 +133,5 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	 */
 	@Override
 	public void leave() throws SDLException {
-		reset();
-		NullpoMinoSDL.enableSpecialKeys = true;
 	}
 }

@@ -40,6 +40,53 @@ public class GameKeySDL extends GameKeyDummy {
 	/** Key input state (Used by all game states) */
 	public static GameKeySDL gamekey[];
 
+	/** Default key mappings */
+	public static int[][][] DEFAULTKEYS =
+	{
+		// Ingame
+		{
+			// Blockbox type
+			{
+				SDLKey.SDLK_UP,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
+				SDLKey.SDLK_z,SDLKey.SDLK_x,SDLKey.SDLK_a,SDLKey.SDLK_SPACE,SDLKey.SDLK_d,SDLKey.SDLK_s,
+				SDLKey.SDLK_F12,SDLKey.SDLK_ESCAPE,SDLKey.SDLK_F11,SDLKey.SDLK_F10,SDLKey.SDLK_n,SDLKey.SDLK_F5
+			},
+			// Guideline games type
+			{
+				SDLKey.SDLK_SPACE,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
+				SDLKey.SDLK_z,SDLKey.SDLK_UP,SDLKey.SDLK_x,SDLKey.SDLK_LSHIFT,SDLKey.SDLK_c,SDLKey.SDLK_v,SDLKey.SDLK_F12,
+				SDLKey.SDLK_ESCAPE,SDLKey.SDLK_F11,SDLKey.SDLK_F10,SDLKey.SDLK_n,SDLKey.SDLK_F5
+			},
+			// NullpoMino classic type
+			{
+				SDLKey.SDLK_UP,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
+				SDLKey.SDLK_a,SDLKey.SDLK_s,SDLKey.SDLK_d,SDLKey.SDLK_z,SDLKey.SDLK_x,SDLKey.SDLK_c,
+				SDLKey.SDLK_ESCAPE,SDLKey.SDLK_F1,SDLKey.SDLK_F12,SDLKey.SDLK_F11,SDLKey.SDLK_n,SDLKey.SDLK_F10
+			},
+		},
+		// Menu
+		{
+			// Blockbox type
+			{
+				SDLKey.SDLK_UP,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
+				SDLKey.SDLK_RETURN,SDLKey.SDLK_ESCAPE,SDLKey.SDLK_a,SDLKey.SDLK_SPACE,SDLKey.SDLK_d,SDLKey.SDLK_s,
+				SDLKey.SDLK_F12,SDLKey.SDLK_F1,SDLKey.SDLK_F11,SDLKey.SDLK_F10,SDLKey.SDLK_n,SDLKey.SDLK_F5
+			},
+			// Guideline games type
+			{
+				SDLKey.SDLK_UP,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
+				SDLKey.SDLK_RETURN,SDLKey.SDLK_ESCAPE,SDLKey.SDLK_x,SDLKey.SDLK_LSHIFT,SDLKey.SDLK_c,SDLKey.SDLK_v,
+				SDLKey.SDLK_F12,SDLKey.SDLK_F1,SDLKey.SDLK_F11,SDLKey.SDLK_F10,SDLKey.SDLK_n,SDLKey.SDLK_F5
+			},
+			// NullpoMino classic type
+			{
+				SDLKey.SDLK_UP,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
+				SDLKey.SDLK_a,SDLKey.SDLK_s,SDLKey.SDLK_d,SDLKey.SDLK_z,SDLKey.SDLK_x,SDLKey.SDLK_c,
+				SDLKey.SDLK_ESCAPE,SDLKey.SDLK_F1,SDLKey.SDLK_F12,SDLKey.SDLK_F11,SDLKey.SDLK_n,SDLKey.SDLK_F10
+			},
+		},
+	};
+
 	/**
 	 * Init everything
 	 */
@@ -175,119 +222,27 @@ public class GameKeySDL extends GameKeyDummy {
 	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
 	 */
 	public void loadDefaultKeymap(int type) {
-		// Blockbox type
-		if(type == 0) {
-			// Ingame
-			keymap[BUTTON_UP]         = SDLKey.SDLK_UP;		// Up
-			keymap[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;	// Down
-			keymap[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;	// Left
-			keymap[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;	// Right
-			keymap[BUTTON_A]          = SDLKey.SDLK_z;		// Z
-			keymap[BUTTON_B]          = SDLKey.SDLK_x;		// X
-			keymap[BUTTON_C]          = SDLKey.SDLK_a;		// A
-			keymap[BUTTON_D]          = SDLKey.SDLK_SPACE;	// Space
-			keymap[BUTTON_E]          = SDLKey.SDLK_d;		// D
-			keymap[BUTTON_F]          = SDLKey.SDLK_s;		// S
-			keymap[BUTTON_QUIT]       = SDLKey.SDLK_F12;	// F12
-			keymap[BUTTON_PAUSE]      = SDLKey.SDLK_ESCAPE;	// Escape
-			keymap[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;	// F11
-			keymap[BUTTON_RETRY]      = SDLKey.SDLK_F10;	// F10
-			keymap[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;		// N
-			keymap[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;		// F5
+		loadDefaultGameKeymap(type);
+		loadDefaultMenuKeymap(type);
+	}
 
-			// Menu
-			keymapNav[BUTTON_UP]         = SDLKey.SDLK_UP;		// Up
-			keymapNav[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;	// Down
-			keymapNav[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;	// Left
-			keymapNav[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;	// Right
-			keymapNav[BUTTON_A]          = SDLKey.SDLK_RETURN;	// Return
-			keymapNav[BUTTON_B]          = SDLKey.SDLK_ESCAPE;	// Escape
-			keymapNav[BUTTON_C]          = SDLKey.SDLK_a;		// A
-			keymapNav[BUTTON_D]          = SDLKey.SDLK_SPACE;	// Space
-			keymapNav[BUTTON_E]          = SDLKey.SDLK_d;		// D
-			keymapNav[BUTTON_F]          = SDLKey.SDLK_s;		// S
-			keymapNav[BUTTON_QUIT]       = SDLKey.SDLK_F12;		// F12
-			keymapNav[BUTTON_PAUSE]      = SDLKey.SDLK_F1;		// F1
-			keymapNav[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;		// F11
-			keymapNav[BUTTON_RETRY]      = SDLKey.SDLK_F10;		// F10
-			keymapNav[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;		// N
-			keymapNav[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;		// F5
+	/**
+	 * Reset in-game keyboard settings to default. Menu keys are unchanged.
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultGameKeymap(int type) {
+		for(int i = 0; i < keymap.length; i++) {
+			keymap[i] = DEFAULTKEYS[0][type][i];
 		}
-		// Guideline games type
-		if(type == 1) {
-			// Ingame
-			keymap[BUTTON_UP]         = SDLKey.SDLK_SPACE;
-			keymap[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
-			keymap[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
-			keymap[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
-			keymap[BUTTON_A]          = SDLKey.SDLK_z;
-			keymap[BUTTON_B]          = SDLKey.SDLK_UP;
-			keymap[BUTTON_C]          = SDLKey.SDLK_x;
-			keymap[BUTTON_D]          = SDLKey.SDLK_LSHIFT;
-			keymap[BUTTON_E]          = SDLKey.SDLK_c;
-			keymap[BUTTON_F]          = SDLKey.SDLK_v;
-			keymap[BUTTON_QUIT]       = SDLKey.SDLK_F12;
-			keymap[BUTTON_PAUSE]      = SDLKey.SDLK_ESCAPE;
-			keymap[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;
-			keymap[BUTTON_RETRY]      = SDLKey.SDLK_F10;
-			keymap[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
-			keymap[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;
+	}
 
-			// Menu
-			keymapNav[BUTTON_UP]         = SDLKey.SDLK_UP;
-			keymapNav[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
-			keymapNav[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
-			keymapNav[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
-			keymapNav[BUTTON_A]          = SDLKey.SDLK_RETURN;
-			keymapNav[BUTTON_B]          = SDLKey.SDLK_ESCAPE;
-			keymapNav[BUTTON_C]          = SDLKey.SDLK_x;
-			keymapNav[BUTTON_D]          = SDLKey.SDLK_LSHIFT;
-			keymapNav[BUTTON_E]          = SDLKey.SDLK_c;
-			keymapNav[BUTTON_F]          = SDLKey.SDLK_v;
-			keymapNav[BUTTON_QUIT]       = SDLKey.SDLK_F12;
-			keymapNav[BUTTON_PAUSE]      = SDLKey.SDLK_F1;
-			keymapNav[BUTTON_GIVEUP]     = SDLKey.SDLK_F11;
-			keymapNav[BUTTON_RETRY]      = SDLKey.SDLK_F10;
-			keymapNav[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
-			keymapNav[BUTTON_SCREENSHOT] = SDLKey.SDLK_F5;
-		}
-		// NullpoMino classic type
-		if(type == 2) {
-			// Ingame
-			keymap[BUTTON_UP]         = SDLKey.SDLK_UP;
-			keymap[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
-			keymap[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
-			keymap[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
-			keymap[BUTTON_A]          = SDLKey.SDLK_a;
-			keymap[BUTTON_B]          = SDLKey.SDLK_s;
-			keymap[BUTTON_C]          = SDLKey.SDLK_d;
-			keymap[BUTTON_D]          = SDLKey.SDLK_z;
-			keymap[BUTTON_E]          = SDLKey.SDLK_x;
-			keymap[BUTTON_F]          = SDLKey.SDLK_c;
-			keymap[BUTTON_QUIT]       = SDLKey.SDLK_ESCAPE;
-			keymap[BUTTON_PAUSE]      = SDLKey.SDLK_F1;
-			keymap[BUTTON_GIVEUP]     = SDLKey.SDLK_F12;
-			keymap[BUTTON_RETRY]      = SDLKey.SDLK_F11;
-			keymap[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
-			keymap[BUTTON_SCREENSHOT] = SDLKey.SDLK_F10;
-
-			// Menu
-			keymapNav[BUTTON_UP]         = SDLKey.SDLK_UP;
-			keymapNav[BUTTON_DOWN]       = SDLKey.SDLK_DOWN;
-			keymapNav[BUTTON_LEFT]       = SDLKey.SDLK_LEFT;
-			keymapNav[BUTTON_RIGHT]      = SDLKey.SDLK_RIGHT;
-			keymapNav[BUTTON_A]          = SDLKey.SDLK_a;
-			keymapNav[BUTTON_B]          = SDLKey.SDLK_s;
-			keymapNav[BUTTON_C]          = SDLKey.SDLK_d;
-			keymapNav[BUTTON_D]          = SDLKey.SDLK_z;
-			keymapNav[BUTTON_E]          = SDLKey.SDLK_x;
-			keymapNav[BUTTON_F]          = SDLKey.SDLK_c;
-			keymapNav[BUTTON_QUIT]       = SDLKey.SDLK_ESCAPE;
-			keymapNav[BUTTON_PAUSE]      = SDLKey.SDLK_F1;
-			keymapNav[BUTTON_GIVEUP]     = SDLKey.SDLK_F12;
-			keymapNav[BUTTON_RETRY]      = SDLKey.SDLK_F11;
-			keymapNav[BUTTON_FRAMESTEP]  = SDLKey.SDLK_n;
-			keymapNav[BUTTON_SCREENSHOT] = SDLKey.SDLK_F10;
+	/**
+	 * Reset menu keyboard settings to default. In-game keys are unchanged.
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultMenuKeymap(int type) {
+		for(int i = 0; i < keymapNav.length; i++) {
+			keymapNav[i] = DEFAULTKEYS[1][type][i];
 		}
 	}
 }
