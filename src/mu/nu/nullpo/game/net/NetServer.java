@@ -103,6 +103,12 @@ public class NetServer implements ActionListener {
 	/** Properties of multiplayer leaderboard */
 	private static CustomProperties propMPRanking;
 
+	/** Properties of single player leaderboard */
+	private static CustomProperties propSPRanking;
+
+	/** Properties of single player personal best */
+	private static CustomProperties propSPPersonalBest;
+
 	/** Default rating */
 	private static int ratingDefault;
 
@@ -129,6 +135,12 @@ public class NetServer implements ActionListener {
 
 	/** Multiplayer leaderboard list. */
 	private static LinkedList<NetPlayerInfo>[] mpRankingList;
+
+	/** Single player mode list. */
+	private static LinkedList<String>[] spModeList;
+
+	/** Single player leaderboard list */
+	private static LinkedList<NetSPRanking> spRankingList;
 
 	/** List of SocketChannel */
 	private List<SocketChannel> channelList = new LinkedList<SocketChannel>();
@@ -233,6 +245,22 @@ public class NetServer implements ActionListener {
 			in.close();
 		} catch (IOException e) {}
 
+		// Load single player leaderboard file
+		propSPRanking = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netserver_spranking.cfg");
+			propSPRanking.load(in);
+			in.close();
+		} catch (IOException e) {}
+
+		// Load single player personal best
+		propSPPersonalBest = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netserver_sppersonalbest.cfg");
+			propSPPersonalBest.load(in);
+			in.close();
+		} catch (IOException e) {}
+
 		// Load settings
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
@@ -247,6 +275,11 @@ public class NetServer implements ActionListener {
 
 		// Load multiplayer leaderboard
 		loadMPRankingList();
+		propMPRanking.clear();	// Clear all entries in order to reduce file size
+
+		// Load single player leaderboard
+		loadSPRankingList();
+		propSPRanking.clear();	// Clear all entries in order to reduce file size
 
 		// Load ban list
 		loadBanList();
@@ -256,6 +289,8 @@ public class NetServer implements ActionListener {
 	 * Load rated-game rule list
 	 */
 	private static void loadRuleList() {
+		log.info("Loading Rule List...");
+
 		ruleList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		ruleSettingIDList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
@@ -287,7 +322,7 @@ public class NetServer implements ActionListener {
 						log.warn("{StyleChange} Unknown Style:" + str);
 						style = 0;
 					} else {
-						log.debug("{StyleChange} StyleID:" + style + " StyleName:" + str);
+						log.debug("{StyleChange} StyleID:" + style + " StyleName:" + strStyle);
 					}
 				} else {
 					// Rule file
@@ -326,6 +361,8 @@ public class NetServer implements ActionListener {
 	 * Load multiplayer leaderboard
 	 */
 	private static void loadMPRankingList() {
+		log.info("Loading Multiplayer Ranking...");
+
 		mpRankingList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			mpRankingList[i] = new LinkedList<NetPlayerInfo>();
@@ -434,7 +471,119 @@ public class NetServer implements ActionListener {
 			propMPRanking.store(out, "NullpoMino NetServer Multiplayer Leaderboard");
 			out.close();
 		} catch (IOException e) {
-			log.error("Failed to write player data", e);
+			log.error("Failed to write multiplayer ranking data", e);
+		}
+	}
+
+	/**
+	 * Load single player leaderboard
+	 */
+	private static void loadSPRankingList() {
+		log.info("Loading Single Player Ranking...");
+
+		spRankingList = new LinkedList<NetSPRanking>();
+
+		// Load mode list
+		spModeList = new LinkedList[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			spModeList[i] = new LinkedList<String>();
+		}
+
+		try {
+			BufferedReader in = new BufferedReader(new FileReader("config/list/netlobby_singlemode.lst"));
+
+			String str = null;
+			int style = 0;
+
+			while((str = in.readLine()) != null) {
+				if((str.length() <= 0) || str.startsWith("#")) {
+					// Empty line or comment line. Ignore it.
+				} else if(str.startsWith(":")) {
+					// Game style tag
+					String strStyle = str.substring(1);
+
+					style = -1;
+					for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+						if(strStyle.equalsIgnoreCase(GameEngine.GAMESTYLE_NAMES[i])) {
+							style = i;
+							break;
+						}
+					}
+
+					if(style == -1) {
+						log.warn("{StyleChange} Unknown Style:" + str);
+						style = 0;
+					} else {
+						log.debug("{StyleChange} StyleID:" + style + " StyleName:" + strStyle);
+					}
+				} else {
+					// Game mode name
+					String[] strSplit = str.split(",");
+					String strModeName = strSplit[0];
+					int rankingType = 0;
+					int maxGameType = 0;
+					if(strSplit.length > 1) rankingType = Integer.parseInt(strSplit[1]);
+					if(strSplit.length > 2) maxGameType = Integer.parseInt(strSplit[2]);
+
+					log.debug("{Mode} Name:" + strModeName + " RankingType:" + rankingType + " MaxGameType:" + maxGameType);
+
+					spModeList[style].add(strModeName);
+
+					for(int i = 0; i < ruleList[style].size(); i++) {
+						RuleOptions ruleOpt = (RuleOptions)ruleList[style].get(i);
+						String ruleName = ruleOpt.strRuleName;
+
+						for(int j = 0; j < maxGameType+1; j++) {
+							NetSPRanking rankingData = new NetSPRanking();
+							rankingData.strModeName = strModeName;
+							rankingData.strRuleName = ruleName;
+							rankingData.gameType = j;
+							rankingData.rankingType = rankingType;
+							rankingData.style = style;
+							rankingData.maxRecords = maxMPRanking;
+							rankingData.readProperty(propSPRanking);
+							spRankingList.add(rankingData);
+							log.debug(rankingData.strRuleName + "," + rankingData.strModeName + "," + rankingData.gameType);
+						}
+					}
+				}
+			}
+
+			in.close();
+		} catch (Exception e) {
+			log.warn("Failed to load single player mode list", e);
+		}
+	}
+
+	/**
+	 * Get specific NetSPRanking
+	 * @param rule Rule Name
+	 * @param mode Mode Name
+	 * @param gtype Game Type
+	 * @return NetSPRanking (null if not found)
+	 */
+	private static NetSPRanking getSPRanking(String rule, String mode, int gtype) {
+		for(NetSPRanking r: spRankingList) {
+			if(r.strRuleName.equals(rule) && r.strModeName.equals(mode) && r.gameType == gtype) {
+				return r;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Write single player ranking to a file
+	 */
+	private static void writeSPRankingToFile() {
+		for(NetSPRanking r: spRankingList) {
+			r.writeProperty(propSPRanking);
+		}
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/netserver_spranking.cfg");
+			propSPRanking.store(out, "NullpoMino NetServer Single Player Leaderboard");
+			out.close();
+		} catch (IOException e) {
+			log.error("Failed to write single player ranking data", e);
 		}
 	}
 
@@ -449,12 +598,15 @@ public class NetServer implements ActionListener {
 				pInfo.playCount[i] = propPlayerData.getProperty("p.playCount." + i + "." + pInfo.strName, 0);
 				pInfo.winCount[i] = propPlayerData.getProperty("p.winCount." + i + "." + pInfo.strName, 0);
 			}
+			pInfo.spPersonalBest.strPlayerName = pInfo.strName;
+			pInfo.spPersonalBest.readProperty(propPlayerData);
 		} else {
 			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				pInfo.rating[i] = ratingDefault;
 				pInfo.playCount[i] = 0;
 				pInfo.winCount[i] = 0;
 			}
+			pInfo.spPersonalBest.strPlayerName = pInfo.strName;
 		}
 	}
 
@@ -469,6 +621,8 @@ public class NetServer implements ActionListener {
 				propPlayerData.setProperty("p.playCount." + i + "." + pInfo.strName, pInfo.playCount[i]);
 				propPlayerData.setProperty("p.winCount." + i + "." + pInfo.strName, pInfo.winCount[i]);
 			}
+			pInfo.spPersonalBest.strPlayerName = pInfo.strName;
+			pInfo.spPersonalBest.writeProperty(propPlayerData);
 		}
 	}
 
@@ -1215,32 +1369,30 @@ public class NetServer implements ActionListener {
 		if(message[0].equals("mpranking")) {
 			//mpranking\t[STYLE]
 
-			if((pInfo != null) || adminList.contains(client)) {
-				int style = Integer.parseInt(message[1]);
-				int myRank = mpRankingIndexOf(style, pInfo);
+			int style = Integer.parseInt(message[1]);
+			int myRank = mpRankingIndexOf(style, pInfo);
 
-				String strPData = "";
-				int prevRating = -1;
-				int nowRank = 0;
-				for(int i = 0; i < mpRankingList[style].size(); i++) {
-					NetPlayerInfo p = (NetPlayerInfo)mpRankingList[style].get(i);
-					if((i == 0) || (p.rating[style] < prevRating)) {
-						prevRating = p.rating[style];
-						nowRank = i;
-					}
-					strPData += (nowRank) + ";" + NetUtil.urlEncode(p.strName) + ";" +
-								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
+			String strPData = "";
+			int prevRating = -1;
+			int nowRank = 0;
+			for(int i = 0; i < mpRankingList[style].size(); i++) {
+				NetPlayerInfo p = (NetPlayerInfo)mpRankingList[style].get(i);
+				if((i == 0) || (p.rating[style] < prevRating)) {
+					prevRating = p.rating[style];
+					nowRank = i;
 				}
-				if((myRank == -1) && (pInfo != null)) {
-					NetPlayerInfo p = pInfo;
-					strPData += (-1) + ";" + NetUtil.urlEncode(p.strName) + ";" +
-								p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
-				}
-				String strPDataC = NetUtil.compressString(strPData);
-
-				String strMsg = "mpranking\t" + style + "\t" + myRank + "\t" + strPDataC + "\n";
-				send(client, strMsg);
+				strPData += (nowRank) + ";" + NetUtil.urlEncode(p.strName) + ";" +
+							p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
 			}
+			if((myRank == -1) && (pInfo != null)) {
+				NetPlayerInfo p = pInfo;
+				strPData += (-1) + ";" + NetUtil.urlEncode(p.strName) + ";" +
+							p.rating[style] + ";" + p.playCount[style] + ";" + p.winCount[style] + "\t";
+			}
+			String strPDataC = NetUtil.compressString(strPData);
+
+			String strMsg = "mpranking\t" + style + "\t" + myRank + "\t" + strPDataC + "\n";
+			send(client, strMsg);
 		}
 		// Single player room
 		if(message[0].equals("singleroomcreate")) {
@@ -1723,6 +1875,141 @@ public class NetServer implements ActionListener {
 				}
 			}
 		}
+		// Single player replay send
+		if(message[0].equals("spsend")) {
+			//spsend\t[CHECKSUM]\t[DATA]
+			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+
+				if(!pInfo.isTripUse || !roomInfo.rated) {
+					broadcast("spsendok\t-1\tfalse\n", pInfo.roomID);
+				} else if(roomInfo.singleplayer) {
+					long sChecksum = Long.parseLong(message[1]);
+					Adler32 checksumObj = new Adler32();
+					checksumObj.update(NetUtil.stringToBytes(message[2]));
+
+					if(sChecksum == checksumObj.getValue()) {
+						String strData = NetUtil.decompressString(message[2]);
+						NetSPRecord record = new NetSPRecord(strData);
+						record.strPlayerName = pInfo.strName;
+						record.strModeName = roomInfo.strMode;
+						record.strRuleName = roomInfo.ruleName;
+						record.style = roomInfo.style;
+
+						NetSPRanking ranking = getSPRanking(record.strRuleName, record.strModeName, record.gameType);
+
+						if(ranking != null) {
+							int rank = ranking.registerRecord(record);
+							if(rank != -1) writeSPRankingToFile();
+
+							boolean isPB = pInfo.spPersonalBest.registerRecord(ranking.rankingType, record);
+							if(isPB) {
+								setPlayerDataToProperty(pInfo);
+								writePlayerDataToFile();
+							}
+
+							broadcast("spsendok\t" + rank + "\t" + isPB + "\n", pInfo.roomID);
+						} else {
+							broadcast("spsendok\t-1\tfalse\n", pInfo.roomID);
+						}
+					} else {
+						send(client, "spsendng\n");
+					}
+				}
+			}
+		}
+		// Single player leaderboard
+		if(message[0].equals("spranking")) {
+			//spranking\t[RULE]\t[MODE]\t[GAMETYPE]
+			String strRule = NetUtil.urlDecode(message[1]);
+			String strMode = NetUtil.urlDecode(message[2]);
+			int gameType = Integer.parseInt(message[3]);
+
+			int myRank = -1;
+			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType);
+
+			if(ranking != null) {
+				int maxRecord = ranking.listRecord.size();
+
+				String strMsg = "spranking\t" + strRule + "\t" + strMode + "\t" + gameType + "\t";
+				strMsg += ranking.rankingType + "\t" + maxRecord + "\t";
+
+				for(int i = 0; i < maxRecord; i++) {
+					String strRow = "";
+					if(i > 0) strRow = ";";
+
+					NetSPRecord record = ranking.listRecord.get(i);
+					strRow += i + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
+
+					if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORE) {
+						strRow += record.stats.score + ",";
+						strRow += record.stats.lines + ",";
+						strRow += record.stats.time;
+					} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_TIME) {
+						strRow += record.stats.time + ",";
+						strRow += record.stats.totalPieceLocked + ",";
+						strRow += record.stats.pps;
+					}
+
+					if((pInfo != null) && pInfo.strName.equals(record.strPlayerName)) {
+						myRank = i;
+					}
+
+					strMsg += strRow;
+				}
+				if((myRank == -1) && (pInfo != null)) {
+					NetSPRecord record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
+
+					if(record != null) {
+						String strRow = "";
+						if(maxRecord > 0) strRow += ",";
+
+						maxRecord++;
+						strRow += (-1) + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
+
+						if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORE) {
+							strRow += record.stats.score + ",";
+							strRow += record.stats.lines + ",";
+							strRow += record.stats.time;
+						} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_TIME) {
+							strRow += record.stats.time + ",";
+							strRow += record.stats.totalPieceLocked + ",";
+							strRow += record.stats.pps;
+						}
+
+						strMsg += strRow;
+					}
+				}
+
+				strMsg += "\n";
+				send(client, strMsg);
+			} else {
+				String strMsg = "sprankingfail\t" + strRule + "\t" + strMode + "\t" + gameType + "\n";
+				send(client, strMsg);
+			}
+		}
+		// Single player replay download
+		if(message[0].equals("spdownload")) {
+			//spdownload\t[RULE]\t[MODE]\t[GAMETYPE]\t[NAME]
+			String strRule = NetUtil.urlDecode(message[1]);
+			String strMode = NetUtil.urlDecode(message[2]);
+			int gameType = Integer.parseInt(message[3]);
+			String strName = NetUtil.urlDecode(message[4]);
+
+			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType);
+			if(ranking != null) {
+				NetSPRecord record = ranking.getRecord(strName);
+
+				if(record != null) {
+					Adler32 checksumObj = new Adler32();
+					checksumObj.update(NetUtil.stringToBytes(record.strReplayProp));
+					long sChecksum = checksumObj.getValue();
+
+					String strMsg = "spdownload\t" + sChecksum + "\t" + record.strReplayProp + "\n";
+					send(client, strMsg);
+				}
+			}
+		}
 		// Game messages (NetServer will deliver them to other players but won't modify it)
 		if(message[0].equals("game")) {
 			if(pInfo != null) {
@@ -1883,7 +2170,8 @@ public class NetServer implements ActionListener {
 			NetPlayerInfo pInfo = searchPlayerByName(strName);
 
 			boolean playerDataChange = false;
-			boolean rankingDataChange = false;
+			boolean mpRankingDataChange = false;
+			boolean spRankingDataChange = false;
 
 			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				if(propPlayerData.getProperty("p.rating." + i + "." + strName) != null) {
@@ -1892,24 +2180,38 @@ public class NetServer implements ActionListener {
 					propPlayerData.setProperty("p.winCount." + i + "." + strName, 0);
 					playerDataChange = true;
 				}
+				if(propPlayerData.getProperty("sppersonal." + strName + ".numRecords") != null) {
+					propPlayerData.setProperty("sppersonal." + strName + ".numRecords", 0);
+					playerDataChange = true;
+				}
 
 				if(pInfo != null) {
 					pInfo.rating[i] = ratingDefault;
 					pInfo.playCount[i] = 0;
 					pInfo.winCount[i] = 0;
+					pInfo.spPersonalBest.listRecord.clear();
 				}
 
 				int mpIndex = mpRankingIndexOf(i, strName);
 				if(mpIndex != -1) {
 					mpRankingList[i].remove(mpIndex);
-					rankingDataChange = true;
+					mpRankingDataChange = true;
+				}
+
+				for(NetSPRanking ranking: spRankingList) {
+					NetSPRecord record = ranking.getRecord(strName);
+					if(record != null) {
+						ranking.listRecord.remove(record);
+						spRankingDataChange = true;
+					}
 				}
 			}
 
 			sendAdminResult(client, "playerdelete\t" + strName);
 
 			if(playerDataChange) writePlayerDataToFile();
-			if(rankingDataChange) writeMPRankingToFile();
+			if(mpRankingDataChange) writeMPRankingToFile();
+			if(spRankingDataChange) writeSPRankingToFile();
 		}
 		// Room delete
 		if(message[0].equals("roomdelete")) {

@@ -1,1 +1,11 @@
-LINE RACE
+#Netplay single player modes list
+#ModeName,RankingType,MaxGameType
+
+:TETROMINO
+LINE RACE,1,2
+
+:AVALANCHE
+
+:PHYSICIAN
+
+:SPF

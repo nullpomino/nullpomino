@@ -29,6 +29,7 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
 import java.io.IOException;
+import java.util.zip.Adler32;
 
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
@@ -39,10 +40,12 @@ import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
+import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
 import mu.nu.nullpo.game.net.NetRoomInfo;
+import mu.nu.nullpo.game.net.NetSPRecord;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -111,6 +114,42 @@ public class LineRaceMode extends NetDummyMode {
 
 	/** NET: The skin player using */
 	private int netPlayerSkin;
+
+	/** NET: Player name */
+	private String netPlayerName;
+
+	/** NET: Replay send status (0:Before Send 1:Sending 2:Sent) */
+	private int netReplaySendStatus;
+
+	/** NET: Current round's online ranking rank */
+	private int netRankingRank;
+
+	/** NET: True if new personal record */
+	private boolean netIsPB;
+
+	/** NET: True if net ranking display mode */
+	private boolean netIsNetRankingDisplayMode;
+
+	/** NET: Net ranking cursor position */
+	private int netRankingCursor;
+
+	/** NET: Net ranking player's current rank */
+	private int netRankingMyRank;
+
+	/** NET: Net Rankings' rank */
+	private int[] netRankingPlace;
+
+	/** NET: Net Rankings' names */
+	private String[] netRankingName;
+
+	/** NET: Net Rankings' times */
+	private int[] netRankingTime;
+
+	/** NET: Net Rankings' piece counts */
+	private int[] netRankingPiece;
+
+	/** NET: Net Rankings' PPS values */
+	private float[] netRankingPPS;
 
 	/*
 	 * Mode name
@@ -201,6 +240,10 @@ public class LineRaceMode extends NetDummyMode {
 		netPrevPieceY = 0;
 		netPrevPieceDir = 0;
 		netPlayerSkin = 0;
+		netReplaySendStatus = 0;
+		netRankingRank = -1;
+		netIsPB = false;
+		netIsNetRankingDisplayMode = false;
 
 		if(netIsWatch) {
 			engine.isNextVisible = false;
@@ -214,6 +257,9 @@ public class LineRaceMode extends NetDummyMode {
 		} else {
 			presetNumber = 0;
 			loadPreset(engine, engine.owner.replayProp, -1);
+
+			// NET: Load name
+			netPlayerName = engine.owner.replayProp.getProperty(playerID + ".net.netPlayerName", "");
 		}
 	}
 
@@ -260,8 +306,40 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
+		// NET: Net Ranking
+		if(netIsNetRankingDisplayMode) {
+			if((netRankingName != null) && (netRankingName.length > 0)) {
+				// Up
+				if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
+					netRankingCursor--;
+					if(netRankingCursor < 0) netRankingCursor = netRankingPlace.length - 1;
+					engine.playSE("cursor");
+				}
+				// Down
+				if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
+					netRankingCursor++;
+					if(netRankingCursor > netRankingPlace.length - 1) netRankingCursor = 0;
+					engine.playSE("cursor");
+				}
+				// Download
+				if(engine.ctrl.isPush(Controller.BUTTON_A)) {
+					engine.playSE("decide");
+					String strMsg = "spdownload\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\t"
+									+ NetUtil.urlEncode(netRankingName[netRankingCursor]) + "\n";
+					netLobby.netPlayerClient.send(strMsg);
+					netIsNetRankingDisplayMode = false;
+					owner.menuOnly = false;
+				}
+			}
+
+			// Exit
+			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+				netIsNetRankingDisplayMode = false;
+				owner.menuOnly = false;
+			}
+		}
 		// Menu
-		if(engine.owner.replayMode == false) {
+		else if(engine.owner.replayMode == false) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) && (!netIsWatch)) {
 				engine.statc[2]--;
@@ -395,8 +473,20 @@ public class LineRaceMode extends NetDummyMode {
 				engine.quitflag = true;
 			}
 
+			// NET: Netplay Ranking
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && (netIsNetPlay) && (netCurrentRoomInfo.rated) && (!big) && (engine.ai == null)) {
+				netRankingPlace = null;
+				netRankingCursor = 0;
+				netRankingMyRank = -1;
+				netIsNetRankingDisplayMode = true;
+				owner.menuOnly = true;
+				netLobby.netPlayerClient.send("spranking\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\n");
+			}
+
 			engine.statc[3]++;
-		} else {
+		}
+		// Replay
+		else {
 			engine.statc[3]++;
 			engine.statc[2] = -1;
 
@@ -413,7 +503,44 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.statc[2] < 10) {
+		if(netIsNetRankingDisplayMode) {
+			// NET: Netplay Ranking
+			if((netRankingPlace != null) && (netRankingPlace.length > 0)) {
+				receiver.drawMenuFont(engine, playerID, 1, 1,
+						"ONLINE RANKING (" + (netRankingCursor+1) + "/" + netRankingPlace.length + ")",
+						EventReceiver.COLOR_GREEN);
+
+				receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     PIECE PPS    NAME", EventReceiver.COLOR_BLUE);
+
+				int startIndex = (netRankingCursor / 25) * 25;
+				int endIndex = startIndex + 25;
+				if(endIndex > netRankingPlace.length) endIndex = netRankingPlace.length;
+				int c = 0;
+
+				for(int i = startIndex; i < endIndex; i++) {
+					if(i == netRankingCursor) {
+						receiver.drawMenuFont(engine, playerID, 0, 4 + c, "b", EventReceiver.COLOR_RED);
+					}
+
+					int rankColor = (i == netRankingMyRank) ? EventReceiver.COLOR_PINK : EventReceiver.COLOR_YELLOW;
+					if(netRankingPlace[i] == -1) {
+						receiver.drawMenuFont(engine, playerID, 1, 4 + c, "N/A", rankColor);
+					} else {
+						receiver.drawMenuFont(engine, playerID, 1, 4 + c, String.format("%3d", netRankingPlace[i]+1), rankColor);
+					}
+					receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[i]), (i == netRankingCursor));
+					receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingPiece[i], (i == netRankingCursor));
+					receiver.drawMenuFont(engine, playerID, 20, 4 + c, String.format("%.5g", netRankingPPS[i]), (i == netRankingCursor));
+					receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[i], (i == netRankingCursor));
+
+					c++;
+				}
+			} else if((netRankingPlace != null) && (netRankingPlace.length == 0)) {
+				receiver.drawMenuFont(engine, playerID, 1, 1, "NO DATA", EventReceiver.COLOR_DARKBLUE);
+			} else if(netRankingPlace == null) {
+				receiver.drawMenuFont(engine, playerID, 1, 1, "LOADING...", EventReceiver.COLOR_CYAN);
+			}
+		} else if(engine.statc[2] < 10) {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GRAVITY", String.valueOf(engine.speed.gravity),
 					"G-MAX", String.valueOf(engine.speed.denominator),
@@ -533,6 +660,8 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
+		if(owner.menuOnly) return;
+
 		receiver.drawScoreFont(engine, playerID, 0, 0, "LINE RACE", EventReceiver.COLOR_RED);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + GOAL_TABLE[goaltype] + " LINES GAME)", EventReceiver.COLOR_RED);
 
@@ -578,6 +707,7 @@ public class LineRaceMode extends NetDummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 16, GeneralUtil.getTime(engine.statistics.time));
 		}
 
+		// NET: Number of spectators
 		if(netIsNetPlay) {
 			receiver.drawScoreFont(engine, playerID, 0, 18, "SPECTATORS", EventReceiver.COLOR_CYAN);
 			receiver.drawScoreFont(engine, playerID, 0, 19, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
@@ -588,8 +718,23 @@ public class LineRaceMode extends NetDummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 20, "PLAY", EventReceiver.COLOR_RED);
 			}
 
+			if((engine.stat == GameEngine.STAT_SETTING) && (netCurrentRoomInfo.rated) && (!big) && (engine.ai == null)) {
+				receiver.drawScoreFont(engine, playerID, 0, 22, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
+			}
+
 			// All number of players
 			if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
+		}
+
+		// NET: Player name
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			String name = netPlayerName;
+			if(name.length() > 14) name = name.substring(0, 14) + "..";
+			receiver.drawTTFDirectFont(
+					engine, playerID,
+					receiver.getFieldDisplayPositionX(engine, playerID),
+					receiver.getFieldDisplayPositionY(engine, playerID) - 20,
+					name);
 		}
 	}
 
@@ -668,8 +813,16 @@ public class LineRaceMode extends NetDummyMode {
 		if(netIsNetPlay) {
 			engine.allowTextRenderByReceiver = false;
 
+			// Replay Send
+			if(netIsWatch || owner.replayMode) {
+				netReplaySendStatus = 2;
+			} else if(netReplaySendStatus == 0) {
+				netReplaySendStatus = 1;
+				netSendReplay(engine);
+			}
+
 			// Retry
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && !netIsWatch) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && !netIsWatch && (netReplaySendStatus == 2)) {
 				engine.playSE("decide");
 				if(netNumSpectators > 0) {
 					netLobby.netPlayerClient.send("game\tretry\n");
@@ -689,13 +842,18 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
-
-		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
+		drawResultStats(engine, playerID, receiver, 1, EventReceiver.COLOR_BLUE,
 				STAT_LINES, STAT_PIECE, STAT_TIME, STAT_LPM, STAT_PPS);
-		drawResultRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, rankingRank);
+		drawResultRank(engine, playerID, receiver, 11, EventReceiver.COLOR_BLUE, rankingRank);
+		drawResultNetRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, netRankingRank);
 
-		if(netIsNetPlay && !netIsWatch) {
+		if(netIsPB) {
+			receiver.drawMenuFont(engine, playerID, 2, 16, "NEW PB", EventReceiver.COLOR_ORANGE);
+		}
+
+		if(netReplaySendStatus == 1) {
+			receiver.drawMenuFont(engine, playerID, 0, 18, "SENDING...", EventReceiver.COLOR_PINK);
+		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
 			receiver.drawMenuFont(engine, playerID, 1, 18, "A: RETRY", EventReceiver.COLOR_RED);
 		}
 	}
@@ -706,6 +864,11 @@ public class LineRaceMode extends NetDummyMode {
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		savePreset(engine, engine.owner.replayProp, -1);
+
+		// NET: Save name
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			prop.setProperty(playerID + ".net.netPlayerName", netPlayerName);
+		}
 
 		// Update rankings
 		if((!owner.replayMode) && (engine.statistics.lines >= GOAL_TABLE[goaltype]) && (!big) && (engine.ai == null) && (!netIsWatch))
@@ -797,11 +960,14 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	private void netUpdatePlayerExist() {
 		netNumSpectators = 0;
+		netPlayerName = "";
 
 		if((netCurrentRoomInfo.roomID != -1) && (netLobby != null)) {
 			for(NetPlayerInfo pInfo: netLobby.updateSameRoomPlayerInfoList()) {
 				if(pInfo.roomID == netCurrentRoomInfo.roomID) {
-					if(pInfo.seatID == -1) {
+					if(pInfo.seatID == 0) {
+						netPlayerName = pInfo.strName;
+					} else if(pInfo.seatID == -1) {
 						netNumSpectators++;
 					}
 				}
@@ -908,6 +1074,29 @@ public class LineRaceMode extends NetDummyMode {
 		netLobby.netPlayerClient.send(msg);
 	}
 
+	/**
+	 * NET: Send replay data
+	 * @param engine GameEngine
+	 */
+	private void netSendReplay(GameEngine engine) {
+		if((engine.statistics.lines >= GOAL_TABLE[goaltype]) && (!big) && (engine.ai == null)) {
+			NetSPRecord record = new NetSPRecord();
+			record.setReplayProp(owner.replayProp);
+			record.stats = new Statistics(engine.statistics);
+			record.gameType = goaltype;
+
+			String strData = NetUtil.compressString(record.exportString());
+
+			Adler32 checksumObj = new Adler32();
+			checksumObj.update(NetUtil.stringToBytes(strData));
+			long sChecksum = checksumObj.getValue();
+
+			netLobby.netPlayerClient.send("spsend\t" + sChecksum + "\t" + strData + "\n");
+		} else {
+			netReplaySendStatus = 2;
+		}
+	}
+
 	/*
 	 * NET: Process netplay messages
 	 */
@@ -946,6 +1135,71 @@ public class LineRaceMode extends NetDummyMode {
 					owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
 					owner.engine[0].resetStatc();
 				}
+			}
+		}
+		// Replay send fail
+		if(message[0].equals("spsendng")) {
+			netReplaySendStatus = 1;
+			netSendReplay(owner.engine[0]);
+		}
+		// Replay send complete
+		if(message[0].equals("spsendok")) {
+			netReplaySendStatus = 2;
+			netRankingRank = Integer.parseInt(message[1]);
+			netIsPB = Boolean.parseBoolean(message[2]);
+		}
+		// Netplay Ranking
+		if(message[0].equals("spranking")) {
+			if(message.length > 6) {
+				int maxRecords = Integer.parseInt(message[5]);
+				String[] arrayRow = message[6].split(";");
+				maxRecords = Math.min(maxRecords, arrayRow.length);
+
+				netRankingPlace = new int[maxRecords];
+				netRankingName = new String[maxRecords];
+				netRankingTime = new int[maxRecords];
+				netRankingPiece = new int[maxRecords];
+				netRankingPPS = new float[maxRecords];
+
+				for(int i = 0; i < maxRecords; i++) {
+					String[] arrayData = arrayRow[i].split(",");
+					netRankingPlace[i] = Integer.parseInt(arrayData[0]);
+					netRankingName[i] = NetUtil.urlDecode(arrayData[1]);
+					netRankingTime[i] = Integer.parseInt(arrayData[2]);
+					netRankingPiece[i] = Integer.parseInt(arrayData[3]);
+					netRankingPPS[i] = Float.parseFloat(arrayData[4]);
+
+					if(netRankingName[i].equals(netPlayerName)) {
+						netRankingCursor = i;
+						netRankingMyRank = i;
+					}
+				}
+			} else {
+				netRankingPlace = new int[0];
+				netRankingName = new String[0];
+				netRankingTime = new int[0];
+				netRankingPiece = new int[0];
+				netRankingPPS = new float[0];
+
+				// Test data
+				/*
+				netRankingPlace = new int[40];
+				netRankingName = new String[40];
+				netRankingTime = new int[40];
+				netRankingPiece = new int[40];
+				netRankingPPS = new float[40];
+
+				for(int i = 0; i < 40; i++) {
+					netRankingPlace[i] = i;
+					netRankingName[i] = "TestData" + (i+1);
+					netRankingTime[i] = i * 60;
+					netRankingPiece[i] = i;
+					netRankingPPS[i] = i;
+				}
+
+				netRankingCursor = 0;
+				netRankingMyRank = -1;
+				*/
 			}
 		}
 		// Game messages

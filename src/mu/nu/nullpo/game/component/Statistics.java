@@ -166,6 +166,22 @@ public class Statistics implements Serializable {
 	}
 
 	/**
+	 * Constructor that imports data from a String Array
+	 * @param s String Array (String[37])
+	 */
+	public Statistics(String[] s) {
+		importStringArray(s);
+	}
+
+	/**
+	 * Constructor that imports data from a String
+	 * @param s String (Split by ;)
+	 */
+	public Statistics(String s) {
+		importString(s);
+	}
+
+	/**
 	 * Reset to defaults
 	 */
 	public void reset() {
@@ -364,5 +380,117 @@ public class Statistics implements Serializable {
 		pps = p.getProperty(id + ".statistics.pps", 0f);
 		gamerate = p.getProperty(id + ".statistics.gamerate", 0f);
 		maxChain = p.getProperty(id + ".statistics.maxChain", 0);
+	}
+
+	/**
+	 * Import from String Array
+	 * @param s String Array (String[37])
+	 */
+	public void importStringArray(String[] s) {
+		score = Integer.parseInt(s[0]);
+		scoreFromLineClear = Integer.parseInt(s[1]);
+		scoreFromSoftDrop = Integer.parseInt(s[2]);
+		scoreFromHardDrop = Integer.parseInt(s[3]);
+		scoreFromOtherBonus = Integer.parseInt(s[4]);
+		lines = Integer.parseInt(s[5]);
+		time = Integer.parseInt(s[6]);
+		level = Integer.parseInt(s[7]);
+		levelDispAdd = Integer.parseInt(s[8]);
+		totalPieceLocked = Integer.parseInt(s[9]);
+		totalPieceActiveTime = Integer.parseInt(s[10]);
+		totalPieceMove = Integer.parseInt(s[11]);
+		totalPieceRotate = Integer.parseInt(s[12]);
+		totalSingle = Integer.parseInt(s[13]);
+		totalDouble = Integer.parseInt(s[14]);
+		totalTriple = Integer.parseInt(s[15]);
+		totalFour = Integer.parseInt(s[16]);
+		totalTSpinZeroMini = Integer.parseInt(s[17]);
+		totalTSpinZero = Integer.parseInt(s[18]);
+		totalTSpinSingleMini = Integer.parseInt(s[19]);
+		totalTSpinSingle = Integer.parseInt(s[20]);
+		totalTSpinDoubleMini = Integer.parseInt(s[21]);
+		totalTSpinDouble = Integer.parseInt(s[22]);
+		totalTSpinTriple = Integer.parseInt(s[23]);
+		totalB2BFour = Integer.parseInt(s[24]);
+		totalB2BTSpin = Integer.parseInt(s[25]);
+		totalHoldUsed = Integer.parseInt(s[26]);
+		maxCombo = Integer.parseInt(s[27]);
+		spl = Double.parseDouble(s[28]);
+		spm = Double.parseDouble(s[29]);
+		sps = Double.parseDouble(s[30]);
+		lpm = Float.parseFloat(s[31]);
+		lps = Float.parseFloat(s[32]);
+		ppm = Float.parseFloat(s[33]);
+		pps = Float.parseFloat(s[34]);
+		gamerate = Float.parseFloat(s[35]);
+		maxChain = Integer.parseInt(s[36]);
+	}
+
+	/**
+	 * Import from String
+	 * @param s String (Split by ;)
+	 */
+	public void importString(String s) {
+		importStringArray(s.split(";"));
+	}
+
+	/**
+	 * Export to String Array
+	 * @return String Array (String[37])
+	 */
+	public String[] exportStringArray() {
+		String[] s = new String[37];
+		s[0] = Integer.toString(score);
+		s[1] = Integer.toString(scoreFromLineClear);
+		s[2] = Integer.toString(scoreFromSoftDrop);
+		s[3] = Integer.toString(scoreFromHardDrop);
+		s[4] = Integer.toString(scoreFromOtherBonus);
+		s[5] = Integer.toString(lines);
+		s[6] = Integer.toString(time);
+		s[7] = Integer.toString(level);
+		s[8] = Integer.toString(levelDispAdd);
+		s[9] = Integer.toString(totalPieceLocked);
+		s[10] = Integer.toString(totalPieceActiveTime);
+		s[11] = Integer.toString(totalPieceMove);
+		s[12] = Integer.toString(totalPieceRotate);
+		s[13] = Integer.toString(totalSingle);
+		s[14] = Integer.toString(totalDouble);
+		s[15] = Integer.toString(totalTriple);
+		s[16] = Integer.toString(totalFour);
+		s[17] = Integer.toString(totalTSpinZeroMini);
+		s[18] = Integer.toString(totalTSpinZero);
+		s[19] = Integer.toString(totalTSpinSingleMini);
+		s[20] = Integer.toString(totalTSpinSingle);
+		s[21] = Integer.toString(totalTSpinDoubleMini);
+		s[22] = Integer.toString(totalTSpinDouble);
+		s[23] = Integer.toString(totalTSpinTriple);
+		s[24] = Integer.toString(totalB2BFour);
+		s[25] = Integer.toString(totalB2BTSpin);
+		s[26] = Integer.toString(totalHoldUsed);
+		s[27] = Integer.toString(maxCombo);
+		s[28] = Double.toString(spl);
+		s[29] = Double.toString(spm);
+		s[30] = Double.toString(sps);
+		s[31] = Float.toString(lpm);
+		s[32] = Float.toString(lps);
+		s[33] = Float.toString(ppm);
+		s[34] = Float.toString(pps);
+		s[35] = Float.toString(gamerate);
+		s[36] = Integer.toString(maxChain);
+		return s;
+	}
+
+	/**
+	 * Export to String
+	 * @return String (Split by ;)
+	 */
+	public String exportString() {
+		String[] array = exportStringArray();
+		String result = "";
+		for(int i = 0; i < array.length; i++) {
+			if(i > 0) result += ";";
+			result += array[i];
+		}
+		return result;
 	}
 }

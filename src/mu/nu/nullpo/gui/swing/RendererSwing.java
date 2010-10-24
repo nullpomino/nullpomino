@@ -171,7 +171,7 @@ public class RendererSwing extends EventReceiver {
 	@Override
 	public void drawTTFMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
 		int x2 = x * 16;
-		int y2 = y * 16;
+		int y2 = y * 16 + 12;
 		if(!engine.owner.menuOnly) {
 			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
 			y2 += getFieldDisplayPositionY(engine, playerID) + 52;

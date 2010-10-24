@@ -1671,7 +1671,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// ** Game mode listbox
 		listmodelCreateRoom1PModeList = new DefaultListModel();
-		loadListToDefaultListModel(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
+		loadSinglePlayerModeList(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
 
 		listboxCreateRoom1PModeList = new JList(listmodelCreateRoom1PModeList);
 		listboxCreateRoom1PModeList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PModeList.value", ""), true);
@@ -1998,7 +1998,39 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					listModel.addElement(str);
 			}
 		} catch (IOException e) {
-			log.debug("Failed to load server list", e);
+			log.debug("Failed to load list from " + filename, e);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Load single player mode list to a DefaultListModel
+	 * @param listModel DefaultListModel
+	 * @param filename Filename of single player mode list
+	 * @return <code>true</code> if success
+	 */
+	public boolean loadSinglePlayerModeList(DefaultListModel listModel, String filename) {
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(filename));
+			listModel.clear();
+
+			String str = null;
+			while((str = in.readLine()) != null) {
+				if((str.length() <= 0) || str.startsWith("#")) {
+					// Empty line or comment line. Ignore it.
+				} else if(str.startsWith(":")) {
+					// Game style tag. Currently unused.
+				} else {
+					// Game mode name
+					int commaIndex = str.indexOf(',');
+					if(commaIndex != -1) {
+						listModel.addElement(str.substring(0, commaIndex));
+					}
+				}
+			}
+		} catch (IOException e) {
+			log.debug("Failed to load list from " + filename, e);
 			return false;
 		}
 		return true;
@@ -3686,6 +3718,26 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			String strTime = getCurrentTimeAsString();
 			String strMessage = "[" + strTime + "]<ADMIN>:" + NetUtil.urlDecode(message[1]);
 			addSystemChatLogLater(getCurrentChatLogTextPane(), strMessage, new Color(255,32,0));
+		}
+		// Single player replay download
+		if(message[0].equals("spdownload")) {
+			long sChecksum = Long.parseLong(message[1]);
+			Adler32 checksumObj = new Adler32();
+			checksumObj.update(NetUtil.stringToBytes(message[2]));
+
+			if(checksumObj.getValue() == sChecksum) {
+				String strReplay = NetUtil.decompressString(message[2]);
+				CustomProperties prop = new CustomProperties();
+				prop.decode(strReplay);
+
+				try {
+					FileOutputStream out = new FileOutputStream("replay/netreplay.rep");
+					prop.store(out, "NullpoMino NetReplay from " + netPlayerClient.getHost());
+					addSystemChatLog(getCurrentChatLogTextPane(), getUIText("SysMsg_ReplaySaved"), Color.magenta);
+				} catch (IOException e) {
+					log.error("Failed to write replay to replay/netreplay.rep", e);
+				}
+			}
 		}
 
 		// Listener呼び出し

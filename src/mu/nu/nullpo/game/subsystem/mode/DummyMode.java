@@ -254,6 +254,12 @@ public class DummyMode implements GameMode {
 			receiver.drawMenuFont(engine, playerID, 0, y+1, String.format("%10d", rank + 1));
 		}
 	}
+	protected void drawResultNetRank (GameEngine engine, int playerID, EventReceiver receiver, int y, int color, int rank) {
+		if(rank != -1) {
+			receiver.drawMenuFont(engine, playerID, 0, y, "NET-RANK", color);
+			receiver.drawMenuFont(engine, playerID, 0, y+1, String.format("%10d", rank + 1));
+		}
+	}
 	protected void drawResultStats (GameEngine engine, int playerID, EventReceiver receiver, int y, int color, int... stats) {
 		for (int i = 0; i < stats.length; i++)
 		{

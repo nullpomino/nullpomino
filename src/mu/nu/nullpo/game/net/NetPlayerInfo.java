@@ -70,6 +70,9 @@ public class NetPlayerInfo implements Serializable {
 	/** Number of rated multiplayer games win */
 	public int[] winCount = new int[GameEngine.MAX_GAMESTYLE];
 
+	/** Single player personal records */
+	public NetSPPersonalBest spPersonalBest = new NetSPPersonalBest();
+
 	/** User ID */
 	public int uid = -1;
 
@@ -152,6 +155,7 @@ public class NetPlayerInfo implements Serializable {
 			playCount[i] = n.playCount[i];
 			winCount[i] = n.winCount[i];
 		}
+		spPersonalBest = new NetSPPersonalBest(n.spPersonalBest);
 
 		uid = n.uid;
 		roomID = n.roomID;
@@ -167,7 +171,7 @@ public class NetPlayerInfo implements Serializable {
 
 	/**
 	 * Import from String array
-	 * @param pdata String array (String[24])
+	 * @param pdata String array (String[25])
 	 */
 	public void importStringArray(String[] pdata) {
 		strName = NetUtil.urlDecode(pdata[0]);
@@ -194,6 +198,9 @@ public class NetPlayerInfo implements Serializable {
 		winCount[1] = Integer.parseInt(pdata[21]);
 		winCount[2] = Integer.parseInt(pdata[22]);
 		winCount[3] = Integer.parseInt(pdata[23]);
+		if(pdata.length > 24) {
+			spPersonalBest.importString(NetUtil.decompressString(pdata[24]));
+		}
 	}
 
 	/**
@@ -206,10 +213,10 @@ public class NetPlayerInfo implements Serializable {
 
 	/**
 	 * Export to String array
-	 * @return String array (String[24])
+	 * @return String array (String[25])
 	 */
 	public String[] exportStringArray() {
-		String[] pdata = new String[24];
+		String[] pdata = new String[25];
 		pdata[0] = NetUtil.urlEncode(strName);
 		pdata[1] = NetUtil.urlEncode(strCountry);
 		pdata[2] = NetUtil.urlEncode(strHost);
@@ -234,6 +241,7 @@ public class NetPlayerInfo implements Serializable {
 		pdata[21] = Integer.toString(winCount[1]);
 		pdata[22] = Integer.toString(winCount[2]);
 		pdata[23] = Integer.toString(winCount[3]);
+		pdata[24] = NetUtil.compressString(spPersonalBest.exportString());
 		return pdata;
 	}
 
