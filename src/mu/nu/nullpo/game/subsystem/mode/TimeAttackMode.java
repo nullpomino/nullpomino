@@ -547,7 +547,7 @@ public class TimeAttackMode extends DummyMode {
 	public void renderSetting(GameEngine engine, int playerID) {
 		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 				"DIFFICULTY", GAMETYPE_NAME[gametype],
-				"LEVEL", String.valueOf(startlevel),
+				"LEVEL", String.valueOf(startlevel + 1),
 				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
 				"BIG",  GeneralUtil.getONorOFF(big));
 	}
@@ -631,7 +631,12 @@ public class TimeAttackMode extends DummyMode {
 
 			// Section time
 			if((showsectiontime == true) && (sectiontime != null)) {
-				receiver.drawScoreFont(engine, playerID, 12, 3, "SECTION TIME", EventReceiver.COLOR_BLUE);
+				int y = (receiver.getNextDisplayType() == 2) ? 6 : 3;
+				int x = (receiver.getNextDisplayType() == 2) ? 22 : 12;
+				int x2 = (receiver.getNextDisplayType() == 2) ? 10 : 12;
+				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+
+				receiver.drawScoreFont(engine, playerID, x, y, "SECTION TIME", EventReceiver.COLOR_BLUE, scale);
 
 				for(int i = 0; i < sectiontime.length; i++) {
 					if(sectiontime[i] > 0) {
@@ -643,13 +648,13 @@ public class TimeAttackMode extends DummyMode {
 
 						int pos = i - Math.max(engine.statistics.level-9,0);
 
-						if (pos >= 0) receiver.drawScoreFont(engine, playerID, 13, 4 + pos, strSectionTime);
+						if (pos >= 0) receiver.drawScoreFont(engine, playerID, x+1, y + 1 + pos, strSectionTime, scale);
 					}
 				}
 
 				if(sectionavgtime > 0) {
-					receiver.drawScoreFont(engine, playerID, 12, 15, "AVERAGE", EventReceiver.COLOR_BLUE);
-					receiver.drawScoreFont(engine, playerID, 12, 16, GeneralUtil.getTime(sectionavgtime));
+					receiver.drawScoreFont(engine, playerID, x2, 15, "AVERAGE", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, x2, 16, GeneralUtil.getTime(sectionavgtime));
 				}
 			}
 		}

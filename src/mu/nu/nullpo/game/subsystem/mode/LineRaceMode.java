@@ -726,10 +726,10 @@ public class LineRaceMode extends NetDummyMode {
 			if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
 		}
 
-		// NET: Player name
+		// NET: Player name (It may also appear in offline replay)
 		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
 			String name = netPlayerName;
-			if(name.length() > 14) name = name.substring(0, 14) + "..";
+			//if(name.length() > 14) name = name.substring(0, 14) + "..";
 			receiver.drawTTFDirectFont(
 					engine, playerID,
 					receiver.getFieldDisplayPositionX(engine, playerID),

@@ -997,7 +997,11 @@ public class GemManiaMode extends DummyMode {
 
 			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
-				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_PINK);
+				int y = (receiver.getNextDisplayType() == 2) ? 4 : 2;
+				int x = (receiver.getNextDisplayType() == 2) ? 22 : 12;
+				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+
+				receiver.drawScoreFont(engine, playerID, x, y, "SECTION TIME", EventReceiver.COLOR_PINK, scale);
 
 				for(int i = 0; i < sectiontime.length; i++) {
 					if(sectiontime[i] != 0) {
@@ -1013,12 +1017,17 @@ public class GemManiaMode extends DummyMode {
 
 						int pos = i - Math.max(stage-14,0);
 
-						if (pos >= 0) receiver.drawScoreFont(engine, playerID, 12, 3 + pos, strSectionTime);
+						if (pos >= 0) receiver.drawScoreFont(engine, playerID, x, y + 1 + pos, strSectionTime, scale);
 					}
 				}
 
-				receiver.drawScoreFont(engine, playerID, 12, 19, "TOTAL TIME", EventReceiver.COLOR_PINK);
-				receiver.drawScoreFont(engine, playerID, 12, 20, GeneralUtil.getTime(engine.statistics.time));
+				if(receiver.getNextDisplayType() == 2) {
+					receiver.drawScoreFont(engine, playerID, 11, 19, "TOTAL", EventReceiver.COLOR_PINK);
+					receiver.drawScoreFont(engine, playerID, 11, 20, GeneralUtil.getTime(engine.statistics.time));
+				} else {
+					receiver.drawScoreFont(engine, playerID, 12, 19, "TOTAL TIME", EventReceiver.COLOR_PINK);
+					receiver.drawScoreFont(engine, playerID, 12, 20, GeneralUtil.getTime(engine.statistics.time));
+				}
 			}
 		}
 	}

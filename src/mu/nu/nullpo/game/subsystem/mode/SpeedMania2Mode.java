@@ -628,7 +628,12 @@ public class SpeedMania2Mode extends DummyMode {
 
 			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
-				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
+				int y = (receiver.getNextDisplayType() == 2) ? 4 : 2;
+				int x = (receiver.getNextDisplayType() == 2) ? 20 : 12;
+				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
+				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
+
+				receiver.drawScoreFont(engine, playerID, x, y, "SECTION TIME", EventReceiver.COLOR_BLUE, scale);
 
 				for(int i = 0; i < sectiontime.length; i++) {
 					if(sectiontime[i] > 0) {
@@ -641,13 +646,13 @@ public class SpeedMania2Mode extends DummyMode {
 						String strSectionTime;
 						strSectionTime = String.format("%4d%s%s", temp, strSeparator, GeneralUtil.getTime(sectiontime[i]));
 
-						receiver.drawScoreFont(engine, playerID, 11, 3 + i, strSectionTime, sectionIsNewRecord[i]);
+						receiver.drawScoreFont(engine, playerID, x-1, y + 1 + i, strSectionTime, sectionIsNewRecord[i], scale);
 					}
 				}
 
 				if(sectionavgtime > 0) {
-					receiver.drawScoreFont(engine, playerID, 12, 17, "AVERAGE", EventReceiver.COLOR_BLUE);
-					receiver.drawScoreFont(engine, playerID, 12, 18, GeneralUtil.getTime(sectionavgtime));
+					receiver.drawScoreFont(engine, playerID, x2, 17, "AVERAGE", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, x2, 18, GeneralUtil.getTime(sectionavgtime));
 				}
 			}
 		}

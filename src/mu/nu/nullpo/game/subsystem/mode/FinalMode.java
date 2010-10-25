@@ -557,7 +557,10 @@ public class FinalMode extends DummyMode {
 
 			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
-				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
+				int x = (receiver.getNextDisplayType() == 2) ? 8 : 12;
+				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
+
+				receiver.drawScoreFont(engine, playerID, x, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
 				for(int i = 0; i < sectiontime.length; i++) {
 					if(sectiontime[i] > 0) {
@@ -571,13 +574,13 @@ public class FinalMode extends DummyMode {
 						String strSectionTime;
 						strSectionTime = String.format("%3d%s%s", temp, strSeparator, GeneralUtil.getTime(sectiontime[i]));
 
-						receiver.drawScoreFont(engine, playerID, 12, 3 + i, strSectionTime, sectionIsNewRecord[i]);
+						receiver.drawScoreFont(engine, playerID, x, 3 + i, strSectionTime, sectionIsNewRecord[i]);
 					}
 				}
 
 				if(sectionavgtime > 0) {
-					receiver.drawScoreFont(engine, playerID, 12, 14, "AVERAGE", EventReceiver.COLOR_BLUE);
-					receiver.drawScoreFont(engine, playerID, 12, 15, GeneralUtil.getTime(sectionavgtime));
+					receiver.drawScoreFont(engine, playerID, x2, 14, "AVERAGE", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, x2, 15, GeneralUtil.getTime(sectionavgtime));
 				}
 			}
 		}

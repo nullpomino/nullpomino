@@ -831,10 +831,8 @@ public class GradeMania3Mode extends DummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		String scolorStr = "NONE";
-		if (showsectiontime) {
-			if (stcolor == 1) scolorStr = "NEWRECORD";
-			else if (stcolor == 2) scolorStr = "COOL";
-		}
+		if (stcolor == 1) scolorStr = "NEWRECORD";
+		else if (stcolor == 2) scolorStr = "COOL";
 		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 				"LEVEL", String.valueOf(startlevel * 100),
 				"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
@@ -846,7 +844,6 @@ public class GradeMania3Mode extends DummyMode {
 				"LV500LIMIT", (lv500torikan == 0) ? "NONE" : GeneralUtil.getTime(lv500torikan),
 				"EXAM", GeneralUtil.getONorOFF(enableexam),
 				"STIMECOLOR", scolorStr);
-
 	}
 
 	/*
@@ -1000,7 +997,9 @@ public class GradeMania3Mode extends DummyMode {
 
 			// Section Time
 			if((showsectiontime == true) && (sectiontime != null)) {
-				receiver.drawScoreFont(engine, playerID, 12, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
+				int x = (receiver.getNextDisplayType() == 2) ? 8 : 12;
+				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
+				receiver.drawScoreFont(engine, playerID, x, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
 
 				for(int i = 0; i < sectiontime.length; i++) {
 					if(sectiontime[i] > 0) {
@@ -1025,13 +1024,13 @@ public class GradeMania3Mode extends DummyMode {
 						String strSectionTime;
 						strSectionTime = String.format("%3d%s%s", temp, strSeparator, GeneralUtil.getTime(sectiontime[i]));
 
-						receiver.drawScoreFont(engine, playerID, 12, 3 + i, strSectionTime, color);
+						receiver.drawScoreFont(engine, playerID, x, 3 + i, strSectionTime, color);
 					}
 				}
 
 				if(sectionavgtime > 0) {
-					receiver.drawScoreFont(engine, playerID, 12, 14, "AVERAGE", EventReceiver.COLOR_BLUE);
-					receiver.drawScoreFont(engine, playerID, 12, 15, GeneralUtil.getTime(sectionavgtime));
+					receiver.drawScoreFont(engine, playerID, x2, 14, "AVERAGE", EventReceiver.COLOR_BLUE);
+					receiver.drawScoreFont(engine, playerID, x2, 15, GeneralUtil.getTime(sectionavgtime));
 				}
 			}
 		}
