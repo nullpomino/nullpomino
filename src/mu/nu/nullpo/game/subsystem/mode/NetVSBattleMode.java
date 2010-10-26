@@ -657,58 +657,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	private void sendField(GameEngine engine) {
 		if(isPractice) return;
 		if(numPlayers + numSpectators < 2) return;
-
-		String strSrcFieldData = engine.field.fieldToString();
-		int nocompSize = strSrcFieldData.length();
-
-		String strCompFieldData = NetUtil.compressString(strSrcFieldData);
-		int compSize = strCompFieldData.length();
-
-		String strFieldData = strSrcFieldData;
-		boolean isCompressed = false;
-		if(compSize < nocompSize) {
-			strFieldData = strCompFieldData;
-			isCompressed = true;
-		}
-		//log.debug("nocompSize:" + nocompSize + " compSize:" + compSize + " isCompressed:" + isCompressed);
-
-		garbage[engine.playerID] = getTotalGarbageLines();
-
-		String msg = "game\tfield\t" + garbage[engine.playerID] + "\t" + engine.getSkin() + "\t" + engine.field.getHighestGarbageBlockY() + "\t";
-		msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
-		msg += strFieldData + "\t" + isCompressed + "\n";
-		netLobby.netPlayerClient.send(msg);
-	}
-
-	/**
-	 * Send NEXT and HOLD states
-	 * @param engine GameEngine
-	 */
-	private void sendNextAndHold(GameEngine engine) {
-		int holdID = Piece.PIECE_NONE;
-		int holdDirection = Piece.DIRECTION_UP;
-		int holdColor = Block.BLOCK_COLOR_GRAY;
-		if(engine.holdPieceObject != null) {
-			holdID = engine.holdPieceObject.id;
-			holdDirection = engine.holdPieceObject.direction;
-			holdColor = engine.ruleopt.pieceColor[engine.holdPieceObject.id];
-		}
-
-		String msg = "game\tnext\t" + engine.ruleopt.nextDisplay + "\t" + engine.holdDisable + "\t";
-
-		for(int i = -1; i < engine.ruleopt.nextDisplay; i++) {
-			if(i < 0) {
-				msg += holdID + ";" + holdDirection + ";" + holdColor;
-			} else {
-				Piece nextObj = engine.getNextObject(engine.nextPieceCount + i);
-				msg += nextObj.id + ";" + nextObj.direction + ";" + engine.ruleopt.pieceColor[nextObj.id];
-			}
-
-			if(i < engine.ruleopt.nextDisplay - 1) msg += "\t";
-		}
-
-		msg += "\n";
-		netLobby.netPlayerClient.send(msg);
+		netSendField(engine);
 	}
 
 	/**
@@ -1006,7 +955,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				netLobby.netPlayerClient.send("game\tpiece\t" + prevPieceID + "\t" + prevPieceX + "\t" + prevPieceY + "\t" + prevPieceDir + "\t" +
 						0 + "\t" + engine.getSkin() + "\n");
 
-				if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
+				if((numNowPlayers == 2) && (numMaxPlayers == 2)) netSendNextAndHold(engine);
 			}
 			else if((engine.nowPieceObject.id != prevPieceID) || (engine.nowPieceX != prevPieceX) ||
 					(engine.nowPieceY != prevPieceY) || (engine.nowPieceObject.direction != prevPieceDir))
@@ -1021,7 +970,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				netLobby.netPlayerClient.send("game\tpiece\t" + prevPieceID + "\t" + x + "\t" + y + "\t" + prevPieceDir + "\t" +
 								engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[prevPieceID] + "\t" + engine.getSkin() + "\n");
 
-				if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
+				if((numNowPlayers == 2) && (numMaxPlayers == 2)) netSendNextAndHold(engine);
 			}
 		}
 
@@ -1340,7 +1289,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	public boolean onARE(GameEngine engine, int playerID) {
 		if((engine.statc[0] == 0) && (engine.ending == 0) && (playerID == 0) && (playerSeatNumber >= 0)) {
 			sendField(engine);
-			if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
+			if((numNowPlayers == 2) && (numMaxPlayers == 2)) netSendNextAndHold(engine);
 		}
 		return false;
 	}
@@ -1675,7 +1624,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			engine.resetFieldVisible();
 
 			sendField(engine);
-			if((numNowPlayers == 2) && (numMaxPlayers == 2)) sendNextAndHold(engine);
+			if((numNowPlayers == 2) && (numMaxPlayers == 2)) netSendNextAndHold(engine);
 			netLobby.netPlayerClient.send("dead\t" + lastAttackerUID + "\n");
 
 			engine.stat = GameEngine.STAT_CUSTOM;

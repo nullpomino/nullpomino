@@ -1282,31 +1282,6 @@ public class ScoreRaceMode extends NetDummyMode {
 	}
 
 	/**
-	 * NET: Send field to all spectators
-	 * @param engine GameEngine
-	 */
-	private void netSendField(GameEngine engine) {
-		String strSrcFieldData = engine.field.fieldToString();
-		int nocompSize = strSrcFieldData.length();
-
-		String strCompFieldData = NetUtil.compressString(strSrcFieldData);
-		int compSize = strCompFieldData.length();
-
-		String strFieldData = strSrcFieldData;
-		boolean isCompressed = false;
-		if(compSize < nocompSize) {
-			strFieldData = strCompFieldData;
-			isCompressed = true;
-		}
-
-		String msg = "game\tfield\t";
-		msg += engine.getSkin() + "\t";
-		msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
-		msg += strFieldData + "\t" + isCompressed + "\n";
-		netLobby.netPlayerClient.send(msg);
-	}
-
-	/**
 	 * NET: Send various in-game stats (as well as goaltype)
 	 * @param engine GameEngine
 	 */
@@ -1337,37 +1312,6 @@ public class ScoreRaceMode extends NetDummyMode {
 		subMsg += "PIECE/SEC;" + engine.statistics.pps + "\t";
 
 		String msg = "gstat1p\t" + NetUtil.urlEncode(subMsg) + "\n";
-		netLobby.netPlayerClient.send(msg);
-	}
-
-	/**
-	 * NET: Send next and hold piece informations to all spectators
-	 * @param engine GameEngine
-	 */
-	private void netSendNextAndHold(GameEngine engine) {
-		int holdID = Piece.PIECE_NONE;
-		int holdDirection = Piece.DIRECTION_UP;
-		int holdColor = Block.BLOCK_COLOR_GRAY;
-		if(engine.holdPieceObject != null) {
-			holdID = engine.holdPieceObject.id;
-			holdDirection = engine.holdPieceObject.direction;
-			holdColor = engine.ruleopt.pieceColor[engine.holdPieceObject.id];
-		}
-
-		String msg = "game\tnext\t" + engine.ruleopt.nextDisplay + "\t" + engine.holdDisable + "\t";
-
-		for(int i = -1; i < engine.ruleopt.nextDisplay; i++) {
-			if(i < 0) {
-				msg += holdID + ";" + holdDirection + ";" + holdColor;
-			} else {
-				Piece nextObj = engine.getNextObject(engine.nextPieceCount + i);
-				msg += nextObj.id + ";" + nextObj.direction + ";" + engine.ruleopt.pieceColor[nextObj.id];
-			}
-
-			if(i < engine.ruleopt.nextDisplay - 1) msg += "\t";
-		}
-
-		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
