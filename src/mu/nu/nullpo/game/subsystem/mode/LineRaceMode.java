@@ -58,6 +58,7 @@ import mu.nu.nullpo.util.GeneralUtil;
  * LINE RACE Mode
  */
 public class LineRaceMode extends NetDummyMode {
+	/* ----- Main variables ----- */
 	/** Logger */
 	static Logger log = Logger.getLogger(LineRaceMode.class);
 
@@ -97,6 +98,7 @@ public class LineRaceMode extends NetDummyMode {
 	/** Rankings' PPS values */
 	private float[][] rankingPPS;
 
+	/* ----- NET variables ----- */
 	/** NET: true if netplay */
 	private boolean netIsNetPlay;
 
@@ -688,10 +690,13 @@ public class LineRaceMode extends NetDummyMode {
 			if((remainLines <= 20) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_ORANGE;
 			if((remainLines <= 10) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_RED;
 			receiver.drawScoreFont(engine, playerID, 0, 4, strLines, fontcolor);
+
 			if(strLines.length() == 1) {
 				receiver.drawMenuFont(engine, playerID, 4, 21, strLines, fontcolor, 2.0f);
-			} else {
+			} else if(strLines.length() == 2) {
 				receiver.drawMenuFont(engine, playerID, 3, 21, strLines, fontcolor, 2.0f);
+			} else if(strLines.length() == 3) {
+				receiver.drawMenuFont(engine, playerID, 2, 21, strLines, fontcolor, 2.0f);
 			}
 
 			receiver.drawScoreFont(engine, playerID, 0, 6, "PIECE", EventReceiver.COLOR_BLUE);
@@ -718,7 +723,7 @@ public class LineRaceMode extends NetDummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 20, "PLAY", EventReceiver.COLOR_RED);
 			}
 
-			if((engine.stat == GameEngine.STAT_SETTING) && (netCurrentRoomInfo.rated) && (!big) && (engine.ai == null)) {
+			if((engine.stat == GameEngine.STAT_SETTING) && (!netIsWatch) && (netCurrentRoomInfo.rated) && (!big) && (engine.ai == null)) {
 				receiver.drawScoreFont(engine, playerID, 0, 22, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
 			}
 
@@ -761,6 +766,7 @@ public class LineRaceMode extends NetDummyMode {
 			engine.timerActive = false;
 			engine.gameActive = false;
 
+			// NET: Send game completed messages
 			if(netIsNetPlay && !netIsWatch) {
 				if(netNumSpectators > 0) {
 					netSendField(engine);
@@ -779,6 +785,7 @@ public class LineRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
+		// NET: Send messages / Wait for messages
 		if(netIsNetPlay){
 			if(!netIsWatch) {
 				if(engine.statc[0] == 0) {
@@ -851,7 +858,7 @@ public class LineRaceMode extends NetDummyMode {
 			receiver.drawMenuFont(engine, playerID, 2, 16, "NEW PB", EventReceiver.COLOR_ORANGE);
 		}
 
-		if(netReplaySendStatus == 1) {
+		if(netIsNetPlay && (netReplaySendStatus == 1)) {
 			receiver.drawMenuFont(engine, playerID, 0, 18, "SENDING...", EventReceiver.COLOR_PINK);
 		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
 			receiver.drawMenuFont(engine, playerID, 1, 18, "A: RETRY", EventReceiver.COLOR_RED);
@@ -1008,7 +1015,7 @@ public class LineRaceMode extends NetDummyMode {
 		String msg = "game\tstats\t";
 		msg += engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
 		msg += engine.statistics.time + "\t" + engine.statistics.lpm + "\t";
-		msg += engine.statistics.pps + "\t" + rankingRank + "\t" + goaltype + "\t";
+		msg += engine.statistics.pps + "\t" + goaltype + "\t";
 		msg += engine.gameActive + "\t" + engine.timerActive;
 		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
@@ -1131,6 +1138,9 @@ public class LineRaceMode extends NetDummyMode {
 			log.debug("NET: Dead");
 
 			if(netIsWatch) {
+				owner.engine[0].gameActive = false;
+				owner.engine[0].timerActive = false;
+
 				if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[0].stat != GameEngine.STAT_RESULT)) {
 					owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
 					owner.engine[0].resetStatc();
@@ -1259,10 +1269,9 @@ public class LineRaceMode extends NetDummyMode {
 					engine.statistics.time = Integer.parseInt(message[6]);
 					engine.statistics.lpm = Float.parseFloat(message[7]);
 					engine.statistics.pps = Float.parseFloat(message[8]);
-					rankingRank = Integer.parseInt(message[9]);
-					goaltype = Integer.parseInt(message[10]);
-					engine.gameActive = Boolean.parseBoolean(message[11]);
-					engine.timerActive = Boolean.parseBoolean(message[12]);
+					goaltype = Integer.parseInt(message[9]);
+					engine.gameActive = Boolean.parseBoolean(message[10]);
+					engine.timerActive = Boolean.parseBoolean(message[11]);
 
 					// Update meter
 					int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;

@@ -2,6 +2,8 @@ package mu.nu.nullpo.game.subsystem.mode;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
@@ -15,6 +17,9 @@ import mu.nu.nullpo.gui.net.NetLobbyListener;
  * Special base class for netplay
  */
 public class NetDummyMode extends DummyMode implements NetLobbyListener {
+	/** Log */
+	static Logger log = Logger.getLogger(NetDummyMode.class);
+
 	/** Lobby (Declared in NetDummyMode) */
 	protected NetLobbyFrame netLobby;
 
@@ -36,8 +41,13 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	public void netplayInit(Object obj) {
 		if(obj instanceof NetLobbyFrame) {
 			netLobby = (NetLobbyFrame)obj;
-			netLobby.ruleOptPlayer = new RuleOptions(owner.engine[0].ruleopt);
 			netLobby.setNetDummyMode(this);
+
+			try {
+				netLobby.ruleOptPlayer = new RuleOptions(owner.engine[0].ruleopt);
+			} catch (NullPointerException e) {
+				log.error("NPE on netplayInit; Most likely the mode is overriding 'owner' variable", e);
+			}
 		}
 	}
 

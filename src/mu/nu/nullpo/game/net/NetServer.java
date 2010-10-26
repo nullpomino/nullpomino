@@ -1941,14 +1941,18 @@ public class NetServer implements ActionListener {
 					NetSPRecord record = ranking.listRecord.get(i);
 					strRow += i + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
 
-					if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORE) {
+					if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
 						strRow += record.stats.score + ",";
 						strRow += record.stats.lines + ",";
 						strRow += record.stats.time;
-					} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_TIME) {
+					} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
 						strRow += record.stats.time + ",";
 						strRow += record.stats.totalPieceLocked + ",";
 						strRow += record.stats.pps;
+					} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
+						strRow += record.stats.time + ",";
+						strRow += record.stats.lines + ",";
+						strRow += record.stats.spl;
 					}
 
 					if((pInfo != null) && pInfo.strName.equals(record.strPlayerName)) {
@@ -1967,14 +1971,18 @@ public class NetServer implements ActionListener {
 						maxRecord++;
 						strRow += (-1) + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
 
-						if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORE) {
+						if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
 							strRow += record.stats.score + ",";
 							strRow += record.stats.lines + ",";
 							strRow += record.stats.time;
-						} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_TIME) {
+						} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
 							strRow += record.stats.time + ",";
 							strRow += record.stats.totalPieceLocked + ",";
 							strRow += record.stats.pps;
+						} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
+							strRow += record.stats.time + ",";
+							strRow += record.stats.lines + ",";
+							strRow += record.stats.spl;
 						}
 
 						strMsg += strRow;

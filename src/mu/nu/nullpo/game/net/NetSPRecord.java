@@ -14,8 +14,9 @@ public class NetSPRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** Ranking type constants */
-	public static final int RANKINGTYPE_SCORE = 0,
-							RANKINGTYPE_TIME = 1;
+	public static final int RANKINGTYPE_GENERIC_SCORE = 0,
+							RANKINGTYPE_GENERIC_TIME = 1,
+							RANKINGTYPE_SCORERACE = 2;
 
 	/** Player Name */
 	public String strPlayerName;
@@ -52,7 +53,7 @@ public class NetSPRecord implements Serializable {
 		Statistics s1 = r1.stats;
 		Statistics s2 = r2.stats;
 
-		if(type == RANKINGTYPE_SCORE) {
+		if(type == RANKINGTYPE_GENERIC_SCORE) {
 			if(s1.score > s2.score) {
 				return true;
 			} else if((s1.score == s2.score) && (s1.lines > s2.lines)) {
@@ -60,12 +61,20 @@ public class NetSPRecord implements Serializable {
 			} else if((s1.score == s2.score) && (s1.lines == s2.lines) && (s1.time < s2.time)) {
 				return true;
 			}
-		} else if(type == RANKINGTYPE_TIME) {
+		} else if(type == RANKINGTYPE_GENERIC_TIME) {
 			if(s1.time < s2.time) {
 				return true;
 			} else if((s1.time == s2.time) && (s1.totalPieceLocked < s2.totalPieceLocked)) {
 				return true;
 			} else if((s1.time == s2.time) && (s1.totalPieceLocked == s2.totalPieceLocked) && (s1.pps > s2.pps)) {
+				return true;
+			}
+		} else if(type == RANKINGTYPE_SCORERACE) {
+			if(s1.time < s2.time) {
+				return true;
+			} else if((s1.time == s2.time) && (s1.lines < s2.lines)) {
+				return true;
+			} else if((s1.time == s2.time) && (s1.lines == s2.lines) && (s1.spl > s2.spl)) {
 				return true;
 			}
 		}
