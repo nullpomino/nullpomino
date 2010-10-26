@@ -1754,6 +1754,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			JScrollPane spMPRanking = new JScrollPane(tableMPRanking[i]);
 			tabMPRanking.addTab(GameEngine.GAMESTYLE_NAMES[i], spMPRanking);
+
+			if(i != GameEngine.GAMESTYLE_TETROMINO) {
+				tabMPRanking.setEnabledAt(i, false);	// TODO: Add non-tetromino leaderboard
+			}
 		}
 
 		// * OK Button
@@ -2229,8 +2233,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 
 		if(r != null) {
-			listboxCreateRoom1PModeList.setSelectedIndex(0);
-			listboxCreateRoom1PRuleList.setSelectedIndex(0);
+			//listboxCreateRoom1PModeList.setSelectedIndex(0);
+			//listboxCreateRoom1PRuleList.setSelectedIndex(0);
 			listboxCreateRoom1PModeList.setSelectedValue(r.strMode, true);
 			listboxCreateRoom1PRuleList.setSelectedValue(r.ruleName, true);
 		}
@@ -2534,11 +2538,29 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultMapSetID", (Integer)spinnerCreateRoomMapSetID.getValue());
 		}
 
+		Object listboxCreateRoomRuleListSelectedValue = listboxCreateRoomRuleList.getSelectedValue();
+		if((listboxCreateRoomRuleListSelectedValue != null) && (listboxCreateRoomRuleListSelectedValue instanceof String) &&
+		   (listboxCreateRoomRuleList.getSelectedIndex() >= 1))
+		{
+			propConfig.setProperty("createroom.listboxCreateRoomRuleList.value", (String)listboxCreateRoomRuleListSelectedValue);
+		} else {
+			propConfig.setProperty("createroom.listboxCreateRoomRuleList.value", "");
+		}
+
 		Object listboxCreateRoom1PModeListSelectedValue = listboxCreateRoom1PModeList.getSelectedValue();
 		if((listboxCreateRoom1PModeListSelectedValue != null) && (listboxCreateRoom1PModeListSelectedValue instanceof String)) {
 			propConfig.setProperty("createroom1p.listboxCreateRoom1PModeList.value", (String)listboxCreateRoom1PModeListSelectedValue);
 		} else {
 			propConfig.setProperty("createroom1p.listboxCreateRoom1PModeList.value", "");
+		}
+
+		Object listboxCreateRoom1PRuleListSelectedValue = listboxCreateRoom1PRuleList.getSelectedValue();
+		if((listboxCreateRoom1PRuleListSelectedValue != null) && (listboxCreateRoom1PRuleListSelectedValue instanceof String) &&
+		   (listboxCreateRoom1PRuleList.getSelectedIndex() >= 1))
+		{
+			propConfig.setProperty("createroom1p.listboxCreateRoom1PRuleList.value", (String)listboxCreateRoom1PRuleListSelectedValue);
+		} else {
+			propConfig.setProperty("createroom1p.listboxCreateRoom1PRuleList.value", "");
 		}
 
 		propConfig.setProperty("createroom.defaultPresetID", (Integer)spinnerCreateRoomPresetID.getValue());
@@ -2830,7 +2852,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
 			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
 			if(r.rated) listboxCreateRoomRuleList.setSelectedValue(r.ruleName, true);
-			else listboxCreateRoomRuleList.setSelectedIndex(0);
 		}
 	}
 
@@ -3270,6 +3291,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					listmodelCreateRoomRuleList.addElement(name);
 					listmodelCreateRoom1PRuleList.addElement(name);
 				}
+
+				listboxCreateRoomRuleList.setSelectedValue(propConfig.getProperty("createroom.listboxCreateRoomRuleList.value", ""), true);
+				listboxCreateRoom1PRuleList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PRuleList.value", ""), true);
 			}
 		}
 		// Playerリスト

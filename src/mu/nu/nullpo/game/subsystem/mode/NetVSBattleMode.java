@@ -657,7 +657,27 @@ public class NetVSBattleMode extends NetDummyMode {
 	private void sendField(GameEngine engine) {
 		if(isPractice) return;
 		if(numPlayers + numSpectators < 2) return;
-		netSendField(engine);
+
+		String strSrcFieldData = engine.field.fieldToString();
+		int nocompSize = strSrcFieldData.length();
+
+		String strCompFieldData = NetUtil.compressString(strSrcFieldData);
+		int compSize = strCompFieldData.length();
+
+		String strFieldData = strSrcFieldData;
+		boolean isCompressed = false;
+		if(compSize < nocompSize) {
+			strFieldData = strCompFieldData;
+			isCompressed = true;
+		}
+		//log.debug("nocompSize:" + nocompSize + " compSize:" + compSize + " isCompressed:" + isCompressed);
+
+		garbage[engine.playerID] = getTotalGarbageLines();
+
+		String msg = "game\tfield\t" + garbage[engine.playerID] + "\t" + engine.getSkin() + "\t" + engine.field.getHighestGarbageBlockY() + "\t";
+		msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
+		msg += strFieldData + "\t" + isCompressed + "\n";
+		netLobby.netPlayerClient.send(msg);
 	}
 
 	/**
