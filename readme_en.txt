@@ -13,7 +13,7 @@ Windows:
 	"play_swing.bat" starts Swing version of NullpoMino.
 		(Does not use any OS-dependent libraries. However, performance and sound quality are poor.
 		 There is no support for joysticks. BGM is also missing.)
-	"play_slick.bat" starts Slick version of NullpoMino.
+	"play_slick.bat" or "NullpoMino.exe" starts Slick version of NullpoMino.
 		(An OpenGL compatible video card required, some PCs may have problems with keyboard.
 		 Has limited support of joysticks.)
 	"play_sdl.bat" starts SDL version of NullpoMino.
@@ -105,26 +105,75 @@ When the piece lands on something (eg. floor or other blocks), the piece locks, 
 You can erase blocks by filling a horizontal line without gap (In other words, connect 10 blocks to horizontal).
 The game ends when the pile of blocks reaches to top of the field.
 
-4. Description of buttons
-UP:Hard Drop (Drop current piece instantly) ; Move cursor up
-DOWN:Soft Drop (Drop current piece faster) ; Move cursor down
-LEFT:Move left ; Decrease current option's value
-RIGHT:Move right ; Increase current option's value
-A:Rotate
-B:Reverse Rotate
-C:Rotate
-D:Hold (Keep a piece to use later)
-E:180-Degree Rotate
-F:Skip ending credits (SPEED MANIA and GARBAGE MANIA modes)
-QUIT:Quit the game
-PAUSE:Pause the game
-GIVEUP:Return to the title screen
-RETRY:Reset the game and restart from beginning
-FRAME STEP:Frame step (pause screen)
-SCREEN SHOT:Save screen shot to ss folder
+4. Controls
+
+* Description of buttons
+	UP:Hard Drop (Drop current piece instantly) ; Move cursor up
+	DOWN:Soft Drop (Drop current piece faster) ; Move cursor down
+	LEFT:Move left ; Decrease current option's value
+	RIGHT:Move right ; Increase current option's value
+	A:Rotate
+	B:Reverse Rotate
+	C:Rotate
+	D:Hold (Keep a piece to use later)
+	E:180-Degree Rotate
+	F:Skip ending credits (SPEED MANIA and GARBAGE MANIA modes)
+	QUIT:Quit the game
+	PAUSE:Pause the game
+	GIVEUP:Return to the title screen
+	RETRY:Reset the game and restart from beginning
+	FRAME STEP:Frame step (pause screen)
+	SCREEN SHOT:Save screen shot to ss folder
+
+* Default keyboard mappings in menu
++-------------+------------+------------+------------+
+| Button Name |  Blockbox  | Guideline  | NullpoMino |
+|             | (Default)  |            |  Classic   |
++-------------+------------+------------+------------+
+|UP           |Cursor Up   |Cursor Up   |Cursor Up   |
+|DOWN         |Cursor Down |Cursor Down |Cursor Down |
+|LEFT         |Cursor Left |Cursor Left |Cursor Left |
+|RIGHT        |Cursor Right|Cursor Right|Cursor Right|
+|A            |Enter       |Enter       |A           |
+|B            |Escape      |Escape      |S           |
+|C            |A           |C           |D           |
+|D            |Space       |Shift       |Z           |
+|E            |D           |X           |X           |
+|F            |S           |V           |C           |
+|QUIT         |F12         |F12         |Escape      |
+|PAUSE        |F1          |F1          |F1          |
+|GIVEUP       |F11         |F11         |F12         |
+|RETRY        |F10         |F10         |F11         |
+|FRAME STEP   |N           |N           |N           |
+|SCREEN SHOT  |F5          |F5          |F10         |
++-------------+------------+------------+------------+
+
+* Default keyboard mappings in game
++-------------+------------+------------+------------+
+| Button Name |  Blockbox  | Guideline  | NullpoMino |
+|             | (Default)  |            |  Classic   |
++-------------+------------+------------+------------+
+|UP           |Cursor Up   |Space       |Cursor Up   |
+|DOWN         |Cursor Down |Cursor Down |Cursor Down |
+|LEFT         |Cursor Left |Cursor Left |Cursor Left |
+|RIGHT        |Cursor Right|Cursor Right|Cursor Right|
+|A            |Z           |Z           |A           |
+|B            |X           |Cursor Up   |S           |
+|C            |A           |C           |D           |
+|D            |Space       |Shift       |Z           |
+|E            |D           |X           |X           |
+|F            |S           |V           |C           |
+|QUIT         |F12         |F12         |Escape      |
+|PAUSE        |Escape      |Escape      |F1          |
+|GIVEUP       |F11         |F11         |F12         |
+|RETRY        |F10         |F10         |F11         |
+|FRAME STEP   |N           |N           |N           |
+|SCREEN SHOT  |F5          |F5          |F10         |
++-------------+------------+------------+------------+
 
 You can change key mappings in CONFIG screen.
 
+* Reset
 If you want to reset settings, delete the following file(s):
 	Swing: config\setting\swing.cfg
 	Slick: config\setting\slick.cfg
@@ -520,7 +569,22 @@ http://code.google.com/p/nullpomino/
 
 Version 7.4.0 (2010/??/??)
 #This version is NO LONGER compatible with 7.3.0 netplay server.
-[TODO: Insert changelog here]
++Swing/Slick/SDL: Added bigger side-preview option (Enable both "SHOW NEXT ON SIDE" and "BIG SIDE NEXT" in the general options screen)
++Swing/Slick/SDL: Can use different keyboard mappings in menu screens (This is in debate. Your feedback helps us.)
++Swing/Slick/SDL: Default rotation is now left instead of auto. You may want to go "GAME TUNING" menu and check or change "A BUTTON ROTATE" option.
++Slick/SDL: Can reconfigure each button individually in keyboard settings screen
++Slick/SDL: First-time setup screens are no longer present (Default keyboard mappings are Blockbox style)
++Slick/SDL: Mouse support in some menus (Incomplete)
++Slick: Added "NullpoMino.exe" executable file which will start Slick version
++Avalanche/SPF: Added bigger screen option to Avalanche and SPF modes
++New mino skins (Thanks 4matsy!)
+#Enhanced Netplay features:
+ +Ranked Room and Leaderboard
+ +View lobby while in a room
+ +"NetAdmin", the administrator tool of NetServer, can ban/kick a player, can delete a record from leaderboard, and can delete any room.
+ +Online single player room (WIP. Currently supports LINE RACE and SCORE RACE modes.)
+#And maybe more...
+[TODO: Add more changelogs]
 
 Version 7.3.0 (2010/08/09)
 #This version is NO LONGER compatible with 7.2.0 netplay server.
@@ -926,9 +990,7 @@ More features and fixes for Netplay
  * Replay support
  * Manage the lag
  * Password protected rooms
- * ID/Password and rating system or something like that
- * Online single player modes (Everyone can snoop the game on realtime)
- * TNET style winlist or leaderboard by rating
+ * ID/Password or something like that
 Various Bugfixes
 Helpful items in SCORE ATTACK mode
 MISSION MANIA mode where players must accomplish certain task within the given time limit
@@ -939,4 +1001,3 @@ Replace Swing version with something better (jME maybe?)
 Better replay selector system
 TAS detection (I didn't include it in this version because the current method had problems with music)
 Fix the possible high score list inaccurates for MANIA modes (Grade always overcome green-line?)
-More next piece preview options (Show previews to side, etc)

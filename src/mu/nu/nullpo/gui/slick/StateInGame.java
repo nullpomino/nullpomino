@@ -73,6 +73,9 @@ public class StateInGame extends BasicGameState {
 	/** Pause menuのCursor position */
 	protected int cursor = 0;
 
+	/** Number of frames remaining until pause key can be used */
+	protected int pauseFrame = 0;
+
 	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
 
@@ -333,23 +336,26 @@ public class StateInGame extends BasicGameState {
 			}
 		}
 
-		// ポーズ
+		// Pause
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_PAUSE) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_PAUSE)) {
 			if(!pause) {
-				if((gameManager != null) && (gameManager.isGameActive())) {
+				if((gameManager != null) && (gameManager.isGameActive()) && (pauseFrame <= 0)) {
 					ResourceHolder.soundManager.play("pause");
 					pause = true;
 					cursor = 0;
+					if(!enableframestep) pauseFrame = 5;
 					if(!enableframestep) ResourceHolder.bgmPause();
 				}
 			} else {
 				ResourceHolder.soundManager.play("pause");
 				pause = false;
+				pauseFrame = 0;
 				if(!enableframestep) ResourceHolder.bgmResume();
 			}
 		}
 		// Pause menu
-		if(pause && !enableframestep && !pauseMessageHide) {
+		else if(pause && !enableframestep && !pauseMessageHide) {
+			// Cursor movement
 			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 				cursor--;
 
@@ -371,11 +377,15 @@ public class StateInGame extends BasicGameState {
 
 				ResourceHolder.soundManager.play("cursor");
 			}
+
+			// Confirm
 			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 				ResourceHolder.soundManager.play("decide");
 				if(cursor == 0) {
 					// Continue
 					pause = false;
+					pauseFrame = 0;
+					GameKey.gamekey[0].clear();
 					ResourceHolder.bgmResume();
 				} else if(cursor == 1) {
 					// Retry
@@ -394,7 +404,17 @@ public class StateInGame extends BasicGameState {
 					cursor = 0;
 				}
 			}
+			// Unpause by cancel key
+			else if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) && (pauseFrame <= 0)) {
+				ResourceHolder.soundManager.play("pause");
+				pause = false;
+				pauseFrame = 5;
+				GameKey.gamekey[0].clear();
+				ResourceHolder.bgmResume();
+			}
 		}
+		if(pauseFrame > 0) pauseFrame--;
+
 		// Hide pause menu
 		pauseMessageHide = GameKey.gamekey[0].isPressKey(GameKey.BUTTON_C);
 

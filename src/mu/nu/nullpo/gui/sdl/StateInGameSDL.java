@@ -69,6 +69,9 @@ public class StateInGameSDL extends BaseStateSDL {
 	/** Pause menuのCursor position */
 	protected int cursor = 0;
 
+	/** Number of frames remaining until pause key can be used */
+	protected int pauseFrame = 0;
+
 	/*
 	 * Called when entering this state
 	 */
@@ -303,20 +306,23 @@ public class StateInGameSDL extends BaseStateSDL {
 		// ポーズ
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_PAUSE) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_PAUSE)) {
 			if(!pause) {
-				if((gameManager != null) && (gameManager.isGameActive())) {
+				if((gameManager != null) && (gameManager.isGameActive()) && (pauseFrame <= 0)) {
 					ResourceHolderSDL.soundManager.play("pause");
 					pause = true;
 					cursor = 0;
+					if(!enableframestep) pauseFrame = 5;
 					if(!enableframestep) ResourceHolderSDL.bgmPause();
 				}
 			} else {
 				ResourceHolderSDL.soundManager.play("pause");
 				pause = false;
+				pauseFrame = 0;
 				if(!enableframestep) ResourceHolderSDL.bgmResume();
 			}
 		}
 		// Pause menu
-		if(pause && !enableframestep && !pauseMessageHide) {
+		else if(pause && !enableframestep && !pauseMessageHide) {
+			// Cursor movement
 			if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 				cursor--;
 
@@ -338,11 +344,15 @@ public class StateInGameSDL extends BaseStateSDL {
 
 				ResourceHolderSDL.soundManager.play("cursor");
 			}
+
+			// Confirm
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 				ResourceHolderSDL.soundManager.play("decide");
 				if(cursor == 0) {
 					// 再開
 					pause = false;
+					pauseFrame = 0;
+					GameKeySDL.gamekey[0].clear();
 					ResourceHolderSDL.bgmResume();
 				} else if(cursor == 1) {
 					// リトライ
@@ -361,7 +371,17 @@ public class StateInGameSDL extends BaseStateSDL {
 					cursor = 0;
 				}
 			}
+			// Unpause by cancel key
+			else if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B) && (pauseFrame <= 0)) {
+				ResourceHolderSDL.soundManager.play("pause");
+				pause = false;
+				pauseFrame = 5;
+				GameKeySDL.gamekey[0].clear();
+				ResourceHolderSDL.bgmResume();
+			}
 		}
+		if(pauseFrame > 0) pauseFrame--;
+
 		// Hide pause menu
 		pauseMessageHide = GameKeySDL.gamekey[0].isPressKey(GameKeySDL.BUTTON_C);
 

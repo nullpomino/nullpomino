@@ -40,13 +40,6 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	/** This state's ID */
 	public static final int ID = 16;
 
-	/** Number of keys to set */
-	public static final int NUM_KEYS = 6;
-
-	public static final String[] KEY_NAMES = {
-		"UP        ", "DOWN      ", "LEFT      ", "RIGHT     ", "A (SELECT)", "B (CANCEL)"
-	};
-
 	/** Player number */
 	public int player = 0;
 
@@ -77,18 +70,8 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 
 		NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
 
-		NormalFontSDL.printFontGrid(2, 3, "GAME KEYS", (cursor == 0));
-		NormalFontSDL.printFontGrid(2, 4, "[CUSTOM]", (cursor == 1));
-
-		if (cursor == 0) {
-			for(int x = 0; x < NUM_KEYS; x++)
-				NormalFontSDL.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
-						+ getKeyName(GameKeySDL.gamekey[player].keymap[x]));
-		} else if (cursor == 1) {
-			for(int x = 0; x < NUM_KEYS; x++)
-				NormalFontSDL.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
-						+ getKeyName(GameKeySDL.gamekey[player].keymapNav[x]));
-		}
+		NormalFontSDL.printFontGrid(2, 3, "COPY FROM GAME KEYS", (cursor == 0));
+		NormalFontSDL.printFontGrid(2, 4, "CUSTOMIZE", (cursor == 1));
 	}
 
 	@Override
@@ -108,7 +91,6 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 		NullpoMinoSDL.saveConfig();
 
 		ResourceHolderSDL.soundManager.play("decide");
-		NullpoMinoSDL.propConfig.setProperty("option.keyCustomNaviType", cursor);
 		NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);
 		return true;
 	}
@@ -124,7 +106,6 @@ public class StateConfigKeyboardNaviSDL extends DummyMenuChooseStateSDL {
 	 */
 	@Override
 	public void enter() throws SDLException {
-		//cursor = NullpoMinoSDL.propConfig.getProperty("option.keyCustomNaviType", 0);
 		SDLVideo.wmSetCaption("NullpoMino version" + GameManager.getVersionString(), null);
 	}
 

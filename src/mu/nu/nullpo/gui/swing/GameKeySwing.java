@@ -39,6 +39,53 @@ public class GameKeySwing extends GameKeyDummy {
 	/** Key input state (Used by all game states) */
 	public static GameKeySwing gamekey[];
 
+	/** Default key mappings */
+	public static int[][][] DEFAULTKEYS =
+	{
+		// Ingame
+		{
+			// Blockbox type
+			{
+				KeyEvent.VK_UP,KeyEvent.VK_DOWN,KeyEvent.VK_LEFT,KeyEvent.VK_RIGHT,
+				KeyEvent.VK_Z,KeyEvent.VK_X,KeyEvent.VK_A,KeyEvent.VK_SPACE,KeyEvent.VK_D,KeyEvent.VK_S,
+				KeyEvent.VK_F12,KeyEvent.VK_ESCAPE,KeyEvent.VK_F11,KeyEvent.VK_F10,KeyEvent.VK_N,KeyEvent.VK_F5
+			},
+			// Guideline games type
+			{
+				KeyEvent.VK_SPACE,KeyEvent.VK_DOWN,KeyEvent.VK_LEFT,KeyEvent.VK_RIGHT,
+				KeyEvent.VK_Z,KeyEvent.VK_UP,KeyEvent.VK_C,KeyEvent.VK_SHIFT,KeyEvent.VK_X,KeyEvent.VK_V,KeyEvent.VK_F12,
+				KeyEvent.VK_ESCAPE,KeyEvent.VK_F11,KeyEvent.VK_F10,KeyEvent.VK_N,KeyEvent.VK_F5
+			},
+			// NullpoMino classic type
+			{
+				KeyEvent.VK_UP,KeyEvent.VK_DOWN,KeyEvent.VK_LEFT,KeyEvent.VK_RIGHT,
+				KeyEvent.VK_A,KeyEvent.VK_S,KeyEvent.VK_D,KeyEvent.VK_Z,KeyEvent.VK_X,KeyEvent.VK_C,
+				KeyEvent.VK_ESCAPE,KeyEvent.VK_F1,KeyEvent.VK_F12,KeyEvent.VK_F11,KeyEvent.VK_N,KeyEvent.VK_F10
+			},
+		},
+		// Menu
+		{
+			// Blockbox type
+			{
+				KeyEvent.VK_UP,KeyEvent.VK_DOWN,KeyEvent.VK_LEFT,KeyEvent.VK_RIGHT,
+				KeyEvent.VK_ENTER,KeyEvent.VK_ESCAPE,KeyEvent.VK_A,KeyEvent.VK_SPACE,KeyEvent.VK_D,KeyEvent.VK_S,
+				KeyEvent.VK_F12,KeyEvent.VK_F1,KeyEvent.VK_F11,KeyEvent.VK_F10,KeyEvent.VK_N,KeyEvent.VK_F5
+			},
+			// Guideline games type
+			{
+				KeyEvent.VK_UP,KeyEvent.VK_DOWN,KeyEvent.VK_LEFT,KeyEvent.VK_RIGHT,
+				KeyEvent.VK_ENTER,KeyEvent.VK_ESCAPE,KeyEvent.VK_C,KeyEvent.VK_SHIFT,KeyEvent.VK_X,KeyEvent.VK_V,
+				KeyEvent.VK_F12,KeyEvent.VK_F1,KeyEvent.VK_F11,KeyEvent.VK_F10,KeyEvent.VK_N,KeyEvent.VK_F5
+			},
+			// NullpoMino classic type
+			{
+				KeyEvent.VK_UP,KeyEvent.VK_DOWN,KeyEvent.VK_LEFT,KeyEvent.VK_RIGHT,
+				KeyEvent.VK_A,KeyEvent.VK_S,KeyEvent.VK_D,KeyEvent.VK_Z,KeyEvent.VK_X,KeyEvent.VK_C,
+				KeyEvent.VK_ESCAPE,KeyEvent.VK_F1,KeyEvent.VK_F12,KeyEvent.VK_F11,KeyEvent.VK_N,KeyEvent.VK_F10
+			},
+		},
+	};
+
 	/**
 	 * Init everything
 	 */
@@ -108,119 +155,27 @@ public class GameKeySwing extends GameKeyDummy {
 	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
 	 */
 	public void loadDefaultKeymap(int type) {
-		// Blockbox type
-		if(type == 0) {
-			// Ingame
-			keymap[BUTTON_UP]         = KeyEvent.VK_UP;
-			keymap[BUTTON_DOWN]       = KeyEvent.VK_DOWN;
-			keymap[BUTTON_LEFT]       = KeyEvent.VK_LEFT;
-			keymap[BUTTON_RIGHT]      = KeyEvent.VK_RIGHT;
-			keymap[BUTTON_A]          = KeyEvent.VK_Z;
-			keymap[BUTTON_B]          = KeyEvent.VK_X;
-			keymap[BUTTON_C]          = KeyEvent.VK_A;
-			keymap[BUTTON_D]          = KeyEvent.VK_SPACE;
-			keymap[BUTTON_E]          = KeyEvent.VK_D;
-			keymap[BUTTON_F]          = KeyEvent.VK_S;
-			keymap[BUTTON_QUIT]       = KeyEvent.VK_F12;
-			keymap[BUTTON_PAUSE]      = KeyEvent.VK_ESCAPE;
-			keymap[BUTTON_GIVEUP]     = KeyEvent.VK_F11;
-			keymap[BUTTON_RETRY]      = KeyEvent.VK_F10;
-			keymap[BUTTON_FRAMESTEP]  = KeyEvent.VK_N;
-			keymap[BUTTON_SCREENSHOT] = KeyEvent.VK_F5;
+		loadDefaultGameKeymap(type);
+		loadDefaultMenuKeymap(type);
+	}
 
-			// Menu
-			keymapNav[BUTTON_UP]         = KeyEvent.VK_UP;
-			keymapNav[BUTTON_DOWN]       = KeyEvent.VK_DOWN;
-			keymapNav[BUTTON_LEFT]       = KeyEvent.VK_LEFT;
-			keymapNav[BUTTON_RIGHT]      = KeyEvent.VK_RIGHT;
-			keymapNav[BUTTON_A]          = KeyEvent.VK_ENTER;
-			keymapNav[BUTTON_B]          = KeyEvent.VK_ESCAPE;
-			keymapNav[BUTTON_C]          = KeyEvent.VK_A;
-			keymapNav[BUTTON_D]          = KeyEvent.VK_SPACE;
-			keymapNav[BUTTON_E]          = KeyEvent.VK_D;
-			keymapNav[BUTTON_F]          = KeyEvent.VK_S;
-			keymapNav[BUTTON_QUIT]       = KeyEvent.VK_F12;
-			keymapNav[BUTTON_PAUSE]      = KeyEvent.VK_F1;
-			keymapNav[BUTTON_GIVEUP]     = KeyEvent.VK_F11;
-			keymapNav[BUTTON_RETRY]      = KeyEvent.VK_F10;
-			keymapNav[BUTTON_FRAMESTEP]  = KeyEvent.VK_N;
-			keymapNav[BUTTON_SCREENSHOT] = KeyEvent.VK_F5;
+	/**
+	 * Reset in-game keyboard settings to default. Menu keys are unchanged.
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultGameKeymap(int type) {
+		for(int i = 0; i < keymap.length; i++) {
+			keymap[i] = DEFAULTKEYS[0][type][i];
 		}
-		// Guideline games type
-		if(type == 1) {
-			// Ingame
-			keymap[BUTTON_UP]         = KeyEvent.VK_SPACE;
-			keymap[BUTTON_DOWN]       = KeyEvent.VK_DOWN;
-			keymap[BUTTON_LEFT]       = KeyEvent.VK_LEFT;
-			keymap[BUTTON_RIGHT]      = KeyEvent.VK_RIGHT;
-			keymap[BUTTON_A]          = KeyEvent.VK_Z;
-			keymap[BUTTON_B]          = KeyEvent.VK_UP;
-			keymap[BUTTON_C]          = KeyEvent.VK_X;
-			keymap[BUTTON_D]          = KeyEvent.VK_SHIFT;
-			keymap[BUTTON_E]          = KeyEvent.VK_C;
-			keymap[BUTTON_F]          = KeyEvent.VK_V;
-			keymap[BUTTON_QUIT]       = KeyEvent.VK_F12;
-			keymap[BUTTON_PAUSE]      = KeyEvent.VK_ESCAPE;
-			keymap[BUTTON_GIVEUP]     = KeyEvent.VK_F11;
-			keymap[BUTTON_RETRY]      = KeyEvent.VK_F10;
-			keymap[BUTTON_FRAMESTEP]  = KeyEvent.VK_N;
-			keymap[BUTTON_SCREENSHOT] = KeyEvent.VK_F5;
+	}
 
-			// Menu
-			keymapNav[BUTTON_UP]         = KeyEvent.VK_UP;
-			keymapNav[BUTTON_DOWN]       = KeyEvent.VK_DOWN;
-			keymapNav[BUTTON_LEFT]       = KeyEvent.VK_LEFT;
-			keymapNav[BUTTON_RIGHT]      = KeyEvent.VK_RIGHT;
-			keymapNav[BUTTON_A]          = KeyEvent.VK_ENTER;
-			keymapNav[BUTTON_B]          = KeyEvent.VK_ESCAPE;
-			keymapNav[BUTTON_C]          = KeyEvent.VK_X;
-			keymapNav[BUTTON_D]          = KeyEvent.VK_SHIFT;
-			keymapNav[BUTTON_E]          = KeyEvent.VK_C;
-			keymapNav[BUTTON_F]          = KeyEvent.VK_V;
-			keymapNav[BUTTON_QUIT]       = KeyEvent.VK_F12;
-			keymapNav[BUTTON_PAUSE]      = KeyEvent.VK_F1;
-			keymapNav[BUTTON_GIVEUP]     = KeyEvent.VK_F11;
-			keymapNav[BUTTON_RETRY]      = KeyEvent.VK_F10;
-			keymapNav[BUTTON_FRAMESTEP]  = KeyEvent.VK_N;
-			keymapNav[BUTTON_SCREENSHOT] = KeyEvent.VK_F5;
-		}
-		// NullpoMino classic type
-		if(type == 2) {
-			// Ingame
-			keymap[BUTTON_UP]         = KeyEvent.VK_UP;
-			keymap[BUTTON_DOWN]       = KeyEvent.VK_DOWN;
-			keymap[BUTTON_LEFT]       = KeyEvent.VK_LEFT;
-			keymap[BUTTON_RIGHT]      = KeyEvent.VK_RIGHT;
-			keymap[BUTTON_A]          = KeyEvent.VK_A;
-			keymap[BUTTON_B]          = KeyEvent.VK_S;
-			keymap[BUTTON_C]          = KeyEvent.VK_D;
-			keymap[BUTTON_D]          = KeyEvent.VK_Z;
-			keymap[BUTTON_E]          = KeyEvent.VK_X;
-			keymap[BUTTON_F]          = KeyEvent.VK_C;
-			keymap[BUTTON_QUIT]       = KeyEvent.VK_ESCAPE;
-			keymap[BUTTON_PAUSE]      = KeyEvent.VK_F1;
-			keymap[BUTTON_GIVEUP]     = KeyEvent.VK_F12;
-			keymap[BUTTON_RETRY]      = KeyEvent.VK_F11;
-			keymap[BUTTON_FRAMESTEP]  = KeyEvent.VK_N;
-			keymap[BUTTON_SCREENSHOT] = KeyEvent.VK_F10;
-
-			// Menu
-			keymapNav[BUTTON_UP]         = KeyEvent.VK_UP;
-			keymapNav[BUTTON_DOWN]       = KeyEvent.VK_DOWN;
-			keymapNav[BUTTON_LEFT]       = KeyEvent.VK_LEFT;
-			keymapNav[BUTTON_RIGHT]      = KeyEvent.VK_RIGHT;
-			keymapNav[BUTTON_A]          = KeyEvent.VK_A;
-			keymapNav[BUTTON_B]          = KeyEvent.VK_S;
-			keymapNav[BUTTON_C]          = KeyEvent.VK_D;
-			keymapNav[BUTTON_D]          = KeyEvent.VK_Z;
-			keymapNav[BUTTON_E]          = KeyEvent.VK_X;
-			keymapNav[BUTTON_F]          = KeyEvent.VK_C;
-			keymapNav[BUTTON_QUIT]       = KeyEvent.VK_ESCAPE;
-			keymapNav[BUTTON_PAUSE]      = KeyEvent.VK_F1;
-			keymapNav[BUTTON_GIVEUP]     = KeyEvent.VK_F12;
-			keymapNav[BUTTON_RETRY]      = KeyEvent.VK_F11;
-			keymapNav[BUTTON_FRAMESTEP]  = KeyEvent.VK_N;
-			keymapNav[BUTTON_SCREENSHOT] = KeyEvent.VK_F10;
+	/**
+	 * Reset menu keyboard settings to default. In-game keys are unchanged.
+	 * @param type Settings type (0=Blockbox 1=Guideline 2=NullpoMino-Classic)
+	 */
+	public void loadDefaultMenuKeymap(int type) {
+		for(int i = 0; i < keymapNav.length; i++) {
+			keymapNav[i] = DEFAULTKEYS[1][type][i];
 		}
 	}
 }

@@ -54,7 +54,7 @@ public class GameKeySDL extends GameKeyDummy {
 			// Guideline games type
 			{
 				SDLKey.SDLK_SPACE,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
-				SDLKey.SDLK_z,SDLKey.SDLK_UP,SDLKey.SDLK_x,SDLKey.SDLK_LSHIFT,SDLKey.SDLK_c,SDLKey.SDLK_v,SDLKey.SDLK_F12,
+				SDLKey.SDLK_z,SDLKey.SDLK_UP,SDLKey.SDLK_c,SDLKey.SDLK_LSHIFT,SDLKey.SDLK_x,SDLKey.SDLK_v,SDLKey.SDLK_F12,
 				SDLKey.SDLK_ESCAPE,SDLKey.SDLK_F11,SDLKey.SDLK_F10,SDLKey.SDLK_n,SDLKey.SDLK_F5
 			},
 			// NullpoMino classic type
@@ -75,7 +75,7 @@ public class GameKeySDL extends GameKeyDummy {
 			// Guideline games type
 			{
 				SDLKey.SDLK_UP,SDLKey.SDLK_DOWN,SDLKey.SDLK_LEFT,SDLKey.SDLK_RIGHT,
-				SDLKey.SDLK_RETURN,SDLKey.SDLK_ESCAPE,SDLKey.SDLK_x,SDLKey.SDLK_LSHIFT,SDLKey.SDLK_c,SDLKey.SDLK_v,
+				SDLKey.SDLK_RETURN,SDLKey.SDLK_ESCAPE,SDLKey.SDLK_c,SDLKey.SDLK_LSHIFT,SDLKey.SDLK_x,SDLKey.SDLK_v,
 				SDLKey.SDLK_F12,SDLKey.SDLK_F1,SDLKey.SDLK_F11,SDLKey.SDLK_F10,SDLKey.SDLK_n,SDLKey.SDLK_F5
 			},
 			// NullpoMino classic type

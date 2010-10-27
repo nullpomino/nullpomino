@@ -10,7 +10,7 @@ Java‚Åì‚Á‚½—Ž‚¿‚à‚ÌƒAƒNƒVƒ‡ƒ“ƒpƒYƒ‹ƒQ[ƒ€‚à‚Ç‚«‚Å‚·B
 EWindows
 @@play_swing.bat‚ðƒ_ƒuƒ‹ƒNƒŠƒbƒN‚·‚é‚ÆSwingƒo[ƒWƒ‡ƒ“‚ª‹N“®‚µ‚Ü‚·B
 @@iOSˆË‘¶ƒ‰ƒCƒuƒ‰ƒŠ‚ðŽg‚í‚È‚¢ÝŒv‚Å‚·B‚µ‚©‚µ“®ì‘¬“x‚âƒTƒEƒ“ƒh‚ÌŽ¿‚ÍÅ’á‚Å‚·BBGMÄ¶‚âƒWƒ‡ƒCƒXƒeƒBƒbƒN‹@”\‚à‚ ‚è‚Ü‚¹‚ñBj
-@@play_slick.bat‚ðƒ_ƒuƒ‹ƒNƒŠƒbƒN‚·‚é‚ÆSlickƒo[ƒWƒ‡ƒ“‚ª‹N“®‚µ‚Ü‚·B
+@@play_slick.bat‚Ü‚½‚ÍNullpoMino.exe‚ðƒ_ƒuƒ‹ƒNƒŠƒbƒN‚·‚é‚ÆSlickƒo[ƒWƒ‡ƒ“‚ª‹N“®‚µ‚Ü‚·B
 @@iOpenGL‚É‘Î‰ž‚µ‚½ƒrƒfƒIƒJ[ƒh‚ª•K—v‚Å‚·B‚¢‚­‚Â‚©‚ÌPC‚Å‚ÍƒL[ƒ{[ƒh‚ð”FŽ¯‚µ‚Ü‚¹‚ñBj
 @@play_sdl.bat‚ðƒ_ƒuƒ‹ƒNƒŠƒbƒN‚·‚é‚ÆSDLƒo[ƒWƒ‡ƒ“‚ª‹N“®‚µ‚Ü‚·B
 @@i‚Ù‚Æ‚ñ‚Ç‚ÌPC‚ÅSlickƒo[ƒWƒ‡ƒ“‚æ‚è‚àˆÀ’è‚µ‚Ä“®ì‚µ‚Ü‚·B‚½‚¾‚µ32bitŒÀ’èj
@@ -107,7 +107,7 @@ BFƒuƒƒbƒN‚Ì‹t‰ñ“]
 CFƒuƒƒbƒN‚Ì‰ñ“]
 DFƒz[ƒ‹ƒhiƒuƒƒbƒN‚ðˆêŽž“I‚É•ÛŠÇ‚µ‚ÄAŒã‚ÅŽg‚¤‚±‚Æ‚ª‚Å‚«‚Ü‚·j
 EFƒuƒƒbƒN‚Ì180“x‰ñ“]
-FFƒGƒ“ƒfƒBƒ“ƒO‘‘—‚èiSPPED MANIA‚ÆGARBAGE MANIAƒ‚[ƒh‚ÅŽg—p‰Â”\j
+FFƒGƒ“ƒfƒBƒ“ƒO‘‘—‚èiSPEED MANIA‚ÆGARBAGE MANIAƒ‚[ƒh‚ÅŽg—p‰Â”\j
 QUITFƒQ[ƒ€‚ðI—¹‚·‚é
 PAUSEFƒQ[ƒ€‚ðˆêŽž’âŽ~
 GIVEUPFƒ^ƒCƒgƒ‹‚É–ß‚é
@@ -116,8 +116,55 @@ FRAME STEPFƒ|[ƒY’†‚É‰Ÿ‚·‚Æ1ƒtƒŒ[ƒ€‚¾‚¯ƒQ[ƒ€‚ði‚ß‚éiÝ’è‚Å—LŒø‚É‚µ‚Ä‚¢‚éê
 SCREEN SHOTFƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ðssƒtƒHƒ‹ƒ_‚É•Û‘¶
 
 yƒL[”z’uz
-ƒL[”z’u‚Í‰‰ñ‹N“®Žž‚ÉÝ’è‚µ‚Ü‚·B
-‚Ü‚½A‚»‚êˆÈ~‚Íƒ^ƒCƒgƒ‹‚ÌuCONFIGv‚Ì’†‚É‚ ‚éu[KEYBOARD SETTING]v‚©‚ç•ÏX‚Å‚«‚Ü‚·B
+Eƒƒjƒ…[‰æ–Ê‚Å‚ÌƒL[”z’u
++-------------+------------+------------+------------+
+|  ƒ{ƒ^ƒ“–¼   |  Blockbox  | Guideline  | NullpoMino |
+|             |(ƒfƒtƒHƒ‹ƒg)|            |  Classic   |
++-------------+------------+------------+------------+
+|UP           |Cursor Up   |Cursor Up   |Cursor Up   |
+|DOWN         |Cursor Down |Cursor Down |Cursor Down |
+|LEFT         |Cursor Left |Cursor Left |Cursor Left |
+|RIGHT        |Cursor Right|Cursor Right|Cursor Right|
+|A            |Enter       |Enter       |A           |
+|B            |Escape      |Escape      |S           |
+|C            |A           |C           |D           |
+|D            |Space       |Shift       |Z           |
+|E            |D           |X           |X           |
+|F            |S           |V           |C           |
+|QUIT         |F12         |F12         |Escape      |
+|PAUSE        |F1          |F1          |F1          |
+|GIVEUP       |F11         |F11         |F12         |
+|RETRY        |F10         |F10         |F11         |
+|FRAME STEP   |N           |N           |N           |
+|SCREEN SHOT  |F5          |F5          |F10         |
++-------------+------------+------------+------------+
+
+EƒQ[ƒ€’†‚ÌƒL[”z’u
++-------------+------------+------------+------------+
+|  ƒ{ƒ^ƒ“–¼   |  Blockbox  | Guideline  | NullpoMino |
+|             |(ƒfƒtƒHƒ‹ƒg)|            |  Classic   |
++-------------+------------+------------+------------+
+|UP           |Cursor Up   |Space       |Cursor Up   |
+|DOWN         |Cursor Down |Cursor Down |Cursor Down |
+|LEFT         |Cursor Left |Cursor Left |Cursor Left |
+|RIGHT        |Cursor Right|Cursor Right|Cursor Right|
+|A            |Z           |Z           |A           |
+|B            |X           |Cursor Up   |S           |
+|C            |A           |C           |D           |
+|D            |Space       |Shift       |Z           |
+|E            |D           |X           |X           |
+|F            |S           |V           |C           |
+|QUIT         |F12         |F12         |Escape      |
+|PAUSE        |Escape      |Escape      |F1          |
+|GIVEUP       |F11         |F11         |F12         |
+|RETRY        |F10         |F10         |F11         |
+|FRAME STEP   |N           |N           |N           |
+|SCREEN SHOT  |F5          |F5          |F10         |
++-------------+------------+------------+------------+
+
+ƒL[”z’u‚Íƒ^ƒCƒgƒ‹‚ÌuCONFIGv‚Ì’†‚É‚ ‚éu[KEYBOARD SETTING]v‚©‚ç•ÏX‚Å‚«‚Ü‚·B
+
+yÝ’è‚ÌƒŠƒZƒbƒgz
 Ý’è‚ðƒŠƒZƒbƒg‚µ‚½‚¢‚Æ‚«‚ÍAˆÈ‰º‚Ìƒtƒ@ƒCƒ‹‚ðíœ‚µ‚Ä‚­‚¾‚³‚¢B
 @Swing”ÅFconfig\setting\swing.cfg
 @Slick”ÅFconfig\setting\slick.cfg
@@ -252,12 +299,12 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚ðƒx[ƒX‚ÉAæs‰ñ“]–³‚µEæsƒz[ƒ‹ƒh–³‚µEƒ\
 @@ƒŒƒxƒ‹300‚É“ž’B‚·‚é‚Ü‚Å‚É‰Ò‚¢‚¾“¾“_‚ð‹£‚¤ƒ‚[ƒh‚Å‚·B
 @@“ïˆÕ“x‚Í‰SŽÒŒü‚¯‚Å‚·B
 
-ESPPED MANIA
+ESPEED MANIA
 @@GRADE MANIA‚ÆŽ—‚½ƒVƒXƒeƒ€‚ð—p‚¢‚½A—Ž‰º‘¬“x‚ª‘¬‚¢’†‹‰ŽÒŒü‚¯ƒ‚[ƒh‚Å‚·B
 @@ƒŒƒxƒ‹500ˆÈ~‚És‚­‚É‚Í‚»‚ê‚È‚è‚Ì˜r‘O‚ª•K—v‚Æ‚È‚è‚Ü‚·B
 
-ESPPED MANIA 2
-@@SPPED MANIA‚ð‘å‚«‚­’´‚¦‚é‘¬“x‚ÅƒuƒƒbƒN‚ª~‚Á‚Ä‚­‚éã‹‰ŽÒŒü‚¯ƒ‚[ƒh‚Å‚·B
+ESPEED MANIA 2
+@@SPEED MANIA‚ð‘å‚«‚­’´‚¦‚é‘¬“x‚ÅƒuƒƒbƒN‚ª~‚Á‚Ä‚­‚éã‹‰ŽÒŒü‚¯ƒ‚[ƒh‚Å‚·B
 @@ƒŒƒxƒ‹500‚É“ž’B‚·‚é‚Æ‰½‚©‚ª‹N‚±‚è‚Ü‚·B
 
 EGARBAGE MANIA
@@ -265,7 +312,7 @@ STANDARD-ZERO@@@FSTANDARD-PLUS‚ðƒx[ƒX‚ÉAæs‰ñ“]–³‚µEæsƒz[ƒ‹ƒh–³‚µEƒ\
 @@Œã”¼‚É‚È‚é‚Ù‚Ç‚¹‚èã‚ª‚è‚Ìƒy[ƒX‚ªã‚ª‚Á‚Ä‚«‚Ü‚·B
 
 EPHANTOM MANIA
-@@SPPED MANIAƒ‚[ƒh‚ÆŽ—‚Ä‚¢‚Ü‚·‚ªA‚±‚Ìƒ‚[ƒh‚Å‚Í’u‚¢‚½ƒuƒƒbƒN‚ª‘S‚­Œ©‚¦‚Ü‚¹‚ñB
+@@SPEED MANIAƒ‚[ƒh‚ÆŽ—‚Ä‚¢‚Ü‚·‚ªA‚±‚Ìƒ‚[ƒh‚Å‚Í’u‚¢‚½ƒuƒƒbƒN‚ª‘S‚­Œ©‚¦‚Ü‚¹‚ñB
 @@’u‚¢‚½ƒuƒƒbƒN‚ÌêŠ‚âƒtƒB[ƒ‹ƒh‚Ì’nŒ`‚ð‹L‰¯‚·‚é‚±‚Æ‚ªd—v‚Æ‚È‚è‚Ü‚·B
 
 EFINAL
@@ -510,7 +557,21 @@ http://code.google.com/p/nullpomino/
 
 Version 7.4.0 (2010/??/??)
 #‚±‚Ìƒo[ƒWƒ‡ƒ“‚©‚ç7.3.0‚ÌƒT[ƒo[‚Æ‚ÌŒÝŠ·«‚ÍŽ¸‚í‚ê‚Ü‚·B
-[TODO: XV—š—ð‚±‚±‚É“ü‚ê‚é]
++Swing/Slick/SDL: ‚æ‚è‘å‚«‚¢‰¡NEXT•\Ž¦‚ð’Ç‰Á‚µ‚Ü‚µ‚½B (GENERAL OPTIONS‚Ì"SHOW NEXT ON SIDE"‚Æ"BIG SIDE NEXT"‚Ì—¼•û‚ð—LŒø‚É‚µ‚Ä‚­‚¾‚³‚¢)
++Swing/Slick/SDL: ƒƒjƒ…[‰æ–Ê‚ÅƒQ[ƒ€’†‚Æ‚Í•Ê‚ÌƒL[”z’u‚ðŽg‚¤‚æ‚¤‚É‚µ‚Ü‚µ‚½B(Ž^”Û—¼˜_‚È‚Ì‚Å‚²ˆÓŒ©•åW’†)
++Swing/Slick/SDL: ƒfƒtƒHƒ‹ƒg‚Ì‰ñ“]•ûŒü‚ð¶‚É•Ï‚¦‚Ü‚µ‚½BAUTO‚É–ß‚·‚É‚Í"GAME TUNING"ƒƒjƒ…[‚Ì"A BUTTON ROTATE"‚ÌÝ’è‚ð•ÏX‚µ‚Ä‚­‚¾‚³‚¢B
++Slick/SDL: ƒL[Ý’è‰æ–Ê‚ÅƒL[‚ðŒÂ•Ê‚É•ÏX‚Å‚«‚é‚æ‚¤‚É‚µ‚Ü‚µ‚½B
++Slick/SDL: ‰‰ñ‹N“®Žž‚ÌÝ’è‰æ–Ê‚ðÁ‚µ‚Ü‚µ‚½BƒL[”z’u‚Ì‰ŠúÝ’è‚ÍBlockboxƒXƒ^ƒCƒ‹‚É‚È‚Á‚Ä‚¢‚Ü‚·B
++Slick/SDL: ‚¢‚­‚Â‚©‚Ìƒƒjƒ…[‚Åƒ}ƒEƒX‚ªŽg‚¦‚é‚æ‚¤‚É‚È‚è‚Ü‚µ‚½(•sŠ®‘S)
++Slick: "NullpoMino.exe"‚ð’Ç‰Á‚µ‚Ü‚µ‚½Bƒ_ƒuƒ‹ƒNƒŠƒbƒN‚·‚é‚ÆSlick”Å‚ª‹N“®‚µ‚Ü‚·B
++Avalanche/SPF: ƒQ[ƒ€‰æ–Ê‚Ì•\Ž¦‚ð‘å‚«‚¢‚à‚Ì‚É•ÏX‚Å‚«‚éÝ’è‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
++V‚µ‚¢ƒXƒLƒ“‚ð’Ç‰Á‚µ‚Ü‚µ‚½(4matsy‚³‚ñ‚ ‚è‚ª‚Æ‚¤I)
+#ƒlƒbƒgƒvƒŒƒC‚ÉV‹@”\‚ð‘½”’Ç‰Á‚µ‚Ü‚µ‚½F
+ +ƒŒ[ƒg•Ï“®‚Ì‚ ‚éƒ‹[ƒ€‚ÆƒŒ[ƒgƒ‰ƒ“ƒLƒ“ƒO
+ +ƒ‹[ƒ€“à‚Å‚àƒƒr[‚ðŒ©‚ê‚é
+ +NetServerŠÇ—ƒc[ƒ‹"NetAdmin"
+ +1lƒvƒŒƒCƒ‹[ƒ€ (¡‚Ì‚Æ‚±‚ëLINE RACE‚ÆSCORE RACEƒ‚[ƒh‚Ì‚Ý)
+[TODO: XV—š—ð‚Ì‘±‚«‚±‚±‚É“ü‚ê‚é]
 
 Version 7.3.0 (2010/08/09)
 #‚±‚Ìƒo[ƒWƒ‡ƒ“‚©‚ç7.2.0‚ÌƒT[ƒo[‚Æ‚ÌŒÝŠ·«‚ÍŽ¸‚í‚ê‚Ü‚·B
@@ -796,7 +857,7 @@ PRACTICEƒ‚[ƒh‚ÅoŒ»‚·‚éƒuƒƒbƒN‚ÌÝ’è‚ð’Ç‰Ái1`3ŒÂ‚Ì¬‚³‚¢ƒuƒƒbƒN‰“oêj
 Version 6.1 (2009/08/20)
 Ä‚ÑMac OS X‚Å“®‚­‚æ‚¤‚É‚È‚Á‚½‚©‚à
 AI‚Åƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚ðŽg‚í‚È‚¢Ý’è€–Ú‚ð’Ç‰ÁiŽå‚ÉƒfƒoƒbƒO—pBAI‚Í‚·‚²‚­d‚¢‚Ì‚Å‘Îí‚Å‚Í“K‚µ‚Ü‚¹‚ñj
-SPPED MANIA‚ÆGARBAGE MANIA‚ÌƒGƒ“ƒfƒBƒ“ƒO‚ÅFƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‘±‚¯‚é‚ÆƒGƒ“ƒfƒBƒ“ƒO‚ÌŽc‚èŽžŠÔ‚Ì’Zk‚ª‰Â”\‚É
+SPEED MANIA‚ÆGARBAGE MANIA‚ÌƒGƒ“ƒfƒBƒ“ƒO‚ÅFƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‘±‚¯‚é‚ÆƒGƒ“ƒfƒBƒ“ƒO‚ÌŽc‚èŽžŠÔ‚Ì’Zk‚ª‰Â”\‚É
 
 Version 6 (2009/08/17)
 ‚©‚È‚è‚Ì•”•ª‚ðì‚è’¼‚µ
@@ -849,7 +910,7 @@ Swingƒo[ƒWƒ‡ƒ“’Ç‰Á
 Šeƒ‚[ƒh‚ÉŠÈ’P‚Èƒ‰ƒ“ƒLƒ“ƒO‚ð’Ç‰Á
 
 Version 4 (2008/08/10)
-SPPED MANIAƒ‚[ƒh‚ð’Ç‰Á
+SPEED MANIAƒ‚[ƒh‚ð’Ç‰Á
 ƒQ[ƒ€ƒpƒbƒh‚Ì\Žšƒ{ƒ^ƒ“‚Ì”»’è•û–@‚ð‚Ü‚½•ÏX
 ƒGƒ‰[ƒƒO‚ðlog.txt‚Éo—Í‚·‚é‚æ‚¤‚Éplay.bat‚ð•ÏXi•s³I—¹‚µ‚½‚çlog.txt‚ð‚Ç‚Á‚©“K“–‚ÈƒAƒbƒvƒ[ƒ_[‚Éã‚°‚Ä•ñ‚µ‚Ä‚­‚¾‚³‚¢j
 

@@ -119,6 +119,9 @@ public class GameFrame extends JFrame implements Runnable {
 	/** Pause menuのCursor position */
 	protected int cursor = 0;
 
+	/** Number of frames remaining until pause key can be used */
+	protected int pauseFrame = 0;
+
 	/** 倍速Mode */
 	protected int fastforward = 0;
 
@@ -329,18 +332,21 @@ public class GameFrame extends JFrame implements Runnable {
 		// Pause button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_PAUSE) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_PAUSE)) {
 			if(!pause) {
-				if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.isGameActive())) {
+				if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.isGameActive()) && (pauseFrame <= 0)) {
 					ResourceHolderSwing.soundManager.play("pause");
 					pause = true;
+					if(!enableframestep) pauseFrame = 5;
 					cursor = 0;
 				}
 			} else {
 				ResourceHolderSwing.soundManager.play("pause");
 				pause = false;
+				pauseFrame = 0;
 			}
 		}
 		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
+			// Cursor movement
 			if(GameKeySwing.gamekey[0].isMenuRepeatKey(GameKeySwing.BUTTON_UP)) {
 				ResourceHolderSwing.soundManager.play("cursor");
 				cursor--;
@@ -360,11 +366,15 @@ public class GameFrame extends JFrame implements Runnable {
 				if((!NullpoMinoSwing.gameManager.replayMode || NullpoMinoSwing.gameManager.replayRerecord) && (cursor > 2))
 					cursor = 0;
 			}
+
+			// Confirm
 			if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_A)) {
 				ResourceHolderSwing.soundManager.play("decide");
 				if(cursor == 0) {
 					// 再開
 					pause = false;
+					pauseFrame = 0;
+					GameKeySwing.gamekey[0].clear();
 				} else if(cursor == 1) {
 					// リトライ
 					pause = false;
@@ -379,7 +389,16 @@ public class GameFrame extends JFrame implements Runnable {
 					cursor = 0;
 				}
 			}
+			// Unpause by cancel key
+			else if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_B) && (pauseFrame <= 0)) {
+				ResourceHolderSwing.soundManager.play("pause");
+				pause = false;
+				pauseFrame = 5;
+				GameKeySwing.gamekey[0].clear();
+			}
 		}
+		if(pauseFrame > 0) pauseFrame--;
+
 		// Hide pause menu
 		pauseMessageHide = GameKeySwing.gamekey[0].isPressKey(GameKeySwing.BUTTON_C);
 

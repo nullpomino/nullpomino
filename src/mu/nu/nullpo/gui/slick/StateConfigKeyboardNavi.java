@@ -40,13 +40,6 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/** This state's ID */
 	public static final int ID = 16;
 
-	/** Number of keys to set */
-	public static final int NUM_KEYS = 6;
-
-	public static final String[] KEY_NAMES = {
-		"UP        ", "DOWN      ", "LEFT      ", "RIGHT     ", "A (SELECT)", "B (CANCEL)"
-	};
-
 	/** Player number */
 	public int player = 0;
 
@@ -93,18 +86,8 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
-		NormalFont.printFontGrid(2, 3, "GAME KEYS", (cursor == 0));
-		NormalFont.printFontGrid(2, 4, "[CUSTOM]", (cursor == 1));
-
-		if (cursor == 0) {
-			for(int x = 0; x < NUM_KEYS; x++)
-				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
-						+ getKeyName(GameKey.gamekey[player].keymap[x]));
-		} else if (cursor == 1) {
-			for(int x = 0; x < NUM_KEYS; x++)
-				NormalFont.printFontGrid(2, x+8, KEY_NAMES[x] + " : "
-						+ getKeyName(GameKey.gamekey[player].keymapNav[x]));
-		}
+		NormalFont.printFontGrid(2, 3, "COPY FROM GAME KEYS", (cursor == 0));
+		NormalFont.printFontGrid(2, 4, "CUSTOMIZE", (cursor == 1));
 
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
@@ -130,7 +113,6 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 		NullpoMinoSlick.saveConfig();
 
 		ResourceHolder.soundManager.play("decide");
-		NullpoMinoSlick.propConfig.setProperty("option.keyCustomNaviType", cursor);
 		gameObj.enterState(StateConfigMainMenu.ID);
 		return true;
 	}
@@ -146,7 +128,6 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-		//cursor = NullpoMinoSlick.propConfig.getProperty("option.keyCustomNaviType", 0);
 	}
 
 	/**

@@ -3165,14 +3165,19 @@ public class GameEngine {
 	}
 
 	/**
-	 * 結果画面
+	 * Results screen
 	 */
 	public void statResult() {
-		//  event 発生
+		// Event
 		if(owner.mode != null) {
 			if(owner.mode.onResult(this, playerID) == true) return;
 		}
 		owner.receiver.onResult(this, playerID);
+
+		// Turn-off in-game flags
+		gameActive = false;
+		timerActive = false;
+		isInGame = false;
 
 		// Cursor movement
 		if(ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT) || ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) {
@@ -3181,7 +3186,7 @@ public class GameEngine {
 			playSE("cursor");
 		}
 
-		// 決定
+		// Confirm
 		if(ctrl.isPush(Controller.BUTTON_A)) {
 			playSE("decide");
 

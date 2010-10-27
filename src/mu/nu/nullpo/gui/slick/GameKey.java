@@ -54,7 +54,7 @@ public class GameKey extends GameKeyDummy {
 			// Guideline games type
 			{
 				Input.KEY_SPACE,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
-				Input.KEY_Z,Input.KEY_UP,Input.KEY_X,Input.KEY_LSHIFT,Input.KEY_C,Input.KEY_V,Input.KEY_F12,
+				Input.KEY_Z,Input.KEY_UP,Input.KEY_C,Input.KEY_LSHIFT,Input.KEY_X,Input.KEY_V,Input.KEY_F12,
 				Input.KEY_ESCAPE,Input.KEY_F11,Input.KEY_F10,Input.KEY_N,Input.KEY_F5
 			},
 			// NullpoMino classic type
@@ -75,7 +75,7 @@ public class GameKey extends GameKeyDummy {
 			// Guideline games type
 			{
 				Input.KEY_UP,Input.KEY_DOWN,Input.KEY_LEFT,Input.KEY_RIGHT,
-				Input.KEY_ENTER,Input.KEY_ESCAPE,Input.KEY_X,Input.KEY_LSHIFT,Input.KEY_C,Input.KEY_V,
+				Input.KEY_ENTER,Input.KEY_ESCAPE,Input.KEY_C,Input.KEY_LSHIFT,Input.KEY_X,Input.KEY_V,
 				Input.KEY_F12,Input.KEY_F1,Input.KEY_F11,Input.KEY_F10,Input.KEY_N,Input.KEY_F5
 			},
 			// NullpoMino classic type
