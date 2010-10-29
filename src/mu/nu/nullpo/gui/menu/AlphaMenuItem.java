@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 public class AlphaMenuItem extends NumericMenuItem {
+	@SuppressWarnings("unused")
 	private int index;
+	@SuppressWarnings("unused")
 	private Vector<String> choiceList;
 
 	public AlphaMenuItem(String name, int color,Vector<String> choiceList){

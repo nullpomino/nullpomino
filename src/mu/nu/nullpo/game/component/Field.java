@@ -2345,7 +2345,7 @@ public class Field implements Serializable {
 	 * @param skin Block skin being used in this field
 	 * @param isGarbage Row is a garbage row
 	 * @param isWall Row is a wall (i.e. hurry-up rows)
-	 * @return
+	 * @return The row array
 	 */
 	public Block[] stringToRow(String str, int skin, boolean isGarbage, boolean isWall){
 		Block[] row = new Block[getWidth()];

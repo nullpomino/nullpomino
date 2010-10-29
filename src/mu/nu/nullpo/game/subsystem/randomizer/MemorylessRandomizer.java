@@ -33,8 +33,8 @@ import java.util.Random;
 import mu.nu.nullpo.game.component.Piece;
 
 /**
- * 通常のランダムな出現順
- *  (engine.randomizerがnullの場合にGameEngineから使われます）
+ * Memoryless randomizer
+ * @deprecated No longer used. The current one is net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer.
  */
 public class MemorylessRandomizer implements Randomizer {
 	/*

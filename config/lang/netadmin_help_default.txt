@@ -52,7 +52,7 @@ unban ALL
 
 ***** List of player data related commands *****
 playerdelete <PlayerName>
-	Delete the player's data (Rating, Number of games, and Number of wins)
+	Delete the player's data (Rating, # of games, # of wins, and 1P mode records)
 pdel <PlayerName>
 	Same as 'playerdelete'
 

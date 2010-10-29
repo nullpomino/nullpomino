@@ -144,6 +144,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	private CardLayout contentPaneCardLayout;
 
 	/** Current screen-card number */
+	@SuppressWarnings("unused")
 	private int currentScreenCardNumber;
 
 	//***** Login screen elements *****

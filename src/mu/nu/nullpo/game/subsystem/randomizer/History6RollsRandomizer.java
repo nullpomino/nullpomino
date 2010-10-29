@@ -34,7 +34,8 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * 4つの履歴を使うNEXT順生成アルゴリズム (偏り少なめ）
+ * History randomizer (4 rolls)
+ * @deprecated No longer used. The current one is net.omegaboshi.nullpomino.game.subsystem.randomizer.History6RollsRandomizer.
  */
 public class History6RollsRandomizer implements Randomizer {
 	/*

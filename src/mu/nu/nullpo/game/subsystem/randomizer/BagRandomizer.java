@@ -34,7 +34,8 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * 出現する可能性のあるピースが全て偏らずに1個ずつ出る出現順
+ * 7 piece bag randomizer
+ * @deprecated No longer used. The current one is net.omegaboshi.nullpomino.game.subsystem.randomizer.BagRandomizer.
  */
 public class BagRandomizer implements Randomizer {
 	/*

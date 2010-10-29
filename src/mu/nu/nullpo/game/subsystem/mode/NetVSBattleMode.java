@@ -313,7 +313,10 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** 敵から送られてきたgarbage blockのリスト */
 	private LinkedList<GarbageEntry> garbageEntries;
 
-	/** APM */
+	/** APL (Attack Per Line) */
+	private float playerAPL;
+
+	/** APM (Attack Per Minute) */
 	private float playerAPM;
 
 	/** Hurryup後にBlockを置いた count */
@@ -719,7 +722,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	private void sendGameStat(GameEngine engine, int playerID) {
 		String msg = "gstat\t";
 		msg += playerPlace[playerID] + "\t";
-		msg += ((float)garbageSent[playerID] / GARBAGE_DENOMINATOR) + "\t" + playerAPM + "\t";
+		msg += ((float)garbageSent[playerID] / GARBAGE_DENOMINATOR) + "\t" + playerAPL + "\t" + playerAPM + "\t";
 		msg += engine.statistics.lines + "\t" + engine.statistics.lpm + "\t";
 		msg += engine.statistics.totalPieceLocked + "\t" + engine.statistics.pps + "\t";
 		msg += netPlayTimer + "\t" + currentKO + "\t" + numWins + "\t" + numGames;
@@ -1353,9 +1356,10 @@ public class NetVSBattleMode extends NetDummyMode {
 		else if(tempGarbage >= 1) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
 
-		// APM
+		// APL & APM
 		if((playerID == 0) && (engine.gameActive) && (engine.timerActive)) {
 			float tempGarbageSent = (float)garbageSent[playerID] / GARBAGE_DENOMINATOR;
+			playerAPL = (float)(tempGarbageSent / engine.statistics.lines);
 			playerAPM = (tempGarbageSent * 3600) / (engine.statistics.time);
 		}
 
@@ -1830,37 +1834,38 @@ public class NetVSBattleMode extends NetDummyMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		if(!isPractice) {
-			receiver.drawMenuFont(engine, playerID, 0, 1, "RESULT", EventReceiver.COLOR_ORANGE);
+			receiver.drawMenuFont(engine, playerID, 0, 0, "RESULT", EventReceiver.COLOR_ORANGE);
 
 			if(playerPlace[playerID] == 1) {
 				if(numNowPlayers == 2) {
-					receiver.drawMenuFont(engine, playerID, 6, 2, "WIN!", EventReceiver.COLOR_YELLOW);
+					receiver.drawMenuFont(engine, playerID, 6, 1, "WIN!", EventReceiver.COLOR_YELLOW);
 				} else if(numNowPlayers > 2) {
-					receiver.drawMenuFont(engine, playerID, 6, 2, "1ST!", EventReceiver.COLOR_YELLOW);
+					receiver.drawMenuFont(engine, playerID, 6, 1, "1ST!", EventReceiver.COLOR_YELLOW);
 				}
 			} else if(playerPlace[playerID] == 2) {
 				if(numNowPlayers == 2) {
-					receiver.drawMenuFont(engine, playerID, 6, 2, "LOSE", EventReceiver.COLOR_WHITE);
+					receiver.drawMenuFont(engine, playerID, 6, 1, "LOSE", EventReceiver.COLOR_WHITE);
 				} else {
-					receiver.drawMenuFont(engine, playerID, 7, 2, "2ND", EventReceiver.COLOR_WHITE);
+					receiver.drawMenuFont(engine, playerID, 7, 1, "2ND", EventReceiver.COLOR_WHITE);
 				}
 			} else if(playerPlace[playerID] == 3) {
-				receiver.drawMenuFont(engine, playerID, 7, 2, "3RD", EventReceiver.COLOR_RED);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "3RD", EventReceiver.COLOR_RED);
 			} else if(playerPlace[playerID] == 4) {
-				receiver.drawMenuFont(engine, playerID, 7, 2, "4TH", EventReceiver.COLOR_GREEN);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "4TH", EventReceiver.COLOR_GREEN);
 			} else if(playerPlace[playerID] == 5) {
-				receiver.drawMenuFont(engine, playerID, 7, 2, "5TH", EventReceiver.COLOR_BLUE);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "5TH", EventReceiver.COLOR_BLUE);
 			} else if(playerPlace[playerID] == 6) {
-				receiver.drawMenuFont(engine, playerID, 7, 2, "6TH", EventReceiver.COLOR_DARKBLUE);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "6TH", EventReceiver.COLOR_DARKBLUE);
 			}
 		} else {
-			receiver.drawMenuFont(engine, playerID, 0, 1, "PRACTICE", EventReceiver.COLOR_PINK);
+			receiver.drawMenuFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_PINK);
 		}
 
-		drawResult(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,
+		drawResult(engine, playerID, receiver, 2, EventReceiver.COLOR_ORANGE,
 				"ATTACK", String.format("%10g", (float)garbageSent[playerID] / GARBAGE_DENOMINATOR),
 				"LINE", String.format("%10d", engine.statistics.lines),
 				"PIECE", String.format("%10d", engine.statistics.totalPieceLocked),
+				"ATK/LINE", String.format("%10g", playerAPL),
 				"ATTACK/MIN", String.format("%10g", playerAPM),
 				"LINE/MIN", String.format("%10g", engine.statistics.lpm),
 				"PIECE/SEC", String.format("%10g", engine.statistics.pps),

@@ -3,10 +3,12 @@ package mu.nu.nullpo.gui.menu;
 import java.util.Vector;
 
 public class Menu {
+	@SuppressWarnings("unused")
 	private String title;
+	@SuppressWarnings("unused")
 	private String subTitle;
 	private int selectedIndex;
-	
+
 	private Vector<MenuItem> menuItems;
 	public Menu(String title, String subTitle, Vector<MenuItem> menuItems){
 		this.title=title;
@@ -28,7 +30,7 @@ public class Menu {
 	}
 	public void addMenuItem(MenuItem menuItem){
 		menuItems.add(menuItem);
-		
+
 	}
 	public void incIndex(){
 		if (selectedIndex<=menuItems.size()-2)
@@ -38,6 +40,6 @@ public class Menu {
 		if (selectedIndex>=1)
 			selectedIndex--;
 	}
-	
-	
+
+
 }

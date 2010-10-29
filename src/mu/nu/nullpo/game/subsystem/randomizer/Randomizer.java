@@ -31,15 +31,16 @@ package mu.nu.nullpo.game.subsystem.randomizer;
 import java.util.Random;
 
 /**
- * Blockピースの出現順を生成するインターフェイス
+ * Deprecated interface of piece sequence randomizer.
+ * @deprecated No longer used. The current one is net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer.
  */
 public interface Randomizer {
 	/**
-	 * Blockピースの出現順を生成
-	 * @param pieceEnable 出現可能なピース (pieceEnable[id]がWhen true,出現可能なピース）
-	 * @param random ランダム number生成用
-	 * @param arrayMax 生成すべきBlockピースの配列のサイズ (必要なら無視してもOK）
-	 * @return Blockピースの出現順の配列 (ピースのIDだけ）
+	 * Create piece sequence.
+	 * @param pieceEnable Piece enable array (When pieceEnable[id] is true the piece can appear)
+	 * @param random Random number generator
+	 * @param arrayMax Preferred array size
+	 * @return Piece sequence (Piece ID only)
 	 */
 	public int[] createPieceSequence(boolean[] pieceEnable, Random random, int arrayMax);
 }

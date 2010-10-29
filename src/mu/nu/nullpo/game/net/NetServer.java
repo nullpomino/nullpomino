@@ -219,9 +219,11 @@ public class NetServer implements ActionListener {
 	/**
 	 * Initialize (default port)
 	 */
+	/*
 	private void init() {
 		init(DEFAULT_PORT);
 	}
+	*/
 
 	/**
 	 * Initialize
@@ -993,6 +995,7 @@ public class NetServer implements ActionListener {
 	 * @param msg Message to send (String)
 	 * @throws IOException If something fails. If this occurs, make sure to disconnect this client.
 	 */
+	@SuppressWarnings("unused")
 	private void send(NetPlayerInfo pInfo, String msg) throws IOException {
 		SocketChannel ch = getSocketChannelByPlayer(pInfo);
 		if(ch == null) return;

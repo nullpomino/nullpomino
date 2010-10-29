@@ -117,9 +117,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** End-of-game statistics column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] STATTABLE_COLUMNNAMES = {
-		"StatTable_Rank", "StatTable_Name",
-		"StatTable_Attack", "StatTable_APM", "StatTable_Lines", "StatTable_LPM", "StatTable_Piece", "StatTable_PPS", "StatTable_Time",
-		"StatTable_KO", "StatTable_Wins", "StatTable_Games"
+		"StatTable_Rank","StatTable_Name",
+		"StatTable_Attack","StatTable_APL","StatTable_APM","StatTable_Lines","StatTable_LPM","StatTable_Piece","StatTable_PPS","StatTable_Time",
+		"StatTable_KO","StatTable_Wins","StatTable_Games"
 	};
 
 	/** 1P end-of-game statistics column names. These strings will be passed to getUIText(String) subroutine. */
@@ -1020,15 +1020,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		tm2.getColumn(0).setPreferredWidth(propConfig.getProperty("tableGameStat.width.rank", 30));			// Rank
 		tm2.getColumn(1).setPreferredWidth(propConfig.getProperty("tableGameStat.width.name", 100));		// Name
 		tm2.getColumn(2).setPreferredWidth(propConfig.getProperty("tableGameStat.width.attack", 55));		// Attack count
-		tm2.getColumn(3).setPreferredWidth(propConfig.getProperty("tableGameStat.width.apm", 55));			// APM
-		tm2.getColumn(4).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lines", 55));		// Line count
-		tm2.getColumn(5).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lpm", 55));			// LPM
-		tm2.getColumn(6).setPreferredWidth(propConfig.getProperty("tableGameStat.width.piece", 55));		// Piece count
-		tm2.getColumn(7).setPreferredWidth(propConfig.getProperty("tableGameStat.width.pps", 55));			// PPS
-		tm2.getColumn(8).setPreferredWidth(propConfig.getProperty("tableGameStat.width.time", 65));			// Time
-		tm2.getColumn(9).setPreferredWidth(propConfig.getProperty("tableGameStat.width.ko", 40));			// KO
-		tm2.getColumn(10).setPreferredWidth(propConfig.getProperty("tableGameStat.width.wins", 55));		// Win
-		tm2.getColumn(11).setPreferredWidth(propConfig.getProperty("tableGameStat.width.games", 55));		// Games
+		tm2.getColumn(3).setPreferredWidth(propConfig.getProperty("tableGameStat.width.apl", 55));			// APL
+		tm2.getColumn(4).setPreferredWidth(propConfig.getProperty("tableGameStat.width.apm", 55));			// APM
+		tm2.getColumn(5).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lines", 55));		// Line count
+		tm2.getColumn(6).setPreferredWidth(propConfig.getProperty("tableGameStat.width.lpm", 55));			// LPM
+		tm2.getColumn(7).setPreferredWidth(propConfig.getProperty("tableGameStat.width.piece", 55));		// Piece count
+		tm2.getColumn(8).setPreferredWidth(propConfig.getProperty("tableGameStat.width.pps", 55));			// PPS
+		tm2.getColumn(9).setPreferredWidth(propConfig.getProperty("tableGameStat.width.time", 65));			// Time
+		tm2.getColumn(10).setPreferredWidth(propConfig.getProperty("tableGameStat.width.ko", 40));			// KO
+		tm2.getColumn(11).setPreferredWidth(propConfig.getProperty("tableGameStat.width.wins", 55));		// Win
+		tm2.getColumn(12).setPreferredWidth(propConfig.getProperty("tableGameStat.width.games", 55));		// Games
 
 		JScrollPane spTableGameStat = new JScrollPane(tableGameStat);
 		spTableGameStat.setMinimumSize(new Dimension(0, 0));
@@ -2485,15 +2486,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		propConfig.setProperty("tableGameStat.width.rank", tm.getColumn(0).getWidth());
 		propConfig.setProperty("tableGameStat.width.name", tm.getColumn(1).getWidth());
 		propConfig.setProperty("tableGameStat.width.attack", tm.getColumn(2).getWidth());
-		propConfig.setProperty("tableGameStat.width.apm", tm.getColumn(3).getWidth());
-		propConfig.setProperty("tableGameStat.width.lines", tm.getColumn(4).getWidth());
-		propConfig.setProperty("tableGameStat.width.lpm", tm.getColumn(5).getWidth());
-		propConfig.setProperty("tableGameStat.width.piece", tm.getColumn(6).getWidth());
-		propConfig.setProperty("tableGameStat.width.pps", tm.getColumn(7).getWidth());
-		propConfig.setProperty("tableGameStat.width.time", tm.getColumn(8).getWidth());
-		propConfig.setProperty("tableGameStat.width.ko", tm.getColumn(9).getWidth());
-		propConfig.setProperty("tableGameStat.width.wins", tm.getColumn(10).getWidth());
-		propConfig.setProperty("tableGameStat.width.games", tm.getColumn(11).getWidth());
+		propConfig.setProperty("tableGameStat.width.apl", tm.getColumn(3).getWidth());
+		propConfig.setProperty("tableGameStat.width.apm", tm.getColumn(4).getWidth());
+		propConfig.setProperty("tableGameStat.width.lines", tm.getColumn(5).getWidth());
+		propConfig.setProperty("tableGameStat.width.lpm", tm.getColumn(6).getWidth());
+		propConfig.setProperty("tableGameStat.width.piece", tm.getColumn(7).getWidth());
+		propConfig.setProperty("tableGameStat.width.pps", tm.getColumn(8).getWidth());
+		propConfig.setProperty("tableGameStat.width.time", tm.getColumn(9).getWidth());
+		propConfig.setProperty("tableGameStat.width.ko", tm.getColumn(10).getWidth());
+		propConfig.setProperty("tableGameStat.width.wins", tm.getColumn(11).getWidth());
+		propConfig.setProperty("tableGameStat.width.games", tm.getColumn(12).getWidth());
 
 		tm = tableGameStat1P.getColumnModel();
 		propConfig.setProperty("tableGameStat1P.width.description", tm.getColumn(0).getWidth());
@@ -3616,21 +3618,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// Game stats (Multiplayer)
 		if(message[0].equals("gstat")) {
-			String[] rowdata = new String[12];
+			String[] rowdata = new String[13];
 			int myRank = Integer.parseInt(message[4]);
 
 			rowdata[0] = Integer.toString(myRank);						// Rank
 			rowdata[1] = convTripCode(NetUtil.urlDecode(message[3]));	// Name
-			rowdata[2] = message[5];									//  Attack count
-			rowdata[3] = message[6];									// APM
-			rowdata[4] = message[7];									// Line count
-			rowdata[5] = message[8];									// LPM
-			rowdata[6] = message[9];									// Piece count
-			rowdata[7] = message[10];									// PPS
-			rowdata[8] = GeneralUtil.getTime(Integer.parseInt(message[11]));	//  Time
-			rowdata[9] = message[12];									// KO
-			rowdata[10] = message[13];									// Win
-			rowdata[11] = message[14];									// Games
+			rowdata[2] = message[5];									// Attack count
+			rowdata[3] = message[6];									// APL
+			rowdata[4] = message[7];									// APM
+			rowdata[5] = message[8];									// Line count
+			rowdata[6] = message[9];									// LPM
+			rowdata[7] = message[10];									// Piece count
+			rowdata[8] = message[11];									// PPS
+			rowdata[9] = GeneralUtil.getTime(Integer.parseInt(message[12]));	//  Time
+			rowdata[10] = message[13];									// KO
+			rowdata[11] = message[14];									// Win
+			rowdata[12] = message[15];									// Games
 
 			int insertPos = 0;
 			for(int i = 0; i < tablemodelGameStat.getRowCount(); i++) {

@@ -8,7 +8,7 @@ A falling block puzzle game using Java.
 This game needs Java Runtime Environment 1.5 or newer version to run. http://www.java.com/
 
 Windows:
-	Double-click "play_swing.bat", "play_slick.bat" or "play_sdl.bat".
+	Double-click "play_swing.bat", "play_slick.bat", "NullpoMino.exe" or "play_sdl.bat".
 
 	"play_swing.bat" starts Swing version of NullpoMino.
 		(Does not use any OS-dependent libraries. However, performance and sound quality are poor.
@@ -25,6 +25,7 @@ Windows:
 	"sequencer.bat" runs Sequence Viewer, which should be helpful for TASing. (Created by Zircean)
 	"musiclisteditor.bat" runs MusicListEditor, where you can configure which music file to use.
 	"netserver.bat" runs NetServer (ALPHA!), which is a server for netplay feature. More details later.
+	"netadmin.bat" runs NetAdmin, which can be used to manage your running NetServer.
 
 Linux:
 	First, open a X-terminal emulator. Next, navigate to the folder where the archive was extracted.
@@ -59,6 +60,10 @@ chmod +x musiclisteditor
 	To start NetServer:
 chmod +x netserver
 ./netserver
+
+	To start NetAdmin:
+chmod +x netadmin
+./netadmin
 
 	Note: You don't have to execute chmod command from 2nd time.
 
@@ -112,8 +117,8 @@ The game ends when the pile of blocks reaches to top of the field.
 	DOWN:Soft Drop (Drop current piece faster) ; Move cursor down
 	LEFT:Move left ; Decrease current option's value
 	RIGHT:Move right ; Increase current option's value
-	A:Rotate
-	B:Reverse Rotate
+	A:Rotate ; Confirm
+	B:Reverse Rotate ; Cancel
 	C:Rotate
 	D:Hold (Keep a piece to use later)
 	E:180-Degree Rotate
@@ -186,7 +191,6 @@ Depending on the game rule, the movement of pieces will be different.
 You can select which rule to use in the CONFIG>RULE SELECT screen.
 You can create your own rule by using Rule Editor.
 
-(Default Rule)   : The default rule. It's not good for most players so I recommend you to select other rule.
 AVALANCHE        : A rule used to play AVALANCHE type games.
 CLASSIC0         : A classic rule that many Japanese players played like a monkey. Best suitable for RETRO MANIA mode.
 CLASSIC0-68K     : CLASSIC0 with reverse rotation.
@@ -401,12 +405,13 @@ Supported file formats: .ogg .wav .xm .mod .aif .aiff
 [List of features]
 List of what you can do:
 	* Play against other players (up to 6 players can join)
-	* Create a new room
+	* Create a multiplayer room
+	* Create a single player room
 	* Join an already existing room
 	* Talk with other players
 	* Spectate games
 List of what you can't do & Known problems:
-	* Replay can't be saved
+	* Multiplayer Replay can't be saved
 	* No ID/Password system
 	* No password protected rooms
 	* Does not completely keep track your amount of wins
@@ -437,14 +442,24 @@ To add a new server to the list:
 harddrop.com
 
 To connect to a server:
-	1. Click a server that you want to connect from the listbox.
+	1. Enter your nickname and tripcode (optional)
+	   If you enter neither a name or a tripcode, then your name will be "noname".
+	   A tripcode is a hashed password by which a person can be identified by others.
+	   To use it, you can enter #tripcode (password followed by a sharp) to your nickname field.
+	   (Wikipedia article: http://en.wikipedia.org/wiki/Tripcode)
+	2. Click a server that you want to connect from the listbox.
 	   (Alternately, you can just double click the server name from the listbox to connect)
-	2. Click Connect button. You are currently in the lobby screen.
+	3. Click Connect button. You are currently in the lobby screen.
 
-To create a room:
+To create a multiplayer room:
 	1. Click "Create Room" button.
 	2. Enter the room name (Optional) and number of max players.
 	3. Click OK button if you are done.  You are currently in the room screen.
+
+To create a single player room:
+	1. Click "Create 1P Room" button.
+	2. Select a mode and a rule you want to use.
+	3. Click OK button if you are done.
 
 To enter an available room:
 	Simply double click the room name from the table.
@@ -466,12 +481,9 @@ java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [PO
 java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [PORT NUMBER]
 
 9. FAQ
-Q: All pieces are gray in color and it has no wallkicks.
-A: You are using "Default Rule" which has this behavior. Try switching to different one.
-
 Q: My Joystick/Gamepads doesn't work correctly in Slick version.
-A: Try changing "JOYSTICK METHOD" option (General Config screen) to LWGJL, then let's mess around "JOYSTICK SETTING" options.
-   Joystick/Gamepads support in Slick is always a problem. Only a few devices will work with Slick version.
+A: Try changing "JOYSTICK METHOD" option (JOYSTICK SETTING screen) to LWGJL, then let's mess around the rest of "JOYSTICK SETTING" options.
+   Please note Joystick/Gamepads support in Slick is not so good as SDL version.
 
 Q: Why NetPlay in SDL version eats too much RAM and crashes after few minutes?
 A: Try using Swing or Slick version. I know it's a bug, but I don't have any solution yet.
@@ -479,6 +491,10 @@ A: Try using Swing or Slick version. I know it's a bug, but I don't have any sol
 
 Q: I'm trying to run SDL version on 64bit systems but doesn't work.
 A: Give up! The SDL library for Java is already abandoned years ago, thus does not support 64bit at all.
+
+Q: My netplay rankings and single-player-records are not saved. Why?
+A: Your record will not be saved if you don't use tripcode in your name.
+   To add tripcode to your name, add a sharp (#) and password. (ex. entering "ABCDEF#nullpomino" to the nickname field will be "ABCDEF !gN6kJVofq6")
 
 10. Credits/Thanks
 
@@ -495,6 +511,9 @@ NullpoMino created by:
 	nightmareci
 	johnwchadwick (aka nmn)
 	prelude234 (aka awake)
+	sesalamander
+	teh_4matsy@lavabit.com (aka 4matsy)
+	delvalle.jacobo (aka clincher)
 
 	See also "People" section of Google Code project page:
 	http://code.google.com/p/nullpomino/people/list
@@ -503,7 +522,7 @@ This game used the following tools, libraries and materials.
 Thank you on this occasion.
 
 Tools:
-	Eclipse 3.5
+	Eclipse 3.6
 	http://www.eclipse.org/
 	PictBear SE
 	http://www20.pos.to/~sleipnir/
