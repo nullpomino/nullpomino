@@ -576,7 +576,7 @@ http://code.google.com/p/nullpomino/
 【更新履歴】
 +は新機能、-はバグ修正、*はその他の修正、#はその他メモを意味します。
 
-Version 7.4.0 (2010/10/29)
+Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #このバージョンから7.3.0のサーバーとの互換性は失われます。
 +Swing/Slick/SDL: より大きい横NEXT表示を追加しました。 (GENERAL OPTIONSの"SHOW NEXT ON SIDE"と"BIG SIDE NEXT"の両方を有効にしてください)
 +Swing/Slick/SDL: メニュー画面でゲーム中とは別のキー配置を使うようにしました。(賛否両論なのでご意見募集中)
@@ -595,7 +595,7 @@ Version 7.4.0 (2010/10/29)
  +1人プレイルーム (今のところLINE RACEとSCORE RACEモードのみ)
 #他の細かい変更内容はsvnlog7_4_0.txtにあります(英語ですが…)
 
-Version 7.3.0 (2010/08/09)
+Version 7.3.0 (2010/08/09) {r1-r276; Stable Release}
 #このバージョンから7.2.0のサーバーとの互換性は失われます。
 #このバージョン以前のリプレイはこのバージョンから見れません。
 +Swing/Slick/SDL: リプレイを保存するとき、replayフォルダが無い場合は自動的に作成するようにしました。

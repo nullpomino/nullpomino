@@ -1,0 +1,3019 @@
+------------------------------------------------------------------------
+r277 | Poochy.EXE | 2010-08-09 20:49:11 +0900 (OZ, 09 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+Fix bug in Avalanche Mode where failed Sprint games still get added to the leaderboard.
+------------------------------------------------------------------------
+r278 | Zircean | 2010-08-10 01:13:21 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateLoading.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+
+*Reverting GUI back to r272 for updating.
+------------------------------------------------------------------------
+r279 | w.kowaluk | 2010-08-10 16:05:30 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+-ez tspin setting not remembered fixed
+------------------------------------------------------------------------
+r280 | Poochy.EXE | 2010-08-10 19:11:56 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+
+GRADE MANIA 3: Add option to color-code section time display by REGRET (red) and COOL (green)
+------------------------------------------------------------------------
+r281 | Poochy.EXE | 2010-08-10 19:34:53 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/BGMStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/BackgroundStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Controller.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+   M /trunk/src/mu/nu/nullpo/game/component/ReplayData.java
+   M /trunk/src/mu/nu/nullpo/game/component/RuleOptions.java
+   M /trunk/src/mu/nu/nullpo/game/component/SpeedParam.java
+   M /trunk/src/mu/nu/nullpo/game/component/Statistics.java
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetObserverClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetUtil.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/AIPlayer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/TSpinAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GameMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/History4RollsRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/History6RollsRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/Randomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/ClassicPlusWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/ClassicWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/WallOnlyWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/Wallkick.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateChecker.java
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateCheckerListener.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/BaseStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/EffectObjectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NormalFontSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/ResourceHolderSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/SoundManagerSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickButtonSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickMainSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickTestSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ControllerManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/EffectObject.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NormalFont.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ResourceHolder.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/SoundManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickButton.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickMain.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickTest.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameTuningFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GeneralConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/KeyConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NormalFontSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/ResourceHolderSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/UpdateCheckFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/WaveEngine.java
+   M /trunk/src/mu/nu/nullpo/tool/musiclisteditor/MusicListEditor.java
+   M /trunk/src/mu/nu/nullpo/tool/ruleeditor/RuleEditor.java
+   M /trunk/src/mu/nu/nullpo/util/CustomProperties.java
+   M /trunk/src/mu/nu/nullpo/util/GeneralUtil.java
+   M /trunk/src/mu/nu/nullpo/util/ModeManager.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBotDefNoPre.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBotDefensive.java
+
+More comment translations with help from Replace All
+------------------------------------------------------------------------
+r282 | Poochy.EXE | 2010-08-10 19:59:18 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateChecker.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/UpdateCheckFrame.java
+
+Oops, my replace-alls hit some non-commented text by accident.
+------------------------------------------------------------------------
+r283 | Poochy.EXE | 2010-08-10 20:50:22 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+More Avalanche modes improvements: Add option to use Fever chain powers, add max chain and Zenkeshi bonus in Avalanche 1P Fever Marathon
+------------------------------------------------------------------------
+r284 | w.kowaluk | 2010-08-10 20:57:49 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagNoSZORandomizer.java
+
+-fixed broken BagNoSZORandomizer
+------------------------------------------------------------------------
+r285 | Poochy.EXE | 2010-08-10 21:25:22 +0900 (%I, 10 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+More cosmetics for Avalanche modes
+------------------------------------------------------------------------
+r286 | Zircean | 2010-08-11 04:07:50 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/MouseInputSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/MouseInput.java
+
+*Condensing variables in MouseInput and MouseInputSDL
+------------------------------------------------------------------------
+r287 | Poochy.EXE@gmail.com | 2010-08-11 13:12:59 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Fix Zenkeshi bonus calculation in Avalanche Fever Mode
+------------------------------------------------------------------------
+r288 | Poochy.EXE | 2010-08-11 13:45:01 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+Add level, statistics, and more accurate scoring algorithms to Avalanche 1P modes. Old replays should still be compatible, but will show the score under the new formulas.
+------------------------------------------------------------------------
+r289 | Poochy.EXE | 2010-08-11 13:48:20 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+Cosmetic bugfixes to Avalanche 1P modes
+------------------------------------------------------------------------
+r290 | Poochy.EXE | 2010-08-11 14:04:41 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/rule/Avalanche.rul
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Avalanche rule now properly spawns pieces above playfield, more cosmetics in Avalanche 1P Fever Marathon.
+------------------------------------------------------------------------
+r291 | w.kowaluk | 2010-08-11 14:11:37 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+
+-fix for b2b chunk
+------------------------------------------------------------------------
+r292 | Poochy.EXE | 2010-08-11 14:12:22 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+More cosmetics to Avalanche 1P modes, fix Zenkeshi adding two score bonuses each in Avalanche Mode
+------------------------------------------------------------------------
+r293 | w.kowaluk | 2010-08-11 19:30:22 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+
+-fixed value edit in sdl general settings
+------------------------------------------------------------------------
+r294 | w.kowaluk | 2010-08-11 19:37:37 +0900 (?., 11 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
+Server Status File (number of online users) as requested by Blink
+------------------------------------------------------------------------
+r295 | Poochy.EXE | 2010-08-12 00:13:49 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+New, more accurate Zenkeshi Bonus formulas for Avalanche 1P modes
+------------------------------------------------------------------------
+r296 | olivier.vidal1@gmail.com | 2010-08-12 05:08:21 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/list/ai.lst
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+
+reactivate ranks AI in ai.lst; quick fix for instant das bug (skip one frame every two frames in setcontrol so that das is not charged)
+------------------------------------------------------------------------
+r297 | Zircean | 2010-08-12 13:00:10 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagNoSZORandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/LimitedHistoryRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/Randomizer.java
+
+-Replicated r284 fix to other randomizers, made the SZO function more visible
+------------------------------------------------------------------------
+r298 | Poochy.EXE | 2010-08-12 16:10:20 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+
+Fix keyboard input in Slick replay menu.
+------------------------------------------------------------------------
+r299 | Poochy.EXE | 2010-08-12 16:38:42 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+
+Slick and SDL: Modify replay select screen to scroll instead of using pages.
+------------------------------------------------------------------------
+r300 | Poochy.EXE | 2010-08-12 17:10:42 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+
+Add scrolling menus for rule select and mode select, dummy out mouse support for now.
+------------------------------------------------------------------------
+r301 | Poochy.EXE | 2010-08-12 17:15:16 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+
+Dummy out mouse support at title screen, since transitioning from a screen with mouse support to one with dummied out mouse support causes autofire repetition.
+------------------------------------------------------------------------
+r302 | Poochy.EXE | 2010-08-12 17:38:20 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+
+Forgot to dummy out mouse code in SDL replay select menu.
+------------------------------------------------------------------------
+r303 | Poochy.EXE | 2010-08-12 17:51:56 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+
+SDL and Slick now create /ss/ directory if it doesn't already exist when trying to save a screenshot.
+------------------------------------------------------------------------
+r304 | Poochy.EXE | 2010-08-12 19:45:04 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/slick/SlickUtil.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+
+Slick menu work - add scrollbars, move some common menu-drawing code to a new class (SlickUtil).
+------------------------------------------------------------------------
+r305 | Poochy.EXE | 2010-08-12 20:32:33 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/SlickUtil.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+
+Add new mouse support with double-click system (inspired by Mahjong Fight Club).
+------------------------------------------------------------------------
+r306 | Poochy.EXE | 2010-08-12 21:50:06 +0900 (-O, 12 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/MouseInputSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/MouseInput.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+
+More mouse controls work
+------------------------------------------------------------------------
+r307 | Poochy.EXE | 2010-08-13 00:52:51 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuChooseState.java
+   A /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuScrollState.java
+   D /trunk/src/mu/nu/nullpo/gui/slick/SlickUtil.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+
+Slick menus revamp: Create new dummy menu states, so future changes don't need to be duplicated.
+------------------------------------------------------------------------
+r308 | Poochy.EXE | 2010-08-13 01:36:41 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/slick/MouseInput.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+
+Oops, accidentally deleted the error messages in StateConfigRuleSelect.
+------------------------------------------------------------------------
+r309 | Poochy.EXE | 2010-08-13 01:58:19 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+
+Mirror Slick changes to SDL.
+------------------------------------------------------------------------
+r310 | Poochy.EXE | 2010-08-13 02:00:24 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuChooseStateSDL.java
+   A /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuScrollStateSDL.java
+
+Oops, forgot to add the new classes.
+------------------------------------------------------------------------
+r311 | Poochy.EXE | 2010-08-13 02:02:27 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+
+Oops again, I didn't meed to commit the debug log messages I added in NullpoMinoSDL.java.
+------------------------------------------------------------------------
+r312 | Poochy.EXE | 2010-08-13 02:33:04 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuScrollStateSDL.java
+
+Finally got the scrollbar working in SDL.
+------------------------------------------------------------------------
+r313 | Poochy.EXE | 2010-08-13 03:08:26 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/MouseInputDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuScrollStateSDL.java
+
+Oops, forgot to add MouseInputDummy. Fix an @Override being out of place in DummyMenuChooseStateSDL.java, while I'm at it.
+------------------------------------------------------------------------
+r314 | Poochy.EXE | 2010-08-13 04:00:58 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuScrollStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuScrollState.java
+
+Add page up/down controls to scrollbar menus.
+------------------------------------------------------------------------
+r315 | Zircean | 2010-08-13 08:14:13 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/menu
+   A /trunk/src/mu/nu/nullpo/gui/menu/MenuItem.java
+   A /trunk/src/mu/nu/nullpo/gui/menu/NumericMenuItem.java
+   A /trunk/src/mu/nu/nullpo/gui/menu/ToggleMenuItem.java
+
+
+------------------------------------------------------------------------
+r316 | pbomqlu910963 | 2010-08-13 11:52:51 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuChooseState.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+
+-Slick: Removed bad @Override annotations
+------------------------------------------------------------------------
+r317 | pbomqlu910963 | 2010-08-13 14:08:02 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
++NetLobby/NetServer: Add view lobby while in the lobby
+------------------------------------------------------------------------
+r318 | pbomqlu910963 | 2010-08-13 14:34:26 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameManager.java
+
+*GameManager: Changed version to 7.4.0 because the recent changes to NetServer broke compatibility with 7.3.0 server.
+------------------------------------------------------------------------
+r319 | pbomqlu910963 | 2010-08-13 17:56:13 +0900 (<…, 13 8 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
+*Moved 2P field position 8 pixels to left. So the piece previews won't get cut off.
++Swing: Add automatic screen-shot folder creation to Swing version too.
+------------------------------------------------------------------------
+r320 | pbomqlu910963 | 2010-08-13 19:39:29 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+
+-NetVSBattleMode: Resets more variables on "netlobbyOnRoomJoin" because now you can move to another room without leaving the current room.
+------------------------------------------------------------------------
+r321 | w.kowaluk | 2010-08-13 19:43:09 +0900 (<…, 13 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
+some status file customization
+------------------------------------------------------------------------
+r322 | Poochy.EXE | 2010-08-14 00:28:32 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+
+Add preliminary item block support.
+------------------------------------------------------------------------
+r323 | Poochy.EXE | 2010-08-14 00:59:03 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+
+Move bonus/item block stuff from GameEngine to modes to allow for more flexibility with future item blocks. Also fixed SPF Mode putting the rainbow gem on the bottom, when it should be the top block. (This will break old SPF Mode replays.
+------------------------------------------------------------------------
+r324 | Poochy.EXE | 2010-08-14 00:59:29 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+
+Minor indentation fix
+------------------------------------------------------------------------
+r325 | Poochy.EXE | 2010-08-14 02:15:01 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+
+Add a bunch of item effects to Field. Still untested.
+------------------------------------------------------------------------
+r326 | Poochy.EXE | 2010-08-14 02:27:17 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+
+Add support for hard blocks in line clear mode.
+------------------------------------------------------------------------
+r327 | alight@gmail.com | 2010-08-14 03:23:51 +0900 ("y, 14 8 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+
+Correct garbage holes not being selected properly in garbage-per-attack mode.
+Initial support for "tank" mode in NetVSBattle.
+------------------------------------------------------------------------
+r328 | olivier.vidal1@gmail.com | 2010-08-14 05:50:42 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/Ranks.java
+
+Ranks AI - optimizations
+------------------------------------------------------------------------
+r329 | prelude234@gmail.com | 2010-08-14 12:58:28 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+
+Combo Race: fixed and added starting shapes, changed options menu to white out startshape when not using combo width of 4
+------------------------------------------------------------------------
+r330 | Zircean | 2010-08-14 16:54:43 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/GameKeyDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+
+*Abstracted GameKey classes to remove a bunch of redundant code
+------------------------------------------------------------------------
+r331 | Poochy.EXE | 2010-08-14 17:27:16 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Avalanche Fever Marathon: Cap level at 99.
+------------------------------------------------------------------------
+r332 | pbomqlu910963 | 2010-08-14 21:00:52 +0900 ("y, 14 8 2010) | 4 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GameMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   A /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyListener.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
++Add ALPHA version of online single player game.
+ Currently, only LINE RACE mode is supported, and is still very incomplete.
+ Click "Quick Start" button on lobby screen to play LINE RACE mode.
+
+------------------------------------------------------------------------
+r333 | olivier.vidal1@gmail.com | 2010-08-14 23:19:55 +0900 ("y, 14 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/Ranks.java
+
+Ranks AI - fixed a major bug in the exploration of possible moves (wasn't trying the right piece in the lower branches of the exploration tree)
+------------------------------------------------------------------------
+r334 | Poochy.EXE | 2010-08-15 04:06:00 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/list/wallkick.lst
+   M /trunk/config/rule/Avalanche.rul
+   A /trunk/config/rule/AvalancheClassic.rul
+   A /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/AvalancheClassicWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/AvalancheWallkick.java
+
+Add new Avalanche wallkicks from Fever and newer games. Old Avalanche rule is now Avalanche-Classic.
+------------------------------------------------------------------------
+r335 | Poochy.EXE | 2010-08-15 05:49:06 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Avalanche Fever Mode: Change default number of colors to 4.
+------------------------------------------------------------------------
+r336 | Poochy.EXE | 2010-08-15 05:49:42 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+A bunch of Avalanche Mode improvements.
+------------------------------------------------------------------------
+r337 | Poochy.EXE | 2010-08-15 07:22:01 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
+Add updateCursor method to DummyMode to reduce copy-and-paste code, in the process of adding a drawMenu method as well.
+------------------------------------------------------------------------
+r338 | olivier.vidal1@gmail.com | 2010-08-15 08:12:49 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/rule
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/Ranks.java
+
+Ranks AI - fixed another major bug in calculation of surface with added piece
+------------------------------------------------------------------------
+r339 | Poochy.EXE | 2010-08-15 09:08:13 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
+Change modes' renderSetting methods to use drawMenu.
+------------------------------------------------------------------------
+r340 | Poochy.EXE | 2010-08-15 10:34:41 +0900 ("£, 15 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+Fix some Fever bugs in Avalanche modes.
+------------------------------------------------------------------------
+r341 | pbomqlu910963 | 2010-08-15 23:11:35 +0900 ("£, 15 8 2010) | 4 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+*LineRaceMode: Add piece movement and next/hold display to netplay
+-NetLobbyFrame: Hide Join/Sit-out buttons in online single player rooms
+#TODO: Move some common networking codes to NetDummyMode
+
+------------------------------------------------------------------------
+r342 | Shrapnel.City | 2010-08-16 06:48:29 +0900 (OZ, 16 8 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java (from /trunk/src/net/twentysixfourteen/nullpomino/game/subsystem/mode/RetroMasteryMode.java:341)
+   D /trunk/src/net/twentysixfourteen/nullpomino/game/subsystem/mode/RetroMasteryMode.java
+
+Move RetroMastery into the main package. This commit leaves things slightly inconsistent; will be fixed in the next revision.
+------------------------------------------------------------------------
+r343 | Shrapnel.City | 2010-08-16 06:52:55 +0900 (OZ, 16 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/list/mode.lst
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+
+r342 part 2: Now working again.
+------------------------------------------------------------------------
+r344 | Shrapnel.City | 2010-08-16 06:56:56 +0900 (OZ, 16 8 2010) | 1 line
+Changed paths:
+   D /trunk/src/net/twentysixfourteen
+
+r342 part 3: Remove unneeded folder structure.
+------------------------------------------------------------------------
+r345 | Poochy.EXE | 2010-08-17 04:36:03 +0900 (%I, 17 8 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+More cosmetic fixes & improvements to Avalanche modes, implement increasing speed in Avalanche Fever Mode.
+#TODO: Make X's and Fever time limits display behind blocks instead of over them.
+------------------------------------------------------------------------
+r346 | olivier.vidal1@gmail.com | 2010-08-17 04:47:08 +0900 (%I, 17 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   A /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/Ranks.java
+
+Ranks AI - Tester Tool to test for numerous games, a few changes and comments on ranksAI.java
+------------------------------------------------------------------------
+r347 | Poochy.EXE | 2010-08-17 05:03:54 +0900 (%I, 17 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+Fix bug where Avalanche VS modes were using the VS Battle mode's hurry-up settings for configuration load/save, add Counter settings to Avalanche VS Dig Race mode.
+------------------------------------------------------------------------
+r348 | Poochy.EXE | 2010-08-17 05:09:18 +0900 (%I, 17 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+
+Fix Avalanche VS Dig Race and Avalanche VS Fever Marathon modes stalling for an extra second at the menu on replays.
+------------------------------------------------------------------------
+r349 | Zircean | 2010-08-18 08:07:44 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/ExpDistWeightRandomizer.java
+
+-Fixed a bug where ExpDistWeight sequences would usually start with S (~50% of the time).
+------------------------------------------------------------------------
+r350 | Zircean | 2010-08-18 08:12:32 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/ExpDistWeightRandomizer.java
+
+*Remove unneeded import from ExpDistWeight used for testing in r349
+------------------------------------------------------------------------
+r351 | Poochy.EXE | 2010-08-18 11:01:11 +0900 (?., 18 8 2010) | 5 lines
+Changed paths:
+   M /trunk/config/list/mode.lst
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   A /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+
+*New mode: Avalanche VS Bomb Battle
+*Add countdown attribute to Block, make SPF Mode use that instead of hard counter to track ojama counters
+*More block attributes can now be passed to Field.garbageDrop to be set on garbage blocks
+*Fix Avalanche VS Dig Race not saving ojama counter mode
+*Fix Avalanche VS Mode not saving minimum and maximum Fever times
+------------------------------------------------------------------------
+r352 | Poochy.EXE | 2010-08-18 11:04:27 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+
+Fix Avalanche VS Bomb Battle's menu page numbers.
+------------------------------------------------------------------------
+r353 | Poochy.EXE | 2010-08-18 11:16:24 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+
+Cosmetic tweaks to Physician modes' speed displays
+------------------------------------------------------------------------
+r354 | Poochy.EXE | 2010-08-18 12:23:59 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+
+Add new drop patterns to SPF Mode.
+------------------------------------------------------------------------
+r355 | Poochy.EXE | 2010-08-18 14:04:44 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+
+Fix a statc value in AvalancheVSBombBattleMode, whitespace modification in SPFMode.
+------------------------------------------------------------------------
+r356 | Poochy.EXE | 2010-08-18 15:01:15 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/list/mode.lst
+   A /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+
+Add Avalanche-SPF VS-Battle mode (working title, need ideas for a better name).
+------------------------------------------------------------------------
+r357 | w.kowaluk | 2010-08-18 19:50:27 +0900 (?., 18 8 2010) | 1 line
+Changed paths:
+   M /trunk/res/graphics/block.png
+   M /trunk/res/graphics/block_big.png
+   M /trunk/res/graphics/block_small.png
+
++new mino skins (Thanks 4matsy!)
+------------------------------------------------------------------------
+r358 | Zircean | 2010-08-19 10:29:27 +0900 (-O, 19 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/rule/StandardSuper3.rul
+
+*Changed StandardSuper3 rule to use one of the new skins. (Looks closer to what it should be.)
+------------------------------------------------------------------------
+r359 | Zircean | 2010-08-19 11:14:01 +0900 (-O, 19 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/DistanceWeightRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/ExpDistWeightRandomizer.java
+
+*Tweaked DistanceWeightRandomizer a little more.
+------------------------------------------------------------------------
+r360 | pbomqlu910963 | 2010-08-19 16:03:01 +0900 (-O, 19 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+
+-Swing: Fixed broken Retry/Quit keys
+------------------------------------------------------------------------
+r361 | pbomqlu910963 | 2010-08-19 16:22:17 +0900 (-O, 19 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+
+*LineRaceMode: The timer/stats of netplay watch mode now works better
+------------------------------------------------------------------------
+r362 | pbomqlu910963 | 2010-08-19 17:33:37 +0900 (-O, 19 8 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   A /trunk/config/list/netlobby_singlemode.lst
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
++NetLobby: Add mode-select screen of online single player game.
++NetDummyMode/LineRaceMode: Add number-of-players-display.
+
+------------------------------------------------------------------------
+r363 | Zircean | 2010-08-20 10:11:05 +0900 (<…, 20 8 2010) | 1 line
+Changed paths:
+   M /trunk/res/graphics/block.png
+   M /trunk/res/graphics/block_big.png
+   M /trunk/res/graphics/block_small.png
+
+*Updated blockskins to fix hues
+------------------------------------------------------------------------
+r364 | pbomqlu910963 | 2010-08-22 23:15:57 +0900 ("£, 22 8 2010) | 3 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerClient.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/ToggleMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuChooseStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuScrollStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+
+-Fix ugly-NPE-ignoring of netplay. Because of this fix, netlobbyOnRoomJoin is no longer called.
+-Removed unused imports.
+-Add Javadoc to SDL-menu-subroutines that throw SDLException, in order to avoid unneeded-throws warning.
+------------------------------------------------------------------------
+r365 | w.kowaluk | 2010-08-22 23:39:31 +0900 ("£, 22 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/tool/sequencer/Sequencer.java
+   M /trunk/src/mu/nu/nullpo/util/GeneralUtil.java
+   M /trunk/src/mu/nu/nullpo/util/ModeManager.java
+
+-fix some cast warnings
+------------------------------------------------------------------------
+r366 | Poochy.EXE | 2010-08-23 10:16:15 +0900 (OZ, 23 8 2010) | 3 lines
+Changed paths:
+   A /trunk/config/map/avalanche/Poochy7Endless.map
+   M /trunk/config/rule/Avalanche.rul
+   M /trunk/config/rule/AvalancheClassic.rul
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+* Fix Avalanche rules' wallkick settings.
+* Add slower-animated cascade gravity variant, similar to recent Puyo Puyo games.
+* Add my own mapset for Avalanche 1P Fever Marathon, based off 7 but with some modifications.
+------------------------------------------------------------------------
+r367 | Poochy.EXE | 2010-08-23 11:19:40 +0900 (OZ, 23 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+
+Add new slower falling animations as an option in Avalanche modes (besides Avalanche 1P Fever Marathon, where faster animations make the game slightly easier).
+------------------------------------------------------------------------
+r368 | Poochy.EXE | 2010-08-23 12:28:29 +0900 (OZ, 23 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/map/avalanche/Poochy7Endless.map
+   A /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+Fix an extra block in Poochy7 Fever maps, create Avalanche1PDummyMode as superclass for 1-player Avalanche modes, put common code from AvalancheMode and AvalancheFeverMode into Avalanche1PDummyMode.
+------------------------------------------------------------------------
+r369 | Poochy.EXE | 2010-08-23 15:07:59 +0900 (OZ, 23 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   A /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+Collapse common code in Avalanche VS modes into Avalanche VS Dummy Mode
+------------------------------------------------------------------------
+r370 | Poochy.EXE | 2010-08-23 15:48:05 +0900 (OZ, 23 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+
+More consolidation, fix some bugs introduced in previous consolidation. AvalancheVSSPFMode still needs work.
+------------------------------------------------------------------------
+r371 | Poochy.EXE | 2010-08-23 16:06:06 +0900 (OZ, 23 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+
+Consolidate AvalancheVSSPFMode into AvalancheVSDummyMode.
+------------------------------------------------------------------------
+r372 | Poochy.EXE | 2010-08-24 03:49:35 +0900 (%I, 24 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameManager.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
+Add option to show invisible blocks in replay mode, toggle with E button.
+------------------------------------------------------------------------
+r373 | Poochy.EXE | 2010-08-26 11:25:15 +0900 (-O, 26 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Statistics.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+
+Fix score/min integer overflow glitch, change Avalanche 1P modes to use engine.statistics.maxChain instead of its own redundant maxChain
+------------------------------------------------------------------------
+r374 | Poochy.EXE | 2010-08-26 12:43:44 +0900 (-O, 26 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+
+Add generic result-drawing utility method to DummyMode, revamp AvalancheVSDummyMode results screen.
+------------------------------------------------------------------------
+r375 | Poochy.EXE | 2010-08-26 14:58:11 +0900 (-O, 26 8 2010) | 3 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
+Add new methods for easy stat printing at results screen; changed modes to use the methods.
+
+I haven't had a chance to check every mode to make sure the layout of the results screens didn't get accidentally changed, but hopefully there should be no visual oddities.
+------------------------------------------------------------------------
+r376 | melthomw@att.net | 2010-08-27 02:14:55 +0900 (<…, 27 8 2010) | 2 lines
+Changed paths:
+   A /trunk/config/map/vsbattle/7.map
+   M /trunk/res/graphics/block.png
+   M /trunk/res/graphics/block_big.png
+   M /trunk/res/graphics/block_small.png
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/ResourceHolderSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ResourceHolder.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/ResourceHolderSwing.java
+
+- Special blocks have been combined into the main block skins, and can thus now be changed on a per-skin basis
+- Added 1 new skin and 7 new vs-battle maps
+------------------------------------------------------------------------
+r377 | Poochy.EXE | 2010-08-27 10:56:20 +0900 (<…, 27 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/map/avalanche/Poochy7Endless.map
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Tweaks with Poochy7 Avalanche Endless map.
+------------------------------------------------------------------------
+r378 | Poochy.EXE@gmail.com | 2010-08-27 17:25:28 +0900 (<…, 27 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Fix Avalanche Fever Mode ojama counter (broken when Avalanche1PDummyMode was added), add ojama rate as a variable in Avalanche1PDummyMode.
+------------------------------------------------------------------------
+r379 | Poochy.EXE | 2010-08-28 06:20:52 +0900 ("y, 28 8 2010) | 1 line
+Changed paths:
+   M /trunk/config/rule/Avalanche.rul
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+
+Tweaks to Avalanche ruleset, speed timings, and speed curve.
+------------------------------------------------------------------------
+r380 | Poochy.EXE | 2010-08-28 06:27:01 +0900 ("y, 28 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
+Fix VS-Battle and SPF modes' results screens (broken in r375)
+------------------------------------------------------------------------
+r381 | Poochy.EXE | 2010-08-28 06:45:43 +0900 ("y, 28 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
+Fix a couple more results screens that I broke in r375.
+------------------------------------------------------------------------
+r382 | Poochy.EXE | 2010-08-28 07:11:13 +0900 ("y, 28 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+
+Fix bugs with ojama clearing and turning into regular blocks in AvalancheVSSPFMode.
+------------------------------------------------------------------------
+r383 | Poochy.EXE | 2010-08-28 08:13:24 +0900 ("y, 28 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+
+Fix Avalanche VS modes always loading 4-color maps (introduced somewhere around r370), consolidate some renderLast code in Avalanche VS modes into AvalancheVSDummyMode.
+------------------------------------------------------------------------
+r384 | Poochy.EXE | 2010-08-28 08:33:54 +0900 ("y, 28 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+
+More renderLast code consolidation.
+------------------------------------------------------------------------
+r385 | kitaru2004 | 2010-08-31 14:37:23 +0900 (%I, 31 8 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+
++Changed NetVSBattleMode's "attack" message to send points earned from different categories (normal, b2b, spin, etc.) as separate values. (This cleans up b2b chunking significantly, and will lend itself better to certain features I have planned for the future.)
+------------------------------------------------------------------------
+r386 | Poochy.EXE | 2010-09-01 15:39:32 +0900 (?., 01 9 2010) | 5 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
+* Move some repeated code in renderers to EventReceiver
+* Add option for big display (2x size) alongside original 1/2x size mini display. (Known issue: Field background looks weird on 2x size in SDL)
+* Change "throwed" in SDL log messages to "thrown"
+* Avalanche VS Mode finally has Big Mode support!
+* Fix bug in Avalanche VS Mode where it fails to load the Fever map set and then crashes when entering Fever mode.
+------------------------------------------------------------------------
+r387 | olivier.vidal1@gmail.com | 2010-09-02 07:44:11 +0900 (-O, 02 9 2010) | 1 line
+Changed paths:
+   A /trunk/ranks15.bin
+   A /trunk/ranks30.bin
+   A /trunk/ranks5.bin
+   A /trunk/ranks5.zip
+   A /trunk/ranks_2.bin
+   A /trunk/ranks_float1.bin
+   A /trunk/ranksf1.bin
+   A /trunk/ranksscale.bin.bin
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksGenerator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/Ranks.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIteratorPart.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksResult.java
+
+ranks AI - bug fixes
+------------------------------------------------------------------------
+r388 | Poochy.EXE | 2010-09-02 15:00:22 +0900 (-O, 02 9 2010) | 1 line
+Changed paths:
+   D /trunk/ranks15.bin
+   D /trunk/ranks30.bin
+   D /trunk/ranks5.bin
+   D /trunk/ranks_2.bin
+   D /trunk/ranks_float1.bin
+   D /trunk/ranksf1.bin
+   D /trunk/ranksscale.bin.bin
+
+Remove unzipped ranks files - they're way too bloated, and I ended up giving up on trying to update because of them.
+------------------------------------------------------------------------
+r389 | Poochy.EXE | 2010-09-03 09:27:31 +0900 (<…, 03 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Add some debug features to AvalancheFeverMode.
+------------------------------------------------------------------------
+r390 | Poochy.EXE | 2010-09-03 09:33:47 +0900 (<…, 03 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+Remove a redundant variable in the debug code.
+------------------------------------------------------------------------
+r391 | olivier.vidal1@gmail.com | 2010-09-04 18:45:07 +0900 ("y, 04 9 2010) | 1 line
+Changed paths:
+   D /trunk/ranks5.zip
+
+remove ranks5.zip
+------------------------------------------------------------------------
+r392 | olivier.vidal1@gmail.com | 2010-09-04 19:03:34 +0900 ("y, 04 9 2010) | 1 line
+Changed paths:
+   M /trunk/res
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+
+ranks are put in res/ranksAI, added "res/ranksAI/*" to ignore list
+------------------------------------------------------------------------
+r393 | olivier.vidal1@gmail.com | 2010-09-04 22:51:46 +0900 ("y, 04 9 2010) | 5 lines
+Changed paths:
+   M /trunk/config/lang/airanksgenerator_default.properties
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksGenerator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+
+Changed the input file JFormattedTextField to a JComboBox that lists the res/ranksai directory.
+Added a config file for ranksAI, that you can configure with the AI Ranks tool, where the default ranks file and number of previews to consider, are stored
+Changed the RanksIterator class from a ProgressMonitor Extension to a JDialog extension. Dialog looks weird now :( but I dont really understand how Swing layouts work...
+
+
+------------------------------------------------------------------------
+r394 | olivier.vidal1@gmail.com | 2010-09-04 23:01:45 +0900 ("y, 04 9 2010) | 1 line
+Changed paths:
+   A /trunk/airanksgenerator.bat
+
+Added bat file to launch AI Generator Tool
+------------------------------------------------------------------------
+r395 | olivier.vidal1@gmail.com | 2010-09-04 23:22:22 +0900 ("y, 04 9 2010) | 1 line
+Changed paths:
+   A /trunk/airanks_readme_en.txt
+
+AI Ranks readme. I figured I would make a second readme file because most users will not care about ranksAI at all so it may confuse them, but you can merge it with main readme if you like.
+------------------------------------------------------------------------
+r396 | olivier.vidal1@gmail.com | 2010-09-04 23:34:37 +0900 ("y, 04 9 2010) | 1 line
+Changed paths:
+   M /trunk/airanks_readme_en.txt
+   M /trunk/readme_en.txt
+
+Changed some personal info on readme_en and added contact info to ranks readme
+------------------------------------------------------------------------
+r397 | olivier.vidal1@gmail.com | 2010-09-05 06:07:12 +0900 ("£, 05 9 2010) | 4 lines
+Changed paths:
+   M /trunk/config/lang/swing_default.properties
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/DummyAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/mu/nu/nullpo/util/GeneralUtil.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+
+AI Hint for Slick/SDL/Swing.
+Tested for Slick nad Swing. I can't  test it with SDL (SDL doesnt work with my java)
+It works for ranksAI and basicAI/tspinAI but not for PoochyBot, I couldnt figure out why.
+When the best move is too hold, no hint is displayed, so that the player knows that he has to hold.
+------------------------------------------------------------------------
+r398 | Poochy.EXE | 2010-09-06 19:43:39 +0900 (OZ, 06 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/DummyAI.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+
+Fix AI hints in SDL, some code indent/format fixes, move comments on variables from AI classes to DummyAI.
+------------------------------------------------------------------------
+r399 | Poochy.EXE | 2010-09-06 20:12:58 +0900 (OZ, 06 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/BGMStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/BackgroundStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Controller.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+   M /trunk/src/mu/nu/nullpo/game/component/ReplayData.java
+   M /trunk/src/mu/nu/nullpo/game/component/RuleOptions.java
+   M /trunk/src/mu/nu/nullpo/game/component/SpeedParam.java
+   M /trunk/src/mu/nu/nullpo/game/component/Statistics.java
+   M /trunk/src/mu/nu/nullpo/game/component/WallkickResult.java
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetObserverClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/AIPlayer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GameMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/BagRandomizerNoSZO.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/History4RollsRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/History6RollsRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/MemorylessRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/NintendoRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/Randomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/ClassicPlusWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/ClassicWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/PhysicianWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/StandardSymmetricWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/StandardWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/WallOnlyWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/Wallkick.java
+   M /trunk/src/mu/nu/nullpo/gui/GameKeyDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateChecker.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/EffectObjectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NormalFontSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/ResourceHolderSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/SoundManagerSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickButtonSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickMainSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickTestSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ControllerManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuChooseState.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/EffectObject.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NormalFont.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ResourceHolder.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/SoundManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickButton.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickMain.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickTest.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateLoading.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameTuningFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GeneralConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/KeyConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NormalFontSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/ResourceHolderSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/UpdateCheckFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/WaveEngine.java
+   M /trunk/src/mu/nu/nullpo/tool/musiclisteditor/MusicListEditor.java
+   M /trunk/src/mu/nu/nullpo/tool/ruleeditor/RuleEditor.java
+   M /trunk/src/mu/nu/nullpo/util/CustomProperties.java
+   M /trunk/src/mu/nu/nullpo/util/GeneralUtil.java
+   M /trunk/src/mu/nu/nullpo/util/ModeManager.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBotDefNoPre.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBotDefensive.java
+
+More comment translations.
+------------------------------------------------------------------------
+r400 | Poochy.EXE | 2010-09-06 20:49:22 +0900 (OZ, 06 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/com/centerkey/utils/BareBonesBrowserLaunch.java
+   M /trunk/src/mu/nu/nullpo/game/component/BGMStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/BackgroundStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Controller.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+   M /trunk/src/mu/nu/nullpo/game/component/ReplayData.java
+   M /trunk/src/mu/nu/nullpo/game/component/RuleOptions.java
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetObserverClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/AIPlayer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GameMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/BagRandomizerNoSZO.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/NintendoRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/AvalancheClassicWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/AvalancheWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/PhysicianWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/Wallkick.java
+   M /trunk/src/mu/nu/nullpo/gui/GameKeyDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/MouseInputDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/MenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/NumericMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateChecker.java
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateCheckerListener.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/BaseStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuChooseStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuScrollStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/MouseInputSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NormalFontSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/ResourceHolderSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/SoundManagerSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickButtonSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickMainSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigJoystickTestSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuChooseState.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuScrollState.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/MouseInput.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NormalFont.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ResourceHolder.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/SoundManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickButton.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickMain.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickTest.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateLoading.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameTuningFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GeneralConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/KeyConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NormalFontSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/ResourceHolderSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/UpdateCheckFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/WaveEngine.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksGenerator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/Ranks.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIteratorPart.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksResult.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/SurfaceComponent.java
+   M /trunk/src/mu/nu/nullpo/tool/musiclisteditor/MusicListEditor.java
+   M /trunk/src/mu/nu/nullpo/tool/ruleeditor/RuleEditor.java
+   M /trunk/src/mu/nu/nullpo/util/GeneralUtil.java
+   M /trunk/src/mu/nu/nullpo/util/ModeManager.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagBonusBagRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagBonusRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagMinusRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagMinusTwoRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagNoSZORandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/DistanceWeightRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/DoubleBagRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/ExpDistWeightRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/GameBoyRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/History4RollsRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/History6RollsRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/LimitedHistoryRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/LinearDistWeightRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/MemorylessRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/NineBagRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/NintendoRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/QuadraticDistWeightRandomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/Randomizer.java
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/StrictHistoryRandomizer.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBotDefNoPre.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBotDefensive.java
+
+Comment translations and whitespace modifications.
+------------------------------------------------------------------------
+r401 | Poochy.EXE | 2010-09-06 20:53:41 +0900 (OZ, 06 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/com/centerkey/utils/BareBonesBrowserLaunch.java
+
+Oops, forgot to exclude /src/com/centerkey/ from the automated whitespace-changing macros.
+------------------------------------------------------------------------
+r402 | Poochy.EXE | 2010-09-06 21:04:12 +0900 (OZ, 06 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/BGMStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/BackgroundStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+   M /trunk/src/mu/nu/nullpo/game/component/ReplayData.java
+   M /trunk/src/mu/nu/nullpo/game/component/RuleOptions.java
+   M /trunk/src/mu/nu/nullpo/game/component/SpeedParam.java
+   M /trunk/src/mu/nu/nullpo/game/component/Statistics.java
+   M /trunk/src/mu/nu/nullpo/game/component/WallkickResult.java
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetObserverClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/AIPlayer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/gui/GameKeyDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/SoundManagerSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/SoundManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/AISelectFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/WaveEngine.java
+   M /trunk/src/mu/nu/nullpo/tool/ruleeditor/RuleEditor.java
+   M /trunk/src/mu/nu/nullpo/util/CustomProperties.java
+   M /trunk/src/mu/nu/nullpo/util/GeneralUtil.java
+
+More comment translations
+------------------------------------------------------------------------
+r403 | Poochy.EXE | 2010-09-06 22:00:04 +0900 (OZ, 06 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+
+Add color to AI hints, fix bug in PoochyBot where it would use the hold piece even when the hold and next piece are the same.
+------------------------------------------------------------------------
+r404 | olivier.vidal1@gmail.com | 2010-09-07 05:53:12 +0900 (%I, 07 9 2010) | 2 lines
+Changed paths:
+   M /trunk/airanksgenerator.bat
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksGenerator.java
+
+ranksai - try pressing hold when no placement fits the surface.
+Some bug fixes in ranks generator
+------------------------------------------------------------------------
+r405 | Poochy.EXE@gmail.com | 2010-09-08 01:18:25 +0900 (?., 08 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksGenerator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksResult.java
+
+Remove unused imports in ranks stuff, comment out unused JFrame parent fields.
+------------------------------------------------------------------------
+r406 | olivier.vidal1@gmail.com | 2010-09-08 07:21:27 +0900 (?., 08 9 2010) | 1 line
+Changed paths:
+   M /trunk/config/lang/airanksgenerator_default.properties
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIteratorPart.java
+
+couple fixes in ranksgenerator
+------------------------------------------------------------------------
+r407 | olivier.vidal1@gmail.com | 2010-09-08 07:24:15 +0900 (?., 08 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+
+fix previous release
+------------------------------------------------------------------------
+r408 | olivier.vidal1@gmail.com | 2010-09-08 07:39:18 +0900 (?., 08 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+
+Hardware tuning for ranks computation
+------------------------------------------------------------------------
+r409 | pbomqlu910963 | 2010-09-08 15:32:27 +0900 (?., 08 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIterator.java
+
+-RanksIterator: Remove JRE1.5 incompatible @Override
+------------------------------------------------------------------------
+r410 | pbomqlu910963 | 2010-09-08 15:51:41 +0900 (?., 08 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+
+-Slick/SDL: Fix "Use background fade" option which was glitched
+------------------------------------------------------------------------
+r411 | olivier.vidal1@gmail.com | 2010-09-10 07:57:20 +0900 (<…, 10 9 2010) | 2 lines
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/xml
+   A /trunk/src/mu/nu/nullpo/gui/xml/Nullpomino.xml
+   A /trunk/src/mu/nu/nullpo/gui/xml/Nullpomino.xsd
+
+XML and XSD files for menu description
+
+------------------------------------------------------------------------
+r412 | olivier.vidal1@gmail.com | 2010-09-10 08:35:28 +0900 (<…, 10 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/xml/Nullpomino.xml
+   M /trunk/src/mu/nu/nullpo/gui/xml/Nullpomino.xsd
+
+FEw additions to XSD
+------------------------------------------------------------------------
+r413 | pbomqlu910963 | 2010-09-10 23:02:56 +0900 (<…, 10 9 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GameMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   A /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleStyleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   A /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleStyleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+
++Rule selector is now separated to 4 sections: TETROMINO, AVALANCHE, PHYSICIAN, and SPF. Now you don't have to select Avalanche rule again after playing Tetromino games.
++In order to add this function, I added "Game Style" related variables/constants to some classes.
+------------------------------------------------------------------------
+r414 | Poochy.EXE@gmail.com | 2010-09-11 06:59:31 +0900 ("y, 11 9 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+
+* Tweak PoochyBot's willingness to leave 2-deep valleys.
+* GRADE MANIA 3 results screen changes: Implement ST COOL/REGRET color display option, fix ROLL POINT appearing over LINE/MIN.
+------------------------------------------------------------------------
+r415 | w.kowaluk | 2010-09-11 20:08:02 +0900 ("y, 11 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/omegaboshi/nullpomino/game/subsystem/randomizer/BagNoSZORandomizer.java
+
+-BagNoSZORandomizer fix
+------------------------------------------------------------------------
+r416 | Poochy.EXE | 2010-09-12 02:39:11 +0900 ("£, 12 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/BackgroundStatus.java
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Controller.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+   M /trunk/src/mu/nu/nullpo/game/component/RuleOptions.java
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/BasicAI.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/Randomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/ClassicPlusWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/ClassicWallkick.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/wallkick/WallOnlyWallkick.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateChecker.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/EffectObjectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NormalFontSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ControllerManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/EffectObject.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NormalFont.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GeneralConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/KeyConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NormalFontSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/UpdateCheckFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/WaveEngine.java
+   M /trunk/src/mu/nu/nullpo/tool/ruleeditor/RuleEditor.java
+   M /trunk/src/mu/nu/nullpo/util/ModeManager.java
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+
+More comment translation work
+------------------------------------------------------------------------
+r417 | kitaru2004 | 2010-09-12 18:31:28 +0900 ("£, 12 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+
+*Combo sends were being added to the same points bucket as back-to-backs. They now go to the appropriate array index.
+------------------------------------------------------------------------
+r418 | prelude234@gmail.com | 2010-09-12 19:59:07 +0900 ("£, 12 9 2010) | 1 line
+Changed paths:
+   M /trunk/config/lang/netlobby_default.properties
+
+Changed lots of text for the netplay lobby.
+------------------------------------------------------------------------
+r419 | pbomqlu910963 | 2010-09-12 20:01:16 +0900 ("£, 12 9 2010) | 3 lines
+Changed paths:
+   A /trunk/config/etc/netserver_rulelist.lst
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+-NetPlay: Fix Map and Rule-lock features.
++NetPlay: Add server-side rule selection for future "rated" games. Currently it's only available for online single player modes.
+
+------------------------------------------------------------------------
+r420 | pbomqlu910963 | 2010-09-12 20:55:20 +0900 ("£, 12 9 2010) | 5 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleStyleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
+-NetPlay: Various fixes.
+ -NetServer: Send room's map-data before "roomjoinsuccess" message is sent.
+ -NetLobbyFrame/Swing/Slick/SDL: Correctly reset tabs and game screens when you click "Disconnect" button while in a room.
+ -NetLobbyFrame: Add correct labels to online 1P rule selector.
+-SDL: Forgot to add sound effect to rule style selection screen.
+------------------------------------------------------------------------
+r421 | Zircean | 2010-09-13 03:06:19 +0900 (OZ, 13 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
++NetServer: Added preliminary banlist support.
+------------------------------------------------------------------------
+r422 | Poochy.EXE@gmail.com | 2010-09-13 19:25:58 +0900 (OZ, 13 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   A /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardNaviSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   A /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardNavi.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+
+Slick/SDL: Add separate menu screen for navigation key settings.
+------------------------------------------------------------------------
+r423 | Zircean | 2010-09-14 16:05:05 +0900 (%I, 14 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   A /trunk/src/mu/nu/nullpo/game/net/NetServerBan.java
+
++Fleshing out banlist support a little more.
+------------------------------------------------------------------------
+r427 | Poochy.EXE@gmail.com | 2010-09-15 15:26:22 +0900 (?., 15 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/net/tetrisconcept/poochy/nullpomino/ai/PoochyBot.java
+
+Small PoochyBot bug fix regarding value of hold box piece ID.
+------------------------------------------------------------------------
+r429 | pbomqlu910963 | 2010-09-17 22:40:23 +0900 (<…, 17 9 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServerBan.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
++NetServer: Add rated multiplayer rooms (Still WIP. Rating system is same as Multrinet.)
++NetLobbyFrame: Add rated rule selector to multiplayer too.
+-NetServerBan: Fix most likely unintended switch-case fall-through.
+------------------------------------------------------------------------
+r430 | pbomqlu910963 | 2010-09-18 21:51:14 +0900 ("y, 18 9 2010) | 1 line
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
++NetServer: Now you can customize some of rating system via netserver.cfg
+------------------------------------------------------------------------
+r431 | pbomqlu910963 | 2010-09-19 23:40:29 +0900 ("£, 19 9 2010) | 4 lines
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetRoomInfo.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+
++NetServer/NetLobbyFrame: Add multiplayer leaderboard. Still WIP, but works.
++NetServer: Add an option to prevent same-IP-players change their rating. This is not enabled by default because rating system is still in development.
++NetLobbyFrame: Add "Rated" column to room list table. It displays "Yes" if the rating is enabled.
++SDL/Slick: Try to sort replay file list if the OS is not Windows. I'm not sure it works or not.
+------------------------------------------------------------------------
+r432 | Zircean | 2010-09-20 06:05:45 +0900 (OZ, 20 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
++Added a preliminary GUI to the NetServer.
+------------------------------------------------------------------------
+r433 | w.kowaluk | 2010-09-20 07:56:54 +0900 (OZ, 20 9 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+
+-simpler code for sorting
+-file sorting also for rules
+------------------------------------------------------------------------
+r435 | pbomqlu910963 | 2010-09-21 13:04:12 +0900 (%I, 21 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
+-NetServer: Bad @Override
+------------------------------------------------------------------------
+r436 | pbomqlu910963 | 2010-09-21 14:05:21 +0900 (%I, 21 9 2010) | 2 lines
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
++NetServer: Add an option to disable GUI
+*NetServer: Comment translated
+------------------------------------------------------------------------
+r437 | pbomqlu910963 | 2010-09-21 14:43:22 +0900 (%I, 21 9 2010) | 1 line
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+
++NetServer: Add preliminary room-setting-lock feature for ranked rooms. Currently, you have to edit netserver.cfg manually (No GUI yet) to change  ranked room settings.
+------------------------------------------------------------------------
+r438 | pbomqlu910963 | 2010-09-23 15:50:16 +0900 (-O, 23 9 2010) | 4 lines
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/config/etc/netserver_rulelist.lst
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
++NetServer: Add some sort of rule-specific room setting.
+ Edit netserver.cfg and netserver_rulelist.lst to edit settings. (Still no GUI)
++NetLobbyFrame: Add "View Room Detail" button to singleplayer rooms.
+
+------------------------------------------------------------------------
+r439 | pbomqlu910963 | 2010-09-23 23:39:35 +0900 (-O, 23 9 2010) | 2 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateReplaySelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateReplaySelect.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/RanksIteratorPart.java
+
++NetServer/NetLobbyFrame/LineRaceMode: Add end-of-game stats table to online single player modes.
+-StateReplaySelect/StateReplaySelectSDL/RanksIteratorPart: Remove unused imports.
+------------------------------------------------------------------------
+r440 | pbomqlu910963 | 2010-09-25 15:45:17 +0900 ("y, 25 9 2010) | 1 line
+Changed paths:
+   A /trunk/config/lang/modedesc_JP.properties
+   A /trunk/config/lang/modedesc_default.properties
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
++Swing/Slick/SDL: Add game mode description in mode select screen.
+------------------------------------------------------------------------
+r441 | pbomqlu910963 | 2010-09-25 15:56:33 +0900 ("y, 25 9 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+
+*Swing/Slick/SDL: Removed "set to default rule" function because the default (null) rule is glitchy and no one will use it.
+*Slick/SDL: Number-of-rules-display is now 21, instead of 20.
+------------------------------------------------------------------------
+r442 | pbomqlu910963 | 2010-09-25 17:13:25 +0900 ("y, 25 9 2010) | 1 line
+Changed paths:
+   A /trunk/NullpoUpdate.xml
+   M /trunk/src/mu/nu/nullpo/gui/net/UpdateChecker.java
+
+*UpdateChecker: Changed URL of NullpoUpdate.xml to our Google Code repository. I'm not sure whether or not Google allows this usage, though.
+------------------------------------------------------------------------
+r443 | pbomqlu910963 | 2010-09-26 14:20:41 +0900 ("£, 26 9 2010) | 5 lines
+Changed paths:
+   M /trunk/readme_en.txt
+   M /trunk/readme_jp.txt
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuChooseState.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   A /trunk/src/mu/nu/nullpo/gui/slick/JInputManager.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/ResourceHolder.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickMain.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardNavi.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+
++Slick: Add command-line option which will read keyboard input from OS by using JInput.
+ This option will allow Linux players to use SCIM in netplay chat.
+ Please read readme_en.txt carefully to learn how to use it. It's very tricky.
+-Slick/Swing: Reset keyboard input when losing focus. (Maybe fix Issue 22)
+-NetLobbyFrame: Fix a bug that multiplayer stats table doesn't appear.
+------------------------------------------------------------------------
+r444 | pbomqlu910963 | 2010-09-26 14:31:45 +0900 ("£, 26 9 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickButton.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickTest.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardNavi.java
+
+-Slick: Fix JInput keyboard input problem of Joystick screens.
++Slick: Add observer count display to Keyboard and Joystick setting screens.
+------------------------------------------------------------------------
+r445 | olivier.vidal1@gmail.com | 2010-09-27 01:24:37 +0900 (OZ, 27 9 2010) | 1 line
+Changed paths:
+   A /trunk/src/mu/nu/nullpo/gui/menu/AlphaMenuItem.java
+   A /trunk/src/mu/nu/nullpo/gui/menu/Menu.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/MenuItem.java
+   A /trunk/src/mu/nu/nullpo/gui/menu/MenuMenuItem.java
+   A /trunk/src/mu/nu/nullpo/gui/menu/NullpominoMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/NumericMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/ToggleMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/xml/Nullpomino.xsd
+
+adding a few gui items
+------------------------------------------------------------------------
+r446 | olivier.vidal1@gmail.com | 2010-09-27 03:42:10 +0900 (OZ, 27 9 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+
+Hold Support for ranksAI
+------------------------------------------------------------------------
+r447 | w.kowaluk | 2010-10-01 18:50:17 +0900 (<…, 01 10 2010) | 1 line
+Changed paths:
+   A /trunk/NullpoMino.exe
+   A /trunk/nullpomino_launcher
+   A /trunk/nullpomino_launcher/nullpo.ico
+   A /trunk/nullpomino_launcher/nullpomino.xml
+
+added launch4J (http://launch4j.sourceforge.net/index.html) launcher to address some user-friendliness concerns (http://harddrop.com/forums/index.php?showtopic=2744)
+------------------------------------------------------------------------
+r448 | kitaru2004 | 2010-10-01 22:00:33 +0900 (<…, 01 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+*Changed defaults of modes with configurable timings to use zero ARE, ARE Line, and Line Clear delay. (These are the typically desired settings, and I feel that bad defaults have encouraged poor .rul practices such as ignoring delays in every single mode.)
+------------------------------------------------------------------------
+r450 | w.kowaluk | 2010-10-02 09:50:39 +0900 ("y, 02 10 2010) | 1 line
+Changed paths:
+   M /trunk/NullpoMino.exe
+   M /trunk/nullpomino_launcher/nullpo.ico
+
+*laucher icon updated (more resolutions available)
+------------------------------------------------------------------------
+r451 | w.kowaluk | 2010-10-02 10:02:10 +0900 ("y, 02 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/slick_default.properties
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+
+* menu navigation consistency (mode setting menu and pause menu now use navigations keys), still WIP
+* you can use joystick in menu again
+
+------------------------------------------------------------------------
+r452 | pbomqlu910963 | 2010-10-02 22:14:07 +0900 ("y, 02 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+
+-RanksAI: Revert because Arrays.copyOf is not present on Java5
+------------------------------------------------------------------------
+r453 | pbomqlu910963 | 2010-10-03 00:45:17 +0900 ("£, 03 10 2010) | 7 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/GameKeyDummy.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/DummyMenuChooseStateSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigAISelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardNaviSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/DummyMenuChooseState.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigAISelect.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardNavi.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+
+*Replaced navigation key system to completely NEW one because recent changes broke Swing and SDL.
+ #This navigation key system is, well, just the "alternate key mappings" for all menus. I think it's simpler but bigger than old one.
+ #Navigation exclusive keys are no longer present.
+ #Game mode setting menus and Pause screen menus will use navigation keys.
+ +You can set all buttons (C,D,E,F,etc) so there is no overlap problems.
+ -Fixed SDL and Swing.
+ #TODO: Add navigation key settings to Swing.
+------------------------------------------------------------------------
+r454 | w.kowaluk | 2010-10-03 12:32:44 +0900 ("£, 03 10 2010) | 1 line
+Changed paths:
+   M /trunk/config/rule/StandardHoldNext.rul
+   M /trunk/config/rule/StandardPlus.rul
+   M /trunk/config/rule/StandardZero.rul
+
+* StandardPlus.rul, StandardZero.rul and StandardHoldNext.rul don't ignore line clear delay anymore
+------------------------------------------------------------------------
+r455 | kitaru2004 | 2010-10-03 12:51:14 +0900 ("£, 03 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
++Reduced garbage tables is the current default in FFA multiplayer.
+*Fixed setting default multiplayer DAS to 12.
+------------------------------------------------------------------------
+r456 | pbomqlu910963 | 2010-10-04 22:24:43 +0900 (OZ, 04 10 2010) | 5 lines
+Changed paths:
+   M /trunk/config/lang/sdl_JP.properties
+   M /trunk/config/lang/sdl_default.properties
+   M /trunk/config/lang/slick_JP.properties
+   M /trunk/config/lang/slick_default.properties
+   M /trunk/config/lang/swing_JP.properties
+   M /trunk/config/lang/swing_default.properties
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   A /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardResetSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigMainMenuSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+   A /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardReset.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigMainMenu.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateLoading.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameTuningFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/KeyConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
+*Swing/Slick/SDL: First-setup screens are no longer present because it will scare people a lot.
+*Swing/Slick/SDL: Changed default keyboard mappings to Blockbox style.
++Swing/Slick/SDL: You can restore default keyboard mappings from the config menu.
++Swing: Fully implemented navigation keys.
+*Default value of "A Button Rotate" setting is now LEFT, instead of AUTO.
+------------------------------------------------------------------------
+r457 | pbomqlu910963 | 2010-10-05 00:47:05 +0900 (%I, 05 10 2010) | 1 line
+Changed paths:
+   M /trunk/config/lang/ruleeditor_JP.properties
+   M /trunk/config/lang/ruleeditor_default.properties
+   M /trunk/config/rule/Avalanche.rul
+   M /trunk/config/rule/AvalancheClassic.rul
+   M /trunk/config/rule/Physician.rul
+   M /trunk/config/rule/SPF.rul
+   M /trunk/src/mu/nu/nullpo/game/component/RuleOptions.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+   M /trunk/src/mu/nu/nullpo/tool/ruleeditor/RuleEditor.java
+
++Add "Game style" variable in rule data. Now Avalanche/Physician/SPF rules will not appear in Tetromino rule selector.
+------------------------------------------------------------------------
+r459 | w.kowaluk | 2010-10-05 07:47:42 +0900 (%I, 05 10 2010) | 2 lines
+Changed paths:
+   M /trunk/netserver
+   M /trunk/netserver.bat
+
+* port override for netserver launch scripts
+
+------------------------------------------------------------------------
+r460 | pbomqlu910963 | 2010-10-06 00:49:09 +0900 (?., 06 10 2010) | 2 lines
+Changed paths:
+   A /trunk/config/list/global_defaultrule.properties
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigRuleSelectSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigRuleSelect.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
++Swing/Slick/SDL: Set default rule on first run (specified in global_defaultrule.properties)
++Slick/SDL: You can toggle rule filename display by pressing D button on rule selector. (Not available yet in Swing)
+------------------------------------------------------------------------
+r461 | pbomqlu910963 | 2010-10-06 14:11:46 +0900 (?., 06 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/swing/RuleSelectFrame.java
+
++Swing: Re-added filename display in rule selector
+------------------------------------------------------------------------
+r462 | pbomqlu910963 | 2010-10-06 14:18:56 +0900 (?., 06 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+
+-RanksAI: Re-commited r446 with repaired JRE5 compatibility
+------------------------------------------------------------------------
+r463 | pbomqlu910963 | 2010-10-06 14:24:44 +0900 (?., 06 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ComboRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PracticeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ToolVSMapEditMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/UltraMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/AlphaMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/Menu.java
+
+-Removed lots of unused imports.
+-AlphaMenuItem: Add @SuppressWarnings for raw Vector.
+------------------------------------------------------------------------
+r464 | pbomqlu910963 | 2010-10-06 16:46:02 +0900 (?., 06 10 2010) | 2 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
++NetLobbyFrame: Added Preset feature in Create Room screen.
++NetServer: When 2 or more players have same ratings, leaderboard will show all of those players as same rank.
+------------------------------------------------------------------------
+r465 | prelude234@gmail.com | 2010-10-06 22:33:34 +0900 (?., 06 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+-NetLobbyFrame: changed default garbage percent from 100 to 90
+------------------------------------------------------------------------
+r466 | pbomqlu910963 | 2010-10-07 16:02:41 +0900 (-O, 07 10 2010) | 1 line
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   A /trunk/config/lang/netadmin_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   A /trunk/src/mu/nu/nullpo/tool/netadmin
+   A /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+   A /trunk/src/net/clarenceho
+   A /trunk/src/net/clarenceho/crypto
+   A /trunk/src/net/clarenceho/crypto/RC4.java
+
++Added "NetAdmin", the administrator tool of NetServer. Very incomplete. Only GUI and few codes are available.
+------------------------------------------------------------------------
+r467 | kitaru2004 | 2010-10-08 01:11:04 +0900 (<…, 08 10 2010) | 12 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Block.java
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+
++Block: Added BLOCK_ATTRIBUTE_LAST_COMMIT. Blocks with this attribute were part of the last placement or cascade.
++Field/Piece: Added code to set/reset BLOCK_ATTRIBUTE_LAST_COMMIT as necessary in placeToField() and cascade functions.
+*Piece: Rewrote placeToField() to eliminate the need for copy-paste function placeToFieldBig().
++Field: Added ArrayList<Block[]> lastLinesCleared field and appropriate code to update it in checkLine().
+*Field: Refactored block_field[][] and block_hidden[][] to (row, column) instead of (column, row) -- block_*[y][x]. (Reasoning: It is much more useful to be able to grab a reference to a row with block_*[y] than it was to obtain a reference to a column with block_*[x].)
++Field: Added functions getRow() and getRowE() that return a reference to a given row in the field. These functions handles the block_field[]/block_hidden[] split for the get/set Block functions rather than sport copy-paste code in all of them.
+*Field: Fixed (I think) the unfinished flipVertical() function. (It was written reference block_*[] even though it used to return a column, so the above refactor helped fix this. I also changed an erroneous decrement to an increment.)
+*Field: Did a big refactor of get/set functions for Blocks in the Field. 11 functions with related tasks were copy-pasted and modified, so I ultimately wrapped them all around just one base implementation -- getBlockE().
++Field: In anticipation of TGM garbage etc., I wrote stringToRow() and rowToString() functions.
+*Field: I wrapped the old fieldToString() and stringToField() functions around the new row-based functions.
++Block: I wrote character<->block color functions for use in row<->string functions to trim down copy-pasting and delegate the task to a more appropriate class.
++Field: Wrote preliminary getLastLinesAsTGMAttack() for future TGM/strategic garbage support.
+------------------------------------------------------------------------
+r469 | pbomqlu910963 | 2010-10-09 01:01:51 +0900 ("y, 09 10 2010) | 1 line
+Changed paths:
+   M /trunk/config/lang/netadmin_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++NetAdmin: "Users" tab is now working. You can kick the IP by double clicking it. (No real ban yet)
+------------------------------------------------------------------------
+r470 | Zircean | 2010-10-10 06:15:12 +0900 ("£, 10 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
+-Removed the NetServer GUI because it has been superseded by NetAdmin.
++Added popup menu to the users table of the NetAdmin tool.
+------------------------------------------------------------------------
+r471 | Zircean | 2010-10-10 06:57:20 +0900 ("£, 10 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServerBan.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++Added Ban option to the user popup menu.
+*More cleanup in NetServer.
+------------------------------------------------------------------------
+r472 | olivier.vidal1@gmail.com | 2010-10-10 21:26:02 +0900 ("£, 10 10 2010) | 2 lines
+Changed paths:
+   M /trunk/config/lang/airanksgenerator_default.properties
+   M /trunk/src/mu/nu/nullpo/game/subsystem/ai/RanksAI.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksGenerator.java
+   M /trunk/src/mu/nu/nullpo/tool/airanksgenerator/AIRanksTester.java
+
+*ranksAI - bug correction (reset bestHold to false if forced to make a tetris)
+*allow Hold configuration in Ranks Tool
+------------------------------------------------------------------------
+r473 | pbomqlu910963 | 2010-10-10 23:10:16 +0900 ("£, 10 10 2010) | 7 lines
+Changed paths:
+   M /trunk/config/lang/netadmin_default.properties
+   A /trunk/config/lang/netadmin_help_default.txt
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServerBan.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
+*NetAdmin/NetServer: Various updates.
+ +NetAdmin: Added console commands. Type "help" for list of commands.
+ +NetAdmin: Settings are now saved to a file.
+ +NetServer: Ban list is now saved to a file.
+ -NetAdmin/NetServer: Fixed re-login problem (Issue 26)
+ -NetServer: Bans are possibly working now (Issue 27)
+
+------------------------------------------------------------------------
+r474 | pbomqlu910963 | 2010-10-11 00:57:58 +0900 (OZ, 11 10 2010) | 2 lines
+Changed paths:
+   M /trunk/config/lang/netadmin_default.properties
+   M /trunk/config/lang/netadmin_help_default.txt
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++NetAdmin/NetServer: Implemented Leaderboard admin tools. Now you can delete a record from the leaderboard.
++NetAdmin/NetLobbyFrame: Added "Copy" context menu in some table components.
+------------------------------------------------------------------------
+r475 | Zircean | 2010-10-11 08:34:10 +0900 (OZ, 11 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+
+*Fixed the additive soft drop bug. However, there will be a separate rule option for it soon.
+------------------------------------------------------------------------
+r476 | pbomqlu910963 | 2010-10-11 13:16:34 +0900 (OZ, 11 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardNaviSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+
++SDL: Keyboard settings screen now shows proper key names
+------------------------------------------------------------------------
+r477 | pbomqlu910963 | 2010-10-11 13:53:12 +0900 (OZ, 11 10 2010) | 2 lines
+Changed paths:
+   M /trunk/config/lang/netadmin_default.properties
+   M /trunk/config/lang/netadmin_help_default.txt
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   A /trunk/src/mu/nu/nullpo/game/net/NetServerDisconnectRequestedException.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++NetAdmin/NetServer: "shutdown" command will now request self-shutdown to the server.
++NetAdmin/NetServer/NetLobbyFrame: Added admin announcement. Use "announce" command to send an announcement message to all players.
+------------------------------------------------------------------------
+r478 | pbomqlu910963 | 2010-10-11 14:42:37 +0900 (OZ, 11 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/airanksgenerator_JP.properties
+   A /trunk/config/lang/netadmin_JP.properties
+   A /trunk/config/lang/netadmin_help_JP.txt
+   M /trunk/config/lang/swing_JP.properties
+   A /trunk/netadmin
+   A /trunk/netadmin.bat
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++NetAdmin: Added an executable batch file and a shell script
+*Various JP language file updates
+
+------------------------------------------------------------------------
+r479 | pbomqlu910963 | 2010-10-11 19:46:07 +0900 (OZ, 11 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboard.java
+
++SDL/Slick: Now you can reconfigure each button individually in keyboard settings screen.
+-SDL: Fixed a big bug that keyboard settings being not saved (!)
+------------------------------------------------------------------------
+r480 | pbomqlu910963 | 2010-10-11 20:43:53 +0900 (OZ, 11 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+-NetPlay: Game will not start until 2 or more players are ready. (Fix Issue 23)
+*NetVSBattleMode: You can't turn on Ready until someone enters the room.
+*NetVSBattleMode: Now you can exit practice during Ready->Go status.
+------------------------------------------------------------------------
+r481 | pbomqlu910963 | 2010-10-11 21:13:00 +0900 (OZ, 11 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/netadmin_JP.properties
+   M /trunk/config/lang/netadmin_help_JP.txt
+   M /trunk/config/lang/netadmin_help_default.txt
+   M /trunk/src/mu/nu/nullpo/game/net/NetBaseClient.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
+-NetServer: Fixed a bug that ban list didn't get saved (Probably fixes issue 27)
++NetServer/NetAdmin: Added 'serverip' and 'version' commands.
+
+------------------------------------------------------------------------
+r482 | pbomqlu910963 | 2010-10-11 23:32:38 +0900 (OZ, 11 10 2010) | 2 lines
+Changed paths:
+   A /trunk/config/list/recommended_rules.lst
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectModeSDL.java
+   A /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectRuleFromListSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NullpoMinoSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectMode.java
+   A /trunk/src/mu/nu/nullpo/gui/slick/StateSelectRuleFromList.java
+
++SDL/Slick: Added an new rule select screen after mode select. This screen displays the list of recommended rules. For example, if you select Gem Mania, you'll see Classic3 and Standard-Hard.
+-GameEngine: New soft drop code added in r475 is currently disabled because it disabled entire soft drop feature in various modes.
+------------------------------------------------------------------------
+r484 | kitaru2004 | 2010-10-12 02:01:31 +0900 (%I, 12 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+
+*SpeedManiaMode: Fixed lv. 500 torikan default. (13200fr -> 12300fr)
+------------------------------------------------------------------------
+r486 | pbomqlu910963 | 2010-10-12 12:57:34 +0900 (%I, 12 10 2010) | 1 line
+Changed paths:
+   M /trunk/config/lang/swing_JP.properties
+   M /trunk/config/lang/swing_default.properties
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateSelectRuleFromListSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateSelectRuleFromList.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
++Swing: Added recommended rule selector.
+------------------------------------------------------------------------
+r487 | pbomqlu910963 | 2010-10-12 13:16:39 +0900 (%I, 12 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+
+*SpeedMania2: Set default Torikan time to 2:28.00 if the player is using Classic-type rule.
+------------------------------------------------------------------------
+r488 | kitaru2004 | 2010-10-12 15:46:16 +0900 (%I, 12 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameTuningFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+
+*Field: Fixed getBlockEmpty() bug that was breaking AI.
++Tuning: Added option to reverse the actions of up/down buttons in-game without reconfiguring controls or rule files. (Slick/SDL/Swing)
+------------------------------------------------------------------------
+r490 | pbomqlu910963 | 2010-10-13 15:24:22 +0900 (?., 13 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/slick_JP.properties
+   M /trunk/config/lang/slick_default.properties
+   A /trunk/res/graphics/font_big.png
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NormalFontSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/ResourceHolderSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/NormalFont.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigJoystickMain.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
++Slick: Added BIG side preview option. Still WIP. It will cause cutoff of score display in many modes.
++LineRaceMode: Added a big line counter below the playfield.
+*Slick: Moved "Joystick Method" to joystick settings screen in order to make room for new big side preview option.
+------------------------------------------------------------------------
+r491 | pbomqlu910963 | 2010-10-13 16:32:56 +0900 (?., 13 10 2010) | 2 lines
+Changed paths:
+   M /trunk/config/lang/sdl_JP.properties
+   M /trunk/config/lang/sdl_default.properties
+   M /trunk/config/lang/swing_JP.properties
+   M /trunk/config/lang/swing_default.properties
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GeneralConfigFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
++Swing/SDL: Added big-side-preview option to these versions too.
+-Swing/Slick/SDL: Fixed the position of speed bar (used by Mania modes) in big-side-preview.
+------------------------------------------------------------------------
+r494 | pbomqlu910963 | 2010-10-14 15:59:29 +0900 (-O, 14 10 2010) | 4 lines
+Changed paths:
+   M /trunk/res/graphics/fieldbg.png
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/component/Piece.java
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ExtremeMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/MarathonPlusMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMarathonMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/RetroMasteryMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SquareMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TechnicianMode.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
+*Use smaller leaderboard display when big-side-preview is used.
+ #Most Tetromino games are done, but others are not.
+ #Section time display is still cutoff.
++Avalanche 1P modes: Added "BIG DISP" option which will use a bigger field display.
+------------------------------------------------------------------------
+r495 | pbomqlu910963 | 2010-10-14 17:23:08 +0900 (-O, 14 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/Avalanche1PDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+
++GameEngine/Avalanche: Added Quick Turn (WIP)
+------------------------------------------------------------------------
+r496 | pbomqlu910963 | 2010-10-14 23:04:23 +0900 (-O, 14 10 2010) | 5 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
++VSBattleMode: Added "DISP STATS" option which you can turn on/off detailed stats display during the game.
++VSBattleMode: Added completely new HUD for big-side-preview.
++VSBattleMode: Added Win counter.
++AvalancheVSMode/AvalancheVSFeverMode: Added "BIG DISP" option to these modes too.
++AvalancheVSMode: Replaced HUD completely. (This is still incomplete)
+------------------------------------------------------------------------
+r497 | Poochy.EXE@gmail.com | 2010-10-15 13:08:23 +0900 (<…, 15 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+
+Fix default hard ojama setting in AvalancheVSBombBattleMode
+------------------------------------------------------------------------
+r498 | Poochy.EXE@gmail.com | 2010-10-15 13:13:24 +0900 (<…, 15 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+
+AvalancheFeverMode: Fix menu statc numbers
+------------------------------------------------------------------------
+r499 | pbomqlu910963 | 2010-10-15 20:43:20 +0900 (<…, 15 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/list/recommended_rules.lst
+   M /trunk/src/mu/nu/nullpo/game/event/EventReceiver.java
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSBombBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDigRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSFeverMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/AvalancheVSSPFMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhysicianVSMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SPFMode.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+
+*AvalancheVSMode: Updated HUD. (Mostly Fever Timer)
++Added "BIG DISP" option to all Avalanche VS modes and SPF mode.
+
+------------------------------------------------------------------------
+r500 | pbomqlu910963 | 2010-10-15 22:03:48 +0900 (<…, 15 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/netadmin_JP.properties
+   M /trunk/config/lang/netadmin_default.properties
+   M /trunk/config/lang/netadmin_help_JP.txt
+   M /trunk/config/lang/netadmin_help_default.txt
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++NetAdmin/NetServer: Added forced room deletion. (Command: roomdelete or rdel)
++NetAdmin: Added room list tab. You can also delete a room from here.
+
+------------------------------------------------------------------------
+r501 | pbomqlu910963 | 2010-10-15 23:33:49 +0900 (<…, 15 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/lang/sdl_JP.properties
+   M /trunk/config/lang/sdl_default.properties
+   M /trunk/config/lang/slick_JP.properties
+   M /trunk/config/lang/slick_default.properties
+   M /trunk/src/mu/nu/nullpo/gui/sdl/RendererSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/SoundManagerSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGeneralSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/RendererSlick.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGeneral.java
+
++SDL/Slick: Added "LINE EFFECT SPEED" option that you can change the speed of line-clear effect. It can be used to tone-down the effect.
+*SDL/Slick: Divided General Config screen to three pages: Basic, Advanced, and version specific page (SDL or SLICK).
++SDL: Restart is no longer required for the SE-Volume option.
+------------------------------------------------------------------------
+r502 | pbomqlu910963 | 2010-10-16 00:39:51 +0900 ("y, 16 10 2010) | 4 lines
+Changed paths:
+   M /trunk/config/lang/swing_JP.properties
+   M /trunk/config/lang/swing_default.properties
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GeneralConfigFrame.java
+
++Swing: Added "Perfect FPS" and "Draw all frames" options.
+ "Perfect FPS" is same as Slick.
+ Disabling "Draw all frames" will stop calling Toolkit.getDefaultToolkit().sync() at the end of each frame.
+ This can increase frame rate, but some frames may be skipped.
+------------------------------------------------------------------------
+r504 | pbomqlu910963 | 2010-10-20 19:54:17 +0900 (?., 20 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/NullpoMinoSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigGameTuningSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateNetGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateTitleSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigGameTuning.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateLoading.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateNetGame.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateTitle.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameTuningFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/NullpoMinoSwing.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/UpdateCheckFrame.java
+
+*Apply "The A button is left rotation by default" setting to new players only. So it doesn't change the existing players' setting.
+*Changed Update Checker's interval to 20 instead of 5. Since NullpoMino doesn't update so often.
+------------------------------------------------------------------------
+r505 | Poochy.EXE@gmail.com | 2010-10-23 15:15:33 +0900 ("y, 23 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/AlphaMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+Fix some type safety compiler warnings.
+------------------------------------------------------------------------
+r506 | Poochy.EXE | 2010-10-24 07:36:53 +0900 ("£, 24 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+
+Correct behavior of Field.delEven()
+------------------------------------------------------------------------
+r507 | pbomqlu910963 | 2010-10-24 16:04:14 +0900 ("£, 24 10 2010) | 4 lines
+Changed paths:
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/config/list/netlobby_singlemode.lst
+   M /trunk/src/mu/nu/nullpo/game/component/Statistics.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetPlayerInfo.java
+   A /trunk/src/mu/nu/nullpo/game/net/NetSPPersonalBest.java
+   A /trunk/src/mu/nu/nullpo/game/net/NetSPRanking.java
+   A /trunk/src/mu/nu/nullpo/game/net/NetSPRecord.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/DummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/RendererSwing.java
+
++Added Online Single Player Leaderboard. (Still WIP)
+ Push D button on NetPlay Line Race setup screen to see the leaderboard.
+ Push Up/Down button to move the cursor in leaderboard screen.
+ Push A button on the leaderboard screen to download it as netreplay.rep.
+------------------------------------------------------------------------
+r508 | pbomqlu910963 | 2010-10-25 01:00:02 +0900 (OZ, 25 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardNaviSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardNavi.java
+
+-SDL/Slick: Removed useless "Default" option from keyboard navigation settings screen. Also removed firstSetupMode leftovers.
+#TODO: Implement less messy navigation keys? Or maybe just remove everything of navigation keys?
+------------------------------------------------------------------------
+r509 | pbomqlu910963 | 2010-10-26 01:06:31 +0900 (%I, 26 10 2010) | 1 line
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/FinalMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GarbageManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GemManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeMania3Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/GradeManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/PhantomManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreAttackMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedMania2Mode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/SpeedManiaMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/TimeAttackMode.java
+
+-Fixed the cut-off of section time display with bigger-side-preview option.
+------------------------------------------------------------------------
+r510 | pbomqlu910963 | 2010-10-26 22:22:19 +0900 (%I, 26 10 2010) | 3 lines
+Changed paths:
+   M /trunk/config/list/netlobby_singlemode.lst
+   M /trunk/src/mu/nu/nullpo/game/net/NetSPRecord.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+
++ScoreRaceMode: Added NetPlay support.
++ScoreRaceMode: Added Score/Line statistic to the leaderboard.
+
+------------------------------------------------------------------------
+r511 | pbomqlu910963 | 2010-10-26 22:44:04 +0900 (%I, 26 10 2010) | 2 lines
+Changed paths:
+   M /trunk/config/etc/netserver.cfg
+   M /trunk/config/lang/airanksgenerator_JP.properties
+
++netserver.cfg: Added some descriptions to ranked-room settings.
+*airanksgenerator_JP.properties: Updated JP lang (still not-so-good, though)
+------------------------------------------------------------------------
+r512 | pbomqlu910963 | 2010-10-26 23:23:23 +0900 (%I, 26 10 2010) | 2 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/LineRaceMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetDummyMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/ScoreRaceMode.java
+
+*NetPlay: Moved netSendField and netSendNextAndHold subroutines to NetDummyMode
+#TODO: Move more common codes to NetDummyMode
+------------------------------------------------------------------------
+r513 | pbomqlu910963 | 2010-10-26 23:55:48 +0900 (%I, 26 10 2010) | 3 lines
+Changed paths:
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+
+-NetVSBattleMode: Ouch... sendField is actually different from single player counterpart. Revert this area.
++NetLobbyFrame: It now remembers last rule/mode used.
+*NetLobbyFrame: Disable non-Tetromino tab in multiplayer leaderboard. These tabs are useless until we add them.
+------------------------------------------------------------------------
+r514 | pbomqlu910963 | 2010-10-27 15:49:21 +0900 (?., 27 10 2010) | 3 lines
+Changed paths:
+   M /trunk/readme_en.txt
+   M /trunk/readme_jp.txt
+   M /trunk/src/mu/nu/nullpo/game/play/GameEngine.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/GameKeySDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateConfigKeyboardNaviSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/sdl/StateInGameSDL.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/GameKey.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateConfigKeyboardNavi.java
+   M /trunk/src/mu/nu/nullpo/gui/slick/StateInGame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameFrame.java
+   M /trunk/src/mu/nu/nullpo/gui/swing/GameKeySwing.java
+
++Swing/Slick/SDL: Added Unpause by B button. So you can toggle Pause by pushing the Escape key in default keyboard mappings.
+*Swing/Slick/SDL: Exchanged X and C keys of Guideline-mappings. So it works better in the rules that has no 180-rotation.
+*Updated readme_en.txt and readme_jp.txt a bit. These texts now list default keyboard mappings.
+------------------------------------------------------------------------
+r515 | pbomqlu910963 | 2010-10-29 22:35:45 +0900 (<…, 29 10 2010) | 4 lines
+Changed paths:
+   M /trunk/config/lang/netadmin_help_JP.txt
+   M /trunk/config/lang/netadmin_help_default.txt
+   M /trunk/config/lang/netlobby_JP.properties
+   M /trunk/config/lang/netlobby_default.properties
+   M /trunk/readme_en.txt
+   M /trunk/readme_jp.txt
+   M /trunk/src/mu/nu/nullpo/game/component/Field.java
+   M /trunk/src/mu/nu/nullpo/game/net/NetServer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/NetVSBattleMode.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/BagRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/BagRandomizerNoSZO.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/History4RollsRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/History6RollsRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/MemorylessRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/NintendoRandomizer.java
+   M /trunk/src/mu/nu/nullpo/game/subsystem/randomizer/Randomizer.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/AlphaMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/Menu.java
+   M /trunk/src/mu/nu/nullpo/gui/menu/MenuMenuItem.java
+   M /trunk/src/mu/nu/nullpo/gui/net/NetLobbyFrame.java
+   M /trunk/src/mu/nu/nullpo/tool/netadmin/NetAdmin.java
+
++NetPlay: Added APL (Attack Per Line) stat.
+-Various warning cleanups. Yes, there are many @SuppressWarnings :(
+-Everything in "mu.nu.nullpo.game.subsystem.randomizer" package is now officially deprecated.
+*Another readme updates.
+------------------------------------------------------------------------
+r516 | pbomqlu910963 | 2010-10-29 23:40:03 +0900 (<…, 29 10 2010) | 2 lines
+Changed paths:
+   M /trunk/readme_en.txt
+   M /trunk/readme_jp.txt
+   M /trunk/src/mu/nu/nullpo/game/subsystem/mode/VSBattleMode.java
+
++VSBattleMode: Added Attack/Line stat to this mode too.
+*Another small updates to readme files.
+------------------------------------------------------------------------

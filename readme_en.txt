@@ -588,7 +588,7 @@ http://code.google.com/p/nullpomino/
 12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
 
-Version 7.4.0 (2010/10/29) {r277-r518; Unstable Release}
+Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #This version is NO LONGER compatible with 7.3.0 netplay server.
 +Swing/Slick/SDL: Added bigger side-preview option (Enable both "SHOW NEXT ON SIDE" and "BIG SIDE NEXT" in the general options screen)
 +Swing/Slick/SDL: Can use different keyboard mappings in menu screens (This is in debate. Your feedback helps us.)
