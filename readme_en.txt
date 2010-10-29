@@ -577,7 +577,9 @@ Also thanks to:
 	hebo-MAI
 	tetrisconcept.net http://www.tetrisconcept.net/
 	Hard Drop http://harddrop.com/
-	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
+	 (NullpoMino Topic: http://harddrop.com/forums/index.php?showtopic=2035
+	  NullpoMino Guide: http://harddrop.com/forums/index.php?showtopic=2317
+	  NullpoMino on HD wiki: http://harddrop.com/wiki/index.php?title=NullpoMino)
 	Puyo Nexus http://www.puyonexus.net/
 
 11. Project Page at Google code
@@ -586,11 +588,12 @@ http://code.google.com/p/nullpomino/
 12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
 
-Version 7.4.0 (2010/??/??)
+Version 7.4.0 (2010/10/29) {r277-r518; Unstable Release}
 #This version is NO LONGER compatible with 7.3.0 netplay server.
 +Swing/Slick/SDL: Added bigger side-preview option (Enable both "SHOW NEXT ON SIDE" and "BIG SIDE NEXT" in the general options screen)
 +Swing/Slick/SDL: Can use different keyboard mappings in menu screens (This is in debate. Your feedback helps us.)
 +Swing/Slick/SDL: Default rotation is now left instead of auto. You may want to go "GAME TUNING" menu and check or change "A BUTTON ROTATE" option.
++Swing/Slick/SDL: Added recommended-rule selector (appears after you select a mode).
 +Slick/SDL: Can reconfigure each button individually in keyboard settings screen
 +Slick/SDL: First-time setup screens are no longer present (Default keyboard mappings are Blockbox style)
 +Slick/SDL: Mouse support in some menus (Incomplete)
@@ -602,10 +605,9 @@ Version 7.4.0 (2010/??/??)
  +View lobby while in a room
  +"NetAdmin", the administrator tool of NetServer, can ban/kick a player, can delete a record from leaderboard, and can delete any room.
  +Online single player room (WIP. Currently supports LINE RACE and SCORE RACE modes.)
-#And maybe more...
-[TODO: Add more changelogs]
+#And maybe more... See svnlog7_4_0.txt for SVN log.
 
-Version 7.3.0 (2010/08/09)
+Version 7.3.0 (2010/08/09) {r1-r276; Stable Release}
 #This version is NO LONGER compatible with 7.2.0 netplay server.
 +Swing/Slick/SDL: When saving replays, a replay folder will be created if one is not found.
 +Swing/Slick/SDL: Fixed location of NEXT piece when spawn offset is non-zero.

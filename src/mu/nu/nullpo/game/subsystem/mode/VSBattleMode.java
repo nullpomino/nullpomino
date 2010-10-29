@@ -1264,23 +1264,27 @@ public class VSBattleMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 0, 1, "RESULT", EventReceiver.COLOR_ORANGE);
+		receiver.drawMenuFont(engine, playerID, 0, 0, "RESULT", EventReceiver.COLOR_ORANGE);
 		if(winnerID == -1) {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "DRAW", EventReceiver.COLOR_GREEN);
+			receiver.drawMenuFont(engine, playerID, 6, 1, "DRAW", EventReceiver.COLOR_GREEN);
 		} else if(winnerID == playerID) {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "WIN!", EventReceiver.COLOR_YELLOW);
+			receiver.drawMenuFont(engine, playerID, 6, 1, "WIN!", EventReceiver.COLOR_YELLOW);
 		} else {
-			receiver.drawMenuFont(engine, playerID, 6, 2, "LOSE", EventReceiver.COLOR_WHITE);
+			receiver.drawMenuFont(engine, playerID, 6, 1, "LOSE", EventReceiver.COLOR_WHITE);
 		}
 
 		float apm = (float)(garbageSent[playerID] * 3600) / (float)(engine.statistics.time);
-		drawResult(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,
+		float apl = (float)(garbageSent[playerID]) / (float)(engine.statistics.lines);
+
+		drawResult(engine, playerID, receiver, 2, EventReceiver.COLOR_ORANGE,
 				"ATTACK", String.format("%10d", garbageSent[playerID]));
-		drawResultStats(engine, playerID, receiver, 5, EventReceiver.COLOR_ORANGE,
+		drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_ORANGE,
 				STAT_LINES, STAT_PIECE);
-		drawResult(engine, playerID, receiver, 9, EventReceiver.COLOR_ORANGE,
+		drawResult(engine, playerID, receiver, 8, EventReceiver.COLOR_ORANGE,
+				"ATK/LINE", String.format("%10g", apl));
+		drawResult(engine, playerID, receiver, 10, EventReceiver.COLOR_ORANGE,
 				"ATTACK/MIN", String.format("%10g", apm));
-		drawResultStats(engine, playerID, receiver, 11, EventReceiver.COLOR_ORANGE,
+		drawResultStats(engine, playerID, receiver, 12, EventReceiver.COLOR_ORANGE,
 				STAT_LPM, STAT_PPS, STAT_TIME);
 	}
 

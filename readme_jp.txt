@@ -565,7 +565,9 @@ A: 名前にトリップが入っていないと記録は保存されません。
 	hebo-MAI
 	tetrisconcept.net http://www.tetrisconcept.net/
 	Hard Drop http://harddrop.com/
-	 (NullpoMino thread: http://harddrop.com/forums/index.php?showtopic=2035)
+	 (NullpoMino Topic: http://harddrop.com/forums/index.php?showtopic=2035
+	  NullpoMino Guide: http://harddrop.com/forums/index.php?showtopic=2317
+	  NullpoMino on HD wiki: http://harddrop.com/wiki/index.php?title=NullpoMino)
 	Puyo Nexus http://www.puyonexus.net/
 
 【Google Codeのプロジェクトページ】
@@ -574,11 +576,12 @@ http://code.google.com/p/nullpomino/
 【更新履歴】
 +は新機能、-はバグ修正、*はその他の修正、#はその他メモを意味します。
 
-Version 7.4.0 (2010/??/??)
+Version 7.4.0 (2010/10/29)
 #このバージョンから7.3.0のサーバーとの互換性は失われます。
 +Swing/Slick/SDL: より大きい横NEXT表示を追加しました。 (GENERAL OPTIONSの"SHOW NEXT ON SIDE"と"BIG SIDE NEXT"の両方を有効にしてください)
 +Swing/Slick/SDL: メニュー画面でゲーム中とは別のキー配置を使うようにしました。(賛否両論なのでご意見募集中)
 +Swing/Slick/SDL: デフォルトの回転方向を左に変えました。AUTOに戻すには"GAME TUNING"メニューの"A BUTTON ROTATE"の設定を変更してください。
++Swing/Slick/SDL: おすすめルール選択画面を追加しました(モード選択後に出現)。
 +Slick/SDL: キー設定画面でキーを個別に変更できるようにしました。
 +Slick/SDL: 初回起動時の設定画面を消しました。キー配置の初期設定はBlockboxスタイルになっています。
 +Slick/SDL: いくつかのメニューでマウスが使えるようになりました(不完全)
@@ -590,7 +593,7 @@ Version 7.4.0 (2010/??/??)
  +ルーム内でもロビーを見れる
  +NetServer管理ツール"NetAdmin"
  +1人プレイルーム (今のところLINE RACEとSCORE RACEモードのみ)
-[TODO: 更新履歴の続きここに入れる]
+#他の細かい変更内容はsvnlog7_4_0.txtにあります(英語ですが…)
 
 Version 7.3.0 (2010/08/09)
 #このバージョンから7.2.0のサーバーとの互換性は失われます。
