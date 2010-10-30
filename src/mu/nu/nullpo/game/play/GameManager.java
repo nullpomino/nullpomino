@@ -47,7 +47,7 @@ public class GameManager {
 	public static final float VERSION_MAJOR = 7.4f;
 
 	/** Minor version */
-	public static final int VERSION_MINOR = 0;
+	public static final int VERSION_MINOR = 1;
 
 	/** Game Mode */
 	public GameMode mode;
