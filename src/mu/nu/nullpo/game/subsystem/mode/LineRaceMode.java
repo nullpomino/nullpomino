@@ -176,52 +176,6 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/*
-	 * NET: Netplay Initialization
-	 */
-	@Override
-	public void netplayInit(Object obj) {
-		super.netplayInit(obj);
-		log.debug("netplayInit");
-
-		if(obj instanceof NetLobbyFrame) {
-			onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
-		}
-	}
-
-	/**
-	 * NET: When you join the room
-	 * @param lobby NetLobbyFrame
-	 * @param client NetPlayerClient
-	 * @param roomInfo NetRoomInfo
-	 */
-	private void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		log.debug("onJoin");
-
-		netCurrentRoomInfo = roomInfo;
-		netIsNetPlay = true;
-		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
-		netNumSpectators = 0;
-		netUpdatePlayerExist();
-
-		if(netIsWatch) {
-			owner.engine[0].isNextVisible = false;
-			owner.engine[0].isHoldVisible = false;
-		}
-
-		if(roomInfo != null) {
-			// Set to locked rule
-			if((roomInfo.ruleLock) && (netLobby != null) && (netLobby.ruleOptLock != null)) {
-				log.info("Set locked rule");
-				Randomizer randomizer = GeneralUtil.loadRandomizer(netLobby.ruleOptLock.strRandomizer);
-				Wallkick wallkick = GeneralUtil.loadWallkick(netLobby.ruleOptLock.strWallkick);
-				owner.engine[0].ruleopt.copy(netLobby.ruleOptLock);
-				owner.engine[0].randomizer = randomizer;
-				owner.engine[0].wallkick = wallkick;
-			}
-		}
-	}
-
-	/*
 	 * Initialization for each player
 	 */
 	@Override
@@ -268,6 +222,53 @@ public class LineRaceMode extends NetDummyMode {
 
 			// NET: Load name
 			netPlayerName = engine.owner.replayProp.getProperty(playerID + ".net.netPlayerName", "");
+		}
+	}
+
+	/*
+	 * NET: Netplay Initialization
+	 */
+	@Override
+	public void netplayInit(Object obj) {
+		super.netplayInit(obj);
+		log.debug("netplayInit");
+
+		if(obj instanceof NetLobbyFrame) {
+			onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
+		}
+	}
+
+	/**
+	 * NET: When you join the room
+	 * @param lobby NetLobbyFrame
+	 * @param client NetPlayerClient
+	 * @param roomInfo NetRoomInfo
+	 */
+	private void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		log.debug("onJoin");
+
+		netCurrentRoomInfo = roomInfo;
+		netIsNetPlay = true;
+		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
+		netNumSpectators = 0;
+		netUpdatePlayerExist();
+
+		if(netIsWatch) {
+			owner.engine[0].isNextVisible = false;
+			owner.engine[0].isHoldVisible = false;
+		}
+
+		if(roomInfo != null) {
+			// Set to locked rule
+			if((roomInfo.ruleLock) && (netLobby != null) && (netLobby.ruleOptLock != null)) {
+				log.info("Set locked rule");
+				Randomizer randomizer = GeneralUtil.loadRandomizer(netLobby.ruleOptLock.strRandomizer);
+				Wallkick wallkick = GeneralUtil.loadWallkick(netLobby.ruleOptLock.strWallkick);
+				owner.engine[0].ruleopt.copy(netLobby.ruleOptLock);
+				owner.engine[0].randomizer = randomizer;
+				owner.engine[0].wallkick = wallkick;
+				loadRanking(owner.modeConfig, owner.engine[0].ruleopt.strRuleName);
+			}
 		}
 	}
 
