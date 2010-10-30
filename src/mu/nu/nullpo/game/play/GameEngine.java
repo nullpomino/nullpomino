@@ -1334,8 +1334,8 @@ public class GameEngine {
 				}
 			}
 		} else if(spinCheckType == SPINTYPE_IMMOBILE) {
-			int y2 = y - 1;
-			log.debug(x + "," + y2 + ":" + piece.checkCollision(x, y2, fld));
+			//int y2 = y - 1;
+			//log.debug(x + "," + y2 + ":" + piece.checkCollision(x, y2, fld));
 
 			if( piece.checkCollision(x, y - 1, fld) &&
 					piece.checkCollision(x + 1, y, fld) &&
@@ -1343,7 +1343,8 @@ public class GameEngine {
 				tspin = true;
 				Field copyField = new Field(fld);
 				piece.placeToField(x, y, copyField);
-				if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true;
+				if((piece.getHeight() + 1 != copyField.checkLineNoFlag()) && (kickused == true)) tspinmini = true;
+				//if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true;
 			} else if((tspinEnableEZ) && (kickused == true)) {
 				tspin = true;
 				tspinez = true;
