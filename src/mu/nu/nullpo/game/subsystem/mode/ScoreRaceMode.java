@@ -225,6 +225,7 @@ public class ScoreRaceMode extends NetDummyMode {
 		netIsNetPlay = false;
 		netIsWatch = false;
 		netNumSpectators = 0;
+		netPlayerName = "";
 	}
 
 	/*
@@ -254,6 +255,11 @@ public class ScoreRaceMode extends NetDummyMode {
 		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
 		netNumSpectators = 0;
 		netUpdatePlayerExist();
+
+		if(netIsWatch) {
+			owner.engine[0].isNextVisible = false;
+			owner.engine[0].isHoldVisible = false;
+		}
 
 		if(roomInfo != null) {
 			// Set to locked rule
@@ -1352,6 +1358,18 @@ public class ScoreRaceMode extends NetDummyMode {
 		}
 	}
 
+	/*
+	 * Retry key on netplay
+	 */
+	@Override
+	public void netplayOnRetryKey(GameEngine engine, int playerID) {
+		if(netIsNetPlay && !netIsWatch) {
+			owner.reset();
+			netLobby.netPlayerClient.send("reset1p\n");
+			netSendOptions(engine);
+		}
+	}
+
 	@Override
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
 		super.netlobbyOnMessage(lobby, client, message);
@@ -1402,6 +1420,12 @@ public class ScoreRaceMode extends NetDummyMode {
 			netReplaySendStatus = 2;
 			netRankingRank = Integer.parseInt(message[1]);
 			netIsPB = Boolean.parseBoolean(message[2]);
+		}
+		// Reset
+		if(message[0].equals("reset1p")) {
+			if(netIsWatch) {
+				owner.reset();
+			}
 		}
 		// Netplay Ranking
 		if(message[0].equals("spranking")) {

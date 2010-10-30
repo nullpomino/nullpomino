@@ -172,6 +172,7 @@ public class LineRaceMode extends NetDummyMode {
 		netIsNetPlay = false;
 		netIsWatch = false;
 		netNumSpectators = 0;
+		netPlayerName = "";
 	}
 
 	/*
@@ -201,6 +202,11 @@ public class LineRaceMode extends NetDummyMode {
 		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
 		netNumSpectators = 0;
 		netUpdatePlayerExist();
+
+		if(netIsWatch) {
+			owner.engine[0].isNextVisible = false;
+			owner.engine[0].isHoldVisible = false;
+		}
 
 		if(roomInfo != null) {
 			// Set to locked rule
@@ -1049,6 +1055,18 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/*
+	 * Retry key on netplay
+	 */
+	@Override
+	public void netplayOnRetryKey(GameEngine engine, int playerID) {
+		if(netIsNetPlay && !netIsWatch) {
+			owner.reset();
+			netLobby.netPlayerClient.send("reset1p\n");
+			netSendOptions(engine);
+		}
+	}
+
+	/*
 	 * NET: Process netplay messages
 	 */
 	@Override
@@ -1154,6 +1172,12 @@ public class LineRaceMode extends NetDummyMode {
 				netRankingCursor = 0;
 				netRankingMyRank = -1;
 				*/
+			}
+		}
+		// Reset
+		if(message[0].equals("reset1p")) {
+			if(netIsWatch) {
+				owner.reset();
 			}
 		}
 		// Game messages

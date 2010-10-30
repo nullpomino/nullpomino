@@ -202,6 +202,9 @@ public class DummyMode implements GameMode {
 	public void netplayUnload(Object obj){
 	}
 
+	public void netplayOnRetryKey(GameEngine engine, int playerID) {
+	}
+
 	protected int updateCursor(GameEngine engine, int maxCursor) {
 		return updateCursor(engine, maxCursor, 0);
 	}

@@ -218,6 +218,11 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 					game.enterState(StateTitle.ID);
 					return;
 				}
+
+				// Retry button
+				if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_RETRY)) {
+					gameManager.mode.netplayOnRetryKey(gameManager.engine[0], 0);
+				}
 			}
 
 			// Screenshot button

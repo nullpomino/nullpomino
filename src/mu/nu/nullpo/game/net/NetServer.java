@@ -2021,6 +2021,21 @@ public class NetServer implements ActionListener {
 				}
 			}
 		}
+		// Single player mode reset
+		if(message[0].equals("reset1p")) {
+			if(pInfo != null) {
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+				if(roomInfo != null) {
+					int seat = roomInfo.getPlayerSeatNumber(pInfo);
+
+					if(seat != -1) {
+						pInfo.resetPlayState();
+						gameFinished(roomInfo);
+						broadcast("reset1p\n", roomInfo.roomID, pInfo);
+					}
+				}
+			}
+		}
 		// Game messages (NetServer will deliver them to other players but won't modify it)
 		if(message[0].equals("game")) {
 			if(pInfo != null) {
@@ -2525,7 +2540,7 @@ public class NetServer implements ActionListener {
 					writePlayerDataToFile();
 				}
 				*/
-			} else if(winner != null) {
+			} else if((winner != null) && !roomInfo.singleplayer) {
 				// Winner is a player
 				roomInfo.playerSeatDead.addFirst(winner);
 

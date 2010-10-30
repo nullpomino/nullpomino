@@ -177,13 +177,18 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			}
 
 			// ゲームの処理を実行
-			if(gameManager != null) {
+			if((gameManager != null) && (gameManager.mode != null)) {
 				GameKeySDL.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
 				gameManager.updateAll();
 
 				if(gameManager.getQuitFlag()) {
 					ResourceHolderSDL.bgmStop();
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+				}
+
+				// Retry button
+				if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_RETRY)) {
+					gameManager.mode.netplayOnRetryKey(gameManager.engine[0], 0);
 				}
 			}
 

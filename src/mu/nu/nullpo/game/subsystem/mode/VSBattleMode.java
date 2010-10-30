@@ -1274,7 +1274,8 @@ public class VSBattleMode extends DummyMode {
 		}
 
 		float apm = (float)(garbageSent[playerID] * 3600) / (float)(engine.statistics.time);
-		float apl = (float)(garbageSent[playerID]) / (float)(engine.statistics.lines);
+		float apl = 0f;
+		if(engine.statistics.lines > 0) apl = (float)(garbageSent[playerID]) / (float)(engine.statistics.lines);
 
 		drawResult(engine, playerID, receiver, 2, EventReceiver.COLOR_ORANGE,
 				"ATTACK", String.format("%10d", garbageSent[playerID]));

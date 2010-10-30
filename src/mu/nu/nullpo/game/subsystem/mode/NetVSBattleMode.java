@@ -1359,8 +1359,13 @@ public class NetVSBattleMode extends NetDummyMode {
 		// APL & APM
 		if((playerID == 0) && (engine.gameActive) && (engine.timerActive)) {
 			float tempGarbageSent = (float)garbageSent[playerID] / GARBAGE_DENOMINATOR;
-			playerAPL = (float)(tempGarbageSent / engine.statistics.lines);
 			playerAPM = (tempGarbageSent * 3600) / (engine.statistics.time);
+
+			if(engine.statistics.lines > 0) {
+				playerAPL = (float)(tempGarbageSent / engine.statistics.lines);
+			} else {
+				playerAPL = 0f;
+			}
 		}
 
 		// Timer

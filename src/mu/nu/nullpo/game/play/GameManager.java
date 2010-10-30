@@ -44,7 +44,7 @@ public class GameManager {
 	static Logger log = Logger.getLogger(GameManager.class);
 
 	/** Major version */
-	public static final float VERSION_MAJOR = 7.4f;
+	public static final float VERSION_MAJOR = 7.5f;
 
 	/** Minor version */
 	public static final int VERSION_MINOR = 0;
