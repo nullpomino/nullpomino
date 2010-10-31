@@ -836,6 +836,10 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				addConsoleLog(getUIText("Console_RoomDelete_NoParams"));
 			}
 		}
+		// diag
+		else if (commands[0].equalsIgnoreCase("diag")){
+			sendCommand("diag");
+		}
 		// Invalid
 		else {
 			addConsoleLog(String.format(getUIText("Console_UnknownCommand"), commands[0]));
@@ -1365,6 +1369,12 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		if(message[0].equals("roomdeletefail")) {
 			if(message.length > 1) {
 				addConsoleLog(String.format(getUIText("Console_RoomDelete_NG"), message[1]), new Color(0, 64, 64));
+			}
+		}
+		// Diagnostics
+		if (message[0].equals("diag")) {
+			if(message.length > 1) {
+				addConsoleLog(message[1], new Color(0, 64, 64));
 			}
 		}
 	}

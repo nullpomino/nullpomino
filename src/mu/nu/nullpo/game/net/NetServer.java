@@ -2395,6 +2395,26 @@ public class NetServer {
 			// announce\t[Message]
 			broadcast("announce\t" + message[1] + "\n");
 		}
+		// Diagnostics
+		if(message[0].equals("diag")) {
+			sendDiagnosticInformations(client);
+		}
+	}
+
+	private void sendDiagnosticInformations(SocketChannel client)
+			throws IOException {
+		String diagMsg = "";
+		
+		Map<Thread,StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
+		
+		for(Thread t: allStackTraces.keySet()) {
+			diagMsg += t.toString() + "\n";
+			
+			for (StackTraceElement ste : allStackTraces.get(t)) {
+				diagMsg += "   " + ste.toString() + "\n";
+			}
+		}
+		sendAdminResult(client, "diag\t" + diagMsg);
 	}
 
 	/**
