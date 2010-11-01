@@ -41,13 +41,13 @@ import org.cacas.java.gnu.tools.Crypt;
 import biz.source_code.base64Coder.Base64Coder;
 
 /**
- * ネット対戦用文字列変換ユーティリティ
+ * Network utils
  */
 public class NetUtil {
 	/**
-	 * バイト配列を文字列に変換
-	 * @param bytes バイト配列
-	 * @return 文字列
+	 * Convert byte[] to String (with UTF-8 encoding)
+	 * @param bytes Byte array (byte[])
+	 * @return String
 	 */
 	public static String bytesToString(byte[] bytes) {
 		try {
@@ -58,9 +58,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * 文字列をバイト配列に変換
-	 * @param str 文字列
-	 * @return バイト配列
+	 * Convert String to byte[] (with UTF-8 encoding)
+	 * @param str String
+	 * @return Byte array (byte[])
 	 */
 	public static byte[] stringToBytes(String str) {
 		try {
@@ -71,9 +71,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * URLEncoderを使って安全でない文字を変換
-	 * @param str 文字列
-	 * @return URLEncoderでエンコードされた文字列
+	 * Encode non-URL-safe characters with using URLEncoder
+	 * @param str String
+	 * @return URLEncoder-encoded String
 	 */
 	public static String urlEncode(String str) {
 		try {
@@ -84,9 +84,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * URLDecoderを使ってURLEncoderでエンコードされた文字列を復元
-	 * @param str URLEncoderでエンコードされた文字列
-	 * @return URLDecoderでデコードされた文字列
+	 * Decode URL-safe characters with using URLDecoder
+	 * @param str URLEncoder-encoded String
+	 * @return Decoded String
 	 */
 	public static String urlDecode(String str) {
 		try {
@@ -97,9 +97,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * String→Shift_JISのbyte配列に変換
-	 * @param s 変換元のString
-	 * @return Shift_JISに変換された文字列のbyte配列
+	 * Convert String to byte[] with Shift_JIS encoding
+	 * @param s UTF-8 String
+	 * @return Shift_JIS encoded byte array (byte[])
 	 */
 	public static byte[] stringToShiftJIS(String s) {
 		byte[] b = null;
@@ -112,9 +112,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * Shift_JISのbyte配列をString型に変換
-	 * @param b 変換元のbyte配列
-	 * @return 変換後のString
+	 * Convert Shift_JIS byte array (byte[]) to String
+	 * @param b Shift_JIS encoded byte array (byte[])
+	 * @return UTF-8 String
 	 */
 	public static String shiftJIStoString(byte[] b) {
 		String s = null;
@@ -127,10 +127,10 @@ public class NetUtil {
 	}
 
 	/**
-	 * トリップ作成
-	 * @param tripkey パスワード
-	 * @param maxlen トリップ桁count(10が普通)
-	 * @return 作成されたトリップ
+	 * Create Tripcode
+	 * @param tripkey Password
+	 * @param maxlen Tripcode Length (Usually 10)
+	 * @return String of Tripcode
 	 */
 	public static String createTripCode(String tripkey, int maxlen) {
 		byte[] bTripKey = stringToShiftJIS(tripkey);
@@ -171,21 +171,21 @@ public class NetUtil {
 	}
 
 	/**
-	 * byte配列を圧縮(圧縮 levelは9になります)<br>
-	 * <a href="http://www.exampledepot.com/egs/java.util.zip/CompArray.html">出展</a>
-	 * @param input 元のbyte配列
-	 * @return 圧縮されたbyte配列
+	 * Compress a byte array (byte[]). The compression level is 9.<br>
+	 * <a href="http://www.exampledepot.com/egs/java.util.zip/CompArray.html">Source</a>
+	 * @param input Raw byte array (byte[])
+	 * @return Compressed byte array (byte[])
 	 */
 	public static byte[] compressByteArray(byte[] input) {
 		return compressByteArray(input, Deflater.BEST_COMPRESSION);
 	}
 
 	/**
-	 * byte配列を圧縮<br>
-	 * <a href="http://www.exampledepot.com/egs/java.util.zip/CompArray.html">出展</a>
-	 * @param input 元のbyte配列
-	 * @param level 圧縮 level(0～9)
-	 * @return 圧縮されたbyte配列
+	 * Compress a byte array (byte[]).<br>
+	 * <a href="http://www.exampledepot.com/egs/java.util.zip/CompArray.html">Source</a>
+	 * @param input Raw byte array (byte[])
+	 * @param level Compression level (0-9)
+	 * @return Compressed byte array (byte[])
 	 */
 	public static byte[] compressByteArray(byte[] input, int level) {
 		// Create the compressor with highest level of compression
@@ -213,9 +213,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * compressByteArrayで圧縮されたbyte配列を解凍
-	 * @param compressedData 圧縮されたbyte配列
-	 * @return 解凍されたbyte配列
+	 * Decompress a byte array (byte[])
+	 * @param compressedData Compressed byte array (byte[])
+	 * @return Raw byte array (byte[])
 	 */
 	public static byte[] decompressByteArray(byte[] compressedData) {
 		// Create the decompressor and give it the data to compress
@@ -239,19 +239,19 @@ public class NetUtil {
 	}
 
 	/**
-	 * 文字列を圧縮してBase64で符号化(圧縮 levelは9になります)
-	 * @param input 圧縮する文字列
-	 * @return 圧縮されてBase64で符号化された文字列
+	 * Compress a String then encode with Base64. The compression level is 9.
+	 * @param input String you want to compress
+	 * @return Compressed + Base64 encoded String
 	 */
 	public static String compressString(String input) {
 		return compressString(input, Deflater.BEST_COMPRESSION);
 	}
 
 	/**
-	 * 文字列を圧縮してBase64で符号化
-	 * @param input 圧縮する文字列
-	 * @param level 圧縮 level(0～9)
-	 * @return 圧縮されてBase64で符号化された文字列
+	 * Compress a String then encode with Base64.
+	 * @param input String you want to compress
+	 * @param level Compression level (0-9)
+	 * @return Compressed + Base64 encoded String
 	 */
 	public static String compressString(String input, int level) {
 		byte[] bCompressed = compressByteArray(stringToBytes(input), level);
@@ -260,9 +260,9 @@ public class NetUtil {
 	}
 
 	/**
-	 * Base64で符号化・圧縮された文字列を解凍する
-	 * @param input 圧縮された文字列
-	 * @return 解凍された文字列
+	 * Decompress a Base64 encoded String
+	 * @param input Compressed + Base64 encoded String
+	 * @return Raw String
 	 */
 	public static String decompressString(String input) {
 		byte[] bCompressed = Base64Coder.decode(input);

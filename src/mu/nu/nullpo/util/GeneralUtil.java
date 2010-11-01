@@ -41,7 +41,7 @@ import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
- * いろいろなstaticな関count群
+ * Generic static utils
  */
 public class GeneralUtil {
 	/** Log */
@@ -93,9 +93,40 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * 出現できるピースのcountを取得
-	 * @param pieceEnable 各ピースの出現可否
-	 * @return 出現できるピースのcount
+	 * Get date and time from a Calendar
+	 * @param c Calendar
+	 * @return Date and Time String
+	 */
+	public static String getCalendarString(Calendar c) {
+		return  String.format("%04d-%02d-%02d %02d:%02d:%02d",
+				c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE),
+				c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+	}
+
+	/**
+	 * Get date from a Calendar
+	 * @param c Calendar
+	 * @return Date String
+	 */
+	public static String getCalendarStringDate(Calendar c) {
+		return  String.format("%04d-%02d-%02d",
+				c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
+	}
+
+	/**
+	 * Get time from a Calendar
+	 * @param c Calendar
+	 * @return Time String
+	 */
+	public static String getCalendarStringTime(Calendar c) {
+		return  String.format("%02d:%02d:%02d",
+				c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+	}
+
+	/**
+	 * Get the number of piece types can appear
+	 * @param pieceEnable Piece enable flags
+	 * @return Number of piece types can appear (In the normal Tetromino games, it returns 7)
 	 */
 	public static int getNumberOfPiecesCanAppear(boolean[] pieceEnable) {
 		if(pieceEnable == null) return Piece.PIECE_COUNT;
@@ -110,9 +141,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * 出現可能なピースがSZOのどれかしかない場合にtrueを返す
-	 * @param pieceEnable 各ピースの出現可否
-	 * @return 出現可能なピースがSZOのどれかしかない場合にtrue
+	 * Returns true if enabled piece types are S,Z,O only.
+	 * @param pieceEnable Piece enable flags
+	 * @return <code>true</code> if enabled piece types are S,Z,O only.
 	 */
 	public static boolean isPieceSZOOnly(boolean[] pieceEnable) {
 		if(pieceEnable == null) return false;
@@ -126,9 +157,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * count値の入った文字列からNEXTピースの出現順を作成
-	 * @param strSrc 文字列
-	 * @return NEXTピースのIDの配列
+	 * Create piece ID array from a String
+	 * @param strSrc String
+	 * @return Piece ID array
 	 */
 	public static int[] createNextPieceArrayFromNumberString(String strSrc) {
 		int len = strSrc.length();
@@ -151,9 +182,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * ルールファイルを読み込み
+	 * Load rule file
 	 * @param filename Filename
-	 * @return ルール data
+	 * @return RuleOptions
 	 */
 	public static RuleOptions loadRule(String filename) {
 		CustomProperties prop = new CustomProperties();
@@ -173,9 +204,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * NEXT順生成アルゴリズムを読み込み
-	 * @param filename クラスファイルのName
-	 * @return NEXT順生成アルゴリズムのオブジェクト (読み込み失敗したらnull）
+	 * Load Randomizer
+	 * @param filename Classpath of the randomizer
+	 * @return Randomizer (null if something fails)
 	 */
 	public static Randomizer loadRandomizer(String filename) {
 		Class<?> randomizerClass = null;
@@ -192,9 +223,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * Wallkickアルゴリズムを読み込み
-	 * @param filename クラスファイルのName
-	 * @return Wallkickアルゴリズムのオブジェクト (読み込み失敗したらnull）
+	 * Load Wallkick
+	 * @param filename Classpath of the wallkick
+	 * @return Wallkick (null if something fails)
 	 */
 	public static Wallkick loadWallkick(String filename) {
 		Class<?> wallkickClass = null;
@@ -211,9 +242,9 @@ public class GeneralUtil {
 	}
 
 	/**
-	 * AIを読み込み
-	 * @param filename クラスファイルのName
-	 * @return AIのオブジェクト (読み込み失敗したらnull）
+	 * Load AI
+	 * @param filename Classpath of the AI
+	 * @return The instance of AI (null if something fails)
 	 */
 	public static DummyAI loadAIPlayer(String filename) {
 		Class<?> aiClass = null;

@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Calendar;
 import java.util.Locale;
 
 import javax.swing.AbstractAction;
@@ -61,6 +60,7 @@ import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
+import mu.nu.nullpo.util.GeneralUtil;
 import net.clarenceho.crypto.RC4;
 
 import org.apache.log4j.Logger;
@@ -1094,14 +1094,26 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// Login failed
 		if(message[0].equals("adminloginfail")) {
+			isWantedDisconnect = true;
+			logout();
+
 			labelLoginMessage.setForeground(Color.red);
 			if((message.length > 1) && (message[1].equals("DISABLE"))) {
 				labelLoginMessage.setText(getUIText("Login_Message_DisabledError"));
 			} else {
 				labelLoginMessage.setText(getUIText("Login_Message_LoginError"));
 			}
+			return;
+		}
+		// Banned
+		if(message[0].equals("banned")) {
 			isWantedDisconnect = true;
 			logout();
+
+			labelLoginMessage.setForeground(Color.red);
+			String strStart = message[1];
+			String strExpire = ((message.length > 2) && (message[2].length() > 0)) ? message[2] : getUIText("Login_Message_Banned_Permanent");
+			labelLoginMessage.setText(String.format(getUIText("Login_Message_Banned"), strStart, strExpire));
 			return;
 		}
 		// Login successful
@@ -1337,10 +1349,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 					String strBanLength = getUIText("BanType" + ban.banLength);
 					String strDate = "";
 					if(ban.startDate != null) {
-						Calendar d = ban.startDate;
-						strDate = String.format("%04d-%02d-%02d %02d:%02d:%02d",
-								d.get(Calendar.YEAR), d.get(Calendar.MONTH) + 1, d.get(Calendar.DATE),
-								d.get(Calendar.HOUR_OF_DAY), d.get(Calendar.MINUTE), d.get(Calendar.SECOND));
+						strDate = GeneralUtil.getCalendarString(ban.startDate);
 					}
 
 					addConsoleLog(String.format(getUIText("Console_BanList_Result"), ban.addr, strBanLength, strDate), new Color(0, 64, 64));

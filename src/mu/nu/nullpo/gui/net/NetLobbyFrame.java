@@ -96,6 +96,7 @@ import mu.nu.nullpo.game.net.NetPlayerInfo;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
+import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.mode.NetDummyMode;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
@@ -3231,12 +3232,29 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// ログイン失敗
 		if(message[0].equals("loginfail")) {
-			setLobbyButtonsEnabled(1);
-			String reason = "";
-			for(int i = 1; i < message.length; i++) {
-				reason += message[i] + " ";
+			setLobbyButtonsEnabled(0);
+
+			if((message.length > 1) && message[1].equals("DIFFERENT_VERSION")) {
+				String strClientVer = String.valueOf(GameManager.getVersionMajor());
+				String strServerVer = message[2];
+				String strErrorMsg = String.format(getUIText("SysMsg_LoginFailDifferentVersion"), strClientVer, strServerVer);
+				addSystemChatLogLater(txtpaneLobbyChatLog, strErrorMsg, Color.red);
+			} else {
+				String reason = "";
+				for(int i = 1; i < message.length; i++) {
+					reason += message[i] + " ";
+				}
+				addSystemChatLogLater(txtpaneLobbyChatLog, getUIText("SysMsg_LoginFail") + reason, Color.red);
 			}
-			addSystemChatLogLater(txtpaneLobbyChatLog, getUIText("SysMsg_LoginFail") + reason, Color.red);
+		}
+		// Banned
+		if(message[0].equals("banned")) {
+			setLobbyButtonsEnabled(0);
+
+			String strStart = message[1];
+			String strExpire = ((message.length > 2) && (message[2].length() > 0)) ? message[2] : getUIText("SysMsg_Banned_Permanent");
+
+			addSystemChatLogLater(txtpaneLobbyChatLog, String.format(getUIText("SysMsg_Banned"), strStart, strExpire), Color.red);
 		}
 		// ルール data送信成功
 		if(message[0].equals("ruledatasuccess")) {

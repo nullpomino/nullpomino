@@ -311,4 +311,29 @@ public class NetSPRecord implements Serializable {
 		String strResult = getCustomStat(name);
 		return (strResult == null) ? strDefault : strResult;
 	}
+
+	/**
+	 * Get a short String of stats of the record (used by NetServer)
+	 * @param type Ranking Type
+	 * @return Short String of stats of the record
+	 */
+	public String getStatRow(int type) {
+		String strRow = "";
+
+		if(type == RANKINGTYPE_GENERIC_SCORE) {
+			strRow += stats.score + ",";
+			strRow += stats.lines + ",";
+			strRow += stats.time;
+		} else if(type == RANKINGTYPE_GENERIC_TIME) {
+			strRow += stats.time + ",";
+			strRow += stats.totalPieceLocked + ",";
+			strRow += stats.pps;
+		} else if(type == RANKINGTYPE_SCORERACE) {
+			strRow += stats.time + ",";
+			strRow += stats.lines + ",";
+			strRow += stats.spl;
+		}
+
+		return strRow;
+	}
 }

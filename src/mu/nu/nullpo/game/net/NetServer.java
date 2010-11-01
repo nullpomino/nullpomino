@@ -44,6 +44,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -56,6 +57,7 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
+import mu.nu.nullpo.util.GeneralUtil;
 import net.clarenceho.crypto.RC4;
 
 import org.apache.log4j.Logger;
@@ -784,13 +786,29 @@ public class NetServer {
 					Iterator<ChangeRequest> changes = this.pendingChanges.iterator();
 					while (changes.hasNext()) {
 						ChangeRequest change = (ChangeRequest) changes.next();
-						switch (change.type) {
-						case ChangeRequest.CHANGEOPS:
-							SelectionKey key = change.socket.keyFor(this.selector);
-							key.interestOps(change.ops);
+						SelectionKey key = change.socket.keyFor(this.selector);
+
+						if(key.isValid()) {
+							switch (change.type) {
+							case ChangeRequest.DISCONNECT:
+								// Delayed disconnect
+								List<ByteBuffer> queue = this.pendingData.get(change.socket);
+								if((queue == null) || queue.isEmpty()) {
+									logout(key);
+									changes.remove();
+								}
+								break;
+							case ChangeRequest.CHANGEOPS:
+								// interestOps Change
+								key.interestOps(change.ops);
+								changes.remove();
+								break;
+							}
+						} else {
+							changes.remove();
 						}
 					}
-					this.pendingChanges.clear();
+					//this.pendingChanges.clear();
 				}
 
 				// Wait for an event one of the registered channels
@@ -855,18 +873,25 @@ public class NetServer {
 		// we'd like to be notified when there's data waiting to be read
 		socketChannel.register(this.selector, SelectionKey.OP_READ);
 
-		// Check ban
-		if(checkConnectionOnBanlist(socketChannel)) {
-			throw new NetServerDisconnectRequestedException("Connection banned");
-		}
-
 		// Add to list
 		channelList.add(socketChannel);
 		adminSendClientList();
 
-		// Send welcome message
-		send(socketChannel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\t" +
-			GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\n");
+		NetServerBan ban = getBan(socketChannel);
+		if(ban != null) {
+			// Banned
+			log.info("Connection is banned:" + getHostName(socketChannel));
+			Calendar endDate = ban.getEndDate();
+			String strStart = GeneralUtil.getCalendarString(ban.startDate);
+			String strExpire = (endDate == null) ? "" : GeneralUtil.getCalendarString(endDate);
+			send(socketChannel, "banned\t" + strStart + "\t" + strExpire + "\n");
+			this.pendingChanges.add(new ChangeRequest(socketChannel, ChangeRequest.DISCONNECT, 0));
+		} else {
+			// Send welcome message
+			log.debug("Accept:" + getHostName(socketChannel));
+			send(socketChannel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\t" +
+				GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\n");
+		}
 	}
 
 	/**
@@ -1077,6 +1102,7 @@ public class NetServer {
 		playerInfoMap.clear();
 		roomInfoList.clear();
 		this.pendingData.clear();
+		if(this.readBuffer != null) this.readBuffer.clear();
 
 		System.gc();
 	}
@@ -1093,8 +1119,6 @@ public class NetServer {
 
 			// And queue the data we want written
 			synchronized (this.pendingData) {
-				this.pendingData.get(client);
-
 				List<ByteBuffer> queue = (List<ByteBuffer>) this.pendingData.get(client);
 				if (queue == null) {
 					queue = new ArrayList<ByteBuffer>();
@@ -1245,6 +1269,12 @@ public class NetServer {
 	 * @throws IOException When something bad happens
 	 */
 	private void processPacket(SocketChannel client, String fullMessage) throws IOException {
+		// Check ban
+		if(checkConnectionOnBanlist(client)) {
+			throw new NetServerDisconnectRequestedException("Connection banned");
+		}
+
+		// Setup Variables
 		String[] message = fullMessage.split("\t");	// Split by \t
 		NetPlayerInfo pInfo = playerInfoMap.get(client);	// NetPlayerInfo of this client. null if not logged in.
 
@@ -1284,7 +1314,8 @@ public class NetServer {
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
 				send(client, "observerloginfail\tDIFFERENT_VERSION\t" + serverVer + "\n");
-				logout(client);
+				//logout(client);
+				this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
 				return;
 			}
 
@@ -1311,7 +1342,8 @@ public class NetServer {
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
 				send(client, "loginfail\tDIFFERENT_VERSION\t" + serverVer + "\n");
-				logout(client);
+				//logout(client);
+				this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
 				return;
 			}
 
@@ -2076,20 +2108,7 @@ public class NetServer {
 
 					NetSPRecord record = ranking.listRecord.get(i);
 					strRow += i + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
-
-					if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
-						strRow += record.stats.score + ",";
-						strRow += record.stats.lines + ",";
-						strRow += record.stats.time;
-					} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
-						strRow += record.stats.time + ",";
-						strRow += record.stats.totalPieceLocked + ",";
-						strRow += record.stats.pps;
-					} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
-						strRow += record.stats.time + ",";
-						strRow += record.stats.lines + ",";
-						strRow += record.stats.spl;
-					}
+					strRow += record.getStatRow(ranking.rankingType);
 
 					if((pInfo != null) && pInfo.strName.equals(record.strPlayerName)) {
 						myRank = i;
@@ -2106,20 +2125,7 @@ public class NetServer {
 
 						maxRecord++;
 						strRow += (-1) + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
-
-						if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
-							strRow += record.stats.score + ",";
-							strRow += record.stats.lines + ",";
-							strRow += record.stats.time;
-						} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
-							strRow += record.stats.time + ",";
-							strRow += record.stats.totalPieceLocked + ",";
-							strRow += record.stats.pps;
-						} else if(ranking.rankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
-							strRow += record.stats.time + ",";
-							strRow += record.stats.lines + ",";
-							strRow += record.stats.spl;
-						}
+						strRow += record.getStatRow(ranking.rankingType);
 
 						strMsg += strRow;
 					}
@@ -2163,6 +2169,7 @@ public class NetServer {
 
 					if(seat != -1) {
 						pInfo.resetPlayState();
+						broadcastPlayerInfoUpdate(pInfo);
 						gameFinished(roomInfo);
 						broadcast("reset1p\n", roomInfo.roomID, pInfo);
 					}
@@ -2201,8 +2208,9 @@ public class NetServer {
 			float serverVer = GameManager.getVersionMajor();
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
-				logout(client);
-				return;
+				String strLogMsg = strRemoteAddr + " has tried to access admin, but client version is different (" + clientVer + ")";
+				log.warn(strLogMsg);
+				throw new NetServerDisconnectRequestedException(strLogMsg);
 			}
 
 			// Check username and password
@@ -2401,15 +2409,18 @@ public class NetServer {
 		}
 	}
 
-	private void sendDiagnosticInformations(SocketChannel client)
-			throws IOException {
+	/**
+	 * Send diagnostics (stack-trace of all threads)
+	 * @param client The SocketChannel who requested
+	 */
+	private void sendDiagnosticInformations(SocketChannel client) {
 		String diagMsg = "";
-		
+
 		Map<Thread,StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-		
+
 		for(Thread t: allStackTraces.keySet()) {
 			diagMsg += t.toString() + "\n";
-			
+
 			for (StackTraceElement ste : allStackTraces.get(t)) {
 				diagMsg += "   " + ste.toString() + "\n";
 			}
@@ -2421,35 +2432,31 @@ public class NetServer {
 	 * Send admin command result
 	 * @param client The admin
 	 * @param msg Message to send
-	 * @throws IOException When something bad happens
 	 */
-	private void sendAdminResult(SocketChannel client, String msg) throws IOException {
+	private void sendAdminResult(SocketChannel client, String msg) {
 		send(client, "adminresult\t" + NetUtil.compressString(msg) + "\n");
 	}
 
 	/**
 	 * Broadcast admin command result to all admins
 	 * @param msg Message to send
-	 * @throws IOException When something bad happens
 	 */
-	private void broadcastAdminResult(String msg) throws IOException {
+	private void broadcastAdminResult(String msg) {
 		broadcastAdmin("adminresult\t" + NetUtil.compressString(msg) + "\n");
 	}
 
 	/**
 	 * Send client list to all admins
-	 * @throws IOException When something bad happens
 	 */
-	private void adminSendClientList() throws IOException {
+	private void adminSendClientList() {
 		adminSendClientList(null);
 	}
 
 	/**
 	 * Send client list to admin
 	 * @param client The admin. If null, it will broadcast to all admins.
-	 * @throws IOException When something bad happens
 	 */
-	private void adminSendClientList(SocketChannel client) throws IOException {
+	private void adminSendClientList(SocketChannel client) {
 		String strMsg = "clientlist";
 
 		for(SocketChannel ch: channelList) {
@@ -2514,9 +2521,8 @@ public class NetServer {
 	 * Delete a room
 	 * @param roomInfo Room to delete
 	 * @return true if success, false if fails (room not empty)
-	 * @throws IOException If something bad happens
 	 */
-	private boolean deleteRoom(NetRoomInfo roomInfo) throws IOException {
+	private boolean deleteRoom(NetRoomInfo roomInfo) {
 		if((roomInfo != null) && (roomInfo.playerList.isEmpty())) {
 			log.info("RoomDelete ID:" + roomInfo.roomID + " Title:" + roomInfo.strName);
 			broadcastRoomInfoUpdate(roomInfo, "roomdelete");
@@ -2969,6 +2975,15 @@ public class NetServer {
 	 * is expired.
 	 */
 	private boolean checkConnectionOnBanlist(SocketChannel client) {
+		return (getBan(client) != null);
+	}
+
+	/**
+	 * Get ban data of the connection.
+	 * @param client The remote address to check.
+	 * @return An instance of NetServerBan is the connection is banned, null otherwise.
+	 */
+	private NetServerBan getBan(SocketChannel client) {
 		String remoteAddr = getHostAddress(client);
 
 		Iterator<NetServerBan> i = banList.iterator();
@@ -2979,12 +2994,13 @@ public class NetServer {
 			if (ban.addr.equals(remoteAddr)) {
 				if (ban.isExpired()) {
 					i.remove();
-					return false;
+				} else {
+					return ban;
 				}
-				return true;
 			}
 		}
-		return false;
+
+		return null;
 	}
 
 	/**
@@ -3110,7 +3126,9 @@ public class NetServer {
 	 * Pending changes
 	 */
 	private static class ChangeRequest {
-		//public static final int REGISTER = 1;
+		/** Delayed disconnect action */
+		public static final int DISCONNECT = 1;
+		/** interestOps change action */
 		public static final int CHANGEOPS = 2;
 
 		public SocketChannel socket;
