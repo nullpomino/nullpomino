@@ -31,12 +31,11 @@ package mu.nu.nullpo.game.subsystem.wallkick;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
-import mu.nu.nullpo.game.component.WallkickResult;
 
 /**
- * StandardWallkick - 壁登りなどができるWallkick
+ * SRS
  */
-public class StandardWallkick implements Wallkick {
+public class StandardWallkick extends BaseStandardWallkick {
 	// Wallkick data
 	private static final int WALLKICK_NORMAL_L[][][] =
 	{
@@ -112,115 +111,76 @@ public class StandardWallkick implements Wallkick {
 	// 180-degree rotation wallkick data
 	private static final int WALLKICK_NORMAL_180[][][] =
 	{
-		{{ 1, 0},{-1, 0},{ 0,-1},{ 0, 1},{ 0,-2},{ 0, 2}},	// 0>>2─┐
-		{{ 0, 1},{ 0,-1},{ 0,-2},{ 0, 2},{-1, 0},{ 1, 0}},	// 1>>3─┼┐
-		{{-1, 0},{ 1, 0},{ 0, 1},{ 0,-1},{ 0, 2},{ 0,-2}},	// 2>>0─┘│
-		{{ 0, 1},{ 0,-1},{ 0,-2},{ 0, 2},{ 1, 0},{-1, 0}} 	// 3>>1──┘
-		//{{ 1, 0},{ 2, 0},{ 1, 1},{ 2, 1},{-1, 0},{-2, 0},{-1, 1},{-2, 1},{ 0,-1},{ 3, 0},{-3, 0}},	// 0>>2─┐
-		//{{ 0, 1},{ 0, 2},{-1, 1},{-1, 2},{ 0,-1},{ 0,-2},{-1,-1},{-1,-2},{ 1, 0},{ 0, 3},{ 0,-3}},	// 1>>3─┼┐
-		//{{-1, 0},{-2, 0},{-1,-1},{-2,-1},{ 1, 0},{ 2, 0},{ 1,-1},{ 2,-1},{ 0, 1},{-3, 0},{ 3, 0}},	// 2>>0─┘│
-		//{{ 0, 1},{ 0, 2},{ 1, 1},{ 1, 2},{ 0,-1},{ 0,-2},{ 1,-1},{ 1,-2},{-1, 0},{ 0, 3},{ 0,-3}},	// 3>>1──┘
+		{{ 1, 0},{ 2, 0},{ 1, 1},{ 2, 1},{-1, 0},{-2, 0},{-1, 1},{-2, 1},{ 0,-1},{ 3, 0},{-3, 0}},	// 0>>2─┐
+		{{ 0, 1},{ 0, 2},{-1, 1},{-1, 2},{ 0,-1},{ 0,-2},{-1,-1},{-1,-2},{ 1, 0},{ 0, 3},{ 0,-3}},	// 1>>3─┼┐
+		{{-1, 0},{-2, 0},{-1,-1},{-2,-1},{ 1, 0},{ 2, 0},{ 1,-1},{ 2,-1},{ 0, 1},{-3, 0},{ 3, 0}},	// 2>>0─┘│
+		{{ 0, 1},{ 0, 2},{ 1, 1},{ 1, 2},{ 0,-1},{ 0,-2},{ 1,-1},{ 1,-2},{-1, 0},{ 0, 3},{ 0,-3}},	// 3>>1──┘
 	};
 	private static final int WALLKICK_I_180[][][] =
 	{
-		{{-1, 0},{-2, 0},{ 1, 0},{ 2, 0}},													// 0>>2─┐
-		{{ 0, 1},{ 0,-1},{ 0,-2},{ 0, 2}},													// 1>>3─┼┐
-		{{ 1, 0},{ 2, 0},{-1, 0},{-2, 0}},													// 2>>0─┘│
-		{{ 0, 1},{ 0,-1},{ 0,-2},{ 0, 2}},													// 3>>1──┘
-		//{{-1, 0},{-2, 0},{ 1, 0},{ 2, 0},{ 0, 1}},													// 0>>2─┐
-		//{{ 0, 1},{ 0, 2},{ 0,-1},{ 0,-2},{-1, 0}},													// 1>>3─┼┐
-		//{{ 1, 0},{ 2, 0},{-1, 0},{-2, 0},{ 0,-1}},													// 2>>0─┘│
-		//{{ 0, 1},{ 0, 2},{ 0,-1},{ 0,-2},{ 1, 0}},													// 3>>1──┘
+		{{-1, 0},{-2, 0},{ 1, 0},{ 2, 0},{ 0, 1}},													// 0>>2─┐
+		{{ 0, 1},{ 0, 2},{ 0,-1},{ 0,-2},{-1, 0}},													// 1>>3─┼┐
+		{{ 1, 0},{ 2, 0},{-1, 0},{-2, 0},{ 0,-1}},													// 2>>0─┘│
+		{{ 0, 1},{ 0, 2},{ 0,-1},{ 0,-2},{ 1, 0}},													// 3>>1──┘
 	};
 
 	/*
-	 * Wallkick実行
+	 * Get kick table
 	 */
-	public WallkickResult executeWallkick(int x, int y, int rtDir, int rtOld, int rtNew, boolean allowUpward, Piece piece, Field field, Controller ctrl) {
-		int x2, y2;
+	@Override
+	protected int[][][] getKickTable(int x, int y, int rtDir, int rtOld, int rtNew, boolean allowUpward, Piece piece, Field field, Controller ctrl) {
+		int[][][] kicktable = null;
 
 		if(rtDir == 2) {
 			// 180-degree rotation
-			int[][][] kicktable = WALLKICK_NORMAL_180;
-			if((piece.id == Piece.PIECE_I) || (piece.id == Piece.PIECE_I3))
+			switch(piece.id) {
+			case Piece.PIECE_I:
 				kicktable = WALLKICK_I_180;
-
-			for(int i = 0; i < kicktable[rtOld].length; i++) {
-				x2 = kicktable[rtOld][i][0];
-				y2 = kicktable[rtOld][i][1];
-
-				if(piece.big == true) {
-					x2 *= 2;
-					y2 *= 2;
-				}
-
-				if((y2 >= 0) || (allowUpward)) {
-					if(piece.checkCollision(x + x2, y + y2, rtNew, field) == false) {
-						return new WallkickResult(x2, y2, rtNew);
-					}
-				}
+				break;
+			default:
+				kicktable = WALLKICK_NORMAL_180;
+				break;
 			}
-		} else {
-			// 通常rotation
-			int[][][] kicktable = null;
-
-			if(rtDir < 0) {
-				// 左rotation
-				switch (piece.id) {
-				case Piece.PIECE_I:
-					kicktable = WALLKICK_I_L;
-					break;
-				case Piece.PIECE_I2:
-					kicktable = WALLKICK_I2_L;
-					break;
-				case Piece.PIECE_I3:
-					kicktable = WALLKICK_I3_L;
-					break;
-				case Piece.PIECE_L3:
-					kicktable = WALLKICK_L3_L;
-					break;
-				default:
-					kicktable = WALLKICK_NORMAL_L;
-					break;
-				}
-			} else {
-				// 右rotation
-				switch (piece.id) {
-				case Piece.PIECE_I:
-					kicktable = WALLKICK_I_R;
-					break;
-				case Piece.PIECE_I2:
-					kicktable = WALLKICK_I2_R;
-					break;
-				case Piece.PIECE_I3:
-					kicktable = WALLKICK_I3_R;
-					break;
-				case Piece.PIECE_L3:
-					kicktable = WALLKICK_L3_R;
-					break;
-				default:
-					kicktable = WALLKICK_NORMAL_R;
-					break;
-				}
+		} else if(rtDir == -1) {
+			// Left rotation
+			switch(piece.id) {
+			case Piece.PIECE_I:
+				kicktable = WALLKICK_I_L;
+				break;
+			case Piece.PIECE_I2:
+				kicktable = WALLKICK_I2_L;
+				break;
+			case Piece.PIECE_I3:
+				kicktable = WALLKICK_I3_L;
+				break;
+			case Piece.PIECE_L3:
+				kicktable = WALLKICK_L3_L;
+				break;
+			default:
+				kicktable = WALLKICK_NORMAL_L;
+				break;
 			}
-
-			for(int i = 0; i < kicktable[rtOld].length; i++) {
-				x2 = kicktable[rtOld][i][0];
-				y2 = kicktable[rtOld][i][1];
-
-				if(piece.big == true) {
-					x2 *= 2;
-					y2 *= 2;
-				}
-
-				if((y2 >= 0) || (allowUpward)) {
-					if(piece.checkCollision(x + x2, y + y2, rtNew, field) == false) {
-						return new WallkickResult(x2, y2, rtNew);
-					}
-				}
+		} else if(rtDir == 1) {
+			// Right rotation
+			switch(piece.id) {
+			case Piece.PIECE_I:
+				kicktable = WALLKICK_I_R;
+				break;
+			case Piece.PIECE_I2:
+				kicktable = WALLKICK_I2_R;
+				break;
+			case Piece.PIECE_I3:
+				kicktable = WALLKICK_I3_R;
+				break;
+			case Piece.PIECE_L3:
+				kicktable = WALLKICK_L3_R;
+				break;
+			default:
+				kicktable = WALLKICK_NORMAL_R;
+				break;
 			}
 		}
 
-		return null;
+		return kicktable;
 	}
 }

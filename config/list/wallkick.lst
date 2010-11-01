@@ -1,5 +1,7 @@
 mu.nu.nullpo.game.subsystem.wallkick.StandardWallkick
+mu.nu.nullpo.game.subsystem.wallkick.StandardMild180Wallkick
 mu.nu.nullpo.game.subsystem.wallkick.StandardSymmetricWallkick
+mu.nu.nullpo.game.subsystem.wallkick.StandardSymmetricMild180Wallkick
 mu.nu.nullpo.game.subsystem.wallkick.ClassicWallkick
 mu.nu.nullpo.game.subsystem.wallkick.ClassicPlusWallkick
 mu.nu.nullpo.game.subsystem.wallkick.DTETWallkick
