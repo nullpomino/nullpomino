@@ -252,9 +252,9 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Team name */
 	private String[] playerTeams;
 
-	private boolean[] playerTeamsIsTank;
-
-	private boolean isTank;
+//	private boolean[] playerTeamsIsTank;
+//
+//	private boolean isTank;
 
 	/** ゲームが続いてる間true, 開始前や全員完全に終わるとfalse */
 	private boolean isNetGameActive;
@@ -469,7 +469,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		isReady = new boolean[MAX_PLAYERS];
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
-		playerTeamsIsTank = new boolean[MAX_PLAYERS];
+//		playerTeamsIsTank = new boolean[MAX_PLAYERS];
 		scgettime = new int[MAX_PLAYERS];
 		lastevent = new int[MAX_PLAYERS];
 		lastb2b = new boolean[MAX_PLAYERS];
@@ -487,7 +487,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 * いろいろリセット
 	 */
 	private void resetFlags() {
-		isTank = false;
+//		isTank = false;
 		isPractice = false;
 		allPlayerSeatNumbers = new int[MAX_PLAYERS];
 		isPlayerExist = new boolean[MAX_PLAYERS];
@@ -750,7 +750,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		garbage[playerID] = 0;
 		garbageSent[playerID] = 0;
 
-		playerTeamsIsTank[playerID] = true;
+//		playerTeamsIsTank[playerID] = true;
 
 		if(playerID == 0) {
 			prevPieceID = Piece.PIECE_NONE;
@@ -777,18 +777,18 @@ public class NetVSBattleMode extends NetDummyMode {
 		}
 	}
 
-	@Override
-	public void onFirst(GameEngine engine, int playerID) {
-		if( (!isPractice) && (isNetGameActive) ){
-			if(engine.ctrl.isPush(Controller.BUTTON_F)) {
-				if((!playerTeamsIsTank[0]) || (!isTank)) {
-					playerTeamsIsTank[0] = true;
-					isTank = true;
-					netLobby.netPlayerClient.send("game\ttank\n");
-				}
-			}
-		}
-	}
+//	@Override
+//	public void onFirst(GameEngine engine, int playerID) {
+//		if( (!isPractice) && (isNetGameActive) ){
+//			if(engine.ctrl.isPush(Controller.BUTTON_F)) {
+//				if((!playerTeamsIsTank[0]) || (!isTank)) {
+//					playerTeamsIsTank[0] = true;
+//					isTank = true;
+//					netLobby.netPlayerClient.send("game\ttank\n");
+//				}
+//			}
+//		}
+//	}
 
 	/*
 	 * Called at settings screen
@@ -2247,19 +2247,19 @@ public class NetVSBattleMode extends NetDummyMode {
 					owner.engine[0].statc[0] = owner.engine[0].goEnd;
 				}
 			}
-			if(message[3].equals("tank")){
-				String teamName = playerTeams[playerID];
-				for(int i = 0; i < MAX_PLAYERS; i++ ){
-					if((isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
-						if(i != playerID) {
-							playerTeamsIsTank[i] = false;
-						}
-					}
-
-				}
-				isTank = true;
-				playerTeamsIsTank[playerID] = true;
-			}
+//			if(message[3].equals("tank")){
+//				String teamName = playerTeams[playerID];
+//				for(int i = 0; i < MAX_PLAYERS; i++ ){
+//					if((isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
+//						if(i != playerID) {
+//							playerTeamsIsTank[i] = false;
+//						}
+//					}
+//
+//				}
+//				isTank = true;
+//				playerTeamsIsTank[playerID] = true;
+//			}
 			//  Attack
 			if(message[3].equals("attack")) {
 				//int pts = Integer.parseInt(message[4]);
@@ -2279,8 +2279,10 @@ public class NetVSBattleMode extends NetDummyMode {
 				scgettime[playerID] = 0;
 
 				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (sumPts > 0) && (!isPractice) && (!isNewcomer) &&
-				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || (!playerTeams[0].equalsIgnoreCase(playerTeams[playerID]))) &&
-				    (playerTeamsIsTank[0]) )
+					    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || !playerTeams[0].equalsIgnoreCase(playerTeams[playerID])))
+//				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (sumPts > 0) && (!isPractice) && (!isNewcomer) &&
+//				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || (!playerTeams[0].equalsIgnoreCase(playerTeams[playerID]))) &&
+//				    (playerTeamsIsTank[0]) )
 				{
 					int secondAdd = 0; //TODO: Allow for chunking of attack types other than b2b.
 					if(currentRoomInfo.b2bChunk){
