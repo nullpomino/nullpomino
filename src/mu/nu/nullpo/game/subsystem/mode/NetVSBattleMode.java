@@ -452,7 +452,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	@Override
 	public void modeInit(GameManager manager) {
-		owner = manager;
+		super.modeInit(manager);
 		receiver = owner.receiver;
 		currentRoomID = -1;
 		playerSeatNumber = -1;
@@ -505,26 +505,13 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * Netplay Initialization
-	 */
-	@Override
-	public void netplayInit(Object obj) {
-		super.netplayInit(obj);
-		log.debug("netplayInit");
-
-		if(obj instanceof NetLobbyFrame) {
-			onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
-		}
-	}
-
-	/**
 	 * When you join the room
 	 * @param lobby NetLobbyFrame
 	 * @param client NetPlayerClient
 	 * @param roomInfo NetRoomInfo
 	 */
-	private void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		log.debug("onJoin");
+	protected void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		log.debug("onJoin on NetVSBattleMode");
 
 		resetFlags();
 		owner.reset();

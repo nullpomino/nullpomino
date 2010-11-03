@@ -31,8 +31,6 @@ package mu.nu.nullpo.game.subsystem.mode;
 import java.io.IOException;
 import java.util.zip.Adler32;
 
-import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
-
 import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.BGMStatus;
@@ -48,8 +46,6 @@ import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetSPRecord;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
@@ -99,59 +95,14 @@ public class LineRaceMode extends NetDummyMode {
 	private float[][] rankingPPS;
 
 	/* ----- NET variables ----- */
-	/** NET: true if netplay */
-	private boolean netIsNetPlay;
-
-	/** NET: true if watch mode */
-	private boolean netIsWatch;
-
-	/** NET: Current room info */
-	private NetRoomInfo netCurrentRoomInfo;
-
-	/** NET: Number of spectators */
-	private int netNumSpectators;
-
-	/** NET: Previous piece informations */
-	private int netPrevPieceID, netPrevPieceX, netPrevPieceY, netPrevPieceDir;
-
-	/** NET: The skin player using */
-	private int netPlayerSkin;
-
-	/** NET: Player name */
-	private String netPlayerName;
-
-	/** NET: Replay send status (0:Before Send 1:Sending 2:Sent) */
-	private int netReplaySendStatus;
-
-	/** NET: Current round's online ranking rank */
-	private int netRankingRank;
-
-	/** NET: True if new personal record */
-	private boolean netIsPB;
-
-	/** NET: True if net ranking display mode */
-	private boolean netIsNetRankingDisplayMode;
-
-	/** NET: Net ranking cursor position */
-	private int netRankingCursor;
-
-	/** NET: Net ranking player's current rank */
-	private int netRankingMyRank;
-
-	/** NET: Net Rankings' rank */
-	private int[] netRankingPlace;
-
-	/** NET: Net Rankings' names */
-	private String[] netRankingName;
-
 	/** NET: Net Rankings' times */
-	private int[] netRankingTime;
+	protected int[] netRankingTime;
 
 	/** NET: Net Rankings' piece counts */
-	private int[] netRankingPiece;
+	protected int[] netRankingPiece;
 
 	/** NET: Net Rankings' PPS values */
-	private float[] netRankingPPS;
+	protected float[] netRankingPPS;
 
 	/*
 	 * Mode name
@@ -159,20 +110,6 @@ public class LineRaceMode extends NetDummyMode {
 	@Override
 	public String getName() {
 		return "LINE RACE";
-	}
-
-	/*
-	 * Mode Initialization
-	 */
-	@Override
-	public void modeInit(GameManager manager) {
-		super.modeInit(manager);
-		log.debug("modeInit");
-
-		netIsNetPlay = false;
-		netIsWatch = false;
-		netNumSpectators = 0;
-		netPlayerName = "";
 	}
 
 	/*
@@ -225,48 +162,19 @@ public class LineRaceMode extends NetDummyMode {
 		}
 	}
 
-	/*
-	 * NET: Netplay Initialization
-	 */
-	@Override
-	public void netplayInit(Object obj) {
-		super.netplayInit(obj);
-		log.debug("netplayInit");
-
-		if(obj instanceof NetLobbyFrame) {
-			onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
-		}
-	}
-
 	/**
 	 * NET: When you join the room
 	 * @param lobby NetLobbyFrame
 	 * @param client NetPlayerClient
 	 * @param roomInfo NetRoomInfo
 	 */
-	private void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		log.debug("onJoin");
-
-		netCurrentRoomInfo = roomInfo;
-		netIsNetPlay = true;
-		netIsWatch = (netLobby.netPlayerClient.getYourPlayerInfo().seatID == -1);
-		netNumSpectators = 0;
-		netUpdatePlayerExist();
-
-		if(netIsWatch) {
-			owner.engine[0].isNextVisible = false;
-			owner.engine[0].isHoldVisible = false;
-		}
+	protected void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		super.onJoin(lobby, client, roomInfo);
 
 		if(roomInfo != null) {
-			// Set to locked rule
+			// Load locked rule rankings
 			if((roomInfo.ruleLock) && (netLobby != null) && (netLobby.ruleOptLock != null)) {
-				log.info("Set locked rule");
-				Randomizer randomizer = GeneralUtil.loadRandomizer(netLobby.ruleOptLock.strRandomizer);
-				Wallkick wallkick = GeneralUtil.loadWallkick(netLobby.ruleOptLock.strWallkick);
-				owner.engine[0].ruleopt.copy(netLobby.ruleOptLock);
-				owner.engine[0].randomizer = randomizer;
-				owner.engine[0].wallkick = wallkick;
+				log.info("Load locked rule rankings");
 				loadRanking(owner.modeConfig, owner.engine[0].ruleopt.strRuleName);
 			}
 		}
@@ -317,35 +225,7 @@ public class LineRaceMode extends NetDummyMode {
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// NET: Net Ranking
 		if(netIsNetRankingDisplayMode) {
-			if((netRankingName != null) && (netRankingName.length > 0)) {
-				// Up
-				if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-					netRankingCursor--;
-					if(netRankingCursor < 0) netRankingCursor = netRankingPlace.length - 1;
-					engine.playSE("cursor");
-				}
-				// Down
-				if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-					netRankingCursor++;
-					if(netRankingCursor > netRankingPlace.length - 1) netRankingCursor = 0;
-					engine.playSE("cursor");
-				}
-				// Download
-				if(engine.ctrl.isPush(Controller.BUTTON_A)) {
-					engine.playSE("decide");
-					String strMsg = "spdownload\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\t"
-									+ NetUtil.urlEncode(netRankingName[netRankingCursor]) + "\n";
-					netLobby.netPlayerClient.send(strMsg);
-					netIsNetRankingDisplayMode = false;
-					owner.menuOnly = false;
-				}
-			}
-
-			// Exit
-			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
-				netIsNetRankingDisplayMode = false;
-				owner.menuOnly = false;
-			}
+			netOnUpdateNetPlayRanking(engine, goaltype);
 		}
 		// Menu
 		else if(engine.owner.replayMode == false) {
@@ -578,90 +458,6 @@ public class LineRaceMode extends NetDummyMode {
 
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		engine.meterValue = receiver.getMeterMax(engine);
-	}
-
-	/*
-	 * When the pieces can move
-	 */
-	@Override
-	public boolean onMove(GameEngine engine, int playerID) {
-		// NET: Send field, next, and stats
-		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) &&
-		   (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0))
-		{
-			netSendField(engine);
-			netSendStats(engine);
-		}
-		// NET: Send piece movement
-		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (engine.nowPieceObject != null) && (netNumSpectators > 0))
-		{
-			if( ((engine.nowPieceObject == null) && (netPrevPieceID != Piece.PIECE_NONE)) || (engine.manualLock) )
-			{
-				netPrevPieceID = Piece.PIECE_NONE;
-				netLobby.netPlayerClient.send("game\tpiece\t" + netPrevPieceID + "\t" + netPrevPieceX + "\t" + netPrevPieceY + "\t" +
-						netPrevPieceDir + "\t" + 0 + "\t" + engine.getSkin() + "\n");
-				netSendNextAndHold(engine);
-			}
-			else if((engine.nowPieceObject.id != netPrevPieceID) || (engine.nowPieceX != netPrevPieceX) ||
-					(engine.nowPieceY != netPrevPieceY) || (engine.nowPieceObject.direction != netPrevPieceDir))
-			{
-				netPrevPieceID = engine.nowPieceObject.id;
-				netPrevPieceX = engine.nowPieceX;
-				netPrevPieceY = engine.nowPieceY;
-				netPrevPieceDir = engine.nowPieceObject.direction;
-
-				int x = netPrevPieceX + engine.nowPieceObject.dataOffsetX[netPrevPieceDir];
-				int y = netPrevPieceY + engine.nowPieceObject.dataOffsetY[netPrevPieceDir];
-				netLobby.netPlayerClient.send("game\tpiece\t" + netPrevPieceID + "\t" + x + "\t" + y + "\t" + netPrevPieceDir + "\t" +
-								engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[netPrevPieceID] + "\t" + engine.getSkin() + "\n");
-				netSendNextAndHold(engine);
-			}
-		}
-		// NET: Stop game in watch mode
-		if(netIsWatch) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/*
-	 * When the piece locked
-	 */
-	@Override
-	public void pieceLocked(GameEngine engine, int playerID, int lines) {
-		// NET: Send field and stats
-		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
-			netSendField(engine);
-			netSendStats(engine);
-		}
-	}
-
-	/*
-	 * Line clear
-	 */
-	@Override
-	public boolean onLineClear(GameEngine engine, int playerID) {
-		// NET: Send field and stats
-		if((engine.statc[0] == 1) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
-			netSendField(engine);
-			netSendStats(engine);
-		}
-		return false;
-	}
-
-	/*
-	 * ARE
-	 */
-	@Override
-	public boolean onARE(GameEngine engine, int playerID) {
-		// NET: Send field, next, and stats
-		if((engine.statc[0] == 0) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
-			netSendField(engine);
-			netSendNextAndHold(engine);
-			netSendStats(engine);
-		}
-		return false;
 	}
 
 	/*
@@ -970,30 +766,10 @@ public class LineRaceMode extends NetDummyMode {
 	}
 
 	/**
-	 * NET: Update player count
-	 */
-	private void netUpdatePlayerExist() {
-		netNumSpectators = 0;
-		netPlayerName = "";
-
-		if((netCurrentRoomInfo.roomID != -1) && (netLobby != null)) {
-			for(NetPlayerInfo pInfo: netLobby.updateSameRoomPlayerInfoList()) {
-				if(pInfo.roomID == netCurrentRoomInfo.roomID) {
-					if(pInfo.seatID == 0) {
-						netPlayerName = pInfo.strName;
-					} else if(pInfo.seatID == -1) {
-						netNumSpectators++;
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * NET: Send various in-game stats (as well as goaltype)
 	 * @param engine GameEngine
 	 */
-	private void netSendStats(GameEngine engine) {
+	protected void netSendStats(GameEngine engine) {
 		String msg = "game\tstats\t";
 		msg += engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
 		msg += engine.statistics.time + "\t" + engine.statistics.lpm + "\t";
@@ -1007,7 +783,7 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send end-of-game stats
 	 * @param engine GameEngine
 	 */
-	private void netSendEndGameStats(GameEngine engine) {
+	protected void netSendEndGameStats(GameEngine engine) {
 		String subMsg = "";
 		subMsg += "LINE;" + engine.statistics.lines + "/" + GOAL_TABLE[goaltype] + "\t";
 		subMsg += "PIECE;" + engine.statistics.totalPieceLocked + "\t";
@@ -1023,7 +799,7 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send game options to all spectators
 	 * @param engine GameEngine
 	 */
-	private void netSendOptions(GameEngine engine) {
+	protected void netSendOptions(GameEngine engine) {
 		String msg = "game\toption\t";
 		msg += engine.speed.gravity + "\t" + engine.speed.denominator + "\t" + engine.speed.are + "\t";
 		msg += engine.speed.areLine + "\t" + engine.speed.lineDelay + "\t" + engine.speed.lockDelay + "\t";
@@ -1036,7 +812,7 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send replay data
 	 * @param engine GameEngine
 	 */
-	private void netSendReplay(GameEngine engine) {
+	protected void netSendReplay(GameEngine engine) {
 		if((engine.statistics.lines >= GOAL_TABLE[goaltype]) && (!big) && (engine.ai == null)) {
 			NetSPRecord record = new NetSPRecord();
 			record.setReplayProp(owner.replayProp);
