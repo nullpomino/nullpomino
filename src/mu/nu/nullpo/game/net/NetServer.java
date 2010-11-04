@@ -2148,7 +2148,10 @@ public class NetServer {
 
 			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType);
 			if(ranking != null) {
+				// Get from all-time leaderboard...
 				NetSPRecord record = ranking.getRecord(strName);
+				// or from Personal Best when not found in the leaderboard.
+				if(record == null) record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
 
 				if(record != null) {
 					Adler32 checksumObj = new Adler32();

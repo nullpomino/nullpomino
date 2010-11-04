@@ -15,6 +15,7 @@ import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
 import mu.nu.nullpo.game.net.NetRoomInfo;
+import mu.nu.nullpo.game.net.NetSPRecord;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
@@ -33,7 +34,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: Lobby (Declared in NetDummyMode) */
 	protected NetLobbyFrame netLobby;
 
-	/** NET: GameManager (Declared in NetDummyMode) */
+	/** NET: GameManager (Declared in NetDummyMode; Don't override it!) */
 	protected GameManager owner;
 
 	/** NET: true if netplay (Declared in NetDummyMode) */
@@ -75,11 +76,29 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: Net ranking player's current rank (Declared in NetDummyMode) */
 	protected int netRankingMyRank;
 
+	/** NET: Net ranking type (Declared in NetDummyMode) */
+	protected int netRankingType;
+
 	/** NET: Net Rankings' rank (Declared in NetDummyMode) */
 	protected int[] netRankingPlace;
 
 	/** NET: Net Rankings' names (Declared in NetDummyMode) */
 	protected String[] netRankingName;
+
+	/** NET: Net Rankings' times (Declared in NetDummyMode) */
+	protected int[] netRankingTime;
+
+	/** NET: Net Rankings' piece counts (Declared in NetDummyMode) */
+	protected int[] netRankingPiece;
+
+	/** NET: Net Rankings' PPS values (Declared in NetDummyMode) */
+	protected float[] netRankingPPS;
+
+	/** NET: Net Rankings' line counts (Declared in NetDummyMode) */
+	protected int[] netRankingLines;
+
+	/** NET: Net Rankings' score/line (Declared in NetDummyMode) */
+	protected double[] netRankingSPL;
 
 	/*
 	 * NET: Mode name
@@ -415,6 +434,10 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			netRankingRank = Integer.parseInt(message[1]);
 			netIsPB = Boolean.parseBoolean(message[2]);
 		}
+		// Netplay Ranking
+		if(message[0].equals("spranking")) {
+			netRecvNetPlayRanking(owner.engine[0], message);
+		}
 		// Reset
 		if(message[0].equals("reset1p")) {
 			if(netIsWatch) {
@@ -747,6 +770,115 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				netIsNetRankingDisplayMode = false;
 				owner.menuOnly = false;
 			}
+		}
+	}
+
+	/**
+	 * Render 1P NetPlay online ranking screen. Usually called from renderSetting(engine, playerID).
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 * @param receiver EventReceiver
+	 */
+	protected void netOnRenderNetPlayRanking(GameEngine engine, int playerID, EventReceiver receiver) {
+		if(netIsNetRankingDisplayMode) {
+			if((netRankingPlace != null) && (netRankingPlace.length > 0)) {
+				receiver.drawMenuFont(engine, playerID, 1, 1,
+						"ONLINE RANKING (" + (netRankingCursor+1) + "/" + netRankingPlace.length + ")",
+						EventReceiver.COLOR_GREEN);
+
+				int startIndex = (netRankingCursor / 25) * 25;
+				int endIndex = startIndex + 25;
+				if(endIndex > netRankingPlace.length) endIndex = netRankingPlace.length;
+				int c = 0;
+
+				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     PIECE PPS    NAME", EventReceiver.COLOR_BLUE);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE SPL    NAME", EventReceiver.COLOR_BLUE);
+				}
+
+				for(int i = startIndex; i < endIndex; i++) {
+					if(i == netRankingCursor) {
+						receiver.drawMenuFont(engine, playerID, 0, 4 + c, "b", EventReceiver.COLOR_RED);
+					}
+
+					int rankColor = (i == netRankingMyRank) ? EventReceiver.COLOR_PINK : EventReceiver.COLOR_YELLOW;
+					if(netRankingPlace[i] == -1) {
+						receiver.drawMenuFont(engine, playerID, 1, 4 + c, "N/A", rankColor);
+					} else {
+						receiver.drawMenuFont(engine, playerID, 1, 4 + c, String.format("%3d", netRankingPlace[i]+1), rankColor);
+					}
+
+					if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[i]), (i == netRankingCursor));
+						receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingPiece[i], (i == netRankingCursor));
+						receiver.drawMenuFont(engine, playerID, 20, 4 + c, String.format("%.5g", netRankingPPS[i]), (i == netRankingCursor));
+						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[i], (i == netRankingCursor));
+					} else if(netRankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[i]), (i == netRankingCursor));
+						receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingLines[i], (i == netRankingCursor));
+						receiver.drawMenuFont(engine, playerID, 19, 4 + c, String.format("%.5g", netRankingSPL[i]), (i == netRankingCursor));
+						receiver.drawTTFMenuFont(engine, playerID, 26, 4 + c, netRankingName[i], (i == netRankingCursor));
+					}
+
+					c++;
+				}
+			} else if((netRankingPlace != null) && (netRankingPlace.length == 0)) {
+				receiver.drawMenuFont(engine, playerID, 1, 1, "NO DATA", EventReceiver.COLOR_DARKBLUE);
+			} else if(netRankingPlace == null) {
+				receiver.drawMenuFont(engine, playerID, 1, 1, "LOADING...", EventReceiver.COLOR_CYAN);
+			}
+		}
+	}
+
+	/**
+	 * Receive 1P NetPlay ranking.
+	 * @param engine GameEngine
+	 * @param message Message array
+	 */
+	protected void netRecvNetPlayRanking(GameEngine engine, String[] message) {
+		if(message.length > 6) {
+			netRankingType = Integer.parseInt(message[4]);
+			int maxRecords = Integer.parseInt(message[5]);
+			String[] arrayRow = message[6].split(";");
+			maxRecords = Math.min(maxRecords, arrayRow.length);
+
+			netRankingPlace = new int[maxRecords];
+			netRankingName = new String[maxRecords];
+			netRankingTime = new int[maxRecords];
+			netRankingPiece = new int[maxRecords];
+			netRankingPPS = new float[maxRecords];
+			netRankingLines = new int[maxRecords];
+			netRankingSPL = new double[maxRecords];
+
+			for(int i = 0; i < maxRecords; i++) {
+				String[] arrayData = arrayRow[i].split(",");
+				netRankingPlace[i] = Integer.parseInt(arrayData[0]);
+				netRankingName[i] = NetUtil.urlDecode(arrayData[1]);
+
+				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
+					netRankingTime[i] = Integer.parseInt(arrayData[2]);
+					netRankingPiece[i] = Integer.parseInt(arrayData[3]);
+					netRankingPPS[i] = Float.parseFloat(arrayData[4]);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
+					netRankingTime[i] = Integer.parseInt(arrayData[2]);
+					netRankingLines[i] = Integer.parseInt(arrayData[3]);
+					netRankingSPL[i] = Double.parseDouble(arrayData[4]);
+				}
+
+				if(netRankingName[i].equals(netPlayerName)) {
+					netRankingCursor = i;
+					netRankingMyRank = i;
+				}
+			}
+		} else {
+			netRankingPlace = new int[0];
+			netRankingName = new String[0];
+			netRankingTime = new int[0];
+			netRankingPiece = new int[0];
+			netRankingPPS = new float[0];
+			netRankingLines = new int[0];
+			netRankingSPL = new double[0];
 		}
 	}
 

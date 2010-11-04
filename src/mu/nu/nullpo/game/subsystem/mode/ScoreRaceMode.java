@@ -28,7 +28,6 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
-import java.io.IOException;
 import java.util.zip.Adler32;
 
 import org.apache.log4j.Logger;
@@ -144,16 +143,6 @@ public class ScoreRaceMode extends NetDummyMode {
 
 	/** Rankings' score/line */
 	private double[][] rankingSPL;
-
-	/* ----- NET variables ----- */
-	/** NET: Net Rankings' times */
-	protected int[] netRankingTime;
-
-	/** NET: Net Rankings' line counts */
-	protected int[] netRankingLines;
-
-	/** NET: Net Rankings' score/line */
-	protected double[] netRankingSPL;
 
 	/*
 	 * Mode name
@@ -463,41 +452,7 @@ public class ScoreRaceMode extends NetDummyMode {
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(netIsNetRankingDisplayMode) {
 			// NET: Netplay Ranking
-			if((netRankingPlace != null) && (netRankingPlace.length > 0)) {
-				receiver.drawMenuFont(engine, playerID, 1, 1,
-						"ONLINE RANKING (" + (netRankingCursor+1) + "/" + netRankingPlace.length + ")",
-						EventReceiver.COLOR_GREEN);
-
-				receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE SPL    NAME", EventReceiver.COLOR_BLUE);
-
-				int startIndex = (netRankingCursor / 25) * 25;
-				int endIndex = startIndex + 25;
-				if(endIndex > netRankingPlace.length) endIndex = netRankingPlace.length;
-				int c = 0;
-
-				for(int i = startIndex; i < endIndex; i++) {
-					if(i == netRankingCursor) {
-						receiver.drawMenuFont(engine, playerID, 0, 4 + c, "b", EventReceiver.COLOR_RED);
-					}
-
-					int rankColor = (i == netRankingMyRank) ? EventReceiver.COLOR_PINK : EventReceiver.COLOR_YELLOW;
-					if(netRankingPlace[i] == -1) {
-						receiver.drawMenuFont(engine, playerID, 1, 4 + c, "N/A", rankColor);
-					} else {
-						receiver.drawMenuFont(engine, playerID, 1, 4 + c, String.format("%3d", netRankingPlace[i]+1), rankColor);
-					}
-					receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[i]), (i == netRankingCursor));
-					receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingLines[i], (i == netRankingCursor));
-					receiver.drawMenuFont(engine, playerID, 19, 4 + c, String.format("%.5g", netRankingSPL[i]), (i == netRankingCursor));
-					receiver.drawTTFMenuFont(engine, playerID, 26, 4 + c, netRankingName[i], (i == netRankingCursor));
-
-					c++;
-				}
-			} else if((netRankingPlace != null) && (netRankingPlace.length == 0)) {
-				receiver.drawMenuFont(engine, playerID, 1, 1, "NO DATA", EventReceiver.COLOR_DARKBLUE);
-			} else if(netRankingPlace == null) {
-				receiver.drawMenuFont(engine, playerID, 1, 1, "LOADING...", EventReceiver.COLOR_CYAN);
-			}
+			netOnRenderNetPlayRanking(engine, playerID, receiver);
 		} else if(engine.statc[2] < 10) {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GRAVITY", String.valueOf(engine.speed.gravity),
@@ -1098,51 +1053,6 @@ public class ScoreRaceMode extends NetDummyMode {
 			netLobby.netPlayerClient.send("spsend\t" + sChecksum + "\t" + strData + "\n");
 		} else {
 			netReplaySendStatus = 2;
-		}
-	}
-
-	/*
-	 * NET: Process netplay messages
-	 */
-	@Override
-	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
-		super.netlobbyOnMessage(lobby, client, message);
-
-		// Netplay Ranking
-		if(message[0].equals("spranking")) {
-			int maxRecords = Integer.parseInt(message[5]);
-			log.debug("spranking message.length:" + message.length + " maxRecords:" + maxRecords);
-
-			if(message.length > 6) {
-				String[] arrayRow = message[6].split(";");
-				maxRecords = Math.min(maxRecords, arrayRow.length);
-
-				netRankingPlace = new int[maxRecords];
-				netRankingName = new String[maxRecords];
-				netRankingTime = new int[maxRecords];
-				netRankingLines = new int[maxRecords];
-				netRankingSPL = new double[maxRecords];
-
-				for(int i = 0; i < maxRecords; i++) {
-					String[] arrayData = arrayRow[i].split(",");
-					netRankingPlace[i] = Integer.parseInt(arrayData[0]);
-					netRankingName[i] = NetUtil.urlDecode(arrayData[1]);
-					netRankingTime[i] = Integer.parseInt(arrayData[2]);
-					netRankingLines[i] = Integer.parseInt(arrayData[3]);
-					netRankingSPL[i] = Double.parseDouble(arrayData[4]);
-
-					if(netRankingName[i].equals(netPlayerName)) {
-						netRankingCursor = i;
-						netRankingMyRank = i;
-					}
-				}
-			} else {
-				netRankingPlace = new int[0];
-				netRankingName = new String[0];
-				netRankingTime = new int[0];
-				netRankingLines = new int[0];
-				netRankingSPL = new double[0];
-			}
 		}
 	}
 }
