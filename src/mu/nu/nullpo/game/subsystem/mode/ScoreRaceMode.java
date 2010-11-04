@@ -34,14 +34,11 @@ import java.util.zip.Adler32;
 import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.BGMStatus;
-import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
-import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
-import mu.nu.nullpo.game.net.NetPlayerInfo;
 import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetSPRecord;
 import mu.nu.nullpo.game.net.NetUtil;
@@ -188,20 +185,7 @@ public class ScoreRaceMode extends NetDummyMode {
 
 		engine.framecolor = GameEngine.FRAME_COLOR_YELLOW;
 
-		netPrevPieceID = Piece.PIECE_NONE;
-		netPrevPieceX = 0;
-		netPrevPieceY = 0;
-		netPrevPieceDir = 0;
-		netPlayerSkin = 0;
-		netReplaySendStatus = 0;
-		netRankingRank = -1;
-		netIsPB = false;
-		netIsNetRankingDisplayMode = false;
-
-		if(netIsWatch) {
-			engine.isNextVisible = false;
-			engine.isHoldVisible = false;
-		}
+		netPlayerInit(engine, playerID);
 
 		if(engine.owner.replayMode == false) {
 			presetNumber = engine.owner.modeConfig.getProperty("scorerace.presetNumber", 0);
@@ -876,70 +860,6 @@ public class ScoreRaceMode extends NetDummyMode {
 	}
 
 	/*
-	 * Game Over
-	 */
-	@Override
-	public boolean onGameOver(GameEngine engine, int playerID) {
-		// NET: Send messages / Wait for messages
-		if(netIsNetPlay){
-			if(!netIsWatch) {
-				if(engine.statc[0] == 0) {
-					if(netNumSpectators > 0) {
-						netSendField(engine);
-						netSendNextAndHold(engine);
-						netSendStats(engine);
-					}
-					netSendEndGameStats(engine);
-					netLobby.netPlayerClient.send("dead\t-1\n");
-				}
-			} else {
-				if(engine.statc[0] < engine.field.getHeight() + 1 + 180) {
-					return false;
-				} else {
-					engine.field.reset();
-					engine.stat = GameEngine.STAT_RESULT;
-					engine.resetStatc();
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/*
-	 * Results screen
-	 */
-	public boolean onResult(GameEngine engine, int playerID) {
-		// NET: Retry
-		if(netIsNetPlay) {
-			engine.allowTextRenderByReceiver = false;
-
-			// Replay Send
-			if(netIsWatch || owner.replayMode) {
-				netReplaySendStatus = 2;
-			} else if(netReplaySendStatus == 0) {
-				netReplaySendStatus = 1;
-				netSendReplay(engine);
-			}
-
-			// Retry
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && !netIsWatch && (netReplaySendStatus == 2)) {
-				engine.playSE("decide");
-				if(netNumSpectators > 0) {
-					netLobby.netPlayerClient.send("game\tretry\n");
-					netSendOptions(engine);
-				}
-				owner.reset();
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/*
 	 * Render results screen
 	 */
 	@Override
@@ -1081,6 +1001,29 @@ public class ScoreRaceMode extends NetDummyMode {
 	}
 
 	/**
+	 * NET: Receive various in-game stats (as well as goaltype)
+	 */
+	@Override
+	protected void netRecvStats(GameEngine engine, String[] message) {
+		engine.statistics.score = Integer.parseInt(message[4]);
+		engine.statistics.lines = Integer.parseInt(message[5]);
+		engine.statistics.totalPieceLocked = Integer.parseInt(message[6]);
+		engine.statistics.time = Integer.parseInt(message[7]);
+		engine.statistics.spm = Double.parseDouble(message[8]);
+		engine.statistics.lpm = Float.parseFloat(message[9]);
+		engine.statistics.spl = Double.parseDouble(message[10]);
+		goaltype = Integer.parseInt(message[11]);
+		engine.gameActive = Boolean.parseBoolean(message[12]);
+		engine.timerActive = Boolean.parseBoolean(message[13]);
+		lastscore = Integer.parseInt(message[14]);
+		scgettime = Integer.parseInt(message[15]);
+		lastevent = Integer.parseInt(message[16]);
+		lastb2b = Boolean.parseBoolean(message[17]);
+		lastcombo = Integer.parseInt(message[18]);
+		lastpiece = Integer.parseInt(message[19]);
+	}
+
+	/**
 	 * NET: Send end-of-game stats
 	 * @param engine GameEngine
 	 */
@@ -1114,6 +1057,28 @@ public class ScoreRaceMode extends NetDummyMode {
 	}
 
 	/**
+	 * NET: Receive game options
+	 */
+	@Override
+	protected void netRecvOptions(GameEngine engine, String[] message) {
+		engine.speed.gravity = Integer.parseInt(message[4]);
+		engine.speed.denominator = Integer.parseInt(message[5]);
+		engine.speed.are = Integer.parseInt(message[6]);
+		engine.speed.areLine = Integer.parseInt(message[7]);
+		engine.speed.lineDelay = Integer.parseInt(message[8]);
+		engine.speed.lockDelay = Integer.parseInt(message[9]);
+		engine.speed.das = Integer.parseInt(message[10]);
+		bgmno = Integer.parseInt(message[11]);
+		big = Boolean.parseBoolean(message[12]);
+		goaltype = Integer.parseInt(message[13]);
+		tspinEnableType = Integer.parseInt(message[14]);
+		enableTSpinKick = Boolean.parseBoolean(message[15]);
+		enableB2B = Boolean.parseBoolean(message[16]);
+		enableCombo = Boolean.parseBoolean(message[17]);
+		presetNumber = Integer.parseInt(message[18]);
+	}
+
+	/**
 	 * NET: Send replay data
 	 * @param engine GameEngine
 	 */
@@ -1137,74 +1102,12 @@ public class ScoreRaceMode extends NetDummyMode {
 	}
 
 	/*
-	 * Retry key on netplay
+	 * NET: Process netplay messages
 	 */
-	@Override
-	public void netplayOnRetryKey(GameEngine engine, int playerID) {
-		if(netIsNetPlay && !netIsWatch) {
-			owner.reset();
-			netLobby.netPlayerClient.send("reset1p\n");
-			netSendOptions(engine);
-		}
-	}
-
 	@Override
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
 		super.netlobbyOnMessage(lobby, client, message);
 
-		// Player status update
-		if(message[0].equals("playerupdate")) {
-			netUpdatePlayerExist();
-		}
-		// When someone logout
-		if(message[0].equals("playerlogout")) {
-			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
-
-			if(pInfo.roomID == netCurrentRoomInfo.roomID) {
-				netUpdatePlayerExist();
-			}
-		}
-		// Game started
-		if(message[0].equals("start")) {
-			log.debug("NET: Game started");
-
-			if(netIsWatch) {
-				owner.reset();
-				owner.engine[0].stat = GameEngine.STAT_READY;
-				owner.engine[0].resetStatc();
-			}
-		}
-		// Dead
-		if(message[0].equals("dead")) {
-			log.debug("NET: Dead");
-
-			if(netIsWatch) {
-				owner.engine[0].gameActive = false;
-				owner.engine[0].timerActive = false;
-
-				if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[0].stat != GameEngine.STAT_RESULT)) {
-					owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-					owner.engine[0].resetStatc();
-				}
-			}
-		}
-		// Replay send fail
-		if(message[0].equals("spsendng")) {
-			netReplaySendStatus = 1;
-			netSendReplay(owner.engine[0]);
-		}
-		// Replay send complete
-		if(message[0].equals("spsendok")) {
-			netReplaySendStatus = 2;
-			netRankingRank = Integer.parseInt(message[1]);
-			netIsPB = Boolean.parseBoolean(message[2]);
-		}
-		// Reset
-		if(message[0].equals("reset1p")) {
-			if(netIsWatch) {
-				owner.reset();
-			}
-		}
 		// Netplay Ranking
 		if(message[0].equals("spranking")) {
 			int maxRecords = Integer.parseInt(message[5]);
@@ -1239,173 +1142,6 @@ public class ScoreRaceMode extends NetDummyMode {
 				netRankingTime = new int[0];
 				netRankingLines = new int[0];
 				netRankingSPL = new double[0];
-			}
-		}
-		// Game messages
-		if(message[0].equals("game")) {
-			if(netIsWatch) {
-				GameEngine engine = owner.engine[0];
-				if(engine.field == null) {
-					engine.field = new Field();
-				}
-
-				// Move cursor
-				if(message[3].equals("cursor")) {
-					if(engine.stat == GameEngine.STAT_SETTING) {
-						engine.statc[2] = Integer.parseInt(message[4]);
-						engine.playSE("cursor");
-					}
-				}
-				// Change game options
-				if(message[3].equals("option")) {
-					engine.speed.gravity = Integer.parseInt(message[4]);
-					engine.speed.denominator = Integer.parseInt(message[5]);
-					engine.speed.are = Integer.parseInt(message[6]);
-					engine.speed.areLine = Integer.parseInt(message[7]);
-					engine.speed.lineDelay = Integer.parseInt(message[8]);
-					engine.speed.lockDelay = Integer.parseInt(message[9]);
-					engine.speed.das = Integer.parseInt(message[10]);
-					bgmno = Integer.parseInt(message[11]);
-					big = Boolean.parseBoolean(message[12]);
-					goaltype = Integer.parseInt(message[13]);
-					tspinEnableType = Integer.parseInt(message[14]);
-					enableTSpinKick = Boolean.parseBoolean(message[15]);
-					enableB2B = Boolean.parseBoolean(message[16]);
-					enableCombo = Boolean.parseBoolean(message[17]);
-					presetNumber = Integer.parseInt(message[18]);
-				}
-				// Field
-				if(message[3].equals("field")) {
-					if(message.length > 5) {
-						engine.nowPieceObject = null;
-						engine.holdDisable = false;
-						if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
-						int skin = Integer.parseInt(message[4]);
-						int highestWallY = Integer.parseInt(message[5]);
-						netPlayerSkin = skin;
-						if(message.length > 7) {
-							String strFieldData = message[6];
-							boolean isCompressed = Boolean.parseBoolean(message[7]);
-							if(isCompressed) {
-								strFieldData = NetUtil.decompressString(strFieldData);
-							}
-							engine.field.stringToField(strFieldData, skin, highestWallY, highestWallY);
-						} else {
-							engine.field.reset();
-						}
-					}
-				}
-				// Stats
-				if(message[3].equals("stats")) {
-					engine.statistics.score = Integer.parseInt(message[4]);
-					engine.statistics.lines = Integer.parseInt(message[5]);
-					engine.statistics.totalPieceLocked = Integer.parseInt(message[6]);
-					engine.statistics.time = Integer.parseInt(message[7]);
-					engine.statistics.spm = Double.parseDouble(message[8]);
-					engine.statistics.lpm = Float.parseFloat(message[9]);
-					engine.statistics.spl = Double.parseDouble(message[10]);
-					goaltype = Integer.parseInt(message[11]);
-					engine.gameActive = Boolean.parseBoolean(message[12]);
-					engine.timerActive = Boolean.parseBoolean(message[13]);
-					lastscore = Integer.parseInt(message[14]);
-					scgettime = Integer.parseInt(message[15]);
-					lastevent = Integer.parseInt(message[16]);
-					lastb2b = Boolean.parseBoolean(message[17]);
-					lastcombo = Integer.parseInt(message[18]);
-					lastpiece = Integer.parseInt(message[19]);
-				}
-				// Current Piece
-				if(message[3].equals("piece")) {
-					int id = Integer.parseInt(message[4]);
-
-					if(id >= 0) {
-						int pieceX = Integer.parseInt(message[5]);
-						int pieceY = Integer.parseInt(message[6]);
-						int pieceDir = Integer.parseInt(message[7]);
-						//int pieceBottomY = Integer.parseInt(message[8]);
-						int pieceColor = Integer.parseInt(message[9]);
-						int pieceSkin = Integer.parseInt(message[10]);
-
-						engine.nowPieceObject = new Piece(id);
-						engine.nowPieceObject.direction = pieceDir;
-						engine.nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
-						engine.nowPieceObject.setColor(pieceColor);
-						engine.nowPieceObject.setSkin(pieceSkin);
-						engine.nowPieceX = pieceX;
-						engine.nowPieceY = pieceY;
-						//engine.nowPieceBottomY = pieceBottomY;
-						engine.nowPieceObject.updateConnectData();
-						engine.nowPieceBottomY =
-							engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
-
-						if((engine.stat != GameEngine.STAT_EXCELLENT) && (engine.stat != GameEngine.STAT_GAMEOVER) &&
-						   (engine.stat != GameEngine.STAT_RESULT))
-						{
-							engine.gameActive = true;
-							engine.timerActive = true;
-							engine.stat = GameEngine.STAT_MOVE;
-							engine.statc[0] = 2;
-						}
-
-						netPlayerSkin = pieceSkin;
-					} else {
-						engine.nowPieceObject = null;
-					}
-				}
-				// Next and Hold
-				if(message[3].equals("next")) {
-					int maxNext = Integer.parseInt(message[4]);
-					engine.ruleopt.nextDisplay = maxNext;
-					engine.holdDisable = Boolean.parseBoolean(message[5]);
-
-					for(int i = 0; i < maxNext + 1; i++) {
-						if(i + 6 < message.length) {
-							String[] strPieceData = message[i + 6].split(";");
-							int pieceID = Integer.parseInt(strPieceData[0]);
-							int pieceDirection = Integer.parseInt(strPieceData[1]);
-							int pieceColor = Integer.parseInt(strPieceData[2]);
-
-							if(i == 0) {
-								if(pieceID == Piece.PIECE_NONE) {
-									engine.holdPieceObject = null;
-								} else {
-									engine.holdPieceObject = new Piece(pieceID);
-									engine.holdPieceObject.direction = pieceDirection;
-									engine.holdPieceObject.setColor(pieceColor);
-									engine.holdPieceObject.setSkin(netPlayerSkin);
-								}
-							} else {
-								if((engine.nextPieceArrayObject == null) || (engine.nextPieceArrayObject.length < maxNext)) {
-									engine.nextPieceArrayObject = new Piece[maxNext];
-								}
-								engine.nextPieceArrayObject[i - 1] = new Piece(pieceID);
-								engine.nextPieceArrayObject[i - 1].direction = pieceDirection;
-								engine.nextPieceArrayObject[i - 1].setColor(pieceColor);
-								engine.nextPieceArrayObject[i - 1].setSkin(netPlayerSkin);
-							}
-						}
-					}
-
-					engine.isNextVisible = true;
-					engine.isHoldVisible = true;
-				}
-				// Ending
-				if(message[3].equals("ending")) {
-					engine.ending = 1;
-					engine.timerActive = false;
-					engine.gameActive = false;
-					engine.stat = GameEngine.STAT_ENDINGSTART;
-					engine.resetStatc();
-				}
-				// Retry
-				if(message[3].equals("retry")) {
-					engine.ending = 0;
-					engine.timerActive = false;
-					engine.gameActive = false;
-					engine.stat = GameEngine.STAT_SETTING;
-					engine.resetStatc();
-					engine.playSE("decide");
-				}
 			}
 		}
 	}

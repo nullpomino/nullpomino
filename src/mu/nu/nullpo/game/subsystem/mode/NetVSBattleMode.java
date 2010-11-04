@@ -1874,6 +1874,13 @@ public class NetVSBattleMode extends NetDummyMode {
 		}
 	}
 
+	/**
+	 * No retry key.
+	 */
+	@Override
+	public void netplayOnRetryKey(GameEngine engine, int playerID) {
+	}
+
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
 		for(int i = 0; i < getPlayers(); i++) {
 			owner.engine[i].stat = GameEngine.STAT_NOTHING;

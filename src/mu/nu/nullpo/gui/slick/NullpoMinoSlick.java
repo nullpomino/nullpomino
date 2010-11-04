@@ -47,6 +47,7 @@ import mu.nu.nullpo.util.ModeManager;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -218,6 +219,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 		Log.setLogSystem(new LogSystemLog4j());
 		log.info("NullpoMinoSlick Start");
 
+		try {
+			log.info("Driver adapter:" + Display.getAdapter() + ", Driver version:" + Display.getVersion());
+		} catch (Throwable e) {
+			log.warn("Cannot get driver informations", e);
+		}
+
 		propConfig = new CustomProperties();
 		propGlobal = new CustomProperties();
 		propMusic = new CustomProperties();
@@ -335,7 +342,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			appGameContainer.setDisplayMode(640, 480, propConfig.getProperty("option.fullscreen", false));
 			appGameContainer.start();
 		} catch (Throwable e) {
-			log.error("Game initialize failed", e);
+			log.fatal("Game initialize failed", e);
 		}
 
 		stopObserverClient();
