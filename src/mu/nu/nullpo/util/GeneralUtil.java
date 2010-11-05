@@ -29,8 +29,11 @@
 package mu.nu.nullpo.util;
 
 import java.io.FileInputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
@@ -83,12 +86,9 @@ public class GeneralUtil {
 	 * @return Replay's filename
 	 */
 	public static String getReplayFilename() {
-		GregorianCalendar currentTime = new GregorianCalendar();
-		int month = currentTime.get(Calendar.MONTH) + 1;
-
-		String filename = String.format("%04d_%02d_%02d_%02d_%02d_%02d.rep", currentTime.get(Calendar.YEAR), month, currentTime
-				.get(Calendar.DATE), currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE), currentTime.get(Calendar.SECOND));
-
+		Calendar c = Calendar.getInstance();
+		DateFormat dfm = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		String filename = dfm.format(c.getTime()) + ".rep";
 		return filename;
 	}
 
@@ -98,9 +98,8 @@ public class GeneralUtil {
 	 * @return Date and Time String
 	 */
 	public static String getCalendarString(Calendar c) {
-		return  String.format("%04d-%02d-%02d %02d:%02d:%02d",
-				c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE),
-				c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+		DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return dfm.format(c.getTime());
 	}
 
 	/**
@@ -109,8 +108,8 @@ public class GeneralUtil {
 	 * @return Date String
 	 */
 	public static String getCalendarStringDate(Calendar c) {
-		return  String.format("%04d-%02d-%02d",
-				c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
+		DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
+		return dfm.format(c.getTime());
 	}
 
 	/**
@@ -119,8 +118,40 @@ public class GeneralUtil {
 	 * @return Time String
 	 */
 	public static String getCalendarStringTime(Calendar c) {
-		return  String.format("%02d:%02d:%02d",
-				c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+		DateFormat dfm = new SimpleDateFormat("HH:mm:ss");
+		return dfm.format(c.getTime());
+	}
+
+	/**
+	 * Export a Calendar to a String for saving/sending. TimeZone is always GMT.
+	 * @param c Calendar
+	 * @return Calendar String (Each field is separated with a hyphen '-')
+	 */
+	public static String exportCalendarString(Calendar c) {
+		DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		dfm.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return dfm.format(c.getTime());
+	}
+
+	/**
+	 * Create a Calendar by using a String that came from exportCalendarString. TimeZone is always GMT.
+	 * @param s String (Each field is separated with a hyphen '-')
+	 * @return Calendar (null if fails)
+	 */
+	public static Calendar importCalendarString(String s) {
+		DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		dfm.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+
+		try {
+			Date date = dfm.parse(s);
+			c.setTime(date);
+		} catch (Exception e) {
+			return null;
+		}
+
+		return c;
 	}
 
 	/**

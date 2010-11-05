@@ -882,8 +882,8 @@ public class NetServer {
 			// Banned
 			log.info("Connection is banned:" + getHostName(socketChannel));
 			Calendar endDate = ban.getEndDate();
-			String strStart = GeneralUtil.getCalendarString(ban.startDate);
-			String strExpire = (endDate == null) ? "" : GeneralUtil.getCalendarString(endDate);
+			String strStart = GeneralUtil.exportCalendarString(ban.startDate);
+			String strExpire = (endDate == null) ? "" : GeneralUtil.exportCalendarString(endDate);
 			send(socketChannel, "banned\t" + strStart + "\t" + strExpire + "\n");
 			this.pendingChanges.add(new ChangeRequest(socketChannel, ChangeRequest.DISCONNECT, 0));
 		} else {

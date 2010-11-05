@@ -21,8 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.Locale;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -1111,8 +1111,13 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			logout();
 
 			labelLoginMessage.setForeground(Color.red);
-			String strStart = message[1];
-			String strExpire = ((message.length > 2) && (message[2].length() > 0)) ? message[2] : getUIText("Login_Message_Banned_Permanent");
+
+			Calendar cStart = GeneralUtil.importCalendarString(message[1]);
+			Calendar cExpire = ((message.length > 2) && (message[2].length() > 0)) ? GeneralUtil.importCalendarString(message[2]) : null;
+
+			String strStart = (cStart != null) ? GeneralUtil.getCalendarString(cStart) : "???";
+			String strExpire = (cExpire != null) ? GeneralUtil.getCalendarString(cExpire) : getUIText("Login_Message_Banned_Permanent");
+
 			labelLoginMessage.setText(String.format(getUIText("Login_Message_Banned"), strStart, strExpire));
 			return;
 		}

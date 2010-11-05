@@ -34,9 +34,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import mu.nu.nullpo.game.net.NetObserverClient;
@@ -647,13 +648,9 @@ public class NullpoMinoSDL {
 	public static void saveScreenShot() throws SDLException {
 		// Filenameを決める
 		String dir = NullpoMinoSDL.propGlobal.getProperty("custom.screenshot.directory", "ss");
-		GregorianCalendar currentTime = new GregorianCalendar();
-		int month = currentTime.get(Calendar.MONTH) + 1;
-		String filename = String.format(
-				dir + "/%04d_%02d_%02d_%02d_%02d_%02d.bmp",
-				currentTime.get(Calendar.YEAR), month, currentTime.get(Calendar.DATE), currentTime.get(Calendar.HOUR_OF_DAY),
-				currentTime.get(Calendar.MINUTE), currentTime.get(Calendar.SECOND)
-		);
+		Calendar c = Calendar.getInstance();
+		DateFormat dfm = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		String filename = dir + "/" + dfm.format(c.getTime()) + ".bmp";
 		log.info("Saving screenshot to " + filename);
 
 		File ssfolder = new File(dir);

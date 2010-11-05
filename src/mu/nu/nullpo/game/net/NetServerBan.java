@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import mu.nu.nullpo.util.GeneralUtil;
+
 import org.apache.log4j.Logger;
 
 import biz.source_code.base64Coder.Base64Coder;
@@ -110,12 +112,22 @@ public class NetServerBan {
 	 */
 	public boolean importStartDate(String strInput) {
 		try {
-			byte[] bTemp = Base64Coder.decode(strInput);
-			byte[] bTemp2 = NetUtil.decompressByteArray(bTemp);
-			ByteArrayInputStream bin = new ByteArrayInputStream(bTemp2);
-			ObjectInputStream oin = new ObjectInputStream(bin);
-			startDate = (Calendar)oin.readObject();
-			return true;
+			if(strInput.startsWith("GMT")) {
+				// GMT String
+				Calendar c = GeneralUtil.importCalendarString(strInput.substring(3));
+				if(c != null) {
+					startDate = c;
+					return true;
+				}
+			} else {
+				// Object Stream
+				byte[] bTemp = Base64Coder.decode(strInput);
+				byte[] bTemp2 = NetUtil.decompressByteArray(bTemp);
+				ByteArrayInputStream bin = new ByteArrayInputStream(bTemp2);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				startDate = (Calendar)oin.readObject();
+				return true;
+			}
 		} catch (Exception e) {
 			log.error("Failed to import startDate", e);
 		}
@@ -127,8 +139,10 @@ public class NetServerBan {
 	 * @return String
 	 */
 	public String exportString() {
-		String strStartDate = exportStartDate();
-		if(strStartDate == null) strStartDate = "";
+		//String strStartDate = exportStartDate();
+		String strTemp = GeneralUtil.exportCalendarString(startDate);
+		String strStartDate = "";
+		if(strTemp != null) strStartDate = "GMT" + strTemp;
 		return addr + ";" + banLength + ";" + strStartDate;
 	}
 
