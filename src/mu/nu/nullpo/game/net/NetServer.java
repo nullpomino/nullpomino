@@ -1621,13 +1621,15 @@ public class NetServer {
 		if(message[0].equals("roomcreate")) {
 			/*
 				String msg;
-				msg = "roomcreate\t" + roomName + "\t" + integerMaxPlayers + "\t" + integerAutoStartSeconds + "\t";
-				msg += integerGravity + "\t" + integerDenominator + "\t" + integerARE + "\t" + integerARELine + "\t";
-				msg += integerLineDelay + "\t" + integerLockDelay + "\t" + integerDAS + "\t" + rulelock + "\t";
-				msg += tspinEnableType + "\t" + b2b + "\t" + combo + "\t" + reduceLineSend + "\t" + integerHurryupSeconds + "\t";
-				msg += integerHurryupInterval + "\t" + autoStartTNET2 + "\t" + disableTimerAfterSomeoneCancelled + "\t";
-				msg += useMap + "\t" + useFractionalGarbage + "\t" + garbageChangePerAttack + "\t" + integerGarbagePercent + "\t";
-				msg += strMode + "\t" + style + "\t" + strRule + "\t" strMap + "\n";
+				msg = "roomcreate\t" + NetUtil.urlEncode(r.strName) + "\t" + r.maxPlayers + "\t" + r.autoStartSeconds + "\t";
+				msg += r.gravity + "\t" + r.denominator + "\t" + r.are + "\t" + r.areLine + "\t";
+				msg += r.lineDelay + "\t" + r.lockDelay + "\t" + r.das + "\t" + r.ruleLock + "\t";
+				msg += r.tspinEnableType + "\t" + r.b2b + "\t" + r.combo + "\t" + r.rensaBlock + "\t";
+				msg += r.counter + "\t" + r.bravo + "\t" + r.reduceLineSend + "\t" + r.hurryupSeconds + "\t";
+				msg += r.hurryupInterval + "\t" + r.autoStartTNET2 + "\t" + r.disableTimerAfterSomeoneCancelled + "\t";
+				msg += r.useMap + "\t" + r.useFractionalGarbage + "\t" + r.garbageChangePerAttack + "\t" + r.garbagePercent + "\t";
+				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t" + r.customRated + "\t";
+				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
 			 */
 			if((pInfo != null) && (pInfo.roomID == -1)) {
 				NetRoomInfo roomInfo = new NetRoomInfo();
@@ -1672,19 +1674,20 @@ public class NetServer {
 				roomInfo.spinCheckType = Integer.parseInt(message[27]);
 				roomInfo.tspinEnableEZ = Boolean.parseBoolean(message[28]);
 				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
-				roomInfo.strMode = NetUtil.urlDecode(message[30]);
-				roomInfo.style = Integer.parseInt(message[31]);
+				roomInfo.customRated = Boolean.parseBoolean(message[30]);
+				roomInfo.strMode = NetUtil.urlDecode(message[31]);
+				roomInfo.style = Integer.parseInt(message[32]);
 
 				// Rule
-				if((message.length > 32) && (message[32].length() > 0)) {
-					roomInfo.ruleName = NetUtil.urlDecode(message[32]);
+				if((message.length > 33) && (message[33].length() > 0)) {
+					roomInfo.ruleName = NetUtil.urlDecode(message[33]);
 					roomInfo.ruleOpt = new RuleOptions(getRatedRule(roomInfo.style, roomInfo.ruleName));
 					roomInfo.ruleLock = true;
 					roomInfo.rated = true;
 				}
 
-				// If ranked room, overwrite most settings with predefined ones
-				if(roomInfo.rated) {
+				// If ranked & not-custom room, overwrite most settings with predefined ones
+				if(roomInfo.rated && !roomInfo.customRated) {
 					int style = roomInfo.style;
 					// TODO: Add proper settings selector
 					int id = (Integer)ruleSettingIDList[style].get(getRatedRuleIndex(style, roomInfo.ruleName));
@@ -1716,8 +1719,8 @@ public class NetServer {
 				}
 
 				// Set map
-				if(roomInfo.useMap && (message.length > 33)) {
-					String strDecompressed = NetUtil.decompressString(message[33]);
+				if(roomInfo.useMap && (message.length > 34)) {
+					String strDecompressed = NetUtil.decompressString(message[34]);
 					String[] strMaps = strDecompressed.split("\t");
 
 					int maxMap = strMaps.length;

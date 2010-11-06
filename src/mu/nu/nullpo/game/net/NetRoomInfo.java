@@ -175,6 +175,9 @@ public class NetRoomInfo implements Serializable {
 	/** Rated-game flag */
 	public boolean rated = false;
 
+	/** Custom rated-game flag */
+	public boolean customRated = false;
+
 	/** Game style */
 	public int style = 0;
 
@@ -281,6 +284,7 @@ public class NetRoomInfo implements Serializable {
 		strMode = n.strMode;
 		singleplayer = n.singleplayer;
 		rated = n.rated;
+		customRated = n.customRated;
 		style = n.style;
 
 		mapList.clear();
@@ -299,7 +303,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列から data代入(Playerリスト除く)
-	 * @param rdata Stringの配列(String[39])
+	 * @param rdata Stringの配列(String[40])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -340,7 +344,8 @@ public class NetRoomInfo implements Serializable {
 		strMode = NetUtil.urlDecode(rdata[35]);
 		singleplayer = Boolean.parseBoolean(rdata[36]);
 		rated = Boolean.parseBoolean(rdata[37]);
-		style = Integer.parseInt(rdata[38]);
+		customRated = Boolean.parseBoolean(rdata[38]);
+		style = Integer.parseInt(rdata[39]);
 	}
 
 	/**
@@ -353,10 +358,10 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(Playerリスト除く)
-	 * @return Stringの配列(String[39])
+	 * @return Stringの配列(String[40])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[39];
+		String[] rdata = new String[40];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -395,7 +400,8 @@ public class NetRoomInfo implements Serializable {
 		rdata[35] = NetUtil.urlEncode(strMode);
 		rdata[36] = Boolean.toString(singleplayer);
 		rdata[37] = Boolean.toString(rated);
-		rdata[38] = Integer.toString(style);
+		rdata[38] = Boolean.toString(customRated);
+		rdata[39] = Integer.toString(style);
 		return rdata;
 	}
 

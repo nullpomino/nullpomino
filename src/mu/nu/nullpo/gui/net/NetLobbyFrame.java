@@ -453,6 +453,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Rule list list data (Create room screen) */
 	protected DefaultListModel listmodelCreateRoomRuleList;
 
+	/** Custom rated game (Create room screen) */
+	protected JCheckBox chkboxCreateRoomCustomRated;
+
 	/** Preset number (Create room screen) */
 	protected JSpinner spinnerCreateRoomPresetID;
 
@@ -1568,6 +1571,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel containerpanelCreateRoomRatedRule = new JPanel(new BorderLayout());
 		containerpanelCreateRoomRatedRuleOwner.add(containerpanelCreateRoomRatedRule);
 
+		// * Custom rated game
+		chkboxCreateRoomCustomRated = new JCheckBox(getUIText("CreateRoom_CustomRated"));
+		chkboxCreateRoomCustomRated.setMnemonic('R');
+		chkboxCreateRoomCustomRated.setSelected(propConfig.getProperty("createroom.defaultCustomRated", false));
+		chkboxCreateRoomCustomRated.setToolTipText(getUIText("CreateRoom_CustomRated_Tip"));
+		containerpanelCreateRoomRatedRule.add(chkboxCreateRoomCustomRated, BorderLayout.NORTH);
+
+		// * Rule list
 		listmodelCreateRoomRuleList = new DefaultListModel();
 		listboxCreateRoomRuleList = new JList(listmodelCreateRoomRuleList);
 		JScrollPane spCreateRoomRuleList = new JScrollPane(listboxCreateRoomRuleList);
@@ -2111,7 +2122,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		String[] rowData = new String[7];
 		rowData[0] = Integer.toString(r.roomID);
 		rowData[1] = r.strName;
-		rowData[2] = r.rated ? getUIText("RoomTable_Rated_True") : getUIText("RoomTable_Rated_False");
+		if(r.rated && r.customRated && !r.singleplayer) {
+			rowData[2] = getUIText("RoomTable_Rated_True_Custom");
+		} else if(r.rated && !r.customRated && !r.singleplayer) {
+			rowData[2] = getUIText("RoomTable_Rated_True");
+		} else if(r.rated && r.singleplayer) {
+			rowData[2] = getUIText("RoomTable_Rated_True_1P");
+		} else {
+			rowData[2] = getUIText("RoomTable_Rated_False");
+		}
 		rowData[3] = r.ruleLock ? r.ruleName.toUpperCase() : getUIText("RoomTable_RuleName_Any");
 		rowData[4] = r.playing ? getUIText("RoomTable_Status_Playing") : getUIText("RoomTable_Status_Waiting");
 		rowData[5] = r.playerSeatedCount + "/" + r.maxPlayers;
@@ -2781,6 +2800,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			boolean garbageChangePerAttack = chkboxCreateRoomGarbageChangePerAttack.isSelected();
 			Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
 			boolean b2bChunk = chkboxCreateRoomB2BChunk.isSelected();
+			boolean customRated = chkboxCreateRoomCustomRated.isSelected();
 
 			roomInfo.strName = roomName;
 			roomInfo.maxPlayers = integerMaxPlayers;
@@ -2811,6 +2831,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			roomInfo.garbageChangePerAttack = garbageChangePerAttack;
 			roomInfo.garbagePercent = integerGarbagePercent;
 			roomInfo.b2bChunk = b2bChunk;
+			roomInfo.customRated = customRated;
 
 			return roomInfo;
 		} catch (Exception e) {
@@ -2854,6 +2875,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
 			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
+			chkboxCreateRoomCustomRated.setSelected(r.customRated);
 			if(r.rated) listboxCreateRoomRuleList.setSelectedValue(r.ruleName, true);
 		}
 	}
@@ -2988,9 +3010,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
 				netPlayerClient.send("roomjoin\t-1\tfalse\n");
 			}
+
 			tablemodelGameStat.setRowCount(0);
 			tablemodelGameStat1P.setRowCount(0);
+
+			tabLobbyAndRoom.setSelectedIndex(0);
+			tabLobbyAndRoom.setEnabledAt(1, false);
+			tabLobbyAndRoom.setTitleAt(1, getUIText("Lobby_Tab_NoRoom"));
+
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
+
+			// Listener call
+			for(NetLobbyListener l: listeners) {
+				l.netlobbyOnRoomLeave(this, netPlayerClient);
+			}
+			if(netDummyMode != null) netDummyMode.netlobbyOnRoomLeave(this, netPlayerClient);
 		}
 		// 参戦 button
 		if(e.getActionCommand() == "Room_Join") {
@@ -3052,7 +3086,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg += r.counter + "\t" + r.bravo + "\t" + r.reduceLineSend + "\t" + r.hurryupSeconds + "\t";
 				msg += r.hurryupInterval + "\t" + r.autoStartTNET2 + "\t" + r.disableTimerAfterSomeoneCancelled + "\t";
 				msg += r.useMap + "\t" + r.useFractionalGarbage + "\t" + r.garbageChangePerAttack + "\t" + r.garbagePercent + "\t";
-				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t";
+				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t" + r.customRated + "\t";
 				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
 
 				// Rule
