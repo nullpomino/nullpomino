@@ -107,6 +107,9 @@ public class GameFrame extends JFrame implements Runnable {
 	/** True to use perfect FPS */
 	public boolean perfectFPSMode = false;
 
+	/** Execute Thread.yield() during Perfect FPS mode */
+	public boolean perfectYield = true;
+
 	/** True if execute Toolkit.getDefaultToolkit().sync() at the end of each frame */
 	public boolean syncDisplay = true;
 
@@ -236,6 +239,7 @@ public class GameFrame extends JFrame implements Runnable {
 		enableframestep = NullpoMinoSwing.propConfig.getProperty("option.enableframestep", false);
 		showfps = NullpoMinoSwing.propConfig.getProperty("option.showfps", true);
 		perfectFPSMode = NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false);
+		perfectYield = NullpoMinoSwing.propConfig.getProperty("option.perfectYield", true);
 		syncDisplay = NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true);
 
 		// Observer開始
@@ -265,7 +269,11 @@ public class GameFrame extends JFrame implements Runnable {
 
 			if(perfectFPSMode) {
 				// Perfect FPS
-				while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
+				if(perfectYield) {
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {Thread.yield();}
+				} else {
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
+				}
 				perfectFPSDelay += 1000000000 / maxfps;
 			} else if(sleepTime > 0) {
 				// 休止 timeがとれる場合

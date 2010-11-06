@@ -103,8 +103,12 @@ public class RendererSlick extends EventReceiver {
 		showbg = NullpoMinoSlick.propConfig.getProperty("option.showbg", true);
 		showlineeffect = NullpoMinoSlick.propConfig.getProperty("option.showlineeffect", true);
 		heavyeffect = NullpoMinoSlick.propConfig.getProperty("option.heavyeffect", false);
-		int bright = NullpoMinoSlick.propConfig.getProperty("option.fieldbgbright", 64);
-		fieldbgbright = bright / (float)128;
+		int bright = NullpoMinoSlick.propConfig.getProperty("option.fieldbgbright", 64) * 2;
+		if(NullpoMinoSlick.propConfig.getProperty("option.fieldbgbright2") != null) {
+			bright = NullpoMinoSlick.propConfig.getProperty("option.fieldbgbright2", 128);
+		}
+		if(bright > 255) bright = 255;
+		fieldbgbright = bright / (float)255;
 		showmeter = NullpoMinoSlick.propConfig.getProperty("option.showmeter", true);
 		darknextarea = NullpoMinoSlick.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSlick.propConfig.getProperty("option.nextshadow", false);

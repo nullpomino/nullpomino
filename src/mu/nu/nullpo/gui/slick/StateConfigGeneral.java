@@ -58,8 +58,7 @@ public class StateConfigGeneral extends BasicGameState {
 		"ConfigGeneral_ShowMeter",
 		"ConfigGeneral_DarkNextArea",
 		"ConfigGeneral_NextShadow",
-		"ConfigGeneral_SideNext",
-		"ConfigGeneral_BigSideNext",
+		"ConfigGeneral_NextType",
 		"ConfigGeneral_OutlineGhost",
 		"ConfigGeneral_FieldBGBright",
 		"ConfigGeneral_Fullscreen",
@@ -71,7 +70,11 @@ public class StateConfigGeneral extends BasicGameState {
 		"ConfigGeneral_AlternateFPSTiming",
 		"ConfigGeneral_AlternateFPSDynamicAdjust",
 		"ConfigGeneral_AlternateFPSPerfectMode",
+		"ConfigGeneral_AlternateFPSPerfectYield",
 	};
+
+	/** Piece preview type options */
+	protected static final String[] NEXTTYPE_OPTIONS = {"TOP", "SIDE(SMALL)", "SIDE(BIG)"};
 
 	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
@@ -139,11 +142,8 @@ public class StateConfigGeneral extends BasicGameState {
 	/** 枠線型ghost ピース */
 	protected boolean outlineghost;
 
-	/** Side piece preview */
-	protected boolean sidenext;
-
-	/** Bigger side piece preview */
-	protected boolean bigsidenext;
+	/** Piece preview type (0=Top 1=Side small 2=Side big) */
+	protected int nexttype;
 
 	/** Timing of alternate FPS sleep (false=render true=update) */
 	protected boolean alternateFPSTiming;
@@ -153,6 +153,9 @@ public class StateConfigGeneral extends BasicGameState {
 
 	/** Perfect FPS mode */
 	protected boolean alternateFPSPerfectMode;
+
+	/** Execute Thread.yield() during Perfect FPS mode */
+	protected boolean alternateFPSPerfectYield;
 
 	/*
 	 * Fetch this state's ID
@@ -186,7 +189,12 @@ public class StateConfigGeneral extends BasicGameState {
 		showlineeffect = prop.getProperty("option.showlineeffect", true);
 		lineeffectspeed = prop.getProperty("option.lineeffectspeed", 0);
 		heavyeffect = prop.getProperty("option.heavyeffect", false);
-		fieldbgbright = prop.getProperty("option.fieldbgbright", 64);
+		if(prop.getProperty("option.fieldbgbright2") != null) {
+			fieldbgbright = prop.getProperty("option.fieldbgbright2", 128);
+		} else {
+			fieldbgbright = prop.getProperty("option.fieldbgbright", 64) * 2;
+			if(fieldbgbright > 255) fieldbgbright = 255;
+		}
 		darknextarea = prop.getProperty("option.darknextarea", true);
 		sevolume = prop.getProperty("option.sevolume", 128);
 		bgmvolume = prop.getProperty("option.bgmvolume", 128);
@@ -194,11 +202,16 @@ public class StateConfigGeneral extends BasicGameState {
 		vsync = prop.getProperty("option.vsync", false);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
-		sidenext = prop.getProperty("option.sidenext", false);
-		bigsidenext = prop.getProperty("option.bigsidenext", false);
+		nexttype = 0;
+		if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == false)) {
+			nexttype = 1;
+		} else if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == true)) {
+			nexttype = 2;
+		}
 		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
 		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", false);
+		alternateFPSPerfectYield = prop.getProperty("option.alternateFPSPerfectYield", true);
 	}
 
 	/**
@@ -218,7 +231,7 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.showlineeffect", showlineeffect);
 		prop.setProperty("option.lineeffectspeed", lineeffectspeed);
 		prop.setProperty("option.heavyeffect", heavyeffect);
-		prop.setProperty("option.fieldbgbright", fieldbgbright);
+		prop.setProperty("option.fieldbgbright2", fieldbgbright);
 		prop.setProperty("option.darknextarea", darknextarea);
 		prop.setProperty("option.sevolume", sevolume);
 		prop.setProperty("option.bgmvolume", bgmvolume);
@@ -226,11 +239,20 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.vsync", vsync);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
-		prop.setProperty("option.sidenext", sidenext);
-		prop.setProperty("option.bigsidenext", bigsidenext);
+		if(nexttype == 0) {
+			prop.setProperty("option.sidenext", false);
+			prop.setProperty("option.bigsidenext", false);
+		} else if(nexttype == 1) {
+			prop.setProperty("option.sidenext", true);
+			prop.setProperty("option.bigsidenext", false);
+		} else if(nexttype == 2) {
+			prop.setProperty("option.sidenext", true);
+			prop.setProperty("option.bigsidenext", true);
+		}
 		prop.setProperty("option.alternateFPSTiming", alternateFPSTiming);
 		prop.setProperty("option.alternateFPSDynamicAdjust", alternateFPSDynamicAdjust);
 		prop.setProperty("option.alternateFPSPerfectMode", alternateFPSPerfectMode);
+		prop.setProperty("option.alternateFPSPerfectYield", alternateFPSPerfectYield);
 	}
 
 	/*
@@ -241,15 +263,15 @@ public class StateConfigGeneral extends BasicGameState {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Basic Options
-		if(cursor < 16) {
+		if(cursor < 15) {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFont.COLOR_ORANGE);
 			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
 			NormalFont.printFontGrid(2,  3, "SE:" + GeneralUtil.getOorX(se), (cursor == 0));
 			NormalFont.printFontGrid(2,  4, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 1));
 			NormalFont.printFontGrid(2,  5, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 2));
-			NormalFont.printFontGrid(2,  6, "SE VOLUME:" + sevolume, (cursor == 3));
-			NormalFont.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume, (cursor == 4));
+			NormalFont.printFontGrid(2,  6, "SE VOLUME:" + sevolume + "("+ (sevolume * 100 / 128) + "%)", (cursor == 3));
+			NormalFont.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume + "(" + (bgmvolume * 100 / 128) + "%)", (cursor == 4));
 			NormalFont.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
 			NormalFont.printFontGrid(2,  9, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 6));
 			NormalFont.printFontGrid(2, 10, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 7));
@@ -257,31 +279,31 @@ public class StateConfigGeneral extends BasicGameState {
 			NormalFont.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
 			NormalFont.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
 			NormalFont.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
-			NormalFont.printFontGrid(2, 15, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 12));
-			NormalFont.printFontGrid(2, 16, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 13));
-			NormalFont.printFontGrid(2, 17, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 14));
-			NormalFont.printFontGrid(2, 18, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 15));
+			NormalFont.printFontGrid(2, 15, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 12));
+			NormalFont.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
+			NormalFont.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
 		}
 		// Advanced Options
-		else if(cursor < 20) {
+		else if(cursor < 19) {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 16), "b", NormalFont.COLOR_RED);
+			NormalFont.printFontGrid(1, 3 + (cursor - 15), "b", NormalFont.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 16));
-			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 17));
-			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 18));
-			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 19));
+			NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 15));
+			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 16));
+			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 17));
+			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 18));
 		}
 		// Slick Options
 		else {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: SLICK (3/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 20), "b", NormalFont.COLOR_RED);
+			NormalFont.printFontGrid(1, 3 + (cursor - 19), "b", NormalFont.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 20));
-			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 21));
-			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 22));
-			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 23));
-			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 24));
+			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 19));
+			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 20));
+			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 21));
+			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
+			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 23));
+			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 24));
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
@@ -379,47 +401,49 @@ public class StateConfigGeneral extends BasicGameState {
 				nextshadow = !nextshadow;
 				break;
 			case 12:
-				sidenext = !sidenext;
+				nexttype += change;
+				if(nexttype < 0) nexttype = 2;
+				if(nexttype > 2) nexttype = 0;
 				break;
 			case 13:
-				bigsidenext = !bigsidenext;
-				break;
-			case 14:
 				outlineghost = !outlineghost;
 				break;
-			case 15:
+			case 14:
 				fieldbgbright += change;
-				if(fieldbgbright < 0) fieldbgbright = 128;
-				if(fieldbgbright > 128) fieldbgbright = 0;
+				if(fieldbgbright < 0) fieldbgbright = 255;
+				if(fieldbgbright > 255) fieldbgbright = 0;
 				break;
-			case 16:
+			case 15:
 				fullscreen = !fullscreen;
 				break;
-			case 17:
+			case 16:
 				showfps = !showfps;
 				break;
-			case 18:
+			case 17:
 				maxfps += change;
 				if(maxfps < 0) maxfps = 99;
 				if(maxfps > 99) maxfps = 0;
 				break;
-			case 19:
+			case 18:
 				enableframestep = !enableframestep;
 				break;
-			case 20:
+			case 19:
 				bgmstreaming = !bgmstreaming;
 				break;
-			case 21:
+			case 20:
 				vsync = !vsync;
 				break;
-			case 22:
+			case 21:
 				alternateFPSTiming = !alternateFPSTiming;
 				break;
-			case 23:
+			case 22:
 				alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
 				break;
-			case 24:
+			case 23:
 				alternateFPSPerfectMode = !alternateFPSPerfectMode;
+				break;
+			case 24:
+				alternateFPSPerfectYield = !alternateFPSPerfectYield;
 				break;
 			}
 		}

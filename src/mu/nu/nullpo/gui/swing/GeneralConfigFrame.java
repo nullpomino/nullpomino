@@ -96,6 +96,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Perfect FPS */
 	protected JCheckBox chkboxPerfectFPSMode;
 
+	/** Execute Thread.yield() during Perfect FPS mode */
+	protected JCheckBox chkboxPerfectYield;
+
 	/** Sync Display */
 	protected JCheckBox chkboxSyncDisplay;
 
@@ -197,6 +200,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxPerfectFPSMode.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxPerfectFPSMode);
 
+		chkboxPerfectYield = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_PerfectYield"));
+		chkboxPerfectYield.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(chkboxPerfectYield);
+
 		chkboxSyncDisplay = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SyncDisplay"));
 		chkboxSyncDisplay.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(chkboxSyncDisplay);
@@ -238,6 +245,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.sidenext", false));
 		chkboxBigSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false));
 		chkboxPerfectFPSMode.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false));
+		chkboxPerfectYield.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectYield", true));
 		chkboxSyncDisplay.setSelected(NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true));
 	}
 
@@ -266,6 +274,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.sidenext", chkboxSideNext.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.bigsidenext", chkboxBigSideNext.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.perfectFPSMode", chkboxPerfectFPSMode.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.perfectYield", chkboxPerfectYield.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.syncDisplay", chkboxSyncDisplay.isSelected());
 
 			NullpoMinoSwing.saveConfig();

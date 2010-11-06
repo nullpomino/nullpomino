@@ -328,7 +328,10 @@ public class NetPlayerClient extends NetBaseClient {
 	 * @return Current room ID
 	 */
 	public int getCurrentRoomID() {
-		return getYourPlayerInfo().roomID;
+		try {
+			return getYourPlayerInfo().roomID;
+		} catch (NullPointerException e) {}
+		return -1;
 	}
 
 	/**

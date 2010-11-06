@@ -52,8 +52,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		"ConfigGeneral_ShowMeter",
 		"ConfigGeneral_DarkNextArea",
 		"ConfigGeneral_NextShadow",
-		"ConfigGeneral_SideNext",
-		"ConfigGeneral_BigSideNext",
+		"ConfigGeneral_NextType",
 		"ConfigGeneral_OutlineGhost",
 		"ConfigGeneral_FieldBGBright",
 		"ConfigGeneral_Fullscreen",
@@ -63,6 +62,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		"ConfigGeneral_SoundBufferSize",
 		"ConfigGeneral_SoundChannels",
 	};
+
+	/** Piece preview type options */
+	protected static final String[] NEXTTYPE_OPTIONS = {"TOP", "SIDE(SMALL)", "SIDE(BIG)"};
 
 	/** Cursor position */
 	protected int cursor;
@@ -127,6 +129,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** 枠線型ghost ピース */
 	protected boolean outlineghost;
 
+	/** Piece preview type (0=Top 1=Side small 2=Side big) */
+	protected int nexttype;
+
 	/** Side piece preview */
 	protected boolean sidenext;
 
@@ -166,8 +171,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		showmeter = prop.getProperty("option.showmeter", true);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
-		sidenext = prop.getProperty("option.sidenext", false);
-		bigsidenext = prop.getProperty("option.bigsidenext", false);
+		nexttype = 0;
+		if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == false)) {
+			nexttype = 1;
+		} else if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == true)) {
+			nexttype = 2;
+		}
 	}
 
 	/**
@@ -195,8 +204,16 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		prop.setProperty("option.showmeter", showmeter);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
-		prop.setProperty("option.sidenext", sidenext);
-		prop.setProperty("option.bigsidenext", bigsidenext);
+		if(nexttype == 0) {
+			prop.setProperty("option.sidenext", false);
+			prop.setProperty("option.bigsidenext", false);
+		} else if(nexttype == 1) {
+			prop.setProperty("option.sidenext", true);
+			prop.setProperty("option.bigsidenext", false);
+		} else if(nexttype == 2) {
+			prop.setProperty("option.sidenext", true);
+			prop.setProperty("option.bigsidenext", true);
+		}
 	}
 
 	/*
@@ -208,44 +225,43 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
 		// Basic Options
-		if(cursor < 16) {
+		if(cursor < 15) {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFontSDL.COLOR_ORANGE);
 			NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
 
 			NormalFontSDL.printFontGrid(2,  3, "SE:" + GeneralUtil.getOorX(se), (cursor == 0));
 			NormalFontSDL.printFontGrid(2,  4, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 1));
 			NormalFontSDL.printFontGrid(2,  5, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 2));
-			NormalFontSDL.printFontGrid(2,  6, "SE VOLUME:" + sevolume, (cursor == 3));
-			NormalFontSDL.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume, (cursor == 4));
+			NormalFontSDL.printFontGrid(2,  6, "SE VOLUME:" + sevolume + "(" + (sevolume * 100 / 128) + "%)", (cursor == 3));
+			NormalFontSDL.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume + "(" + (bgmvolume * 100 / 128) + "%)", (cursor == 4));
 			NormalFontSDL.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
 			NormalFontSDL.printFontGrid(2,  9, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 6));
 			NormalFontSDL.printFontGrid(2, 10, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 7));
 			NormalFontSDL.printFontGrid(2, 11, "LINE EFFECT SPEED:" + "X " + (lineeffectspeed+1), (cursor == 8));
 			NormalFontSDL.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
 			NormalFontSDL.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
-			NormalFontSDL.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
-			NormalFontSDL.printFontGrid(2, 15, "SHOW NEXT ON SIDE:" + GeneralUtil.getOorX(sidenext), (cursor == 12));
-			NormalFontSDL.printFontGrid(2, 16, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 13));
-			NormalFontSDL.printFontGrid(2, 17, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 14));
-			NormalFontSDL.printFontGrid(2, 18, "FIELD BG BRIGHT:" + fieldbgbright, (cursor == 15));
+			NormalFontSDL.printFontGrid(2, 14, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 11));
+			NormalFontSDL.printFontGrid(2, 15, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 12));
+			NormalFontSDL.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
+			NormalFontSDL.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
 		}
 		// Advanced Options
-		else if(cursor < 20) {
+		else if(cursor < 19) {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFontSDL.COLOR_ORANGE);
-			NormalFontSDL.printFontGrid(1, 3 + (cursor - 16), "b", NormalFontSDL.COLOR_RED);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 15), "b", NormalFontSDL.COLOR_RED);
 
-			NormalFontSDL.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 16));
-			NormalFontSDL.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 17));
-			NormalFontSDL.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 18));
-			NormalFontSDL.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 19));
+			NormalFontSDL.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 15));
+			NormalFontSDL.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 16));
+			NormalFontSDL.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 17));
+			NormalFontSDL.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 18));
 		}
 		// SDL Options
 		else {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: SDL (3/3)", NormalFontSDL.COLOR_ORANGE);
-			NormalFontSDL.printFontGrid(1, 3 + (cursor - 20), "b", NormalFontSDL.COLOR_RED);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 19), "b", NormalFontSDL.COLOR_RED);
 
-			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 20));
-			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 21));
+			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 19));
+			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 20));
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
@@ -259,12 +275,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 21;
+			if(cursor < 0) cursor = 20;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 21) cursor = 0;
+			if(cursor > 20) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -320,39 +336,38 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 				nextshadow = !nextshadow;
 				break;
 			case 12:
-				sidenext = !sidenext;
+				nexttype += change;
+				if(nexttype < 0) nexttype = 2;
+				if(nexttype > 2) nexttype = 0;
 				break;
 			case 13:
-				bigsidenext = !bigsidenext;
-				break;
-			case 14:
 				outlineghost = !outlineghost;
 				break;
-			case 15:
+			case 14:
 				fieldbgbright += change;
 				if(fieldbgbright < 0) fieldbgbright = 255;
 				if(fieldbgbright > 255) fieldbgbright = 0;
 				break;
-			case 16:
+			case 15:
 				fullscreen = !fullscreen;
 				break;
-			case 17:
+			case 16:
 				showfps = !showfps;
 				break;
-			case 18:
+			case 17:
 				maxfps += change;
 				if(maxfps < 0) maxfps = 99;
 				if(maxfps > 99) maxfps = 0;
 				break;
-			case 19:
+			case 18:
 				enableframestep = !enableframestep;
 				break;
-			case 20:
+			case 19:
 				soundbuffer += change * 256;
 				if(soundbuffer < 0) soundbuffer = 65535;
 				if(soundbuffer > 65535) soundbuffer = 0;
 				break;
-			case 21:
+			case 20:
 				soundChannels += change;
 				if(soundChannels < 0) soundChannels = 50;
 				if(soundChannels > 50) soundChannels = 0;

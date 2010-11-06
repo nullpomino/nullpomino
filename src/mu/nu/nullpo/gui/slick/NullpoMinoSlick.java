@@ -167,6 +167,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Perfect FPS mode (more accurate, eats more CPU) */
 	public static boolean alternateFPSPerfectMode;
 
+	/** Execute Thread.yield() during Perfect FPS mode */
+	public static boolean alternateFPSPerfectYield;
+
 	/** Target FPS */
 	public static int altMaxFPS;
 
@@ -389,6 +392,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		alternateFPSTiming = propConfig.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = propConfig.getProperty("option.alternateFPSDynamicAdjust", false);
 		alternateFPSPerfectMode = propConfig.getProperty("option.alternateFPSPerfectMode", false);
+		alternateFPSPerfectYield = propConfig.getProperty("option.alternateFPSPerfectYield", true);
 		altMaxFPS = propConfig.getProperty("option.maxfps", 60);
 		altMaxFPSCurrent = altMaxFPS;
 
@@ -508,7 +512,11 @@ public class NullpoMinoSlick extends StateBasedGame {
 			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
 			if(alternateFPSPerfectMode && ingame) {
-				while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {}
+				if(alternateFPSPerfectYield) {
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {Thread.yield();}
+				} else {
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {}
+				}
 				perfectFPSDelay += 1000000000 / altMaxFPS;
 			} else if(sleepTime > 0) {
 				// 休止 timeがとれる場合
