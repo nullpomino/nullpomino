@@ -575,7 +575,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			if (!engine.field.getBlockEmpty(2, 0) || !engine.field.getBlockEmpty(3, 0))
 			{
 				engine.stat = GameEngine.STAT_GAMEOVER;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.statc[1] = 1;
 			}
@@ -583,8 +583,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 
 		// Out of time
 		if((timeLimit <= 0) && (engine.timerActive == true)) {
-			engine.gameActive = false;
-			engine.timerActive = false;
+			engine.gameEnded();
 			engine.resetStatc();
 			engine.stat = GameEngine.STAT_ENDINGSTART;
 		}

@@ -852,8 +852,7 @@ public class SpeedMania2Mode extends DummyMode {
 				if(nextseclv == 500) engine.statistics.level = 500;
 				if(nextseclv == 1000) engine.statistics.level = 1000;
 
-				engine.timerActive = false;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.staffrollEnable = false;
 				engine.ending = 1;
 
@@ -978,7 +977,7 @@ public class SpeedMania2Mode extends DummyMode {
 			if(rolltime >= ROLLTIMELIMIT) {
 				secretGrade = engine.field.getSecretGrade();
 				rollclear = 2;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

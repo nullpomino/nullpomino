@@ -428,7 +428,7 @@ public class RetroMarathonMode extends DummyMode {
 		if(gametype == GAMETYPE_TYPE_B && engine.statistics.lines >= 25) {
 			pts += (engine.statistics.level + startheight) * 1000;
 			engine.ending = 1;
-			engine.gameActive = false;
+			engine.gameEnded();
 		}
 
 		// Add score to total

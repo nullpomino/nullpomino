@@ -1163,7 +1163,7 @@ public class GradeMania2Mode extends DummyMode {
 
 				engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

@@ -396,8 +396,7 @@ public class DigRaceMode extends DummyMode {
 		// ゴール
 		if((lines > 0) && (engine.field.getHowManyGemClears() > 0)) {
 			engine.ending = 1;
-			engine.timerActive = false;
-			engine.gameActive = false;
+			engine.gameEnded();
 		}
 	}
 

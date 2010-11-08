@@ -336,12 +336,7 @@ public class LineRaceMode extends NetDummyMode {
 
 			// NET: Netplay Ranking
 			if(engine.ctrl.isPush(Controller.BUTTON_D) && (netIsNetPlay) && (netCurrentRoomInfo.rated) && (!big) && (engine.ai == null)) {
-				netRankingPlace = null;
-				netRankingCursor = 0;
-				netRankingMyRank = -1;
-				netIsNetRankingDisplayMode = true;
-				owner.menuOnly = true;
-				netLobby.netPlayerClient.send("spranking\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\n");
+				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 
 			engine.statc[3]++;
@@ -504,8 +499,7 @@ public class LineRaceMode extends NetDummyMode {
 		// Game completed
 		if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
 			engine.ending = 1;
-			engine.timerActive = false;
-			engine.gameActive = false;
+			engine.gameEnded();
 
 			// NET: Send game completed messages
 			if(netIsNetPlay && !netIsWatch) {
@@ -529,16 +523,17 @@ public class LineRaceMode extends NetDummyMode {
 		drawResultStats(engine, playerID, receiver, 1, EventReceiver.COLOR_BLUE,
 				STAT_LINES, STAT_PIECE, STAT_TIME, STAT_LPM, STAT_PPS);
 		drawResultRank(engine, playerID, receiver, 11, EventReceiver.COLOR_BLUE, rankingRank);
-		drawResultNetRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, netRankingRank);
+		drawResultNetRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, netRankingRank[0]);
+		drawResultNetRankDaily(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, netRankingRank[1]);
 
 		if(netIsPB) {
-			receiver.drawMenuFont(engine, playerID, 2, 16, "NEW PB", EventReceiver.COLOR_ORANGE);
+			receiver.drawMenuFont(engine, playerID, 2, 18, "NEW PB", EventReceiver.COLOR_ORANGE);
 		}
 
 		if(netIsNetPlay && (netReplaySendStatus == 1)) {
-			receiver.drawMenuFont(engine, playerID, 0, 18, "SENDING...", EventReceiver.COLOR_PINK);
+			receiver.drawMenuFont(engine, playerID, 0, 19, "SENDING...", EventReceiver.COLOR_PINK);
 		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
-			receiver.drawMenuFont(engine, playerID, 1, 18, "A: RETRY", EventReceiver.COLOR_RED);
+			receiver.drawMenuFont(engine, playerID, 1, 19, "A: RETRY", EventReceiver.COLOR_RED);
 		}
 	}
 

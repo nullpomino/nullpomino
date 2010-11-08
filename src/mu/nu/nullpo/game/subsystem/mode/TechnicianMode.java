@@ -567,8 +567,7 @@ public class TechnicianMode extends DummyMode {
 				levelTimeOut = true;
 
 				if((gametype == GAMETYPE_LV15_HARD) || (gametype == GAMETYPE_10MIN_HARD)) {
-					engine.gameActive = false;
-					engine.timerActive = false;
+					engine.gameEnded();
 					engine.resetStatc();
 					engine.stat = GameEngine.STAT_GAMEOVER;
 				} else if(gametype == GAMETYPE_10MIN_EASY) {
@@ -598,8 +597,7 @@ public class TechnicianMode extends DummyMode {
 
 			if(totalTimer < 0) {
 				// Out of time
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 
 				if((gametype == GAMETYPE_10MIN_EASY) || (gametype == GAMETYPE_10MIN_HARD)) {
@@ -635,7 +633,7 @@ public class TechnicianMode extends DummyMode {
 				engine.statistics.scoreFromOtherBonus += lastscore;
 				lastevent = EVENT_NONE;
 
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}
@@ -789,7 +787,7 @@ public class TechnicianMode extends DummyMode {
 				if((engine.statistics.level >= 14) && ((gametype == GAMETYPE_LV15_EASY) || (gametype == GAMETYPE_LV15_HARD))) {
 					// Ending (LV15-EASY/HARD）
 					engine.ending = 1;
-					engine.gameActive = false;
+					engine.gameEnded();
 				} else if((engine.statistics.level >= 29) && (gametype == GAMETYPE_SPECIAL)) {
 					// Ending (SPECIAL）
 					engine.ending = 2;

@@ -699,8 +699,7 @@ public class TimeAttackMode extends DummyMode {
 					receiver.playSE("countdown");
 				}
 			} else {
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_GAMEOVER;
 			}
@@ -753,7 +752,7 @@ public class TimeAttackMode extends DummyMode {
 			// Completed
 			if(rolltime >= ROLLTIMELIMIT) {
 				rollclear = 2;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}
@@ -818,7 +817,7 @@ public class TimeAttackMode extends DummyMode {
 				engine.staffrollEnable = true;
 				rollclear = 1;
 			} else {
-				engine.gameActive = false;
+				engine.gameEnded();
 				rollclear = 2;
 			}
 		}

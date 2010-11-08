@@ -150,11 +150,9 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 									"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
 									" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
 									, NormalFontSDL.COLOR_CYAN);
-		/*
 		NormalFontSDL.printFontGrid(1, 27,
 									"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
 									, NormalFontSDL.COLOR_CYAN);
-		*/
 	}
 
 	@Override

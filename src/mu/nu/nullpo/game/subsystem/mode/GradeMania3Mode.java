@@ -1321,8 +1321,7 @@ public class GradeMania3Mode extends DummyMode {
 					  (!promotionFlag) && (!demotionFlag)) {
 				//  level500とりカン
 				engine.statistics.level = 999;
-				engine.timerActive = false;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.staffrollEnable = false;
 				engine.ending = 1;
 
@@ -1509,7 +1508,7 @@ public class GradeMania3Mode extends DummyMode {
 				engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 				engine.blockShowOutlineOnly = false;
 
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

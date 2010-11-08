@@ -575,7 +575,7 @@ public class MarathonMode extends DummyMode {
 		if((engine.statistics.lines >= tableGameClearLines[gametype]) && (tableGameClearLines[gametype] >= 0)) {
 			// Ending
 			engine.ending = 1;
-			engine.gameActive = false;
+			engine.gameEnded();
 		} else if((engine.statistics.lines >= (engine.statistics.level + 1) * 10) && (engine.statistics.level < 19)) {
 			// Level up
 			engine.statistics.level++;

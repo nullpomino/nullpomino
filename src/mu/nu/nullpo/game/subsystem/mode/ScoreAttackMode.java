@@ -662,7 +662,7 @@ public class ScoreAttackMode extends DummyMode {
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			if(rolltime >= ROLLTIMELIMIT) {
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

@@ -948,7 +948,7 @@ public class PhantomManiaMode extends DummyMode {
 			if(rolltime >= ROLLTIMELIMIT) {
 				if (engine.statistics.level >= 999) rollclear = 2;
 
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

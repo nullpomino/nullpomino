@@ -415,7 +415,7 @@ public class RetroMasteryMode extends DummyMode {
 		// Do the ending (at 200 lines for now)
 		if(gametype == GAMETYPE_200 && loons >= 200) {
 			engine.ending = 1;
-			engine.gameActive = false;
+			engine.gameEnded();
 		}
 
 		// Add score to total

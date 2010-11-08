@@ -898,7 +898,7 @@ public class PracticeMode extends DummyMode {
 				receiver.drawScoreFont(engine, playerID, 0, 21, GeneralUtil.getTime(remainTime), ((remainTime > 0) && (remainTime < 10 * 60)));
 			}
 
-			// Line clear event 
+			// Line clear event
 			if((lastevent != EVENT_NONE) && (scgettime < 120)) {
 				String strPieceName = Piece.getPieceName(lastpiece);
 
@@ -963,7 +963,7 @@ public class PracticeMode extends DummyMode {
 
 			// Roll 終了
 			if(rolltime >= rolltimelimit) {
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}
@@ -972,7 +972,7 @@ public class PracticeMode extends DummyMode {
 
 			// Out of time
 			if((timelimit > 0) && (timelimitTimer <= 0) && (engine.timerActive == true)) {
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.timerActive = false;
 				engine.resetStatc();
 				if(goallv == -1) engine.stat = GameEngine.STAT_ENDINGSTART;
@@ -1109,7 +1109,7 @@ public class PracticeMode extends DummyMode {
 				engine.ending = 1;
 				engine.timerActive = false;
 				if(rolltimelimit == 0) {
-					engine.gameActive = false;
+					engine.gameEnded();
 					secretGrade = engine.field.getSecretGrade();
 				} else {
 					engine.staffrollEnable = true;
@@ -1335,7 +1335,7 @@ public class PracticeMode extends DummyMode {
 
 			if(rolltimelimit == 0) {
 				engine.ending = 1;
-				engine.gameActive = false;
+				engine.gameEnded();
 				secretGrade = engine.field.getSecretGrade();
 			} else {
 				engine.ending = 2;

@@ -163,11 +163,9 @@ public class StateReplaySelect extends DummyMenuScrollState {
 									"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
 									" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
 									, NormalFont.COLOR_CYAN);
-		/*
 		NormalFont.printFontGrid(1, 27,
 									"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
 									, NormalFont.COLOR_CYAN);
-		*/
 	}
 
 	@Override

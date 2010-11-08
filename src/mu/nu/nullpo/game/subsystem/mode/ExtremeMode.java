@@ -467,7 +467,7 @@ public class ExtremeMode extends DummyMode {
 
 			// Roll 終了
 			if(rolltime >= ROLLTIMELIMIT) {
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

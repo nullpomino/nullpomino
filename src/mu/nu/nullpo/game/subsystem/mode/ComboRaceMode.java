@@ -610,7 +610,7 @@ public class ComboRaceMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
-		//  Attack 
+		//  Attack
 		if(lines > 0) {
 			scgettime = 0;
 
@@ -681,8 +681,7 @@ public class ComboRaceMode extends DummyMode {
 			// ゴール
 			if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
 				engine.ending = 1;
-				engine.timerActive = false;
-				engine.gameActive = false;
+				engine.gameEnded();
 			} else if(engine.statistics.lines >= GOAL_TABLE[goaltype] - 5) {
 				owner.bgmStatus.fadesw = true;
 			} else if(engine.statistics.lines >= nextseclines) {

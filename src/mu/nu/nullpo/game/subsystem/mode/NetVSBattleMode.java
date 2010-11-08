@@ -1382,7 +1382,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(isPractice) {
 				isPractice = false;
 				engine.field.reset();
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.stat = GameEngine.STAT_SETTING;
 				engine.resetStatc();
 			} else {
@@ -1619,8 +1619,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
-		engine.gameActive = false;
-		engine.timerActive = false;
+		engine.gameEnded();
 		engine.allowTextRenderByReceiver = false;
 		isPracticeExitAllowed = false;
 
@@ -1742,8 +1741,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onExcellent(GameEngine engine, int playerID) {
-		engine.gameActive = false;
-		engine.timerActive = false;
+		engine.gameEnded();
 		engine.allowTextRenderByReceiver = false;
 
 		if(engine.statc[0] == 0) {
@@ -2084,7 +2082,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(!isDead[playerID]) {
 				isDead[playerID] = true;
 				playerPlace[playerID] = Integer.parseInt(message[4]);
-				owner.engine[playerID].gameActive = false;
+				owner.engine[playerID].gameEnded();
 				owner.engine[playerID].stat = GameEngine.STAT_GAMEOVER;
 				owner.engine[playerID].resetStatc();
 				numAlivePlayers--;
@@ -2113,7 +2111,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(isPractice) {
 				isPractice = false;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-				owner.engine[0].gameActive = false;
+				owner.engine[0].gameEnded();
 				owner.engine[0].stat = GameEngine.STAT_SETTING;
 				owner.engine[0].resetStatc();
 			}
@@ -2125,7 +2123,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				for(int i = 0; i < MAX_PLAYERS; i++) {
 					if(isPlayerExist[i] && !isDead[i]) {
 						playerPlace[i] = 1;
-						owner.engine[i].gameActive = false;
+						owner.engine[i].gameEnded();
 						owner.engine[i].stat = GameEngine.STAT_EXCELLENT;
 						owner.engine[i].resetStatc();
 						owner.engine[i].statistics.time = netPlayTimer;
@@ -2143,7 +2141,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					int playerID = getPlayerIDbySeatID(seatID);
 					if(isPlayerExist[playerID]) {
 						playerPlace[playerID] = 1;
-						owner.engine[playerID].gameActive = false;
+						owner.engine[playerID].gameEnded();
 						owner.engine[playerID].stat = GameEngine.STAT_EXCELLENT;
 						owner.engine[playerID].resetStatc();
 						owner.engine[playerID].statistics.time = netPlayTimer;

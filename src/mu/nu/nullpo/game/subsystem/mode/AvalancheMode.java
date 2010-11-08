@@ -412,8 +412,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 
 			// Out of time
 			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				return;
@@ -429,8 +428,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 
 			// ゴール
 			if((engine.statistics.score >= SPRINT_MAX_SCORE[sprintTarget]) && (engine.timerActive == true)) {
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 			}
@@ -467,7 +465,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			if (!engine.field.getBlockEmpty(2, 0) || (dangerColumnDouble && !engine.field.getBlockEmpty(3, 0)))
 			{
 				engine.stat = GameEngine.STAT_GAMEOVER;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.statc[1] = 1;
 			}

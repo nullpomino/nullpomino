@@ -700,7 +700,7 @@ public class GradeManiaMode extends DummyMode {
 
 					engine.ending = 2;
 				} else {
-					engine.gameActive = false;
+					engine.gameEnded();
 					engine.ending = 1;
 				}
 			} else if(engine.statistics.level >= nextseclv) {
@@ -775,7 +775,7 @@ public class GradeManiaMode extends DummyMode {
 
 			// Roll 終了
 			if(rolltime >= ROLLTIMELIMIT) {
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

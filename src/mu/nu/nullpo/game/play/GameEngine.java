@@ -888,6 +888,9 @@ public class GameEngine {
 
 		rainbowAnimate = false;
 
+		startTime = 0;
+		endTime = 0;
+
 		//  event 発生
 		if(owner.mode != null) {
 			owner.mode.playerInit(this, playerID);
@@ -1618,6 +1621,20 @@ public class GameEngine {
 	}
 
 	/**
+	 * Call this if the game has ended
+	 */
+	public void gameEnded() {
+		if(endTime == 0) {
+			endTime = System.nanoTime();
+			statistics.gamerate = (float)(replayTimer / (0.00000006*(endTime - startTime)));
+		}
+		gameActive = false;
+		timerActive = false;
+		isInGame = false;
+		if(ai != null) ai.shutdown(this, playerID);
+	}
+
+	/**
 	 * ゲーム stateの更新
 	 */
 	public void update() {
@@ -1721,6 +1738,12 @@ public class GameEngine {
 		if(gameActive && timerActive) {
 			statistics.time++;
 		}
+
+		/*
+		if(startTime > 0 && endTime == 0) {
+			statistics.gamerate = (float)(replayTimer / (0.00000006*(System.nanoTime() - startTime)));
+		}
+		*/
 	}
 
 	/**
@@ -1921,7 +1944,8 @@ public class GameEngine {
 			stat = STAT_MOVE;
 			resetStatc();
 			if(!readyDone) {
-				startTime = System.currentTimeMillis();
+				startTime = System.nanoTime();
+				//startTime = System.nanoTime()/1000000L;
 			}
 			readyDone = true;
 			return;
@@ -3043,11 +3067,8 @@ public class GameEngine {
 		owner.receiver.onExcellent(this, playerID);
 
 		if(statc[0] == 0) {
-			gameActive = false;
-			timerActive = false;
-			isInGame = false;
+			gameEnded();
 			owner.bgmStatus.fadesw = true;
-			if(ai != null) ai.shutdown(this, playerID);
 
 			resetFieldVisible();
 
@@ -3079,15 +3100,9 @@ public class GameEngine {
 		if(lives <= 0) {
 			// もう復活できないとき
 			if(statc[0] == 0) {
-				endTime = System.currentTimeMillis();
-				statistics.gamerate = (float)(replayTimer / (.06*(endTime - startTime)));
-
-				gameActive = false;
-				timerActive = false;
-				isInGame = false;
+				gameEnded();
 				blockShowOutlineOnly = false;
 				if(owner.getPlayers() < 2) owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-				if(ai != null) ai.shutdown(this, playerID);
 
 				if(field.isEmpty()) {
 					statc[0] = field.getHeight() + 1;

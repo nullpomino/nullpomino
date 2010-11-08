@@ -1232,14 +1232,14 @@ public class VSBattleMode extends DummyMode {
 			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
 				// Draw
 				winnerID = -1;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
+				owner.engine[0].gameEnded();
+				owner.engine[1].gameEnded();
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
 				// 1P win
 				winnerID = 0;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
+				owner.engine[0].gameEnded();
+				owner.engine[1].gameEnded();
 				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
 				owner.engine[0].resetStatc();
 				owner.engine[0].statc[1] = 1;
@@ -1248,8 +1248,8 @@ public class VSBattleMode extends DummyMode {
 			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
 				// 2P win
 				winnerID = 1;
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
+				owner.engine[0].gameEnded();
+				owner.engine[1].gameEnded();
 				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
 				owner.engine[1].resetStatc();
 				owner.engine[1].statc[1] = 1;

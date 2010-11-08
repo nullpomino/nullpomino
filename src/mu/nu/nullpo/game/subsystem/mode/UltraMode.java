@@ -668,8 +668,7 @@ public class UltraMode extends DummyMode {
 
 			// Out of time
 			if(engine.statistics.time >= limitTime) {
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				return;

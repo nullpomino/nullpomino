@@ -825,7 +825,7 @@ public class FinalMode extends DummyMode {
 			// Player has survived the roll
 			if(rolltime >= rollTimeLimit) {
 				rollclear = 2;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
 			}

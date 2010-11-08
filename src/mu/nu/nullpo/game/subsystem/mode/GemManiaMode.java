@@ -1338,8 +1338,7 @@ public class GemManiaMode extends DummyMode {
 			else if(stage >= laststage) {
 				allclear = (stage >= MAX_STAGE_TOTAL - 1) ? 2 : 1;
 				engine.ending = 1;
-				engine.timerActive = false;
-				engine.gameActive = false;
+				engine.gameEnded();
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				engine.resetStatc();
 			}

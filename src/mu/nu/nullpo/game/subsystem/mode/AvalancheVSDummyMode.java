@@ -797,8 +797,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
 			}
 			if (p1Lose || p2Lose) {
-				owner.engine[0].gameActive = false;
-				owner.engine[1].gameActive = false;
+				owner.engine[0].gameEnded();
+				owner.engine[1].gameEnded();
 				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
 				owner.engine[0].statc[1] = 1;

@@ -123,6 +123,15 @@ public class GeneralUtil {
 	}
 
 	/**
+	 * Export a Calendar to a String for saving/sending. TimeZone is always GMT. Time is based on current time.
+	 * @return Calendar String (Each field is separated with a hyphen '-')
+	 */
+	public static String exportCalendarString() {
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		return exportCalendarString(c);
+	}
+
+	/**
 	 * Export a Calendar to a String for saving/sending. TimeZone is always GMT.
 	 * @param c Calendar
 	 * @return Calendar String (Each field is separated with a hyphen '-')

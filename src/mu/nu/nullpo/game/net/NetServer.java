@@ -51,6 +51,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.zip.Adler32;
 
 import mu.nu.nullpo.game.component.RuleOptions;
@@ -92,6 +93,9 @@ public class NetServer {
 	/** Default value of maxMPRanking */
 	public static final int DEFAULT_MAX_MPRANKING = 100;
 
+	/** Default value of maxSPRanking */
+	public static final int DEFAULT_MAX_SPRANKING = 100;
+
 	/** Server config file */
 	private static CustomProperties propServer;
 
@@ -101,8 +105,11 @@ public class NetServer {
 	/** Properties of multiplayer leaderboard */
 	private static CustomProperties propMPRanking;
 
-	/** Properties of single player leaderboard */
-	private static CustomProperties propSPRanking;
+	/** Properties of single player all-time leaderboard */
+	private static CustomProperties propSPRankingAlltime;
+
+	/** Properties of single player daily leaderboard */
+	private static CustomProperties propSPRankingDaily;
 
 	/** Properties of single player personal best */
 	private static CustomProperties propSPPersonalBest;
@@ -128,6 +135,12 @@ public class NetServer {
 	/** Max entry of multiplayer leaderboard */
 	private static int maxMPRanking;
 
+	/** Max entry of singleplayer leaderboard */
+	private static int maxSPRanking;
+
+	/** TimeZone of daily single player leaderboard */
+	private static String spDailyTimeZone;
+
 	/** Rule list for rated game. */
 	private static LinkedList<RuleOptions>[] ruleList;
 
@@ -140,8 +153,14 @@ public class NetServer {
 	/** Single player mode list. */
 	private static LinkedList<String>[] spModeList;
 
-	/** Single player leaderboard list */
-	private static LinkedList<NetSPRanking> spRankingList;
+	/** Single player all-time leaderboard list */
+	private static LinkedList<NetSPRanking> spRankingListAlltime;
+
+	/** Single player daily leaderboard list */
+	private static LinkedList<NetSPRanking> spRankingListDaily;
+
+	/** Last-update time of single player daily leaderboard */
+	private static Calendar spDailyLastUpdate;
 
 	/** Ban list */
 	private static LinkedList<NetServerBan> banList;
@@ -390,13 +409,19 @@ public class NetServer {
 	private static void loadSPRankingList() {
 		log.info("Loading Single Player Ranking...");
 
-		spRankingList = new LinkedList<NetSPRanking>();
+		spRankingListAlltime = new LinkedList<NetSPRanking>();
+		spRankingListDaily = new LinkedList<NetSPRanking>();
 
 		// Load mode list
 		spModeList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			spModeList[i] = new LinkedList<String>();
 		}
+
+		// Daily last-update
+		TimeZone z = (spDailyTimeZone.length() > 0) ? TimeZone.getTimeZone(spDailyTimeZone) : TimeZone.getDefault();
+		spDailyLastUpdate = GeneralUtil.importCalendarString(propSPRankingDaily.getProperty("daily.lastupdate", ""));
+		if(spDailyLastUpdate != null) spDailyLastUpdate.setTimeZone(z);
 
 		try {
 			BufferedReader in = new BufferedReader(new FileReader("config/list/netlobby_singlemode.lst"));
@@ -443,16 +468,24 @@ public class NetServer {
 						String ruleName = ruleOpt.strRuleName;
 
 						for(int j = 0; j < maxGameType+1; j++) {
-							NetSPRanking rankingData = new NetSPRanking();
-							rankingData.strModeName = strModeName;
-							rankingData.strRuleName = ruleName;
-							rankingData.gameType = j;
-							rankingData.rankingType = rankingType;
-							rankingData.style = style;
-							rankingData.maxRecords = maxMPRanking;
-							rankingData.readProperty(propSPRanking);
-							spRankingList.add(rankingData);
-							log.debug(rankingData.strRuleName + "," + rankingData.strModeName + "," + rankingData.gameType);
+							for(int k = 0; k < 2; k++) {
+								NetSPRanking rankingData = new NetSPRanking();
+								rankingData.strModeName = strModeName;
+								rankingData.strRuleName = ruleName;
+								rankingData.gameType = j;
+								rankingData.rankingType = rankingType;
+								rankingData.style = style;
+								rankingData.maxRecords = maxSPRanking;
+
+								if(k == 0) {
+									rankingData.readProperty(propSPRankingAlltime);
+									spRankingListAlltime.add(rankingData);
+									log.debug(rankingData.strRuleName + "," + rankingData.strModeName + "," + rankingData.gameType);
+								} else {
+									rankingData.readProperty(propSPRankingDaily);
+									spRankingListDaily.add(rankingData);
+								}
+							}
 						}
 					}
 				}
@@ -465,14 +498,27 @@ public class NetServer {
 	}
 
 	/**
-	 * Get specific NetSPRanking
+	 * Get specific all-time NetSPRanking
 	 * @param rule Rule Name
 	 * @param mode Mode Name
 	 * @param gtype Game Type
 	 * @return NetSPRanking (null if not found)
 	 */
 	private static NetSPRanking getSPRanking(String rule, String mode, int gtype) {
-		for(NetSPRanking r: spRankingList) {
+		return getSPRanking(rule, mode, gtype, false);
+	}
+
+	/**
+	 * Get specific NetSPRanking
+	 * @param rule Rule Name
+	 * @param mode Mode Name
+	 * @param gtype Game Type
+	 * @param isDaily <code>true</code> to get daily ranking, <code>false</code> to get all-time ranking
+	 * @return NetSPRanking (null if not found)
+	 */
+	private static NetSPRanking getSPRanking(String rule, String mode, int gtype, boolean isDaily) {
+		LinkedList<NetSPRanking> list = isDaily ? spRankingListDaily : spRankingListAlltime;
+		for(NetSPRanking r: list) {
 			if(r.strRuleName.equals(rule) && r.strModeName.equals(mode) && r.gameType == gtype) {
 				return r;
 			}
@@ -481,18 +527,58 @@ public class NetServer {
 	}
 
 	/**
+	 * Update the last-update variable of daily ranking, and wipe the records if needed
+	 * @return <code>true</code> if the records are wiped
+	 */
+	private static boolean updateSPDailyRanking() {
+		TimeZone z = (spDailyTimeZone.length() > 0) ? TimeZone.getTimeZone(spDailyTimeZone) : TimeZone.getDefault();
+		Calendar c = Calendar.getInstance(z);
+		Calendar oldLastUpdate = spDailyLastUpdate;
+
+		spDailyLastUpdate = c;
+		propSPRankingDaily.setProperty("daily.lastupdate", GeneralUtil.exportCalendarString(spDailyLastUpdate));
+
+		if(oldLastUpdate != null) {
+			log.debug("SP daily ranking previous-update:" + GeneralUtil.getCalendarString(oldLastUpdate));
+		}
+		log.debug("SP daily ranking last-update:" + GeneralUtil.getCalendarString(c));
+
+		if((oldLastUpdate == null) || (c.get(Calendar.DATE) == oldLastUpdate.get(Calendar.DATE))) {
+			return false;
+		}
+
+		spRankingListDaily.clear();
+		log.debug("SP daily ranking wiped");
+
+		return true;
+	}
+
+	/**
 	 * Write single player ranking to a file
 	 */
 	private static void writeSPRankingToFile() {
-		for(NetSPRanking r: spRankingList) {
-			r.writeProperty(propSPRanking);
+		// All-time
+		for(NetSPRanking r: spRankingListAlltime) {
+			r.writeProperty(propSPRankingAlltime);
 		}
 		try {
 			FileOutputStream out = new FileOutputStream("config/setting/netserver_spranking.cfg");
-			propSPRanking.store(out, "NullpoMino NetServer Single Player Leaderboard");
+			propSPRankingAlltime.store(out, "NullpoMino NetServer Single Player All-time Leaderboard");
 			out.close();
 		} catch (IOException e) {
-			log.error("Failed to write single player ranking data", e);
+			log.error("Failed to write single player all-time ranking data", e);
+		}
+
+		// Daily
+		for(NetSPRanking r: spRankingListDaily) {
+			r.writeProperty(propSPRankingDaily);
+		}
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/netserver_spranking_daily.cfg");
+			propSPRankingDaily.store(out, "NullpoMino NetServer Single Player Daily Leaderboard");
+			out.close();
+		} catch (IOException e) {
+			log.error("Failed to write single player daily ranking data", e);
 		}
 	}
 
@@ -702,10 +788,17 @@ public class NetServer {
 		} catch (IOException e) {}
 
 		// Load single player leaderboard file
-		propSPRanking = new CustomProperties();
+		propSPRankingAlltime = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/setting/netserver_spranking.cfg");
-			propSPRanking.load(in);
+			propSPRankingAlltime.load(in);
+			in.close();
+		} catch (IOException e) {}
+
+		propSPRankingDaily = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netserver_spranking_daily.cfg");
+			propSPRankingDaily.load(in);
 			in.close();
 		} catch (IOException e) {}
 
@@ -726,6 +819,8 @@ public class NetServer {
 		ratingMax = propServer.getProperty("netserver.ratingMax", 99999);
 		ratingAllowSameIP = propServer.getProperty("netserver.ratingAllowSameIP", true);
 		maxMPRanking = propServer.getProperty("netserver.maxMPRanking", DEFAULT_MAX_MPRANKING);
+		maxSPRanking = propServer.getProperty("netserver.maxSPRanking", DEFAULT_MAX_SPRANKING);
+		spDailyTimeZone = propServer.getProperty("netserver.spDailyTimeZone", "");
 
 		// Load rules for rated game
 		loadRuleList();
@@ -736,7 +831,8 @@ public class NetServer {
 
 		// Load single player leaderboard
 		loadSPRankingList();
-		propSPRanking.clear();	// Clear all entries in order to reduce file size
+		propSPRankingAlltime.clear();	// Clear all entries in order to reduce file size
+		propSPRankingDaily.clear();
 
 		// Load ban list
 		loadBanList();
@@ -2053,7 +2149,7 @@ public class NetServer {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
 
 				if(!pInfo.isTripUse || !roomInfo.rated) {
-					broadcast("spsendok\t-1\tfalse\n", pInfo.roomID);
+					broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
 				} else if(roomInfo.singleplayer) {
 					long sChecksum = Long.parseLong(message[1]);
 					Adler32 checksumObj = new Adler32();
@@ -2071,7 +2167,15 @@ public class NetServer {
 
 						if(ranking != null) {
 							int rank = ranking.registerRecord(record);
-							if(rank != -1) writeSPRankingToFile();
+
+							boolean isDailyWiped = updateSPDailyRanking();
+							int rankDaily = -1;
+							NetSPRanking rankingDaily = getSPRanking(record.strRuleName, record.strModeName, record.gameType, true);
+							if(rankingDaily != null) {
+								rankDaily = rankingDaily.registerRecord(record);
+							}
+
+							if((rank != -1) || (rankDaily != -1) || (isDailyWiped)) writeSPRankingToFile();
 
 							boolean isPB = pInfo.spPersonalBest.registerRecord(ranking.rankingType, record);
 							if(isPB) {
@@ -2079,9 +2183,9 @@ public class NetServer {
 								writePlayerDataToFile();
 							}
 
-							broadcast("spsendok\t" + rank + "\t" + isPB + "\n", pInfo.roomID);
+							broadcast("spsendok\t" + rank + "\t" + isPB + "\t" + rankDaily + "\n", pInfo.roomID);
 						} else {
-							broadcast("spsendok\t-1\tfalse\n", pInfo.roomID);
+							broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
 						}
 					} else {
 						send(client, "spsendng\n");
@@ -2091,18 +2195,25 @@ public class NetServer {
 		}
 		// Single player leaderboard
 		if(message[0].equals("spranking")) {
-			//spranking\t[RULE]\t[MODE]\t[GAMETYPE]
+			//spranking\t[RULE]\t[MODE]\t[GAMETYPE]\t[DAILY]
 			String strRule = NetUtil.urlDecode(message[1]);
 			String strMode = NetUtil.urlDecode(message[2]);
 			int gameType = Integer.parseInt(message[3]);
+			boolean isDaily = Boolean.parseBoolean(message[4]);
+
+			if(isDaily) {
+				if(updateSPDailyRanking()) {
+					writeSPRankingToFile();
+				}
+			}
 
 			int myRank = -1;
-			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType);
+			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType, isDaily);
 
 			if(ranking != null) {
 				int maxRecord = ranking.listRecord.size();
 
-				String strMsg = "spranking\t" + strRule + "\t" + strMode + "\t" + gameType + "\t";
+				String strMsg = "spranking\t" + strRule + "\t" + strMode + "\t" + gameType + "\t" + isDaily + "\t";
 				strMsg += ranking.rankingType + "\t" + maxRecord + "\t";
 
 				for(int i = 0; i < maxRecord; i++) {
@@ -2119,7 +2230,7 @@ public class NetServer {
 
 					strMsg += strRow;
 				}
-				if((myRank == -1) && (pInfo != null)) {
+				if((myRank == -1) && (pInfo != null) && (!isDaily)) {
 					NetSPRecord record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
 
 					if(record != null) {
@@ -2137,24 +2248,31 @@ public class NetServer {
 				strMsg += "\n";
 				send(client, strMsg);
 			} else {
-				String strMsg = "sprankingfail\t" + strRule + "\t" + strMode + "\t" + gameType + "\n";
+				String strMsg = "sprankingfail\t" + strRule + "\t" + strMode + "\t" + gameType + "\t" + isDaily + "\n";
 				send(client, strMsg);
 			}
 		}
 		// Single player replay download
 		if(message[0].equals("spdownload")) {
-			//spdownload\t[RULE]\t[MODE]\t[GAMETYPE]\t[NAME]
+			//spdownload\t[RULE]\t[MODE]\t[GAMETYPE]\t[DAILY]\t[NAME]
 			String strRule = NetUtil.urlDecode(message[1]);
 			String strMode = NetUtil.urlDecode(message[2]);
 			int gameType = Integer.parseInt(message[3]);
-			String strName = NetUtil.urlDecode(message[4]);
+			boolean isDaily = Boolean.parseBoolean(message[4]);
+			String strName = NetUtil.urlDecode(message[5]);
 
-			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType);
+			if(isDaily) {
+				if(updateSPDailyRanking()) {
+					writeSPRankingToFile();
+				}
+			}
+
+			NetSPRanking ranking = getSPRanking(strRule, strMode, gameType, isDaily);
 			if(ranking != null) {
-				// Get from all-time leaderboard...
+				// Get from leaderboard...
 				NetSPRecord record = ranking.getRecord(strName);
 				// or from Personal Best when not found in the leaderboard.
-				if(record == null) record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
+				if(record == null && !isDaily) record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
 
 				if(record != null) {
 					Adler32 checksumObj = new Adler32();
@@ -2369,7 +2487,14 @@ public class NetServer {
 					mpRankingDataChange = true;
 				}
 
-				for(NetSPRanking ranking: spRankingList) {
+				for(NetSPRanking ranking: spRankingListAlltime) {
+					NetSPRecord record = ranking.getRecord(strName);
+					if(record != null) {
+						ranking.listRecord.remove(record);
+						spRankingDataChange = true;
+					}
+				}
+				for(NetSPRanking ranking: spRankingListDaily) {
 					NetSPRecord record = ranking.getRecord(strName);
 					if(record != null) {
 						ranking.listRecord.remove(record);

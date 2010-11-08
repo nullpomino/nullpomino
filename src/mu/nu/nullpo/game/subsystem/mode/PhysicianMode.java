@@ -345,7 +345,7 @@ public class PhysicianMode extends DummyMode {
 		else engine.meterColor = GameEngine.METER_COLOR_RED;
 
 		if(rest == 0 && engine.timerActive) {
-			engine.gameActive = false;
+			engine.gameEnded();
 			engine.timerActive = false;
 			engine.resetStatc();
 			engine.stat = GameEngine.STAT_EXCELLENT;

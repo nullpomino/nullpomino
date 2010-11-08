@@ -402,8 +402,7 @@ public class SquareMode extends DummyMode {
 
 			// Time up!
 			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 				return;
@@ -419,8 +418,7 @@ public class SquareMode extends DummyMode {
 
 			// Goal
 			if((engine.statistics.score >= SPRINT_MAX_SCORE) && (engine.timerActive == true)) {
-				engine.gameActive = false;
-				engine.timerActive = false;
+				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_ENDINGSTART;
 			}
