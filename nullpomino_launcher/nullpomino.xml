@@ -33,12 +33,12 @@
     <opt>-Djava.library.path=lib</opt>
   </jre>
   <versionInfo>
-    <fileVersion>7.4.0.0</fileVersion>
-    <txtFileVersion>7.4.0</txtFileVersion>
+    <fileVersion>7.5.0.0</fileVersion>
+    <txtFileVersion>7.5.0</txtFileVersion>
     <fileDescription>NullpoMino</fileDescription>
     <copyright>NullNoname</copyright>
-    <productVersion>7.4.0.0</productVersion>
-    <txtProductVersion>7.4.0</txtProductVersion>
+    <productVersion>7.5.0.0</productVersion>
+    <txtProductVersion>7.5.0</txtProductVersion>
     <productName>NullpoMino</productName>
     <companyName>NullNoname</companyName>
     <internalName>NullpoMino</internalName>
