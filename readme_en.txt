@@ -222,7 +222,7 @@ STANDARD-HARD    : Difficult than normal STANDARD rule.
 STANDARD-HARD128 : Slightly easier variant of STANDARD-HARD rule. You can move/rotate the piece 128 times.
 STANDARD-HOLDNEXT: A rule created by holdnext. Enjoy the power of orange sticks.
 STANDARD-J       : This variant has slow movements, nothing more than that.
-STANDARD-PLUS    : A rule created by Blink. STANDARD-FAST with no line clear delay, and faster softdrop.
+STANDARD-PLUS    : A rule created by Blink. STANDARD-FAST with no IRS/IHS and faster softdrop.
 STANDARD-SUPER3  : A classical rule with the rotation system of STANDARD rules but no wallkicks. Has ARE canceling.
 STANDARD-ZERO    : A rule created by Wojtek. STANDARD-PLUS with 20G Soft Drop and Instant DAS.
 
@@ -474,11 +474,11 @@ To make "OK" signal to everyone:
 [Starting a server]
 	You can run a server by simply double-clicking "netserver.bat" if you are using Windows.
 	But the port number is fixed to 9200, which is a default one.
-	If you want to change the port number, or if you are using Linux or MacOS, you will need to manually use the following command:
+	If you want to change the port number you can use the following command:
 	For Windows:
-java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [PORT NUMBER]
+netserver.bat [PORT NUMBER]
 	For Linux/MacOS:
-java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [PORT NUMBER]
+./netserver [PORT NUMBER]
 
 9. FAQ
 Q: My Joystick/Gamepads doesn't work correctly in Slick version.
