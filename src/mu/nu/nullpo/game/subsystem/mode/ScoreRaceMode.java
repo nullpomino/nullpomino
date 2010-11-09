@@ -813,11 +813,18 @@ public class ScoreRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
-				STAT_SCORE, STAT_LINES, STAT_TIME, STAT_PIECE, STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
-		drawResultRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, rankingRank);
-		drawResultNetRank(engine, playerID, receiver, 18, EventReceiver.COLOR_BLUE, netRankingRank[0]);
-		drawResultNetRankDaily(engine, playerID, receiver, 20, EventReceiver.COLOR_BLUE, netRankingRank[1]);
+		receiver.drawMenuFont(engine, playerID, 0, 0, "kn PAGE" + (engine.statc[1] + 1) + "/2", EventReceiver.COLOR_RED);
+
+		if(engine.statc[1] == 0) {
+			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE,
+					STAT_SCORE, STAT_LINES, STAT_TIME, STAT_PIECE);
+			drawResultRank(engine, playerID, receiver, 10, EventReceiver.COLOR_BLUE, rankingRank);
+			drawResultNetRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, netRankingRank[0]);
+			drawResultNetRankDaily(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, netRankingRank[1]);
+		} else if(engine.statc[1] == 1) {
+			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE,
+					STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
+		}
 
 		if(netIsPB) {
 			receiver.drawMenuFont(engine, playerID, 2, 21, "NEW PB", EventReceiver.COLOR_ORANGE);
@@ -828,6 +835,26 @@ public class ScoreRaceMode extends NetDummyMode {
 		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
 			receiver.drawMenuFont(engine, playerID, 1, 22, "A: RETRY", EventReceiver.COLOR_RED);
 		}
+	}
+
+	/*
+	 * Results screen
+	 */
+	@Override
+	public boolean onResult(GameEngine engine, int playerID) {
+		// Page change
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
+			engine.statc[1]--;
+			if(engine.statc[1] < 0) engine.statc[1] = 1;
+			engine.playSE("change");
+		}
+		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
+			engine.statc[1]++;
+			if(engine.statc[1] > 1) engine.statc[1] = 0;
+			engine.playSE("change");
+		}
+
+		return super.onResult(engine, playerID);
 	}
 
 	/*

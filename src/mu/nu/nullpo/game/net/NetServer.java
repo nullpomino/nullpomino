@@ -2221,7 +2221,10 @@ public class NetServer {
 					if(i > 0) strRow = ";";
 
 					NetSPRecord record = ranking.listRecord.get(i);
+					CustomProperties propReplay = record.getReplayProp();
+
 					strRow += i + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
+					strRow += propReplay.getProperty("timestamp.gmt", "") + "," + record.stats.gamerate + ",";
 					strRow += record.getStatRow(ranking.rankingType);
 
 					if((pInfo != null) && pInfo.strName.equals(record.strPlayerName)) {
@@ -2234,11 +2237,14 @@ public class NetServer {
 					NetSPRecord record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
 
 					if(record != null) {
+						CustomProperties propReplay = record.getReplayProp();
+
 						String strRow = "";
 						if(maxRecord > 0) strRow += ",";
 
 						maxRecord++;
 						strRow += (-1) + "," + NetUtil.urlEncode(record.strPlayerName) + ",";
+						strRow += propReplay.getProperty("timestamp.gmt", "") + "," + record.stats.gamerate + ",";
 						strRow += record.getStatRow(ranking.rankingType);
 
 						strMsg += strRow;

@@ -1,7 +1,9 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.TimeZone;
 
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
@@ -92,6 +94,12 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: Net Rankings' names (Declared in NetDummyMode) */
 	protected LinkedList<String>[] netRankingName;
 
+	/** NET: Net Rankings' timestamps (Declared in NetDummyMode) */
+	protected LinkedList<Calendar>[] netRankingDate;
+
+	/** NET: Net Rankings' gamerates (Declared in NetDummyMode) */
+	protected LinkedList<Float>[] netRankingGamerate;
+
 	/** NET: Net Rankings' times (Declared in NetDummyMode) */
 	protected LinkedList<Integer>[] netRankingTime;
 
@@ -165,6 +173,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 		netRankingPlace = new LinkedList[2];
 		netRankingName = new LinkedList[2];
+		netRankingDate = new LinkedList[2];
+		netRankingGamerate = new LinkedList[2];
 		netRankingTime = new LinkedList[2];
 		netRankingPiece = new LinkedList[2];
 		netRankingPPS = new LinkedList[2];
@@ -812,12 +822,14 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			int d = netRankingView;
 
 			if(!netRankingNoDataFlag[d] && (netRankingPlace != null) && (netRankingPlace[d] != null)) {
-				receiver.drawMenuFont(engine, playerID, 1, 1,
+				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 38, 1, ">>", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 3, 1,
 						((d != 0) ? "DAILY" : "ALL-TIME") + " RANKING (" + (netRankingCursor[d]+1) + "/" + netRankingPlace[d].size() + ")",
 						EventReceiver.COLOR_GREEN);
 
-				int startIndex = (netRankingCursor[d] / 25) * 25;
-				int endIndex = startIndex + 25;
+				int startIndex = (netRankingCursor[d] / 20) * 20;
+				int endIndex = startIndex + 20;
 				if(endIndex > netRankingPlace[d].size()) endIndex = netRankingPlace[d].size();
 				int c = 0;
 
@@ -853,18 +865,44 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 					c++;
 				}
+
+				if((netRankingCursor[d] >= 0) && (netRankingCursor[d] < netRankingDate[d].size())) {
+					String strDate = "----/--/-- --:--:--";
+					Calendar calendar = netRankingDate[d].get(netRankingCursor[d]);
+					if(calendar != null) {
+						strDate = GeneralUtil.getCalendarString(calendar, TimeZone.getDefault());
+					}
+					receiver.drawMenuFont(engine, playerID, 1, 25, "DATE:" + strDate, EventReceiver.COLOR_CYAN);
+
+					float gamerate = netRankingGamerate[d].get(netRankingCursor[d]);
+					receiver.drawMenuFont(engine, playerID, 1, 26, "GAMERATE:" + ((gamerate == 0f) ? "UNKNOWN" : (100*gamerate)+"%"),
+							EventReceiver.COLOR_CYAN);
+				}
+
+				receiver.drawMenuFont(engine, playerID, 1, 28, "A:DOWNLOAD B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
+						EventReceiver.COLOR_ORANGE);
 			} else if(netRankingNoDataFlag[d]) {
-				receiver.drawMenuFont(engine, playerID, 1, 1,
+				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 38, 1, ">>", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 3, 1,
 						((d != 0) ? "DAILY" : "ALL-TIME") + " RANKING",
 						EventReceiver.COLOR_GREEN);
 
 				receiver.drawMenuFont(engine, playerID, 1, 3, "NO DATA", EventReceiver.COLOR_DARKBLUE);
+
+				receiver.drawMenuFont(engine, playerID, 1, 28, "B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
+						EventReceiver.COLOR_ORANGE);
 			} else if((netRankingPlace == null) || (netRankingPlace[d] == null)) {
-				receiver.drawMenuFont(engine, playerID, 1, 1,
+				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 38, 1, ">>", EventReceiver.COLOR_ORANGE);
+				receiver.drawMenuFont(engine, playerID, 3, 1,
 						((d != 0) ? "DAILY" : "ALL-TIME") + " RANKING",
 						EventReceiver.COLOR_GREEN);
 
 				receiver.drawMenuFont(engine, playerID, 1, 3, "LOADING...", EventReceiver.COLOR_CYAN);
+
+				receiver.drawMenuFont(engine, playerID, 1, 28, "B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
+						EventReceiver.COLOR_ORANGE);
 			}
 		}
 	}
@@ -914,6 +952,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			netRankingNoDataFlag[d] = false;
 			netRankingPlace[d] = new LinkedList<Integer>();
 			netRankingName[d] = new LinkedList<String>();
+			netRankingDate[d] = new LinkedList<Calendar>();
+			netRankingGamerate[d] = new LinkedList<Float>();
 			netRankingTime[d] = new LinkedList<Integer>();
 			netRankingPiece[d] = new LinkedList<Integer>();
 			netRankingPPS[d] = new LinkedList<Float>();
@@ -925,15 +965,17 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				netRankingPlace[d].add(Integer.parseInt(arrayData[0]));
 				String pName = NetUtil.urlDecode(arrayData[1]);
 				netRankingName[d].add(pName);
+				netRankingDate[d].add(GeneralUtil.importCalendarString(arrayData[2]));
+				netRankingGamerate[d].add(Float.parseFloat(arrayData[3]));
 
 				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
-					netRankingTime[d].add(Integer.parseInt(arrayData[2]));
-					netRankingPiece[d].add(Integer.parseInt(arrayData[3]));
-					netRankingPPS[d].add(Float.parseFloat(arrayData[4]));
+					netRankingTime[d].add(Integer.parseInt(arrayData[4]));
+					netRankingPiece[d].add(Integer.parseInt(arrayData[5]));
+					netRankingPPS[d].add(Float.parseFloat(arrayData[6]));
 				} else if(netRankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
-					netRankingTime[d].add(Integer.parseInt(arrayData[2]));
-					netRankingLines[d].add(Integer.parseInt(arrayData[3]));
-					netRankingSPL[d].add(Double.parseDouble(arrayData[4]));
+					netRankingTime[d].add(Integer.parseInt(arrayData[4]));
+					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
+					netRankingSPL[d].add(Double.parseDouble(arrayData[6]));
 				}
 
 				if(pName.equals(netPlayerName)) {

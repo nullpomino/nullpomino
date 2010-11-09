@@ -29,9 +29,7 @@
 package mu.nu.nullpo.game.play;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.BGMStatus;
@@ -46,6 +44,7 @@ import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.component.WallkickResult;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
+import mu.nu.nullpo.util.GeneralUtil;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.MemorylessRandomizer;
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
@@ -1577,13 +1576,17 @@ public class GameEngine {
 			if(owner.mode != null) owner.replayProp.setProperty("name.mode", owner.mode.getName());
 			if(ruleopt.strRuleName != null) owner.replayProp.setProperty("name.rule", ruleopt.strRuleName);
 
-			GregorianCalendar currentTime = new GregorianCalendar();
+			// Local timestamp
+			Calendar currentTime = Calendar.getInstance();
 			int month = currentTime.get(Calendar.MONTH) + 1;
 			String strDate = String.format("%04d/%02d/%02d", currentTime.get(Calendar.YEAR), month, currentTime.get(Calendar.DATE));
 			String strTime = String.format("%02d:%02d:%02d",
 											currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE), currentTime.get(Calendar.SECOND));
 			owner.replayProp.setProperty("timestamp.date", strDate);
 			owner.replayProp.setProperty("timestamp.time", strTime);
+
+			// GMT timestamp
+			owner.replayProp.setProperty("timestamp.gmt", GeneralUtil.exportCalendarString());
 		}
 
 		owner.replayProp.setProperty(playerID + ".tuning.owRotateButtonDefaultRight", owRotateButtonDefaultRight);
