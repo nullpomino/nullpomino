@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.TimeZone;
+import java.util.zip.Adler32;
 
 import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
@@ -14,6 +15,7 @@ import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.RuleOptions;
+import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
@@ -139,7 +141,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			}
 
 			if((netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.getCurrentRoomInfo() != null)) {
-				onJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
+				netOnJoin(netLobby, netLobby.netPlayerClient, netLobby.netPlayerClient.getCurrentRoomInfo());
 			}
 		}
 	}
@@ -309,6 +311,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		if(netIsNetPlay){
 			if(!netIsWatch) {
 				if(engine.statc[0] == 0) {
+					// Send end-of-game messages
 					if(netNumSpectators > 0) {
 						netSendField(engine);
 						netSendNextAndHold(engine);
@@ -316,6 +319,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					}
 					netSendEndGameStats(engine);
 					netLobby.netPlayerClient.send("dead\t-1\n");
+				} else if(engine.statc[0] >= engine.field.getHeight() + 1 + 180) {
+					// To results screen
+					netLobby.netPlayerClient.send("game\tresultsscreen\n");
 				}
 			} else {
 				if(engine.statc[0] < engine.field.getHeight() + 1 + 180) {
@@ -335,6 +341,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/**
 	 * NET: Results screen
 	 */
+	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
 		// NET: Retry
 		if(netIsNetPlay) {
@@ -559,6 +566,12 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					engine.resetStatc();
 					engine.playSE("decide");
 				}
+				// Display results screen
+				if(message[3].equals("resultsscreen")) {
+					engine.field.reset();
+					engine.stat = GameEngine.STAT_RESULT;
+					engine.resetStatc();
+				}
 			}
 		}
 	}
@@ -575,7 +588,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * @param client NetPlayerClient
 	 * @param roomInfo NetRoomInfo
 	 */
-	protected void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+	protected void netOnJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
 		log.debug("onJoin on NetDummyMode");
 
 		netCurrentRoomInfo = roomInfo;
@@ -837,6 +850,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     PIECE PPS    NAME", EventReceiver.COLOR_BLUE);
 				} else if(netRankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE SPL    NAME", EventReceiver.COLOR_BLUE);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_DIGRACE) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE PIECE  NAME", EventReceiver.COLOR_BLUE);
 				}
 
 				for(int i = startIndex; i < endIndex; i++) {
@@ -860,6 +875,11 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 19, 4 + c, String.format("%.5g", netRankingSPL[d].get(i)), (i == netRankingCursor[d]));
+						receiver.drawTTFMenuFont(engine, playerID, 26, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
+					} else if(netRankingType == NetSPRecord.RANKINGTYPE_DIGRACE) {
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 19, 4 + c, "" + netRankingPiece[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawTTFMenuFont(engine, playerID, 26, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
 					}
 
@@ -976,6 +996,10 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					netRankingTime[d].add(Integer.parseInt(arrayData[4]));
 					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
 					netRankingSPL[d].add(Double.parseDouble(arrayData[6]));
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_DIGRACE) {
+					netRankingTime[d].add(Integer.parseInt(arrayData[4]));
+					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
+					netRankingPiece[d].add(Integer.parseInt(arrayData[6]));
 				}
 
 				if(pName.equals(netPlayerName)) {
@@ -1034,9 +1058,30 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 	/**
 	 * NET: Send replay data<br>
-	 * Game modes should implement this.
+	 * Game modes should implement this. However, some basic codes are already implemented in NetDummyMode.
 	 * @param engine GameEngine
 	 */
 	protected void netSendReplay(GameEngine engine) {
+		NetSPRecord record = new NetSPRecord();
+		record.setReplayProp(owner.replayProp);
+		record.stats = new Statistics(engine.statistics);
+		record.gameType = netGetGoalType();
+
+		String strData = NetUtil.compressString(record.exportString());
+
+		Adler32 checksumObj = new Adler32();
+		checksumObj.update(NetUtil.stringToBytes(strData));
+		long sChecksum = checksumObj.getValue();
+
+		netLobby.netPlayerClient.send("spsend\t" + sChecksum + "\t" + strData + "\n");
+	}
+
+	/**
+	 * NET: Get goal type (used from the default implementation of netSendReplay)<br>
+	 * Game modes should implement this, unless there is only 1 goal type.
+	 * @return Goal type (default implementation will return 0)
+	 */
+	protected int netGetGoalType() {
+		return 0;
 	}
 }

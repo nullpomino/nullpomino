@@ -16,7 +16,8 @@ public class NetSPRecord implements Serializable {
 	/** Ranking type constants */
 	public static final int RANKINGTYPE_GENERIC_SCORE = 0,
 							RANKINGTYPE_GENERIC_TIME = 1,
-							RANKINGTYPE_SCORERACE = 2;
+							RANKINGTYPE_SCORERACE = 2,
+							RANKINGTYPE_DIGRACE = 3;
 
 	/** Player Name */
 	public String strPlayerName;
@@ -35,6 +36,9 @@ public class NetSPRecord implements Serializable {
 
 	/** Replay data (Compressed) */
 	public String strReplayProp;
+
+	/** Time stamp (GMT) */
+	public String strTimeStamp;
 
 	/** Game Type ID */
 	public int gameType;
@@ -75,6 +79,14 @@ public class NetSPRecord implements Serializable {
 			} else if((s1.time == s2.time) && (s1.lines < s2.lines)) {
 				return true;
 			} else if((s1.time == s2.time) && (s1.lines == s2.lines) && (s1.spl > s2.spl)) {
+				return true;
+			}
+		} else if(type == RANKINGTYPE_DIGRACE) {
+			if(s1.time < s2.time) {
+				return true;
+			} else if((s1.time == s2.time) && (s1.lines < s2.lines)) {
+				return true;
+			} else if((s1.time == s2.time) && (s1.lines == s2.lines) && (s1.totalPieceLocked < s2.totalPieceLocked)) {
 				return true;
 			}
 		}
@@ -123,6 +135,7 @@ public class NetSPRecord implements Serializable {
 		stats = null;
 		listCustomStats = new LinkedList<String>();
 		strReplayProp = "";
+		strTimeStamp = "";
 		gameType = 0;
 		style = 0;
 	}
@@ -142,6 +155,7 @@ public class NetSPRecord implements Serializable {
 		listCustomStats = new LinkedList<String>(s.listCustomStats);
 
 		strReplayProp = s.strReplayProp;
+		strTimeStamp = s.strTimeStamp;
 		gameType = s.gameType;
 		style = s.style;
 	}
@@ -200,10 +214,10 @@ public class NetSPRecord implements Serializable {
 
 	/**
 	 * Export to a String Array
-	 * @return String Array (String[8])
+	 * @return String Array (String[9])
 	 */
 	public String[] exportStringArray() {
-		String[] s = new String[8];
+		String[] s = new String[9];
 		s[0] = NetUtil.urlEncode(strPlayerName);
 		s[1] = NetUtil.urlEncode(strModeName);
 		s[2] = NetUtil.urlEncode(strRuleName);
@@ -212,6 +226,7 @@ public class NetSPRecord implements Serializable {
 		s[5] = strReplayProp;
 		s[6] = Integer.toString(gameType);
 		s[7] = Integer.toString(style);
+		s[8] = strTimeStamp;
 		return s;
 	}
 
@@ -233,7 +248,7 @@ public class NetSPRecord implements Serializable {
 
 	/**
 	 * Import from a String Array
-	 * @param s String Array (String[8])
+	 * @param s String Array (String[9])
 	 */
 	public void importStringArray(String[] s) {
 		strPlayerName = NetUtil.urlDecode(s[0]);
@@ -246,6 +261,7 @@ public class NetSPRecord implements Serializable {
 		strReplayProp = s[5];
 		gameType = Integer.parseInt(s[6]);
 		style = Integer.parseInt(s[7]);
+		strTimeStamp = (s.length > 8) ? s[8] : "";
 	}
 
 	/**
@@ -332,6 +348,10 @@ public class NetSPRecord implements Serializable {
 			strRow += stats.time + ",";
 			strRow += stats.lines + ",";
 			strRow += stats.spl;
+		} else if(type == RANKINGTYPE_DIGRACE) {
+			strRow += stats.time + ",";
+			strRow += stats.lines + ",";
+			strRow += stats.totalPieceLocked;
 		}
 
 		return strRow;

@@ -28,17 +28,13 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
-import java.util.zip.Adler32;
-
 import org.apache.log4j.Logger;
 
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
-import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetRoomInfo;
-import mu.nu.nullpo.game.net.NetSPRecord;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
@@ -140,8 +136,9 @@ public class LineRaceMode extends NetDummyMode {
 	 * @param client NetPlayerClient
 	 * @param roomInfo NetRoomInfo
 	 */
-	protected void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		super.onJoin(lobby, client, roomInfo);
+	@Override
+	protected void netOnJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+		super.netOnJoin(lobby, client, roomInfo);
 
 		if(roomInfo != null) {
 			// Load locked rule rankings
@@ -638,6 +635,7 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send various in-game stats (as well as goaltype)
 	 * @param engine GameEngine
 	 */
+	@Override
 	protected void netSendStats(GameEngine engine) {
 		String msg = "game\tstats\t";
 		msg += engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
@@ -674,6 +672,7 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send end-of-game stats
 	 * @param engine GameEngine
 	 */
+	@Override
 	protected void netSendEndGameStats(GameEngine engine) {
 		String subMsg = "";
 		subMsg += "LINE;" + engine.statistics.lines + "/" + GOAL_TABLE[goaltype] + "\t";
@@ -690,6 +689,7 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send game options to all spectators
 	 * @param engine GameEngine
 	 */
+	@Override
 	protected void netSendOptions(GameEngine engine) {
 		String msg = "game\toption\t";
 		msg += engine.speed.gravity + "\t" + engine.speed.denominator + "\t" + engine.speed.are + "\t";
@@ -721,22 +721,20 @@ public class LineRaceMode extends NetDummyMode {
 	 * NET: Send replay data
 	 * @param engine GameEngine
 	 */
+	@Override
 	protected void netSendReplay(GameEngine engine) {
 		if((engine.statistics.lines >= GOAL_TABLE[goaltype]) && (!big) && (engine.ai == null)) {
-			NetSPRecord record = new NetSPRecord();
-			record.setReplayProp(owner.replayProp);
-			record.stats = new Statistics(engine.statistics);
-			record.gameType = goaltype;
-
-			String strData = NetUtil.compressString(record.exportString());
-
-			Adler32 checksumObj = new Adler32();
-			checksumObj.update(NetUtil.stringToBytes(strData));
-			long sChecksum = checksumObj.getValue();
-
-			netLobby.netPlayerClient.send("spsend\t" + sChecksum + "\t" + strData + "\n");
+			super.netSendReplay(engine);
 		} else {
 			netReplaySendStatus = 2;
 		}
+	}
+
+	/**
+	 * NET: Get goal type
+	 */
+	@Override
+	protected int netGetGoalType() {
+		return goaltype;
 	}
 }

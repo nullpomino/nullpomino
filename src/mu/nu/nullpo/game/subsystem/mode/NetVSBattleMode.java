@@ -510,7 +510,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 * @param client NetPlayerClient
 	 * @param roomInfo NetRoomInfo
 	 */
-	protected void onJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
+	protected void netOnJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
 		log.debug("onJoin on NetVSBattleMode");
 
 		resetFlags();
