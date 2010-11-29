@@ -711,11 +711,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// echo
 		else if(commands[0].equalsIgnoreCase("echo")) {
-			String strTemp = "";
-			for(int i = 0; i < commands.length - 1; i++) {
-				if(i >= 1) strTemp += " " + commands[i + 1];
-				else strTemp += commands[i + 1];
-			}
+			String strTemp = GeneralUtil.StringCombine(commands, " ", 1);
 			addConsoleLog(strTemp);
 		}
 		// cls
@@ -742,11 +738,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// announce
 		else if(commands[0].equalsIgnoreCase("announce")) {
-			String strTemp = "";
-			for(int i = 0; i < commands.length - 1; i++) {
-				if(i >= 1) strTemp += " " + commands[i + 1];
-				else strTemp += commands[i + 1];
-			}
+			String strTemp = GeneralUtil.StringCombine(commands, " ", 1);
 			if(strTemp.length() > 0) {
 				sendCommand("announce\t" + NetUtil.urlEncode(strTemp));
 				addConsoleLog(getUIText("Console_Announce") + strTemp);
@@ -822,8 +814,9 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 		}
 		// playerdelete/pdel
 		else if(commands[0].equalsIgnoreCase("playerdelete")||commands[0].equalsIgnoreCase("pdel")) {
-			if(commands.length > 1) {
-				sendCommand("playerdelete\t" + commands[1]);
+			String strTemp = GeneralUtil.StringCombine(commands, " ", 1);
+			if(strTemp.length() > 0) {
+				sendCommand("playerdelete\t" + strTemp);
 			} else {
 				addConsoleLog(getUIText("Console_PlayerDelete_NoParams"));
 			}
@@ -835,10 +828,6 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			} else {
 				addConsoleLog(getUIText("Console_RoomDelete_NoParams"));
 			}
-		}
-		// diag
-		else if (commands[0].equalsIgnoreCase("diag")){
-			sendCommand("diag");
 		}
 		// Invalid
 		else {

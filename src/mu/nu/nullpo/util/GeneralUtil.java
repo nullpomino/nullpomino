@@ -335,4 +335,24 @@ public class GeneralUtil {
 
 		return aiObject;
 	}
+	
+	/**
+	 * Combine array of strings
+	 * @param strings Array of strings
+	 * @param separator Separator used for combine
+	 * @param startIndex First element which will be combined
+	 * @return Combined string
+	 */
+	public static String StringCombine(String[] strings, String separator,
+			int startIndex)
+	{
+		String res = "";
+		for (int i = startIndex; i<strings.length; i++) {
+			res+= strings[i];
+			if (i != strings.length-1)
+				res+= separator;
+		}
+		
+		return res;
+	}
 }
