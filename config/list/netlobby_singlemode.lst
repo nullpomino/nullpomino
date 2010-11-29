@@ -2,6 +2,7 @@
 #ModeName,RankingType,MaxGameType
 
 :TETROMINO
+MARATHON,0,2
 LINE RACE,1,2
 SCORE RACE,2,2
 DIG RACE,3,2

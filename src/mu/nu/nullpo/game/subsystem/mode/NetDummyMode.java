@@ -105,6 +105,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: Net Rankings' times (Declared in NetDummyMode) */
 	protected LinkedList<Integer>[] netRankingTime;
 
+	/** NET: Net Rankings' score (Declared in NetDummyMode) */
+	protected LinkedList<Integer>[] netRankingScore;
+
 	/** NET: Net Rankings' piece counts (Declared in NetDummyMode) */
 	protected LinkedList<Integer>[] netRankingPiece;
 
@@ -178,6 +181,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netRankingDate = new LinkedList[2];
 		netRankingGamerate = new LinkedList[2];
 		netRankingTime = new LinkedList[2];
+		netRankingScore = new LinkedList[2];
 		netRankingPiece = new LinkedList[2];
 		netRankingPPS = new LinkedList[2];
 		netRankingLines = new LinkedList[2];
@@ -846,7 +850,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				if(endIndex > netRankingPlace[d].size()) endIndex = netRankingPlace[d].size();
 				int c = 0;
 
-				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
+				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    SCORE   LINE TIME     NAME", EventReceiver.COLOR_BLUE);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     PIECE PPS    NAME", EventReceiver.COLOR_BLUE);
 				} else if(netRankingType == NetSPRecord.RANKINGTYPE_SCORERACE) {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE SPL    NAME", EventReceiver.COLOR_BLUE);
@@ -866,7 +872,12 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						receiver.drawMenuFont(engine, playerID, 1, 4 + c, String.format("%3d", netRankingPlace[d].get(i)+1), rankColor);
 					}
 
-					if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
+					if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, "" + netRankingScore[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 13, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 18, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
+						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
+					} else if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
 						receiver.drawMenuFont(engine, playerID, 5, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingPiece[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 20, 4 + c, String.format("%.5g", netRankingPPS[d].get(i)), (i == netRankingCursor[d]));
@@ -975,6 +986,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			netRankingDate[d] = new LinkedList<Calendar>();
 			netRankingGamerate[d] = new LinkedList<Float>();
 			netRankingTime[d] = new LinkedList<Integer>();
+			netRankingScore[d] = new LinkedList<Integer>();
 			netRankingPiece[d] = new LinkedList<Integer>();
 			netRankingPPS[d] = new LinkedList<Float>();
 			netRankingLines[d] = new LinkedList<Integer>();
@@ -988,7 +1000,11 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				netRankingDate[d].add(GeneralUtil.importCalendarString(arrayData[2]));
 				netRankingGamerate[d].add(Float.parseFloat(arrayData[3]));
 
-				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
+				if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_SCORE) {
+					netRankingScore[d].add(Integer.parseInt(arrayData[4]));
+					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
+					netRankingTime[d].add(Integer.parseInt(arrayData[6]));
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_GENERIC_TIME) {
 					netRankingTime[d].add(Integer.parseInt(arrayData[4]));
 					netRankingPiece[d].add(Integer.parseInt(arrayData[5]));
 					netRankingPPS[d].add(Float.parseFloat(arrayData[6]));
