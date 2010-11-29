@@ -2361,48 +2361,49 @@ public class GameEngine {
 				}
 			}
 
-			// Old Soft Drop codes
-			if( (ctrl.isPress(getDown()) == true) &&
-				(softdropContinuousUse == false) &&
-				(ruleopt.softdropEnable == true) &&
-				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
-				((ruleopt.moveUpAndDown == true) || (updown == false)) )
-			{
-				if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0))
-					gcount += (int)(speed.gravity * ruleopt.softdropSpeed);
-				else
-					gcount += (int)(speed.denominator * ruleopt.softdropSpeed);
+			if(!ruleopt.softdropGravitySpeedLimit || (ruleopt.softdropSpeed < 1.0f)) {
+				// Old Soft Drop codes
+				if( (ctrl.isPress(getDown()) == true) &&
+					(softdropContinuousUse == false) &&
+					(ruleopt.softdropEnable == true) &&
+					((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
+					((ruleopt.moveUpAndDown == true) || (updown == false)) )
+				{
+					if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0))
+						gcount += (int)(speed.gravity * ruleopt.softdropSpeed);
+					else
+						gcount += (int)(speed.denominator * ruleopt.softdropSpeed);
 
-				softdropUsed = true;
-			}
-
-			// New Soft Drop codes. Currently disabled because New Soft Drop doesn't work in several modes.
-			/*
-			if(ctrl.isPress(getDown()) && !softdropContinuousUse &&
-				ruleopt.softdropEnable && (ruleopt.moveDiagonal || !sidemoveflag) &&
-				(ruleopt.moveUpAndDown || !updown) && (ruleopt.softdropMultiplyNativeSpeed ||
-				(speed.gravity < (int)(speed.denominator * ruleopt.softdropSpeed)))) {
-
-				if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0)) {
-					// gcount += (int)(speed.gravity * ruleopt.softdropSpeed);
-					gcount = (int)(speed.gravity * ruleopt.softdropSpeed);
-				} else {
-					// gcount += (int)(speed.denominator * ruleopt.softdropSpeed);
-					gcount = (int)(speed.denominator * ruleopt.softdropSpeed);
+					softdropUsed = true;
 				}
-
-				softdropUsed = true;
 			} else {
-				// 落下
-				// This prevents soft drop from adding to the gravity speed.
-				gcount += speed.gravity;
+				// New Soft Drop codes
+				if( ctrl.isPress(getDown()) && !softdropContinuousUse &&
+					ruleopt.softdropEnable && (ruleopt.moveDiagonal || !sidemoveflag) &&
+					(ruleopt.moveUpAndDown || !updown) &&
+					(ruleopt.softdropMultiplyNativeSpeed || (speed.gravity < (int)(speed.denominator * ruleopt.softdropSpeed))) )
+				{
+					if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0)) {
+						// gcount += (int)(speed.gravity * ruleopt.softdropSpeed);
+						gcount = (int)(speed.gravity * ruleopt.softdropSpeed);
+					} else {
+						// gcount += (int)(speed.denominator * ruleopt.softdropSpeed);
+						gcount = (int)(speed.denominator * ruleopt.softdropSpeed);
+					}
+
+					softdropUsed = true;
+				} else {
+					// 落下
+					// This prevents soft drop from adding to the gravity speed.
+					gcount += speed.gravity;
+				}
 			}
-			*/
 
 			if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceActiveTime++;
 		}
 
-		gcount += speed.gravity;	// Part of Old Soft Drop
+		if(!ruleopt.softdropGravitySpeedLimit || (ruleopt.softdropSpeed < 1.0f))
+			gcount += speed.gravity;	// Part of Old Soft Drop
 
 		while((gcount >= speed.denominator) || (speed.gravity < 0)) {
 			if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, field) == false) {

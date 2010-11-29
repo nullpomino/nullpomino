@@ -153,6 +153,9 @@ public class RuleOptions implements Serializable {
 	/** Soft drop速度をCurrent 通常速度×n倍にする */
 	public boolean softdropMultiplyNativeSpeed;
 
+	/** Use new soft drop codes */
+	public boolean softdropGravitySpeedLimit;
+
 	/** 先行rotation */
 	public boolean rotateInitial;
 
@@ -373,6 +376,7 @@ public class RuleOptions implements Serializable {
 		softdropSurfaceLock = false;
 		softdropSpeed = 0.5f;
 		softdropMultiplyNativeSpeed = false;
+		softdropGravitySpeedLimit = false;
 
 		rotateInitial = true;
 		rotateInitialLimit = false;
@@ -498,6 +502,7 @@ public class RuleOptions implements Serializable {
 		softdropSurfaceLock = r.softdropSurfaceLock;
 		softdropSpeed = r.softdropSpeed;
 		softdropMultiplyNativeSpeed = r.softdropMultiplyNativeSpeed;
+		softdropGravitySpeedLimit = r.softdropGravitySpeedLimit;
 
 		rotateInitial = r.rotateInitial;
 		rotateInitialLimit = r.rotateInitialLimit;
@@ -617,6 +622,7 @@ public class RuleOptions implements Serializable {
 		if(softdropSurfaceLock != r.softdropSurfaceLock) return false;
 		if(softdropSpeed != r.softdropSpeed) return false;
 		if(softdropMultiplyNativeSpeed != r.softdropMultiplyNativeSpeed) return false;
+		if(softdropGravitySpeedLimit != r.softdropGravitySpeedLimit) return false;
 
 		if(rotateInitial != r.rotateInitial) return false;
 		if(rotateInitialLimit != r.rotateInitialLimit) return false;
@@ -737,6 +743,7 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.softdropSurfaceLock", softdropSurfaceLock);
 		p.setProperty(id + ".ruleopt.softdropSpeed", softdropSpeed);
 		p.setProperty(id + ".ruleopt.softdropMultiplyNativeSpeed", softdropMultiplyNativeSpeed);
+		p.setProperty(id + ".ruleopt.softdropGravitySpeedLimit", softdropGravitySpeedLimit);
 
 		p.setProperty(id + ".ruleopt.rotateInitial", rotateInitial);
 		p.setProperty(id + ".ruleopt.rotateInitialLimit", rotateInitialLimit);
@@ -855,6 +862,7 @@ public class RuleOptions implements Serializable {
 		softdropSurfaceLock = p.getProperty(id + ".ruleopt.softdropSurfaceLock", softdropSurfaceLock);
 		softdropSpeed = p.getProperty(id + ".ruleopt.softdropSpeed", softdropSpeed);
 		softdropMultiplyNativeSpeed = p.getProperty(id + ".ruleopt.softdropMultiplyNativeSpeed", softdropMultiplyNativeSpeed);
+		softdropGravitySpeedLimit = p.getProperty(id + ".ruleopt.softdropGravitySpeedLimit", softdropGravitySpeedLimit);
 
 		rotateInitial = p.getProperty(id + ".ruleopt.rotateInitial", rotateInitial);
 		rotateInitialLimit = p.getProperty(id + ".ruleopt.rotateInitialLimit", rotateInitialLimit);

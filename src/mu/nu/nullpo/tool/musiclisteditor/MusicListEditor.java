@@ -146,7 +146,7 @@ public class MusicListEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setTitle(getUIText("Title_MusicListEditor"));
 
 		initUI();

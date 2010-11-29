@@ -211,6 +211,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Soft drop速度をCurrent 通常速度×n倍にする */
 	private JCheckBox chkboxDropSoftDropMultiplyNativeSpeed;
 
+	/** Use new soft drop codes */
+	private JCheckBox chkboxDropSoftDropGravitySpeedLimit;
+
 	//----------------------------------------------------------------------
 	/* rotation設定パネル */
 
@@ -525,7 +528,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		strNowFile = null;
 
 		setTitle(getUIText("Title_RuleEditor"));
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		loadBlockSkins();
 
@@ -793,6 +796,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 		// Soft drop速度をCurrent 通常速度×n倍にする
 		chkboxDropSoftDropMultiplyNativeSpeed = new JCheckBox(getUIText("Drop_SoftDropMultiplyNativeSpeed"));
 		panelDrop.add(chkboxDropSoftDropMultiplyNativeSpeed);
+
+		// Use new soft drop codes
+		chkboxDropSoftDropGravitySpeedLimit = new JCheckBox(getUIText("Drop_SoftDropGravitySpeedLimit"));
+		panelDrop.add(chkboxDropSoftDropGravitySpeedLimit);
 
 		// Soft drop速度
 		JPanel pDropSoftDropSpeed = new JPanel();
@@ -1441,6 +1448,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxDropSoftDropSurfaceLock.setSelected(r.softdropSurfaceLock);
 		txtfldDropSoftDropSpeed.setText(String.valueOf(r.softdropSpeed));
 		chkboxDropSoftDropMultiplyNativeSpeed.setSelected(r.softdropMultiplyNativeSpeed);
+		chkboxDropSoftDropGravitySpeedLimit.setSelected(r.softdropGravitySpeedLimit);
 
 		chkboxRotateInitial.setSelected(r.rotateInitial);
 		chkboxRotateInitialLimit.setSelected(r.rotateInitialLimit);
@@ -1558,6 +1566,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.softdropSurfaceLock = chkboxDropSoftDropSurfaceLock.isSelected();
 		r.softdropSpeed = getFloatTextField(txtfldDropSoftDropSpeed);
 		r.softdropMultiplyNativeSpeed = chkboxDropSoftDropMultiplyNativeSpeed.isSelected();
+		r.softdropGravitySpeedLimit = chkboxDropSoftDropGravitySpeedLimit.isSelected();
 
 		r.rotateInitial = chkboxRotateInitial.isSelected();
 		r.rotateInitialLimit = chkboxRotateInitialLimit.isSelected();

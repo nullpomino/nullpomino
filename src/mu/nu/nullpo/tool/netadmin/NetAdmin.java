@@ -634,7 +634,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 	public void shutdown() {
 		logout();
 		saveConfig();
-		this.dispose();
+		System.exit(0);
 	}
 
 	/**

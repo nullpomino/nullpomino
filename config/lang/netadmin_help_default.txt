@@ -37,8 +37,6 @@ serverport
 	Display this server's port number
 version
 	Display version info
-diag
-	Dump stack trace of this server
 
 ***** List of ban-related commands *****
 bangui (IP)
