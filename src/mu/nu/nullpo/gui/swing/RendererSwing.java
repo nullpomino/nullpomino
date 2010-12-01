@@ -762,12 +762,10 @@ public class RendererSwing extends EventReceiver {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
 								  blk.darkness, blk.alpha, scale);
-					} else if (showfieldblockgraphics) {
-						if (engine.owner.replayMode && engine.owner.replayShowInvisible) {
-							drawBlockForceVisible(x2, y2, blk, scale);
-						} else if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
-							drawBlock(x2, y2, blk, scale);
-						}
+					} else if (showfieldblockgraphics && engine.owner.replayMode && engine.owner.replayShowInvisible) {
+						drawBlockForceVisible(x2, y2, blk, scale);
+					} else if(showfieldblockgraphics && blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
+						drawBlock(x2, y2, blk, scale);
 					} else {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
 						graphics.drawImage(ResourceHolderSwing.imgFieldbg, x2, y2, x2+blksize, y2+blksize, sx, 0, sx+16, 16, null);

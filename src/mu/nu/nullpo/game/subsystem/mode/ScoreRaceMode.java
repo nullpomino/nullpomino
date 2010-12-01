@@ -264,34 +264,8 @@ public class ScoreRaceMode extends NetDummyMode {
 		}
 		// Menu
 		else if(engine.owner.replayMode == false) {
-			// Up
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) && (!netIsWatch)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 15;
-				engine.playSE("cursor");
-
-				// NET: Signal cursor change
-				if(netIsNetPlay && (netNumSpectators > 0)) {
-					netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
-				}
-			}
-			// Down
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN) && (!netIsWatch)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 15) engine.statc[2] = 0;
-				engine.playSE("cursor");
-
-				// NET: Signal cursor change
-				if(netIsNetPlay && (netNumSpectators > 0)) {
-					netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
-				}
-			}
-
 			// Configuration changes
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
-			if(netIsWatch) change = 0;
+			int change = updateCursor(engine, 15, playerID);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -486,7 +460,12 @@ public class ScoreRaceMode extends NetDummyMode {
 		engine.b2bEnable = enableB2B;
 		if(enableCombo) engine.comboType = GameEngine.COMBO_TYPE_NORMAL;
 		else engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
-		owner.bgmStatus.bgm = bgmno;
+
+		if(netIsWatch) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+		} else {
+			owner.bgmStatus.bgm = bgmno;
+		}
 
 		if(version >= 1) {
 			engine.tspinAllowKick = enableTSpinKick;

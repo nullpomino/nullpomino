@@ -205,10 +205,23 @@ public class DummyMode implements GameMode {
 	public void netplayOnRetryKey(GameEngine engine, int playerID) {
 	}
 
+	/**
+	 * Update menu cursor
+	 * @param engine GameEngine
+	 * @param maxCursor Max value of cursor position
+	 * @return -1 if Left key is pressed, 1 if Right key is pressed, 0 otherwise
+	 */
 	protected int updateCursor(GameEngine engine, int maxCursor) {
 		return updateCursor(engine, maxCursor, 0);
 	}
 
+	/**
+	 * Update menu cursor
+	 * @param engine GameEngine
+	 * @param maxCursor Max value of cursor position
+	 * @param playerID Player ID (unused)
+	 * @return -1 if Left key is pressed, 1 if Right key is pressed, 0 otherwise
+	 */
 	protected int updateCursor (GameEngine engine, int maxCursor, int playerID) {
 		// Up
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {

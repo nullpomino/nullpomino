@@ -28,6 +28,7 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
+import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
@@ -234,34 +235,8 @@ public class MarathonMode extends NetDummyMode {
 		}
 		// Menu
 		else if(engine.owner.replayMode == false) {
-			// Up
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) && (!netIsWatch)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 6;
-				engine.playSE("cursor");
-
-				// NET: Signal cursor change
-				if(netIsNetPlay && (netNumSpectators > 0)) {
-					netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
-				}
-			}
-			// Down
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN) && (!netIsWatch)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 6) engine.statc[2] = 0;
-				engine.playSE("cursor");
-
-				// NET: Signal cursor change
-				if(netIsNetPlay && (netNumSpectators > 0)) {
-					netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
-				}
-			}
-
 			// Configuration changes
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
-			if(netIsWatch) change = 0;
+			int change = updateCursor(engine, 6, playerID);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -410,6 +385,10 @@ public class MarathonMode extends NetDummyMode {
 		}
 
 		setSpeed(engine);
+
+		if(netIsWatch) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+		}
 	}
 
 	/*

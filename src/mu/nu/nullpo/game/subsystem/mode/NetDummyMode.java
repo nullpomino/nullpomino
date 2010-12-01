@@ -90,6 +90,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: True if no data is present. [0] for all-time and [1] for daily. (Declared in NetDummyMode) */
 	protected boolean[] netRankingNoDataFlag;
 
+	/** NET: True if loading is complete. [0] for all-time and [1] for daily. (Declared in NetDummyMode) */
+	protected boolean[] netRankingReady;
+
 	/** NET: Net Rankings' rank (Declared in NetDummyMode) */
 	protected LinkedList<Integer>[] netRankingPlace;
 
@@ -175,6 +178,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netRankingMyRank = new int[2];
 		netRankingView = 0;
 		netRankingNoDataFlag = new boolean[2];
+		netRankingReady = new boolean[2];
 
 		netRankingPlace = new LinkedList[2];
 		netRankingName = new LinkedList[2];
@@ -381,6 +385,26 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
 		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
+	}
+
+	/**
+	 * NET: Update menu cursor. NetDummyMode will signal cursor movement to all spectators.
+	 */
+	@Override
+	protected int updateCursor(GameEngine engine, int maxCursor, int playerID) {
+		// NET: Don't execute in watch mode
+		if(netIsWatch) return 0;
+
+		int change = super.updateCursor(engine, maxCursor, playerID);
+
+		// NET: Signal cursor change
+		if((engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) || engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) &&
+			netIsNetPlay && (netNumSpectators > 0))
+		{
+			netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
+		}
+
+		return change;
 	}
 
 	/**
@@ -789,7 +813,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		if(netIsNetRankingDisplayMode) {
 			int d = netRankingView;
 
-			if(!netRankingNoDataFlag[d] && (netRankingPlace != null) && (netRankingPlace[d] != null)) {
+			if(!netRankingNoDataFlag[d] && netRankingReady[d] && (netRankingPlace != null) && (netRankingPlace[d] != null)) {
 				// Up
 				if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 					netRankingCursor[d]--;
@@ -805,7 +829,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				// Download
 				if(engine.ctrl.isPush(Controller.BUTTON_A)) {
 					engine.playSE("decide");
-					String strMsg = "spdownload\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\t" +
+					String strMsg = "spdownload\t" + NetUtil.urlEncode(netCurrentRoomInfo.ruleName) + "\t" +
+									NetUtil.urlEncode(getName()) + "\t" + goaltype + "\t" +
 									(netRankingView != 0) + "\t" + NetUtil.urlEncode(netRankingName[d].get(netRankingCursor[d])) + "\n";
 					netLobby.netPlayerClient.send(strMsg);
 					netIsNetRankingDisplayMode = false;
@@ -838,7 +863,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		if(netIsNetRankingDisplayMode) {
 			int d = netRankingView;
 
-			if(!netRankingNoDataFlag[d] && (netRankingPlace != null) && (netRankingPlace[d] != null)) {
+			if(!netRankingNoDataFlag[d] && netRankingReady[d] && (netRankingPlace != null) && (netRankingPlace[d] != null)) {
 				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 38, 1, ">>", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 3, 1,
@@ -923,7 +948,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 				receiver.drawMenuFont(engine, playerID, 1, 28, "B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
 						EventReceiver.COLOR_ORANGE);
-			} else if((netRankingPlace == null) || (netRankingPlace[d] == null)) {
+			} else if(!netRankingReady[d] && (netRankingPlace == null) || (netRankingPlace[d] == null)) {
 				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 38, 1, ">>", EventReceiver.COLOR_ORANGE);
 				receiver.drawMenuFont(engine, playerID, 3, 1,
@@ -955,8 +980,10 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netRankingMyRank[1] = -1;
 		netIsNetRankingDisplayMode = true;
 		owner.menuOnly = true;
-		netLobby.netPlayerClient.send("spranking\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\t" + false + "\n");
-		netLobby.netPlayerClient.send("spranking\t" + netCurrentRoomInfo.ruleName + "\t" + getName() + "\t" + goaltype + "\t" + true + "\n");
+		netLobby.netPlayerClient.send("spranking\t" + NetUtil.urlEncode(netCurrentRoomInfo.ruleName) + "\t" +
+				NetUtil.urlEncode(getName()) + "\t" + goaltype + "\t" + false + "\n");
+		netLobby.netPlayerClient.send("spranking\t" + NetUtil.urlEncode(netCurrentRoomInfo.ruleName) + "\t" +
+				NetUtil.urlEncode(getName()) + "\t" + goaltype + "\t" + true + "\n");
 	}
 
 	/**
@@ -981,6 +1008,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			maxRecords = Math.min(maxRecords, arrayRow.length);
 
 			netRankingNoDataFlag[d] = false;
+			netRankingReady[d] = false;
 			netRankingPlace[d] = new LinkedList<Integer>();
 			netRankingName[d] = new LinkedList<String>();
 			netRankingDate[d] = new LinkedList<Calendar>();
@@ -1023,10 +1051,13 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					netRankingMyRank[d] = i;
 				}
 			}
+
+			netRankingReady[d] = true;
 		} else if(message.length > 4) {
 			boolean isDaily = Boolean.parseBoolean(message[4]);
 			int d = isDaily ? 1 : 0;
 			netRankingNoDataFlag[d] = true;
+			netRankingReady[d] = false;
 		}
 	}
 

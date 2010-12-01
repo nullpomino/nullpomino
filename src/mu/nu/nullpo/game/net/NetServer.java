@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -1106,6 +1107,8 @@ public class NetServer {
 
 		try {
 			channel.register(selector, 0);
+		} catch (CancelledKeyException e) {
+			// CancelledKeyException. This is normal
 		} catch (Exception e) {
 			log.debug("Exception throwed on logout (channel.register)", e);
 		}

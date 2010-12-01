@@ -204,34 +204,8 @@ public class DigRaceMode extends NetDummyMode {
 		}
 		// Menu
 		else if(engine.owner.replayMode == false) {
-			// Up
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) && (!netIsWatch)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 10;
-				engine.playSE("cursor");
-
-				// NET: Signal cursor change
-				if(netIsNetPlay && (netNumSpectators > 0)) {
-					netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
-				}
-			}
-			// Down
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN) && (!netIsWatch)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 10) engine.statc[2] = 0;
-				engine.playSE("cursor");
-
-				// NET: Signal cursor change
-				if(netIsNetPlay && (netNumSpectators > 0)) {
-					netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
-				}
-			}
-
 			// Configuration changes
-			int change = 0;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) change = -1;
-			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) change = 1;
-			if(netIsWatch) change = 0;
+			int change = updateCursor(engine, 10, playerID);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -412,7 +386,12 @@ public class DigRaceMode extends NetDummyMode {
 		if(version <= 0) {
 			engine.big = big;
 		}
-		owner.bgmStatus.bgm = bgmno;
+
+		if(netIsWatch) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+		} else {
+			owner.bgmStatus.bgm = bgmno;
+		}
 	}
 
 	/**
