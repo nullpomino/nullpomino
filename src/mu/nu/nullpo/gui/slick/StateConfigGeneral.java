@@ -71,10 +71,17 @@ public class StateConfigGeneral extends BasicGameState {
 		"ConfigGeneral_AlternateFPSDynamicAdjust",
 		"ConfigGeneral_AlternateFPSPerfectMode",
 		"ConfigGeneral_AlternateFPSPerfectYield",
+		"ConfigGeneral_ScreenSizeType",
 	};
 
 	/** Piece preview type options */
 	protected static final String[] NEXTTYPE_OPTIONS = {"TOP", "SIDE(SMALL)", "SIDE(BIG)"};
+
+	/** Screen size table */
+	protected static final int[][] SCREENSIZE_TABLE =
+	{
+		{320,240}, {400,300}, {480,360}, {512,384}, {640,480}, {800,600}, {1024,768}, {1152,864}, {1280,960}
+	};
 
 	/** Screenshot撮影 flag */
 	protected boolean ssflag = false;
@@ -157,6 +164,9 @@ public class StateConfigGeneral extends BasicGameState {
 	/** Execute Thread.yield() during Perfect FPS mode */
 	protected boolean alternateFPSPerfectYield;
 
+	/** Screen size type */
+	protected int screenSizeType;
+
 	/*
 	 * Fetch this state's ID
 	 */
@@ -212,6 +222,16 @@ public class StateConfigGeneral extends BasicGameState {
 		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
 		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", false);
 		alternateFPSPerfectYield = prop.getProperty("option.alternateFPSPerfectYield", true);
+
+		screenSizeType = 4;	// Default to 640x480
+		int sWidth = prop.getProperty("option.screenwidth", -1);
+		int sHeight = prop.getProperty("option.screenheight", -1);
+		for(int i = 0; i < SCREENSIZE_TABLE.length; i++) {
+			if((sWidth == SCREENSIZE_TABLE[i][0]) && (sHeight == SCREENSIZE_TABLE[i][1])) {
+				screenSizeType = i;
+				break;
+			}
+		}
 	}
 
 	/**
@@ -253,6 +273,11 @@ public class StateConfigGeneral extends BasicGameState {
 		prop.setProperty("option.alternateFPSDynamicAdjust", alternateFPSDynamicAdjust);
 		prop.setProperty("option.alternateFPSPerfectMode", alternateFPSPerfectMode);
 		prop.setProperty("option.alternateFPSPerfectYield", alternateFPSPerfectYield);
+
+		if((screenSizeType >= 0) && (screenSizeType < SCREENSIZE_TABLE.length)) {
+			prop.setProperty("option.screenwidth", SCREENSIZE_TABLE[screenSizeType][0]);
+			prop.setProperty("option.screenheight", SCREENSIZE_TABLE[screenSizeType][1]);
+		}
 	}
 
 	/*
@@ -304,6 +329,9 @@ public class StateConfigGeneral extends BasicGameState {
 			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
 			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 23));
 			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 24));
+			NormalFont.printFontGrid(2,  9, "SCREEN SIZE:" + SCREENSIZE_TABLE[screenSizeType][0] + "e" + SCREENSIZE_TABLE[screenSizeType][1],
+									 (cursor == 25));
+
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
@@ -331,7 +359,7 @@ public class StateConfigGeneral extends BasicGameState {
 			return;
 		}
 
-		// TTF font 描画
+		// TTF font
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
 		// Update key input states
@@ -340,12 +368,12 @@ public class StateConfigGeneral extends BasicGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		    cursor--;
-			if(cursor < 0) cursor = 24;
+			if(cursor < 0) cursor = 25;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 24) cursor = 0;
+			if(cursor > 25) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -445,10 +473,15 @@ public class StateConfigGeneral extends BasicGameState {
 			case 24:
 				alternateFPSPerfectYield = !alternateFPSPerfectYield;
 				break;
+			case 25:
+				screenSizeType += change;
+				if(screenSizeType < 0) screenSizeType = SCREENSIZE_TABLE.length - 1;
+				if(screenSizeType > SCREENSIZE_TABLE.length - 1) screenSizeType = 0;
+				break;
 			}
 		}
 
-		// 決定 button
+		// Confirm button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			ResourceHolder.soundManager.play("decide");
 			saveConfig(NullpoMinoSlick.propConfig);

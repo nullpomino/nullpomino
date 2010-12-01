@@ -54,6 +54,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
@@ -334,16 +335,24 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		// ゲーム画面などの初期化
 		try {
+			int sWidth = propConfig.getProperty("option.screenwidth", 640);
+			int sHeight = propConfig.getProperty("option.screenheight", 480);
+
 			NullpoMinoSlick obj = new NullpoMinoSlick();
 
-			appGameContainer = new AppGameContainer(obj);
+			if((sWidth != 640) || (sHeight != 480)) {
+				ScalableGame sObj = new ScalableGame(obj, 640, 480, true);
+				appGameContainer = new AppGameContainer(sObj);
+			} else {
+				appGameContainer = new AppGameContainer(obj);
+			}
 			appGameContainer.setShowFPS(false);
 			appGameContainer.setClearEachFrame(false);
 			appGameContainer.setMinimumLogicUpdateInterval(0);
 			appGameContainer.setMaximumLogicUpdateInterval(0);
 			appGameContainer.setUpdateOnlyWhenVisible(false);
 			appGameContainer.setForceExit(false);
-			appGameContainer.setDisplayMode(640, 480, propConfig.getProperty("option.fullscreen", false));
+			appGameContainer.setDisplayMode(sWidth, sHeight, propConfig.getProperty("option.fullscreen", false));
 			appGameContainer.start();
 		} catch (Throwable e) {
 			log.fatal("Game initialize failed", e);

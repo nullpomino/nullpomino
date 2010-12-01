@@ -135,7 +135,7 @@ public class StateLoading extends BasicGameState {
 		}
 
 		g.setColor(Color.black);
-		g.fillRect(0, 0, container.getWidth(), container.getHeight());
+		g.fillRect(0, 0, 640, 480);
 	}
 
 	/*
