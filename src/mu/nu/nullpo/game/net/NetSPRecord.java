@@ -17,7 +17,8 @@ public class NetSPRecord implements Serializable {
 	public static final int RANKINGTYPE_GENERIC_SCORE = 0,
 							RANKINGTYPE_GENERIC_TIME = 1,
 							RANKINGTYPE_SCORERACE = 2,
-							RANKINGTYPE_DIGRACE = 3;
+							RANKINGTYPE_DIGRACE = 3,
+							RANKINGTYPE_ULTRA = 4;
 
 	/** Player Name */
 	public String strPlayerName;
@@ -87,6 +88,14 @@ public class NetSPRecord implements Serializable {
 			} else if((s1.time == s2.time) && (s1.lines < s2.lines)) {
 				return true;
 			} else if((s1.time == s2.time) && (s1.lines == s2.lines) && (s1.totalPieceLocked < s2.totalPieceLocked)) {
+				return true;
+			}
+		} else if(type == RANKINGTYPE_ULTRA) {
+			if(s1.score > s2.score) {
+				return true;
+			} else if((s1.score == s2.score) && (s1.lines > s2.lines)) {
+				return true;
+			} else if((s1.score == s2.score) && (s1.lines == s2.lines) && (s1.totalPieceLocked < s2.totalPieceLocked)) {
 				return true;
 			}
 		}
@@ -350,6 +359,10 @@ public class NetSPRecord implements Serializable {
 			strRow += stats.spl;
 		} else if(type == RANKINGTYPE_DIGRACE) {
 			strRow += stats.time + ",";
+			strRow += stats.lines + ",";
+			strRow += stats.totalPieceLocked;
+		} else if(type == RANKINGTYPE_ULTRA) {
+			strRow += stats.score + ",";
 			strRow += stats.lines + ",";
 			strRow += stats.totalPieceLocked;
 		}

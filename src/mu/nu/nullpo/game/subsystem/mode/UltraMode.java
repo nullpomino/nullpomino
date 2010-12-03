@@ -32,15 +32,15 @@ import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
+import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
  * ULTRA Mode
  */
-public class UltraMode extends DummyMode {
+public class UltraMode extends NetDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
@@ -66,9 +66,6 @@ public class UltraMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
 							 EVENT_TSPIN_TRIPLE = 11;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
@@ -162,6 +159,8 @@ public class UltraMode extends DummyMode {
 
 		engine.framecolor = GameEngine.FRAME_COLOR_BLUE;
 
+		netPlayerInit(engine, playerID);
+
 		if(engine.owner.replayMode == false) {
 			presetNumber = engine.owner.modeConfig.getProperty("ultra.presetNumber", 0);
 			loadPreset(engine, engine.owner.modeConfig, -1);
@@ -171,6 +170,8 @@ public class UltraMode extends DummyMode {
 			presetNumber = 0;
 			loadPreset(engine, engine.owner.replayProp, -1);
 			version = engine.owner.replayProp.getProperty("ultra.version", 0);
+			// NET: Load name
+			netPlayerName = engine.owner.replayProp.getProperty(playerID + ".net.netPlayerName", "");
 		}
 	}
 
@@ -227,8 +228,12 @@ public class UltraMode extends DummyMode {
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
+		// NET: Net Ranking
+		if(netIsNetRankingDisplayMode) {
+			netOnUpdateNetPlayRanking(engine, goaltype);
+		}
 		// Menu
-		if(engine.owner.replayMode == false) {
+		else if(engine.owner.replayMode == false) {
 			// Configuration changes
 			int change = updateCursor(engine, 15);
 
@@ -310,14 +315,20 @@ public class UltraMode extends DummyMode {
 					if(presetNumber > 99) presetNumber = 0;
 					break;
 				}
+
+				// NET: Signal options change
+				if(netIsNetPlay && (netNumSpectators > 0)) netSendOptions(engine);
 			}
 
-			// 決定
+			// Confirm
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
 				if(engine.statc[2] == 14) {
 					loadPreset(engine, owner.modeConfig, presetNumber);
+
+					// NET: Signal options change
+					if(netIsNetPlay && (netNumSpectators > 0)) netSendOptions(engine);
 				} else if(engine.statc[2] == 15) {
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
@@ -325,17 +336,28 @@ public class UltraMode extends DummyMode {
 					owner.modeConfig.setProperty("ultra.presetNumber", presetNumber);
 					savePreset(engine, owner.modeConfig, -1);
 					receiver.saveModeConfig(owner.modeConfig);
+
+					// NET: Signal start of the game
+					if(netIsNetPlay) netLobby.netPlayerClient.send("start1p\n");
+
 					return false;
 				}
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B) && !netIsNetPlay) {
 				engine.quitflag = true;
 			}
 
+			// NET: Netplay Ranking
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && !netIsWatch && netCurrentRoomInfo.rated && netIsNetRankingViewOK(engine)) {
+				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
+			}
+
 			engine.statc[3]++;
-		} else {
+		}
+		// Replay
+		else {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
@@ -355,7 +377,10 @@ public class UltraMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if(engine.statc[2] < 10) {
+		if(netIsNetRankingDisplayMode) {
+			// NET: Netplay Ranking
+			netOnRenderNetPlayRanking(engine, playerID, receiver);
+		} else if(engine.statc[2] < 10) {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GRAVITY", String.valueOf(engine.speed.gravity),
 					"G-MAX", String.valueOf(engine.speed.denominator),
@@ -388,7 +413,7 @@ public class UltraMode extends DummyMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization
+	 * This function will be called before the game actually begins (after Ready&Go screen disappears)
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -398,7 +423,12 @@ public class UltraMode extends DummyMode {
 		else engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
 		engine.meterValue = 320;
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
-		owner.bgmStatus.bgm = bgmno;
+
+		if(netIsWatch) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+		} else {
+			owner.bgmStatus.bgm = bgmno;
+		}
 
 		if(version >= 1) {
 			engine.tspinAllowKick = enableTSpinKick;
@@ -421,6 +451,8 @@ public class UltraMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
+		if(owner.menuOnly) return;
+
 		receiver.drawScoreFont(engine, playerID, 0, 0, "ULTRA", EventReceiver.COLOR_CYAN);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + (goaltype + 1) + " MINUTE GAME)", EventReceiver.COLOR_CYAN);
 
@@ -521,6 +553,13 @@ public class UltraMode extends DummyMode {
 					receiver.drawMenuFont(engine, playerID, 2, 22, (lastcombo - 1) + "COMBO", EventReceiver.COLOR_CYAN);
 			}
 		}
+
+		// NET: Number of spectators
+		netDrawSpectatorsCount(engine, 0, 19);
+		// NET: All number of players
+		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
+		// NET: Player name (It may also appear in offline replay)
+		netDrawPlayerName(engine);
 	}
 
 	/*
@@ -662,33 +701,36 @@ public class UltraMode extends DummyMode {
 
 			// Time meter
 			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / limitTime;
+			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(remainTime <= 30*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 			if(remainTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Out of time
-			if(engine.statistics.time >= limitTime) {
-				engine.gameEnded();
-				engine.resetStatc();
-				engine.stat = GameEngine.STAT_ENDINGSTART;
-				return;
-			}
+			if(!netIsWatch) {
+				// Out of time
+				if(engine.statistics.time >= limitTime) {
+					engine.gameEnded();
+					engine.resetStatc();
+					engine.stat = GameEngine.STAT_ENDINGSTART;
+					return;
+				}
 
-			// 10秒前からのカウントダウン
-			if((engine.statistics.time >= limitTime - (10 * 60)) && (engine.statistics.time % 60 == 0)) {
-				engine.playSE("countdown");
-			}
+				// 10秒前からのカウントダウン
+				if((engine.statistics.time >= limitTime - (10 * 60)) && (engine.statistics.time % 60 == 0)) {
+					engine.playSE("countdown");
+				}
 
-			// 5秒前からのBGM fadeout
-			if(engine.statistics.time >= limitTime - (5 * 60)) {
-				owner.bgmStatus.fadesw = true;
-			}
+				// 5秒前からのBGM fadeout
+				if(engine.statistics.time >= limitTime - (5 * 60)) {
+					owner.bgmStatus.fadesw = true;
+				}
 
-			// 1分ごとのBackground切り替え
-			if((engine.statistics.time > 0) && (engine.statistics.time % 3600 == 0)) {
-				engine.playSE("levelup");
-				owner.backgroundStatus.fadesw = true;
-				owner.backgroundStatus.fadebg = owner.backgroundStatus.bg + 1;
+				// 1分ごとのBackground切り替え
+				if((engine.statistics.time > 0) && (engine.statistics.time % 3600 == 0)) {
+					engine.playSE("levelup");
+					owner.backgroundStatus.fadesw = true;
+					owner.backgroundStatus.fadebg = owner.backgroundStatus.bg + 1;
+				}
 			}
 		}
 
@@ -714,6 +756,19 @@ public class UltraMode extends DummyMode {
 
 		drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
 				STAT_PIECE, STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
+
+		drawResultNetRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[0]);
+		drawResultNetRankDaily(engine, playerID, receiver, 18, EventReceiver.COLOR_BLUE, netRankingRank[1]);
+
+		if(netIsPB) {
+			receiver.drawMenuFont(engine, playerID, 2, 21, "NEW PB", EventReceiver.COLOR_ORANGE);
+		}
+
+		if(netIsNetPlay && (netReplaySendStatus == 1)) {
+			receiver.drawMenuFont(engine, playerID, 0, 22, "SENDING...", EventReceiver.COLOR_PINK);
+		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
+			receiver.drawMenuFont(engine, playerID, 1, 22, "A: RETRY", EventReceiver.COLOR_RED);
+		}
 	}
 
 	/*
@@ -723,6 +778,11 @@ public class UltraMode extends DummyMode {
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		savePreset(engine, engine.owner.replayProp, -1);
 		engine.owner.replayProp.setProperty("ultra.version", version);
+
+		// NET: Save name
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			prop.setProperty(playerID + ".net.netPlayerName", netPlayerName);
+		}
 
 		// Update rankings
 		if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
@@ -740,7 +800,8 @@ public class UltraMode extends DummyMode {
 	 * @param prop Property file
 	 * @param ruleName Rule name
 	 */
-	private void loadRanking(CustomProperties prop, String ruleName) {
+	@Override
+	protected void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < GOALTYPE_MAX; i++) {
 			for(int j = 0; j < RANKING_TYPE; j++) {
 				for(int k = 0; k < RANKING_MAX; k++) {
@@ -815,5 +876,127 @@ public class UltraMode extends DummyMode {
 		}
 
 		return -1;
+	}
+
+	/**
+	 * NET: Send various in-game stats (as well as goaltype)
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendStats(GameEngine engine) {
+		int bg = owner.backgroundStatus.fadesw ? owner.backgroundStatus.fadebg : owner.backgroundStatus.bg;
+		String msg = "game\tstats\t";
+		msg += engine.statistics.score + "\t" + engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
+		msg += engine.statistics.time + "\t" + engine.statistics.spm + "\t";
+		msg += engine.statistics.lpm + "\t" + engine.statistics.spl + "\t" + goaltype + "\t";
+		msg += engine.gameActive + "\t" + engine.timerActive + "\t";
+		msg += lastscore + "\t" + scgettime + "\t" + lastevent + "\t" + lastb2b + "\t" + lastcombo + "\t" + lastpiece + "\t";
+		msg += bg + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Receive various in-game stats (as well as goaltype)
+	 */
+	@Override
+	protected void netRecvStats(GameEngine engine, String[] message) {
+		engine.statistics.score = Integer.parseInt(message[4]);
+		engine.statistics.lines = Integer.parseInt(message[5]);
+		engine.statistics.totalPieceLocked = Integer.parseInt(message[6]);
+		engine.statistics.time = Integer.parseInt(message[7]);
+		engine.statistics.spm = Double.parseDouble(message[8]);
+		engine.statistics.lpm = Float.parseFloat(message[9]);
+		engine.statistics.spl = Double.parseDouble(message[10]);
+		goaltype = Integer.parseInt(message[11]);
+		engine.gameActive = Boolean.parseBoolean(message[12]);
+		engine.timerActive = Boolean.parseBoolean(message[13]);
+		lastscore = Integer.parseInt(message[14]);
+		scgettime = Integer.parseInt(message[15]);
+		lastevent = Integer.parseInt(message[16]);
+		lastb2b = Boolean.parseBoolean(message[17]);
+		lastcombo = Integer.parseInt(message[18]);
+		lastpiece = Integer.parseInt(message[19]);
+		owner.backgroundStatus.bg = Integer.parseInt(message[20]);
+
+		// Time meter
+		int limitTime = ((goaltype + 1) * 3600);
+		int remainTime = ((goaltype + 1) * 3600) - engine.statistics.time;
+		engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / limitTime;
+		engine.meterColor = GameEngine.METER_COLOR_GREEN;
+		if(remainTime <= 30*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+		if(remainTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+		if(remainTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
+	}
+
+	/**
+	 * NET: Send end-of-game stats
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendEndGameStats(GameEngine engine) {
+		String subMsg = "";
+		subMsg += "SCORE;" + engine.statistics.score + "\t";
+		subMsg += "LINE;" + engine.statistics.lines + "\t";
+		subMsg += "PIECE;" + engine.statistics.totalPieceLocked + "\t";
+		subMsg += "SCORE/LINE;" + engine.statistics.spl + "\t";
+		subMsg += "SCORE/MIN;" + engine.statistics.spm + "\t";
+		subMsg += "LINE/MIN;" + engine.statistics.lpm + "\t";
+		subMsg += "PIECE/SEC;" + engine.statistics.pps + "\t";
+
+		String msg = "gstat1p\t" + NetUtil.urlEncode(subMsg) + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send game options to all spectators
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendOptions(GameEngine engine) {
+		String msg = "game\toption\t";
+		msg += engine.speed.gravity + "\t" + engine.speed.denominator + "\t" + engine.speed.are + "\t";
+		msg += engine.speed.areLine + "\t" + engine.speed.lineDelay + "\t" + engine.speed.lockDelay + "\t";
+		msg += engine.speed.das + "\t" + bgmno + "\t" + big + "\t" + goaltype + "\t" + tspinEnableType + "\t";
+		msg += enableTSpinKick + "\t" + enableB2B + "\t" + enableCombo + "\t" + presetNumber;
+		msg += "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Receive game options
+	 */
+	@Override
+	protected void netRecvOptions(GameEngine engine, String[] message) {
+		engine.speed.gravity = Integer.parseInt(message[4]);
+		engine.speed.denominator = Integer.parseInt(message[5]);
+		engine.speed.are = Integer.parseInt(message[6]);
+		engine.speed.areLine = Integer.parseInt(message[7]);
+		engine.speed.lineDelay = Integer.parseInt(message[8]);
+		engine.speed.lockDelay = Integer.parseInt(message[9]);
+		engine.speed.das = Integer.parseInt(message[10]);
+		bgmno = Integer.parseInt(message[11]);
+		big = Boolean.parseBoolean(message[12]);
+		goaltype = Integer.parseInt(message[13]);
+		tspinEnableType = Integer.parseInt(message[14]);
+		enableTSpinKick = Boolean.parseBoolean(message[15]);
+		enableB2B = Boolean.parseBoolean(message[16]);
+		enableCombo = Boolean.parseBoolean(message[17]);
+		presetNumber = Integer.parseInt(message[18]);
+	}
+
+	/**
+	 * NET: Get goal type
+	 */
+	@Override
+	protected int netGetGoalType() {
+		return goaltype;
+	}
+
+	/**
+	 * NET: It returns true when the current settings doesn't prevent leaderboard screen from showing.
+	 */
+	@Override
+	protected boolean netIsNetRankingViewOK(GameEngine engine) {
+		return (!big) && (engine.ai == null);
 	}
 }

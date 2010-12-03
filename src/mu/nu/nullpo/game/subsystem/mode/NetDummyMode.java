@@ -971,6 +971,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE SPL    NAME", EventReceiver.COLOR_BLUE);
 				} else if(netRankingType == NetSPRecord.RANKINGTYPE_DIGRACE) {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE PIECE  NAME", EventReceiver.COLOR_BLUE);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_ULTRA) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    SCORE   LINE PIECE    NAME", EventReceiver.COLOR_BLUE);
 				}
 
 				for(int i = startIndex; i < endIndex; i++) {
@@ -1005,6 +1007,11 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						receiver.drawMenuFont(engine, playerID, 14, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 19, 4 + c, "" + netRankingPiece[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawTTFMenuFont(engine, playerID, 26, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
+					} else if(netRankingType == NetSPRecord.RANKINGTYPE_ULTRA) {
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, "" + netRankingScore[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 13, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 18, 4 + c, "" + netRankingPiece[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
 					}
 
 					c++;
@@ -1132,6 +1139,12 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					netRankingTime[d].add(Integer.parseInt(arrayData[4]));
 					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
 					netRankingPiece[d].add(Integer.parseInt(arrayData[6]));
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_ULTRA) {
+					netRankingScore[d].add(Integer.parseInt(arrayData[4]));
+					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
+					netRankingPiece[d].add(Integer.parseInt(arrayData[6]));
+				} else {
+					log.error("Unknown ranking type:" + netRankingType);
 				}
 
 				if(pName.equals(netPlayerName)) {
