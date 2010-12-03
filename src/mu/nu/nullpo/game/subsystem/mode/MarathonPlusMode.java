@@ -36,7 +36,6 @@ import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
-import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
@@ -203,25 +202,6 @@ public class MarathonPlusMode extends NetDummyMode {
 		engine.owner.backgroundStatus.bg = startlevel;
 		if(engine.owner.backgroundStatus.bg > 19) engine.owner.backgroundStatus.bg = 19;
 		engine.framecolor = GameEngine.FRAME_COLOR_GRAY;
-	}
-
-	/**
-	 * NET: When you join the room
-	 * @param lobby NetLobbyFrame
-	 * @param client NetPlayerClient
-	 * @param roomInfo NetRoomInfo
-	 */
-	@Override
-	protected void netOnJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		super.netOnJoin(lobby, client, roomInfo);
-
-		if(roomInfo != null) {
-			// Load locked rule rankings
-			if((roomInfo.ruleLock) && (netLobby != null) && (netLobby.ruleOptLock != null)) {
-				log.info("Load locked rule rankings");
-				loadRanking(owner.modeConfig, owner.engine[0].ruleopt.strRuleName);
-			}
-		}
 	}
 
 	/**
@@ -742,16 +722,6 @@ public class MarathonPlusMode extends NetDummyMode {
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 				engine.timerActive = false;
 				engine.ending = 1;
-
-				// NET: Send bonus level entered messages
-				if(netIsNetPlay && !netIsWatch) {
-					if(netNumSpectators > 0) {
-						netSendField(engine);
-						netSendNextAndHold(engine);
-						netSendStats(engine);
-					}
-					netLobby.netPlayerClient.send("game\tbonuslevel\n");
-				}
 			} else {
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
@@ -800,6 +770,16 @@ public class MarathonPlusMode extends NetDummyMode {
 			engine.nowPieceObject = null;
 			engine.timerActive = false;
 			engine.playSE("endingstart");
+
+			// NET: Send bonus level entered messages
+			if(netIsNetPlay && !netIsWatch) {
+				if(netNumSpectators > 0) {
+					netSendField(engine);
+					netSendNextAndHold(engine);
+					netSendStats(engine);
+					netLobby.netPlayerClient.send("game\tbonuslevelenter\n");
+				}
+			}
 		} else if(engine.statc[0] == 90) {
 			engine.playSE("excellent");
 		} else if((engine.statc[0] >= 120) && (engine.statc[0] < 480)) {
@@ -810,6 +790,17 @@ public class MarathonPlusMode extends NetDummyMode {
 			engine.ending = 0;
 			engine.stat = GameEngine.STAT_READY;
 			engine.resetStatc();
+
+			// NET: Send game restarted messages
+			if(netIsNetPlay && !netIsWatch) {
+				if(netNumSpectators > 0) {
+					netSendField(engine);
+					netSendNextAndHold(engine);
+					netSendStats(engine);
+					netLobby.netPlayerClient.send("game\tbonuslevelstart\n");
+				}
+			}
+
 			return true;
 		}
 
@@ -960,7 +951,8 @@ public class MarathonPlusMode extends NetDummyMode {
 	 * @param prop Property file
 	 * @param ruleName Rule name
 	 */
-	private void loadRanking(CustomProperties prop, String ruleName) {
+	@Override
+	protected void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int j = 0; j < GAMETYPE_MAX; j++) {
 				rankingScore[j][i] = prop.getProperty("marathonplus.ranking." + ruleName + "." + j + ".score." + i, 0);
@@ -1042,12 +1034,18 @@ public class MarathonPlusMode extends NetDummyMode {
 			GameEngine engine = owner.engine[0];
 
 			// Bonus level entered
-			if(message[3].equals("bonuslevel")) {
+			if(message[3].equals("bonuslevelenter")) {
 				engine.meterValue = 0;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 				engine.timerActive = false;
 				engine.ending = 1;
-				engine.stat = GameEngine.STAT_ENDINGSTART;
+				engine.stat = GameEngine.STAT_CUSTOM;
+				engine.resetStatc();
+			}
+			// Bonus level started
+			else if(message[3].equals("bonuslevelstart")) {
+				engine.ending = 0;
+				engine.stat = GameEngine.STAT_READY;
 				engine.resetStatc();
 			}
 		}

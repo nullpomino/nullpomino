@@ -34,11 +34,8 @@ import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
-import mu.nu.nullpo.game.net.NetPlayerClient;
-import mu.nu.nullpo.game.net.NetRoomInfo;
 import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -134,24 +131,6 @@ public class DigRaceMode extends NetDummyMode {
 
 			// NET: Load name
 			netPlayerName = engine.owner.replayProp.getProperty(playerID + ".net.netPlayerName", "");
-		}
-	}
-
-	/**
-	 * NET: When you join the room
-	 * @param lobby NetLobbyFrame
-	 * @param client NetPlayerClient
-	 * @param roomInfo NetRoomInfo
-	 */
-	@Override
-	protected void netOnJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
-		super.netOnJoin(lobby, client, roomInfo);
-
-		if(roomInfo != null) {
-			// Load locked rule rankings
-			if((roomInfo.ruleLock) && (netLobby != null) && (netLobby.ruleOptLock != null)) {
-				loadRanking(owner.modeConfig, owner.engine[0].ruleopt.strRuleName);
-			}
 		}
 	}
 
@@ -537,16 +516,6 @@ public class DigRaceMode extends NetDummyMode {
 		if((lines > 0) && (remainLines == 0)) {
 			engine.ending = 1;
 			engine.gameEnded();
-
-			// NET: Send game completed messages
-			if(netIsNetPlay && !netIsWatch) {
-				if(netNumSpectators > 0) {
-					netSendField(engine);
-					netSendNextAndHold(engine);
-					netSendStats(engine);
-				}
-				netLobby.netPlayerClient.send("game\tending\n");
-			}
 		}
 	}
 
@@ -601,7 +570,8 @@ public class DigRaceMode extends NetDummyMode {
 	 * @param prop Property file
 	 * @param ruleName Rule name
 	 */
-	private void loadRanking(CustomProperties prop, String ruleName) {
+	@Override
+	protected void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < GOALTYPE_MAX; i++) {
 			for(int j = 0; j < RANKING_MAX; j++) {
 				rankingTime[i][j] = prop.getProperty("digrace.ranking." + ruleName + "." + i + ".time." + j, -1);

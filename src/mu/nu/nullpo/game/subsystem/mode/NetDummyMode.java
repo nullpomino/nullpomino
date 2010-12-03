@@ -27,6 +27,7 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.gui.net.NetLobbyListener;
+import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
@@ -311,6 +312,40 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
+	 * NET: Ending start. NetDummyMode will send ending start messages.
+	 */
+	@Override
+	public boolean onEndingStart(GameEngine engine, int playerID) {
+		if(engine.statc[2] == 0) {
+			// NET: Send game completed messages
+			if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) {
+				netSendField(engine);
+				netSendNextAndHold(engine);
+				netSendStats(engine);
+				netLobby.netPlayerClient.send("game\tending\n");
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * NET: "Excellent!" screen
+	 */
+	@Override
+	public boolean onExcellent(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 0) {
+			// NET: Send game completed messages
+			if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) {
+				netSendField(engine);
+				netSendNextAndHold(engine);
+				netSendStats(engine);
+				netLobby.netPlayerClient.send("game\texcellent\n");
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * NET: Game Over
 	 */
 	@Override
@@ -582,8 +617,13 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				// Ending
 				if(message[3].equals("ending")) {
 					engine.ending = 1;
-					engine.gameEnded();
+					if(!engine.staffrollEnable) engine.gameEnded();
 					engine.stat = GameEngine.STAT_ENDINGSTART;
+					engine.resetStatc();
+				}
+				// Excellent
+				if(message[3].equals("excellent")) {
+					engine.stat = GameEngine.STAT_EXCELLENT;
 					engine.resetStatc();
 				}
 				// Retry
@@ -639,9 +679,17 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				owner.engine[0].ruleopt.copy(netLobby.ruleOptLock);
 				owner.engine[0].randomizer = randomizer;
 				owner.engine[0].wallkick = wallkick;
-				//loadRanking(owner.modeConfig, owner.engine[0].ruleopt.strRuleName);
+				loadRanking(owner.modeConfig, owner.engine[0].ruleopt.strRuleName);
 			}
 		}
+	}
+
+	/**
+	 * NET: Read rankings from property file. This is used from netOnJoin.
+	 * @param prop Property file
+	 * @param ruleName Rule name
+	 */
+	protected void loadRanking(CustomProperties prop, String ruleName) {
 	}
 
 	/**

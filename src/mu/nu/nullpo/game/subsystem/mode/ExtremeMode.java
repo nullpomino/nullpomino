@@ -32,15 +32,15 @@ import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
+import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
  * EXTREME Mode
  */
-public class ExtremeMode extends DummyMode {
+public class ExtremeMode extends NetDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
@@ -84,9 +84,6 @@ public class ExtremeMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
 							 EVENT_TSPIN_TRIPLE = 11;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
@@ -183,12 +180,17 @@ public class ExtremeMode extends DummyMode {
 		rankingLines = new int[RANKING_TYPE][RANKING_MAX];
 		rankingTime = new int[RANKING_TYPE][RANKING_MAX];
 
+		netPlayerInit(engine, playerID);
+
 		if(owner.replayMode == false) {
 			loadSetting(owner.modeConfig);
 			loadRanking(owner.modeConfig, engine.ruleopt.strRuleName);
 			version = CURRENT_VERSION;
 		} else {
 			loadSetting(owner.replayProp);
+
+			// NET: Load name
+			netPlayerName = engine.owner.replayProp.getProperty(playerID + ".net.netPlayerName", "");
 		}
 
 		engine.staffrollEnable = true;
@@ -222,8 +224,12 @@ public class ExtremeMode extends DummyMode {
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
+		// NET: Net Ranking
+		if(netIsNetRankingDisplayMode) {
+			netOnUpdateNetPlayRanking(engine, netGetGoalType());
+		}
 		// Menu
-		if(engine.owner.replayMode == false) {
+		else if(engine.owner.replayMode == false) {
 			// Configuration changes
 			int change = updateCursor(engine, 6);
 
@@ -259,23 +265,40 @@ public class ExtremeMode extends DummyMode {
 					big = !big;
 					break;
 				}
+
+				// NET: Signal options change
+				if(netIsNetPlay && (netNumSpectators > 0)) {
+					netSendOptions(engine);
+				}
 			}
 
-			// 決定
+			// Confirm
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
+
+				// NET: Signal start of the game
+				if(netIsNetPlay) netLobby.netPlayerClient.send("start1p\n");
+
 				return false;
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B) && !netIsNetPlay) {
 				engine.quitflag = true;
 			}
 
+			// NET: Netplay Ranking
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && (netIsNetPlay) && (netCurrentRoomInfo.rated) &&
+				(startlevel == 0) && (!big) && (engine.ai == null)) {
+				netEnterNetPlayRankingScreen(engine, playerID, netGetGoalType());
+			}
+
 			engine.statc[3]++;
-		} else {
+		}
+		// Replay
+		else {
 			engine.statc[3]++;
 			engine.statc[2] = -1;
 
@@ -292,22 +315,27 @@ public class ExtremeMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		String strTSpinEnable = "";
-		if(version >= 1) {
-			if(tspinEnableType == 0) strTSpinEnable = "OFF";
-			if(tspinEnableType == 1) strTSpinEnable = "T-ONLY";
-			if(tspinEnableType == 2) strTSpinEnable = "ALL";
+		if(netIsNetRankingDisplayMode) {
+			// NET: Netplay Ranking
+			netOnRenderNetPlayRanking(engine, playerID, receiver);
 		} else {
-			strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
+			String strTSpinEnable = "";
+			if(version >= 1) {
+				if(tspinEnableType == 0) strTSpinEnable = "OFF";
+				if(tspinEnableType == 1) strTSpinEnable = "T-ONLY";
+				if(tspinEnableType == 2) strTSpinEnable = "ALL";
+			} else {
+				strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
+			}
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+					"LEVEL", String.valueOf(startlevel + 1),
+					"SPIN BONUS", strTSpinEnable,
+					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"B2B", GeneralUtil.getONorOFF(enableB2B),
+					"COMBO",  GeneralUtil.getONorOFF(enableCombo),
+					"ENDLESS", GeneralUtil.getONorOFF(endless),
+					"BIG", GeneralUtil.getONorOFF(big));
 		}
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"LEVEL", String.valueOf(startlevel + 1),
-				"SPIN BONUS", strTSpinEnable,
-				"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
-				"B2B", GeneralUtil.getONorOFF(enableB2B),
-				"COMBO",  GeneralUtil.getONorOFF(enableCombo),
-				"ENDLESS", GeneralUtil.getONorOFF(endless),
-				"BIG", GeneralUtil.getONorOFF(big));
 	}
 
 	/*
@@ -324,7 +352,12 @@ public class ExtremeMode extends DummyMode {
 			engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
 		}
 		engine.big = big;
-		owner.bgmStatus.bgm = bgmlv + 2;
+
+		if(netIsWatch) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+		} else {
+			owner.bgmStatus.bgm = bgmlv + 2;
+		}
 
 		if(version >= 1) {
 			engine.tspinAllowKick = enableTSpinKick;
@@ -348,6 +381,8 @@ public class ExtremeMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
+		if(owner.menuOnly) return;
+
 		receiver.drawScoreFont(engine, playerID, 0, 0, "EXTREME", EventReceiver.COLOR_RED);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
@@ -393,7 +428,8 @@ public class ExtremeMode extends DummyMode {
 				if(remainRollTime < 0) remainRollTime = 0;
 
 				receiver.drawScoreFont(engine, playerID, 0, 14, "ROLL TIME", EventReceiver.COLOR_BLUE);
-				receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(remainRollTime), ((remainRollTime > 0) && (remainRollTime < 10 * 60)));
+				receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(remainRollTime),
+						((remainRollTime > 0) && (remainRollTime < 10 * 60)));
 			}
 
 			if((lastevent != EVENT_NONE) && (scgettime < 120)) {
@@ -444,6 +480,36 @@ public class ExtremeMode extends DummyMode {
 				if((lastcombo >= 2) && (lastevent != EVENT_TSPIN_ZERO_MINI) && (lastevent != EVENT_TSPIN_ZERO))
 					receiver.drawMenuFont(engine, playerID, 2, 22, (lastcombo - 1) + "COMBO", EventReceiver.COLOR_CYAN);
 			}
+		}
+
+		// NET: Number of spectators
+		if(netIsNetPlay) {
+			receiver.drawScoreFont(engine, playerID, 0, 18, "SPECTATORS", EventReceiver.COLOR_CYAN);
+			receiver.drawScoreFont(engine, playerID, 0, 19, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
+
+			if(netIsWatch) {
+				receiver.drawScoreFont(engine, playerID, 0, 20, "WATCH", EventReceiver.COLOR_GREEN);
+			} else {
+				receiver.drawScoreFont(engine, playerID, 0, 20, "PLAY", EventReceiver.COLOR_RED);
+			}
+
+			if((engine.stat == GameEngine.STAT_SETTING) && (!netIsWatch) && (netCurrentRoomInfo.rated) &&
+				(startlevel == 0) && (!big) && (engine.ai == null)) {
+				receiver.drawScoreFont(engine, playerID, 0, 22, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
+			}
+
+			// All number of players
+			if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
+		}
+
+		// NET: Player name (It may also appear in offline replay)
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			String name = netPlayerName;
+			receiver.drawTTFDirectFont(
+					engine, playerID,
+					receiver.getFieldDisplayPositionX(engine, playerID),
+					receiver.getFieldDisplayPositionY(engine, playerID) - 20,
+					name);
 		}
 	}
 
@@ -632,11 +698,21 @@ public class ExtremeMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
-
-		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
+		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
 				STAT_SCORE, STAT_LINES, STAT_LEVEL, STAT_TIME, STAT_SPL, STAT_LPM);
-		drawResultRank(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, rankingRank);
+		drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
+		drawResultNetRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, netRankingRank[0]);
+		drawResultNetRankDaily(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[1]);
+
+		if(netIsPB) {
+			receiver.drawMenuFont(engine, playerID, 2, 21, "NEW PB", EventReceiver.COLOR_ORANGE);
+		}
+
+		if(netIsNetPlay && (netReplaySendStatus == 1)) {
+			receiver.drawMenuFont(engine, playerID, 0, 22, "SENDING...", EventReceiver.COLOR_PINK);
+		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
+			receiver.drawMenuFont(engine, playerID, 1, 22, "A: RETRY", EventReceiver.COLOR_RED);
+		}
 	}
 
 	/*
@@ -645,6 +721,11 @@ public class ExtremeMode extends DummyMode {
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		saveSetting(prop);
+
+		// NET: Save name
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			prop.setProperty(playerID + ".net.netPlayerName", netPlayerName);
+		}
 
 		// Update rankings
 		if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
@@ -694,7 +775,8 @@ public class ExtremeMode extends DummyMode {
 	 * @param prop Property file
 	 * @param ruleName Rule name
 	 */
-	private void loadRanking(CustomProperties prop, String ruleName) {
+	@Override
+	protected void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int endlessIndex = 0; endlessIndex < 2; endlessIndex++) {
 				rankingScore[endlessIndex][i] = prop.getProperty("extreme.ranking." + ruleName + "." + endlessIndex + ".score." + i, 0);
@@ -768,5 +850,114 @@ public class ExtremeMode extends DummyMode {
 		}
 
 		return -1;
+	}
+
+	/**
+	 * NET: Send various in-game stats (as well as goaltype)
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendStats(GameEngine engine) {
+		int bg = engine.owner.backgroundStatus.fadesw ? engine.owner.backgroundStatus.fadebg : engine.owner.backgroundStatus.bg;
+		String msg = "game\tstats\t";
+		msg += engine.statistics.score + "\t" + engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
+		msg += engine.statistics.time + "\t" + engine.statistics.level + "\t";
+		msg += engine.statistics.lpm + "\t" + engine.statistics.spl + "\t" + endless + "\t";
+		msg += engine.gameActive + "\t" + engine.timerActive + "\t";
+		msg += lastscore + "\t" + scgettime + "\t" + lastevent + "\t" + lastb2b + "\t" + lastcombo + "\t" + lastpiece + "\t";
+		msg += bg + "\t" + rolltime + "\t" + engine.meterValue + "\t" + engine.meterColor + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Receive various in-game stats (as well as goaltype)
+	 */
+	@Override
+	protected void netRecvStats(GameEngine engine, String[] message) {
+		engine.statistics.score = Integer.parseInt(message[4]);
+		engine.statistics.lines = Integer.parseInt(message[5]);
+		engine.statistics.totalPieceLocked = Integer.parseInt(message[6]);
+		engine.statistics.time = Integer.parseInt(message[7]);
+		engine.statistics.level = Integer.parseInt(message[8]);
+		engine.statistics.lpm = Float.parseFloat(message[9]);
+		engine.statistics.spl = Double.parseDouble(message[10]);
+		endless = Boolean.parseBoolean(message[11]);
+		engine.gameActive = Boolean.parseBoolean(message[12]);
+		engine.timerActive = Boolean.parseBoolean(message[13]);
+		lastscore = Integer.parseInt(message[14]);
+		scgettime = Integer.parseInt(message[15]);
+		lastevent = Integer.parseInt(message[16]);
+		lastb2b = Boolean.parseBoolean(message[17]);
+		lastcombo = Integer.parseInt(message[18]);
+		lastpiece = Integer.parseInt(message[19]);
+		engine.owner.backgroundStatus.bg = Integer.parseInt(message[20]);
+		rolltime = Integer.parseInt(message[21]);
+		engine.meterValue = Integer.parseInt(message[22]);
+		engine.meterColor = Integer.parseInt(message[23]);
+	}
+
+	/**
+	 * NET: Send end-of-game stats
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendEndGameStats(GameEngine engine) {
+		String subMsg = "";
+		subMsg += "SCORE;" + engine.statistics.score + "\t";
+		subMsg += "LINE;" + engine.statistics.lines + "\t";
+		subMsg += "LEVEL;" + (engine.statistics.level + engine.statistics.levelDispAdd) + "\t";
+		subMsg += "TIME;" + GeneralUtil.getTime(engine.statistics.time) + "\t";
+		subMsg += "SCORE/LINE;" + engine.statistics.spl + "\t";
+		subMsg += "LINE/MIN;" + engine.statistics.lpm + "\t";
+
+		String msg = "gstat1p\t" + NetUtil.urlEncode(subMsg) + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send game options to all spectators
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendOptions(GameEngine engine) {
+		String msg = "game\toption\t";
+		msg += startlevel + "\t" + tspinEnableType + "\t" + enableTSpinKick + "\t" + enableB2B + "\t";
+		msg += enableCombo + "\t" + endless + "\t" + big + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Receive game options
+	 */
+	@Override
+	protected void netRecvOptions(GameEngine engine, String[] message) {
+		startlevel = Integer.parseInt(message[4]);
+		tspinEnableType = Integer.parseInt(message[5]);
+		enableTSpinKick = Boolean.parseBoolean(message[6]);
+		enableB2B = Boolean.parseBoolean(message[7]);
+		enableCombo = Boolean.parseBoolean(message[8]);
+		endless = Boolean.parseBoolean(message[9]);
+		big = Boolean.parseBoolean(message[10]);
+	}
+
+	/**
+	 * NET: Send replay data
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendReplay(GameEngine engine) {
+		if((startlevel == 0) && (!big) && (engine.ai == null)) {
+			super.netSendReplay(engine);
+		} else {
+			netReplaySendStatus = 2;
+		}
+	}
+
+	/**
+	 * NET: Get goal type
+	 */
+	@Override
+	protected int netGetGoalType() {
+		return endless ? 1 : 0;
 	}
 }

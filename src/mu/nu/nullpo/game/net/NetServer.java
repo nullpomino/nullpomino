@@ -2167,17 +2167,18 @@ public class NetServer {
 						record.style = roomInfo.style;
 						record.strTimeStamp = GeneralUtil.exportCalendarString();
 
+						boolean isDailyWiped = updateSPDailyRanking();
+						int rank = -1;
+						int rankDaily = -1;
+
 						NetSPRanking ranking = getSPRanking(record.strRuleName, record.strModeName, record.gameType);
+						NetSPRanking rankingDaily = getSPRanking(record.strRuleName, record.strModeName, record.gameType, true);
 
-						if(ranking != null) {
-							int rank = ranking.registerRecord(record);
-
-							boolean isDailyWiped = updateSPDailyRanking();
-							int rankDaily = -1;
-							NetSPRanking rankingDaily = getSPRanking(record.strRuleName, record.strModeName, record.gameType, true);
-							if(rankingDaily != null) {
+						if(ranking != null || rankingDaily != null) {
+							if(ranking != null)
+								rank = ranking.registerRecord(record);
+							if(rankingDaily != null)
 								rankDaily = rankingDaily.registerRecord(record);
-							}
 
 							if((rank != -1) || (rankDaily != -1) || (isDailyWiped)) writeSPRankingToFile();
 
@@ -2187,6 +2188,7 @@ public class NetServer {
 								writePlayerDataToFile();
 							}
 
+							//log.info("Name:" + pInfo.strName + " Mode:" + record.strModeName + " AllTime:" + rank + " Daily:" + rankDaily);
 							broadcast("spsendok\t" + rank + "\t" + isPB + "\t" + rankDaily + "\n", pInfo.roomID);
 						} else {
 							broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
