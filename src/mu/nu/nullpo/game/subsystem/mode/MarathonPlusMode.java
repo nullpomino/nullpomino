@@ -497,34 +497,11 @@ public class MarathonPlusMode extends NetDummyMode {
 		}
 
 		// NET: Number of spectators
-		if(netIsNetPlay) {
-			receiver.drawScoreFont(engine, playerID, 0, 18, "SPECTATORS", EventReceiver.COLOR_CYAN);
-			receiver.drawScoreFont(engine, playerID, 0, 19, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
-
-			if(netIsWatch) {
-				receiver.drawScoreFont(engine, playerID, 0, 20, "WATCH", EventReceiver.COLOR_GREEN);
-			} else {
-				receiver.drawScoreFont(engine, playerID, 0, 20, "PLAY", EventReceiver.COLOR_RED);
-			}
-
-			if((engine.stat == GameEngine.STAT_SETTING) && (!netIsWatch) && (netCurrentRoomInfo.rated) &&
-				((startlevel == 0) || (startlevel == 20)) && (!big) && (engine.ai == null)) {
-				receiver.drawScoreFont(engine, playerID, 0, 22, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
-			}
-
-			// All number of players
-			if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
-		}
-
+		netDrawSpectatorsCount(engine, 0, 18);
+		// NET: All number of players
+		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
 		// NET: Player name (It may also appear in offline replay)
-		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
-			String name = netPlayerName;
-			receiver.drawTTFDirectFont(
-					engine, playerID,
-					receiver.getFieldDisplayPositionX(engine, playerID),
-					receiver.getFieldDisplayPositionY(engine, playerID) - 20,
-					name);
-		}
+		netDrawPlayerName(engine);
 	}
 
 	/*
@@ -1174,23 +1151,18 @@ public class MarathonPlusMode extends NetDummyMode {
 	}
 
 	/**
-	 * NET: Send replay data
-	 * @param engine GameEngine
-	 */
-	@Override
-	protected void netSendReplay(GameEngine engine) {
-		if( ((startlevel == 0) || (startlevel == 20)) && (!big) && (engine.ai == null) ) {
-			super.netSendReplay(engine);
-		} else {
-			netReplaySendStatus = 2;
-		}
-	}
-
-	/**
 	 * NET: Get goal type
 	 */
 	@Override
 	protected int netGetGoalType() {
 		return (startlevel == 20) ? 1 : 0;
+	}
+
+	/**
+	 * NET: It returns true when the current settings doesn't prevent leaderboard screen from showing.
+	 */
+	@Override
+	protected boolean netIsNetRankingViewOK(GameEngine engine) {
+		return ((startlevel == 0) || (startlevel == 20)) && (!big) && (engine.ai == null);
 	}
 }

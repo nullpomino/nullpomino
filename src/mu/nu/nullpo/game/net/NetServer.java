@@ -2219,8 +2219,7 @@ public class NetServer {
 			if(ranking != null) {
 				int maxRecord = ranking.listRecord.size();
 
-				String strMsg = "spranking\t" + strRule + "\t" + strMode + "\t" + gameType + "\t" + isDaily + "\t";
-				strMsg += ranking.rankingType + "\t" + maxRecord + "\t";
+				String strData = "";
 
 				for(int i = 0; i < maxRecord; i++) {
 					String strRow = "";
@@ -2235,7 +2234,7 @@ public class NetServer {
 						myRank = i;
 					}
 
-					strMsg += strRow;
+					strData += strRow;
 				}
 				if((myRank == -1) && (pInfo != null) && (!isDaily)) {
 					NetSPRecord record = pInfo.spPersonalBest.getRecord(strRule, strMode, gameType);
@@ -2249,11 +2248,12 @@ public class NetServer {
 						strRow += record.strTimeStamp + "," + record.stats.gamerate + ",";
 						strRow += record.getStatRow(ranking.rankingType);
 
-						strMsg += strRow;
+						strData += strRow;
 					}
 				}
 
-				strMsg += "\n";
+				String strMsg = "spranking\t" + strRule + "\t" + strMode + "\t" + gameType + "\t" + isDaily + "\t";
+				strMsg += ranking.rankingType + "\t" + maxRecord + "\t" + strData + "\n";
 				send(client, strMsg);
 			} else {
 				String strMsg = "spranking\t" + strRule + "\t" + strMode + "\t" + gameType + "\t" + isDaily + "\t";

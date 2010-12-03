@@ -34,7 +34,7 @@ import mu.nu.nullpo.util.GeneralUtil;
  * Special base class for netplay
  */
 public class NetDummyMode extends DummyMode implements NetLobbyListener {
-	/** Log */
+	/** Log (Declared in NetDummyMode) */
 	static Logger log = Logger.getLogger(NetDummyMode.class);
 
 	/** NET: Lobby (Declared in NetDummyMode) */
@@ -718,13 +718,53 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * @param engine GameEngine
 	 */
 	protected void netDrawAllPlayersCount(GameEngine engine) {
-		if((netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
+		if(netIsNetPlay && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
 			int fontcolor = EventReceiver.COLOR_BLUE;
 			if(netLobby.netPlayerClient.getObserverCount() > 0) fontcolor = EventReceiver.COLOR_GREEN;
 			if(netLobby.netPlayerClient.getPlayerCount() > 1) fontcolor = EventReceiver.COLOR_RED;
 			String strObserverInfo = String.format("%d/%d", netLobby.netPlayerClient.getObserverCount(), netLobby.netPlayerClient.getPlayerCount());
 			String strObserverString = String.format("%40s", strObserverInfo);
 			owner.receiver.drawDirectFont(engine, 0, 0, 480-16, strObserverString, fontcolor);
+		}
+	}
+
+	/**
+	 * NET: Draw spectator count in score area.
+	 * @param engine GameEngine
+	 * @param x X offset
+	 * @param y Y offset
+	 */
+	protected void netDrawSpectatorsCount(GameEngine engine, int x, int y) {
+		if(netIsNetPlay) {
+			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+0, "SPECTATORS", EventReceiver.COLOR_CYAN);
+			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+1, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
+
+			if(netIsWatch) {
+				owner.receiver.drawScoreFont(engine, engine.playerID, x, y+2, "WATCH", EventReceiver.COLOR_GREEN);
+			} else {
+				owner.receiver.drawScoreFont(engine, engine.playerID, x, y+2, "PLAY", EventReceiver.COLOR_RED);
+			}
+
+			if((engine.stat == GameEngine.STAT_SETTING) && (!netIsWatch) && (netCurrentRoomInfo.rated) && netIsNetRankingViewOK(engine)) {
+				int y2 = y + 4;
+				if(y2 > 24) y2 = 24;
+				owner.receiver.drawScoreFont(engine, engine.playerID, x, y2, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
+			}
+		}
+	}
+
+	/**
+	 * NET: Draw player's name. It may also appear in offline replay.
+	 * @param engine GameEngine
+	 */
+	protected void netDrawPlayerName(GameEngine engine) {
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			String name = netPlayerName;
+			owner.receiver.drawTTFDirectFont(
+					engine, engine.playerID,
+					owner.receiver.getFieldDisplayPositionX(engine, engine.playerID),
+					owner.receiver.getFieldDisplayPositionY(engine, engine.playerID) - 20,
+					name);
 		}
 	}
 
@@ -1157,18 +1197,22 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * @param engine GameEngine
 	 */
 	protected void netSendReplay(GameEngine engine) {
-		NetSPRecord record = new NetSPRecord();
-		record.setReplayProp(owner.replayProp);
-		record.stats = new Statistics(engine.statistics);
-		record.gameType = netGetGoalType();
+		if(netIsNetRankingSendOK(engine)) {
+			NetSPRecord record = new NetSPRecord();
+			record.setReplayProp(owner.replayProp);
+			record.stats = new Statistics(engine.statistics);
+			record.gameType = netGetGoalType();
 
-		String strData = NetUtil.compressString(record.exportString());
+			String strData = NetUtil.compressString(record.exportString());
 
-		Adler32 checksumObj = new Adler32();
-		checksumObj.update(NetUtil.stringToBytes(strData));
-		long sChecksum = checksumObj.getValue();
+			Adler32 checksumObj = new Adler32();
+			checksumObj.update(NetUtil.stringToBytes(strData));
+			long sChecksum = checksumObj.getValue();
 
-		netLobby.netPlayerClient.send("spsend\t" + sChecksum + "\t" + strData + "\n");
+			netLobby.netPlayerClient.send("spsend\t" + sChecksum + "\t" + strData + "\n");
+		} else {
+			netReplaySendStatus = 2;
+		}
 	}
 
 	/**
@@ -1178,5 +1222,25 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 */
 	protected int netGetGoalType() {
 		return 0;
+	}
+
+	/**
+	 * NET: It returns <code>true</code> when the current settings doesn't prevent leaderboard screen from showing.
+	 * Game modes should implement this. By default, this always returns false.
+	 * @param engine GameEngine
+	 * @return <code>true</code> when the current settings doesn't prevent leaderboard screen from showing.
+	 */
+	protected boolean netIsNetRankingViewOK(GameEngine engine) {
+		return false;
+	}
+
+	/**
+	 * NET: It returns <code>true</code> when the current settings doesn't prevent replay data from sending.
+	 * By default, it just calls netIsNetRankingViewOK, but you should override it if you make "race" modes.
+	 * @param engine GameEngine
+	 * @return <code>true</code> when the current settings doesn't prevent replay data from sending.
+	 */
+	protected boolean netIsNetRankingSendOK(GameEngine engine) {
+		return netIsNetRankingViewOK(engine);
 	}
 }
