@@ -240,8 +240,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NormalFontSDL.printFontGrid(2, 11, "LINE EFFECT SPEED:" + "X " + (lineeffectspeed+1), (cursor == 8));
 			NormalFontSDL.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
 			NormalFontSDL.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
-			NormalFontSDL.printFontGrid(2, 14, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 11));
-			NormalFontSDL.printFontGrid(2, 15, "BIG SIDE NEXT:" + GeneralUtil.getOorX(bigsidenext), (cursor == 12));
+			NormalFontSDL.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
+			NormalFontSDL.printFontGrid(2, 15, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 12));
 			NormalFontSDL.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
 			NormalFontSDL.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
 		}
@@ -375,7 +375,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定 button
+		// Confirm button
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			ResourceHolderSDL.soundManager.play("decide");
 

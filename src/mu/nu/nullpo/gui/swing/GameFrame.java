@@ -113,6 +113,12 @@ public class GameFrame extends JFrame implements Runnable {
 	/** True if execute Toolkit.getDefaultToolkit().sync() at the end of each frame */
 	public boolean syncDisplay = true;
 
+	/** Screen width */
+	protected int screenWidth = 640;
+
+	/** Screen height */
+	protected int screenHeight = 480;
+
 	/** ポーズ状態 */
 	protected boolean pause = false;
 
@@ -177,9 +183,12 @@ public class GameFrame extends JFrame implements Runnable {
 	 */
 	public void displayWindow() {
 		setVisible(true);
+
+		screenWidth = NullpoMinoSwing.propConfig.getProperty("option.screenwidth", 640);
+		screenHeight = NullpoMinoSwing.propConfig.getProperty("option.screenheight", 640);
 		insets = getInsets();
-		int width = 640 + insets.left + insets.right;
-		int height = 480 + insets.top + insets.bottom;
+		int width = screenWidth + insets.left + insets.right;
+		int height = screenHeight + insets.top + insets.bottom;
 		setSize(width, height);
 
 		if(!running) {
@@ -554,7 +563,7 @@ public class GameFrame extends JFrame implements Runnable {
 		}
 
 		Graphics g = null;
-		if(ssflag) {
+		if(ssflag || (screenWidth != 640) || (screenHeight != 480)) {
 			g = ssImage.getGraphics();
 		} else {
 			g = bufferStrategy.getDrawGraphics();
@@ -609,20 +618,24 @@ public class GameFrame extends JFrame implements Runnable {
 
 		// 画面に表示／Screenshot作成
 		g.dispose();
-		if(ssflag) {
-			saveScreenShot();
+		if(ssflag || (screenWidth != 640) || (screenHeight != 480)) {
+			if(ssflag) saveScreenShot();
 
 			if(insets != null) {
 				Graphics g2 = getGraphics();
-				g2.drawImage(ssImage, insets.left, insets.top, null);
+				if((screenWidth != 640) || (screenHeight != 480)) {
+					g2.drawImage(ssImage, insets.left, insets.top, screenWidth, screenHeight, null);
+				} else {
+					g2.drawImage(ssImage, insets.left, insets.top, null);
+				}
 				g2.dispose();
-				Toolkit.getDefaultToolkit().sync();
+				if(syncDisplay) Toolkit.getDefaultToolkit().sync();
 			}
 
 			ssflag = false;
 		} else if((bufferStrategy != null) && !bufferStrategy.contentsLost()) {
 			bufferStrategy.show();
-			Toolkit.getDefaultToolkit().sync();
+			if(syncDisplay) Toolkit.getDefaultToolkit().sync();
 		}
 	}
 
@@ -646,7 +659,7 @@ public class GameFrame extends JFrame implements Runnable {
 		}
 
 		Graphics g = null;
-		if(ssflag) {
+		if(ssflag || (screenWidth != 640) || (screenHeight != 480)) {
 			g = ssImage.getGraphics();
 		} else {
 			g = bufferStrategy.getDrawGraphics();
@@ -671,12 +684,16 @@ public class GameFrame extends JFrame implements Runnable {
 
 		// 画面に表示／Screenshot作成
 		g.dispose();
-		if(ssflag) {
-			saveScreenShot();
+		if(ssflag || (screenWidth != 640) || (screenHeight != 480)) {
+			if(ssflag) saveScreenShot();
 
 			if(insets != null) {
 				Graphics g2 = getGraphics();
-				g2.drawImage(ssImage, insets.left, insets.top, null);
+				if((screenWidth != 640) || (screenHeight != 480)) {
+					g2.drawImage(ssImage, insets.left, insets.top, screenWidth, screenHeight, null);
+				} else {
+					g2.drawImage(ssImage, insets.left, insets.top, null);
+				}
 				g2.dispose();
 				if(syncDisplay) Toolkit.getDefaultToolkit().sync();
 			}

@@ -34,8 +34,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,8 +50,20 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
+	/** Screen size table */
+	protected static final int[][] SCREENSIZE_TABLE =
+	{
+		{320,240}, {400,300}, {480,360}, {512,384}, {640,480}, {800,600}, {1024,768}, {1152,864}, {1280,960}
+	};
+
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
+
+	/** Model of screen size combobox */
+	protected DefaultComboBoxModel modelScreenSize;
+
+	/** Screen size combobox */
+	protected JComboBox comboboxScreenSize;
 
 	/** MaximumFPS */
 	protected JTextField txtfldMaxFPS;
@@ -124,6 +138,22 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	 */
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+
+		// ---------- Screen size ----------
+		JPanel pScreenSize = new JPanel();
+		pScreenSize.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(pScreenSize);
+
+		JLabel lScreenSize = new JLabel(NullpoMinoSwing.getUIText("GeneralConfig_ScreenSize"));
+		pScreenSize.add(lScreenSize);
+
+		modelScreenSize = new DefaultComboBoxModel();
+		for(int i = 0; i < SCREENSIZE_TABLE.length; i++) {
+			String strTemp = SCREENSIZE_TABLE[i][0] + "x" + SCREENSIZE_TABLE[i][1];
+			modelScreenSize.addElement(strTemp);
+		}
+		comboboxScreenSize = new JComboBox(modelScreenSize);
+		pScreenSize.add(comboboxScreenSize);
 
 		// ---------- MaximumFPS ----------
 		JPanel pMaxFPS = new JPanel();
@@ -230,6 +260,16 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	 * Current 設定をGUIに反映させる
 	 */
 	public void load() {
+		int sWidth = NullpoMinoSwing.propConfig.getProperty("option.screenwidth", 640);
+		int sHeight = NullpoMinoSwing.propConfig.getProperty("option.screenheight", 480);
+		comboboxScreenSize.setSelectedIndex(4);	// Default to 640x480
+		for(int i = 0; i < SCREENSIZE_TABLE.length; i++) {
+			if((sWidth == SCREENSIZE_TABLE[i][0]) && (sHeight == SCREENSIZE_TABLE[i][1])) {
+				comboboxScreenSize.setSelectedIndex(i);
+				break;
+			}
+		}
+
 		txtfldMaxFPS.setText(String.valueOf(NullpoMinoSwing.propConfig.getProperty("option.maxfps", 60)));
 		txtfldSEVolume.setText(String.valueOf(NullpoMinoSwing.propConfig.getProperty("option.sevolume", 1.0d)));
 		chkboxShowFPS.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showfps", true));
@@ -255,6 +295,12 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "GeneralConfig_OK") {
 			// OK
+			int screenSizeIndex = comboboxScreenSize.getSelectedIndex();
+			if((screenSizeIndex >= 0) && (screenSizeIndex < SCREENSIZE_TABLE.length)) {
+				NullpoMinoSwing.propConfig.setProperty("option.screenwidth", SCREENSIZE_TABLE[screenSizeIndex][0]);
+				NullpoMinoSwing.propConfig.setProperty("option.screenheight", SCREENSIZE_TABLE[screenSizeIndex][1]);
+			}
+
 			int maxfps = NullpoMinoSwing.getIntTextField(60, txtfldMaxFPS);
 			NullpoMinoSwing.propConfig.setProperty("option.maxfps", maxfps);
 
