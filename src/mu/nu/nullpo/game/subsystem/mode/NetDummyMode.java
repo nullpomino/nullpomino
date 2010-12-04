@@ -973,6 +973,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    TIME     LINE PIECE  NAME", EventReceiver.COLOR_BLUE);
 				} else if(netRankingType == NetSPRecord.RANKINGTYPE_ULTRA) {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    SCORE   LINE PIECE    NAME", EventReceiver.COLOR_BLUE);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_COMBORACE) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    COMBO TIME     PPS    NAME", EventReceiver.COLOR_BLUE);
 				}
 
 				for(int i = startIndex; i < endIndex; i++) {
@@ -1011,6 +1013,11 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						receiver.drawMenuFont(engine, playerID, 5, 4 + c, "" + netRankingScore[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 13, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 18, 4 + c, "" + netRankingPiece[d].get(i), (i == netRankingCursor[d]));
+						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
+					} else if(netRankingType == NetSPRecord.RANKINGTYPE_COMBORACE) {
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, "" + (netRankingScore[d].get(i) - 1), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 11, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 20, 4 + c, String.format("%.4g", netRankingPPS[d].get(i)), (i == netRankingCursor[d]));
 						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
 					}
 
@@ -1143,6 +1150,10 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					netRankingScore[d].add(Integer.parseInt(arrayData[4]));
 					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
 					netRankingPiece[d].add(Integer.parseInt(arrayData[6]));
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_COMBORACE) {
+					netRankingScore[d].add(Integer.parseInt(arrayData[4]));
+					netRankingTime[d].add(Integer.parseInt(arrayData[5]));
+					netRankingPPS[d].add(Float.parseFloat(arrayData[6]));
 				} else {
 					log.error("Unknown ranking type:" + netRankingType);
 				}
