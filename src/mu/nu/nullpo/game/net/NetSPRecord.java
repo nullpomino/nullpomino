@@ -19,7 +19,8 @@ public class NetSPRecord implements Serializable {
 							RANKINGTYPE_SCORERACE = 2,
 							RANKINGTYPE_DIGRACE = 3,
 							RANKINGTYPE_ULTRA = 4,
-							RANKINGTYPE_COMBORACE = 5;
+							RANKINGTYPE_COMBORACE = 5,
+							RANKINGTYPE_DIGCHALLENGE = 6;
 
 	/** Player Name */
 	public String strPlayerName;
@@ -105,6 +106,14 @@ public class NetSPRecord implements Serializable {
 			} else if((s1.maxCombo == s2.maxCombo) && (s1.time < s2.time)) {
 				return true;
 			} else if((s1.maxCombo == s2.maxCombo) && (s1.time == s2.time) && (s1.pps > s2.pps)) {
+				return true;
+			}
+		} else if(type == RANKINGTYPE_DIGCHALLENGE) {
+			if(s1.score > s2.score) {
+				return true;
+			} else if((s1.score == s2.score) && (s1.lines > s2.lines)) {
+				return true;
+			} else if((s1.score == s2.score) && (s1.lines == s2.lines) && (s1.time > s2.time)) {
 				return true;
 			}
 		}
@@ -378,6 +387,10 @@ public class NetSPRecord implements Serializable {
 			strRow += stats.maxCombo + ",";
 			strRow += stats.time + ",";
 			strRow += stats.pps;
+		} else if(type == RANKINGTYPE_DIGCHALLENGE) {
+			strRow += stats.score + ",";
+			strRow += stats.lines + ",";
+			strRow += stats.time;
 		}
 
 		return strRow;

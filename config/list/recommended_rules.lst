@@ -52,6 +52,11 @@ config/rule/StandardJ.rul
 config/rule/Square.rul
 config/rule/Standard.rul
 
+:DIG CHALLENGE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
 :RETRO MARATHON
 config/rule/NintendoR.rul
 

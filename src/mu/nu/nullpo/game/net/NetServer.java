@@ -548,7 +548,9 @@ public class NetServer {
 			return false;
 		}
 
-		spRankingListDaily.clear();
+		for(NetSPRanking r: spRankingListDaily) {
+			r.reset();
+		}
 		log.debug("SP daily ranking wiped");
 
 		return true;
@@ -2173,6 +2175,8 @@ public class NetServer {
 
 						NetSPRanking ranking = getSPRanking(record.strRuleName, record.strModeName, record.gameType);
 						NetSPRanking rankingDaily = getSPRanking(record.strRuleName, record.strModeName, record.gameType, true);
+						if(ranking == null) log.warn("All-time ranking not found:" + record.strModeName);
+						if(rankingDaily == null) log.warn("Daily ranking not found:" + record.strModeName);
 
 						if(ranking != null || rankingDaily != null) {
 							if(ranking != null)
@@ -2180,12 +2184,15 @@ public class NetServer {
 							if(rankingDaily != null)
 								rankDaily = rankingDaily.registerRecord(record);
 
-							if((rank != -1) || (rankDaily != -1) || (isDailyWiped)) writeSPRankingToFile();
+							if((rank!= -1) || (rankDaily != -1) || (isDailyWiped)) writeSPRankingToFile();
 
-							boolean isPB = pInfo.spPersonalBest.registerRecord(ranking.rankingType, record);
-							if(isPB) {
-								setPlayerDataToProperty(pInfo);
-								writePlayerDataToFile();
+							boolean isPB = false;
+							if(ranking != null) {
+								isPB = pInfo.spPersonalBest.registerRecord(ranking.rankingType, record);
+								if(isPB) {
+									setPlayerDataToProperty(pInfo);
+									writePlayerDataToFile();
+								}
 							}
 
 							//log.info("Name:" + pInfo.strName + " Mode:" + record.strModeName + " AllTime:" + rank + " Daily:" + rankDaily);

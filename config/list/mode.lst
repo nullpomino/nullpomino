@@ -8,6 +8,7 @@ mu.nu.nullpo.game.subsystem.mode.ComboRaceMode
 mu.nu.nullpo.game.subsystem.mode.UltraMode
 mu.nu.nullpo.game.subsystem.mode.TechnicianMode
 mu.nu.nullpo.game.subsystem.mode.SquareMode
+mu.nu.nullpo.game.subsystem.mode.DigChallengeMode
 mu.nu.nullpo.game.subsystem.mode.RetroMarathonMode
 mu.nu.nullpo.game.subsystem.mode.RetroMasteryMode
 mu.nu.nullpo.game.subsystem.mode.RetroManiaMode
