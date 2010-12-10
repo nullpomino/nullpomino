@@ -522,7 +522,11 @@ public class DigChallengeMode extends NetDummyMode {
 		int limitTime = getGarbageMaxTime(engine.statistics.level);
 		int remainTime = limitTime - garbageTimer;
 		if(remainTime < 0) remainTime = 0;
-		engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / limitTime;
+		if(limitTime > 0) {
+			engine.meterValue = (remainTime * receiver.getMeterMax(engine)) / limitTime;
+		} else {
+			engine.meterValue = 0;
+		}
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		if(engine.meterValue <= receiver.getMeterMax(engine) / 2) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		if(engine.meterValue <= receiver.getMeterMax(engine) / 3) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
@@ -590,10 +594,12 @@ public class DigChallengeMode extends NetDummyMode {
 			// B2B
 			if(engine.b2b) {
 				lastb2b = true;
-				if((lastevent == EVENT_TSPIN_TRIPLE) && (!engine.useAllSpinBonus)) {
-					pts += 2;
-				} else {
-					pts += 1;
+				if(pts > 0) {
+					if((lastevent == EVENT_TSPIN_TRIPLE) && (!engine.useAllSpinBonus)) {
+						pts += 2;
+					} else {
+						pts += 1;
+					}
 				}
 			} else {
 				lastb2b = false;

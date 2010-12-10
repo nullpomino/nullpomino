@@ -34,7 +34,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * 設定画面のステート
+ * Options screen
  */
 public class StateConfigMainMenu extends DummyMenuChooseState {
 	/** This state's ID */
@@ -83,7 +83,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1, "CONFIG", NormalFont.COLOR_ORANGE);
+		NormalFont.printFontGrid(1, 1, "OPTIONS", NormalFont.COLOR_ORANGE);
 
 		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 

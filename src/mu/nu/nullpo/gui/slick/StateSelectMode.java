@@ -28,22 +28,35 @@
 */
 package mu.nu.nullpo.gui.slick;
 
+import java.util.LinkedList;
+
+import org.apache.log4j.Logger;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * Mode 選択画面のステート
+ * Mode select screen
  */
 public class StateSelectMode extends DummyMenuScrollState {
+	/** Logger */
+	static Logger log = Logger.getLogger(StateSelectMode.class);
+
 	/** This state's ID */
 	public static final int ID = 3;
 
 	/** Number of game modes in one page */
 	public static final int PAGE_HEIGHT = 24;
 
+	/** Current folder name */
+	protected String strCurrentFolder;
+
+	/**
+	 * Constructor
+	 */
 	public StateSelectMode() {
+		super();
 		pageHeight = PAGE_HEIGHT;
 	}
 
@@ -59,12 +72,36 @@ public class StateSelectMode extends DummyMenuScrollState {
 	 * State initialization
 	 */
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
-		String lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode", null);
-		list = NullpoMinoSlick.modeManager.getModeNames(false);
-		maxCursor = list.length-1;
+	}
+
+	/**
+	 * Prepare mode list
+	 */
+	protected void prepareModeList() {
+		strCurrentFolder = StateSelectModeFolder.strCurrentFolder;
+
+		// Get mode list
+		LinkedList<String> listMode = StateSelectModeFolder.mapFolder.get(strCurrentFolder);
+		if(listMode != null) {
+			list = new String[listMode.size()];
+			for(int i = 0; i < list.length; i++) {
+				list[i] = listMode.get(i);
+			}
+		} else {
+			list = NullpoMinoSlick.modeManager.getModeNames(false);
+		}
+		maxCursor = list.length - 1;
+
+		// Set cursor postion
+		String lastmode = null;
+		if(strCurrentFolder.length() > 0) {
+			lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode." + strCurrentFolder, null);
+		} else {
+			lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode", null);
+		}
 		cursor = getIDbyName(lastmode);
 		if(cursor < 0) cursor = 0;
-		if(cursor > list.length - 1) cursor = 0;
+		if(cursor > list.length - 1) cursor = list.length - 1;
 	}
 
 	/**
@@ -100,26 +137,53 @@ public class StateSelectMode extends DummyMenuScrollState {
 		return result;
 	}
 
+	/*
+	 * Enter
+	 */
+	@Override
+	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+		prepareModeList();
+	}
+
+	/*
+	 * Render screen
+	 */
 	@Override
 	public void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
-		NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
-				NormalFont.COLOR_ORANGE);
+		if(strCurrentFolder.length() > 0) {
+			NormalFont.printFontGrid(1, 1, strCurrentFolder + " (" + (cursor + 1) + "/" + list.length + ")",
+					NormalFont.COLOR_ORANGE);
+		} else {
+			NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
+					NormalFont.COLOR_ORANGE);
+		}
 
 		NormalFont.printTTFFont(16, 440, getModeDesc(list[cursor]));
 	}
 
+	/*
+	 * Decide
+	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
+		if(strCurrentFolder.length() > 0) {
+			NullpoMinoSlick.propGlobal.setProperty("name.mode." + strCurrentFolder, list[cursor]);
+		}
 		NullpoMinoSlick.propGlobal.setProperty("name.mode", list[cursor]);
 		NullpoMinoSlick.saveConfig();
+
 		game.enterState(StateSelectRuleFromList.ID);
+
 		return false;
 	}
 
+	/*
+	 * Cancel
+	 */
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
-		game.enterState(StateTitle.ID);
+		game.enterState(StateSelectModeFolder.ID);
 		return false;
 	}
 }

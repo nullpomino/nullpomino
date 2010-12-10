@@ -39,14 +39,14 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * タイトル画面のステート
+ * Title screen state
  */
 public class StateTitle extends DummyMenuChooseState {
 	/** This state's ID */
 	public static final int ID = 1;
 
 	/** Strings for menu choices */
-	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "CONFIG", "EXIT"};
+	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "OPTIONS", "EXIT"};
 
 	/** UI Text identifier Strings */
 	private static final String[] UI_TEXT = {
@@ -56,7 +56,7 @@ public class StateTitle extends DummyMenuChooseState {
 	/** Log */
 	static Logger log = Logger.getLogger(StateTitle.class);
 
-	/** 新Versionの check 済みならtrue */
+	/** true when new version is already checked */
 	protected boolean isNewVersionChecked = false;
 
 	public StateTitle () {
@@ -83,18 +83,18 @@ public class StateTitle extends DummyMenuChooseState {
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-		// Observer開始
+		// Observer start
 		NullpoMinoSlick.startObserverClient();
-		// GC呼び出し
+		// Call GC
 		System.gc();
 
-		// タイトルバー更新
+		// Update title bar
 		if(container instanceof AppGameContainer) {
 			((AppGameContainer) container).setTitle("NullpoMino version" + GameManager.getVersionString());
 			((AppGameContainer) container).setUpdateOnlyWhenVisible(true);
 		}
 
-		// 新Version check
+		// New Version check
 		if(!isNewVersionChecked && NullpoMinoSlick.propGlobal.getProperty("updatechecker.enable", true)) {
 			isNewVersionChecked = true;
 
@@ -147,7 +147,7 @@ public class StateTitle extends DummyMenuChooseState {
 
 		switch(cursor) {
 		case 0:
-			game.enterState(StateSelectMode.ID);
+			game.enterState(StateSelectModeFolder.ID);
 			break;
 		case 1:
 			game.enterState(StateReplaySelect.ID);
