@@ -171,9 +171,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Minimum chain count needed to send ojama */
 	protected int[] rensaShibari;
 
-	/** Minimum number of blocks linked together to clear */
-	protected int[] clearSize;
-
 	/** Denominator for score-to-ojama conversion */
 	protected int[] ojamaRate;
 
@@ -292,7 +289,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		numColors = new int[MAX_PLAYERS];
 		maxAttack = new int[MAX_PLAYERS];
 		rensaShibari = new int[MAX_PLAYERS];
-		clearSize = new int[MAX_PLAYERS];
 		ojamaRate = new int[MAX_PLAYERS];
 		ojamaHard = new int[MAX_PLAYERS];
 
@@ -375,7 +371,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		maxAttack[playerID] = prop.getProperty("avalanchevs" + name + ".maxAttack.p" + playerID, 30);
 		numColors[playerID] = prop.getProperty("avalanchevs" + name + ".numColors.p" + playerID, 5);
 		rensaShibari[playerID] = prop.getProperty("avalanchevs" + name + ".rensaShibari.p" + playerID, 1);
-		clearSize[playerID] = prop.getProperty("avalanchevs" + name + ".clearSize.p" + playerID, 4);
 		zenKeshiType[playerID] = prop.getProperty("avalanchevs" + name + ".zenKeshiType.p" + playerID, 1);
 		outlineType[playerID] = prop.getProperty("avalanchevs" + name + ".outlineType.p" + playerID, 1);
 		dangerColumnDouble[playerID] = prop.getProperty("avalanchevs" + name + ".dangerColumnDouble.p" + playerID, false);
@@ -384,6 +379,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		newChainPower[playerID] = prop.getProperty("avalanchevs" + name + ".newChainPower.p" + playerID, false);
 		cascadeSlow[playerID] = prop.getProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, false);
 		bigDisplay = prop.getProperty("avalanchevs" + name + ".bigDisplay", false);
+		engine.colorClearSize = prop.getProperty("avalanchevs" + name + ".clearSize.p" + playerID, 4);
 	}
 
 	/**
@@ -406,7 +402,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		prop.setProperty("avalanchevs" + name + ".maxAttack.p" + playerID, maxAttack[playerID]);
 		prop.setProperty("avalanchevs" + name + ".numColors.p" + playerID, numColors[playerID]);
 		prop.setProperty("avalanchevs" + name + ".rensaShibari.p" + playerID, rensaShibari[playerID]);
-		prop.setProperty("avalanchevs" + name + ".clearSize.p" + playerID, clearSize[playerID]);
 		prop.setProperty("avalanchevs" + name + ".ojamaRate.p" + playerID, ojamaRate[playerID]);
 		prop.setProperty("avalanchevs" + name + ".ojamaHard.p" + playerID, ojamaHard[playerID]);
 		prop.setProperty("avalanchevs" + name + ".zenKeshiType.p" + playerID, zenKeshiType[playerID]);
@@ -417,6 +412,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		prop.setProperty("avalanchevs" + name + ".newChainPower.p" + playerID, newChainPower[playerID]);
 		prop.setProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, cascadeSlow[playerID]);
 		prop.setProperty("avalanchevs" + name + ".bigDisplay", bigDisplay);
+		prop.setProperty("avalanchevs" + name + ".clearSize.p" + playerID, engine.colorClearSize);
 	}
 
 	/**
@@ -589,7 +585,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.comboType = GameEngine.COMBO_TYPE_DISABLE;
 		engine.enableSE = enableSE[playerID];
 		if(playerID == 1) owner.bgmStatus.bgm = bgmno;
-		engine.colorClearSize = clearSize[playerID];
 		engine.ignoreHidden = true;
 
 		engine.tspinAllowKick = false;

@@ -230,9 +230,9 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 					newChainPower[playerID] = !newChainPower[playerID];
 					break;
 				case 20:
-					clearSize[playerID] += change;
-					if(clearSize[playerID] < 2) clearSize[playerID] = 36;
-					if(clearSize[playerID] > 36) clearSize[playerID] = 2;
+					engine.colorClearSize += change;
+					if(engine.colorClearSize < 2) engine.colorClearSize = 36;
+					if(engine.colorClearSize > 36) engine.colorClearSize = 2;
 					break;
 				case 21:
 					outlineType[playerID] += change;
@@ -293,8 +293,10 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 180)
+			if(engine.statc[3] >= 240)
 				engine.statc[4] = 1;
+			else if(engine.statc[3] >= 180)
+				engine.statc[2] = 27;
 			else if(engine.statc[3] >= 120)
 				engine.statc[2] = 18;
 			else if(engine.statc[3] >= 60)
@@ -354,7 +356,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 				menuColor = EventReceiver.COLOR_CYAN;
 				drawMenu(engine, playerID, receiver,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC",
-						"CLEAR SIZE", String.valueOf(clearSize[playerID]));
+						"CLEAR SIZE", String.valueOf(engine.colorClearSize));
 				menuColor = EventReceiver.COLOR_DARKBLUE;
 				drawMenu(engine, playerID, receiver,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
@@ -427,7 +429,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			engine.field.garbageDropPlace(x+1, y, false, 1);
 			engine.field.garbageDropPlace(x+1, y-1, false, 1);
 		}
-		int sizeLimit = Math.max(clearSize[playerID]-1, 2);
+		int sizeLimit = Math.max(engine.colorClearSize-1, 2);
 		do {
 			for (int i = 0; i < handicapRows[playerID]; i++)
 				for (int j = 0; j < width; j++)

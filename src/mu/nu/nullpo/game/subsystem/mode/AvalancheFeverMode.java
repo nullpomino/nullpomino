@@ -322,12 +322,12 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		String strOutline = "";
-		if(outlinetype == 0) strOutline = "NORMAL";
-		if(outlinetype == 1) strOutline = "COLOR";
-		if(outlinetype == 2) strOutline = "NONE";
-
 		if (engine.statc[2] <= 5) {
+			String strOutline = "";
+			if(outlinetype == 0) strOutline = "NORMAL";
+			if(outlinetype == 1) strOutline = "COLOR";
+			if(outlinetype == 2) strOutline = "NONE";
+
 			initMenu(0, EventReceiver.COLOR_BLUE, 0);
 			drawMenu(engine, playerID, receiver,
 					"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),

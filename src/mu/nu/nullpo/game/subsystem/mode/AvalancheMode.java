@@ -157,14 +157,14 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 9;
+				if(engine.statc[2] < 0) engine.statc[2] = 10;
 				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]--;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 9) engine.statc[2] = 0;
+				if(engine.statc[2] > 10) engine.statc[2] = 0;
 				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]++;
 				engine.playSE("cursor");
 			}
@@ -195,29 +195,34 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 					if(scoreType >= SCORETYPE_MAX) scoreType = 0;
 					break;
 				case 3:
-					outlinetype += change;
-					if(outlinetype < 0) outlinetype = 2;
-					if(outlinetype > 2) outlinetype = 0;
-					break;
-				case 4:
 					numColors += change;
 					if(numColors < 3) numColors = 5;
 					if(numColors > 5) numColors = 3;
 					break;
-				case 5:
+				case 4:
 					dangerColumnDouble = !dangerColumnDouble;
 					break;
-				case 6:
+				case 5:
 					dangerColumnShowX = !dangerColumnShowX;
 					break;
-				case 7:
-					showChains = !showChains;
+				case 6:
+					engine.colorClearSize += change;
+					if(engine.colorClearSize < 2) engine.colorClearSize = 36;
+					if(engine.colorClearSize > 36) engine.colorClearSize = 2;
 					break;
-				case 8:
+				case 7:
 					cascadeSlow = !cascadeSlow;
 					break;
-				case 9:
+				case 8:
 					bigDisplay = !bigDisplay;
+					break;
+				case 9:
+					outlinetype += change;
+					if(outlinetype < 0) outlinetype = 2;
+					if(outlinetype > 2) outlinetype = 0;
+					break;
+				case 10:
+					showChains = !showChains;
 					break;
 				}
 			}
@@ -240,9 +245,10 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(engine.statc[3] >= 60)
+				engine.statc[2] = 9;
+			else if(engine.statc[3] >= 120)
 				return false;
-			}
 		}
 
 		return true;
@@ -253,28 +259,35 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"GAME TYPE", GAMETYPE_NAME[gametype]);
-		if (gametype == 2)
-		{
-			drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE, 1,
-					"TARGET", String.valueOf(SPRINT_MAX_SCORE[sprintTarget]));
+		if (engine.statc[2] <= 8) {
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+					"GAME TYPE", GAMETYPE_NAME[gametype]);
+			if (gametype == 2)
+			{
+				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE, 1,
+						"TARGET", String.valueOf(SPRINT_MAX_SCORE[sprintTarget]));
+			}
+			drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE, 2,
+					"SCORE TYPE", SCORETYPE_NAME[scoreType],
+					"COLORS", String.valueOf(numColors),
+					"X COLUMN", dangerColumnDouble ? "3 AND 4" : "3 ONLY",
+					"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX),
+					"CLEAR SIZE", String.valueOf(engine.colorClearSize),
+					"FALL ANIM", cascadeSlow ?  "FEVER" : "CLASSIC",
+					"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+			
+			receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/2", EventReceiver.COLOR_YELLOW);
+		} else {
+			String strOutline = "";
+			if(outlinetype == 0) strOutline = "NORMAL";
+			if(outlinetype == 1) strOutline = "COLOR";
+			if(outlinetype == 2) strOutline = "NONE";
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 9,
+					"OUTLINE", strOutline,
+					"SHOW CHAIN", GeneralUtil.getONorOFF(showChains));
+			
+			receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/2", EventReceiver.COLOR_YELLOW);
 		}
-
-		String strOutline = "";
-		if(outlinetype == 0) strOutline = "NORMAL";
-		if(outlinetype == 1) strOutline = "COLOR";
-		if(outlinetype == 2) strOutline = "NONE";
-
-		drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE, 2,
-				"SCORE TYPE", SCORETYPE_NAME[scoreType],
-				"OUTLINE", strOutline,
-				"COLORS", String.valueOf(numColors),
-				"X COLUMN", dangerColumnDouble ? "3 AND 4" : "3 ONLY",
-				"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX),
-				"SHOW CHAIN", GeneralUtil.getONorOFF(showChains),
-				"FALL ANIM", cascadeSlow ?  "FEVER" : "CLASSIC",
-				"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
 	}
 
 	/*
@@ -299,7 +312,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 1, "("+SCORETYPE_NAME[scoreType] + " " + numColors + " COLORS)", EventReceiver.COLOR_DARKBLUE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
-			if((owner.replayMode == false) && (engine.ai == null)) {
+			if((owner.replayMode == false) && (engine.ai == null) && (engine.colorClearSize == 4)) {
 				float scale = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 0.5f : 1.0f;
 				int topY = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 6 : 4;
 
@@ -518,7 +531,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		saveSetting(prop);
 
 		// Update rankings
-		if((owner.replayMode == false) && (engine.ai == null)) {
+		if((owner.replayMode == false) && (engine.ai == null) && (engine.colorClearSize == 4)) {
 			updateRanking(engine.statistics.score, engine.statistics.time, gametype, scoreType, numColors);
 
 			if(rankingRank != -1) {

@@ -309,9 +309,9 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
 					break;
 				case 13:
-					clearSize[playerID] += change;
-					if(clearSize[playerID] < 2) clearSize[playerID] = 36;
-					if(clearSize[playerID] > 36) clearSize[playerID] = 2;
+					engine.colorClearSize += change;
+					if(engine.colorClearSize < 2) engine.colorClearSize = 36;
+					if(engine.colorClearSize > 36) engine.colorClearSize = 2;
 					break;
 				case 14:
 					if (m >= 10) ojamaRate[playerID] += change*100;
@@ -494,12 +494,14 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 240)
+			if(engine.statc[3] >= 300)
 				engine.statc[4] = 1;
+			else if(engine.statc[3] >= 240)
+				engine.statc[2] = 34;
 			else if(engine.statc[3] >= 180)
-				engine.statc[2] = 27;
+				engine.statc[2] = 25;
 			else if(engine.statc[3] >= 120)
-				engine.statc[2] = 18;
+				engine.statc[2] = 17;
 			else if(engine.statc[3] >= 60)
 				engine.statc[2] = 9;
 		} else {
@@ -544,7 +546,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"MAX ATTACK", String.valueOf(maxAttack[playerID]),
 						"COLORS", String.valueOf(numColors[playerID]),
 						"MIN CHAIN", String.valueOf(rensaShibari[playerID]),
-						"CLEAR SIZE", String.valueOf(clearSize[playerID]),
+						"CLEAR SIZE", String.valueOf(engine.colorClearSize),
 						"OJAMA RATE", String.valueOf(ojamaRate[playerID]),
 						"HURRYUP", (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
