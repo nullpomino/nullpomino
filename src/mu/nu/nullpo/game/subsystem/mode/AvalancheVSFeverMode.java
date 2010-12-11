@@ -369,26 +369,30 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 24) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
+				initMenu(EventReceiver.COLOR_PURPLE, 18);
+				drawMenu(engine, playerID, receiver,
 						"HANDICAP", String.valueOf(ojamaHandicap[playerID]),
 						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
-				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_DARKBLUE, 20,
+				menuColor = EventReceiver.COLOR_DARKBLUE;
+				drawMenu(engine, playerID, receiver,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
 						"SHOW CHAIN", chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE ?
 								"FEVERSIZE" : CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 23,
+				menuColor = EventReceiver.COLOR_CYAN;
+				drawMenu(engine, playerID, receiver,
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 24,
-						"BGM", String.valueOf(bgmno));
-				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_YELLOW, 25,
-						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_PINK, 26,
-						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
-				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_GREEN, 27,
+				initMenu(EventReceiver.COLOR_PINK, 24);
+				drawMenu(engine, playerID, receiver, "BGM", String.valueOf(bgmno));
+				menuColor = EventReceiver.COLOR_YELLOW;
+				drawMenu(engine, playerID, receiver, "SE", GeneralUtil.getONorOFF(enableSE[playerID]));
+				menuColor = EventReceiver.COLOR_PINK;
+				drawMenu(engine, playerID, receiver, "BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+				menuColor = EventReceiver.COLOR_GREEN;
+				drawMenu(engine, playerID, receiver,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 

@@ -121,7 +121,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 27);
+			int change = updateCursor(engine, 28);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -227,34 +227,39 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 					if(handicapRows[playerID] > 11) handicapRows[playerID] = 0;
 					break;
 				case 19:
+					newChainPower[playerID] = !newChainPower[playerID];
+					break;
+				case 20:
+					clearSize[playerID] += change;
+					if(clearSize[playerID] < 2) clearSize[playerID] = 36;
+					if(clearSize[playerID] > 36) clearSize[playerID] = 2;
+					break;
+				case 21:
 					outlineType[playerID] += change;
 					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
 					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
 					break;
-				case 20:
+				case 22:
 					chainDisplayType[playerID] += change;
 					if(chainDisplayType[playerID] < 0) chainDisplayType[playerID] = 3;
 					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
 					break;
-				case 21:
+				case 23:
 					cascadeSlow[playerID] = !cascadeSlow[playerID];
 					break;
-				case 22:
-					newChainPower[playerID] = !newChainPower[playerID];
-					break;
-				case 23:
+				case 24:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 24:
+				case 25:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 25:
+				case 26:
 					bigDisplay = !bigDisplay;
 					break;
-				case 26:
 				case 27:
+				case 28:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -343,25 +348,28 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 26) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PURPLE, 18,
-						"ROWS", String.valueOf(handicapRows[playerID]));
-				drawMenu(engine, playerID, receiver, 2, EventReceiver.COLOR_DARKBLUE, 19,
+			} else if(engine.statc[2] < 27) {
+				initMenu(EventReceiver.COLOR_PURPLE, 18);
+				drawMenu(engine, playerID, receiver, "ROWS", String.valueOf(handicapRows[playerID]));
+				menuColor = EventReceiver.COLOR_CYAN;
+				drawMenu(engine, playerID, receiver,
+						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC",
+						"CLEAR SIZE", String.valueOf(clearSize[playerID]));
+				menuColor = EventReceiver.COLOR_DARKBLUE;
+				drawMenu(engine, playerID, receiver,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
 						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_CYAN, 22,
-						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_PINK, 23,
-						"BGM", String.valueOf(bgmno));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_YELLOW, 24,
-						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_PINK, 25,
-						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
+				menuColor = EventReceiver.COLOR_PINK;
+				drawMenu(engine, playerID, receiver, "BGM", String.valueOf(bgmno));
+				menuColor = EventReceiver.COLOR_YELLOW;
+				drawMenu(engine, playerID, receiver, "SE", GeneralUtil.getONorOFF(enableSE[playerID]));
+				menuColor = EventReceiver.COLOR_PINK;
+				drawMenu(engine, playerID, receiver, "BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 26,
+				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 27,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
@@ -419,12 +427,13 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			engine.field.garbageDropPlace(x+1, y, false, 1);
 			engine.field.garbageDropPlace(x+1, y-1, false, 1);
 		}
+		int sizeLimit = Math.max(clearSize[playerID]-1, 2);
 		do {
 			for (int i = 0; i < handicapRows[playerID]; i++)
 				for (int j = 0; j < width; j++)
 					if (engine.field.getBlockEmpty(j, y-i))
 						engine.field.setBlockColor(j, y-i, BLOCK_COLORS[rand.nextInt(numColors[playerID])]);
-		} while (engine.field.clearColor(3, false, false, true) > 0);
+		} while (engine.field.clearColor(sizeLimit, false, false, true) > 0);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 		engine.field.setAllSkin(engine.getSkin());
 	}

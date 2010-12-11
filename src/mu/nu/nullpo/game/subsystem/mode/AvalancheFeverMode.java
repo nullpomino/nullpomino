@@ -328,14 +328,15 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if(outlinetype == 2) strOutline = "NONE";
 
 		if (engine.statc[2] <= 5) {
-			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+			initMenu(0, EventReceiver.COLOR_BLUE, 0);
+			drawMenu(engine, playerID, receiver,
 					"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),
 					"OUTLINE", strOutline,
 					"COLORS", String.valueOf(numColors),
 					"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType],
 					"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
 			if (xyzzy == 573)
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_BLUE, 5, "FAST", FAST_NAMES[fastenable]);
+				drawMenu(engine, playerID, receiver, "FAST", FAST_NAMES[fastenable]);
 		} else {
 			receiver.drawMenuFont(engine, playerID, 0, 13, "MAP PREVIEW", EventReceiver.COLOR_YELLOW);
 			receiver.drawMenuFont(engine, playerID, 0, 14, "A:DISPLAY", EventReceiver.COLOR_GREEN);

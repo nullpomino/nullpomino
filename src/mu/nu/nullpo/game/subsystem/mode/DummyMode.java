@@ -47,6 +47,15 @@ public class DummyMode implements GameMode {
 			STAT_MAXCOMBO = 7, STAT_SPL = 8, STAT_SPM = 9, STAT_SPS = 10,
 			STAT_LPM = 11, STAT_LPS = 12, STAT_PPM = 13, STAT_PPS = 14,
 			STAT_MAXCHAIN = 15, STAT_LEVEL_ADD_DISP = 16;
+	
+	/** Current state of menu for drawMenu */
+	protected int statcMenu, menuColor, menuY;
+	
+	public DummyMode() {
+		statcMenu = 0;
+		menuColor = EventReceiver.COLOR_WHITE;
+		menuY = 0;
+	}
 
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
 	}
@@ -240,6 +249,36 @@ public class DummyMode implements GameMode {
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) return -1;
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) return 1;
 		return 0;
+	}
+
+	protected void initMenu (int y, int color, int statc) {
+		menuY = y;
+		menuColor = color;
+		statcMenu = statc;
+	}
+
+	protected void initMenu (int color, int statc) {
+		menuY = 0;
+		statcMenu = statc;
+		menuColor = color;
+	}
+
+	protected void drawMenu (GameEngine engine, int playerID, EventReceiver receiver, String... str) {
+		for (int i = 0; i < str.length; i++)
+		{
+			if ((i&1) == 0)
+				receiver.drawMenuFont(engine, playerID, 0, menuY, str[i], menuColor);
+			else if (engine.statc[2] == statcMenu && !engine.owner.replayMode)
+			{
+				receiver.drawMenuFont(engine, playerID, 0, menuY, "b" + str[i], true);
+				statcMenu++;
+			}
+			else {
+				receiver.drawMenuFont(engine, playerID, 1, menuY, str[i]);
+				statcMenu++;
+			}
+			menuY++;
+		}
 	}
 
 	protected void drawMenu (GameEngine engine, int playerID, EventReceiver receiver,

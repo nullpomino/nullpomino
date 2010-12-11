@@ -387,55 +387,60 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 					if(rensaShibari[playerID] > 20) rensaShibari[playerID] = 1;
 					break;
 				case 12:
+					clearSize[playerID] += change;
+					if(clearSize[playerID] < 2) clearSize[playerID] = 36;
+					if(clearSize[playerID] > 36) clearSize[playerID] = 2;
+					break;
+				case 13:
 					if (m >= 10) ojamaRate[playerID] += change*100;
 					else ojamaRate[playerID] += change*10;
 					if(ojamaRate[playerID] < 10) ojamaRate[playerID] = 1000;
 					if(ojamaRate[playerID] > 1000) ojamaRate[playerID] = 10;
 					break;
-				case 13:
+				case 14:
 					if (m > 10) hurryupSeconds[playerID] += change*m/10;
 					else hurryupSeconds[playerID] += change;
 					if(hurryupSeconds[playerID] < 0) hurryupSeconds[playerID] = 300;
 					if(hurryupSeconds[playerID] > 300) hurryupSeconds[playerID] = 0;
 					break;
-				case 14:
+				case 15:
 					dangerColumnDouble[playerID] = !dangerColumnDouble[playerID];
 					break;
-				case 15:
+				case 16:
 					dangerColumnShowX[playerID] = !dangerColumnShowX[playerID];
 					break;
-				case 16:
+				case 17:
 					ojamaCountdown[playerID] += change;
 					if(ojamaCountdown[playerID] < 1) ojamaCountdown[playerID] = 10;
 					if(ojamaCountdown[playerID] > 10) ojamaCountdown[playerID] = 1;
 					break;
-				case 17:
+				case 18:
 					zenKeshiType[playerID] += change;
 					if(zenKeshiType[playerID] < 0) zenKeshiType[playerID] = 2;
 					if(zenKeshiType[playerID] > 2) zenKeshiType[playerID] = 0;
 					break;
-				case 18:
+				case 19:
 					feverMapSet[playerID] += change;
 					if(feverMapSet[playerID] < 0) feverMapSet[playerID] = FEVER_MAPS.length-1;
 					if(feverMapSet[playerID] >= FEVER_MAPS.length) feverMapSet[playerID] = 0;
 					break;
-				case 19:
+				case 20:
 					outlineType[playerID] += change;
 					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
 					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
 					break;
-				case 20:
+				case 21:
 					chainDisplayType[playerID] += change;
 					if(chainDisplayType[playerID] < 0) chainDisplayType[playerID] = 3;
 					if(chainDisplayType[playerID] > 3) chainDisplayType[playerID] = 0;
 					break;
-				case 21:
+				case 22:
 					cascadeSlow[playerID] = !cascadeSlow[playerID];
 					break;
-				case 22:
+				case 23:
 					newChainPower[playerID] = !newChainPower[playerID];
 					break;
-				case 23:
+				case 24:
 					useMap[playerID] = !useMap[playerID];
 					if(!useMap[playerID]) {
 						if(engine.field != null) engine.field.reset();
@@ -443,7 +448,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 24:
+				case 25:
 					mapSet[playerID] += change;
 					if(mapSet[playerID] < 0) mapSet[playerID] = 99;
 					if(mapSet[playerID] > 99) mapSet[playerID] = 0;
@@ -452,7 +457,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 					}
 					break;
-				case 25:
+				case 26:
 					if(useMap[playerID]) {
 						mapNumber[playerID] += change;
 						if(mapNumber[playerID] < -1) mapNumber[playerID] = mapMaxNo[playerID] - 1;
@@ -462,31 +467,31 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						mapNumber[playerID] = -1;
 					}
 					break;
-				case 26:
+				case 27:
 					bigDisplay = !bigDisplay;
 					break;
-				case 27:
+				case 28:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 28:
+				case 29:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 29:
 				case 30:
+				case 31:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
 					break;
-				case 31:
+				case 32:
 					dropSet[playerID] += change;
 					if(dropSet[playerID] < 0) dropSet[playerID] = DROP_PATTERNS.length-1;
 					if(dropSet[playerID] >= DROP_PATTERNS.length) dropSet[playerID] = 0;
 					if(dropMap[playerID] >= DROP_PATTERNS[dropSet[playerID]].length) dropMap[playerID] = 0;
 					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 					break;
-				case 32:
+				case 33:
 					dropMap[playerID] += change;
 					if(dropMap[playerID] < 0) dropMap[playerID] = DROP_PATTERNS[dropSet[playerID]].length-1;
 					if(dropMap[playerID] >= DROP_PATTERNS[dropSet[playerID]].length) dropMap[playerID] = 0;
@@ -600,43 +605,49 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 16) {
+			} else if(engine.statc[2] < 17) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
 						"MAX ATTACK", String.valueOf(maxAttack[playerID]),
 						"MIN CHAIN", String.valueOf(rensaShibari[playerID]),
+						"CLEAR SIZE", String.valueOf(clearSize[playerID]),
 						"OJAMA RATE", String.valueOf(ojamaRate[playerID]),
 						"HURRYUP", (hurryupSeconds[playerID] == 0) ? "NONE" : hurryupSeconds[playerID]+"SEC",
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 23) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 16,
+			} else if(engine.statc[2] < 24) {
+				initMenu(EventReceiver.COLOR_CYAN, 17);
+				drawMenu(engine, playerID, receiver,
 						"COUNTDOWN", (ojamaCountdown[playerID] == 10) ? "NONE" :
 							String.valueOf(ojamaCountdown[playerID]),
 						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
-				drawMenu(engine, playerID, receiver, 4, zenKeshiType[playerID] == ZENKESHI_MODE_FEVER ?
-							EventReceiver.COLOR_PURPLE : EventReceiver.COLOR_WHITE, 18,
-						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
-				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_DARKBLUE, 19,
+				menuColor = (zenKeshiType[playerID] == ZENKESHI_MODE_FEVER) ?
+						EventReceiver.COLOR_PURPLE : EventReceiver.COLOR_WHITE;
+				drawMenu(engine, playerID, receiver, "F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
+				menuColor = EventReceiver.COLOR_DARKBLUE;
+				drawMenu(engine, playerID, receiver,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
 						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_CYAN, 22,
-						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
+				menuColor = EventReceiver.COLOR_CYAN;
+				drawMenu(engine, playerID, receiver, "CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 31) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_PINK, 23,
+			} else if(engine.statc[2] < 32) {
+				initMenu(EventReceiver.COLOR_PINK, 24);
+				drawMenu(engine, playerID, receiver,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1),
 						"BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
-				drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_DARKBLUE, 27,
+				menuColor = EventReceiver.COLOR_DARKBLUE;
+				drawMenu(engine, playerID, receiver,
 						"BGM", String.valueOf(bgmno),
 						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 29,
+				menuColor = EventReceiver.COLOR_GREEN;
+				drawMenu(engine, playerID, receiver,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 
@@ -657,7 +668,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 				else
 					receiver.drawMenuFont(engine, playerID, 3,  3, multiplier + "%", EventReceiver.COLOR_GREEN);
 
-				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_CYAN, 31,
+				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_CYAN, 32,
 						"DROP SET", DROP_SET_NAMES[dropSet[playerID]],
 						"DROP MAP", String.format("%2d", dropMap[playerID]+1) + "/" +
 									String.format("%2d", DROP_PATTERNS[dropSet[playerID]].length));

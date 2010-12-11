@@ -565,7 +565,8 @@ public class PhysicianVSMode extends DummyMode {
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
 			if(engine.statc[2] < 9) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
+				initMenu(EventReceiver.COLOR_ORANGE, 0);
+				drawMenu(engine, playerID, receiver,
 						"GRAVITY", String.valueOf(engine.speed.gravity),
 						"G-MAX", String.valueOf(engine.speed.denominator),
 						"ARE", String.valueOf(engine.speed.are),
@@ -573,18 +574,22 @@ public class PhysicianVSMode extends DummyMode {
 						"LINE DELAY", String.valueOf(engine.speed.lineDelay),
 						"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
 						"DAS", String.valueOf(engine.speed.das));
-				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 7,
+				menuColor = EventReceiver.COLOR_GREEN;
+				drawMenu(engine, playerID, receiver,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
 			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
+				initMenu(EventReceiver.COLOR_CYAN, 9);
+				drawMenu(engine, playerID, receiver,
 						"SPEED", SPEED_NAME[speed[playerID]],
 						"VIRUS", String.valueOf(hoverBlocks[playerID]),
 						"MODE", (flash[playerID] ? "FLASH" : "NORMAL"));
-				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_PINK, 12,
-						"BGM", String.valueOf(bgmno),
-						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 10, EventReceiver.COLOR_CYAN, 14,
+				menuColor = EventReceiver.COLOR_PINK;
+				drawMenu(engine, playerID, receiver,
+						"SE", GeneralUtil.getONorOFF(enableSE[playerID]),
+						"BGM", String.valueOf(bgmno));
+				menuColor = EventReceiver.COLOR_CYAN;
+				drawMenu(engine, playerID, receiver,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),
 						"MAP SET", String.valueOf(mapSet[playerID]),
 						"MAP NO.", (mapNumber[playerID] < 0) ? "RANDOM" : mapNumber[playerID]+"/"+(mapMaxNo[playerID]-1));
