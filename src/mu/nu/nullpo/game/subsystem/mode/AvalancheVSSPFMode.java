@@ -406,8 +406,8 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 					break;
 				case 16:
 					ojamaCountdown[playerID] += change;
-					if(ojamaCountdown[playerID] < 1) ojamaCountdown[playerID] = 9;
-					if(ojamaCountdown[playerID] > 9) ojamaCountdown[playerID] = 1;
+					if(ojamaCountdown[playerID] < 1) ojamaCountdown[playerID] = 10;
+					if(ojamaCountdown[playerID] > 10) ojamaCountdown[playerID] = 1;
 					break;
 				case 17:
 					zenKeshiType[playerID] += change;
@@ -613,7 +613,8 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 23) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 16,
-						"COUNTDOWN", String.valueOf(ojamaCountdown[playerID]),
+						"COUNTDOWN", (ojamaCountdown[playerID] == 10) ? "NONE" :
+							String.valueOf(ojamaCountdown[playerID]),
 						"ZENKESHI", ZENKESHI_TYPE_NAMES[zenKeshiType[playerID]]);
 				drawMenu(engine, playerID, receiver, 4, zenKeshiType[playerID] == ZENKESHI_MODE_FEVER ?
 							EventReceiver.COLOR_PURPLE : EventReceiver.COLOR_WHITE, 18,
@@ -759,6 +760,8 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 		// Countdown Blocks
 		Block b;
 		int blockColor, textColor;
+		int d = (engine.displaysize == 1) ? 2 : 1;
+		String str;
 		if((engine.field != null) && (engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted))
 			for (int x = 0; x < engine.field.getWidth(); x++)
 				for (int y = 0; y < engine.field.getHeight(); y++)
@@ -777,10 +780,8 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 						else if (blockColor == Block.BLOCK_COLOR_YELLOW)
 							textColor = EventReceiver.COLOR_YELLOW;
 
-						if(engine.displaysize == 1)
-							receiver.drawMenuFont(engine, playerID, x * 2, y * 2, String.valueOf(b.countdown), textColor, 2.0f);
-						else
-							receiver.drawMenuFont(engine, playerID, x, y, String.valueOf(b.countdown), textColor);
+						str = (b.countdown >= 10) ? "d" : String.valueOf(b.countdown);
+						receiver.drawMenuFont(engine, playerID, x * d, y * d, str, textColor, 1.0f * d);
 					}
 				}
 
@@ -838,7 +839,7 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 
 		boolean result = false;
 		//Decrement countdowns
-		if (!countdownDecremented[playerID])
+		if (ojamaCountdown[playerID] != 10 && !countdownDecremented[playerID])
 		{
 			countdownDecremented[playerID] = true;
 			for (int y = (engine.field.getHiddenHeight() * -1); y < engine.field.getHeight(); y++)
