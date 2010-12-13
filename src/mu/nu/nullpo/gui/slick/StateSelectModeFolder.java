@@ -25,6 +25,9 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 	/** Number of folders in one page */
 	public static final int PAGE_HEIGHT = 24;
 
+	/** Top-level mode list */
+	public static LinkedList<String> listTopLevelModes;
+
 	/** Folder names list */
 	public static LinkedList<String> listFolder;
 
@@ -62,16 +65,15 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 	 * Load folder list file
 	 */
 	public static void loadFolderListFile() {
-		if(listFolder == null) {
-			listFolder = new LinkedList<String>();
-		} else {
-			listFolder.clear();
-		}
-		if(mapFolder == null) {
-			mapFolder = new HashMap<String, LinkedList<String>>();
-		} else {
-			mapFolder.clear();
-		}
+		if(listTopLevelModes == null) listTopLevelModes = new LinkedList<String>();
+		else listTopLevelModes.clear();
+
+		if(listFolder == null) listFolder = new LinkedList<String>();
+		else listFolder.clear();
+
+		if(mapFolder == null) mapFolder = new HashMap<String, LinkedList<String>>();
+		else mapFolder.clear();
+
 		strCurrentFolder = NullpoMinoSlick.propGlobal.getProperty("name.folder", "");
 
 		try {
@@ -94,11 +96,16 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 					}
 				} else if(str.length() > 0) {
 					// Mode name
-					LinkedList<String> listMode = mapFolder.get(strFolder);
-					if((listMode != null) && !listMode.contains(str)) {
-						log.debug(strFolder + "." + str);
-						listMode.add(str);
-						mapFolder.put(strFolder, listMode);
+					if(strFolder.length() == 0) {
+						log.debug("(top-level)." + str);
+						listTopLevelModes.add(str);
+					} else {
+						LinkedList<String> listMode = mapFolder.get(strFolder);
+						if((listMode != null) && !listMode.contains(str)) {
+							log.debug(strFolder + "." + str);
+							listMode.add(str);
+							mapFolder.put(strFolder, listMode);
+						}
 					}
 				}
 			}
@@ -163,6 +170,7 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 		}
 		NullpoMinoSlick.propGlobal.setProperty("name.folder", strCurrentFolder);
 		NullpoMinoSlick.saveConfig();
+		StateSelectMode.isTopLevel = false;
 		game.enterState(StateSelectMode.ID);
 		return false;
 	}
@@ -172,7 +180,8 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
-		game.enterState(StateTitle.ID);
+		StateSelectMode.isTopLevel = true;
+		game.enterState(StateSelectMode.ID);
 		return false;
 	}
 }

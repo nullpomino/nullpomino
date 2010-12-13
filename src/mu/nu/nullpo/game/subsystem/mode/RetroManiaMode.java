@@ -406,10 +406,10 @@ public class RetroManiaMode extends DummyMode {
 		{
 			engine.statistics.level++;
 
-			owner.backgroundStatus.fadesw = true;
 			owner.backgroundStatus.fadecount = 0;
 			owner.backgroundStatus.fadebg = (engine.statistics.level/2);
 			if (owner.backgroundStatus.fadebg > 19) owner.backgroundStatus.fadebg = 19;
+			owner.backgroundStatus.fadesw = (owner.backgroundStatus.fadebg != owner.backgroundStatus.bg);
 
 			levelTimer = 0;
 			linesAfterLastLevelUp = 0;

@@ -147,7 +147,8 @@ public class StateTitle extends DummyMenuChooseState {
 
 		switch(cursor) {
 		case 0:
-			game.enterState(StateSelectModeFolder.ID);
+			StateSelectMode.isTopLevel = true;
+			game.enterState(StateSelectMode.ID);
 			break;
 		case 1:
 			game.enterState(StateReplaySelect.ID);

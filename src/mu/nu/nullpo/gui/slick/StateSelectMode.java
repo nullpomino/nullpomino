@@ -49,6 +49,9 @@ public class StateSelectMode extends DummyMenuScrollState {
 	/** Number of game modes in one page */
 	public static final int PAGE_HEIGHT = 24;
 
+	/** true if top-level folder */
+	public static boolean isTopLevel;
+
 	/** Current folder name */
 	protected String strCurrentFolder;
 
@@ -81,20 +84,32 @@ public class StateSelectMode extends DummyMenuScrollState {
 		strCurrentFolder = StateSelectModeFolder.strCurrentFolder;
 
 		// Get mode list
-		LinkedList<String> listMode = StateSelectModeFolder.mapFolder.get(strCurrentFolder);
-		if(listMode != null) {
-			list = new String[listMode.size()];
-			for(int i = 0; i < list.length; i++) {
+		LinkedList<String> listMode = null;
+		if(isTopLevel) {
+			listMode = StateSelectModeFolder.listTopLevelModes;
+			list = new String[listMode.size() + 1];
+			for(int i = 0; i < listMode.size(); i++) {
 				list[i] = listMode.get(i);
 			}
+			list[list.length - 1] = "[MORE...]";
 		} else {
-			list = NullpoMinoSlick.modeManager.getModeNames(false);
+			listMode = StateSelectModeFolder.mapFolder.get(strCurrentFolder);
+			if(listMode != null) {
+				list = new String[listMode.size()];
+				for(int i = 0; i < list.length; i++) {
+					list[i] = listMode.get(i);
+				}
+			} else {
+				list = NullpoMinoSlick.modeManager.getModeNames(false);
+			}
 		}
 		maxCursor = list.length - 1;
 
 		// Set cursor postion
 		String lastmode = null;
-		if(strCurrentFolder.length() > 0) {
+		if(isTopLevel) {
+			lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode.toplevel", null);
+		} else if(strCurrentFolder.length() > 0) {
 			lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode." + strCurrentFolder, null);
 		} else {
 			lastmode = NullpoMinoSlick.propGlobal.getProperty("name.mode", null);
@@ -150,7 +165,7 @@ public class StateSelectMode extends DummyMenuScrollState {
 	 */
 	@Override
 	public void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
-		if(strCurrentFolder.length() > 0) {
+		if(!isTopLevel && (strCurrentFolder.length() > 0)) {
 			NormalFont.printFontGrid(1, 1, strCurrentFolder + " (" + (cursor + 1) + "/" + list.length + ")",
 					NormalFont.COLOR_ORANGE);
 		} else {
@@ -167,13 +182,23 @@ public class StateSelectMode extends DummyMenuScrollState {
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		ResourceHolder.soundManager.play("decide");
-		if(strCurrentFolder.length() > 0) {
-			NullpoMinoSlick.propGlobal.setProperty("name.mode." + strCurrentFolder, list[cursor]);
-		}
-		NullpoMinoSlick.propGlobal.setProperty("name.mode", list[cursor]);
-		NullpoMinoSlick.saveConfig();
 
-		game.enterState(StateSelectRuleFromList.ID);
+		if(isTopLevel && (cursor == list.length - 1)) {
+			// More...
+			NullpoMinoSlick.propGlobal.setProperty("name.mode.toplevel", list[cursor]);
+			game.enterState(StateSelectModeFolder.ID);
+		} else {
+			// Go to rule selector
+			if(isTopLevel) {
+				NullpoMinoSlick.propGlobal.setProperty("name.mode.toplevel", list[cursor]);
+			}
+			if(strCurrentFolder.length() > 0) {
+				NullpoMinoSlick.propGlobal.setProperty("name.mode." + strCurrentFolder, list[cursor]);
+			}
+			NullpoMinoSlick.propGlobal.setProperty("name.mode", list[cursor]);
+			NullpoMinoSlick.saveConfig();
+			game.enterState(StateSelectRuleFromList.ID);
+		}
 
 		return false;
 	}
@@ -183,7 +208,11 @@ public class StateSelectMode extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onCancel(GameContainer container, StateBasedGame game, int delta) {
-		game.enterState(StateSelectModeFolder.ID);
+		if(isTopLevel) {
+			game.enterState(StateTitle.ID);
+		} else {
+			game.enterState(StateSelectModeFolder.ID);
+		}
 		return false;
 	}
 }
