@@ -157,7 +157,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			engine.stat == GameEngine.STAT_READY;
 		if ((newInARE && !inARE) || (!thinking && !thinkSuccess))
 		{
-			debugOut("Begin pre-think of next piece.");
+			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
 			inARE = newInARE;
 			thinkComplete = false;
 			thinkRequest = true;
@@ -195,7 +195,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					setDAS = 0;
 				delay = 0;
 			}
-			debugOut("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
+			if (DEBUG_ALL) log.debug("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
 			//engine.ctrl.setButtonBit(input);
 			inputARE = input;
 		}
@@ -242,19 +242,19 @@ public class PoochyBot extends DummyAI implements Runnable {
 					(nowX > bestX && pieceNow.checkCollision(nowX-1, nowY, rt, fld)))
 			{
 				thinkRequest = true;
-				debugOut("Needs rethink - piece is stuck!");
+				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck!");
 			}
 			*/
 			/*
 			if (rt == Piece.DIRECTION_DOWN &&
 					((nowType == Piece.PIECE_L && bestX > nowX) || (nowType == Piece.PIECE_J && bestX < nowX)))
 				{
-					debugOut("Checking for stuck L or J piece.");
-					debugOut("Coordinates of piece: x = " + nowX + ", y = " + nowY);
-					debugOut("Coordinates of block to check: x = " + (pieceNow.getMaximumBlockX()+nowX-1) +
+					if (DEBUG_ALL) log.debug("Checking for stuck L or J piece.");
+					if (DEBUG_ALL) log.debug("Coordinates of piece: x = " + nowX + ", y = " + nowY);
+					if (DEBUG_ALL) log.debug("Coordinates of block to check: x = " + (pieceNow.getMaximumBlockX()+nowX-1) +
 							", y = " + (pieceNow.getMaximumBlockY()+nowY));
 					for (int xCheck = 0; xCheck < fld.getWidth(); xCheck++)
-						debugOut("fld.getHighestBlockY(" + xCheck + ") = " + fld.getHighestBlockY(xCheck));
+						if (DEBUG_ALL) log.debug("fld.getHighestBlockY(" + xCheck + ") = " + fld.getHighestBlockY(xCheck));
 				}
 			*/
 			if ((rt == Piece.DIRECTION_DOWN &&
@@ -263,14 +263,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 			{
 				thinkRequest = true;
 				thinkComplete = false;
-				debugOut("Needs rethink - L or J piece is stuck!");
+				if (DEBUG_ALL) log.debug("Needs rethink - L or J piece is stuck!");
 			}
 			if (nowType == Piece.PIECE_O && ((bestX < nowX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))
 					|| (bestX < nowX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))))
 			{
 				thinkRequest = true;
 				thinkComplete = false;
-				debugOut("Needs rethink - O piece is stuck!");
+				if (DEBUG_ALL) log.debug("Needs rethink - O piece is stuck!");
 			}
 			if (pieceTouchGround && rt == bestRt &&
 					(pieceNow.getMostMovableRight(nowX, nowY, rt, engine.field) < bestX ||
@@ -282,7 +282,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			{
 				thinkRequest = true;
 				thinkComplete = false;
-				debugOut("Needs rethink - piece is stuck!");
+				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck!");
 			}
 			if (nowX == lastX && nowY == lastY && rt == lastRt && lastInput != 0)
 			{
@@ -291,14 +291,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 				{
 					thinkRequest = true;
 					thinkComplete = false;
-					debugOut("Needs rethink - piece is stuck, last inputs had no effect!");
+					if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck, last inputs had no effect!");
 				}
 			}
 			if (engine.nowPieceRotateCount >= 8)
 			{
 				thinkRequest = true;
 				thinkComplete = false;
-				debugOut("Needs rethink - piece is stuck, too many rotations!");
+				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck, too many rotations!");
 			}
 			else
 				sameStatusTime = 0;
@@ -310,7 +310,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if (holdPiece != null)
 					input |= calcIRS(holdPiece, engine);
 			} else {
-				debugOut("bestX = " + bestX + ", nowX = " + nowX +
+				if (DEBUG_ALL) log.debug("bestX = " + bestX + ", nowX = " + nowX +
 						", bestY = " + bestY + ", nowY = " + nowY +
 						", bestRt = " + bestRt + ", rt = " + rt +
 						", bestXSub = " + bestXSub + ", bestYSub = " + bestYSub + ", bestRtSub = " + bestRtSub);
@@ -340,7 +340,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 								rotateI = true;
 							else if (engine.isHoldOK() && !ctrl.isPress(Controller.BUTTON_D))
 							{
-								debugOut("Stuck I piece - use hold");
+								if (DEBUG_ALL) log.debug("Stuck I piece - use hold");
 								input |= Controller.BUTTON_BIT_D;
 
 								Piece holdPiece = engine.holdPieceObject;
@@ -361,7 +361,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 								rotateI = true;
 							else if (engine.isHoldOK() && !ctrl.isPress(Controller.BUTTON_D))
 							{
-								debugOut("Stuck I piece - use hold");
+								if (DEBUG_ALL) log.debug("Stuck I piece - use hold");
 								input |= Controller.BUTTON_BIT_D;
 
 								Piece holdPiece = engine.holdPieceObject;
@@ -387,11 +387,11 @@ public class PoochyBot extends DummyAI implements Runnable {
 						!(pieceNow.getMaximumBlockX()+nowX == width-2 && (rt&1) == 1) &&
 						!(pieceNow.getMinimumBlockY()+nowY == 2 && pieceTouchGround && (rt&1) == 0 && nowType != Piece.PIECE_I)))))
 				{
-					//debugOut("Case 1 rotation");
+					//if (DEBUG_ALL) log.debug("Case 1 rotation");
 
 					int lrot = engine.getRotateDirection(-1);
 					int rrot = engine.getRotateDirection(1);
-					debugOut("lrot = " + lrot + ", rrot = " + rrot);
+					if (DEBUG_ALL) log.debug("lrot = " + lrot + ", rrot = " + rrot);
 
 					if(best180 && (engine.ruleopt.rotateButtonAllowDouble) && !ctrl.isPress(Controller.BUTTON_E))
 						input |= Controller.BUTTON_BIT_E;
@@ -413,7 +413,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				else if (((rt != Piece.DIRECTION_UP && xDiff > 1 && engine.ruleopt.rotateButtonAllowReverse) /*|| best180*/) &&
 						(nowType == Piece.PIECE_L || nowType == Piece.PIECE_J || nowType == Piece.PIECE_T))
 				{
-					//debugOut("Case 2 rotation");
+					//if (DEBUG_ALL) log.debug("Case 2 rotation");
 
 					if (rt == Piece.DIRECTION_DOWN)
 					{
@@ -448,7 +448,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					thinkComplete = false;
 					//thinkCurrentPieceNo++;
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
-					debugOut("Needs rethink - cannot reach desired position");
+					if (DEBUG_ALL) log.debug("Needs rethink - cannot reach desired position");
 				} else {
 					// 到達できる場合
 					if((nowX == bestX) && (pieceTouchGround)) {
@@ -519,7 +519,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					moveDir = 1;
 				else if (bestX < nowX)
 				{
-					debugOut("Delaying rotation on L piece to avoid getting stuck. (Case 1)");
+					if (DEBUG_ALL) log.debug("Delaying rotation on L piece to avoid getting stuck. (Case 1)");
 					sync = false;
 					rotateDir = 0;
 					moveDir = 1;
@@ -529,14 +529,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 					/*
 					if (minBlockXDepth == fld.getHighestBlockY(minBlockX-1))
 					{
-						debugOut("Delaying rotation on L piece to avoid getting stuck. (Case 2)");
+						if (DEBUG_ALL) log.debug("Delaying rotation on L piece to avoid getting stuck. (Case 2)");
 						sync = false;
 						rotateDir = 0;
 						moveDir = -1;
 					}
 					else
 					*/
-					debugOut("Attempting synchro move on L piece to avoid getting stuck.");
+					if (DEBUG_ALL) log.debug("Attempting synchro move on L piece to avoid getting stuck.");
 					sync = true;
 					rotateDir = -1;
 					moveDir = -1;
@@ -549,7 +549,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 					moveDir = -1;
 				else if (bestX > nowX)
 				{
-					debugOut("Delaying rotation on J piece to avoid getting stuck. (Case 1)");
+					if (DEBUG_ALL) log.debug("Delaying rotation on J piece to avoid getting stuck. (Case 1)");
 					sync = false;
 					rotateDir = 0;
 					moveDir = -1;
@@ -559,14 +559,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 					/*
 					if (maxBlockXDepth == fld.getHighestBlockY(maxBlockX+1))
 					{
-						debugOut("Delaying rotation on J piece to avoid getting stuck. (Case 2)");
+						if (DEBUG_ALL) log.debug("Delaying rotation on J piece to avoid getting stuck. (Case 2)");
 						sync = false;
 						rotateDir = 0;
 						moveDir = 1;
 					}
 					else
 					*/
-					debugOut("Attempting synchro move on J piece to avoid getting stuck.");
+					if (DEBUG_ALL) log.debug("Attempting synchro move on J piece to avoid getting stuck.");
 					sync = true;
 					rotateDir = 1;
 					moveDir = 1;
@@ -576,13 +576,13 @@ public class PoochyBot extends DummyAI implements Runnable {
 					&& (nowType == Piece.PIECE_J || nowType == Piece.PIECE_L)
 					&& !pieceNow.checkCollision(nowX+moveDir, nowY+1, rt, fld))
 			{
-				debugOut("Delaying move on L or J piece to avoid getting stuck.");
+				if (DEBUG_ALL) log.debug("Delaying move on L or J piece to avoid getting stuck.");
 				sync = false;
 				moveDir = 0;
 			}
 			if (engine.nowPieceRotateCount >= 5 && rotateDir != 0 && moveDir != 0 && !sync)
 			{
-				debugOut("Piece seems to be stuck due to unintentional synchro - trying intentional desync.");
+				if (DEBUG_ALL) log.debug("Piece seems to be stuck due to unintentional synchro - trying intentional desync.");
 				moveDir = 0;
 			}
 			if (moveDir == -1 && minBlockX == 1 && nowType == Piece.PIECE_I && (rt&1) == 1
@@ -620,7 +620,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				else if (bestX > nowX)
 					moveDir = 1;
 				else
-					debugOut("Movement error: Nothing to do!");
+					if (DEBUG_ALL) log.debug("Movement error: Nothing to do!");
 			}
 			if (rotateDir == 0 && Math.abs(rt - bestRt) == 2)
 				rotateDir = 1;
@@ -674,7 +674,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			if (sync)
 			{
-				debugOut("Attempting to perform synchro move.");
+				if (DEBUG_ALL) log.debug("Attempting to perform synchro move.");
 				int bitsLR = Controller.BUTTON_BIT_LEFT | Controller.BUTTON_BIT_RIGHT;
 				int bitsAB = Controller.BUTTON_BIT_A | Controller.BUTTON_BIT_B;
 				if ((input & bitsLR) == 0 || (input & bitsAB) == 0)
@@ -691,7 +691,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			lastY = nowY;
 			lastRt = rt;
 
-			debugOut ("Input = " + input + ", moveDir = " + moveDir  + ", rotateDir = " + rotateDir +
+			if (DEBUG_ALL) log.debug ("Input = " + input + ", moveDir = " + moveDir  + ", rotateDir = " + rotateDir +
 					 ", sync = " + sync  + ", drop = " + drop  + ", setDAS = " + setDAS);
 
 			delay = 0;
@@ -730,7 +730,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			case Piece.DIRECTION_UP:    result = result + "up";    break;
 			case Piece.DIRECTION_RIGHT: result = result + "right"; break;
 		}
-		debugOut(result);
+		if (DEBUG_ALL) log.debug(result);
 	}
 
 	public int calcIRS(Piece piece, GameEngine engine)
@@ -793,7 +793,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * @param playerID Player ID
 	 */
 	public void thinkBestPosition(GameEngine engine, int playerID) {
-		debugOut("thinkBestPosition called, inARE = " + inARE + ", piece: ");
+		if (DEBUG_ALL) log.debug("thinkBestPosition called, inARE = " + inARE + ", piece: ");
 		bestHold = false;
 		bestX = 0;
 		bestY = 0;
@@ -909,14 +909,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 							bestYSub = y;
 							bestRtSub = -1;
 							bestPts = pts;
-							debugOut("New best position found (Case 1): bestHold = false" +
-									", bestX = " + x +
-									", bestY = " + y +
-									", bestRt = " + rt +
-									", bestXSub = " + x +
-									", bestYSub = " + y +
-									", bestRtSub = " + -1 +
-									", bestPts = " + pts);
+							if (DEBUG_ALL)
+								logBest(1);
 							thinkSuccess = true;
 						}
 						//Check regardless
@@ -935,14 +929,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 								bestYSub = y;
 								bestRtSub = -1;
 								bestPts = pts;
-								debugOut("New best position found (Case 2): bestHold = false" +
-										", bestX = " + x +
-										", bestY = " + y +
-										", bestRt = " + rt +
-										", bestXSub = " + (x-1) +
-										", bestYSub = " + y +
-										", bestRtSub = " + -1 +
-										", bestPts = " + pts);
+								if (DEBUG_ALL)
+									logBest(2);
 								thinkSuccess = true;
 							}
 						}
@@ -961,14 +949,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 								bestYSub = y;
 								bestRtSub = -1;
 								bestPts = pts;
-								debugOut("New best position found (Case 3): bestHold = false" +
-										", bestX = " + x +
-										", bestY = " + y +
-										", bestRt = " + rt +
-										", bestXSub = " + (x+1) +
-										", bestYSub = " + y +
-										", bestRtSub = " + -1 +
-										", bestPts = " + pts);
+								if (DEBUG_ALL)
+									logBest(3);
 								thinkSuccess = true;
 							}
 						}
@@ -1005,14 +987,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 								bestYSub = newY;
 								bestRtSub = rot;
 								bestPts = pts;
-								debugOut("New best position found (Case 4): bestHold = false" +
-										", bestX = " + x +
-										", bestY = " + y +
-										", bestRt = " + rt +
-										", bestXSub = " + newX +
-										", bestYSub = " + newY +
-										", bestRtSub = " + rot +
-										", bestPts = " + pts);
+								if (DEBUG_ALL)
+									logBest(4);
 								thinkSuccess = true;
 							}
 						}
@@ -1049,14 +1025,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 								bestYSub = newY;
 								bestRtSub = rot;
 								bestPts = pts;
-								debugOut("New best position found (Case 5): bestHold = false" +
-										", bestX = " + x +
-										", bestY = " + y +
-										", bestRt = " + rt +
-										", bestXSub = " + newX +
-										", bestYSub = " + newY +
-										", bestRtSub = " + rot +
-										", bestPts = " + pts);
+								if (DEBUG_ALL)
+									logBest(5);
 								thinkSuccess = true;
 							}
 						}
@@ -1093,14 +1063,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 								bestYSub = newY;
 								bestRtSub = rot;
 								bestPts = pts;
-								debugOut("New best position found (Case 6): bestHold = false" +
-										", bestX = " + x +
-										", bestY = " + y +
-										", bestRt = " + rt +
-										", bestXSub = " + newX +
-										", bestYSub = " + newY +
-										", bestRtSub = " + rot +
-										", bestPts = " + pts);
+								if (DEBUG_ALL)
+									logBest(6);
 								thinkSuccess = true;
 							}
 						}
@@ -1153,14 +1117,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 								bestYSub = y;
 								bestRtSub = -1;
 								bestPts = pts;
-								debugOut("New best position found (Case 7): bestHold = true" +
-										", bestX = " + x +
-										", bestY = " + y +
-										", bestRt = " + rt +
-										", bestXSub = " + x +
-										", bestYSub = " + y +
-										", bestRtSub = " + -1 +
-										", bestPts = " + pts);
+								if (DEBUG_ALL)
+									logBest(7);
+								thinkSuccess = true;
 							}
 							//Check regardless
 							//if((depth > 0) || (bestPts <= 10) || (pieceHold.id == Piece.PIECE_T)) {
@@ -1179,14 +1138,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestYSub = y;
 									bestRtSub = -1;
 									bestPts = pts;
-									debugOut("New best position found (Case 8): bestHold = true" +
-											", bestX = " + x +
-											", bestY = " + y +
-											", bestRt = " + rt +
-											", bestXSub = " + (x-1) +
-											", bestYSub = " + y +
-											", bestRtSub = " + -1 +
-											", bestPts = " + pts);
+									if (DEBUG_ALL)
+										logBest(8);
+									thinkSuccess = true;
 								}
 							}
 
@@ -1205,14 +1159,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestYSub = y;
 									bestRtSub = -1;
 									bestPts = pts;
-									debugOut("New best position found (Case 9): bestHold = true" +
-											", bestX = " + x +
-											", bestY = " + y +
-											", bestRt = " + rt +
-											", bestXSub = " + (x+1) +
-											", bestYSub = " + y +
-											", bestRtSub = " + -1 +
-											", bestPts = " + pts);
+									if (DEBUG_ALL)
+										logBest(9);
+									thinkSuccess = true;
 								}
 							}
 
@@ -1249,14 +1198,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestYSub = newY;
 									bestRtSub = rot;
 									bestPts = pts;
-									debugOut("New best position found (Case 10): bestHold = true" +
-											", bestX = " + x +
-											", bestY = " + y +
-											", bestRt = " + rt +
-											", bestXSub = " + newX +
-											", bestYSub = " + newY +
-											", bestRtSub = " + rot +
-											", bestPts = " + pts);
+									if (DEBUG_ALL)
+										logBest(10);
+									thinkSuccess = true;
 								}
 							}
 
@@ -1293,14 +1237,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestYSub = newY;
 									bestRtSub = rot;
 									bestPts = pts;
-									debugOut("New best position found (Case 11): bestHold = true" +
-											", bestX = " + x +
-											", bestY = " + y +
-											", bestRt = " + rt +
-											", bestXSub = " + newX +
-											", bestYSub = " + newY +
-											", bestRtSub = " + rot +
-											", bestPts = " + pts);
+									if (DEBUG_ALL)
+										logBest(11);
+									thinkSuccess = true;
 								}
 							}
 
@@ -1337,14 +1276,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 									bestYSub = newY;
 									bestRtSub = rot;
 									bestPts = pts;
-									debugOut("New best position found (Case 12): bestHold = true" +
-											", bestX = " + x +
-											", bestY = " + y +
-											", bestRt = " + rt +
-											", bestXSub = " + newX +
-											", bestYSub = " + newY +
-											", bestRtSub = " + rot +
-											", bestPts = " + pts);
+									if (DEBUG_ALL)
+										logBest(12);
+									thinkSuccess = true;
 								}
 							}
 						}
@@ -1438,7 +1372,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		if(piece.id == Piece.PIECE_I) {
 			if (xMin == xMax && 0 <= xMin && xMin < width)
 			{
-				//debugOut("actualX = " + xMin);
+				//if (DEBUG_ALL) log.debug("actualX = " + xMin);
 				int xDepth = depthsBefore[xMin];
 				int sideDepth = -1;
 				if (xMin >= move)
@@ -1446,13 +1380,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if (xMin < width-move)
 					sideDepth = Math.max(sideDepth, depthsBefore[xMin+move]);
 				valley = xDepth - sideDepth;
-				//debugOut("valley = " + valley);
+				//if (DEBUG_ALL) log.debug("valley = " + valley);
 			}
 		}
 
 		// ピースを置く
 		if(!piece.placeToField(x, y, rt, fld)) {
-			debugOut("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
+			if (DEBUG_ALL)
+				log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Cannot place piece)");
 			return Integer.MIN_VALUE;
 		}
@@ -1507,12 +1442,12 @@ public class PoochyBot extends DummyAI implements Runnable {
 			valleyBonus = 400000;
 		if (xMax == 0)
 			valleyBonus *= 2;
-		if (valley > 0)
-			debugOut("I piece xMax = " + xMax + ", valley depth = " + valley +
+		if (valley > 0 && DEBUG_ALL)
+			log.debug("I piece xMax = " + xMax + ", valley depth = " + valley +
 					", valley bonus = " + valleyBonus);
 		pts += valleyBonus;
 		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) && (!tspin)) {
-			debugOut("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
+			if (DEBUG_ALL) log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Special Condition 3)");
 			return Integer.MIN_VALUE;
 		}
@@ -1753,8 +1688,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 					pts += 200;
 			}
 		}
-		debugOut("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
-				", fld, piece " + piece.id + ", " + depth + "). pts = " + pts);
+		if (DEBUG_ALL)
+			log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
+					", fld, piece " + piece.id + ", " + depth + "). pts = " + pts);
 		return pts;
 	}
 	//private static final int[][] HI_PENALTY = {{6, 2}, {7, 6}, {6, 2}, {1, 0}};
@@ -1873,8 +1809,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 		SpeedParam speed = engine.speed;
 		if (speed.gravity >= 0 && speed.gravity < speed.denominator)
 		{
-			debugOut("mostMovableX not applicable - low gravity (gravity = " + speed.gravity
-					+ ", denominator = " + speed.denominator + ")");
+			if (DEBUG_ALL)
+				log.debug("mostMovableX not applicable - low gravity (gravity = " +
+						speed.gravity + ", denominator = " + speed.denominator + ")");
 			if (dir < 0)
 				return piece.getMostMovableLeft(testX, testY, rt, fld);
 			else if (dir > 0)
@@ -1937,8 +1874,9 @@ public class PoochyBot extends DummyAI implements Runnable {
 			}
 			else
 			{
-				debugOut("mostMovableX(" + x + ", " + y + ", " + dir + ", piece " + piece.id +
-						", " + rt + ") = " + testX);
+				if (DEBUG_ALL)
+					log.debug("mostMovableX(" + x + ", " + y + ", " + dir +
+							", piece " + piece.id + ", " + rt + ") = " + testX);
 				if (piece.id == Piece.PIECE_I && testX < 0 && (rt&1) == 1)
 				{
 					int height1 = fld.getHighestBlockY(1);
@@ -1953,19 +1891,20 @@ public class PoochyBot extends DummyAI implements Runnable {
 			testY = piece.getBottom(testX, testY, testRt, fld);
 		}
 	}
-	public int getHighestBlockY(int x, Field fld, int max)
+
+	protected void logBest(int caseNum)
 	{
-		int y = fld.getHiddenHeight() * -1;
-		do {
-			y++;
-		} while(fld.getBlockEmpty(x, y) && y < max);
-		return y;
+		log.debug("New best position found (Case " + caseNum +
+				"): bestHold = " + bestHold +
+				", bestX = " + bestX +
+				", bestY = " + bestY +
+				", bestRt = " + bestRt +
+				", bestXSub = " + bestXSub +
+				", bestYSub = " + bestYSub +
+				", bestRtSub = " + bestRtSub +
+				", bestPts = " + bestPts);
 	}
-	protected void debugOut(String str)
-	{
-		if (DEBUG_ALL)
-			log.debug(str);
-	}
+
 	/*
 	 * スレッドの処理
 	 */

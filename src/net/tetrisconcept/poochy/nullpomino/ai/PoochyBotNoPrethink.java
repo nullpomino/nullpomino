@@ -64,7 +64,7 @@ public class PoochyBotNoPrethink extends PoochyBot {
 					setDAS = 0;
 				delay = 0;
 			}
-			debugOut("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
+			if (DEBUG_ALL) log.debug("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
 			//engine.ctrl.setButtonBit(input);
 			inputARE = input;
 		}

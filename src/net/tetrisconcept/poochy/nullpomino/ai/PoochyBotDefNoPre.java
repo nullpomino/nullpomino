@@ -65,7 +65,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 					setDAS = 0;
 				delay = 0;
 			}
-			debugOut("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
+			if (DEBUG_ALL) log.debug("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
 			//engine.ctrl.setButtonBit(input);
 			inputARE = input;
 		}
@@ -173,7 +173,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 		if(piece.id == Piece.PIECE_I) {
 			if (xMin == xMax && 0 <= xMin && xMin < width)
 			{
-				//debugOut("actualX = " + xMin);
+				//if (DEBUG_ALL) log.debug("actualX = " + xMin);
 				int xDepth = depthsBefore[xMin];
 				int sideDepth = -1;
 				if (xMin > 0)
@@ -181,13 +181,13 @@ public class PoochyBotDefNoPre extends PoochyBot {
 				if (xMin < width-1)
 					sideDepth = Math.max(sideDepth, depthsBefore[xMin+1]);
 				valley = xDepth - sideDepth;
-				//debugOut("valley = " + valley);
+				//if (DEBUG_ALL) log.debug("valley = " + valley);
 			}
 		}
 
 		// Place piece
 		if(!piece.placeToField(x, y, rt, fld)) {
-			debugOut("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
+			if (DEBUG_ALL) log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Cannot place piece)");
 			return Integer.MIN_VALUE;
 		}
@@ -227,7 +227,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 		if (xMax == 0)
 			valleyBonus *= 2;
 		if (valley > 0)
-			debugOut("I piece xMax = " + xMax + ", valley depth = " + valley +
+			if (DEBUG_ALL) log.debug("I piece xMax = " + xMax + ", valley depth = " + valley +
 					", valley bonus = " + valleyBonus);
 		pts += valleyBonus;
 
@@ -398,7 +398,7 @@ public class PoochyBotDefNoPre extends PoochyBot {
 					pts -= 2000000 * (heightBefore - heightAfter);
 			}
 		}
-		debugOut("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
+		if (DEBUG_ALL) log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 				", fld, piece " + piece.id + ", " + depth + "). pts = " + pts);
 		return pts;
 	}
