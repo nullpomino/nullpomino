@@ -30,7 +30,6 @@ package mu.nu.nullpo.gui.sdl;
 
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.gui.net.UpdateChecker;
-
 import sdljava.SDLException;
 //import sdljava.event.MouseState;
 //import sdljava.event.SDLEvent;
@@ -38,18 +37,18 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * タイトル画面のステート
+ * Title screen state (SDL)
  */
 public class StateTitleSDL extends DummyMenuChooseStateSDL {
 	/** Strings for menu choices */
-	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "CONFIG", "EXIT"};
+	private static final String[] CHOICES = {"START", "REPLAY", "NETPLAY", "OPTIONS", "EXIT"};
 
 	/** UI Text identifier Strings */
 	private static final String[] UI_TEXT = {
         "Title_Start", "Title_Replay", "Title_NetPlay", "Title_Config", "Title_Exit"
 	};
 
-	/** 新Versionの check 済みならtrue */
+	/** true when new version is already checked */
 	protected boolean isNewVersionChecked = false;
 
 	public StateTitleSDL () {
@@ -62,14 +61,14 @@ public class StateTitleSDL extends DummyMenuChooseStateSDL {
 	 */
 	@Override
 	public void enter() throws SDLException {
-		// タイトルバー変更
+		// Update title bar
 		SDLVideo.wmSetCaption("NullpoMino version" + GameManager.getVersionString(), null);
-		// Observer開始
+		// Observer start
 		NullpoMinoSDL.startObserverClient();
-		// GC呼び出し
+		// Call GC
 		System.gc();
 
-		// 新Version check
+		// New Version check
 		if(!isNewVersionChecked && NullpoMinoSDL.propGlobal.getProperty("updatechecker.enable", true)) {
 			isNewVersionChecked = true;
 
@@ -120,6 +119,7 @@ public class StateTitleSDL extends DummyMenuChooseStateSDL {
 
 		switch(cursor) {
 		case 0:
+			StateSelectModeSDL.isTopLevel = true;
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_SELECTMODE);
 			break;
 		case 1:

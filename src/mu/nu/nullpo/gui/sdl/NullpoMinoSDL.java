@@ -95,8 +95,8 @@ public class NullpoMinoSDL {
 		"WORLD_89","WORLD_90","WORLD_91","WORLD_92","WORLD_93","WORLD_94","WORLD_95","KP0","KP1","KP2","KP3","KP4",
 		"KP5","KP6","KP7","KP8","KP9","KP_PERIOD","KP_DIVIDE","KP_MULTIPLY","KP_MINUS","KP_PLUS","KP_ENTER","KP_EQUALS",
 		"UP","DOWN","RIGHT","LEFT","INSERT","HOME","END","PAGEUP","PAGEDOWN","F1","F2","F3","F4","F5","F6","F7","F8","F9",
-		"F10","F11","F12","F13","F14","F15","(297)","(298)","(299)","NUMLOCK","CAPSLOCK","SCROLLOCK","RSHIFT","LSHIFT","RCTRL"
-		,"LCTRL","RALT","LALT","RMETA","LMETA","LSUPER","RSUPER","MODE","COMPOSE","HELP","PRINT","SYSREQ","BREAK","MENU",
+		"F10","F11","F12","F13","F14","F15","(297)","(298)","(299)","NUMLOCK","CAPSLOCK","SCROLLOCK","RSHIFT","LSHIFT","RCTRL",
+		"LCTRL","RALT","LALT","RMETA","LMETA","LSUPER","RSUPER","MODE","COMPOSE","HELP","PRINT","SYSREQ","BREAK","MENU",
 		"POWER","EURO","UNDO"
 	};
 
@@ -118,10 +118,11 @@ public class NullpoMinoSDL {
 							STATE_CONFIG_RULESTYLESELECT = 14,
 							STATE_CONFIG_KEYBOARD_NAVI = 15,
 							STATE_CONFIG_KEYBOARD_RESET = 16,
-							STATE_SELECTRULEFROMLIST = 17;
+							STATE_SELECTRULEFROMLIST = 17,
+							STATE_SELECTMODEFOLDER = 18;
 
 	/** ゲームステートのcount */
-	public static final int STATE_MAX = 18;
+	public static final int STATE_MAX = 19;
 
 	/** 認識するキーのMaximum値 */
 	public static final int SDL_KEY_MAX = 322;
@@ -361,6 +362,7 @@ public class NullpoMinoSDL {
 		gameStates[STATE_CONFIG_KEYBOARD_NAVI] = new StateConfigKeyboardNaviSDL();
 		gameStates[STATE_CONFIG_KEYBOARD_RESET] = new StateConfigKeyboardResetSDL();
 		gameStates[STATE_SELECTRULEFROMLIST] = new StateSelectRuleFromListSDL();
+		gameStates[STATE_SELECTMODEFOLDER] = new StateSelectModeFolderSDL();
 
 		// SDLのInitializationと開始
 		try {
