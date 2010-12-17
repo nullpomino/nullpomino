@@ -97,6 +97,9 @@ public class NetServer {
 	/** Default value of maxSPRanking */
 	public static final int DEFAULT_MAX_SPRANKING = 100;
 
+	/** Default time of timeout */
+	public static final long DEFAULT_TIMEOUT_TIME = 1000 * 60 * 1;
+
 	/** Server config file */
 	private static CustomProperties propServer;
 
@@ -117,6 +120,9 @@ public class NetServer {
 
 	/** True to allow hostname display (If false, it will display IP only) */
 	private static boolean allowDNSAccess;
+
+	/** Timeout time (0=Disable) */
+	private static long timeoutTime;
 
 	/** Default rating */
 	private static int ratingDefault;
@@ -168,6 +174,9 @@ public class NetServer {
 
 	/** List of SocketChannel */
 	private LinkedList<SocketChannel> channelList = new LinkedList<SocketChannel>();
+
+	/** Last communication time */
+	private Map<SocketChannel, Long> lastCommTimeMap = new HashMap<SocketChannel, Long>();
 
 	/** Incomplete packet buffer */
 	private Map<SocketChannel, StringBuilder> notCompletePacketMap = new HashMap<SocketChannel, StringBuilder>();
@@ -815,6 +824,7 @@ public class NetServer {
 
 		// Load settings
 		allowDNSAccess = propServer.getProperty("netserver.allowDNSAccess", true);
+		timeoutTime = propServer.getProperty("netserver.timeoutTime", DEFAULT_TIMEOUT_TIME);
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
 		ratingProvisionalGames = propServer.getProperty("netserver.ratingProvisionalGames", PROVISIONAL_GAMES);
@@ -974,6 +984,7 @@ public class NetServer {
 
 		// Add to list
 		channelList.add(socketChannel);
+		lastCommTimeMap.put(socketChannel, System.currentTimeMillis());
 		adminSendClientList();
 
 		NetServerBan ban = getBan(socketChannel);
@@ -1127,6 +1138,7 @@ public class NetServer {
 
 		try {
 			channelList.remove(channel);
+			lastCommTimeMap.remove(channel);
 			notCompletePacketMap.remove(channel);
 
 			List<ByteBuffer> queue = (List<ByteBuffer>) this.pendingData.get(channel);
@@ -1197,6 +1209,7 @@ public class NetServer {
 		log.info("Cleanup");
 
 		channelList.clear();
+		lastCommTimeMap.clear();
 		notCompletePacketMap.clear();
 		observerList.clear();
 		adminList.clear();
@@ -1206,6 +1219,35 @@ public class NetServer {
 		if(this.readBuffer != null) this.readBuffer.clear();
 
 		System.gc();
+	}
+
+	/**
+	 * Kill timeout (dead) connections
+	 * @param timeout Timeout in millsecond
+	 * @return Number of connections killed
+	 */
+	private int killTimeoutConnections(long timeout) {
+		if(timeout <= 0) return 0;
+
+		LinkedList<SocketChannel> clients = new LinkedList<SocketChannel>(channelList);
+		int killCount = 0;
+
+		for(SocketChannel client: clients) {
+			Long lasttimeL = lastCommTimeMap.get(client);
+
+			if(lasttimeL != null) {
+				long lasttime = lasttimeL.longValue();
+				long nowtime = System.currentTimeMillis();
+
+				if(nowtime - lasttime >= timeout) {
+					logout(client);
+					killCount++;
+				}
+			}
+		}
+
+		log.info("Killed " + killCount + " dead connections");
+		return killCount;
 	}
 
 	/**
@@ -1379,6 +1421,9 @@ public class NetServer {
 		String[] message = fullMessage.split("\t");	// Split by \t
 		NetPlayerInfo pInfo = playerInfoMap.get(client);	// NetPlayerInfo of this client. null if not logged in.
 
+		// Update last communication time
+		lastCommTimeMap.put(client, System.currentTimeMillis());
+
 		// Get information of this server.
 		if(message[0].equals("getinfo")) {
 			int loggedInUsersCount = playerInfoMap.size();
@@ -1420,6 +1465,9 @@ public class NetServer {
 				return;
 			}
 
+			// Kill dead connections
+			killTimeoutConnections(timeoutTime);
+
 			// Success
 			observerList.add(client);
 			send(client, "observerloginsuccess\n");
@@ -1448,6 +1496,9 @@ public class NetServer {
 				return;
 			}
 
+			// Kill dead connections
+			killTimeoutConnections(timeoutTime);
+
 			// Tripcode
 			String originalName = NetUtil.urlDecode(message[2]);
 			int sharpIndex = originalName.indexOf('#');
@@ -1472,10 +1523,20 @@ public class NetServer {
 			// Decide name (change to something else if needed)
 			if(originalName.length() < 1) originalName = "noname";
 			String name = originalName;
-			int nameCount = 0;
-			while(searchPlayerByName(name) != null) {
-				name = originalName + "(" + nameCount + ")";
-				nameCount++;
+
+			if(isTripUse) {
+				// Kill the connection of the same name player
+				NetPlayerInfo pInfo2 = searchPlayerByName(name);
+				if((pInfo2 != null) && (pInfo2.channel != null)) {
+					logout(pInfo2.channel);
+				}
+			} else {
+				// Change to "Name(n)" if the player of the same name exists
+				int nameCount = 0;
+				while(searchPlayerByName(name) != null) {
+					name = originalName + "(" + nameCount + ")";
+					nameCount++;
+				}
 			}
 
 			// Set variables
@@ -1489,6 +1550,7 @@ public class NetServer {
 
 			pInfo.strRealHost = getHostName(client);
 			pInfo.strRealIP = getHostAddress(client);
+			pInfo.channel = client;
 
 			int showhosttype = propServer.getProperty("netserver.showhosttype", 0);
 			if(showhosttype == 1) {
@@ -2378,6 +2440,9 @@ public class NetServer {
 				send(client, "adminloginfail\tFAIL\n");
 				return;
 			}
+
+			// Kill dead connections
+			killTimeoutConnections(timeoutTime);
 
 			// Login successful
 			adminList.add(client);

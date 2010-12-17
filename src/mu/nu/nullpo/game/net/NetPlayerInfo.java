@@ -29,6 +29,7 @@
 package mu.nu.nullpo.game.net;
 
 import java.io.Serializable;
+import java.nio.channels.SocketChannel;
 
 import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.play.GameEngine;
@@ -103,6 +104,9 @@ public class NetPlayerInfo implements Serializable {
 	/** Real IP (for internal use) */
 	public String strRealIP = "";
 
+	/** SocketChannel of this player (for internal use) */
+	public SocketChannel channel = null;
+
 	/**
 	 * Constructor
 	 */
@@ -167,6 +171,7 @@ public class NetPlayerInfo implements Serializable {
 		isTripUse = n.isTripUse;
 		strRealHost = n.strRealHost;
 		strRealIP = n.strRealIP;
+		channel = n.channel;
 	}
 
 	/**

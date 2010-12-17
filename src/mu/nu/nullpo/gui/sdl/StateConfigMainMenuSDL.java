@@ -62,7 +62,7 @@ public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 	public void render(SDLSurface screen) throws SDLException {
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
-		NormalFontSDL.printFontGrid(1, 1, "CONFIG", NormalFontSDL.COLOR_ORANGE);
+		NormalFontSDL.printFontGrid(1, 1, "OPTIONS", NormalFontSDL.COLOR_ORANGE);
 
 		NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
 
