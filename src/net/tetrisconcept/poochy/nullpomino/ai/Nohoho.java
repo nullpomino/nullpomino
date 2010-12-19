@@ -567,7 +567,7 @@ public class Nohoho extends DummyAI implements Runnable {
 			int maxY = fld.getHighestBlockY(maxX);
 			int clear = fld.clearColor(maxX, maxY, true, true, false, true);
 			if (clear >= 4)
-				pts -= 4;
+				pts += (defcon == 5) ? -4 : 4;
 			else if (clear == 3)
 				pts += 2;
 			else if (clear == 2)
@@ -581,7 +581,7 @@ public class Nohoho extends DummyAI implements Runnable {
 			else
 				clear = fld.clearColor(maxX-1, fld.getHighestBlockY(maxX-1), true, true, false, true);
 			if (clear >= 4)
-				pts -= 4;
+				pts += (defcon == 5) ? -4 : 4;
 			else if (clear == 3)
 				pts += 2;
 			else if (clear == 2)
