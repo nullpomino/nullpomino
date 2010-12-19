@@ -595,7 +595,7 @@ public class Nohoho extends DummyAI implements Runnable {
 			int clear = fld.clearColor(4, true, false, true);
 			if (clear <= 0)
 				break;
-			else if (defcon <= 3)
+			else if (defcon <= 4)
 			{
 				if (chain == 0)
 					pts += clear;
