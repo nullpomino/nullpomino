@@ -88,7 +88,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * AI's name
 	 */
 	public String getName() {
-		return "PoochyBot V1.24";
+		return "PoochyBot V1.25";
 	}
 
 	/*
@@ -1446,7 +1446,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 			log.debug("I piece xMax = " + xMax + ", valley depth = " + valley +
 					", valley bonus = " + valleyBonus);
 		pts += valleyBonus;
-		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) && (!tspin)) {
+		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) &&
+				(!tspin) && (xMax == width-1)) {
 			if (DEBUG_ALL) log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Special Condition 3)");
 			return Integer.MIN_VALUE;
