@@ -2971,22 +2971,33 @@ public class Field implements Serializable {
 		return total;
 	}
 
-	public void freeFall() {
+	/**
+	 * Instant avalanche, skips intermediate (cascade falling animation) steps.
+	 * @return true if it affected the field at all, false otherwise.
+	 */
+	public boolean freeFall() {
 		int y1, y2;
+		boolean result = false;
 		for (int x = 0; x < width; x++)
 		{
-			y1 = getHighestBlockY(x)-1;
+			y1 = height-1;
+			while (!getBlockEmpty(x, y1) && y1 >= (-1 * hidden_height))
+				y1--;
 			y2 = y1;
+			while (getBlockEmpty(x, y2) && y2 >= (-1 * hidden_height))
+				y2--;
 			while (y2 >= (-1 * hidden_height))
 			{
-				while (getBlockEmpty(x, y2) && y2 >= (-1 * hidden_height))
-					y2--;
 				setBlock(x, y1, getBlock(x, y2));
 				setBlock(x, y2, new Block());
 				y1--;
 				y2--;
+				result = true;
+				while (getBlockEmpty(x, y2) && y2 >= (-1 * hidden_height))
+					y2--;
 			}
 		}
+		return result;
 	}
 
 	public void delEven() {
