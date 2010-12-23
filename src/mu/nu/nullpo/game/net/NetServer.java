@@ -100,6 +100,12 @@ public class NetServer {
 	/** Default time of timeout */
 	public static final long DEFAULT_TIMEOUT_TIME = 1000 * 60 * 1;
 
+	/** Default number of lobby chat histories */
+	public static final int DEFAULT_MAX_LOBBYCHAT_HISTORY = 10;
+
+	/** Default number of room chat histories */
+	public static final int DEFAULT_MAX_ROOMCHAT_HISTORY = 10;
+
 	/** Server config file */
 	private static CustomProperties propServer;
 
@@ -148,6 +154,12 @@ public class NetServer {
 	/** TimeZone of daily single player leaderboard */
 	private static String spDailyTimeZone;
 
+	/** Max entry of lobby chat history */
+	private static int maxLobbyChatHistory;
+
+	/** Max entry of room chat history */
+	private static int maxRoomChatHistory;
+
 	/** Rule list for rated game. */
 	private static LinkedList<RuleOptions>[] ruleList;
 
@@ -171,6 +183,9 @@ public class NetServer {
 
 	/** Ban list */
 	private static LinkedList<NetServerBan> banList;
+
+	/** Lobby chat message history */
+	private static LinkedList<NetChatMessage> lobbyChatList = new LinkedList<NetChatMessage>();
 
 	/** List of SocketChannel */
 	private LinkedList<SocketChannel> channelList = new LinkedList<SocketChannel>();
@@ -558,9 +573,9 @@ public class NetServer {
 		}
 
 		for(NetSPRanking r: spRankingListDaily) {
-			r.reset();
+			r.listRecord.clear();
 		}
-		log.debug("SP daily ranking wiped");
+		log.info("SP daily ranking wiped");
 
 		return true;
 	}
@@ -688,6 +703,56 @@ public class NetServer {
 			log.info("Ban list saved");
 		} catch (Exception e) {
 			log.error("Failed to save ban list", e);
+		}
+	}
+
+	/**
+	 * Load lobby chat history file
+	 */
+	private static void loadLobbyChatHistory() {
+		if(lobbyChatList == null) lobbyChatList = new LinkedList<NetChatMessage>();
+		else lobbyChatList.clear();
+
+		try {
+			BufferedReader txtLobbyChat = new BufferedReader(new FileReader("config/setting/netserver_lobbychat.cfg"));
+
+			String str;
+			while((str = txtLobbyChat.readLine()) != null) {
+				if(str.length() > 0) {
+					NetChatMessage chat = new NetChatMessage();
+					chat.importString(str);
+					lobbyChatList.add(chat);
+				}
+			}
+		} catch (IOException e) {
+			log.debug("Lobby chat history doesn't exist");
+		} catch (Exception e) {
+			log.info("Failed to load lobby chat history", e);
+		}
+
+		while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
+	}
+
+	/**
+	 * Save lobby chat history file
+	 */
+	private static void saveLobbyChatHistory() {
+		try {
+			FileWriter outFile = new FileWriter("config/setting/netserver_lobbychat.cfg");
+			PrintWriter out = new PrintWriter(outFile);
+
+			while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
+
+			for(NetChatMessage chat: lobbyChatList) {
+				out.println(chat.exportString());
+			}
+
+			out.flush();
+			out.close();
+
+			log.debug("Lobby chat history saved");
+		} catch (Exception e) {
+			log.error("Failed to save lobby chat history file", e);
 		}
 	}
 
@@ -834,6 +899,8 @@ public class NetServer {
 		maxMPRanking = propServer.getProperty("netserver.maxMPRanking", DEFAULT_MAX_MPRANKING);
 		maxSPRanking = propServer.getProperty("netserver.maxSPRanking", DEFAULT_MAX_SPRANKING);
 		spDailyTimeZone = propServer.getProperty("netserver.spDailyTimeZone", "");
+		maxLobbyChatHistory = propServer.getProperty("netserver.maxLobbyChatHistory", DEFAULT_MAX_LOBBYCHAT_HISTORY);
+		maxRoomChatHistory = propServer.getProperty("netserver.maxRoomChatHistory", DEFAULT_MAX_ROOMCHAT_HISTORY);
 
 		// Load rules for rated game
 		loadRuleList();
@@ -849,6 +916,9 @@ public class NetServer {
 
 		// Load ban list
 		loadBanList();
+
+		// Load lobby chat history
+		loadLobbyChatHistory();
 	}
 
 	/**
@@ -1246,7 +1316,8 @@ public class NetServer {
 			}
 		}
 
-		log.info("Killed " + killCount + " dead connections");
+		if(killCount > 0) log.info("Killed " + killCount + " dead connections");
+
 		return killCount;
 	}
 
@@ -1590,6 +1661,14 @@ public class NetServer {
 			broadcastPlayerInfoUpdate(pInfo, "playernew");
 			broadcastUserCountToAll();
 			adminSendClientList();
+
+			// Send lobby chat history
+			while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
+			for(NetChatMessage chat: lobbyChatList) {
+				send(client, "lobbychath\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+					GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n");
+			}
+
 			return;
 		}
 		// Send rule data to server (Client->Server)
@@ -1681,8 +1760,14 @@ public class NetServer {
 			//lobbychat\t[MESSAGE]
 
 			if(pInfo != null) {
-				broadcast("lobbychat\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + message[1] + "\n");
-				log.info("LobbyChat Name:" + pInfo.strName + " Msg:" + NetUtil.urlDecode(message[1]));
+				NetChatMessage chat = new NetChatMessage(NetUtil.urlDecode(message[1]), pInfo);
+				chat.outputLog();
+				lobbyChatList.add(chat);
+				while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
+				saveLobbyChatHistory();
+
+				broadcast("lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+						GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n");
 			}
 			return;
 		}
@@ -1691,8 +1776,16 @@ public class NetServer {
 			//chat\t[MESSAGE]
 
 			if((pInfo != null) && (pInfo.roomID != -1)) {
-				broadcast("chat\t" + pInfo.uid + "\t" + NetUtil.urlEncode(pInfo.strName) + "\t" + message[1] + "\n", pInfo.roomID);
-				log.info("RoomID:" + pInfo.roomID + " Name:" + pInfo.strName + " Msg:" + NetUtil.urlDecode(message[1]));
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+				if(roomInfo != null) {
+					NetChatMessage chat = new NetChatMessage(NetUtil.urlDecode(message[1]), pInfo, roomInfo);
+					chat.outputLog();
+					roomInfo.chatList.add(chat);
+					while(roomInfo.chatList.size() > maxRoomChatHistory) roomInfo.chatList.removeFirst();
+
+					broadcast("chat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+						GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n", pInfo.roomID);
+				}
 			}
 			return;
 		}
@@ -2034,6 +2127,12 @@ public class NetServer {
 					broadcastRoomInfoUpdate(newRoom);
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t" + newRoom.roomID + "\t" + pInfo.seatID + "\t" + pInfo.queueID + "\n");
+
+					// Send chat history
+					for(NetChatMessage chat: newRoom.chatList) {
+						send(client, "chath\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+							GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n");
+					}
 				} else {
 					// No such a room
 					send(client, "roomjoinfail\n");

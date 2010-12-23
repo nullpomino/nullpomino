@@ -199,6 +199,9 @@ public class NetRoomInfo implements Serializable {
 	/** Dead player list (Pushed from front, winner will be the first entry) */
 	public LinkedList<NetPlayerInfo> playerSeatDead = new LinkedList<NetPlayerInfo>();
 
+	/** Chat messages */
+	public LinkedList<NetChatMessage> chatList = new LinkedList<NetChatMessage>();
+
 	/**
 	 * Constructor
 	 */
@@ -299,6 +302,8 @@ public class NetRoomInfo implements Serializable {
 		playerQueue.addAll(n.playerQueue);
 		playerSeatDead.clear();
 		playerSeatDead.addAll(n.playerSeatDead);
+		chatList.clear();
+		chatList.addAll(n.chatList);
 	}
 
 	/**
@@ -664,6 +669,7 @@ public class NetRoomInfo implements Serializable {
 		playerSeatNowPlaying.clear();
 		playerSeatNowPlaying.addAll(playerSeat);
 		playerSeatDead.clear();
+		chatList.clear();
 		startPlayers = playerSeatedCount;
 		deadCount = 0;
 		autoStartActive = false;
@@ -681,5 +687,6 @@ public class NetRoomInfo implements Serializable {
 		playerSeatNowPlaying.clear();
 		playerQueue.clear();
 		playerSeatDead.clear();
+		chatList.clear();
 	}
 }

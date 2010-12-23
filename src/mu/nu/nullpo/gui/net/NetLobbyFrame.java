@@ -51,6 +51,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -1850,14 +1852,35 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * 現在時刻をString型で取得
-	 * @return 現在時刻
+	 * Get current time as String (for chat log)
+	 * @return Current time as String
 	 */
 	public String getCurrentTimeAsString() {
 		GregorianCalendar currentTime = new GregorianCalendar();
-		String strTime = String.format("%02d:%02d:%02d",
-										currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE), currentTime.get(Calendar.SECOND));
-		return strTime;
+		DateFormat dfm = new SimpleDateFormat("HH:mm:ss");
+		return dfm.format(currentTime.getTime());
+	}
+
+	/**
+	 * Create String from a Calendar (for chat log)
+	 * @param cal Calendar
+	 * @return String created from Calendar
+	 */
+	public String getTimeAsString(Calendar cal) {
+		return getTimeAsString(cal, false);
+	}
+
+	/**
+	 * Create String from a Calendar (for chat log)
+	 * @param cal Calendar
+	 * @param showDate true to show date
+	 * @return String created from Calendar
+	 */
+	public String getTimeAsString(Calendar cal, boolean showDate) {
+		if(cal == null) return showDate ? "????-??-?? ??:??:??" : "??:??:??";
+		String strFormat = showDate ? "yyyy-MM-dd HH:mm:ss" : "HH:mm:ss";
+		DateFormat dfm = new SimpleDateFormat(strFormat);
+		return dfm.format(cal.getTime());
 	}
 
 	/**
@@ -1951,15 +1974,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * チャットログに新しい行を追加(ユーザーチャット)
-	 * @param txtpane チャットログ
-	 * @param username ユーザー名
-	 * @param str 発言内容
+	 * Add a user chat to log pane
+	 * @param txtpane JTextPane to add this chat log
+	 * @param username User name
+	 * @param calendar Time
+	 * @param str Message
 	 */
-	public void addUserChatLog(JTextPane txtpane, String username, String str) {
+	public void addUserChatLog(JTextPane txtpane, String username, Calendar calendar, String str) {
 		SimpleAttributeSet sasTime = new SimpleAttributeSet();
 		StyleConstants.setForeground(sasTime, Color.gray);
-		String strTime = getCurrentTimeAsString();
+		String strTime = getTimeAsString(calendar);
 
 		SimpleAttributeSet sas = new SimpleAttributeSet();
 		StyleConstants.setBold(sas, true);
@@ -1985,15 +2009,70 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * チャットログに新しい行を追加(ユーザーチャット・別スレッドからの呼び出し用)
-	 * @param txtpane チャットログ
-	 * @param username ユーザー名
-	 * @param str 発言内容
+	 * Add a user chat to log pane (for multi threading)
+	 * @param txtpane JTextPane to add this chat log
+	 * @param username User name
+	 * @param calendar Time
+	 * @param str Message
 	 */
-	public void addUserChatLogLater(final JTextPane txtpane, final String username, final String str) {
+	public void addUserChatLogLater(final JTextPane txtpane, final String username, final Calendar calendar, final String str) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				addUserChatLog(txtpane, username, str);
+				addUserChatLog(txtpane, username, calendar, str);
+			}
+		});
+	}
+
+	/**
+	 * Add a recorded user chat to log pane
+	 * @param txtpane JTextPane to add this chat log
+	 * @param username User name
+	 * @param calendar Time
+	 * @param str Message
+	 */
+	public void addRecordedUserChatLog(JTextPane txtpane, String username, Calendar calendar, String str) {
+		SimpleAttributeSet sasTime = new SimpleAttributeSet();
+		StyleConstants.setForeground(sasTime, Color.gray);
+		String strTime = getTimeAsString(calendar, true);
+
+		SimpleAttributeSet sasUserName = new SimpleAttributeSet();
+		StyleConstants.setBold(sasUserName, true);
+		StyleConstants.setUnderline(sasUserName, true);
+		StyleConstants.setForeground(sasUserName, Color.gray);
+
+		SimpleAttributeSet sasMessage = new SimpleAttributeSet();
+		StyleConstants.setForeground(sasMessage, Color.darkGray);
+
+		try {
+			Document doc = txtpane.getDocument();
+			doc.insertString(doc.getLength(), "[" + strTime + "]", sasTime);
+			doc.insertString(doc.getLength(), "<" + username + ">", sasUserName);
+			doc.insertString(doc.getLength(), " " + str + "\n", sasMessage);
+			txtpane.setCaretPosition(doc.getLength());
+
+			if(txtpane == txtpaneRoomChatLog) {
+				if(writerRoomLog != null) {
+					writerRoomLog.println("[" + strTime + "]" + "<" + username + "> " + str);
+					writerRoomLog.flush();
+				}
+			} else if(writerLobbyLog != null) {
+				writerLobbyLog.println("[" + strTime + "]" + "<" + username + "> " + str);
+				writerLobbyLog.flush();
+			}
+		} catch (Exception e) {}
+	}
+
+	/**
+	 * Add a recorded user chat to log pane (for multi threading)
+	 * @param txtpane JTextPane to add this chat log
+	 * @param username User name
+	 * @param calendar Time
+	 * @param str Message
+	 */
+	public void addRecordedUserChatLogLater(final JTextPane txtpane, final String username, final Calendar calendar, final String str) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				addRecordedUserChatLog(txtpane, username, calendar, str);
 			}
 		});
 	}
@@ -3598,8 +3677,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			NetPlayerInfo pInfo = netPlayerClient.getPlayerInfoByUID(uid);
 
 			if(pInfo != null) {
-				String strMsgBody = NetUtil.urlDecode(message[3]);
-				addUserChatLogLater(txtpaneLobbyChatLog, getPlayerNameWithTripCode(pInfo), strMsgBody);
+				Calendar calendar = GeneralUtil.importCalendarString(message[3]);
+				String strMsgBody = NetUtil.urlDecode(message[4]);
+				addUserChatLogLater(txtpaneLobbyChatLog, getPlayerNameWithTripCode(pInfo), calendar, strMsgBody);
 			}
 		}
 		// Room chat
@@ -3608,9 +3688,18 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			NetPlayerInfo pInfo = netPlayerClient.getPlayerInfoByUID(uid);
 
 			if(pInfo != null) {
-				String strMsgBody = NetUtil.urlDecode(message[3]);
-				addUserChatLogLater(txtpaneRoomChatLog, getPlayerNameWithTripCode(pInfo), strMsgBody);
+				Calendar calendar = GeneralUtil.importCalendarString(message[3]);
+				String strMsgBody = NetUtil.urlDecode(message[4]);
+				addUserChatLogLater(txtpaneRoomChatLog, getPlayerNameWithTripCode(pInfo), calendar, strMsgBody);
 			}
+		}
+		// Lobby chat/Room chat (history)
+		if(message[0].equals("lobbychath") || message[0].equals("chath")) {
+			String strUsername = convTripCode(NetUtil.urlDecode(message[1]));
+			Calendar calendar = GeneralUtil.importCalendarString(message[2]);
+			String strMsgBody = NetUtil.urlDecode(message[3]);
+			JTextPane txtpane = message[0].equals("lobbychath") ? txtpaneLobbyChatLog : txtpaneRoomChatLog;
+			addRecordedUserChatLogLater(txtpane, strUsername, calendar, strMsgBody);
 		}
 		// 参戦状態変更
 		if(message[0].equals("changestatus")) {
