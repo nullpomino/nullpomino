@@ -592,6 +592,9 @@ public class GameEngine {
 	/** Reverse roles of up/down keys in-game */
 	public boolean owReverseUpDown;
 
+	/** Diagonal move (-1=Auto 0=Disable 1=Enable) */
+	public int owMoveDiagonal;
+
 	/** Clear mode selection */
 	public int clearMode;
 
@@ -652,6 +655,7 @@ public class GameEngine {
 		owMaxDAS = -1;
 		owDasDelay = -1;
 		owReverseUpDown = false;
+		owMoveDiagonal = -1;
 	}
 
 	/**
@@ -707,6 +711,7 @@ public class GameEngine {
 			owMaxDAS = owner.replayProp.getProperty(playerID + ".tuning.owMaxDAS", -1);
 			owDasDelay = owner.replayProp.getProperty(playerID + ".tuning.owDasDelay", -1);
 			owReverseUpDown = owner.replayProp.getProperty(playerID + ".tuning.owReverseUpDown", false);
+			owMoveDiagonal = owner.replayProp.getProperty(playerID + ".tuning.owMoveDiagonal", -1);
 
 			// Fixing old replays to accomodate for new DAS notation
 			if (versionMajor < 7.3) {
@@ -1069,6 +1074,17 @@ public class GameEngine {
 			else return true;
 		}
 		return ruleopt.rotateButtonDefaultRight;
+	}
+
+	/**
+	 * Is diagonal movement enabled?
+	 * @return true if diagonal movement is enabled
+	 */
+	public boolean isDiagonalMoveEnabled() {
+		if((ruleopt == null) || (owMoveDiagonal >= 0)) {
+			return (owMoveDiagonal == 1);
+		}
+		return ruleopt.moveDiagonal;
 	}
 
 	/**
@@ -1595,6 +1611,7 @@ public class GameEngine {
 		owner.replayProp.setProperty(playerID + ".tuning.owMaxDAS", owMaxDAS);
 		owner.replayProp.setProperty(playerID + ".tuning.owDasDelay", owDasDelay);
 		owner.replayProp.setProperty(playerID + ".tuning.owReverseUpDown", owReverseUpDown);
+		owner.replayProp.setProperty(playerID + ".tuning.owMoveDiagonal", owMoveDiagonal);
 
 		if(owner.mode != null) owner.mode.saveReplay(this, playerID, owner.replayProp);
 	}
@@ -2338,7 +2355,7 @@ public class GameEngine {
 			if( (ctrl.isPress(getUp()) == true) &&
 				(harddropContinuousUse == false) &&
 				(ruleopt.harddropEnable == true) &&
-				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
+				((isDiagonalMoveEnabled() == true) || (sidemoveflag == false)) &&
 				((ruleopt.moveUpAndDown == true) || (updown == false)) &&
 				(nowPieceY < nowPieceBottomY) )
 			{
@@ -2366,7 +2383,7 @@ public class GameEngine {
 				if( (ctrl.isPress(getDown()) == true) &&
 					(softdropContinuousUse == false) &&
 					(ruleopt.softdropEnable == true) &&
-					((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
+					((isDiagonalMoveEnabled() == true) || (sidemoveflag == false)) &&
 					((ruleopt.moveUpAndDown == true) || (updown == false)) )
 				{
 					if((ruleopt.softdropMultiplyNativeSpeed == true) || (speed.denominator <= 0))
@@ -2379,7 +2396,7 @@ public class GameEngine {
 			} else {
 				// New Soft Drop codes
 				if( ctrl.isPress(getDown()) && !softdropContinuousUse &&
-					ruleopt.softdropEnable && (ruleopt.moveDiagonal || !sidemoveflag) &&
+					ruleopt.softdropEnable && (isDiagonalMoveEnabled() || !sidemoveflag) &&
 					(ruleopt.moveUpAndDown || !updown) &&
 					(ruleopt.softdropMultiplyNativeSpeed || (speed.gravity < (int)(speed.denominator * ruleopt.softdropSpeed))) )
 				{
@@ -2468,7 +2485,7 @@ public class GameEngine {
 			if( (ctrl.isPress(getUp()) == true) &&
 				(harddropContinuousUse == false) &&
 				(ruleopt.harddropEnable == true) &&
-				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
+				((isDiagonalMoveEnabled() == true) || (sidemoveflag == false)) &&
 				((ruleopt.moveUpAndDown == true) || (updown == false)) &&
 				(ruleopt.harddropLock == true) )
 			{
@@ -2481,7 +2498,7 @@ public class GameEngine {
 			if( (ctrl.isPress(getDown()) == true) &&
 				(softdropContinuousUse == false) &&
 				(ruleopt.softdropEnable == true) &&
-				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
+				((isDiagonalMoveEnabled() == true) || (sidemoveflag == false)) &&
 				((ruleopt.moveUpAndDown == true) || (updown == false)) &&
 				(ruleopt.softdropLock == true) )
 			{
@@ -2493,7 +2510,7 @@ public class GameEngine {
 			// 接地状態でソフドドロップ固定
 			if( (ctrl.isPush(getDown()) == true) &&
 				(ruleopt.softdropEnable == true) &&
-				((ruleopt.moveDiagonal == true) || (sidemoveflag == false)) &&
+				((isDiagonalMoveEnabled() == true) || (sidemoveflag == false)) &&
 				((ruleopt.moveUpAndDown == true) || (updown == false)) &&
 				(ruleopt.softdropSurfaceLock == true) )
 			{

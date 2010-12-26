@@ -65,6 +65,9 @@ public class StateConfigGameTuning extends BasicGameState {
 	/** Reverse the roles of up/down keys in-game */
 	protected boolean owReverseUpDown;
 
+	/** Diagonal move (-1=Auto 0=Disable 1=Enable) */
+	protected int owMoveDiagonal;
+
 	/*
 	 * Fetch this state's ID
 	 */
@@ -90,6 +93,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		owMaxDAS = prop.getProperty(player + ".tuning.owMaxDAS", -1);
 		owDasDelay = prop.getProperty(player + ".tuning.owDasDelay", -1);
 		owReverseUpDown = prop.getProperty(player + ".tuning.owReverseUpDown", false);
+		owMoveDiagonal = prop.getProperty(player + ".tuning.owMoveDiagonal", -1);
 	}
 
 	/**
@@ -103,6 +107,7 @@ public class StateConfigGameTuning extends BasicGameState {
 		prop.setProperty(player + ".tuning.owMaxDAS", owMaxDAS);
 		prop.setProperty(player + ".tuning.owDasDelay", owDasDelay);
 		prop.setProperty(player + ".tuning.owReverseUpDown", owReverseUpDown);
+		prop.setProperty(player + ".tuning.owMoveDiagonal", owMoveDiagonal);
 	}
 
 	/*
@@ -139,6 +144,11 @@ public class StateConfigGameTuning extends BasicGameState {
 		NormalFont.printFontGrid(2, 7, "DAS DELAY:" + ((owDasDelay == -1) ? "AUTO" : String.valueOf(owDasDelay)), (cursor == 4));
 		NormalFont.printFontGrid(2, 8, "REVERSE UP/DOWN:" + GeneralUtil.getOorX(owReverseUpDown), (cursor == 5));
 
+		if(owMoveDiagonal == -1) strTemp = "AUTO";
+		if(owMoveDiagonal == 0) strTemp = "e";
+		if(owMoveDiagonal == 1) strTemp = "c";
+		NormalFont.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
+
 		// FPS
 		NullpoMinoSlick.drawFPS(container);
 		// Observer
@@ -166,12 +176,12 @@ public class StateConfigGameTuning extends BasicGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 5;
+			if(cursor < 0) cursor = 6;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 5) cursor = 0;
+			if(cursor > 6) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -211,6 +221,11 @@ public class StateConfigGameTuning extends BasicGameState {
 				break;
 			case 5:
 				owReverseUpDown ^= true;
+				break;
+			case 6:
+				owMoveDiagonal += change;
+				if(owMoveDiagonal < -1) owMoveDiagonal = 1;
+				if(owMoveDiagonal > 1) owMoveDiagonal = -1;
 				break;
 			}
 		}

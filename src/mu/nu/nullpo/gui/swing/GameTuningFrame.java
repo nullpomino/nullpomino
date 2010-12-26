@@ -88,6 +88,13 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	/** Checkbox to enable swapping the roles of up/down buttons in-game */
 	protected JCheckBox chkboxReverseUpDown;
 
+	/** Diagonal move: Auto */
+	protected JRadioButton radioMoveDiagonalAuto;
+	/** Diagonal move: Disable */
+	protected JRadioButton radioMoveDiagonalDisable;
+	/** Diagonal move: Enable */
+	protected JRadioButton radioMoveDiagonalEnable;
+
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
@@ -136,6 +143,29 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		radioRotateButtonDefaultRightRight = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_RotateButtonDefaultRight_Right"));
 		pRotateButtonDefaultRight.add(radioRotateButtonDefaultRightRight);
 		gRotateButtonDefaultRight.add(radioRotateButtonDefaultRightRight);
+
+		// ---------- Diagonal Move ----------
+		JPanel pMoveDiagonal = new JPanel();
+		pMoveDiagonal.setLayout(new BoxLayout(pMoveDiagonal, BoxLayout.Y_AXIS));
+		pMoveDiagonal.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(pMoveDiagonal);
+
+		JLabel lMoveDiagonal = new JLabel(NullpoMinoSwing.getUIText("GameTuning_MoveDiagonal_Label"));
+		pMoveDiagonal.add(lMoveDiagonal);
+
+		ButtonGroup gMoveDiagonal = new ButtonGroup();
+
+		radioMoveDiagonalAuto = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_MoveDiagonal_Auto"));
+		pMoveDiagonal.add(radioMoveDiagonalAuto);
+		gMoveDiagonal.add(radioMoveDiagonalAuto);
+
+		radioMoveDiagonalDisable = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_MoveDiagonal_Disable"));
+		pMoveDiagonal.add(radioMoveDiagonalDisable);
+		gMoveDiagonal.add(radioMoveDiagonalDisable);
+
+		radioMoveDiagonalEnable = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_MoveDiagonal_Enable"));
+		pMoveDiagonal.add(radioMoveDiagonalEnable);
+		gMoveDiagonal.add(radioMoveDiagonalEnable);
 
 		// ---------- 絵柄 ----------
 		JPanel pSkin = new JPanel();
@@ -247,6 +277,11 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		if(owRotateButtonDefaultRight ==  0) radioRotateButtonDefaultRightLeft.setSelected(true);
 		if(owRotateButtonDefaultRight ==  1) radioRotateButtonDefaultRightRight.setSelected(true);
 
+		int owMoveDiagonal = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owMoveDiagonal", -1);
+		if(owMoveDiagonal == -1) radioMoveDiagonalAuto.setSelected(true);
+		if(owMoveDiagonal ==  0) radioMoveDiagonalDisable.setSelected(true);
+		if(owMoveDiagonal ==  1) radioMoveDiagonalEnable.setSelected(true);
+
 		int owSkin = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owSkin", -1);
 		comboboxSkin.setSelectedIndex(owSkin + 1);
 
@@ -265,6 +300,12 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		if(radioRotateButtonDefaultRightLeft.isSelected()) owRotateButtonDefaultRight =  0;
 		if(radioRotateButtonDefaultRightRight.isSelected()) owRotateButtonDefaultRight = 1;
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owRotateButtonDefaultRight", owRotateButtonDefaultRight);
+
+		int owMoveDiagonal = -1;
+		if(radioMoveDiagonalAuto.isSelected()) owMoveDiagonal = -1;
+		if(radioMoveDiagonalDisable.isSelected()) owMoveDiagonal = 0;
+		if(radioMoveDiagonalEnable.isSelected()) owMoveDiagonal = 1;
+		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owMoveDiagonal", owMoveDiagonal);
 
 		int owSkin = comboboxSkin.getSelectedIndex() - 1;
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owSkin", owSkin);

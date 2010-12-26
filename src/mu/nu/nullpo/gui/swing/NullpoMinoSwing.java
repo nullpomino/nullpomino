@@ -972,6 +972,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameManager.engine[i].owMaxDAS = propGlobal.getProperty(i + ".tuning.owMaxDAS", -1);
 			gameManager.engine[i].owDasDelay = propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
 			gameManager.engine[i].owReverseUpDown = propGlobal.getProperty(i + ".tuning.owReverseUpDown", false);
+			gameManager.engine[i].owMoveDiagonal = propGlobal.getProperty(i + ".tuning.owMoveDiagonal", -1);
 
 			// ルール
 			RuleOptions ruleopt = null;
@@ -1134,6 +1135,8 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			gameManager.engine[0].owMinDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMinDAS", -1);
 			gameManager.engine[0].owMaxDAS = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMaxDAS", -1);
 			gameManager.engine[0].owDasDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
+			gameManager.engine[0].owReverseUpDown = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owReverseUpDown", false);
+			gameManager.engine[0].owMoveDiagonal = NullpoMinoSwing.propGlobal.getProperty(0 + ".tuning.owMoveDiagonal", -1);
 
 			// Rule
 			RuleOptions ruleopt = null;
