@@ -595,7 +595,10 @@ public class ScoreRaceMode extends NetDummyMode {
 		// NET: Number of spectators
 		netDrawSpectatorsCount(engine, 0, 21);
 		// NET: All number of players
-		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
+		if(playerID == getPlayers() - 1) {
+			netDrawAllPlayersCount(engine);
+			netDrawGameRate(engine);
+		}
 		// NET: Player name (It may also appear in offline replay)
 		netDrawPlayerName(engine);
 	}

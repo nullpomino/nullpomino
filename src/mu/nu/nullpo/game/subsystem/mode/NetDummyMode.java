@@ -711,6 +711,31 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
+	 * NET: Draw game-rate to bottom-right of screen.
+	 * @param engine GameEngine
+	 */
+	protected void netDrawGameRate(GameEngine engine) {
+		if(netIsNetPlay && !netIsWatch && engine.gameStarted && (engine.startTime != 0)) {
+			float gamerate = 0f;
+			if(engine.endTime != 0) {
+				gamerate = engine.statistics.gamerate;
+			} else {
+				long nowtime = System.nanoTime();
+				gamerate = (float)(engine.replayTimer / (0.00000006*(nowtime-engine.startTime)));
+			}
+
+			String strTemp = String.format("%.0f%%", (float)(gamerate * 100f));
+			String strTemp2 = String.format("%40s", strTemp);
+
+			int fontcolor = EventReceiver.COLOR_BLUE;
+			if(gamerate < 1f) fontcolor = EventReceiver.COLOR_YELLOW;
+			if(gamerate < 0.9f) fontcolor = EventReceiver.COLOR_ORANGE;
+			if(gamerate < 0.8f) fontcolor = EventReceiver.COLOR_RED;
+			owner.receiver.drawDirectFont(engine, 0, 0, 480-32, strTemp2, fontcolor);
+		}
+	}
+
+	/**
 	 * NET: Draw spectator count in score area.
 	 * @param engine GameEngine
 	 * @param x X offset

@@ -97,6 +97,9 @@ public class NetServer {
 	/** Default value of maxSPRanking */
 	public static final int DEFAULT_MAX_SPRANKING = 100;
 
+	/** Default minimum gamerate */
+	public static final float DEFAULT_MIN_GAMERATE = 80f;
+
 	/** Default time of timeout */
 	public static final long DEFAULT_TIMEOUT_TIME = 1000 * 60 * 1;
 
@@ -153,6 +156,9 @@ public class NetServer {
 
 	/** TimeZone of daily single player leaderboard */
 	private static String spDailyTimeZone;
+
+	/** Minimum game rate of single player leaderboard */
+	private static float spMinGameRate;
 
 	/** Max entry of lobby chat history */
 	private static int maxLobbyChatHistory;
@@ -899,6 +905,7 @@ public class NetServer {
 		maxMPRanking = propServer.getProperty("netserver.maxMPRanking", DEFAULT_MAX_MPRANKING);
 		maxSPRanking = propServer.getProperty("netserver.maxSPRanking", DEFAULT_MAX_SPRANKING);
 		spDailyTimeZone = propServer.getProperty("netserver.spDailyTimeZone", "");
+		spMinGameRate = propServer.getProperty("netserver.spMinGameRate", DEFAULT_MIN_GAMERATE);
 		maxLobbyChatHistory = propServer.getProperty("netserver.maxLobbyChatHistory", DEFAULT_MAX_LOBBYCHAT_HISTORY);
 		maxRoomChatHistory = propServer.getProperty("netserver.maxRoomChatHistory", DEFAULT_MAX_ROOMCHAT_HISTORY);
 
@@ -2330,6 +2337,8 @@ public class NetServer {
 						record.style = roomInfo.style;
 						record.strTimeStamp = GeneralUtil.exportCalendarString();
 
+						float gamerate = record.stats.gamerate * 100f;
+
 						boolean isDailyWiped = updateSPDailyRanking();
 						int rank = -1;
 						int rankDaily = -1;
@@ -2339,7 +2348,7 @@ public class NetServer {
 						if(ranking == null) log.warn("All-time ranking not found:" + record.strModeName);
 						if(rankingDaily == null) log.warn("Daily ranking not found:" + record.strModeName);
 
-						if(ranking != null || rankingDaily != null) {
+						if((ranking != null || rankingDaily != null) && (gamerate >= spMinGameRate)) {
 							if(ranking != null)
 								rank = ranking.registerRecord(record);
 							if(rankingDaily != null)
