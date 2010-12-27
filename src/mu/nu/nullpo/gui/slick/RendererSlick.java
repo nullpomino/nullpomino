@@ -1208,8 +1208,8 @@ public class RendererSlick extends EventReceiver {
 						graphics.fillRect(0, 0, 640, 480);
 					}
 				} else {
-					graphics.setColor(Color.black);
-					graphics.fillRect(0, 0, 640, 480);
+					//graphics.setColor(Color.black);
+					//graphics.fillRect(0, 0, 640, 480);
 				}
 			}
 		}

@@ -220,7 +220,7 @@ public class StateConfigGeneral extends BasicGameState {
 		}
 		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
-		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", false);
+		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", true);
 		alternateFPSPerfectYield = prop.getProperty("option.alternateFPSPerfectYield", true);
 
 		screenSizeType = 4;	// Default to 640x480

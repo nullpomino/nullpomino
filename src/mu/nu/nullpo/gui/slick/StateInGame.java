@@ -67,6 +67,9 @@ public class StateInGame extends BasicGameState {
 	/**  frame ステップ is enabled flag */
 	protected boolean enableframestep = false;
 
+	/** Show background flag */
+	protected boolean showbg = true;
+
 	/** 倍速Mode */
 	protected int fastforward = 0;
 
@@ -103,8 +106,11 @@ public class StateInGame extends BasicGameState {
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		enableframestep = NullpoMinoSlick.propConfig.getProperty("option.enableframestep", false);
+		showbg = NullpoMinoSlick.propConfig.getProperty("option.showbg", true);
 		fastforward = 0;
 		cursor = 0;
+
+		container.setClearEachFrame(!showbg);	// Clear each frame when there is no BG
 	}
 
 	/**
@@ -266,6 +272,7 @@ public class StateInGame extends BasicGameState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		container.setClearEachFrame(false);
 		shutdown();
 	}
 

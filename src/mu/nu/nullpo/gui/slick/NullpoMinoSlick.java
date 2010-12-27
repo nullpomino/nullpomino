@@ -403,7 +403,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		alternateFPSTiming = propConfig.getProperty("option.alternateFPSTiming", true);
 		alternateFPSDynamicAdjust = propConfig.getProperty("option.alternateFPSDynamicAdjust", false);
-		alternateFPSPerfectMode = propConfig.getProperty("option.alternateFPSPerfectMode", false);
+		alternateFPSPerfectMode = propConfig.getProperty("option.alternateFPSPerfectMode", true);
 		alternateFPSPerfectYield = propConfig.getProperty("option.alternateFPSPerfectYield", true);
 		altMaxFPS = propConfig.getProperty("option.maxfps", 60);
 		altMaxFPSCurrent = altMaxFPS;
