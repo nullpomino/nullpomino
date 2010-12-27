@@ -53,7 +53,7 @@ public class TechnicianMode extends NetDummyMode {
 	/** BGM change levels */
 	private static final int tableBGMChange[]   = {9, 15, 19, 23, 27, -1};
 
-	/** Comboで手に入る point */
+	/** Combo goal table */
 	private static final int COMBO_GOAL_TABLE[] = {0,0,1,1,2,2,3,3,4,4,4,5};
 
 	/** Number of entries in rankings */
@@ -62,7 +62,7 @@ public class TechnicianMode extends NetDummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 5;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event type constants */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -74,61 +74,62 @@ public class TechnicianMode extends NetDummyMode {
 							 EVENT_TSPIN_SINGLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
-							 EVENT_TSPIN_TRIPLE = 11;
+							 EVENT_TSPIN_TRIPLE = 11,
+							 EVENT_TSPIN_EZ = 12;
 
-	/** Game type typeの定count */
+	/** Game type constants */
 	private static final int GAMETYPE_LV15_EASY = 0,
 							 GAMETYPE_LV15_HARD = 1,
 							 GAMETYPE_10MIN_EASY = 2,
 							 GAMETYPE_10MIN_HARD = 3,
 							 GAMETYPE_SPECIAL = 4;
 
-	/** Game typeの表示名 */
+	/** Game type names */
 	private static final String[] GAMETYPE_NAME = {"LV15-EASY", "LV15-HARD", "10MIN-EASY", "10MIN-HARD", "SPECIAL"};
 
-	/** Game type typeのcount */
+	/** Game type max */
 	private static final int GAMETYPE_MAX = 5;
 
-	/** 各 levelの制限 time */
+	/** Time limit for each level */
 	private static final int TIMELIMIT_LEVEL = 3600*2;
 
-	/** 10分間Mode のゲーム制限 time */
+	/** Time limit of 10min games */
 	private static final int TIMELIMIT_10MIN = 3600*10;
 
-	/** SPECIALMode 開始時の制限 time */
+	/** Default time limit of Special game */
 	private static final int TIMELIMIT_SPECIAL = 3600*2;
 
-	/** SPECIALMode でLevel upしたときに増える time */
+	/** Extra time of Special game */
 	private static final int TIMELIMIT_SPECIAL_BONUS = 60*30;
 
-	/** Endingの time */
+	/** Ending time */
 	private static final int TIMELIMIT_ROLL = 3600;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** Level upまでの残り point */
+	/** Number of Goal-points remaining */
 	private int goal;
 
-	/** この levelでの経過 time */
+	/** Level timer */
 	private int levelTimer;
 
-	/** この levelでTimerが切れていたらtrue */
+	/** true if level timer runs out */
 	private boolean levelTimeOut;
 
-	/** ゲーム全体の制限 time */
+	/** Master time limit */
 	private int totalTimer;
 
 	/** Ending time */
 	private int rolltime;
 
-	/** 直前に手に入れた point */
+	/** Most recent increase in goal-points */
 	private int lastgoal;
 
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 直前に手に入れたTime bonus */
+	/** Most recent increase in time limit */
 	private int lasttimebonus;
 
 	/** Time to display the most recent increase in score */
@@ -140,13 +141,13 @@ public class TechnicianMode extends NetDummyMode {
 	/** Most recent scoring event type */
 	private int lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** Most recent scoring event b2b */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Most recent scoring event combo count */
 	private int lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Most recent scoring event piece ID */
 	private int lastpiece;
 
 	/** Current BGM */
@@ -166,6 +167,12 @@ public class TechnicianMode extends NetDummyMode {
 
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
+
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
 
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
@@ -279,7 +286,7 @@ public class TechnicianMode extends NetDummyMode {
 		// Menu
 		else if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 6);
+			int change = updateCursor(engine, 8);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -307,12 +314,20 @@ public class TechnicianMode extends NetDummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 4:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 5:
-					enableCombo = !enableCombo;
+					tspinEnableEZ = !tspinEnableEZ;
 					break;
 				case 6:
+					enableB2B = !enableB2B;
+					break;
+				case 7:
+					enableCombo = !enableCombo;
+					break;
+				case 8:
 					big = !big;
 					break;
 				}
@@ -380,6 +395,8 @@ public class TechnicianMode extends NetDummyMode {
 					"LEVEL", String.valueOf(startlevel + 1),
 					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"SPIN TYPE", (spinCheckType == 0) ? "4POINT" : "IMMOBILE",
+					"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo),
 					"BIG", GeneralUtil.getONorOFF(big));
@@ -414,6 +431,9 @@ public class TechnicianMode extends NetDummyMode {
 		} else {
 			engine.tspinEnable = enableTSpin;
 		}
+
+		engine.spinCheckType = spinCheckType;
+		engine.tspinEnableEZ = tspinEnableEZ;
 
 		engine.speed.lineDelay = 8;
 
@@ -523,11 +543,11 @@ public class TechnicianMode extends NetDummyMode {
 			}
 
 			if(regretdispframe > 0) {
-				// REGRET表示
+				// REGRET
 				receiver.drawMenuFont(engine,playerID,2,21,"REGRET",(regretdispframe % 4 == 0),EventReceiver.COLOR_WHITE,EventReceiver.COLOR_ORANGE);
 			}
 			else if((lastevent != EVENT_NONE) && (scgettime < 120)) {
-				// 直前のLine clear type表示
+				// Most recent event
 				String strPieceName = Piece.getPieceName(lastpiece);
 
 				switch(lastevent) {
@@ -570,6 +590,10 @@ public class TechnicianMode extends NetDummyMode {
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if((lastcombo >= 2) && (lastevent != EVENT_TSPIN_ZERO_MINI) && (lastevent != EVENT_TSPIN_ZERO))
@@ -593,7 +617,7 @@ public class TechnicianMode extends NetDummyMode {
 		scgettime++;
 		if(regretdispframe > 0) regretdispframe--;
 
-		//  levelTime
+		// Level Time
 		if(engine.gameActive && engine.timerActive && (goaltype != GAMETYPE_SPECIAL)) {
 			levelTimer++;
 			int remainTime = TIMELIMIT_LEVEL - levelTimer;
@@ -621,13 +645,13 @@ public class TechnicianMode extends NetDummyMode {
 						levelTimer = 0;
 					}
 				} else if((remainTime <= 10 * 60) && (remainTime % 60 == 0)) {
-					// 10秒前からのカウントダウン
+					// Countdown
 					engine.playSE("countdown");
 				}
 			}
 		}
 
-		// トータルTime
+		// Total Time
 		if(engine.gameActive && engine.timerActive && (goaltype != GAMETYPE_LV15_EASY) && (goaltype != GAMETYPE_LV15_HARD)) {
 			totalTimer--;
 
@@ -654,7 +678,7 @@ public class TechnicianMode extends NetDummyMode {
 
 					totalTimer = 0;
 				} else if((totalTimer <= 10 * 60) && (totalTimer % 60 == 0)) {
-					// 10秒前からのカウントダウン
+					// Countdown
 					engine.playSE("countdown");
 				}
 			}
@@ -672,7 +696,7 @@ public class TechnicianMode extends NetDummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Roll 終了
+			// Finished
 			if((rolltime >= TIMELIMIT_ROLL) && (!netIsWatch)) {
 				scgettime = 0;
 				lastscore = totalTimer * 2;
@@ -698,7 +722,7 @@ public class TechnicianMode extends NetDummyMode {
 
 		if(engine.tspin) {
 			// T-Spin 0 lines
-			if(lines == 0) {
+			if((lines == 0) && (!engine.tspinez)) {
 				if(engine.tspinmini) {
 					pts += 100 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO_MINI;
@@ -706,6 +730,15 @@ public class TechnicianMode extends NetDummyMode {
 					pts += 400 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO;
 				}
+			}
+			// Immobile EZ Spin
+			else if(engine.tspinez && (lines > 0)) {
+				if(engine.b2b) {
+					pts += 180 * (engine.statistics.level + 1);
+				} else {
+					pts += 120 * (engine.statistics.level + 1);
+				}
+				lastevent = EVENT_TSPIN_EZ;
 			}
 			// T-Spin 1 line
 			else if(lines == 1) {
@@ -938,6 +971,8 @@ public class TechnicianMode extends NetDummyMode {
 		tspinEnableType = prop.getProperty("technician.tspinEnableType", 1);
 		enableTSpin = prop.getProperty("technician.enableTSpin", true);
 		enableTSpinKick = prop.getProperty("technician.enableTSpinKick", true);
+		spinCheckType = prop.getProperty("technician.spinCheckType", 0);
+		tspinEnableEZ = prop.getProperty("technician.tspinEnableEZ", false);
 		enableB2B = prop.getProperty("technician.enableB2B", true);
 		enableCombo = prop.getProperty("technician.enableCombo", true);
 		big = prop.getProperty("technician.big", false);
@@ -954,6 +989,8 @@ public class TechnicianMode extends NetDummyMode {
 		prop.setProperty("technician.tspinEnableType", tspinEnableType);
 		prop.setProperty("technician.enableTSpin", enableTSpin);
 		prop.setProperty("technician.enableTSpinKick", enableTSpinKick);
+		prop.setProperty("technician.spinCheckType", spinCheckType);
+		prop.setProperty("technician.tspinEnableEZ", tspinEnableEZ);
 		prop.setProperty("technician.enableB2B", enableB2B);
 		prop.setProperty("technician.enableCombo", enableCombo);
 		prop.setProperty("technician.big", big);
@@ -1115,7 +1152,7 @@ public class TechnicianMode extends NetDummyMode {
 		String msg = "game\toption\t";
 		msg += goaltype + "\t" + startlevel + "\t" + tspinEnableType + "\t";
 		msg += enableTSpinKick + "\t" + enableB2B + "\t" + enableCombo + "\t" + big + "\t";
-		msg += "\n";
+		msg += spinCheckType + "\t" + tspinEnableEZ + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -1131,6 +1168,8 @@ public class TechnicianMode extends NetDummyMode {
 		enableB2B = Boolean.parseBoolean(message[8]);
 		enableCombo = Boolean.parseBoolean(message[9]);
 		big = Boolean.parseBoolean(message[10]);
+		spinCheckType = Integer.parseInt(message[11]);
+		tspinEnableEZ = Boolean.parseBoolean(message[12]);
 	}
 
 	/**

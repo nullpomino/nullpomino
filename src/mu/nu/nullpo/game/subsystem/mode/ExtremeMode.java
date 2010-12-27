@@ -44,7 +44,7 @@ public class ExtremeMode extends NetDummyMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
-	/** Endingの time */
+	/** Ending time */
 	protected static final int ROLLTIMELIMIT = 2968;
 
 	/** ARE table */
@@ -56,7 +56,7 @@ public class ExtremeMode extends NetDummyMode {
 	/** Line clear time table */
 	private static final int tableLineDelay[] = {40,20,10, 5, 6, 4, 4, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	/** 固定 time table */
+	/** Lock delay table */
 	private static final int tableLockDelay[] = {30,25,25,20,18,18,17,16,15,15,14,14,14,13,13,13,13,12,11,11};
 
 	/** DAS table */
@@ -71,7 +71,7 @@ public class ExtremeMode extends NetDummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 2;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event type constants */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -83,7 +83,8 @@ public class ExtremeMode extends NetDummyMode {
 							 EVENT_TSPIN_SINGLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
-							 EVENT_TSPIN_TRIPLE = 11;
+							 EVENT_TSPIN_TRIPLE = 11,
+							 EVENT_TSPIN_EZ = 12;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
@@ -97,13 +98,13 @@ public class ExtremeMode extends NetDummyMode {
 	/** Most recent scoring event type */
 	private int lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** True if most recent scoring event is a B2B */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Combo count for most recent scoring event */
 	private int lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Piece ID for most recent scoring event */
 	private int lastpiece;
 
 	/** Ending time */
@@ -124,13 +125,19 @@ public class ExtremeMode extends NetDummyMode {
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
 
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
+
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
 
 	/** Flag for enabling combos */
 	private boolean enableCombo;
 
-	/** エンドレス */
+	/** Endless flag */
 	private boolean endless;
 
 	/** Big */
@@ -231,7 +238,7 @@ public class ExtremeMode extends NetDummyMode {
 		// Menu
 		else if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 6);
+			int change = updateCursor(engine, 8);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -253,15 +260,23 @@ public class ExtremeMode extends NetDummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 3:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 4:
-					enableCombo = !enableCombo;
+					tspinEnableEZ = !tspinEnableEZ;
 					break;
 				case 5:
-					endless = !endless;
+					enableB2B = !enableB2B;
 					break;
 				case 6:
+					enableCombo = !enableCombo;
+					break;
+				case 7:
+					endless = !endless;
+					break;
+				case 8:
 					big = !big;
 					break;
 				}
@@ -331,6 +346,8 @@ public class ExtremeMode extends NetDummyMode {
 					"LEVEL", String.valueOf(startlevel + 1),
 					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"SPIN TYPE", (spinCheckType == 0) ? "4POINT" : "IMMOBILE",
+					"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo),
 					"ENDLESS", GeneralUtil.getONorOFF(endless),
@@ -372,6 +389,9 @@ public class ExtremeMode extends NetDummyMode {
 		} else {
 			engine.tspinEnable = enableTSpin;
 		}
+
+		engine.spinCheckType = spinCheckType;
+		engine.tspinEnableEZ = tspinEnableEZ;
 
 		setSpeed(engine);
 	}
@@ -475,6 +495,10 @@ public class ExtremeMode extends NetDummyMode {
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if((lastcombo >= 2) && (lastevent != EVENT_TSPIN_ZERO_MINI) && (lastevent != EVENT_TSPIN_ZERO))
@@ -491,7 +515,7 @@ public class ExtremeMode extends NetDummyMode {
 	}
 
 	/*
-	 * 各 frame の終わりの処理
+	 * Called after every frame
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -508,7 +532,7 @@ public class ExtremeMode extends NetDummyMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Roll 終了
+			// Finished
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameEnded();
 				engine.resetStatc();
@@ -529,7 +553,7 @@ public class ExtremeMode extends NetDummyMode {
 
 		if(engine.tspin) {
 			// T-Spin 0 lines
-			if(lines == 0) {
+			if((lines == 0) && (!engine.tspinez)) {
 				if(engine.tspinmini) {
 					pts += 100 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO_MINI;
@@ -537,6 +561,15 @@ public class ExtremeMode extends NetDummyMode {
 					pts += 400 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO;
 				}
+			}
+			// Immobile EZ Spin
+			else if(engine.tspinez && (lines > 0)) {
+				if(engine.b2b) {
+					pts += 180 * (engine.statistics.level + 1);
+				} else {
+					pts += 120 * (engine.statistics.level + 1);
+				}
+				lastevent = EVENT_TSPIN_EZ;
 			}
 			// T-Spin 1 line
 			else if(lines == 1) {
@@ -724,6 +757,8 @@ public class ExtremeMode extends NetDummyMode {
 		tspinEnableType = prop.getProperty("extreme.tspinEnableType", 1);
 		enableTSpin = prop.getProperty("extreme.enableTSpin", true);
 		enableTSpinKick = prop.getProperty("extreme.enableTSpinKick", true);
+		spinCheckType = prop.getProperty("extreme.spinCheckType", 0);
+		tspinEnableEZ = prop.getProperty("extreme.tspinEnableEZ", false);
 		enableB2B = prop.getProperty("extreme.enableB2B", true);
 		enableCombo = prop.getProperty("extreme.enableCombo", true);
 		endless = prop.getProperty("extreme.endless", false);
@@ -740,6 +775,8 @@ public class ExtremeMode extends NetDummyMode {
 		prop.setProperty("extreme.tspinEnableType", tspinEnableType);
 		prop.setProperty("extreme.enableTSpin", enableTSpin);
 		prop.setProperty("extreme.enableTSpinKick", enableTSpinKick);
+		prop.setProperty("extreme.spinCheckType", spinCheckType);
+		prop.setProperty("extreme.tspinEnableEZ", tspinEnableEZ);
 		prop.setProperty("extreme.enableB2B", enableB2B);
 		prop.setProperty("extreme.enableCombo", enableCombo);
 		prop.setProperty("extreme.endless", endless);
@@ -899,7 +936,7 @@ public class ExtremeMode extends NetDummyMode {
 	protected void netSendOptions(GameEngine engine) {
 		String msg = "game\toption\t";
 		msg += startlevel + "\t" + tspinEnableType + "\t" + enableTSpinKick + "\t" + enableB2B + "\t";
-		msg += enableCombo + "\t" + endless + "\t" + big + "\n";
+		msg += enableCombo + "\t" + endless + "\t" + big + "\t" + spinCheckType + "\t" + tspinEnableEZ + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -915,6 +952,8 @@ public class ExtremeMode extends NetDummyMode {
 		enableCombo = Boolean.parseBoolean(message[8]);
 		endless = Boolean.parseBoolean(message[9]);
 		big = Boolean.parseBoolean(message[10]);
+		spinCheckType = Integer.parseInt(message[11]);
+		tspinEnableEZ = Boolean.parseBoolean(message[12]);
 	}
 
 	/**

@@ -50,10 +50,10 @@ public class UltraMode extends NetDummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 2;
 
-	/** 制限 time type */
+	/** Time limit type */
 	private static final int GOALTYPE_MAX = 5;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event type constants */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -65,7 +65,8 @@ public class UltraMode extends NetDummyMode {
 							 EVENT_TSPIN_SINGLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
-							 EVENT_TSPIN_TRIPLE = 11;
+							 EVENT_TSPIN_TRIPLE = 11,
+							 EVENT_TSPIN_EZ = 12;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
@@ -79,16 +80,16 @@ public class UltraMode extends NetDummyMode {
 	/** Most recent scoring event type */
 	private int lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** Most recent scoring event b2b */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Most recent scoring event combo count */
 	private int lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Most recent scoring event piece ID */
 	private int lastpiece;
 
-	/** 使用するBGM */
+	/** BGM number */
 	private int bgmno;
 
 	/** Flag for types of T-Spins allowed (0=none, 1=normal, 2=all spin) */
@@ -100,6 +101,12 @@ public class UltraMode extends NetDummyMode {
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
 
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
+
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
 
@@ -109,7 +116,7 @@ public class UltraMode extends NetDummyMode {
 	/** Big */
 	private boolean big;
 
-	/** 制限 time type */
+	/** Time limit type */
 	private int goaltype;
 
 	/** Last preset number used */
@@ -176,7 +183,7 @@ public class UltraMode extends NetDummyMode {
 	}
 
 	/**
-	 * Presetを読み込み
+	 * Load options from a preset
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 * @param preset Preset number
@@ -193,6 +200,8 @@ public class UltraMode extends NetDummyMode {
 		tspinEnableType = prop.getProperty("ultra.tspinEnableType." + preset, 1);
 		enableTSpin = prop.getProperty("ultra.enableTSpin." + preset, true);
 		enableTSpinKick = prop.getProperty("ultra.enableTSpinKick." + preset, true);
+		spinCheckType = prop.getProperty("ultra.spinCheckType." + preset, 0);
+		tspinEnableEZ = prop.getProperty("ultra.tspinEnableEZ." + preset, false);
 		enableB2B = prop.getProperty("ultra.enableB2B." + preset, true);
 		enableCombo = prop.getProperty("ultra.enableCombo." + preset, true);
 		big = prop.getProperty("ultra.big." + preset, false);
@@ -200,7 +209,7 @@ public class UltraMode extends NetDummyMode {
 	}
 
 	/**
-	 * Presetを保存
+	 * Save options to a preset
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 * @param preset Preset number
@@ -217,6 +226,8 @@ public class UltraMode extends NetDummyMode {
 		prop.setProperty("ultra.tspinEnableType." + preset, tspinEnableType);
 		prop.setProperty("ultra.enableTSpin." + preset, enableTSpin);
 		prop.setProperty("ultra.enableTSpinKick." + preset, enableTSpinKick);
+		prop.setProperty("ultra.spinCheckType." + preset, spinCheckType);
+		prop.setProperty("ultra.tspinEnableEZ." + preset, tspinEnableEZ);
 		prop.setProperty("ultra.enableB2B." + preset, enableB2B);
 		prop.setProperty("ultra.enableCombo." + preset, enableCombo);
 		prop.setProperty("ultra.big." + preset, big);
@@ -235,7 +246,7 @@ public class UltraMode extends NetDummyMode {
 		// Menu
 		else if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 15);
+			int change = updateCursor(engine, 17);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -303,13 +314,21 @@ public class UltraMode extends NetDummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 12:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 13:
-					enableCombo = !enableCombo;
+					tspinEnableEZ = !tspinEnableEZ;
 					break;
 				case 14:
+					enableB2B = !enableB2B;
+					break;
 				case 15:
+					enableCombo = !enableCombo;
+					break;
+				case 16:
+				case 17:
 					presetNumber += change;
 					if(presetNumber < 0) presetNumber = 99;
 					if(presetNumber > 99) presetNumber = 0;
@@ -324,12 +343,12 @@ public class UltraMode extends NetDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 14) {
+				if(engine.statc[2] == 16) {
 					loadPreset(engine, owner.modeConfig, presetNumber);
 
 					// NET: Signal options change
 					if(netIsNetPlay && (netNumSpectators > 0)) netSendOptions(engine);
-				} else if(engine.statc[2] == 15) {
+				} else if(engine.statc[2] == 17) {
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -404,9 +423,11 @@ public class UltraMode extends NetDummyMode {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 10,
 					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"SPIN TYPE", (spinCheckType == 0) ? "4POINT" : "IMMOBILE",
+					"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo));
-			drawMenu(engine, playerID, receiver, 8, EventReceiver.COLOR_GREEN, 14,
+			drawMenu(engine, playerID, receiver, 12, EventReceiver.COLOR_GREEN, 16,
 					"LOAD", String.valueOf(presetNumber),
 					"SAVE", String.valueOf(presetNumber));
 		}
@@ -444,6 +465,9 @@ public class UltraMode extends NetDummyMode {
 			engine.tspinEnable = enableTSpin;
 			engine.tspinAllowKick = enableTSpinKick;
 		}
+
+		engine.spinCheckType = spinCheckType;
+		engine.tspinEnableEZ = tspinEnableEZ;
 	}
 
 	/*
@@ -547,6 +571,10 @@ public class UltraMode extends NetDummyMode {
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if((lastcombo >= 2) && (lastevent != EVENT_TSPIN_ZERO_MINI) && (lastevent != EVENT_TSPIN_ZERO))
@@ -572,7 +600,7 @@ public class UltraMode extends NetDummyMode {
 
 		if(engine.tspin) {
 			// T-Spin 0 lines
-			if(lines == 0) {
+			if((lines == 0) && (!engine.tspinez)) {
 				if(engine.tspinmini) {
 					pts += 100;
 					lastevent = EVENT_TSPIN_ZERO_MINI;
@@ -580,6 +608,15 @@ public class UltraMode extends NetDummyMode {
 					pts += 400;
 					lastevent = EVENT_TSPIN_ZERO;
 				}
+			}
+			// Immobile EZ Spin
+			else if(engine.tspinez && (lines > 0)) {
+				if(engine.b2b) {
+					pts += 180 * (engine.statistics.level + 1);
+				} else {
+					pts += 120 * (engine.statistics.level + 1);
+				}
+				lastevent = EVENT_TSPIN_EZ;
 			}
 			// T-Spin 1 line
 			else if(lines == 1) {
@@ -957,8 +994,8 @@ public class UltraMode extends NetDummyMode {
 		msg += engine.speed.gravity + "\t" + engine.speed.denominator + "\t" + engine.speed.are + "\t";
 		msg += engine.speed.areLine + "\t" + engine.speed.lineDelay + "\t" + engine.speed.lockDelay + "\t";
 		msg += engine.speed.das + "\t" + bgmno + "\t" + big + "\t" + goaltype + "\t" + tspinEnableType + "\t";
-		msg += enableTSpinKick + "\t" + enableB2B + "\t" + enableCombo + "\t" + presetNumber;
-		msg += "\n";
+		msg += enableTSpinKick + "\t" + enableB2B + "\t" + enableCombo + "\t" + presetNumber + "\t";
+		msg += spinCheckType + "\t" + tspinEnableEZ + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -982,6 +1019,8 @@ public class UltraMode extends NetDummyMode {
 		enableB2B = Boolean.parseBoolean(message[16]);
 		enableCombo = Boolean.parseBoolean(message[17]);
 		presetNumber = Integer.parseInt(message[18]);
+		spinCheckType = Integer.parseInt(message[19]);
+		tspinEnableEZ = Boolean.parseBoolean(message[20]);
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class PracticeMode extends DummyMode {
 	static Logger log = Logger.getLogger(PracticeMode.class);
 
 	/** Current version */
-	private static final int CURRENT_VERSION = 4;
+	private static final int CURRENT_VERSION = 5;
 
 	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
@@ -63,7 +63,8 @@ public class PracticeMode extends DummyMode {
 							 EVENT_TSPIN_SINGLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
-							 EVENT_TSPIN_TRIPLE = 11;
+							 EVENT_TSPIN_TRIPLE = 11,
+							 EVENT_TSPIN_EZ = 12;
 
 	/** Comboで手に入る point */
 	private static final int COMBO_GOAL_TABLE[] = {0,0,1,1,2,2,3,3,4,4,4,5};
@@ -89,6 +90,9 @@ public class PracticeMode extends DummyMode {
 
 	/** Comboタイプの表示名 */
 	private static final String[] COMBOTYPE_STRING = {"DISABLE", "NORMAL", "DOUBLE"};
+
+	/** Outline type names */
+	private static final String[] BLOCK_OUTLINE_TYPE_STRING = {"NONE", "NORMAL", "CONNECT", "SAMECOLOR"};
 
 	/** GameManager that owns this mode */
 	private GameManager owner;
@@ -140,6 +144,12 @@ public class PracticeMode extends DummyMode {
 
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
+
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
 
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
@@ -210,6 +220,18 @@ public class PracticeMode extends DummyMode {
 	/** 骨Blockを使う */
 	private boolean bone;
 
+	/** Number of frames before placed blocks disappear (-1:Disable) */
+	private int blockHidden;
+
+	/** Use alpha-blending for blockHidden */
+	private boolean blockHiddenAnim;
+
+	/** Outline type */
+	private int blockOutlineType;
+
+	/** Show outline only flag. If enabled it does not show actual image of blocks. */
+	private boolean blockShowOutlineOnly;
+
 	/*
 	 * Mode name
 	 */
@@ -278,6 +300,8 @@ public class PracticeMode extends DummyMode {
 		tspinEnableType = prop.getProperty("practice.tspinEnableType." + preset, 1);
 		enableTSpin = prop.getProperty("practice.enableTSpin." + preset, true);
 		enableTSpinKick = prop.getProperty("practice.enableTSpinKick." + preset, true);
+		spinCheckType = prop.getProperty("practice.spinCheckType." + preset, 0);
+		tspinEnableEZ = prop.getProperty("practice.tspinEnableEZ." + preset, false);
 		enableB2B = prop.getProperty("practice.enableB2B." + preset, true);
 		comboType = prop.getProperty("practice.comboType." + preset, GameEngine.COMBO_TYPE_NORMAL);
 		big = prop.getProperty("practice.big." + preset, false);
@@ -294,6 +318,10 @@ public class PracticeMode extends DummyMode {
 		useMap = prop.getProperty("practice.useMap." + preset, false);
 		timelimitResetEveryLevel = prop.getProperty("practice.timelimitResetEveryLevel." + preset, false);
 		bone = prop.getProperty("practice.bone." + preset, false);
+		blockHidden = prop.getProperty("practice.blockHidden." + preset, -1);
+		blockHiddenAnim = prop.getProperty("practice.blockHiddenAnim." + preset, true);
+		blockOutlineType = prop.getProperty("practice.blockOutlineType." + preset, GameEngine.BLOCK_OUTLINE_NORMAL);
+		blockShowOutlineOnly = prop.getProperty("practice.blockShowOutlineOnly." + preset, false);
 	}
 
 	/**
@@ -314,6 +342,8 @@ public class PracticeMode extends DummyMode {
 		prop.setProperty("practice.tspinEnableType." + preset, tspinEnableType);
 		prop.setProperty("practice.enableTSpin." + preset, enableTSpin);
 		prop.setProperty("practice.enableTSpinKick." + preset, enableTSpinKick);
+		prop.setProperty("practice.spinCheckType." + preset, spinCheckType);
+		prop.setProperty("practice.tspinEnableEZ." + preset, tspinEnableEZ);
 		prop.setProperty("practice.enableB2B." + preset, enableB2B);
 		prop.setProperty("practice.comboType." + preset, comboType);
 		prop.setProperty("practice.big." + preset, big);
@@ -330,6 +360,10 @@ public class PracticeMode extends DummyMode {
 		prop.setProperty("practice.useMap." + preset, useMap);
 		prop.setProperty("practice.timelimitResetEveryLevel." + preset, timelimitResetEveryLevel);
 		prop.setProperty("practice.bone." + preset, bone);
+		prop.setProperty("practice.blockHidden." + preset, blockHidden);
+		prop.setProperty("practice.blockHiddenAnim." + preset, blockHiddenAnim);
+		prop.setProperty("practice.blockOutlineType." + preset, blockOutlineType);
+		prop.setProperty("practice.blockShowOutlineOnly." + preset, blockShowOutlineOnly);
 	}
 
 	/**
@@ -366,7 +400,7 @@ public class PracticeMode extends DummyMode {
 			owner.menuOnly = true;
 
 			// Configuration changes
-			int change = updateCursor(engine, 38);
+			int change = updateCursor(engine, 44);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -434,88 +468,112 @@ public class PracticeMode extends DummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 12:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 13:
+					tspinEnableEZ = !tspinEnableEZ;
+					break;
+				case 14:
+					enableB2B = !enableB2B;
+					break;
+				case 15:
 					comboType += change;
 					if(comboType < 0) comboType = 2;
 					if(comboType > 2) comboType = 0;
 					break;
-				case 14:
+				case 16:
 					lvstopse = !lvstopse;
 					break;
-				case 15:
+				case 17:
 					bigmove = !bigmove;
 					break;
-				case 16:
+				case 18:
 					bighalf = !bighalf;
 					break;
-				case 17:
+				case 19:
 					goallv += change * m;
 					if(goallv < -1) goallv = 9999;
 					if(goallv > 9999) goallv = -1;
 					break;
-				case 18:
+				case 20:
 					timelimit += change * 60 * m;
 					if(timelimit < 0) timelimit = 3600 * 20;
 					if(timelimit > 3600 * 20) timelimit = 0;
 					break;
-				case 19:
+				case 21:
 					rolltimelimit += change * 60 * m;
 					if(rolltimelimit < 0) rolltimelimit = 3600 * 20;
 					if(rolltimelimit > 3600 * 20) rolltimelimit = 0;
 					break;
-				case 20:
+				case 22:
 					timelimitResetEveryLevel = !timelimitResetEveryLevel;
 					break;
-				case 21:
+				case 23:
 					bone = !bone;
 					break;
-				case 22:
-					pieceEnable[0] = !pieceEnable[0];
-					break;
-				case 23:
-					pieceEnable[1] = !pieceEnable[1];
-					break;
 				case 24:
-					pieceEnable[2] = !pieceEnable[2];
+					blockHidden += change;
+					if(blockHidden < -1) blockHidden = 99;
+					if(blockHidden > 99) blockHidden = -1;
 					break;
 				case 25:
-					pieceEnable[3] = !pieceEnable[3];
+					blockHiddenAnim = !blockHiddenAnim;
 					break;
 				case 26:
-					pieceEnable[4] = !pieceEnable[4];
+					blockOutlineType += change;
+					if(blockOutlineType < 0) blockOutlineType = 3;
+					if(blockOutlineType > 3) blockOutlineType = 0;
 					break;
 				case 27:
-					pieceEnable[5] = !pieceEnable[5];
+					blockShowOutlineOnly = !blockShowOutlineOnly;
 					break;
 				case 28:
-					pieceEnable[6] = !pieceEnable[6];
+					pieceEnable[0] = !pieceEnable[0];
 					break;
 				case 29:
-					pieceEnable[7] = !pieceEnable[7];
+					pieceEnable[1] = !pieceEnable[1];
 					break;
 				case 30:
-					pieceEnable[8] = !pieceEnable[8];
+					pieceEnable[2] = !pieceEnable[2];
 					break;
 				case 31:
-					pieceEnable[9] = !pieceEnable[9];
+					pieceEnable[3] = !pieceEnable[3];
 					break;
 				case 32:
-					pieceEnable[10] = !pieceEnable[10];
+					pieceEnable[4] = !pieceEnable[4];
 					break;
 				case 33:
-					useMap = !useMap;
+					pieceEnable[5] = !pieceEnable[5];
 					break;
 				case 34:
+					pieceEnable[6] = !pieceEnable[6];
+					break;
 				case 35:
+					pieceEnable[7] = !pieceEnable[7];
+					break;
 				case 36:
+					pieceEnable[8] = !pieceEnable[8];
+					break;
+				case 37:
+					pieceEnable[9] = !pieceEnable[9];
+					break;
+				case 38:
+					pieceEnable[10] = !pieceEnable[10];
+					break;
+				case 39:
+					useMap = !useMap;
+					break;
+				case 40:
+				case 41:
+				case 42:
 					mapNumber += change;
 					if(mapNumber < 0) mapNumber = 99;
 					if(mapNumber > 99) mapNumber = 0;
 					break;
-				case 37:
-				case 38:
+				case 43:
+				case 44:
 					presetNumber += change;
 					if(presetNumber < 0) presetNumber = 99;
 					if(presetNumber > 99) presetNumber = 0;
@@ -527,11 +585,11 @@ public class PracticeMode extends DummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 34) {
+				if(engine.statc[2] == 40) {
 					// fieldエディット
 					engine.enterFieldEdit();
 					return true;
-				} else if(engine.statc[2] == 35) {
+				} else if(engine.statc[2] == 41) {
 					// Map読み込み
 					engine.createFieldIfNeeded();
 					engine.field.reset();
@@ -541,17 +599,17 @@ public class PracticeMode extends DummyMode {
 						loadMap(engine.field, prop, 0);
 						engine.field.setAllSkin(engine.getSkin());
 					}
-				} else if(engine.statc[2] == 36) {
+				} else if(engine.statc[2] == 42) {
 					// Map保存
 					if(engine.field != null) {
 						CustomProperties prop = new CustomProperties();
 						saveMap(engine.field, prop, 0);
 						receiver.saveProperties("config/map/practice/" + mapNumber + ".map", prop);
 					}
-				} else if(engine.statc[2] == 37) {
+				} else if(engine.statc[2] == 43) {
 					// Preset読み込み
 					loadPreset(engine, owner.modeConfig, presetNumber);
-				} else if(engine.statc[2] == 38) {
+				} else if(engine.statc[2] == 44) {
 					// Preset保存
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
@@ -615,7 +673,7 @@ public class PracticeMode extends DummyMode {
 			receiver.drawMenuFont(engine, playerID, 1, 27, "F:SKIP", EventReceiver.COLOR_RED);
 		}
 
-		if(engine.statc[2] < 22) {
+		if(engine.statc[2] < 23) {
 			if(owner.replayMode == false) {
 				receiver.drawMenuFont(engine, playerID, 1, engine.statc[2] + 3, "b", EventReceiver.COLOR_RED);
 			}
@@ -640,11 +698,13 @@ public class PracticeMode extends DummyMode {
 			}
 			receiver.drawMenuFont(engine, playerID, 2, 13, "SPIN BONUS:" + strTSpinEnable, (engine.statc[2] == 10));
 			receiver.drawMenuFont(engine, playerID, 2, 14, "EZ SPIN:" + GeneralUtil.getONorOFF(enableTSpinKick), (engine.statc[2] == 11));
-			receiver.drawMenuFont(engine, playerID, 2, 15, "B2B:" + GeneralUtil.getONorOFF(enableB2B), (engine.statc[2] == 12));
-			receiver.drawMenuFont(engine, playerID, 2, 16, "COMBO:" + COMBOTYPE_STRING[comboType], (engine.statc[2] == 13));
-			receiver.drawMenuFont(engine, playerID, 2, 17, "LEVEL STOP SE:" + GeneralUtil.getONorOFF(lvstopse), (engine.statc[2] == 14));
-			receiver.drawMenuFont(engine, playerID, 2, 18, "BIG MOVE:" + (bigmove ? "2 CELL" : "1 CELL"), (engine.statc[2] == 15));
-			receiver.drawMenuFont(engine, playerID, 2, 19, "BIG HALF:" + GeneralUtil.getONorOFF(bighalf), (engine.statc[2] == 16));
+			receiver.drawMenuFont(engine, playerID, 2, 15, "SPIN TYPE:" + ((spinCheckType == 0) ? "4POINT" : "IMMOBILE"), (engine.statc[2] == 12));
+			receiver.drawMenuFont(engine, playerID, 2, 16, "EZ IMMOBILE:" + GeneralUtil.getONorOFF(tspinEnableEZ), (engine.statc[2] == 13));
+			receiver.drawMenuFont(engine, playerID, 2, 17, "B2B:" + GeneralUtil.getONorOFF(enableB2B), (engine.statc[2] == 14));
+			receiver.drawMenuFont(engine, playerID, 2, 18, "COMBO:" + COMBOTYPE_STRING[comboType], (engine.statc[2] == 15));
+			receiver.drawMenuFont(engine, playerID, 2, 19, "LEVEL STOP SE:" + GeneralUtil.getONorOFF(lvstopse), (engine.statc[2] == 16));
+			receiver.drawMenuFont(engine, playerID, 2, 20, "BIG MOVE:" + (bigmove ? "2 CELL" : "1 CELL"), (engine.statc[2] == 17));
+			receiver.drawMenuFont(engine, playerID, 2, 21, "BIG HALF:" + GeneralUtil.getONorOFF(bighalf), (engine.statc[2] == 18));
 			String strGoalLv = "ENDLESS";
 			if(goallv >= 0) {
 				if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS))
@@ -654,36 +714,44 @@ public class PracticeMode extends DummyMode {
 				else
 					strGoalLv = "LV" + String.valueOf(goallv + 1);
 			}
-			receiver.drawMenuFont(engine, playerID, 2, 20, "GOAL LEVEL:" + strGoalLv, (engine.statc[2] == 17));
-			receiver.drawMenuFont(engine, playerID, 2, 21, "TIME LIMIT:" + ((timelimit == 0) ? "NONE" : GeneralUtil.getTime(timelimit)),
-								  (engine.statc[2] == 18));
-			receiver.drawMenuFont(engine, playerID, 2, 22, "ROLL LIMIT:" + ((rolltimelimit == 0) ? "NONE" : GeneralUtil.getTime(rolltimelimit)),
-								  (engine.statc[2] == 19));
-			receiver.drawMenuFont(engine, playerID, 2, 23, "TIME LIMIT RESET EVERY LEVEL:" + GeneralUtil.getONorOFF(timelimitResetEveryLevel),
+			receiver.drawMenuFont(engine, playerID, 2, 22, "GOAL LEVEL:" + strGoalLv, (engine.statc[2] == 19));
+			receiver.drawMenuFont(engine, playerID, 2, 23, "TIME LIMIT:" + ((timelimit == 0) ? "NONE" : GeneralUtil.getTime(timelimit)),
 								  (engine.statc[2] == 20));
-			receiver.drawMenuFont(engine, playerID, 2, 24, "USE BONE BLOCKS:" + GeneralUtil.getONorOFF(bone), (engine.statc[2] == 21));
-		} else if(engine.statc[2] < 42) {
+			receiver.drawMenuFont(engine, playerID, 2, 24, "ROLL LIMIT:" + ((rolltimelimit == 0) ? "NONE" : GeneralUtil.getTime(rolltimelimit)),
+								  (engine.statc[2] == 21));
+			receiver.drawMenuFont(engine, playerID, 2, 25, "TIME LIMIT RESET EVERY LEVEL:" + GeneralUtil.getONorOFF(timelimitResetEveryLevel),
+					  (engine.statc[2] == 22));
+		} else if(engine.statc[2] < 45) {
 			if(owner.replayMode == false) {
-				receiver.drawMenuFont(engine, playerID, 1, engine.statc[2] - 22 + 3, "b", EventReceiver.COLOR_RED);
+				receiver.drawMenuFont(engine, playerID, 1, engine.statc[2] - 23 + 3, "b", EventReceiver.COLOR_RED);
 			}
 
-			receiver.drawMenuFont(engine, playerID, 2,  3, "PIECE I:" + GeneralUtil.getONorOFF(pieceEnable[0]), (engine.statc[2] == 22));
-			receiver.drawMenuFont(engine, playerID, 2,  4, "PIECE L:" + GeneralUtil.getONorOFF(pieceEnable[1]), (engine.statc[2] == 23));
-			receiver.drawMenuFont(engine, playerID, 2,  5, "PIECE O:" + GeneralUtil.getONorOFF(pieceEnable[2]), (engine.statc[2] == 24));
-			receiver.drawMenuFont(engine, playerID, 2,  6, "PIECE Z:" + GeneralUtil.getONorOFF(pieceEnable[3]), (engine.statc[2] == 25));
-			receiver.drawMenuFont(engine, playerID, 2,  7, "PIECE T:" + GeneralUtil.getONorOFF(pieceEnable[4]), (engine.statc[2] == 26));
-			receiver.drawMenuFont(engine, playerID, 2,  8, "PIECE J:" + GeneralUtil.getONorOFF(pieceEnable[5]), (engine.statc[2] == 27));
-			receiver.drawMenuFont(engine, playerID, 2,  9, "PIECE S:" + GeneralUtil.getONorOFF(pieceEnable[6]), (engine.statc[2] == 28));
-			receiver.drawMenuFont(engine, playerID, 2, 10, "PIECE I1:" + GeneralUtil.getONorOFF(pieceEnable[7]), (engine.statc[2] == 29));
-			receiver.drawMenuFont(engine, playerID, 2, 11, "PIECE I2:" + GeneralUtil.getONorOFF(pieceEnable[8]), (engine.statc[2] == 30));
-			receiver.drawMenuFont(engine, playerID, 2, 12, "PIECE I3:" + GeneralUtil.getONorOFF(pieceEnable[9]), (engine.statc[2] == 31));
-			receiver.drawMenuFont(engine, playerID, 2, 13, "PIECE L3:" + GeneralUtil.getONorOFF(pieceEnable[10]), (engine.statc[2] == 32));
-			receiver.drawMenuFont(engine, playerID, 2, 14, "USE MAP:" + GeneralUtil.getONorOFF(useMap), (engine.statc[2] == 33));
-			receiver.drawMenuFont(engine, playerID, 2, 15, "[EDIT FIELD MAP]", (engine.statc[2] == 34));
-			receiver.drawMenuFont(engine, playerID, 2, 16, "[LOAD FIELD MAP]:" + mapNumber, (engine.statc[2] == 35));
-			receiver.drawMenuFont(engine, playerID, 2, 17, "[SAVE FIELD MAP]:" + mapNumber, (engine.statc[2] == 36));
-			receiver.drawMenuFont(engine, playerID, 2, 18, "[LOAD PRESET]:" + presetNumber, (engine.statc[2] == 37));
-			receiver.drawMenuFont(engine, playerID, 2, 19, "[SAVE PRESET]:" + presetNumber, (engine.statc[2] == 38));
+			receiver.drawMenuFont(engine, playerID, 2,  3, "USE BONE BLOCKS:" + GeneralUtil.getONorOFF(bone), (engine.statc[2] == 23));
+			receiver.drawMenuFont(engine, playerID, 2,  4, "BLOCK HIDDEN FRAMES:" + ((blockHidden == -1) ? "NONE" : ""+blockHidden),
+					(engine.statc[2] == 24));
+			receiver.drawMenuFont(engine, playerID, 2,  5, "BLOCK HIDDEN ANIM:" + GeneralUtil.getONorOFF(blockHiddenAnim),
+					(engine.statc[2] == 25));
+			receiver.drawMenuFont(engine, playerID, 2,  6, "BLOCK OUTLINE TYPE:" + BLOCK_OUTLINE_TYPE_STRING[blockOutlineType],
+					(engine.statc[2] == 26));
+			receiver.drawMenuFont(engine, playerID, 2,  7, "BLOCK OUTLINE ONLY:" + GeneralUtil.getONorOFF(blockShowOutlineOnly),
+					(engine.statc[2] == 27));
+			receiver.drawMenuFont(engine, playerID, 2,  8, "PIECE I:" + GeneralUtil.getONorOFF(pieceEnable[0]), (engine.statc[2] == 28));
+			receiver.drawMenuFont(engine, playerID, 2,  9, "PIECE L:" + GeneralUtil.getONorOFF(pieceEnable[1]), (engine.statc[2] == 29));
+			receiver.drawMenuFont(engine, playerID, 2, 10, "PIECE O:" + GeneralUtil.getONorOFF(pieceEnable[2]), (engine.statc[2] == 30));
+			receiver.drawMenuFont(engine, playerID, 2, 11, "PIECE Z:" + GeneralUtil.getONorOFF(pieceEnable[3]), (engine.statc[2] == 31));
+			receiver.drawMenuFont(engine, playerID, 2, 12, "PIECE T:" + GeneralUtil.getONorOFF(pieceEnable[4]), (engine.statc[2] == 32));
+			receiver.drawMenuFont(engine, playerID, 2, 13, "PIECE J:" + GeneralUtil.getONorOFF(pieceEnable[5]), (engine.statc[2] == 33));
+			receiver.drawMenuFont(engine, playerID, 2, 14, "PIECE S:" + GeneralUtil.getONorOFF(pieceEnable[6]), (engine.statc[2] == 34));
+			receiver.drawMenuFont(engine, playerID, 2, 15, "PIECE I1:" + GeneralUtil.getONorOFF(pieceEnable[7]), (engine.statc[2] == 35));
+			receiver.drawMenuFont(engine, playerID, 2, 16, "PIECE I2:" + GeneralUtil.getONorOFF(pieceEnable[8]), (engine.statc[2] == 36));
+			receiver.drawMenuFont(engine, playerID, 2, 17, "PIECE I3:" + GeneralUtil.getONorOFF(pieceEnable[9]), (engine.statc[2] == 37));
+			receiver.drawMenuFont(engine, playerID, 2, 18, "PIECE L3:" + GeneralUtil.getONorOFF(pieceEnable[10]), (engine.statc[2] == 38));
+			receiver.drawMenuFont(engine, playerID, 2, 19, "USE MAP:" + GeneralUtil.getONorOFF(useMap), (engine.statc[2] == 39));
+			receiver.drawMenuFont(engine, playerID, 2, 20, "[EDIT FIELD MAP]", (engine.statc[2] == 40));
+			receiver.drawMenuFont(engine, playerID, 2, 21, "[LOAD FIELD MAP]:" + mapNumber, (engine.statc[2] == 41));
+			receiver.drawMenuFont(engine, playerID, 2, 22, "[SAVE FIELD MAP]:" + mapNumber, (engine.statc[2] == 42));
+			receiver.drawMenuFont(engine, playerID, 2, 23, "[LOAD PRESET]:" + presetNumber, (engine.statc[2] == 43));
+			receiver.drawMenuFont(engine, playerID, 2, 24, "[SAVE PRESET]:" + presetNumber, (engine.statc[2] == 44));
 		}
 	}
 
@@ -757,12 +825,22 @@ public class PracticeMode extends DummyMode {
 			} else {
 				engine.tspinEnable = enableTSpin;
 			}
+
+			engine.spinCheckType = spinCheckType;
+			engine.tspinEnableEZ = tspinEnableEZ;
 		} else {
 			engine.tspinEnable = false;
 			engine.tspinAllowKick = false;
 			engine.b2bEnable = false;
 			engine.comboType = GameEngine.COMBO_TYPE_DOUBLE;
 			engine.statistics.levelDispAdd = 0;
+		}
+
+		if(version >= 5) {
+			engine.blockHidden = blockHidden;
+			engine.blockHiddenAnim = blockHiddenAnim;
+			engine.blockOutlineType = blockOutlineType;
+			engine.blockShowOutlineOnly = blockShowOutlineOnly;
 		}
 
 		owner.bgmStatus.bgm = bgmno;
@@ -941,6 +1019,10 @@ public class PracticeMode extends DummyMode {
 				case EVENT_TSPIN_TRIPLE:
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
+					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
 					break;
 				}
 
@@ -1191,7 +1273,7 @@ public class PracticeMode extends DummyMode {
 
 		if(engine.tspin) {
 			// T-Spin 0 lines
-			if(lines == 0) {
+			if((lines == 0) && (!engine.tspinez)) {
 				if(engine.tspinmini) {
 					pts += 100 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO_MINI;
@@ -1199,6 +1281,15 @@ public class PracticeMode extends DummyMode {
 					pts += 400 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO;
 				}
+			}
+			// Immobile EZ Spin
+			else if(engine.tspinez && (lines > 0)) {
+				if(engine.b2b) {
+					pts += 180 * (engine.statistics.level + 1);
+				} else {
+					pts += 120 * (engine.statistics.level + 1);
+				}
+				lastevent = EVENT_TSPIN_EZ;
 			}
 			// T-Spin 1 line
 			else if(lines == 1) {
