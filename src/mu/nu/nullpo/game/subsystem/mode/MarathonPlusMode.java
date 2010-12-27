@@ -79,7 +79,8 @@ public class MarathonPlusMode extends NetDummyMode {
 							 EVENT_TSPIN_SINGLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
-							 EVENT_TSPIN_TRIPLE = 11;
+							 EVENT_TSPIN_TRIPLE = 11,
+							 EVENT_TSPIN_EZ = 12;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
@@ -93,28 +94,28 @@ public class MarathonPlusMode extends NetDummyMode {
 	/** Most recent scoring event type */
 	private int lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** True if most recent scoring event is a B2B */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Combo count for most recent scoring event */
 	private int lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Piece ID for most recent scoring event */
 	private int lastpiece;
 
 	/** Current BGM */
 	private int bgmlv;
 
-	/**  bonus levelでのline count */
+	/** Bonus level line count */
 	private int bonusLines;
 
-	/**  bonus levelでBlockを置いた count */
+	/** Bonus level piece count */
 	private int bonusPieceCount;
 
-	/**  bonus levelでのBlockが見える残り time */
+	/** Bonus level remaining flash time */
 	private int bonusFlashNow;
 
-	/**  bonus level経過 time */
+	/** Bonus level time */
 	private int bonusTime;
 
 	/** Level at start time */
@@ -128,6 +129,12 @@ public class MarathonPlusMode extends NetDummyMode {
 
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
+
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
 
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
@@ -245,7 +252,7 @@ public class MarathonPlusMode extends NetDummyMode {
 		// Menu
 		else if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 5);
+			int change = updateCursor(engine, 7);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -268,12 +275,20 @@ public class MarathonPlusMode extends NetDummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 3:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 4:
-					enableCombo = !enableCombo;
+					tspinEnableEZ = !tspinEnableEZ;
 					break;
 				case 5:
+					enableB2B = !enableB2B;
+					break;
+				case 6:
+					enableCombo = !enableCombo;
+					break;
+				case 7:
 					big = !big;
 					break;
 				}
@@ -343,6 +358,8 @@ public class MarathonPlusMode extends NetDummyMode {
 					"LEVEL", String.valueOf(startlevel + 1),
 					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"SPIN TYPE", (spinCheckType == 0) ? "4POINT" : "IMMOBILE",
+					"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo),
 					"BIG", GeneralUtil.getONorOFF(big));
@@ -380,6 +397,10 @@ public class MarathonPlusMode extends NetDummyMode {
 				engine.tspinEnable = enableTSpin;
 			}
 		}
+
+		engine.spinCheckType = spinCheckType;
+		engine.tspinEnableEZ = tspinEnableEZ;
+
 		setSpeed(engine);
 		setStartBgmlv(engine);
 
@@ -489,6 +510,10 @@ public class MarathonPlusMode extends NetDummyMode {
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if((lastcombo >= 2) && (lastevent != EVENT_TSPIN_ZERO_MINI) && (lastevent != EVENT_TSPIN_ZERO))
@@ -554,7 +579,7 @@ public class MarathonPlusMode extends NetDummyMode {
 
 		if(engine.tspin) {
 			// T-Spin 0 lines
-			if(lines == 0) {
+			if((lines == 0) && (!engine.tspinez)) {
 				if(engine.tspinmini) {
 					pts += 100 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO_MINI;
@@ -562,6 +587,15 @@ public class MarathonPlusMode extends NetDummyMode {
 					pts += 400 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO;
 				}
+			}
+			// Immobile EZ Spin
+			else if(engine.tspinez && (lines > 0)) {
+				if(engine.b2b) {
+					pts += 180 * (engine.statistics.level + 1);
+				} else {
+					pts += 120 * (engine.statistics.level + 1);
+				}
+				lastevent = EVENT_TSPIN_EZ;
 			}
 			// T-Spin 1 line
 			else if(lines == 1) {
@@ -676,7 +710,7 @@ public class MarathonPlusMode extends NetDummyMode {
 			if(engine.statistics.lines % 10 >= 8) engine.meterColor = GameEngine.METER_COLOR_RED;
 		}
 
-		//  bonus level
+		// Bonus level
 		if(engine.statistics.level >= 20) {
 			bonusLines += lines;
 			bonusPieceCount++;
@@ -739,7 +773,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	}
 
 	/*
-	 *  bonus level到達画面の処理
+	 * Bonus level unlocked screen
 	 */
 	@Override
 	public boolean onCustom(GameEngine engine, int playerID) {
@@ -786,7 +820,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	}
 
 	/*
-	 *  bonus level到達画面の描画
+	 * Render bonus level unlocked screen
 	 */
 	@Override
 	public void renderCustom(GameEngine engine, int playerID) {
@@ -902,6 +936,8 @@ public class MarathonPlusMode extends NetDummyMode {
 		tspinEnableType = prop.getProperty("marathonplus.tspinEnableType", 1);
 		enableTSpin = prop.getProperty("marathonplus.enableTSpin", true);
 		enableTSpinKick = prop.getProperty("marathonplus.enableTSpinKick", true);
+		spinCheckType = prop.getProperty("marathonplus.spinCheckType", 0);
+		tspinEnableEZ = prop.getProperty("marathonplus.tspinEnableEZ", false);
 		enableB2B = prop.getProperty("marathonplus.enableB2B", true);
 		enableCombo = prop.getProperty("marathonplus.enableCombo", true);
 		big = prop.getProperty("marathonplus.big", false);
@@ -917,6 +953,8 @@ public class MarathonPlusMode extends NetDummyMode {
 		prop.setProperty("marathonplus.tspinEnableType", tspinEnableType);
 		prop.setProperty("marathonplus.enableTSpin", enableTSpin);
 		prop.setProperty("marathonplus.enableTSpinKick", enableTSpinKick);
+		prop.setProperty("marathonplus.spinCheckType", spinCheckType);
+		prop.setProperty("marathonplus.tspinEnableEZ", tspinEnableEZ);
 		prop.setProperty("marathonplus.enableB2B", enableB2B);
 		prop.setProperty("marathonplus.enableCombo", enableCombo);
 		prop.setProperty("marathonplus.big", big);
@@ -1133,7 +1171,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	protected void netSendOptions(GameEngine engine) {
 		String msg = "game\toption\t";
 		msg += startlevel + "\t" + tspinEnableType + "\t" + enableTSpinKick + "\t" + enableB2B + "\t";
-		msg += enableCombo + "\t" + big + "\n";
+		msg += enableCombo + "\t" + big + "\t" + spinCheckType + "\t" + tspinEnableEZ + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -1148,6 +1186,8 @@ public class MarathonPlusMode extends NetDummyMode {
 		enableB2B = Boolean.parseBoolean(message[7]);
 		enableCombo = Boolean.parseBoolean(message[8]);
 		big = Boolean.parseBoolean(message[9]);
+		spinCheckType = Integer.parseInt(message[10]);
+		tspinEnableEZ = Boolean.parseBoolean(message[11]);
 	}
 
 	/**

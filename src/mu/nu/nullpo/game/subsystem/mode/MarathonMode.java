@@ -77,7 +77,8 @@ public class MarathonMode extends NetDummyMode {
 							 EVENT_TSPIN_SINGLE = 8,
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_DOUBLE = 10,
-							 EVENT_TSPIN_TRIPLE = 11;
+							 EVENT_TSPIN_TRIPLE = 11,
+							 EVENT_TSPIN_EZ = 12;
 
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
@@ -114,6 +115,12 @@ public class MarathonMode extends NetDummyMode {
 
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
+
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
 
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
@@ -214,7 +221,7 @@ public class MarathonMode extends NetDummyMode {
 		// Menu
 		else if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 6, playerID);
+			int change = updateCursor(engine, 8, playerID);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -241,12 +248,20 @@ public class MarathonMode extends NetDummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 3:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 4:
-					enableCombo = !enableCombo;
+					tspinEnableEZ = !tspinEnableEZ;
 					break;
 				case 5:
+					enableB2B = !enableB2B;
+					break;
+				case 6:
+					enableCombo = !enableCombo;
+					break;
+				case 7:
 					goaltype += change;
 					if(goaltype < 0) goaltype = GAMETYPE_MAX - 1;
 					if(goaltype > GAMETYPE_MAX - 1) goaltype = 0;
@@ -256,7 +271,7 @@ public class MarathonMode extends NetDummyMode {
 						engine.owner.backgroundStatus.bg = startlevel;
 					}
 					break;
-				case 6:
+				case 8:
 					big = !big;
 					break;
 				}
@@ -326,6 +341,8 @@ public class MarathonMode extends NetDummyMode {
 					"LEVEL", String.valueOf(startlevel + 1),
 					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"SPIN TYPE", (spinCheckType == 0) ? "4POINT" : "IMMOBILE",
+					"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO",  GeneralUtil.getONorOFF(enableCombo),
 					"GOAL",  (goaltype == 2) ? "ENDLESS" : tableGameClearLines[goaltype] + " LINES",
@@ -361,6 +378,9 @@ public class MarathonMode extends NetDummyMode {
 		} else {
 			engine.tspinEnable = enableTSpin;
 		}
+
+		engine.spinCheckType = spinCheckType;
+		engine.tspinEnableEZ = tspinEnableEZ;
 
 		setSpeed(engine);
 
@@ -462,6 +482,10 @@ public class MarathonMode extends NetDummyMode {
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if((lastcombo >= 2) && (lastevent != EVENT_TSPIN_ZERO_MINI) && (lastevent != EVENT_TSPIN_ZERO))
@@ -495,7 +519,7 @@ public class MarathonMode extends NetDummyMode {
 
 		if(engine.tspin) {
 			// T-Spin 0 lines
-			if(lines == 0) {
+			if((lines == 0) && (!engine.tspinez)) {
 				if(engine.tspinmini) {
 					pts += 100 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO_MINI;
@@ -503,6 +527,15 @@ public class MarathonMode extends NetDummyMode {
 					pts += 400 * (engine.statistics.level + 1);
 					lastevent = EVENT_TSPIN_ZERO;
 				}
+			}
+			// Immobile EZ Spin
+			else if(engine.tspinez && (lines > 0)) {
+				if(engine.b2b) {
+					pts += 180 * (engine.statistics.level + 1);
+				} else {
+					pts += 120 * (engine.statistics.level + 1);
+				}
+				lastevent = EVENT_TSPIN_EZ;
 			}
 			// T-Spin 1 line
 			else if(lines == 1) {
@@ -703,6 +736,8 @@ public class MarathonMode extends NetDummyMode {
 		tspinEnableType = prop.getProperty("marathon.tspinEnableType", 1);
 		enableTSpin = prop.getProperty("marathon.enableTSpin", true);
 		enableTSpinKick = prop.getProperty("marathon.enableTSpinKick", true);
+		spinCheckType = prop.getProperty("marathon.spinCheckType", 0);
+		tspinEnableEZ = prop.getProperty("marathon.tspinEnableEZ", false);
 		enableB2B = prop.getProperty("marathon.enableB2B", true);
 		enableCombo = prop.getProperty("marathon.enableCombo", true);
 		goaltype = prop.getProperty("marathon.gametype", 0);
@@ -719,6 +754,8 @@ public class MarathonMode extends NetDummyMode {
 		prop.setProperty("marathon.tspinEnableType", tspinEnableType);
 		prop.setProperty("marathon.enableTSpin", enableTSpin);
 		prop.setProperty("marathon.enableTSpinKick", enableTSpinKick);
+		prop.setProperty("marathon.spinCheckType", spinCheckType);
+		prop.setProperty("marathon.tspinEnableEZ", tspinEnableEZ);
 		prop.setProperty("marathon.enableB2B", enableB2B);
 		prop.setProperty("marathon.enableCombo", enableCombo);
 		prop.setProperty("marathon.gametype", goaltype);
@@ -875,8 +912,8 @@ public class MarathonMode extends NetDummyMode {
 	@Override
 	protected void netSendOptions(GameEngine engine) {
 		String msg = "game\toption\t";
-		msg += startlevel + "\t" + tspinEnableType + "\t" + enableTSpinKick + "\t" + enableB2B + "\t";
-		msg += enableCombo + "\t" + goaltype + "\t" + big + "\n";
+		msg += startlevel + "\t" + tspinEnableType + "\t" + enableTSpinKick + "\t" + spinCheckType + "\t" + tspinEnableEZ + "\t";
+		msg += enableB2B + "\t" + enableCombo + "\t" + goaltype + "\t" + big + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -888,10 +925,12 @@ public class MarathonMode extends NetDummyMode {
 		startlevel = Integer.parseInt(message[4]);
 		tspinEnableType = Integer.parseInt(message[5]);
 		enableTSpinKick = Boolean.parseBoolean(message[6]);
-		enableB2B = Boolean.parseBoolean(message[7]);
-		enableCombo = Boolean.parseBoolean(message[8]);
-		goaltype = Integer.parseInt(message[9]);
-		big = Boolean.parseBoolean(message[10]);
+		spinCheckType = Integer.parseInt(message[7]);
+		tspinEnableEZ = Boolean.parseBoolean(message[8]);
+		enableB2B = Boolean.parseBoolean(message[9]);
+		enableCombo = Boolean.parseBoolean(message[10]);
+		goaltype = Integer.parseInt(message[11]);
+		big = Boolean.parseBoolean(message[12]);
 	}
 
 	/**

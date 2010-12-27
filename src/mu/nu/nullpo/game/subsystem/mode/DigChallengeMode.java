@@ -525,6 +525,11 @@ public class DigChallengeMode extends NetDummyMode {
 				if(version >= 1) {
 					garbagePending++;
 					garbageTimer = 0;
+
+					// NET: Send stats
+					if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) {
+						netSendStats(engine);
+					}
 				} else {
 					garbagePending = 1;
 				}
@@ -538,7 +543,7 @@ public class DigChallengeMode extends NetDummyMode {
 				garbageTimer = 0;
 
 				// NET: Send field and stats
-				if(netIsNetPlay && !netIsWatch) {
+				if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) {
 					netSendField(engine);
 					netSendStats(engine);
 				}
@@ -562,7 +567,7 @@ public class DigChallengeMode extends NetDummyMode {
 					engine.nowPieceBottomY = engine.nowPieceObject.getBottom(engine.nowPieceX, engine.nowPieceY, engine.field);
 
 					// NET: Send piece movement
-					if(netIsNetPlay && !netIsWatch) netSendPieceMovement(engine, true);
+					if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) netSendPieceMovement(engine, true);
 				}
 			}
 		}
