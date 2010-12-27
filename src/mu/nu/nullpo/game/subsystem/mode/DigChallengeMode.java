@@ -16,7 +16,7 @@ import mu.nu.nullpo.util.GeneralUtil;
  */
 public class DigChallengeMode extends NetDummyMode {
 	/** Current version */
-	private static final int CURRENT_VERSION = 0;
+	private static final int CURRENT_VERSION = 1;
 
 	/** Number of goal type */
 	private static final int GOALTYPE_MAX = 2;
@@ -41,7 +41,8 @@ public class DigChallengeMode extends NetDummyMode {
 							 EVENT_TSPIN_SINGLE = 6,
 							 EVENT_TSPIN_DOUBLE_MINI = 7,
 							 EVENT_TSPIN_DOUBLE = 8,
-							 EVENT_TSPIN_TRIPLE = 9;
+							 EVENT_TSPIN_TRIPLE = 9,
+							 EVENT_TSPIN_EZ = 10;
 
 	/** Combo bonus table */
 	private final int[] COMBO_ATTACK_TABLE = {0,0,1,1,2,2,3,3,4,4,4,5};
@@ -92,6 +93,9 @@ public class DigChallengeMode extends NetDummyMode {
 	/** Number of garbage lines needed for next level */
 	private int garbageNextLevelLines;
 
+	/** Number of garbage lines waiting to appear (Normal type) */
+	private int garbagePending;
+
 	/** Game type */
 	private int goaltype;
 
@@ -106,6 +110,12 @@ public class DigChallengeMode extends NetDummyMode {
 
 	/** Flag for enabling wallkick T-Spins */
 	private boolean enableTSpinKick;
+
+	/** Spin check type (4Point or Immobile) */
+	private int spinCheckType;
+
+	/** Immobile EZ spin */
+	private boolean tspinEnableEZ;
 
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
@@ -155,6 +165,7 @@ public class DigChallengeMode extends NetDummyMode {
 		garbageTimer = 0;
 		garbageTotal = 0;
 		garbageNextLevelLines = 0;
+		garbagePending = 0;
 
 		rankingRank = -1;
 		rankingScore = new int[GOALTYPE_MAX][RANKING_MAX];
@@ -216,7 +227,7 @@ public class DigChallengeMode extends NetDummyMode {
 		// Menu
 		else if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 7, playerID);
+			int change = updateCursor(engine, 9, playerID);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -247,12 +258,20 @@ public class DigChallengeMode extends NetDummyMode {
 					enableTSpinKick = !enableTSpinKick;
 					break;
 				case 5:
-					enableB2B = !enableB2B;
+					spinCheckType += change;
+					if(spinCheckType < 0) spinCheckType = 1;
+					if(spinCheckType > 1) spinCheckType = 0;
 					break;
 				case 6:
-					enableCombo = !enableCombo;
+					tspinEnableEZ = !tspinEnableEZ;
 					break;
 				case 7:
+					enableB2B = !enableB2B;
+					break;
+				case 8:
+					enableCombo = !enableCombo;
+					break;
+				case 9:
 					engine.speed.das += change;
 					if(engine.speed.das < 0) engine.speed.das = 99;
 					if(engine.speed.das > 99) engine.speed.das = 0;
@@ -322,6 +341,8 @@ public class DigChallengeMode extends NetDummyMode {
 					"BGM", String.valueOf(bgmno),
 					"SPIN BONUS", strTSpinEnable,
 					"EZ SPIN", GeneralUtil.getONorOFF(enableTSpinKick),
+					"SPIN TYPE", (spinCheckType == 0) ? "4POINT" : "IMMOBILE",
+					"EZIMMOBILE", GeneralUtil.getONorOFF(tspinEnableEZ),
 					"B2B", GeneralUtil.getONorOFF(enableB2B),
 					"COMBO", GeneralUtil.getONorOFF(enableCombo),
 					"DAS", String.valueOf(engine.speed.das));
@@ -349,6 +370,11 @@ public class DigChallengeMode extends NetDummyMode {
 		} else {
 			engine.tspinEnable = true;
 			engine.useAllSpinBonus = true;
+		}
+
+		if(version >= 1) {
+			engine.spinCheckType = spinCheckType;
+			engine.tspinEnableEZ = tspinEnableEZ;
 		}
 
 		garbageTotal = LEVEL_GARBAGE_LINES * startlevel;
@@ -449,10 +475,27 @@ public class DigChallengeMode extends NetDummyMode {
 					if(lastb2b) receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
 					else receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
 					break;
+				case EVENT_TSPIN_EZ:
+					if(lastb2b) receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+					else receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+					break;
 				}
 
 				if(lastcombo >= 2)
 					receiver.drawMenuFont(engine, playerID, 2, 22, (lastcombo - 1) + "COMBO", EventReceiver.COLOR_CYAN);
+			}
+
+			if(garbagePending > 0) {
+				int x = receiver.getFieldDisplayPositionX(engine, playerID);
+				int y = receiver.getFieldDisplayPositionY(engine, playerID);
+				int fontColor = EventReceiver.COLOR_WHITE;
+
+				if(garbagePending >= 1) fontColor = EventReceiver.COLOR_YELLOW;
+				if(garbagePending >= 3) fontColor = EventReceiver.COLOR_ORANGE;
+				if(garbagePending >= 4) fontColor = EventReceiver.COLOR_RED;
+
+				String strTempGarbage = String.format("%5d", garbagePending);
+				receiver.drawDirectFont(engine, playerID, x + 96, y + 372, strTempGarbage, fontColor);
 			}
 		}
 
@@ -477,11 +520,22 @@ public class DigChallengeMode extends NetDummyMode {
 			// Update meter
 			updateMeter(engine);
 
+			// Add pending garbage (Normal)
+			if((garbageTimer >= getGarbageMaxTime(engine.statistics.level)) && (goaltype == GOALTYPE_NORMAL) && (!netIsWatch)) {
+				if(version >= 1) {
+					garbagePending++;
+					garbageTimer = 0;
+				} else {
+					garbagePending = 1;
+				}
+			}
+
 			// Add Garbage (Realtime)
 			if((garbageTimer >= getGarbageMaxTime(engine.statistics.level)) && (goaltype == GOALTYPE_REALTIME) &&
 			   (engine.stat != GameEngine.STAT_LINECLEAR) && (!netIsWatch))
 			{
 				addGarbage(engine);
+				garbageTimer = 0;
 
 				// NET: Send field and stats
 				if(netIsNetPlay && !netIsWatch) {
@@ -539,8 +593,9 @@ public class DigChallengeMode extends NetDummyMode {
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
 		// Add Garbage (Normal)
-		if((garbageTimer >= getGarbageMaxTime(engine.statistics.level)) && (goaltype == GOALTYPE_NORMAL)) {
-			addGarbage(engine);
+		if((goaltype == GOALTYPE_NORMAL) && (garbagePending > 0)) {
+			addGarbage(engine, garbagePending);
+			garbagePending = 0;
 		}
 
 		// Line clear bonus
@@ -549,6 +604,13 @@ public class DigChallengeMode extends NetDummyMode {
 			scgettime = 0;
 
 			if(engine.tspin) {
+				// Immobile EZ Spin
+				if(engine.tspinez) {
+					if(!engine.useAllSpinBonus) {
+						pts += 1;
+					}
+					lastevent = EVENT_TSPIN_EZ;
+				}
 				// T-Spin 1 line
 				if(lines == 1) {
 					if(engine.tspinmini) {
@@ -647,37 +709,54 @@ public class DigChallengeMode extends NetDummyMode {
 	 * @param engine GameEngine
 	 */
 	private void addGarbage(GameEngine engine) {
+		addGarbage(engine, 1);
+	}
+
+	/**
+	 * Add garbage line(s)
+	 * @param engine GameEngine
+	 * @param lines Number of garbage lines to add
+	 */
+	private void addGarbage(GameEngine engine, int lines) {
+		// Add garbages
 		Field field = engine.field;
 		int w = field.getWidth();
 		int h = field.getHeight();
 
 		engine.playSE("garbage");
-		garbageTimer = 0;
-
-		field.pushUp();
 
 		int prevHole = garbageHole;
-		do {
-			garbageHole = engine.random.nextInt(w);
-		} while (garbageHole == prevHole);
 
-		for(int x = 0; x < w; x++) {
-			if(x != garbageHole) {
-				field.setBlock(x,h-1,new Block(Block.BLOCK_COLOR_GRAY,engine.getSkin(),Block.BLOCK_ATTRIBUTE_VISIBLE|Block.BLOCK_ATTRIBUTE_GARBAGE));
+		for(int i = 0; i < lines; i++) {
+			do {
+				garbageHole = engine.random.nextInt(w);
+			} while (garbageHole == prevHole);
+
+			field.pushUp();
+
+			for(int x = 0; x < w; x++) {
+				if(x != garbageHole) {
+					field.setBlock(x, h-1,
+						new Block(Block.BLOCK_COLOR_GRAY,engine.getSkin(),Block.BLOCK_ATTRIBUTE_VISIBLE|Block.BLOCK_ATTRIBUTE_GARBAGE)
+					);
+				}
 			}
 		}
 
 		// Levelup
-		garbageTotal++;
-		if((garbageTotal >= garbageNextLevelLines) && (engine.statistics.level < 19)) {
+		boolean lvupflag = false;
+		garbageTotal += lines;
+
+		while((garbageTotal >= garbageNextLevelLines) && (engine.statistics.level < 19)) {
 			garbageNextLevelLines += LEVEL_GARBAGE_LINES;
-
 			engine.statistics.level++;
+			lvupflag = true;
+		}
 
+		if(lvupflag) {
 			owner.backgroundStatus.fadesw = true;
 			owner.backgroundStatus.fadecount = 0;
 			owner.backgroundStatus.fadebg = engine.statistics.level;
-
 			setSpeed(engine);
 			engine.playSE("levelup");
 		}
@@ -742,6 +821,8 @@ public class DigChallengeMode extends NetDummyMode {
 		bgmno = prop.getProperty("digchallenge.bgmno", 0);
 		tspinEnableType = prop.getProperty("digchallenge.tspinEnableType", 2);
 		enableTSpinKick = prop.getProperty("digchallenge.enableTSpinKick", true);
+		spinCheckType = prop.getProperty("digchallenge.spinCheckType", 0);
+		tspinEnableEZ = prop.getProperty("digchallenge.tspinEnableEZ", false);
 		enableB2B = prop.getProperty("digchallenge.enableB2B", true);
 		enableCombo = prop.getProperty("digchallenge.enableCombo", true);
 		owner.engine[0].speed.das = prop.getProperty("digchallenge.das", 11);
@@ -757,6 +838,8 @@ public class DigChallengeMode extends NetDummyMode {
 		prop.setProperty("digchallenge.startlevel", startlevel);
 		prop.setProperty("digchallenge.bgmno", bgmno);
 		prop.setProperty("digchallenge.tspinEnableType", tspinEnableType);
+		prop.setProperty("digchallenge.spinCheckType", spinCheckType);
+		prop.setProperty("digchallenge.tspinEnableEZ", tspinEnableEZ);
 		prop.setProperty("digchallenge.enableTSpinKick", enableTSpinKick);
 		prop.setProperty("digchallenge.enableB2B", enableB2B);
 		prop.setProperty("digchallenge.enableCombo", enableCombo);
@@ -853,7 +936,7 @@ public class DigChallengeMode extends NetDummyMode {
 		msg += garbageTimer + "\t" + garbageTotal + "\t" + goaltype + "\t";
 		msg += engine.gameActive + "\t" + engine.timerActive + "\t";
 		msg += lastscore + "\t" + scgettime + "\t" + lastevent + "\t" + lastb2b + "\t" + lastcombo + "\t" + lastpiece + "\t";
-		msg += bg + "\n";
+		msg += bg + "\t" + garbagePending + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -879,6 +962,7 @@ public class DigChallengeMode extends NetDummyMode {
 		lastcombo = Integer.parseInt(message[18]);
 		lastpiece = Integer.parseInt(message[19]);
 		engine.owner.backgroundStatus.bg = Integer.parseInt(message[20]);
+		garbagePending = Integer.parseInt(message[21]);
 
 		// Meter
 		updateMeter(engine);
@@ -910,8 +994,8 @@ public class DigChallengeMode extends NetDummyMode {
 	protected void netSendOptions(GameEngine engine) {
 		String msg = "game\toption\t";
 		msg += goaltype + "\t" + startlevel + "\t" + bgmno + "\t";
-		msg += tspinEnableType + "\t" + enableTSpinKick + "\t" + enableB2B + "\t" + enableCombo + "\t";
-		msg += engine.speed.das + "\n";
+		msg += tspinEnableType + "\t" + enableTSpinKick + "\t" + spinCheckType + "\t" + tspinEnableEZ + "\t";
+		msg += enableB2B + "\t" + enableCombo + "\t" + engine.speed.das + "\n";
 		netLobby.netPlayerClient.send(msg);
 	}
 
@@ -925,9 +1009,11 @@ public class DigChallengeMode extends NetDummyMode {
 		bgmno = Integer.parseInt(message[6]);
 		tspinEnableType = Integer.parseInt(message[7]);
 		enableTSpinKick = Boolean.parseBoolean(message[8]);
-		enableB2B = Boolean.parseBoolean(message[9]);
-		enableCombo = Boolean.parseBoolean(message[10]);
-		engine.speed.das = Integer.parseInt(message[11]);
+		spinCheckType = Integer.parseInt(message[9]);
+		tspinEnableEZ = Boolean.parseBoolean(message[10]);
+		enableB2B = Boolean.parseBoolean(message[11]);
+		enableCombo = Boolean.parseBoolean(message[12]);
+		engine.speed.das = Integer.parseInt(message[13]);
 	}
 
 	/**
