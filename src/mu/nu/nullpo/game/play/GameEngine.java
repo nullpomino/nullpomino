@@ -2082,7 +2082,7 @@ public class GameEngine {
 			if(itemRollRollEnable) nowPieceColorOverride = Block.BLOCK_COLOR_GRAY;
 
 			// 先行rotation
-			initialRotate();
+			if(versionMajor < 7.5f) initialRotate(); //XXX: Weird active time IRS
 			//if( (getARE() != 0) && ((getARELine() != 0) || (version < 6.3f)) ) initialRotate();
 
 			if((speed.gravity > speed.denominator) && (speed.denominator > 0))
@@ -2137,7 +2137,7 @@ public class GameEngine {
 					initialHoldContinuousUse = true;
 					initialHoldFlag = false;
 					holdDisable = true;
-					initialRotate();
+					initialRotate(); //Hold swap triggered IRS
 					statMove();
 					return;
 				} else if((statc[0] > 0) && (!initialHoldFlag)) {
@@ -2935,7 +2935,7 @@ public class GameEngine {
 					} else {
 						// AREなし
 						nowPieceObject = null;
-						initialRotate();
+						if(versionMajor < 7.5f) initialRotate(); //XXX: Weird IRS thing on lines cleared but no ARE
 						stat = STAT_MOVE;
 					}
 				}
