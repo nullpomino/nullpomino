@@ -206,9 +206,7 @@ CLASSIC-EASY-B2  : Almost same as CLASSIC-EASY-B, but block colors are not diffe
 CLASSIC-S        : CLASSIC0 with reverse rotation and "Wall Only" wallkick. It can kick wall, but not the already placed blocks.
 DTET             : That game was so good that the evil king had to kill it. This rule is a bit tricky. Has ARE/line clear canceling.
 NINTENDO-L       : A classical rule that was bundled with a handheld gadget which was made by king of video game.
-NINTENDO-L-FAST  : NINTENDO-L with faster sideways movement.
 NINTENDO-R       : A classical rule that was appeared before or after NINTENDO-L. Best suitable for RETRO MARATHON mode.
-NINTENDO-R-FAST  : NINTENDO-R with faster sideways movement.
 PHYSICIAN        : A rule used to play PHYSICIAN type games.
 SPF              : A rule used to play SPF type games.
 SQUARE           : Rule designed to make it easier to build squares. Best suitable for SQUARE mode.
