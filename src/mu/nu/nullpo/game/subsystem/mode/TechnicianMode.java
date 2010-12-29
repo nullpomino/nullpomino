@@ -354,7 +354,7 @@ public class TechnicianMode extends NetDummyMode {
 			}
 
 			// NET: Netplay Ranking
-			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && netCurrentRoomInfo.rated && netIsNetRankingViewOK(engine)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && netIsNetRankingViewOK(engine)) {
 				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 

@@ -289,7 +289,7 @@ public class DigRaceMode extends NetDummyMode {
 			}
 
 			// NET: Netplay Ranking
-			if(engine.ctrl.isPush(Controller.BUTTON_D) && (netIsNetPlay) && (netCurrentRoomInfo.rated) && (!big) && (engine.ai == null)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && !big && engine.ai == null) {
 				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 

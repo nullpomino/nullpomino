@@ -752,7 +752,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				owner.receiver.drawScoreFont(engine, engine.playerID, x, y+2, "PLAY", EventReceiver.COLOR_RED);
 			}
 
-			if((engine.stat == GameEngine.STAT_SETTING) && (!netIsWatch) && (netCurrentRoomInfo.rated) && netIsNetRankingViewOK(engine)) {
+			if(engine.stat == GameEngine.STAT_SETTING && !netIsWatch && netIsNetRankingViewOK(engine)) {
 				int y2 = y + 4;
 				if(y2 > 24) y2 = 24;
 				owner.receiver.drawScoreFont(engine, engine.playerID, x, y2, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
@@ -1129,9 +1129,10 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netRankingMyRank[1] = -1;
 		netIsNetRankingDisplayMode = true;
 		owner.menuOnly = true;
-		netLobby.netPlayerClient.send("spranking\t" + NetUtil.urlEncode(netCurrentRoomInfo.ruleName) + "\t" +
+		String rule = (netCurrentRoomInfo.rated ? netCurrentRoomInfo.ruleName : "all");
+		netLobby.netPlayerClient.send("spranking\t" + NetUtil.urlEncode(rule) + "\t" +
 				NetUtil.urlEncode(getName()) + "\t" + goaltype + "\t" + false + "\n");
-		netLobby.netPlayerClient.send("spranking\t" + NetUtil.urlEncode(netCurrentRoomInfo.ruleName) + "\t" +
+		netLobby.netPlayerClient.send("spranking\t" + NetUtil.urlEncode(rule) + "\t" +
 				NetUtil.urlEncode(getName()) + "\t" + goaltype + "\t" + true + "\n");
 	}
 

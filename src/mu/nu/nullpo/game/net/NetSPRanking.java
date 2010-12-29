@@ -251,4 +251,20 @@ public class NetSPRanking implements Serializable {
 			}
 		}
 	}
+	
+	/**
+	 * Condense a list of rankings into a single ranking file.
+	 * @param s The list of rankings.
+	 * @return A ranking that is the combination of all of the rankings.
+	 */
+	public static NetSPRanking mergeRankings(LinkedList<NetSPRanking> s) {
+		if (s == null || s.size() == 0) { return null; }
+		NetSPRanking acc = new NetSPRanking(s.get(0));
+		for (NetSPRanking r : s) {
+			for(int i = 0; i < r.listRecord.size(); i++) {
+				acc.registerRecord(new NetSPRecord(r.listRecord.get(i)));
+			}
+		}
+		return acc;
+	}
 }

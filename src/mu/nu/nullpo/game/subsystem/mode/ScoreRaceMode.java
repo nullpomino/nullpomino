@@ -384,8 +384,7 @@ public class ScoreRaceMode extends NetDummyMode {
 			}
 
 			// NET: Netplay Ranking
-			if(engine.ctrl.isPush(Controller.BUTTON_D) && (netIsNetPlay) && (!netIsWatch) && (netCurrentRoomInfo.rated) &&
-			   (!big) && (engine.ai == null))
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && !netIsWatch && !big && engine.ai == null)
 			{
 				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}

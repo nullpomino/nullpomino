@@ -369,7 +369,7 @@ public class UltraMode extends NetDummyMode {
 			}
 
 			// NET: Netplay Ranking
-			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && !netIsWatch && netCurrentRoomInfo.rated && netIsNetRankingViewOK(engine)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && !netIsWatch && netIsNetRankingViewOK(engine)) {
 				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 

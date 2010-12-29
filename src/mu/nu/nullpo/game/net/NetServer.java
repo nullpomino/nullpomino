@@ -494,9 +494,14 @@ public class NetServer {
 
 					spModeList[style].add(strModeName);
 
-					for(int i = 0; i < ruleList[style].size(); i++) {
-						RuleOptions ruleOpt = (RuleOptions)ruleList[style].get(i);
-						String ruleName = ruleOpt.strRuleName;
+					for(int i = 0; i < ruleList[style].size()+1; i++) {
+						String ruleName;
+						if (i < ruleList[style].size()) {
+							RuleOptions ruleOpt = (RuleOptions)ruleList[style].get(i);
+							ruleName = ruleOpt.strRuleName;
+						} else {
+							ruleName = "any";
+						}
 
 						for(int j = 0; j < maxGameType+1; j++) {
 							for(int k = 0; k < 2; k++) {
@@ -541,20 +546,43 @@ public class NetServer {
 
 	/**
 	 * Get specific NetSPRanking
-	 * @param rule Rule Name
+	 * @param rule Rule Name ("all" to get a merged table)
 	 * @param mode Mode Name
 	 * @param gtype Game Type
 	 * @param isDaily <code>true</code> to get daily ranking, <code>false</code> to get all-time ranking
 	 * @return NetSPRanking (null if not found)
 	 */
 	private static NetSPRanking getSPRanking(String rule, String mode, int gtype, boolean isDaily) {
+		if (rule.equals("all")) {
+			return getSPRankingAllRules(mode,gtype,isDaily);
+		}
 		LinkedList<NetSPRanking> list = isDaily ? spRankingListDaily : spRankingListAlltime;
-		for(NetSPRanking r: list) {
+		for(NetSPRanking r : list) {
 			if(r.strRuleName.equals(rule) && r.strModeName.equals(mode) && r.gameType == gtype) {
 				return r;
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Get NetSPRanking for all rule types
+	 * @param mode Mode Name
+	 * @param gtype Game Type
+	 * @param isDaily <code>true</code> to get daily ranking, <code>false</code> to get all-time ranking
+	 * @return NetSPRanking (null if not found or there are none)
+	 */
+	private static NetSPRanking getSPRankingAllRules(String mode, int gtype, boolean isDaily) {
+		LinkedList<NetSPRanking> list = isDaily ? spRankingListDaily : spRankingListAlltime;
+		LinkedList<NetSPRanking> allRanks = new LinkedList<NetSPRanking>();
+		for(NetSPRanking r : list) {
+			if(r.strModeName.equals(mode) && r.gameType == gtype) {
+				allRanks.add(r);
+			}
+		}
+		NetSPRanking merged = NetSPRanking.mergeRankings(allRanks);
+		merged.strRuleName = "all";
+		return merged;
 	}
 
 	/**
@@ -2320,20 +2348,21 @@ public class NetServer {
 			//spsend\t[CHECKSUM]\t[DATA]
 			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
 				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
-
-				if(!pInfo.isTripUse || !roomInfo.rated) {
+				if(!pInfo.isTripUse) {
 					broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
 				} else if(roomInfo.singleplayer) {
 					long sChecksum = Long.parseLong(message[1]);
 					Adler32 checksumObj = new Adler32();
 					checksumObj.update(NetUtil.stringToBytes(message[2]));
+					log.info("Checksums are: "+sChecksum+" and "+checksumObj.getValue());
 
 					if(sChecksum == checksumObj.getValue()) {
 						String strData = NetUtil.decompressString(message[2]);
 						NetSPRecord record = new NetSPRecord(strData);
+						String rule = (roomInfo.rated ? roomInfo.ruleName : "any"); // "any" for unrated rules
 						record.strPlayerName = pInfo.strName;
 						record.strModeName = roomInfo.strMode;
-						record.strRuleName = roomInfo.ruleName;
+						record.strRuleName = rule;
 						record.style = roomInfo.style;
 						record.strTimeStamp = GeneralUtil.exportCalendarString();
 
@@ -2343,8 +2372,8 @@ public class NetServer {
 						int rank = -1;
 						int rankDaily = -1;
 
-						NetSPRanking ranking = getSPRanking(record.strRuleName, record.strModeName, record.gameType);
-						NetSPRanking rankingDaily = getSPRanking(record.strRuleName, record.strModeName, record.gameType, true);
+						NetSPRanking ranking = getSPRanking(rule, record.strModeName, record.gameType);
+						NetSPRanking rankingDaily = getSPRanking(rule, record.strModeName, record.gameType, true);
 						if(ranking == null) log.warn("All-time ranking not found:" + record.strModeName);
 						if(rankingDaily == null) log.warn("Daily ranking not found:" + record.strModeName);
 
@@ -2365,8 +2394,12 @@ public class NetServer {
 								}
 							}
 
-							//log.info("Name:" + pInfo.strName + " Mode:" + record.strModeName + " AllTime:" + rank + " Daily:" + rankDaily);
-							broadcast("spsendok\t" + rank + "\t" + isPB + "\t" + rankDaily + "\n", pInfo.roomID);
+							log.info("Name:" + pInfo.strName + " Mode:" + record.strModeName + " AllTime:" + rank + " Daily:" + rankDaily);
+							if (roomInfo.rated) {
+								broadcast("spsendok\t" + rank + "\t" + isPB + "\t" + rankDaily + "\n", pInfo.roomID);
+							} else {
+								broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
+							}
 						} else {
 							broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
 						}
