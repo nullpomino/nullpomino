@@ -1,4 +1,4 @@
-package mu.nu.nullpo.tool.airanksgenerator;
+package mu.nu.nullpo.tool.airankstool;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -7,8 +7,12 @@ public class Ranks implements Serializable{
 	/**
 	 *
 	 */
+
 	private static final long serialVersionUID = 1L;
 
+	
+
+	//Number of different orientations a piece can have (this is used to save computing time)
 	public static final int[] PIECES_NUM_ROTATIONS = {
 		2,	// I
 		4,	// L
@@ -23,6 +27,8 @@ public class Ranks implements Serializable{
 		4	// L3
 	};
 
+	
+	
 	public static final int[][] PIECES_LEFTMOSTS={
 		{0,2,0,1},	// I
 		{0,1,0,0},	// L
@@ -137,6 +143,7 @@ public int getStackWidth() {
 	return stackWidth;
 }
 public Ranks(int maxJump,int stackWidth){
+
 	 this.maxJump=maxJump;
 	 base=2*maxJump+1;
 
@@ -156,6 +163,7 @@ public Ranks(int maxJump,int stackWidth){
 }
 
 public Ranks(Ranks rankFrom){
+
 	this.ranksFrom=rankFrom;
 	this.maxJump=ranksFrom.getMaxJump();
 	base=2*maxJump+1;
@@ -171,6 +179,7 @@ public Ranks(Ranks rankFrom){
 	rankMax=0;
 
 }
+
 public void setRanksFrom(Ranks ranksfrom){
 	this.ranksFrom=ranksfrom;
 	error=0;
@@ -291,7 +300,9 @@ private int getRank(int [] surface,int [] surfaceDecodedWork){
 	long sum=0;
 
 	for (int p=0;p<Piece.PIECE_STANDARD_COUNT;p++){
-		sum+=getRankPiece(surface,surfaceDecodedWork,p);
+		int rankForPiece=getRankPiece(surface,surfaceDecodedWork,p);
+		//System.out.println("piece :"+p+" rank : "+rankForPiece);
+		sum+=rankForPiece;
 	}
 	int result=0;
 	result=(int) (sum/Piece.PIECE_STANDARD_COUNT);
@@ -409,6 +420,13 @@ public int [] heightsToSurface(int [] heights){
 private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int piece, int rotation){
 
 	int bestRank=0;
+	if (piece==Piece.PIECE_I){
+		 int rank=ranksFrom.getRankValue(encode(surface));
+		 if (rank>bestRank){
+			  bestRank=rank;
+		  }
+		 
+	}
 
 	for (int x=0;x<(stackWidth-(PIECES_WIDTHS[piece][rotation]-1));x++){
 		boolean fits=surfaceFitsPiece(surfaceDecodedWork,piece,rotation,x);
@@ -445,3 +463,5 @@ private int getRankPieceRotation( int [] surface,int [] surfaceDecodedWork,int p
 return bestRank;
 }
 }
+
+

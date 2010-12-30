@@ -197,6 +197,7 @@ public class Piece implements Serializable {
 		}
 		return "?";
 	}
+	
 
 	/**
 	 * Constructor

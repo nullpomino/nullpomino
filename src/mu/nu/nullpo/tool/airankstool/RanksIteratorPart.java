@@ -1,6 +1,6 @@
-package mu.nu.nullpo.tool.airanksgenerator;
+package mu.nu.nullpo.tool.airankstool;
 
-import mu.nu.nullpo.tool.airanksgenerator.RanksIterator.OneIteration;
+import mu.nu.nullpo.tool.airankstool.RanksIterator.OneIteration;
 
 public class RanksIteratorPart extends Thread {
 

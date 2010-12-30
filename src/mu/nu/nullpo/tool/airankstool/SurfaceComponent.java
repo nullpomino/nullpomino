@@ -1,4 +1,4 @@
-package mu.nu.nullpo.tool.airanksgenerator;
+package mu.nu.nullpo.tool.airankstool;
 
 import java.awt.Color;
 import java.awt.Dimension;

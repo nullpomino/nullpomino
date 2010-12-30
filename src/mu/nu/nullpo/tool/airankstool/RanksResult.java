@@ -1,4 +1,4 @@
-package mu.nu.nullpo.tool.airanksgenerator;
+package mu.nu.nullpo.tool.airankstool;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -145,7 +145,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	        @Override
 	        public void done() {
 
-	        	setTitle(AIRanksGenerator.getUIText("Result_Title"));
+	        	setTitle(AIRanksTool.getUIText("Result_Title"));
         		initUI();
         		pack();
         		setVisible(true);
@@ -165,7 +165,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		this.factorCompare=ascendant?-1:1;
 		this.maxJump=ranks.getMaxJump();
 		this.stackWidth=ranks.getStackWidth();
-		progressMonitor=new ProgressMonitor(parent,AIRanksGenerator.getUIText("Result_Progress_Message"),"",0,100);
+		progressMonitor=new ProgressMonitor(parent,AIRanksTool.getUIText("Result_Progress_Message"),"",0,100);
 		progressMonitor.setProgress(0);
 		task = new Task();
         task.addPropertyChangeListener(this);
@@ -195,17 +195,17 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		currentSurface=surfaceRanksBests[indexSurface].getSurface();
 
 		surfaceComponent=new SurfaceComponent (maxJump,stackWidth,currentSurface);
-		labelScore=new JLabel(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBests[indexSurface].getRank());
+		labelScore=new JLabel(AIRanksTool.getUIText("Result_Score")+surfaceRanksBests[indexSurface].getRank());
 
 		currentSurfaceMirrored=surfaceRanksBestsMirrored[indexSurface].getSurface();
 		surfaceComponentMirrored=new SurfaceComponent(maxJump,stackWidth,currentSurfaceMirrored);
-	    labelScoreMirrored=new JLabel(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());
+	    labelScoreMirrored=new JLabel(AIRanksTool.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());
 
-		buttonNext=new JButton(AIRanksGenerator.getUIText("Result_Next"));
+		buttonNext=new JButton(AIRanksTool.getUIText("Result_Next"));
 		buttonNext.setActionCommand("next");
 		buttonNext.addActionListener( this);
 		buttonNext.setMnemonic('N');
-		buttonPrevious=new JButton(AIRanksGenerator.getUIText("Result_Previous"));
+		buttonPrevious=new JButton(AIRanksTool.getUIText("Result_Previous"));
 		buttonPrevious.setActionCommand("previous ");
 		buttonPrevious.setEnabled(false);
 		buttonPrevious.addActionListener( this);
@@ -241,11 +241,11 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	           indexSurface++;
 	          currentSurface=surfaceRanksBests[indexSurface].getSurface();
 	          surfaceComponent.setSurface(currentSurface);
-	          labelScore.setText(AIRanksGenerator.getUIText("Result_Score")+ surfaceRanksBests[indexSurface].getRank());
+	          labelScore.setText(AIRanksTool.getUIText("Result_Score")+ surfaceRanksBests[indexSurface].getRank());
 
 	          currentSurfaceMirrored=surfaceRanksBestsMirrored[indexSurface].getSurface();
 	  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);
-	  	    labelScoreMirrored.setText(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());
+	  	    labelScoreMirrored.setText(AIRanksTool.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());
 
 	          if (indexSurface>0){
 	        	  buttonPrevious.setEnabled(true);
@@ -261,11 +261,11 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 		           indexSurface--;
 		          currentSurface=surfaceRanksBests[indexSurface].getSurface();
 		          surfaceComponent.setSurface(currentSurface);
-		          labelScore.setText(AIRanksGenerator.getUIText("Result_Score")+ surfaceRanksBests[indexSurface].getRank());
+		          labelScore.setText(AIRanksTool.getUIText("Result_Score")+ surfaceRanksBests[indexSurface].getRank());
 
 		          currentSurfaceMirrored=getMirroredSurface(currentSurface);
 		  		surfaceComponentMirrored.setSurface(currentSurfaceMirrored);
-		  	    labelScoreMirrored.setText(AIRanksGenerator.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());;
+		  	    labelScoreMirrored.setText(AIRanksTool.getUIText("Result_Score")+surfaceRanksBestsMirrored[indexSurface].getRank());;
 
 		          if (indexSurface<bestNRanks-1){
 		        	  buttonNext.setEnabled(true);
@@ -284,7 +284,7 @@ public class RanksResult extends JDialog implements ActionListener, PropertyChan
 	            int progress = (Integer) evt.getNewValue();
 	            progressMonitor.setProgress(progress);
 	            String message =
-	                String.format(AIRanksGenerator.getUIText("Result_Progress_Note"), progress);
+	                String.format(AIRanksTool.getUIText("Result_Progress_Note"), progress);
 	            progressMonitor.setNote(message);
 		 }
 

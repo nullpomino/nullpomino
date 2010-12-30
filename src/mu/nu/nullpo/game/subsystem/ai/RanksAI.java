@@ -39,8 +39,8 @@ import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.tool.airanksgenerator.AIRanksGenerator;
-import mu.nu.nullpo.tool.airanksgenerator.Ranks;
+import mu.nu.nullpo.tool.airankstool.AIRanksTool;
+import mu.nu.nullpo.tool.airankstool.Ranks;
 import mu.nu.nullpo.util.CustomProperties;
 
 import org.apache.log4j.Logger;
@@ -105,6 +105,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	private boolean plannedToUseIPiece;
 	private String currentRanksFile="";
 	private boolean allowHold;
+	private int speedLimit;
 
 	public class Score{
 
@@ -124,33 +125,47 @@ public class RanksAI extends DummyAI implements Runnable {
 			this.distanceToSet=0;
 			int [] surface= new int[ranks.getStackWidth()-1];
 			int maxJump=ranks.getMaxJump();
+			
 			for (int i=0;i<ranks.getStackWidth()-1;i++){
 				int diff=heights[i+1]-heights[i];
 				if (diff>maxJump){
-
-					this.distanceToSet+=(diff-maxJump);
-					diff=maxJump;
+					
+						this.distanceToSet+=(diff-maxJump);
+						diff=maxJump;
+					
+					
 				}
 				if (diff<-maxJump){
+					
 					this.distanceToSet-=(diff+maxJump);
 
 					diff=-maxJump;
+					
+				
 				}
 				surface[i]=diff;
 			}
-			this.rankStacking=ranks.getRankValue(ranks.encode(ranks.heightsToSurface(heights)));
+			log.debug("new surface ="+Arrays.toString(surface));
+			
+			int	surfaceNb=ranks.encode(surface);
+			
+			
+			this.rankStacking=ranks.getRankValue(surfaceNb);
 
 		}
 		public int compareTo(Object o) {
 			Score otherScore=(Score) o;
 
-			if (this.distanceToSet!= otherScore.distanceToSet){
+			
+			/*if (this.distanceToSet!= otherScore.distanceToSet){
 				return this.distanceToSet<otherScore.distanceToSet?1:-1;
 			}
-
-			if (this.rankStacking != otherScore.rankStacking){
-				return this.rankStacking>otherScore.rankStacking?1:-1;
-			}
+			else {*/
+				if (this.rankStacking != otherScore.rankStacking){
+					return this.rankStacking>otherScore.rankStacking?1:-1;
+				}
+			//}
+		
 
 			return 0;
 		}
@@ -168,19 +183,21 @@ public class RanksAI extends DummyAI implements Runnable {
 		threadRunning = false;
 		CustomProperties propRanksAI = new CustomProperties();
 		try {
-			FileInputStream in = new FileInputStream(AIRanksGenerator.RANKSAI_CONFIG_FILE);
+			FileInputStream in = new FileInputStream(AIRanksTool.RANKSAI_CONFIG_FILE);
 			propRanksAI.load(in);
 			in.close();
 		} catch (IOException e) {}
 		String file=propRanksAI.getProperty("ranksai.file");
 		MAX_PREVIEWS=propRanksAI.getProperty("ranksai.numpreviews", 2);
 		allowHold=propRanksAI.getProperty("ranksai.allowhold", false);
+		speedLimit=propRanksAI.getProperty("ranksai.speedlimit", 0);
+		
 		// If no ranks file has been loaded yet, try to load it
 		if (ranks==null || !(currentRanksFile.equals(file))){
 			currentRanksFile=file;
 			String inputFile="";
 			if (file!=null && file.trim().length()>0){
-			 inputFile=AIRanksGenerator.RANKSAI_DIR+currentRanksFile;
+			 inputFile=AIRanksTool.RANKSAI_DIR+currentRanksFile;
 			}
 			FileInputStream fis = null;
 			ObjectInputStream in = null;
@@ -260,94 +277,99 @@ public class RanksAI extends DummyAI implements Runnable {
 
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
+	
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) && (delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 				(!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{
-			int input = 0;
-			Piece pieceNow = engine.nowPieceObject;
-			int nowX = engine.nowPieceX;
-			int nowY = engine.nowPieceY;
-			int rt = pieceNow.direction;
-			Field fld = engine.field;
-			boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
+			int totalPieceLocked=engine.statistics.totalPieceLocked+1;
+			int tpm=(int)(totalPieceLocked*3600f)/(int)engine.statistics.time;
+			if ((tpm<=speedLimit)||(speedLimit<=0)){
+				int input = 0;
+				Piece pieceNow = engine.nowPieceObject;
+				int nowX = engine.nowPieceX;
+				int nowY = engine.nowPieceY;
+				int rt = pieceNow.direction;
+				Field fld = engine.field;
+				boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
 
-			if((bestHold || forceHold) ) {
-				if  (engine.isHoldOK())
-				input |= Controller.BUTTON_BIT_D;
-			} else {
+				if((bestHold || forceHold) ) {
+					if  (engine.isHoldOK())
+						input |= Controller.BUTTON_BIT_D;
+				} else {
 
-				if(rt != bestRt) {
-					int lrot = engine.getRotateDirection(-1);
-					int rrot = engine.getRotateDirection(1);
+					if(rt != bestRt) {
+						int lrot = engine.getRotateDirection(-1);
+						int rrot = engine.getRotateDirection(1);
 
-					if((Math.abs(rt - bestRt) == 2) && (engine.ruleopt.rotateButtonAllowDouble) && !ctrl.isPress(Controller.BUTTON_E)) {
-						input |= Controller.BUTTON_BIT_E;
-					} else if(!ctrl.isPress(Controller.BUTTON_B) && engine.ruleopt.rotateButtonAllowReverse &&
-							!engine.isRotateButtonDefaultRight() && (bestRt == rrot)) {
-						input |= Controller.BUTTON_BIT_B;
-					} else if(!ctrl.isPress(Controller.BUTTON_B) && engine.ruleopt.rotateButtonAllowReverse &&
-							engine.isRotateButtonDefaultRight() && (bestRt == lrot)) {
-						input |= Controller.BUTTON_BIT_B;
-					} else if(!ctrl.isPress(Controller.BUTTON_A)) {
-						input |= Controller.BUTTON_BIT_A;
+						if((Math.abs(rt - bestRt) == 2) && (engine.ruleopt.rotateButtonAllowDouble) && !ctrl.isPress(Controller.BUTTON_E)) {
+							input |= Controller.BUTTON_BIT_E;
+						} else if(!ctrl.isPress(Controller.BUTTON_B) && engine.ruleopt.rotateButtonAllowReverse &&
+								!engine.isRotateButtonDefaultRight() && (bestRt == rrot)) {
+							input |= Controller.BUTTON_BIT_B;
+						} else if(!ctrl.isPress(Controller.BUTTON_B) && engine.ruleopt.rotateButtonAllowReverse &&
+								engine.isRotateButtonDefaultRight() && (bestRt == lrot)) {
+							input |= Controller.BUTTON_BIT_B;
+						} else if(!ctrl.isPress(Controller.BUTTON_A)) {
+							input |= Controller.BUTTON_BIT_A;
+						}
+					}
+
+					int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
+					int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
+					if (!skipNextFrame){
+						skipNextFrame=true;
+
+						if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt)  ){
+
+							thinkRequest = true;
+
+						} else {
+
+							if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
+
+								if(bestRtSub != -1) {
+									bestRt = bestRtSub;
+									bestRtSub = -1;
+								}
+
+								if(bestX != bestXSub) {
+									bestX = bestXSub;
+									bestY = bestYSub;
+								}
+							}
+
+							if(nowX > bestX) {
+
+								if(!ctrl.isPress(Controller.BUTTON_LEFT) || (engine.aiMoveDelay >= 0))
+									input |= Controller.BUTTON_BIT_LEFT;
+							} else if(nowX < bestX) {
+
+								if(!ctrl.isPress(Controller.BUTTON_RIGHT) || (engine.aiMoveDelay >= 0))
+									input |= Controller.BUTTON_BIT_RIGHT;
+							} else if((nowX == bestX) && (rt == bestRt)) {
+
+								if((bestRtSub == -1) && (bestX == bestXSub)) {
+									if(engine.ruleopt.harddropEnable && !ctrl.isPress(Controller.BUTTON_UP))
+										input |= Controller.BUTTON_BIT_UP;
+									else if(engine.ruleopt.softdropEnable || engine.ruleopt.softdropLock)
+										input |= Controller.BUTTON_BIT_DOWN;
+								} else {
+									if(engine.ruleopt.harddropEnable && !engine.ruleopt.harddropLock && !ctrl.isPress(Controller.BUTTON_UP))
+										input |= Controller.BUTTON_BIT_UP;
+									else if(engine.ruleopt.softdropEnable && !engine.ruleopt.softdropLock)
+										input |= Controller.BUTTON_BIT_DOWN;
+								}
+							}
+						}
+					}
+					else {
+						skipNextFrame=false;
 					}
 				}
 
-				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
-				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
-				if (!skipNextFrame){
-					skipNextFrame=true;
-
-					if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt)  ){
-
-						thinkRequest = true;
-
-					} else {
-
-						if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
-
-							if(bestRtSub != -1) {
-								bestRt = bestRtSub;
-								bestRtSub = -1;
-							}
-
-							if(bestX != bestXSub) {
-								bestX = bestXSub;
-								bestY = bestYSub;
-							}
-						}
-
-						if(nowX > bestX) {
-
-							if(!ctrl.isPress(Controller.BUTTON_LEFT) || (engine.aiMoveDelay >= 0))
-								input |= Controller.BUTTON_BIT_LEFT;
-						} else if(nowX < bestX) {
-
-							if(!ctrl.isPress(Controller.BUTTON_RIGHT) || (engine.aiMoveDelay >= 0))
-								input |= Controller.BUTTON_BIT_RIGHT;
-						} else if((nowX == bestX) && (rt == bestRt)) {
-
-							if((bestRtSub == -1) && (bestX == bestXSub)) {
-								if(engine.ruleopt.harddropEnable && !ctrl.isPress(Controller.BUTTON_UP))
-									input |= Controller.BUTTON_BIT_UP;
-								else if(engine.ruleopt.softdropEnable || engine.ruleopt.softdropLock)
-									input |= Controller.BUTTON_BIT_DOWN;
-							} else {
-								if(engine.ruleopt.harddropEnable && !engine.ruleopt.harddropLock && !ctrl.isPress(Controller.BUTTON_UP))
-									input |= Controller.BUTTON_BIT_UP;
-								else if(engine.ruleopt.softdropEnable && !engine.ruleopt.softdropLock)
-									input |= Controller.BUTTON_BIT_DOWN;
-							}
-						}
-					}
-				}
-				else {
-					skipNextFrame=false;
-				}
+				delay = 0;
+				ctrl.setButtonBit(input);
 			}
-
-			delay = 0;
-			ctrl.setButtonBit(input);
 		} else {
 			delay++;
 			ctrl.setButtonBit(0);
@@ -524,7 +546,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		 }
 
 		 // If we are able to score a 4-Line and if the maximum height is dangerously high, then force doing a tetris
-		 if (pieceNow==Piece.PIECE_I &&currentHeightMax>=THRESHOLD_FORCE_4LINES && currentHeightMin>=4 &&!plannedToUseIPiece){
+		 if (pieceNow==Piece.PIECE_I &&currentHeightMin>=THRESHOLD_FORCE_4LINES && currentHeightMin>=4 /*&&!plannedToUseIPiece*/){
 			 
 			 bestHold=false;
 			 //Rightmost column
@@ -659,6 +681,7 @@ public class RanksAI extends DummyAI implements Runnable {
 			 if (!isVerticalIRightMost){
 
 				 ranks.addToHeights(heightsWork, pieces[0], rt, x);
+				
 				 for (int i=0;i<ranks.getStackWidth();i++){
 					 if (heightsWork[i]>heightMax){
 						 heightMax=heights[i];

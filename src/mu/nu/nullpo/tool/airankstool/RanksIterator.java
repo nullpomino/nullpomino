@@ -1,4 +1,4 @@
-package mu.nu.nullpo.tool.airanksgenerator;
+package mu.nu.nullpo.tool.airankstool;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -118,7 +118,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         @Override
 
         public Void doInBackground() {
-        	progressLabel.setText(AIRanksGenerator.getUIText("Progress_Note_Load_File"));
+        	progressLabel.setText(AIRanksTool.getUIText("Progress_Note_Load_File"));
 
         	FileInputStream fis = null;
         	ObjectInputStream in = null;
@@ -126,7 +126,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         		ranksFrom=new Ranks(4,9);
         	else {
         		  try {
-        			fis = new FileInputStream(AIRanksGenerator.RANKSAI_DIR+inputFile);
+        			fis = new FileInputStream(AIRanksTool.RANKSAI_DIR+inputFile);
         			   in = new ObjectInputStream(fis);
         			   ranksFrom = (Ranks)in.readObject();
         			   in.close();
@@ -180,16 +180,16 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
 
         	}
          	//System.out.println("save file !");
-       	 progressLabel.setText(AIRanksGenerator.getUIText("Progress_Note_Save_File"));
+       	 progressLabel.setText(AIRanksTool.getUIText("Progress_Note_Save_File"));
 
            try {
-           	File ranksAIDir=new File(AIRanksGenerator.RANKSAI_DIR);
+           	File ranksAIDir=new File(AIRanksTool.RANKSAI_DIR);
            	if (!ranksAIDir.exists()){
            		ranksAIDir.mkdirs();
            	}
                FileOutputStream fos=null;
                ObjectOutputStream out=null;
-               fos=new FileOutputStream(AIRanksGenerator.RANKSAI_DIR+ outputFile);
+               fos=new FileOutputStream(AIRanksTool.RANKSAI_DIR+ outputFile);
                out = new ObjectOutputStream(fos);
                ranks.freeRanksFrom();
                out.writeObject(ranks);
@@ -223,19 +223,19 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
 
 public RanksIterator(JFrame parent,String inputFile,String outputFile, int numIterations){
 
-	super(parent,AIRanksGenerator.getUIText("Progress_Message"));
+	super(parent,AIRanksTool.getUIText("Progress_Message"));
 	this.outputFile=outputFile;
 	;
 
 	this.numIterations=numIterations;
 	setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-	progressLabel=new JLabel(String.format(AIRanksGenerator.getUIText("Progress_Note"), 1,0,numIterations,0));
-	String message=String.format(AIRanksGenerator.getUIText("Progress_Note"), 100,100,100,100);
+	progressLabel=new JLabel(String.format(AIRanksTool.getUIText("Progress_Note"), 1,0,numIterations,0));
+	String message=String.format(AIRanksTool.getUIText("Progress_Note"), 100,100,100,100);
     progressLabel.setText(message);
 
 	progressBar=new JProgressBar(0,100);
-    cancelButton= new JButton(AIRanksGenerator.getUIText("Progress_Cancel_Button"));
+    cancelButton= new JButton(AIRanksTool.getUIText("Progress_Cancel_Button"));
     cancelButton.setActionCommand("cancel");
     cancelButton.addActionListener(this);
 	JPanel mainPane=new JPanel(new BorderLayout() );
@@ -267,7 +267,7 @@ public void propertyChange(PropertyChangeEvent evt) {
            progressBar.setValue(totalCompletion);
 
            String message =
-               String.format(AIRanksGenerator.getUIText("Progress_Note"), iteration+1,ranks.getCompletionPercentage(),numIterations,totalCompletion);
+               String.format(AIRanksTool.getUIText("Progress_Note"), iteration+1,ranks.getCompletionPercentage(),numIterations,totalCompletion);
           progressLabel.setText(message);
 
 	 }
