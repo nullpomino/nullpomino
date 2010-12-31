@@ -125,6 +125,8 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 			int newCursor = y - 3 + minentry;
 			if (newCursor == cursor)
 				return true;
+			else if (newCursor >= list.length)
+				return false;
 			else
 			{
 				ResourceHolder.soundManager.play("cursor");

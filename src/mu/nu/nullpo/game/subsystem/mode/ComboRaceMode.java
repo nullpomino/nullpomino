@@ -48,11 +48,8 @@ public class ComboRaceMode extends NetDummyMode {
 	/** Number of ranking records */
 	private static final int RANKING_MAX = 10;
 
-	/** 制限 time type */
-	private static final int GOALTYPE_MAX = 3;
-
 	/** 邪魔Linescountの定count */
-	private static final int[] GOAL_TABLE = {20, 40, 100};
+	private static final int[] GOAL_TABLE = {20, 40, 100, -1};
 
 	/** Most recent scoring event typeの定count */
 	private static final int EVENT_NONE = 0,
@@ -118,9 +115,6 @@ public class ComboRaceMode extends NetDummyMode {
 		Block.BLOCK_COLOR_BLUE,
 		Block.BLOCK_COLOR_PURPLE,
 	};
-
-	/** Number of stack colours */
-	private static final int STACK_COLOUR_MAX = 7;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
@@ -219,8 +213,8 @@ public class ComboRaceMode extends NetDummyMode {
 		nextseclines = 10;
 
 		rankingRank = -1;
-		rankingTime = new int[GOALTYPE_MAX][RANKING_MAX];
-		rankingCombo = new int[GOALTYPE_MAX][RANKING_MAX];
+		rankingTime = new int[GOAL_TABLE.length][RANKING_MAX];
+		rankingCombo = new int[GOAL_TABLE.length][RANKING_MAX];
 
 		engine.framecolor = GameEngine.FRAME_COLOR_RED;
 
@@ -307,8 +301,8 @@ public class ComboRaceMode extends NetDummyMode {
 				switch(engine.statc[2]) {
 				case 0:
 					goaltype += change;
-					if(goaltype < 0) goaltype = 2;
-					if(goaltype > GOALTYPE_MAX - 1) goaltype = 0;
+					if(goaltype < 0) goaltype = GOAL_TABLE.length - 1;
+					if(goaltype > GOAL_TABLE.length - 1) goaltype = 0;
 					break;
 				case 1:
 					shapetype += change;
@@ -452,7 +446,7 @@ public class ComboRaceMode extends NetDummyMode {
 			String strSpawn = spawnAboveField ? "ABOVE" : "BELOW";
 
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-					"GOAL", String.valueOf(GOAL_TABLE[goaltype]));
+					"GOAL", (GOAL_TABLE[goaltype] == -1) ? "ENDLESS" : String.valueOf(GOAL_TABLE[goaltype]));
 			drawMenu(engine, playerID, receiver, 2, (comboWidth == 4) ? EventReceiver.COLOR_BLUE : EventReceiver.COLOR_WHITE, 1,
 					"STARTSHAPE", SHAPE_NAME_TABLE[shapetype]);
 			drawMenu(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE, 2,
@@ -531,7 +525,7 @@ public class ComboRaceMode extends NetDummyMode {
 		 *  set initial stack height and remaining stack lines
 		 *  depending on the goal lines and ceiling height adjustment
 		 */
-		if(GOAL_TABLE[height] > h + ceilingAdjust) {
+		if(GOAL_TABLE[height] > h + ceilingAdjust || GOAL_TABLE[height] == -1) {
 			stackHeight = h + ceilingAdjust;
 			remainStack = GOAL_TABLE[height] - h - ceilingAdjust;
 		} else {
@@ -544,7 +538,7 @@ public class ComboRaceMode extends NetDummyMode {
 			for(int x = 0; x < w; x++) {
 				if(	((x < comboColumn - 1) || (x > comboColumn - 2 + comboWidth))
 					) {
-					engine.field.setBlock(x,y,new Block(STACK_COLOUR_TABLE[stackColour % STACK_COLOUR_MAX],engine.getSkin(),
+					engine.field.setBlock(x,y,new Block(STACK_COLOUR_TABLE[stackColour % STACK_COLOUR_TABLE.length],engine.getSkin(),
 							Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_GARBAGE));
 				}
 			}
@@ -570,7 +564,10 @@ public class ComboRaceMode extends NetDummyMode {
 		if(owner.menuOnly) return;
 
 		receiver.drawScoreFont(engine, playerID, 0, 0, "COMBO RACE", EventReceiver.COLOR_RED);
-		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + GOAL_TABLE[goaltype] + " LINES GAME)", EventReceiver.COLOR_WHITE);
+		if (GOAL_TABLE[goaltype] == -1)
+			receiver.drawScoreFont(engine, playerID, 0, 1, "(ENDLESS GAME)", EventReceiver.COLOR_WHITE);
+		else
+			receiver.drawScoreFont(engine, playerID, 0, 1, "(" + GOAL_TABLE[goaltype] + " LINES GAME)", EventReceiver.COLOR_WHITE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
 			if(!owner.replayMode && !big && (engine.ai == null)) {
@@ -714,35 +711,48 @@ public class ComboRaceMode extends NetDummyMode {
 			lastpiece = engine.nowPieceObject.id;
 
 			// add any remaining stack lines
+			if (GOAL_TABLE[goaltype] == -1)
+				remainStack = Integer.MAX_VALUE;
 			for(int tmplines = 1; tmplines <= lines && remainStack > 0; tmplines++, remainStack--) {
 				for(int x = 0; x < engine.field.getWidth(); x++) {
 					if((x < comboColumn - 1) || (x > comboColumn - 2 + comboWidth)) {
-						engine.field.setBlock(x,-ceilingAdjust-tmplines,new Block(STACK_COLOUR_TABLE[stackColour % STACK_COLOUR_MAX],engine.getSkin(),
+						engine.field.setBlock(x,-ceilingAdjust-tmplines,new Block(STACK_COLOUR_TABLE[stackColour % STACK_COLOUR_TABLE.length],engine.getSkin(),
 								Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_GARBAGE));
 					}
 				}
 				stackColour++;
 			}
 
-			int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
-			engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
-
-			if(remainLines <= 30) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-			if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-			if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
-
-			// ゴール
-			if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
-				engine.ending = 1;
-				engine.gameEnded();
-			} else if(engine.statistics.lines >= GOAL_TABLE[goaltype] - 5) {
-				owner.bgmStatus.fadesw = true;
-			} else if(engine.statistics.lines >= nextseclines) {
-				owner.backgroundStatus.fadesw = true;
-				owner.backgroundStatus.fadecount = 0;
-				owner.backgroundStatus.fadebg = nextseclines / 10;
-				nextseclines += 10;
+			if (GOAL_TABLE[goaltype] == -1) {
+				engine.meterValue = Math.min(engine.statistics.maxCombo, receiver.getMeterMax(engine));
+				engine.meterColor = GameEngine.METER_COLOR_GREEN;
+			} else {
+				int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
+				engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
+	
+				if(remainLines <= 30) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+				if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+				if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
+	
+				// ゴール
+				if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
+					engine.ending = 1;
+					engine.gameEnded();
+				} else if(engine.statistics.lines >= GOAL_TABLE[goaltype] - 5) {
+					owner.bgmStatus.fadesw = true;
+				} else if(engine.statistics.lines >= nextseclines) {
+					owner.backgroundStatus.fadesw = true;
+					owner.backgroundStatus.fadecount = 0;
+					owner.backgroundStatus.fadebg = nextseclines / 10;
+					nextseclines += 10;
+				}
 			}
+		}
+		else if (GOAL_TABLE[goaltype] == -1 && engine.statistics.maxCombo >= 2) {
+			engine.ending = 1;
+			engine.gameEnded();
+			engine.resetStatc();
+			engine.stat = GameEngine.STAT_EXCELLENT;
 		}
 	}
 
@@ -792,7 +802,7 @@ public class ComboRaceMode extends NetDummyMode {
 		}
 
 		// Update rankings
-		if((owner.replayMode == false) && (engine.ending != 0) && (big == false) && (engine.ai == null)) {
+		if((owner.replayMode == false) && (engine.ending != 0) && (!big) && (engine.ai == null)) {
 			updateRanking(engine.statistics.maxCombo - 1, engine.statistics.time);
 
 			if(rankingRank != -1) {
@@ -807,7 +817,7 @@ public class ComboRaceMode extends NetDummyMode {
 	 */
 	@Override
 	protected void loadRanking(CustomProperties prop, String ruleName) {
-		for(int i = 0; i < GOALTYPE_MAX; i++) {
+		for(int i = 0; i < GOAL_TABLE.length; i++) {
 			for(int j = 0; j < RANKING_MAX; j++) {
 				rankingCombo[i][j] = prop.getProperty("comborace.ranking." + ruleName + "." + i + ".maxcombo." + j, 0);
 				rankingTime[i][j] = prop.getProperty("comborace.ranking." + ruleName + "." + i + ".time." + j, -1);
@@ -819,7 +829,7 @@ public class ComboRaceMode extends NetDummyMode {
 	 * Save the ranking
 	 */
 	private void saveRanking(CustomProperties prop, String ruleName) {
-		for(int i = 0; i < GOALTYPE_MAX; i++) {
+		for(int i = 0; i < GOAL_TABLE.length; i++) {
 			for(int j = 0; j < RANKING_MAX; j++) {
 				prop.setProperty("comborace.ranking." + ruleName + "." + i + ".maxcombo." + j, rankingCombo[i][j]);
 				prop.setProperty("comborace.ranking." + ruleName + "." + i + ".time." + j, rankingTime[i][j]);
