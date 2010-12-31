@@ -100,16 +100,16 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** Number of colors to use */
 	protected int numColors;
 
-	/** Time to display last engine.chain */
+	/** Time to display last chain */
 	protected int chainDisplay;
 
 	/** Number of all clears */
 	protected int zenKeshiCount;
 
-	/** Score before adding zenkeshi bonus and max engine.chain bonus */
+	/** Score before adding zenkeshi bonus and max chain bonus */
 	protected int scoreBeforeBonus;
 
-	/** Zenkeshi bonus and max engine.chain bonus amounts */
+	/** Zenkeshi bonus and max chain bonus amounts */
 	protected int zenKeshiBonus, maxChainBonus;
 
 	/** Blocks cleared */
@@ -188,7 +188,6 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		maxChainBonus = 0;
 		blocksCleared = 0;
 
-		engine.chain = 0;
 		chainDisplay = 0;
 		level = 5;
 		toNextLevel = blocksPerLevel;
