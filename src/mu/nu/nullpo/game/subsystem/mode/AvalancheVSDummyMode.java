@@ -213,9 +213,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** If true, red X's appear at tops of danger columns */
 	protected boolean[] dangerColumnShowX;
 
-	/** Last chain hit number */
-	protected int[] chain;
-
 	/** Time to display last chain */
 	protected int[] chainDisplay;
 
@@ -299,7 +296,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		outlineType = new int[MAX_PLAYERS];
 		dangerColumnDouble = new boolean[MAX_PLAYERS];
 		dangerColumnShowX = new boolean[MAX_PLAYERS];
-		chain = new int[MAX_PLAYERS];
 		chainDisplay = new int[MAX_PLAYERS];
 		chainDisplayType = new int[MAX_PLAYERS];
 		newChainPower = new boolean[MAX_PLAYERS];
@@ -505,7 +501,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		cleared[playerID] = false;
 		ojamaDrop[playerID] = false;
 		zenKeshiDisplay[playerID] = 0;
-		chain[playerID] = 0;
 		chainDisplay[playerID] = 0;
 	}
 
@@ -616,9 +611,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		if (avalanche > 0) {
 			cleared[playerID] = true;
 
-			chain[playerID] = engine.chain;
 			chainDisplay[playerID] = 60;
-			engine.playSE("combo" + Math.min(chain[playerID], 20));
+			engine.playSE("combo" + Math.min(engine.chain, 20));
 			onClear(engine, playerID);
 
 			int pts = calcPts(engine, playerID, avalanche);
@@ -629,7 +623,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
 
-			multiplier += calcChainMultiplier(engine, playerID, chain[playerID]);
+			multiplier += calcChainMultiplier(engine, playerID, engine.chain);
 
 			if (multiplier > 999)
 				multiplier = 999;
@@ -642,7 +636,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 			int ptsTotal = pts*multiplier;
 			score[playerID] += ptsTotal;
 
-			if (chain[playerID] >= rensaShibari[playerID])
+			if (engine.chain >= rensaShibari[playerID])
 				addOjama(engine, playerID, ptsTotal);
 
 			if (engine.field.isEmpty()) {
@@ -810,10 +804,9 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	@Override
-	public boolean onMove (GameEngine engine, int playerID) {
+	public void pieceLocked (GameEngine engine, int playerID, int clear) {
 		cleared[playerID] = false;
 		ojamaDrop[playerID] = false;
-		return false;
 	}
 
 	protected void updateOjamaMeter (GameEngine engine, int playerID) {
@@ -847,18 +840,18 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 
 		int baseX = (engine.displaysize == 1) ? 1 : -2;
 
-		if (chain[playerID] > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
-			receiver.drawMenuFont(engine, playerID, baseX + (chain[playerID] > 9 ? 0 : 1), textHeight,
-					chain[playerID] + " CHAIN!", getChainColor(playerID));
+		if (engine.chain > 0 && chainDisplay[playerID] > 0 && chainDisplayType[playerID] != CHAIN_DISPLAY_NONE)
+			receiver.drawMenuFont(engine, playerID, baseX + (engine.chain > 9 ? 0 : 1), textHeight,
+					engine.chain + " CHAIN!", getChainColor(engine, playerID));
 		if(zenKeshi[playerID] || zenKeshiDisplay[playerID] > 0)
 			receiver.drawMenuFont(engine, playerID, baseX+1, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 	}
 
-	protected int getChainColor (int playerID) {
+	protected int getChainColor (GameEngine engine, int playerID) {
 		if (chainDisplayType[playerID] == CHAIN_DISPLAY_PLAYER)
 			return (playerID == 0) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_BLUE;
 		else if (chainDisplayType[playerID] == CHAIN_DISPLAY_SIZE)
-			return chain[playerID] >= rensaShibari[playerID] ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
+			return (engine.chain >= rensaShibari[playerID]) ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
 		else
 			return EventReceiver.COLOR_YELLOW;
 	}

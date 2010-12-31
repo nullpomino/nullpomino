@@ -423,19 +423,19 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 				textHeight = 11;
 
 			int baseX = (engine.displaysize == 1) ? 1 : 0;
-			if (chain > 0 && chainDisplay > 0 && chainDisplayType != 0)
+			if (engine.chain > 0 && chainDisplay > 0 && chainDisplayType != 0)
 			{
 				int color = EventReceiver.COLOR_YELLOW;
 				if (chainDisplayType == 2)
 				{
-					if (chain >= feverChainDisplay)
+					if (engine.chain >= feverChainDisplay)
 						color = EventReceiver.COLOR_GREEN;
-					else if (chain == feverChainDisplay-2)
+					else if (engine.chain == feverChainDisplay-2)
 						color = EventReceiver.COLOR_ORANGE;
-					else if (chain < feverChainDisplay-2)
+					else if (engine.chain < feverChainDisplay-2)
 						color = EventReceiver.COLOR_RED;
 				}
-				receiver.drawMenuFont(engine, playerID, baseX + (chain > 9 ? 0 : 1), textHeight, chain + " CHAIN!", color);
+				receiver.drawMenuFont(engine, playerID, baseX + (engine.chain > 9 ? 0 : 1), textHeight, engine.chain + " CHAIN!", color);
 			}
 			if (zenKeshiDisplay > 0)
 				receiver.drawMenuFont(engine, playerID, baseX, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
@@ -529,7 +529,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		chainDisplay = 60;
 		cleared = true;
 		feverChainDisplay = feverChain;
-		if (chain == 1)
+		if (engine.chain == 1)
 			chainLevelMultiplier = level;
 	}
 

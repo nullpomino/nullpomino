@@ -380,8 +380,8 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				textHeight = 11;
 
 			int baseX = (engine.displaysize == 1) ? 1 : 0;
-			if (chain > 0 && chainDisplay > 0 && showChains)
-				receiver.drawMenuFont(engine, playerID, baseX + (chain > 9 ? 0 : 1), textHeight, chain + " CHAIN!", EventReceiver.COLOR_YELLOW);
+			if (engine.chain > 0 && chainDisplay > 0 && showChains)
+				receiver.drawMenuFont(engine, playerID, baseX + (engine.chain > 9 ? 0 : 1), textHeight, engine.chain + " CHAIN!", EventReceiver.COLOR_YELLOW);
 			if (zenKeshi)
 				receiver.drawMenuFont(engine, playerID, baseX, textHeight+1, "ZENKESHI!", EventReceiver.COLOR_YELLOW);
 		}

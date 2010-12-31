@@ -100,19 +100,16 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	/** Number of colors to use */
 	protected int numColors;
 
-	/** Last chain hit number */
-	protected int chain;
-
-	/** Time to display last chain */
+	/** Time to display last engine.chain */
 	protected int chainDisplay;
 
 	/** Number of all clears */
 	protected int zenKeshiCount;
 
-	/** Score before adding zenkeshi bonus and max chain bonus */
+	/** Score before adding zenkeshi bonus and max engine.chain bonus */
 	protected int scoreBeforeBonus;
 
-	/** Zenkeshi bonus and max chain bonus amounts */
+	/** Zenkeshi bonus and max engine.chain bonus amounts */
 	protected int zenKeshiBonus, maxChainBonus;
 
 	/** Blocks cleared */
@@ -191,7 +188,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		maxChainBonus = 0;
 		blocksCleared = 0;
 
-		chain = 0;
+		engine.chain = 0;
 		chainDisplay = 0;
 		level = 5;
 		toNextLevel = blocksPerLevel;
@@ -355,11 +352,8 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 			else
 				zenKeshi = false;
 
-			chain = engine.chain;
-			if (chain > engine.statistics.maxChain)
-				engine.statistics.maxChain = chain;
 			onClear(engine, playerID);
-			engine.playSE("combo" + Math.min(chain, 20));
+			engine.playSE("combo" + Math.min(engine.chain, 20));
 
 			int pts = calcPts(avalanche);
 
@@ -367,7 +361,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 			if (engine.field.colorsCleared > 1)
 				multiplier += (engine.field.colorsCleared-1)*2;
 
-			multiplier += calcChainMultiplier(chain);
+			multiplier += calcChainMultiplier(engine.chain);
 
 			if (multiplier > 999)
 				multiplier = 999;

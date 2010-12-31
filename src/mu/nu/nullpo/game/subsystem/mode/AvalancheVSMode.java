@@ -794,7 +794,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 
-		if (chain[playerID] == 1)
+		if (engine.chain == 1)
 			ojamaAddToFever[enemyID] = inFever[enemyID];
 	}
 

@@ -501,20 +501,20 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	}
 
 	@Override
-	protected int getChainColor (int playerID) {
+	protected int getChainColor (GameEngine engine, int playerID) {
 		if (chainDisplayType[playerID] == CHAIN_DISPLAY_FEVERSIZE)
 		{
-			if (chain[playerID] >= feverChainDisplay[playerID])
+			if (engine.chain >= feverChainDisplay[playerID])
 				return EventReceiver.COLOR_GREEN;
-			else if (chain[playerID] == feverChainDisplay[playerID]-2)
+			else if (engine.chain == feverChainDisplay[playerID]-2)
 				return EventReceiver.COLOR_ORANGE;
-			else if (chain[playerID] < feverChainDisplay[playerID]-2)
+			else if (engine.chain < feverChainDisplay[playerID]-2)
 				return EventReceiver.COLOR_RED;
 			else
 				return EventReceiver.COLOR_YELLOW;
 		}
 		else
-			return super.getChainColor(playerID);
+			return super.getChainColor(engine, playerID);
 	}
 
 	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {
