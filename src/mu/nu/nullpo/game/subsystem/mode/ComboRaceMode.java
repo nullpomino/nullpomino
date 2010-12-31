@@ -802,8 +802,9 @@ public class ComboRaceMode extends NetDummyMode {
 		}
 
 		// Update rankings
-		if((owner.replayMode == false) && (engine.ending != 0) && (!big) && (engine.ai == null)) {
-			updateRanking(engine.statistics.maxCombo - 1, engine.statistics.time);
+		if((owner.replayMode == false) && (!big) && (engine.ai == null)) {
+			updateRanking(engine.statistics.maxCombo - 1,
+					(engine.ending == 0) ? -1 : engine.statistics.time);
 
 			if(rankingRank != -1) {
 				saveRanking(owner.modeConfig, engine.ruleopt.strRuleName);
@@ -863,7 +864,8 @@ public class ComboRaceMode extends NetDummyMode {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			if(maxcombo > rankingCombo[goaltype][i]) {
 				return i;
-			} else if ((maxcombo == rankingCombo[goaltype][i]) && (time < rankingTime[goaltype][i])) {
+			} else if ((maxcombo == rankingCombo[goaltype][i]) && (time >= 0) &&
+					((time < rankingTime[goaltype][i]) || (rankingTime[goaltype][i] == -1))) {
 				return i;
 			}
 		}
