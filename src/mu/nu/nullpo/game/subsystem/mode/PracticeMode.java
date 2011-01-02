@@ -232,6 +232,9 @@ public class PracticeMode extends DummyMode {
 	/** Show outline only flag. If enabled it does not show actual image of blocks. */
 	private boolean blockShowOutlineOnly;
 
+	/** Hebo hidden level (0=None) */
+	private int heboHiddenLevel;
+
 	/*
 	 * Mode name
 	 */
@@ -322,6 +325,7 @@ public class PracticeMode extends DummyMode {
 		blockHiddenAnim = prop.getProperty("practice.blockHiddenAnim." + preset, true);
 		blockOutlineType = prop.getProperty("practice.blockOutlineType." + preset, GameEngine.BLOCK_OUTLINE_NORMAL);
 		blockShowOutlineOnly = prop.getProperty("practice.blockShowOutlineOnly." + preset, false);
+		heboHiddenLevel = prop.getProperty("practice.heboHiddenLevel." + preset, 0);
 	}
 
 	/**
@@ -364,6 +368,7 @@ public class PracticeMode extends DummyMode {
 		prop.setProperty("practice.blockHiddenAnim." + preset, blockHiddenAnim);
 		prop.setProperty("practice.blockOutlineType." + preset, blockOutlineType);
 		prop.setProperty("practice.blockShowOutlineOnly." + preset, blockShowOutlineOnly);
+		prop.setProperty("practice.heboHiddenLevel." + preset, heboHiddenLevel);
 	}
 
 	/**
@@ -400,7 +405,7 @@ public class PracticeMode extends DummyMode {
 			owner.menuOnly = true;
 
 			// Configuration changes
-			int change = updateCursor(engine, 44);
+			int change = updateCursor(engine, 45);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -514,9 +519,9 @@ public class PracticeMode extends DummyMode {
 					bone = !bone;
 					break;
 				case 24:
-					blockHidden += change;
-					if(blockHidden < -1) blockHidden = 99;
-					if(blockHidden > 99) blockHidden = -1;
+					blockHidden += change * m;
+					if(blockHidden < -2) blockHidden = 9999;
+					if(blockHidden > 9999) blockHidden = -2;
 					break;
 				case 25:
 					blockHiddenAnim = !blockHiddenAnim;
@@ -530,50 +535,55 @@ public class PracticeMode extends DummyMode {
 					blockShowOutlineOnly = !blockShowOutlineOnly;
 					break;
 				case 28:
-					pieceEnable[0] = !pieceEnable[0];
+					heboHiddenLevel += change;
+					if(heboHiddenLevel < 0) heboHiddenLevel = 7;
+					if(heboHiddenLevel > 7) heboHiddenLevel = 0;
 					break;
 				case 29:
-					pieceEnable[1] = !pieceEnable[1];
+					pieceEnable[0] = !pieceEnable[0];
 					break;
 				case 30:
-					pieceEnable[2] = !pieceEnable[2];
+					pieceEnable[1] = !pieceEnable[1];
 					break;
 				case 31:
-					pieceEnable[3] = !pieceEnable[3];
+					pieceEnable[2] = !pieceEnable[2];
 					break;
 				case 32:
-					pieceEnable[4] = !pieceEnable[4];
+					pieceEnable[3] = !pieceEnable[3];
 					break;
 				case 33:
-					pieceEnable[5] = !pieceEnable[5];
+					pieceEnable[4] = !pieceEnable[4];
 					break;
 				case 34:
-					pieceEnable[6] = !pieceEnable[6];
+					pieceEnable[5] = !pieceEnable[5];
 					break;
 				case 35:
-					pieceEnable[7] = !pieceEnable[7];
+					pieceEnable[6] = !pieceEnable[6];
 					break;
 				case 36:
-					pieceEnable[8] = !pieceEnable[8];
+					pieceEnable[7] = !pieceEnable[7];
 					break;
 				case 37:
-					pieceEnable[9] = !pieceEnable[9];
+					pieceEnable[8] = !pieceEnable[8];
 					break;
 				case 38:
-					pieceEnable[10] = !pieceEnable[10];
+					pieceEnable[9] = !pieceEnable[9];
 					break;
 				case 39:
-					useMap = !useMap;
+					pieceEnable[10] = !pieceEnable[10];
 					break;
 				case 40:
+					useMap = !useMap;
+					break;
 				case 41:
 				case 42:
+				case 43:
 					mapNumber += change;
 					if(mapNumber < 0) mapNumber = 99;
 					if(mapNumber > 99) mapNumber = 0;
 					break;
-				case 43:
 				case 44:
+				case 45:
 					presetNumber += change;
 					if(presetNumber < 0) presetNumber = 99;
 					if(presetNumber > 99) presetNumber = 0;
@@ -585,11 +595,11 @@ public class PracticeMode extends DummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 40) {
+				if(engine.statc[2] == 41) {
 					// fieldエディット
 					engine.enterFieldEdit();
 					return true;
-				} else if(engine.statc[2] == 41) {
+				} else if(engine.statc[2] == 42) {
 					// Map読み込み
 					engine.createFieldIfNeeded();
 					engine.field.reset();
@@ -599,17 +609,17 @@ public class PracticeMode extends DummyMode {
 						loadMap(engine.field, prop, 0);
 						engine.field.setAllSkin(engine.getSkin());
 					}
-				} else if(engine.statc[2] == 42) {
+				} else if(engine.statc[2] == 43) {
 					// Map保存
 					if(engine.field != null) {
 						CustomProperties prop = new CustomProperties();
 						saveMap(engine.field, prop, 0);
 						receiver.saveProperties("config/map/practice/" + mapNumber + ".map", prop);
 					}
-				} else if(engine.statc[2] == 43) {
+				} else if(engine.statc[2] == 44) {
 					// Preset読み込み
 					loadPreset(engine, owner.modeConfig, presetNumber);
-				} else if(engine.statc[2] == 44) {
+				} else if(engine.statc[2] == 45) {
 					// Preset保存
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
@@ -721,37 +731,41 @@ public class PracticeMode extends DummyMode {
 								  (engine.statc[2] == 21));
 			receiver.drawMenuFont(engine, playerID, 2, 25, "TIME LIMIT RESET EVERY LEVEL:" + GeneralUtil.getONorOFF(timelimitResetEveryLevel),
 					  (engine.statc[2] == 22));
-		} else if(engine.statc[2] < 45) {
+		} else if(engine.statc[2] < 46) {
 			if(owner.replayMode == false) {
 				receiver.drawMenuFont(engine, playerID, 1, engine.statc[2] - 23 + 3, "b", EventReceiver.COLOR_RED);
 			}
 
 			receiver.drawMenuFont(engine, playerID, 2,  3, "USE BONE BLOCKS:" + GeneralUtil.getONorOFF(bone), (engine.statc[2] == 23));
-			receiver.drawMenuFont(engine, playerID, 2,  4, "BLOCK HIDDEN FRAMES:" + ((blockHidden == -1) ? "NONE" : ""+blockHidden),
-					(engine.statc[2] == 24));
+			String strHiddenFrames = "NONE";
+			if(blockHidden == -2) strHiddenFrames = "LOCK FLASH (" + engine.ruleopt.lockflash + "F)";
+			if(blockHidden >= 0) strHiddenFrames = String.format("%d (%.2f SEC.)", blockHidden, (float)(blockHidden / 60f));
+			receiver.drawMenuFont(engine, playerID, 2,  4, "BLOCK HIDDEN FRAMES:" + strHiddenFrames, (engine.statc[2] == 24));
 			receiver.drawMenuFont(engine, playerID, 2,  5, "BLOCK HIDDEN ANIM:" + GeneralUtil.getONorOFF(blockHiddenAnim),
 					(engine.statc[2] == 25));
 			receiver.drawMenuFont(engine, playerID, 2,  6, "BLOCK OUTLINE TYPE:" + BLOCK_OUTLINE_TYPE_STRING[blockOutlineType],
 					(engine.statc[2] == 26));
 			receiver.drawMenuFont(engine, playerID, 2,  7, "BLOCK OUTLINE ONLY:" + GeneralUtil.getONorOFF(blockShowOutlineOnly),
 					(engine.statc[2] == 27));
-			receiver.drawMenuFont(engine, playerID, 2,  8, "PIECE I:" + GeneralUtil.getONorOFF(pieceEnable[0]), (engine.statc[2] == 28));
-			receiver.drawMenuFont(engine, playerID, 2,  9, "PIECE L:" + GeneralUtil.getONorOFF(pieceEnable[1]), (engine.statc[2] == 29));
-			receiver.drawMenuFont(engine, playerID, 2, 10, "PIECE O:" + GeneralUtil.getONorOFF(pieceEnable[2]), (engine.statc[2] == 30));
-			receiver.drawMenuFont(engine, playerID, 2, 11, "PIECE Z:" + GeneralUtil.getONorOFF(pieceEnable[3]), (engine.statc[2] == 31));
-			receiver.drawMenuFont(engine, playerID, 2, 12, "PIECE T:" + GeneralUtil.getONorOFF(pieceEnable[4]), (engine.statc[2] == 32));
-			receiver.drawMenuFont(engine, playerID, 2, 13, "PIECE J:" + GeneralUtil.getONorOFF(pieceEnable[5]), (engine.statc[2] == 33));
-			receiver.drawMenuFont(engine, playerID, 2, 14, "PIECE S:" + GeneralUtil.getONorOFF(pieceEnable[6]), (engine.statc[2] == 34));
-			receiver.drawMenuFont(engine, playerID, 2, 15, "PIECE I1:" + GeneralUtil.getONorOFF(pieceEnable[7]), (engine.statc[2] == 35));
-			receiver.drawMenuFont(engine, playerID, 2, 16, "PIECE I2:" + GeneralUtil.getONorOFF(pieceEnable[8]), (engine.statc[2] == 36));
-			receiver.drawMenuFont(engine, playerID, 2, 17, "PIECE I3:" + GeneralUtil.getONorOFF(pieceEnable[9]), (engine.statc[2] == 37));
-			receiver.drawMenuFont(engine, playerID, 2, 18, "PIECE L3:" + GeneralUtil.getONorOFF(pieceEnable[10]), (engine.statc[2] == 38));
-			receiver.drawMenuFont(engine, playerID, 2, 19, "USE MAP:" + GeneralUtil.getONorOFF(useMap), (engine.statc[2] == 39));
-			receiver.drawMenuFont(engine, playerID, 2, 20, "[EDIT FIELD MAP]", (engine.statc[2] == 40));
-			receiver.drawMenuFont(engine, playerID, 2, 21, "[LOAD FIELD MAP]:" + mapNumber, (engine.statc[2] == 41));
-			receiver.drawMenuFont(engine, playerID, 2, 22, "[SAVE FIELD MAP]:" + mapNumber, (engine.statc[2] == 42));
-			receiver.drawMenuFont(engine, playerID, 2, 23, "[LOAD PRESET]:" + presetNumber, (engine.statc[2] == 43));
-			receiver.drawMenuFont(engine, playerID, 2, 24, "[SAVE PRESET]:" + presetNumber, (engine.statc[2] == 44));
+			receiver.drawMenuFont(engine, playerID, 2,  8, "HEBO HIDDEN:" + ((heboHiddenLevel == 0) ? "NONE" : "LV"+heboHiddenLevel),
+					(engine.statc[2] == 28));
+			receiver.drawMenuFont(engine, playerID, 2,  9, "PIECE I:" + GeneralUtil.getONorOFF(pieceEnable[0]), (engine.statc[2] == 29));
+			receiver.drawMenuFont(engine, playerID, 2, 10, "PIECE L:" + GeneralUtil.getONorOFF(pieceEnable[1]), (engine.statc[2] == 30));
+			receiver.drawMenuFont(engine, playerID, 2, 11, "PIECE O:" + GeneralUtil.getONorOFF(pieceEnable[2]), (engine.statc[2] == 31));
+			receiver.drawMenuFont(engine, playerID, 2, 12, "PIECE Z:" + GeneralUtil.getONorOFF(pieceEnable[3]), (engine.statc[2] == 32));
+			receiver.drawMenuFont(engine, playerID, 2, 13, "PIECE T:" + GeneralUtil.getONorOFF(pieceEnable[4]), (engine.statc[2] == 33));
+			receiver.drawMenuFont(engine, playerID, 2, 14, "PIECE J:" + GeneralUtil.getONorOFF(pieceEnable[5]), (engine.statc[2] == 34));
+			receiver.drawMenuFont(engine, playerID, 2, 15, "PIECE S:" + GeneralUtil.getONorOFF(pieceEnable[6]), (engine.statc[2] == 35));
+			receiver.drawMenuFont(engine, playerID, 2, 16, "PIECE I1:" + GeneralUtil.getONorOFF(pieceEnable[7]), (engine.statc[2] == 36));
+			receiver.drawMenuFont(engine, playerID, 2, 17, "PIECE I2:" + GeneralUtil.getONorOFF(pieceEnable[8]), (engine.statc[2] == 37));
+			receiver.drawMenuFont(engine, playerID, 2, 18, "PIECE I3:" + GeneralUtil.getONorOFF(pieceEnable[9]), (engine.statc[2] == 38));
+			receiver.drawMenuFont(engine, playerID, 2, 19, "PIECE L3:" + GeneralUtil.getONorOFF(pieceEnable[10]), (engine.statc[2] == 39));
+			receiver.drawMenuFont(engine, playerID, 2, 20, "USE MAP:" + GeneralUtil.getONorOFF(useMap), (engine.statc[2] == 40));
+			receiver.drawMenuFont(engine, playerID, 2, 21, "[EDIT FIELD MAP]", (engine.statc[2] == 41));
+			receiver.drawMenuFont(engine, playerID, 2, 22, "[LOAD FIELD MAP]:" + mapNumber, (engine.statc[2] == 42));
+			receiver.drawMenuFont(engine, playerID, 2, 23, "[SAVE FIELD MAP]:" + mapNumber, (engine.statc[2] == 43));
+			receiver.drawMenuFont(engine, playerID, 2, 24, "[LOAD PRESET]:" + presetNumber, (engine.statc[2] == 44));
+			receiver.drawMenuFont(engine, playerID, 2, 25, "[SAVE PRESET]:" + presetNumber, (engine.statc[2] == 45));
 		}
 	}
 
@@ -837,10 +851,49 @@ public class PracticeMode extends DummyMode {
 		}
 
 		if(version >= 5) {
-			engine.blockHidden = blockHidden;
+			// Hidden
+			if(blockHidden == -2) {
+				engine.blockHidden = engine.ruleopt.lockflash;
+			} else {
+				engine.blockHidden = blockHidden;
+			}
 			engine.blockHiddenAnim = blockHiddenAnim;
 			engine.blockOutlineType = blockOutlineType;
 			engine.blockShowOutlineOnly = blockShowOutlineOnly;
+
+			// Hebo Hidden
+			if(heboHiddenLevel >= 1) {
+				engine.heboHiddenEnable = true;
+
+				if(heboHiddenLevel == 1) {
+					engine.heboHiddenYLimit = 15;
+					engine.heboHiddenTimerMax = (engine.heboHiddenYNow + 2) * 120;
+				}
+				if(heboHiddenLevel == 2) {
+					engine.heboHiddenYLimit = 17;
+					engine.heboHiddenTimerMax = (engine.heboHiddenYNow + 1) * 100;
+				}
+				if(heboHiddenLevel == 3) {
+					engine.heboHiddenYLimit = 19;
+					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 60 + 60;
+				}
+				if(heboHiddenLevel == 4) {
+					engine.heboHiddenYLimit = 19;
+					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 30 + 45;
+				}
+				if(heboHiddenLevel == 5) {
+					engine.heboHiddenYLimit = 19;
+					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 30 + 30;
+				}
+				if(heboHiddenLevel == 6) {
+					engine.heboHiddenYLimit = 19;
+					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 2 + 15;
+				}
+				if(heboHiddenLevel == 7) {
+					engine.heboHiddenYLimit = 20;
+					engine.heboHiddenTimerMax = engine.heboHiddenYNow + 15;
+				}
+			}
 		}
 
 		owner.bgmStatus.bgm = bgmno;
@@ -1153,6 +1206,13 @@ public class PracticeMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
+		// Decrease Hebo Hidden
+		if((engine.heboHiddenEnable) && (lines > 0)) {
+			engine.heboHiddenTimerNow = 0;
+			engine.heboHiddenYNow -= lines;
+			if(engine.heboHiddenYNow < 0) engine.heboHiddenYNow = 0;
+		}
+
 		if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
 			calcScoreMania(engine, playerID, lines);
 		} else {
