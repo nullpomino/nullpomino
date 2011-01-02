@@ -86,6 +86,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.Document;
@@ -185,6 +187,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Property file for observer ("Watch") settings */
 	protected CustomProperties propObserver;
+
+	/** Default game mode description file */
+	protected CustomProperties propDefaultModeDesc;
+
+	/** Game mode description file */
+	protected CustomProperties propModeDesc;
 
 	/** Default language file */
 	protected CustomProperties propLangDefault;
@@ -483,6 +491,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Cancel Button (Create room screen) */
 	protected JButton btnCreateRoomCancel;
 
+	/** Game mode label (Create room 1P screen) */
+	protected JLabel labelCreateRoom1PGameMode;
+
 	/** Game mode listbox (Create room 1P screen) */
 	protected JList listboxCreateRoom1PModeList;
 
@@ -571,6 +582,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		try {
 			FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
 			propObserver.load(in);
+			in.close();
+		} catch(IOException e) {}
+
+		// Game mode description
+		propDefaultModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_default.properties");
+			propDefaultModeDesc.load(in);
+			in.close();
+		} catch(IOException e) {
+			log.error("Couldn't load default mode description file", e);
+		}
+		propModeDesc = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/lang/modedesc_" + Locale.getDefault().getCountry() + ".properties");
+			propModeDesc.load(in);
 			in.close();
 		} catch(IOException e) {}
 
@@ -1729,15 +1756,20 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel pModeList = new JPanel(new BorderLayout());
 		mainpanelCreateRoom1P.add(pModeList);
 
-		// ** "Game Mode:" label
-		JLabel lCreateRoom1P = new JLabel(getUIText("CreateRoom1P_Mode_Label"));
-		pModeList.add(lCreateRoom1P, BorderLayout.NORTH);
+		labelCreateRoom1PGameMode = new JLabel(getUIText("CreateRoom1P_Mode_Label"));
+		pModeList.add(labelCreateRoom1PGameMode, BorderLayout.NORTH);
 
 		// ** Game mode listbox
 		listmodelCreateRoom1PModeList = new DefaultListModel();
 		loadSinglePlayerModeList(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
 
 		listboxCreateRoom1PModeList = new JList(listmodelCreateRoom1PModeList);
+		listboxCreateRoom1PModeList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				String strMode = (String)listboxCreateRoom1PModeList.getSelectedValue();
+				labelCreateRoom1PGameMode.setText(getModeDesc(strMode));
+			}
+		});
 		listboxCreateRoom1PModeList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PModeList.value", ""), true);
 		JScrollPane spCreateRoom1PModeList = new JScrollPane(listboxCreateRoom1PModeList);
 		pModeList.add(spCreateRoom1PModeList, BorderLayout.CENTER);
@@ -1883,6 +1915,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		String result = propLang.getProperty(str);
 		if(result == null) {
 			result = propLangDefault.getProperty(str, str);
+		}
+		return result;
+	}
+
+	/**
+	 * Get game mode description
+	 * @param str Mode name
+	 * @return Description
+	 */
+	protected String getModeDesc(final String str) {
+		String str2 = str.replace(' ', '_');
+		str2 = str2.replace('(', 'l');
+		str2 = str2.replace(')', 'r');
+		String result = propModeDesc.getProperty(str2);
+		if(result == null) {
+			result = propDefaultModeDesc.getProperty(str2, str2);
 		}
 		return result;
 	}
