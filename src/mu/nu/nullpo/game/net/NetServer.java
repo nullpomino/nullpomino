@@ -166,6 +166,9 @@ public class NetServer {
 	/** Max entry of room chat history */
 	private static int maxRoomChatHistory;
 
+	/** Rated room info presets (compressed NetRoomInfo Strings) */
+	private static LinkedList<String> ratedInfoList;
+	
 	/** Rule list for rated game. */
 	private static LinkedList<RuleOptions>[] ruleList;
 
@@ -205,6 +208,7 @@ public class NetServer {
 	/** Player info */
 	private Map<SocketChannel, NetPlayerInfo> playerInfoMap = new HashMap<SocketChannel, NetPlayerInfo>();
 
+		
 	/** Room info list */
 	private LinkedList<NetRoomInfo> roomInfoList = new LinkedList<NetRoomInfo>();
 
@@ -244,6 +248,21 @@ public class NetServer {
 	/** Maps a SocketChannel to a list of ByteBuffer instances */
 	private HashMap<SocketChannel, List<ByteBuffer>> pendingData = new HashMap<SocketChannel, List<ByteBuffer>>();
 
+	/**
+	 * Load rated-game room presets from the server config
+	 */
+	private static void loadPresetList() {
+		ratedInfoList = new LinkedList<String>();
+		
+		String strInfo = ""; int i = 0;
+		while (strInfo != null){	//Iterate over the available presets in the server config
+			strInfo = propServer.getProperty("0.preset." + (i++));
+			if(strInfo != null){
+				ratedInfoList.add(strInfo);
+			}
+		}
+	}
+	
 	/**
 	 * Load rated-game rule list
 	 */
@@ -936,10 +955,13 @@ public class NetServer {
 		spMinGameRate = propServer.getProperty("netserver.spMinGameRate", DEFAULT_MIN_GAMERATE);
 		maxLobbyChatHistory = propServer.getProperty("netserver.maxLobbyChatHistory", DEFAULT_MAX_LOBBYCHAT_HISTORY);
 		maxRoomChatHistory = propServer.getProperty("netserver.maxRoomChatHistory", DEFAULT_MAX_ROOMCHAT_HISTORY);
-
+		
 		// Load rules for rated game
 		loadRuleList();
 
+		// Load room info presets for rated multiplayer games
+		loadPresetList();
+		
 		// Load multiplayer leaderboard
 		loadMPRankingList();
 		propMPRanking.clear();	// Clear all entries in order to reduce file size
@@ -1706,6 +1728,21 @@ public class NetServer {
 
 			return;
 		}
+		// Send rated presets to client
+		if(message[0].equals("getpresets")){
+			String str = "ratedpresets";
+			
+			Iterator<String> iter = ratedInfoList.iterator();
+			while(iter.hasNext()){
+				str += "\t" + iter.next();
+			}
+			
+			str += "\n";
+			
+			send(client, str);
+			
+			return;
+		}
 		// Send rule data to server (Client->Server)
 		if(message[0].equals("ruledata")) {
 			//ruledata\t[ADLER32CHECKSUM]\t[RULEDATA]
@@ -2059,6 +2096,34 @@ public class NetServer {
 				log.info("NewRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName + " RuleLock:" + roomInfo.ruleLock +
 						 " Map:" + roomInfo.useMap + " Mode:" + roomInfo.strMode);
 			}
+			return;
+		}
+		if(message[0].equals("ratedroomcreate")){
+			int i = Integer.parseInt(message[2]);
+			String strPreset = NetUtil.decompressString(ratedInfoList.get(i));
+			NetRoomInfo roomInfo = new NetRoomInfo(strPreset);
+			
+			roomInfo.strName = NetUtil.urlDecode(message[1]);
+			roomInfo.rated = true;
+			roomInfo.ruleLock = false; //TODO: implement rule whitelists or rule locks in presets where it is relevant
+			
+			roomInfo.roomID = roomCount; //TODO: fix copy-paste code
+
+			roomCount++;
+			if(roomCount == -1) roomCount = 0;
+
+			roomInfoList.add(roomInfo);
+
+			pInfo.roomID = roomInfo.roomID;
+			pInfo.resetPlayState();
+
+			roomInfo.playerList.add(pInfo);
+			pInfo.seatID = roomInfo.joinSeat(pInfo);
+
+			broadcastPlayerInfoUpdate(pInfo);
+			broadcastRoomInfoUpdate(roomInfo, "roomcreate");
+			send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
+			
 			return;
 		}
 		// Join room (If roomID is -1, the player will return to lobby)
