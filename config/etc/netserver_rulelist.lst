@@ -10,6 +10,8 @@ config/rule/Classic3.rul;2
 config/rule/ClassicEasyA.rul;2
 config/rule/ClassicEasyB.rul;2
 config/rule/Standard.rul;1
+config/rule/StandardHard128.rul;1
+config/rule/StandardHard.rul;1
 config/rule/StandardExp.rul;1
 config/rule/StandardFast.rul
 config/rule/StandardFastB.rul

@@ -862,38 +862,7 @@ public class PracticeMode extends DummyMode {
 			engine.blockShowOutlineOnly = blockShowOutlineOnly;
 
 			// Hebo Hidden
-			if(heboHiddenLevel >= 1) {
-				engine.heboHiddenEnable = true;
-
-				if(heboHiddenLevel == 1) {
-					engine.heboHiddenYLimit = 15;
-					engine.heboHiddenTimerMax = (engine.heboHiddenYNow + 2) * 120;
-				}
-				if(heboHiddenLevel == 2) {
-					engine.heboHiddenYLimit = 17;
-					engine.heboHiddenTimerMax = (engine.heboHiddenYNow + 1) * 100;
-				}
-				if(heboHiddenLevel == 3) {
-					engine.heboHiddenYLimit = 19;
-					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 60 + 60;
-				}
-				if(heboHiddenLevel == 4) {
-					engine.heboHiddenYLimit = 19;
-					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 30 + 45;
-				}
-				if(heboHiddenLevel == 5) {
-					engine.heboHiddenYLimit = 19;
-					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 30 + 30;
-				}
-				if(heboHiddenLevel == 6) {
-					engine.heboHiddenYLimit = 19;
-					engine.heboHiddenTimerMax = engine.heboHiddenYNow * 2 + 15;
-				}
-				if(heboHiddenLevel == 7) {
-					engine.heboHiddenYLimit = 20;
-					engine.heboHiddenTimerMax = engine.heboHiddenYNow + 15;
-				}
-			}
+			setHeboHidden(engine);
 		}
 
 		owner.bgmStatus.bgm = bgmno;
@@ -903,6 +872,47 @@ public class PracticeMode extends DummyMode {
 		engine.meterValue = 0;
 		engine.meterColor = GameEngine.METER_COLOR_GREEN;
 		setMeter(engine, playerID);
+	}
+
+	/**
+	 * Set Hebo Hidden params
+	 * @param engine GameEngine
+	 */
+	private void setHeboHidden(GameEngine engine) {
+		if(heboHiddenLevel >= 1) {
+			engine.heboHiddenEnable = true;
+
+			if(heboHiddenLevel == 1) {
+				engine.heboHiddenYLimit = 15;
+				engine.heboHiddenTimerMax = (engine.heboHiddenYNow + 2) * 120;
+			}
+			if(heboHiddenLevel == 2) {
+				engine.heboHiddenYLimit = 17;
+				engine.heboHiddenTimerMax = (engine.heboHiddenYNow + 1) * 100;
+			}
+			if(heboHiddenLevel == 3) {
+				engine.heboHiddenYLimit = 19;
+				engine.heboHiddenTimerMax = engine.heboHiddenYNow * 60 + 60;
+			}
+			if(heboHiddenLevel == 4) {
+				engine.heboHiddenYLimit = 19;
+				engine.heboHiddenTimerMax = engine.heboHiddenYNow * 30 + 45;
+			}
+			if(heboHiddenLevel == 5) {
+				engine.heboHiddenYLimit = 19;
+				engine.heboHiddenTimerMax = engine.heboHiddenYNow * 30 + 30;
+			}
+			if(heboHiddenLevel == 6) {
+				engine.heboHiddenYLimit = 19;
+				engine.heboHiddenTimerMax = engine.heboHiddenYNow * 2 + 15;
+			}
+			if(heboHiddenLevel == 7) {
+				engine.heboHiddenYLimit = 20;
+				engine.heboHiddenTimerMax = engine.heboHiddenYNow + 15;
+			}
+		} else {
+			engine.heboHiddenEnable = false;
+		}
 	}
 
 	/*
@@ -1091,6 +1101,11 @@ public class PracticeMode extends DummyMode {
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		scgettime++;
+
+		if(engine.gameActive && engine.timerActive) {
+			// Hebo Hidden
+			setHeboHidden(engine);
+		}
 
 		if((engine.gameActive) && (engine.ending == 2)) {
 			// Ending中

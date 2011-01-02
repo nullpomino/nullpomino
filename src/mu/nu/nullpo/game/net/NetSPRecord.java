@@ -20,7 +20,8 @@ public class NetSPRecord implements Serializable {
 							RANKINGTYPE_DIGRACE = 3,
 							RANKINGTYPE_ULTRA = 4,
 							RANKINGTYPE_COMBORACE = 5,
-							RANKINGTYPE_DIGCHALLENGE = 6;
+							RANKINGTYPE_DIGCHALLENGE = 6,
+							RANKINGTYPE_TIMEATTACK = 7;
 
 	/** Player Name */
 	public String strPlayerName;
@@ -114,6 +115,16 @@ public class NetSPRecord implements Serializable {
 			} else if((s1.score == s2.score) && (s1.lines > s2.lines)) {
 				return true;
 			} else if((s1.score == s2.score) && (s1.lines == s2.lines) && (s1.time > s2.time)) {
+				return true;
+			}
+		} else if(type == RANKINGTYPE_TIMEATTACK) {
+			if(s1.rollclear > s2.rollclear) {
+				return true;
+			} else if((s1.rollclear == s2.rollclear) && (s1.lines > s2.lines)) {
+				return true;
+			} else if((s1.rollclear == s2.rollclear) && (s1.lines == s2.lines) && (s1.time < s2.time)) {
+				return true;
+			} else if((s1.rollclear == s2.rollclear) && (s1.lines == s2.lines) && (s1.time == s2.time) && (s1.pps > s2.pps)) {
 				return true;
 			}
 		}
@@ -391,6 +402,11 @@ public class NetSPRecord implements Serializable {
 			strRow += stats.score + ",";
 			strRow += stats.lines + ",";
 			strRow += stats.time;
+		} else if(type == RANKINGTYPE_TIMEATTACK) {
+			strRow += stats.lines + ",";
+			strRow += stats.time + ",";
+			strRow += stats.pps + ",";
+			strRow += stats.rollclear;
 		}
 
 		return strRow;

@@ -150,6 +150,9 @@ public class Statistics implements Serializable {
 	/** Max chain */
 	public int maxChain;
 
+	/** Roll cleared flag (0=Died 1=Reached 2=Fully Survived) */
+	public int rollclear;
+
 	/**
 	 * Constructor
 	 */
@@ -222,6 +225,7 @@ public class Statistics implements Serializable {
 		pps = 0f;
 		gamerate = 0f;
 		maxChain = 0;
+		rollclear = 0;
 	}
 
 	/**
@@ -265,6 +269,7 @@ public class Statistics implements Serializable {
 		pps = s.pps;
 		gamerate = s.gamerate;
 		maxChain = s.maxChain;
+		rollclear = s.rollclear;
 	}
 
 	/**
@@ -327,6 +332,7 @@ public class Statistics implements Serializable {
 		p.setProperty(id + ".statistics.pps", pps);
 		p.setProperty(id + ".statistics.gamerate", gamerate);
 		p.setProperty(id + ".statistics.maxChain", maxChain);
+		p.setProperty(id + ".statistics.rollclear", rollclear);
 
 		// 旧Versionとの互換用
 		if(id == 0) {
@@ -380,11 +386,12 @@ public class Statistics implements Serializable {
 		pps = p.getProperty(id + ".statistics.pps", 0f);
 		gamerate = p.getProperty(id + ".statistics.gamerate", 0f);
 		maxChain = p.getProperty(id + ".statistics.maxChain", 0);
+		rollclear = p.getProperty(id + ".statistics.rollclear", 0);
 	}
 
 	/**
 	 * Import from String Array
-	 * @param s String Array (String[37])
+	 * @param s String Array (String[38])
 	 */
 	public void importStringArray(String[] s) {
 		score = Integer.parseInt(s[0]);
@@ -424,6 +431,7 @@ public class Statistics implements Serializable {
 		pps = Float.parseFloat(s[34]);
 		gamerate = Float.parseFloat(s[35]);
 		maxChain = Integer.parseInt(s[36]);
+		if(s.length > 37) rollclear = Integer.parseInt(s[37]);
 	}
 
 	/**
@@ -436,10 +444,10 @@ public class Statistics implements Serializable {
 
 	/**
 	 * Export to String Array
-	 * @return String Array (String[37])
+	 * @return String Array (String[38])
 	 */
 	public String[] exportStringArray() {
-		String[] s = new String[37];
+		String[] s = new String[38];
 		s[0] = Integer.toString(score);
 		s[1] = Integer.toString(scoreFromLineClear);
 		s[2] = Integer.toString(scoreFromSoftDrop);
@@ -477,6 +485,7 @@ public class Statistics implements Serializable {
 		s[34] = Float.toString(pps);
 		s[35] = Float.toString(gamerate);
 		s[36] = Integer.toString(maxChain);
+		s[37] = Integer.toString(rollclear);
 		return s;
 	}
 

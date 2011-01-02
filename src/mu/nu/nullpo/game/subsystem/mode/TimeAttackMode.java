@@ -31,15 +31,15 @@ package mu.nu.nullpo.game.subsystem.mode;
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
+import mu.nu.nullpo.game.net.NetUtil;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
  * TIME ATTACK mode (Original from NullpoUE build 010210 by Zircean. This mode is heavily modified from the original.)
  */
-public class TimeAttackMode extends DummyMode {
+public class TimeAttackMode extends NetDummyMode {
 	/** Current version of this mode */
 	private static final int CURRENT_VERSION = 1;
 
@@ -232,9 +232,6 @@ public class TimeAttackMode extends DummyMode {
 	/** Number of ranking types */
 	private static final int RANKING_TYPE = 11;
 
-	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
-
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
 
@@ -256,9 +253,6 @@ public class TimeAttackMode extends DummyMode {
 	/** Ending started flag */
 	private boolean rollstarted;
 
-	/** Game completed flag (0=Died before 150/200 lines 1=Died during credits roll 2=Survived credits roll */
-	private int rollclear;
-
 	/** Section time */
 	private int[] sectiontime;
 
@@ -269,7 +263,7 @@ public class TimeAttackMode extends DummyMode {
 	private int sectionavgtime;
 
 	/** Game type */
-	private int gametype;
+	private int goaltype;
 
 	/** Selected starting level */
 	private int startlevel;
@@ -312,11 +306,10 @@ public class TimeAttackMode extends DummyMode {
 		receiver = engine.owner.receiver;
 
 		norm = 0;
-		gametype = 0;
+		goaltype = 0;
 		startlevel = 0;
 		rolltime = 0;
 		rollstarted = false;
-		rollclear = 0;
 		sectiontime = new int[20];
 		sectionscomp = 0;
 		sectionavgtime = 0;
@@ -337,12 +330,17 @@ public class TimeAttackMode extends DummyMode {
 		engine.staffrollEnable = false;
 		engine.staffrollNoDeath = false;
 
+		netPlayerInit(engine, playerID);
+
 		if(owner.replayMode == false) {
 			loadSetting(owner.modeConfig);
 			loadRanking(owner.modeConfig, engine.ruleopt.strRuleName);
 			version = CURRENT_VERSION;
 		} else {
 			loadSetting(owner.replayProp);
+
+			// NET: Load name
+			netPlayerName = engine.owner.replayProp.getProperty(playerID + ".net.netPlayerName", "");
 		}
 
 		engine.owner.backgroundStatus.bg = startlevel;
@@ -356,15 +354,15 @@ public class TimeAttackMode extends DummyMode {
 		// Gravity speed
 		int gravlv = engine.statistics.level;
 		if(gravlv < 0) gravlv = 0;
-		if(gravlv >= tableGravity[gametype].length) gravlv = tableGravity[gametype].length - 1;
-		engine.speed.gravity = tableGravity[gametype][gravlv];
-		engine.speed.denominator = tableDenominator[gametype];
+		if(gravlv >= tableGravity[goaltype].length) gravlv = tableGravity[goaltype].length - 1;
+		engine.speed.gravity = tableGravity[goaltype][gravlv];
+		engine.speed.denominator = tableDenominator[goaltype];
 
 		// Other speed values
 		int speedlv = engine.statistics.level;
 		if(speedlv < 0) speedlv = 0;
 
-		switch(gametype) {
+		switch(goaltype) {
 		case GAMETYPE_NORMAL:
 		case GAMETYPE_HIGHSPEED1:
 		case GAMETYPE_HIGHSPEED2:
@@ -427,19 +425,19 @@ public class TimeAttackMode extends DummyMode {
 		// Level timer
 		int timelv = engine.statistics.level;
 		if(timelv < 0) timelv = 0;
-		if(timelv >= tableLevelTimer[gametype].length) timelv = tableLevelTimer[gametype].length - 1;
-		levelTimerMax = levelTimer = tableLevelTimer[gametype][timelv];
+		if(timelv >= tableLevelTimer[goaltype].length) timelv = tableLevelTimer[goaltype].length - 1;
+		levelTimerMax = levelTimer = tableLevelTimer[goaltype][timelv];
 
 		// Show outline only
-		if(gametype == GAMETYPE_HELL) {
+		if(goaltype == GAMETYPE_HELL) {
 			engine.blockShowOutlineOnly = true;
 		}
 		// Bone blocks
-		if( (gametype == GAMETYPE_HELLX) || ((gametype == GAMETYPE_HELL) && (engine.statistics.level >= 15)) || (gametype == GAMETYPE_VOID) ) {
+		if( (goaltype == GAMETYPE_HELLX) || ((goaltype == GAMETYPE_HELL) && (engine.statistics.level >= 15)) || (goaltype == GAMETYPE_VOID) ) {
 			engine.bone = true;
 		}
 		// Block fade for HELL-X
-		if(gametype == GAMETYPE_HELLX) {
+		if(goaltype == GAMETYPE_HELLX) {
 			int fadelv = engine.statistics.level;
 			if(fadelv < 0) fadelv = 0;
 			if(fadelv >= tableHellXFade.length) fadelv = tableHellXFade.length - 1;
@@ -463,7 +461,7 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	private void setStartBgmlv(GameEngine engine) {
 		bgmlv = 0;
-		while((bgmlv < tableBGMChange[gametype].length) && (norm >= tableBGMChange[gametype][bgmlv])) bgmlv++;
+		while((bgmlv < tableBGMChange[goaltype].length) && (norm >= tableBGMChange[goaltype][bgmlv])) bgmlv++;
 	}
 
 	/**
@@ -484,7 +482,12 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
-		if(engine.owner.replayMode == false) {
+		// NET: Net Ranking
+		if(netIsNetRankingDisplayMode) {
+			netOnUpdateNetPlayRanking(engine, netGetGoalType());
+		}
+		// Menu
+		else if(engine.owner.replayMode == false) {
 			// Configuration changes
 			int change = updateCursor(engine, 3);
 
@@ -493,16 +496,16 @@ public class TimeAttackMode extends DummyMode {
 
 				switch(engine.statc[2]) {
 				case 0:
-					gametype += change;
-					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
-					if(gametype > GAMETYPE_MAX - 1) gametype = 0;
-					if(startlevel > tableGoalLevel[gametype] - 1) startlevel = tableGoalLevel[gametype] - 1;
+					goaltype += change;
+					if(goaltype < 0) goaltype = GAMETYPE_MAX - 1;
+					if(goaltype > GAMETYPE_MAX - 1) goaltype = 0;
+					if(startlevel > tableGoalLevel[goaltype] - 1) startlevel = tableGoalLevel[goaltype] - 1;
 					engine.owner.backgroundStatus.bg = startlevel;
 					break;
 				case 1:
 					startlevel += change;
-					if(startlevel < 0) startlevel = tableGoalLevel[gametype] - 1;
-					if(startlevel > tableGoalLevel[gametype] - 1) startlevel = 0;
+					if(startlevel < 0) startlevel = tableGoalLevel[goaltype] - 1;
+					if(startlevel > tableGoalLevel[goaltype] - 1) startlevel = 0;
 					engine.owner.backgroundStatus.bg = startlevel;
 					break;
 				case 2:
@@ -512,6 +515,11 @@ public class TimeAttackMode extends DummyMode {
 					big = !big;
 					break;
 				}
+
+				// NET: Signal options change
+				if(netIsNetPlay && (netNumSpectators > 0)) {
+					netSendOptions(engine);
+				}
 			}
 
 			// Check for A button, when pressed this will begin the game
@@ -519,12 +527,21 @@ public class TimeAttackMode extends DummyMode {
 				receiver.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
+
+				// NET: Signal start of the game
+				if(netIsNetPlay) netLobby.netPlayerClient.send("start1p\n");
+
 				return false;
 			}
 
 			// Check for B button, when pressed this will shutdown the game engine.
-			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B) && !netIsNetPlay) {
 				engine.quitflag = true;
+			}
+
+			// NET: Netplay Ranking
+			if(engine.ctrl.isPush(Controller.BUTTON_D) && netIsNetPlay && !big && engine.ai == null) {
+				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 
 			engine.statc[3]++;
@@ -545,11 +562,16 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"DIFFICULTY", GAMETYPE_NAME[gametype],
-				"LEVEL", String.valueOf(startlevel + 1),
-				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
-				"BIG",  GeneralUtil.getONorOFF(big));
+		if(netIsNetRankingDisplayMode) {
+			// NET: Netplay Ranking
+			netOnRenderNetPlayRanking(engine, playerID, receiver);
+		} else {
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
+					"DIFFICULTY", GAMETYPE_NAME[goaltype],
+					"LEVEL", String.valueOf(startlevel + 1),
+					"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
+					"BIG",  GeneralUtil.getONorOFF(big));
+		}
 	}
 
 	/**
@@ -574,7 +596,11 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		owner.bgmStatus.bgm = tableBGMNumber[gametype][bgmlv];
+		if(netIsWatch) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+		} else {
+			owner.bgmStatus.bgm = tableBGMNumber[goaltype][bgmlv];
+		}
 	}
 
 	/**
@@ -582,22 +608,24 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
+		if(owner.menuOnly) return;
+
 		receiver.drawScoreFont(engine, playerID, 0, 0, "TIME ATTACK", EventReceiver.COLOR_PURPLE);
-		receiver.drawScoreFont(engine, playerID, 0, 1, "("+GAMETYPE_NAME_LONG[gametype]+")", EventReceiver.COLOR_PURPLE);
+		receiver.drawScoreFont(engine, playerID, 0, 1, "("+GAMETYPE_NAME_LONG[goaltype]+")", EventReceiver.COLOR_PURPLE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
-			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
+			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null) && (!netIsWatch)) {
 				receiver.drawScoreFont(engine, playerID, 3, 3, "LINE TIME", EventReceiver.COLOR_BLUE);
 
 				for(int i = 0; i < RANKING_MAX; i++) {
 					int gcolor = EventReceiver.COLOR_WHITE;
-					if(rankingRollclear[gametype][i] == 1) gcolor = EventReceiver.COLOR_GREEN;
-					if(rankingRollclear[gametype][i] == 2) gcolor = EventReceiver.COLOR_ORANGE;
+					if(rankingRollclear[goaltype][i] == 1) gcolor = EventReceiver.COLOR_GREEN;
+					if(rankingRollclear[goaltype][i] == 2) gcolor = EventReceiver.COLOR_ORANGE;
 
 					receiver.drawScoreFont(engine, playerID, 0, 4 + i, String.format("%2d", i + 1),
 							(i == rankingRank) ? EventReceiver.COLOR_RED : EventReceiver.COLOR_YELLOW);
-					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingLines[gametype][i]), gcolor);
-					receiver.drawScoreFont(engine, playerID, 8, 4 + i, GeneralUtil.getTime(rankingTime[gametype][i]), gcolor);
+					receiver.drawScoreFont(engine, playerID, 3, 4 + i, String.valueOf(rankingLines[goaltype][i]), gcolor);
+					receiver.drawScoreFont(engine, playerID, 8, 4 + i, GeneralUtil.getTime(rankingTime[goaltype][i]), gcolor);
 				}
 			}
 		} else {
@@ -615,7 +643,7 @@ public class TimeAttackMode extends DummyMode {
 			String strLevel = String.format("%3d", norm);
 			receiver.drawScoreFont(engine, playerID, 0, 13, strLevel);
 
-			int speed = engine.speed.gravity / (tableDenominator[gametype]/2);
+			int speed = engine.speed.gravity / (tableDenominator[goaltype]/2);
 			if(engine.speed.gravity < 0) speed = 40;
 			receiver.drawSpeedMeter(engine, playerID, 0, 14, speed);
 
@@ -630,7 +658,7 @@ public class TimeAttackMode extends DummyMode {
 			}
 
 			// Section time
-			if((showsectiontime == true) && (sectiontime != null)) {
+			if((showsectiontime == true) && (sectiontime != null) && (!netIsWatch)) {
 				int y = (receiver.getNextDisplayType() == 2) ? 6 : 3;
 				int x = (receiver.getNextDisplayType() == 2) ? 22 : 12;
 				int x2 = (receiver.getNextDisplayType() == 2) ? 10 : 12;
@@ -652,12 +680,22 @@ public class TimeAttackMode extends DummyMode {
 					}
 				}
 
-				if(sectionavgtime > 0) {
+				if((sectionavgtime > 0) && (!netIsWatch)) {
 					receiver.drawScoreFont(engine, playerID, x2, 15, "AVERAGE", EventReceiver.COLOR_BLUE);
 					receiver.drawScoreFont(engine, playerID, x2, 16, GeneralUtil.getTime(sectionavgtime));
 				}
 			}
 		}
+
+		// NET: Number of spectators
+		netDrawSpectatorsCount(engine, 0, 20);
+		// NET: All number of players
+		if(playerID == getPlayers() - 1) {
+			netDrawAllPlayersCount(engine);
+			netDrawGameRate(engine);
+		}
+		// NET: Player name (It may also appear in offline replay)
+		netDrawPlayerName(engine);
 	}
 
 	/**
@@ -670,20 +708,20 @@ public class TimeAttackMode extends DummyMode {
 			engine.timerActive = true;
 		}
 		// Ending start
-		if((engine.ending == 2) && (engine.staffrollEnable == true) && (rollstarted == false)) {
+		if((engine.ending == 2) && (engine.staffrollEnable == true) && (rollstarted == false) && (!netIsWatch)) {
 			rollstarted = true;
 			owner.bgmStatus.bgm = BGMStatus.BGM_ENDING1;
 			owner.bgmStatus.fadesw = false;
 
 			// VOID ending
-			if(gametype == GAMETYPE_VOID) {
+			if(goaltype == GAMETYPE_VOID) {
 				engine.blockHidden = engine.ruleopt.lockflash;
 				engine.blockHiddenAnim = false;
 				engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NONE;
 			}
 		}
 
-		return false;
+		return super.onMove(engine, playerID);
 	}
 
 	/**
@@ -698,7 +736,7 @@ public class TimeAttackMode extends DummyMode {
 				if((levelTimer <= 600) && (levelTimer % 60 == 0)) {
 					receiver.playSE("countdown");
 				}
-			} else {
+			} else if(!netIsWatch) {
 				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_GAMEOVER;
@@ -706,7 +744,7 @@ public class TimeAttackMode extends DummyMode {
 		}
 
 		// Update meter
-		if((tableGoalLevel[gametype] >= 20) && (engine.ending == 0) && (levelTimerMax != 0)) {
+		if((tableGoalLevel[goaltype] >= 20) && (engine.ending == 0) && (levelTimerMax != 0)) {
 			engine.meterValue = (levelTimer * receiver.getMeterMax(engine)) / levelTimerMax;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(levelTimer <= 25*60) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
@@ -723,7 +761,7 @@ public class TimeAttackMode extends DummyMode {
 		}
 
 		// Hebo Hidden for HELL
-		if((gametype == GAMETYPE_HELL) && (engine.timerActive) && (engine.ending == 0)) {
+		if((goaltype == GAMETYPE_HELL) && (engine.timerActive) && (engine.ending == 0)) {
 			if((engine.statistics.level >= 5) && (engine.statistics.level <= 6)) {
 				engine.heboHiddenEnable = true;
 				engine.heboHiddenYLimit = 19;
@@ -750,8 +788,8 @@ public class TimeAttackMode extends DummyMode {
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			// Completed
-			if(rolltime >= ROLLTIMELIMIT) {
-				rollclear = 2;
+			if((rolltime >= ROLLTIMELIMIT) && (!netIsWatch)) {
+				engine.statistics.rollclear = 2;
 				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
@@ -779,7 +817,7 @@ public class TimeAttackMode extends DummyMode {
 		}
 
 		// Update meter
-		if(tableGoalLevel[gametype] < 20) {
+		if(tableGoalLevel[goaltype] < 20) {
 			engine.meterValue = ((norm % 10) * receiver.getMeterMax(engine)) / 9;
 			engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			if(norm % 10 >= 4) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
@@ -788,18 +826,18 @@ public class TimeAttackMode extends DummyMode {
 		}
 
 		// BGM change
-		if((bgmlv < tableBGMChange[gametype].length) && (norm >= tableBGMChange[gametype][bgmlv])) {
+		if((bgmlv < tableBGMChange[goaltype].length) && (norm >= tableBGMChange[goaltype][bgmlv])) {
 			bgmlv++;
-			owner.bgmStatus.bgm = tableBGMNumber[gametype][bgmlv];
+			owner.bgmStatus.bgm = tableBGMNumber[goaltype][bgmlv];
 			owner.bgmStatus.fadesw = false;
 		}
 		// BGM fadeout
-		else if((bgmlv < tableBGMFadeout[gametype].length) && (norm >= tableBGMFadeout[gametype][bgmlv])) {
+		else if((bgmlv < tableBGMFadeout[goaltype].length) && (norm >= tableBGMFadeout[goaltype][bgmlv])) {
 			owner.bgmStatus.fadesw = true;
 		}
 
 		// Game completed
-		if(norm >= tableGoalLevel[gametype] * 10) {
+		if(norm >= tableGoalLevel[goaltype] * 10) {
 			receiver.playSE("levelup");
 
 			// Update section time
@@ -808,21 +846,21 @@ public class TimeAttackMode extends DummyMode {
 				setAverageSectionTime();
 			}
 
-			norm = tableGoalLevel[gametype] * 10;
+			norm = tableGoalLevel[goaltype] * 10;
 			engine.ending = 1;
 			engine.timerActive = false;
 
-			if((gametype == GAMETYPE_HELLX) || (gametype == GAMETYPE_VOID)) {
+			if((goaltype == GAMETYPE_HELLX) || (goaltype == GAMETYPE_VOID)) {
 				// HELL-X ending & VOID ending
 				engine.staffrollEnable = true;
-				rollclear = 1;
+				engine.statistics.rollclear = 1;
 			} else {
 				engine.gameEnded();
-				rollclear = 2;
+				engine.statistics.rollclear = 2;
 			}
 		}
 		// Level up
-		else if((norm >= (engine.statistics.level + 1) * 10) && (engine.statistics.level < tableGoalLevel[gametype] - 1)) {
+		else if((norm >= (engine.statistics.level + 1) * 10) && (engine.statistics.level < tableGoalLevel[goaltype] - 1)) {
 			receiver.playSE("levelup");
 			engine.statistics.level++;
 
@@ -843,20 +881,24 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		receiver.drawMenuFont(engine, playerID, 0, 0, "kn PAGE" + (engine.statc[1] + 1) + "/3", EventReceiver.COLOR_RED);
+		if(!netIsWatch) {
+			receiver.drawMenuFont(engine, playerID, 0, 0, "kn PAGE" + (engine.statc[1] + 1) + "/3", EventReceiver.COLOR_RED);
+		}
 
 		if(engine.statc[1] == 0) {
 			int gcolor = EventReceiver.COLOR_WHITE;
-			if(rollclear == 1) gcolor = EventReceiver.COLOR_GREEN;
-			if(rollclear == 2) gcolor = EventReceiver.COLOR_ORANGE;
+			if(engine.statistics.rollclear == 1) gcolor = EventReceiver.COLOR_GREEN;
+			if(engine.statistics.rollclear == 2) gcolor = EventReceiver.COLOR_ORANGE;
 
 			receiver.drawMenuFont(engine, playerID,  0, 2, "NORM", EventReceiver.COLOR_BLUE);
 			String strLines = String.format("%10d", norm);
 			receiver.drawMenuFont(engine, playerID,  0, 3, strLines, gcolor);
 
 			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
-					STAT_LEVEL, STAT_TIME, STAT_LPM, STAT_PPS);
-			drawResultRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, rankingRank);
+					STAT_LEVEL, STAT_TIME, STAT_PIECE, STAT_LPM, STAT_PPS);
+			drawResultRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, rankingRank);
+			drawResultNetRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[0]);
+			drawResultNetRankDaily(engine, playerID, receiver, 18, EventReceiver.COLOR_BLUE, netRankingRank[1]);
 		} else if(engine.statc[1] == 1) {
 			receiver.drawMenuFont(engine, playerID, 0, 2, "SECTION", EventReceiver.COLOR_BLUE);
 
@@ -884,6 +926,15 @@ public class TimeAttackMode extends DummyMode {
 				receiver.drawMenuFont(engine, playerID, 2, 15, GeneralUtil.getTime(sectionavgtime));
 			}
 		}
+
+		if(netIsPB) {
+			receiver.drawMenuFont(engine, playerID, 2, 20, "NEW PB", EventReceiver.COLOR_ORANGE);
+		}
+		if(netIsNetPlay && (netReplaySendStatus == 1)) {
+			receiver.drawMenuFont(engine, playerID, 0, 21, "SENDING...", EventReceiver.COLOR_PINK);
+		} else if(netIsNetPlay && !netIsWatch && (netReplaySendStatus == 2)) {
+			receiver.drawMenuFont(engine, playerID, 1, 21, "A: RETRY", EventReceiver.COLOR_RED);
+		}
 	}
 
 	/**
@@ -891,18 +942,20 @@ public class TimeAttackMode extends DummyMode {
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
-		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-			engine.statc[1]--;
-			if(engine.statc[1] < 0) engine.statc[1] = 2;
-			receiver.playSE("change");
-		}
-		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-			engine.statc[1]++;
-			if(engine.statc[1] > 2) engine.statc[1] = 0;
-			receiver.playSE("change");
+		if(!netIsWatch) {
+			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
+				engine.statc[1]--;
+				if(engine.statc[1] < 0) engine.statc[1] = 2;
+				receiver.playSE("change");
+			}
+			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
+				engine.statc[1]++;
+				if(engine.statc[1] > 2) engine.statc[1] = 0;
+				receiver.playSE("change");
+			}
 		}
 
-		return false;
+		return super.onResult(engine, playerID);
 	}
 
 	/**
@@ -912,8 +965,13 @@ public class TimeAttackMode extends DummyMode {
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
 		saveSetting(prop);
 
+		// NET: Save name
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			prop.setProperty(playerID + ".net.netPlayerName", netPlayerName);
+		}
+
 		if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
-			updateRanking(norm, engine.statistics.time, gametype, rollclear);
+			updateRanking(norm, engine.statistics.time, goaltype, engine.statistics.rollclear);
 
 			if(rankingRank != -1) {
 				saveRanking(owner.modeConfig, engine.ruleopt.strRuleName);
@@ -927,7 +985,7 @@ public class TimeAttackMode extends DummyMode {
 	 * @param prop CustomProperties
 	 */
 	private void loadSetting(CustomProperties prop) {
-		gametype = prop.getProperty("timeattack.gametype", 0);
+		goaltype = prop.getProperty("timeattack.gametype", 0);
 		startlevel = prop.getProperty("timeattack.startlevel", 0);
 		big = prop.getProperty("timeattack.big", false);
 		showsectiontime = prop.getProperty("timeattack.showsectiontime", true);
@@ -939,7 +997,7 @@ public class TimeAttackMode extends DummyMode {
 	 * @param prop CustomProperties
 	 */
 	private void saveSetting(CustomProperties prop) {
-		prop.setProperty("timeattack.gametype", gametype);
+		prop.setProperty("timeattack.gametype", goaltype);
 		prop.setProperty("timeattack.startlevel", startlevel);
 		prop.setProperty("timeattack.big", big);
 		prop.setProperty("timeattack.showsectiontime", showsectiontime);
@@ -951,7 +1009,8 @@ public class TimeAttackMode extends DummyMode {
 	 * @param prop CustomProperties
 	 * @param ruleName Rule name
 	 */
-	private void loadRanking(CustomProperties prop, String ruleName) {
+	@Override
+	protected void loadRanking(CustomProperties prop, String ruleName) {
 		for(int i = 0; i < RANKING_MAX; i++) {
 			for(int type = 0; type < GAMETYPE_MAX; type++) {
 				rankingLines[type][i] = prop.getProperty("timeattack.ranking." + ruleName + "." + type + ".lines." + i, 0);
@@ -1019,5 +1078,114 @@ public class TimeAttackMode extends DummyMode {
 		}
 
 		return -1;
+	}
+
+	/**
+	 * NET: Send various in-game stats (as well as goaltype)
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendStats(GameEngine engine) {
+		int bg = engine.owner.backgroundStatus.fadesw ? engine.owner.backgroundStatus.fadebg : engine.owner.backgroundStatus.bg;
+		String msg = "game\tstats\t";
+		msg += engine.statistics.lines + "\t" + engine.statistics.totalPieceLocked + "\t";
+		msg += engine.statistics.time + "\t" + engine.statistics.lpm + "\t";
+		msg += engine.statistics.pps + "\t" + goaltype + "\t";
+		msg += engine.gameActive + "\t" + engine.timerActive + "\t";
+		msg += engine.statistics.level + "\t" + levelTimer + "\t" + levelTimerMax + "\t";
+		msg += rolltime + "\t" + norm + "\t" + bg + "\t" + engine.meterValue + "\t" + engine.meterColor + "\t";
+		msg += engine.heboHiddenEnable + "\t" + engine.heboHiddenTimerNow + "\t" + engine.heboHiddenTimerMax + "\t";
+		msg += engine.heboHiddenYNow + "\t" + engine.heboHiddenYLimit + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Receive various in-game stats (as well as goaltype)
+	 */
+	@Override
+	protected void netRecvStats(GameEngine engine, String[] message) {
+		engine.statistics.lines = Integer.parseInt(message[4]);
+		engine.statistics.totalPieceLocked = Integer.parseInt(message[5]);
+		engine.statistics.time = Integer.parseInt(message[6]);
+		engine.statistics.lpm = Float.parseFloat(message[7]);
+		engine.statistics.pps = Float.parseFloat(message[8]);
+		goaltype = Integer.parseInt(message[9]);
+		engine.gameActive = Boolean.parseBoolean(message[10]);
+		engine.timerActive = Boolean.parseBoolean(message[11]);
+		engine.statistics.level = Integer.parseInt(message[12]);
+		levelTimer = Integer.parseInt(message[13]);
+		levelTimerMax = Integer.parseInt(message[14]);
+		rolltime = Integer.parseInt(message[15]);
+		norm = Integer.parseInt(message[16]);
+		engine.owner.backgroundStatus.bg = Integer.parseInt(message[17]);
+		engine.meterValue = Integer.parseInt(message[18]);
+		engine.meterColor = Integer.parseInt(message[19]);
+		engine.heboHiddenEnable = Boolean.parseBoolean(message[20]);
+		engine.heboHiddenTimerNow = Integer.parseInt(message[21]);
+		engine.heboHiddenTimerMax = Integer.parseInt(message[21]);
+		engine.heboHiddenYNow = Integer.parseInt(message[22]);
+		engine.heboHiddenYLimit = Integer.parseInt(message[23]);
+	}
+
+	/**
+	 * NET: Send end-of-game stats
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendEndGameStats(GameEngine engine) {
+		String subMsg = "";
+		subMsg += "NORM;" + norm + "\t";
+		subMsg += "LEVEL;" + (engine.statistics.level + engine.statistics.levelDispAdd) + "\t";
+		subMsg += "TIME;" + GeneralUtil.getTime(engine.statistics.time) + "\t";
+		subMsg += "PIECE;" + engine.statistics.totalPieceLocked + "\t";
+		subMsg += "LINE/MIN;" + engine.statistics.lpm + "\t";
+		subMsg += "PIECE/SEC;" + engine.statistics.pps + "\t";
+		subMsg += "SECTION AVERAGE;" + GeneralUtil.getTime(sectionavgtime) + "\t";
+		for(int i = 0; i < sectiontime.length; i++) {
+			if(sectiontime[i] > 0) {
+				subMsg += "SECTION " + (i+1) + ";" + GeneralUtil.getTime(sectiontime[i]) + "\t";
+			}
+		}
+
+		String msg = "gstat1p\t" + NetUtil.urlEncode(subMsg) + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Send game options to all spectators
+	 * @param engine GameEngine
+	 */
+	@Override
+	protected void netSendOptions(GameEngine engine) {
+		String msg = "game\toption\t";
+		msg += goaltype + "\t" + startlevel + "\t" + showsectiontime + "\t" + big + "\n";
+		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * NET: Receive game options
+	 */
+	@Override
+	protected void netRecvOptions(GameEngine engine, String[] message) {
+		goaltype = Integer.parseInt(message[4]);
+		startlevel = Integer.parseInt(message[5]);
+		showsectiontime = Boolean.parseBoolean(message[6]);
+		big = Boolean.parseBoolean(message[7]);
+	}
+
+	/**
+	 * NET: Get goal type
+	 */
+	@Override
+	protected int netGetGoalType() {
+		return goaltype;
+	}
+
+	/**
+	 * NET: It returns true when the current settings doesn't prevent leaderboard screen from showing.
+	 */
+	@Override
+	protected boolean netIsNetRankingViewOK(GameEngine engine) {
+		return (startlevel == 0) && (!big) && (engine.ai == null);
 	}
 }

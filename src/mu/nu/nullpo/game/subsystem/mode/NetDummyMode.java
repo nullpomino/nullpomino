@@ -124,6 +124,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: Net Rankings' score/line (Declared in NetDummyMode) */
 	protected LinkedList<Double>[] netRankingSPL;
 
+	/** NET: Net Rankings' roll completed flag (Declared in NetDummyMode) */
+	protected LinkedList<Integer>[] netRankingRollclear;
+
 	/*
 	 * NET: Mode name
 	 */
@@ -191,6 +194,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netRankingPPS = new LinkedList[2];
 		netRankingLines = new LinkedList[2];
 		netRankingSPL = new LinkedList[2];
+		netRankingRollclear = new LinkedList[2];
 	}
 
 	/**
@@ -1017,6 +1021,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    COMBO TIME     PPS    NAME", EventReceiver.COLOR_BLUE);
 				} else if(netRankingType == NetSPRecord.RANKINGTYPE_DIGCHALLENGE) {
 					receiver.drawMenuFont(engine, playerID, 1, 3, "    SCORE   LINE TIME     NAME", EventReceiver.COLOR_BLUE);
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_TIMEATTACK) {
+					receiver.drawMenuFont(engine, playerID, 1, 3, "    LINE  TIME     PPS    NAME", EventReceiver.COLOR_BLUE);
 				}
 
 				for(int i = startIndex; i < endIndex; i++) {
@@ -1065,6 +1071,14 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						receiver.drawMenuFont(engine, playerID, 5, 4 + c, "" + netRankingScore[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 13, 4 + c, "" + netRankingLines[d].get(i), (i == netRankingCursor[d]));
 						receiver.drawMenuFont(engine, playerID, 18, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
+						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
+					} else if(netRankingType == NetSPRecord.RANKINGTYPE_TIMEATTACK) {
+						int fontcolor = EventReceiver.COLOR_WHITE;
+						if(netRankingRollclear[d].get(i) == 1) fontcolor = EventReceiver.COLOR_GREEN;
+						if(netRankingRollclear[d].get(i) == 2) fontcolor = EventReceiver.COLOR_ORANGE;
+						receiver.drawMenuFont(engine, playerID, 5, 4 + c, "" + netRankingLines[d].get(i), fontcolor);
+						receiver.drawMenuFont(engine, playerID, 11, 4 + c, GeneralUtil.getTime(netRankingTime[d].get(i)), (i == netRankingCursor[d]));
+						receiver.drawMenuFont(engine, playerID, 20, 4 + c, String.format("%.4g", netRankingPPS[d].get(i)), (i == netRankingCursor[d]));
 						receiver.drawTTFMenuFont(engine, playerID, 27, 4 + c, netRankingName[d].get(i), (i == netRankingCursor[d]));
 					}
 
@@ -1169,6 +1183,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			netRankingPPS[d] = new LinkedList<Float>();
 			netRankingLines[d] = new LinkedList<Integer>();
 			netRankingSPL[d] = new LinkedList<Double>();
+			netRankingRollclear[d] = new LinkedList<Integer>();
 
 			for(int i = 0; i < maxRecords; i++) {
 				String[] arrayData = arrayRow[i].split(",");
@@ -1206,6 +1221,11 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					netRankingScore[d].add(Integer.parseInt(arrayData[4]));
 					netRankingLines[d].add(Integer.parseInt(arrayData[5]));
 					netRankingTime[d].add(Integer.parseInt(arrayData[6]));
+				} else if(netRankingType == NetSPRecord.RANKINGTYPE_TIMEATTACK) {
+					netRankingLines[d].add(Integer.parseInt(arrayData[4]));
+					netRankingTime[d].add(Integer.parseInt(arrayData[5]));
+					netRankingPPS[d].add(Float.parseFloat(arrayData[6]));
+					netRankingRollclear[d].add(Integer.parseInt(arrayData[7]));
 				} else {
 					log.error("Unknown ranking type:" + netRankingType);
 				}
