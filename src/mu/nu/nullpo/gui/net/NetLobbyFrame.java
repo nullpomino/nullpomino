@@ -46,13 +46,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -147,10 +150,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 							SCREENCARD_SERVERADD = 2,
 							SCREENCARD_CREATEROOM = 3,
 							SCREENCARD_CREATEROOM1P = 4,
-							SCREENCARD_MPRANKING = 5;
+							SCREENCARD_MPRANKING = 5,
+							SCREENCARD_RULECHANGE = 6;
 
 	/** Names for each screen-card */
-	public static final String[] SCREENCARD_NAMES = {"ServerSelect", "Lobby", "ServerAdd", "CreateRoom", "CreateRoom1P", "MPRanking"};
+	public static final String[] SCREENCARD_NAMES = {"ServerSelect","Lobby","ServerAdd","CreateRoom","CreateRoom1P","MPRanking","RuleChange"};
 
 	/** Log */
 	static final Logger log = Logger.getLogger(NetLobbyFrame.class);
@@ -172,6 +176,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Property file for lobby settings */
 	protected CustomProperties propConfig;
+
+	/** Property file for global settings */
+	protected CustomProperties propGlobal;
 
 	/** Property file for swing settings */
 	protected CustomProperties propSwingConfig;
@@ -245,6 +252,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Create Room 1P (Lobby screen) */
 	protected JButton btnRoomListRoomCreate1P;
 
+	/** Rule change button (Lobby screen) */
+	protected JButton btnRoomListRuleChange;
+
 	/** チーム変更 button(Lobby screen) */
 	protected JButton btnRoomListTeamChange;
 
@@ -254,19 +264,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Team name input 欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
 
-	/** ルーム一覧 table */
+	/** Room list table */
 	protected JTable tableRoomList;
 
-	/** ルーム一覧 tableのカラム名(翻訳後) */
+	/** Room list tableのカラム名(翻訳後) */
 	protected String[] strTableColumnNames;
 
-	/** ルーム一覧 tableの data */
+	/** Room list tableの data */
 	protected DefaultTableModel tablemodelRoomList;
 
-	/** チャットログとPlayerリストの仕切り線(Lobby screen) */
+	/** Chat logとPlayerリストの仕切り線(Lobby screen) */
 	protected JSplitPane splitLobbyChat;
 
-	/** チャットログ(Lobby screen) */
+	/** Chat log(Lobby screen) */
 	protected JTextPane txtpaneLobbyChatLog;
 
 	/** Playerリスト(Lobby screen) */
@@ -329,10 +339,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Multiplayer game stats table data */
 	protected DefaultTableModel tablemodelGameStat1P;
 
-	/** チャットログとPlayerリストの仕切り線(Room screen) */
+	/** Chat logとPlayerリストの仕切り線(Room screen) */
 	protected JSplitPane splitRoomChat;
 
-	/** チャットログ(Room screen) */
+	/** Chat log(Room screen) */
 	protected JTextPane txtpaneRoomChatLog;
 
 	/** Playerリスト(Room screen) */
@@ -506,6 +516,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** OK button (MPRanking screen) */
 	protected JButton btnMPRankingOK;
 
+	/** Tab (Rule change screen) */
+	protected JTabbedPane tabRuleChange;
+
+	/** Rule list listbox (Rule change screen) */
+	protected JList[] listboxRuleChangeRuleList;
+
+	/** OK button (Rule change screen) */
+	protected JButton btnRuleChangeOK;
+
+	/** Cancel button (Rule change screen) */
+	protected JButton btnRuleChangeCancel;
+
+	/** Rule entries (Rule change screen) */
+	protected LinkedList<RuleEntry> ruleEntries;
+
 	/**
 	 * Constructor
 	 */
@@ -522,6 +547,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		try {
 			FileInputStream in = new FileInputStream("config/setting/netlobby.cfg");
 			propConfig.load(in);
+			in.close();
+		} catch(IOException e) {}
+
+		// Load global settings
+		propGlobal = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/global.cfg");
+			propGlobal.load(in);
 			in.close();
 		} catch(IOException e) {}
 
@@ -585,6 +618,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// Map list
 		mapList = new LinkedList<String>();
 
+		// Rule files
+		String[] strRuleFileList = getRuleFileList();
+		if(strRuleFileList == null) {
+			log.error("Rule file directory not found");
+		} else {
+			createRuleEntries(strRuleFileList);
+		}
+
 		// GUI Init
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setTitle(getUIText("Title_NetLobby"));
@@ -619,6 +660,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		initCreateRoomUI();
 		initCreateRoom1PUI();
 		initMPRankingUI();
+		initRuleChangeUI();
 
 		changeCurrentScreenCard(SCREENCARD_SERVERSELECT);
 	}
@@ -754,7 +796,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		splitLobby.setDividerLocation(propConfig.getProperty("lobby.splitLobby.location", 200));
 		mainpanelLobby.add(splitLobby, BorderLayout.CENTER);
 
-		// ** ルーム一覧(上)
+		// ** Room list(上)
 		JPanel subpanelRoomList = new JPanel(new BorderLayout());
 		subpanelRoomList.setMinimumSize(new Dimension(0,0));
 		splitLobby.setTopComponent(subpanelRoomList);
@@ -764,7 +806,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelRoomListTopBar = new JPanel(roomListTopBarCardLayout);
 		subpanelRoomList.add(subpanelRoomListTopBar, BorderLayout.NORTH);
 
-		// **** ルーム一覧 button類
+		// **** Room list button類
 		JPanel subpanelRoomListButtons = new JPanel();
 		subpanelRoomListTopBar.add(subpanelRoomListButtons, "Buttons");
 		//subpanelRoomList.add(subpanelRoomListButtons, BorderLayout.NORTH);
@@ -790,6 +832,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate1P.setActionCommand("Lobby_RoomCreate1P");
 		btnRoomListRoomCreate1P.setMnemonic('1');
 		subpanelRoomListButtons.add(btnRoomListRoomCreate1P);
+
+		// ***** Rule change button
+		btnRoomListRuleChange = new JButton(getUIText("Lobby_RuleChange"));
+		btnRoomListRuleChange.addActionListener(this);
+		btnRoomListRuleChange.setActionCommand("Lobby_RuleChange");
+		btnRoomListRuleChange.setMnemonic('R');
+		subpanelRoomListButtons.add(btnRoomListRuleChange);
 
 		// ***** チーム変更 button
 		btnRoomListTeamChange = new JButton(getUIText("Lobby_TeamChange"));
@@ -838,7 +887,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListTeamCancel.setMnemonic('C');
 		subpanelRoomListTeamButtons.add(btnRoomListTeamCancel);
 
-		// *** ルーム一覧 table
+		// *** Room list table
 		strTableColumnNames = new String[ROOMTABLE_COLUMNNAMES.length];
 		for(int i = 0; i < strTableColumnNames.length; i++) {
 			strTableColumnNames[i] = getUIText(ROOMTABLE_COLUMNNAMES[i]);
@@ -870,12 +919,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelLobbyChat.setMinimumSize(new Dimension(0,0));
 		splitLobby.setBottomComponent(subpanelLobbyChat);
 
-		// *** チャットログとPlayerリストの仕切り線
+		// *** Chat logとPlayerリストの仕切り線
 		splitLobbyChat = new JSplitPane();
 		splitLobbyChat.setDividerLocation(propConfig.getProperty("lobby.splitLobbyChat.location", 350));
 		subpanelLobbyChat.add(splitLobbyChat, BorderLayout.CENTER);
 
-		// **** チャットログ(Lobby screen)
+		// **** Chat log(Lobby screen)
 		txtpaneLobbyChatLog = new JTextPane();
 		txtpaneLobbyChatLog.setComponentPopupMenu(new LogPopupMenu(txtpaneLobbyChatLog));
 		txtpaneLobbyChatLog.addKeyListener(new LogKeyAdapter());
@@ -1067,12 +1116,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelRoomChat.setMinimumSize(new Dimension(0,0));
 		splitRoom.setBottomComponent(subpanelRoomChat);
 
-		// *** チャットログとPlayerリストの仕切り線(Room screen)
+		// *** Chat logとPlayerリストの仕切り線(Room screen)
 		splitRoomChat = new JSplitPane();
 		splitRoomChat.setDividerLocation(propConfig.getProperty("room.splitRoomChat.location", 350));
 		subpanelRoomChat.add(splitRoomChat, BorderLayout.CENTER);
 
-		// **** チャットログ(Room screen)
+		// **** Chat log(Room screen)
 		txtpaneRoomChatLog = new JTextPane();
 		txtpaneRoomChatLog.setComponentPopupMenu(new LogPopupMenu(txtpaneRoomChatLog));
 		txtpaneRoomChatLog.addKeyListener(new LogKeyAdapter());
@@ -1784,6 +1833,48 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
+	 * Rule change screen initialization
+	 */
+	protected void initRuleChangeUI() {
+		// Main panel for RuleChange
+		JPanel mainpanelRuleChange = new JPanel(new BorderLayout());
+		this.getContentPane().add(mainpanelRuleChange, SCREENCARD_NAMES[SCREENCARD_RULECHANGE]);
+
+		// * Tab
+		tabRuleChange = new JTabbedPane();
+		mainpanelRuleChange.add(tabRuleChange, BorderLayout.CENTER);
+
+		// ** Rule Listboxes
+		listboxRuleChangeRuleList = new JList[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			listboxRuleChangeRuleList[i] = new JList(extractRuleListFromRuleEntries(i));
+			JScrollPane spRuleList = new JScrollPane(listboxRuleChangeRuleList[i]);
+			tabRuleChange.addTab(GameEngine.GAMESTYLE_NAMES[i], spRuleList);
+		}
+
+		// * Buttons panel
+		JPanel subpanelButtons = new JPanel();
+		subpanelButtons.setLayout(new BoxLayout(subpanelButtons, BoxLayout.X_AXIS));
+		mainpanelRuleChange.add(subpanelButtons, BorderLayout.SOUTH);
+
+		// ** OK button
+		btnRuleChangeOK = new JButton(getUIText("RuleChange_OK"));
+		btnRuleChangeOK.addActionListener(this);
+		btnRuleChangeOK.setActionCommand("RuleChange_OK");
+		btnRuleChangeOK.setMnemonic('O');
+		btnRuleChangeOK.setMaximumSize(new Dimension(Short.MAX_VALUE, btnRuleChangeOK.getMaximumSize().height));
+		subpanelButtons.add(btnRuleChangeOK);
+
+		// ** Cancel button
+		btnRuleChangeCancel = new JButton(getUIText("RuleChange_Cancel"));
+		btnRuleChangeCancel.addActionListener(this);
+		btnRuleChangeCancel.setActionCommand("RuleChange_Cancel");
+		btnRuleChangeCancel.setMnemonic('C');
+		btnRuleChangeCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, btnRuleChangeCancel.getMaximumSize().height));
+		subpanelButtons.add(btnRuleChangeCancel);
+	}
+
+	/**
 	 * 翻訳後のUIの文字列を取得
 	 * @param str 文字列
 	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
@@ -1834,6 +1925,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		case SCREENCARD_MPRANKING:
 			defaultButton = btnMPRankingOK;
 			break;
+		case SCREENCARD_RULECHANGE:
+			defaultButton = btnRuleChangeOK;
+			break;
 		}
 
 		if(defaultButton != null) {
@@ -1842,7 +1936,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * @return Current 画面のチャットログ
+	 * @return Current 画面のChat log
 	 */
 	public JTextPane getCurrentChatLogTextPane() {
 		if(tabLobbyAndRoom.getSelectedIndex() != 0) {
@@ -1907,8 +2001,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * チャットログに新しい行を追加(システムメッセージ)
-	 * @param txtpane チャットログ
+	 * Chat logに新しい行を追加(システムメッセージ)
+	 * @param txtpane Chat log
 	 * @param str 追加する文字列
 	 */
 	public void addSystemChatLog(JTextPane txtpane, String str) {
@@ -1916,8 +2010,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * チャットログに新しい行を追加(システムメッセージ)
-	 * @param txtpane チャットログ
+	 * Chat logに新しい行を追加(システムメッセージ)
+	 * @param txtpane Chat log
 	 * @param str 追加する文字列
 	 * @param fgcolor 文字色(null可)
 	 */
@@ -1947,8 +2041,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * チャットログに新しい行を追加(システムメッセージ・別スレッドからの呼び出し用)
-	 * @param txtpane チャットログ
+	 * Chat logに新しい行を追加(システムメッセージ・別スレッドからの呼び出し用)
+	 * @param txtpane Chat log
 	 * @param str 追加する文字列
 	 */
 	public void addSystemChatLogLater(final JTextPane txtpane, final String str) {
@@ -1960,8 +2054,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * チャットログに新しい行を追加(システムメッセージ・別スレッドからの呼び出し用)
-	 * @param txtpane チャットログ
+	 * Chat logに新しい行を追加(システムメッセージ・別スレッドからの呼び出し用)
+	 * @param txtpane Chat log
 	 * @param str 追加する文字列
 	 * @param fgcolor 文字色(null可)
 	 */
@@ -2161,6 +2255,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListQuickStart.setEnabled((mode == 1));
 		btnRoomListRoomCreate.setEnabled((mode == 1));
 		btnRoomListRoomCreate1P.setEnabled((mode == 1));
+		btnRoomListRuleChange.setEnabled((mode == 1));
 		btnRoomListTeamChange.setEnabled((mode >= 1));
 		btnRoomListRanking.setEnabled((mode >= 1));
 		btnLobbyChatSend.setEnabled((mode >= 1));
@@ -2676,6 +2771,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
+	 * Save global config file
+	 */
+	public void saveGlobalConfig() {
+		try {
+			FileOutputStream out = new FileOutputStream("config/setting/global.cfg");
+			propGlobal.store(out, "NullpoMino Global Config");
+			out.close();
+		} catch (IOException e) {
+			log.warn("Failed to save global config file", e);
+		}
+	}
+
+	/**
 	 * 終了処理
 	 */
 	public void shutdown() {
@@ -2959,6 +3067,116 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 	}
 
+	/**
+	 * Get rule file list (for rule change screen)
+	 * @return Rule file list. null if directory doesn't exist.
+	 */
+	public String[] getRuleFileList() {
+		File dir = new File("config/rule");
+
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File dir1, String name) {
+				return name.endsWith(".rul");
+			}
+		};
+
+		String[] list = dir.list(filter);
+
+		if(!System.getProperty("os.name").startsWith("Windows")) {
+			// Sort if not windows
+			Arrays.sort(list);
+		}
+
+		return list;
+	}
+
+	/**
+	 * Create rule entries (for rule change screen)
+	 * @param filelist Rule file list
+	 */
+	public void createRuleEntries(String[] filelist) {
+		ruleEntries = new LinkedList<RuleEntry>();
+
+		for(int i = 0; i < filelist.length; i++) {
+			RuleEntry entry = new RuleEntry();
+
+			File file = new File("config/rule/" + filelist[i]);
+			entry.filename = filelist[i];
+			entry.filepath = file.getPath();
+
+			CustomProperties prop = new CustomProperties();
+			try {
+				FileInputStream in = new FileInputStream("config/rule/" + filelist[i]);
+				prop.load(in);
+				in.close();
+				entry.rulename = prop.getProperty("0.ruleopt.strRuleName", "");
+				entry.style = prop.getProperty("0.ruleopt.style", 0);
+			} catch (Exception e) {
+				entry.rulename = "";
+				entry.style = -1;
+			}
+
+			ruleEntries.add(entry);
+		}
+	}
+
+	/**
+	 * Get subset of rule entries (for rule change screen)
+	 * @param currentStyle Current style
+	 * @return Subset of rule entries
+	 */
+	public LinkedList<RuleEntry> getSubsetEntries(int currentStyle) {
+		LinkedList<RuleEntry> subEntries = new LinkedList<RuleEntry>();
+		for(int i = 0; i < ruleEntries.size(); i++) {
+			if(ruleEntries.get(i).style == currentStyle) {
+				subEntries.add(ruleEntries.get(i));
+			}
+		}
+		return subEntries;
+	}
+
+	/**
+	 * Get rule name + file name list as String[] (for rule change screen)
+	 * @param currentStyle Current style
+	 * @return Rule name + file name list
+	 */
+	public String[] extractRuleListFromRuleEntries(int currentStyle) {
+		LinkedList<RuleEntry> subEntries = getSubsetEntries(currentStyle);
+
+		String[] result = new String[subEntries.size()];
+		for(int i = 0; i < subEntries.size(); i++) {
+			RuleEntry entry = subEntries.get(i);
+			result[i] = entry.rulename + " (" + entry.filename + ")";
+		}
+
+		return result;
+	}
+
+	/**
+	 * Enter rule change screen
+	 */
+	public void enterRuleChangeScreen() {
+		String[] strCurrentFileName = new String[GameEngine.MAX_GAMESTYLE];
+
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			if(i == 0) {
+				strCurrentFileName[i] = propGlobal.getProperty(0 + ".rulefile", "");
+			} else {
+				strCurrentFileName[i] = propGlobal.getProperty(0 + ".rulefile." + i, "");
+			}
+
+			LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
+
+			for(int j = 0; j < subEntries.size(); j++) {
+				if(subEntries.get(j).filename.equals(strCurrentFileName[i])) {
+					listboxRuleChangeRuleList[i].setSelectedIndex(j);
+				}
+			}
+		}
+
+		changeCurrentScreenCard(SCREENCARD_RULECHANGE);
+	}
+
 	/*
 	 * Menu 実行時の処理
 	 */
@@ -3021,6 +3239,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			currentViewDetailRoomID = -1;
 			setCreateRoomUIType(false, null);
 			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
+		}
+		// Rule Change
+		if(e.getActionCommand() == "Lobby_RuleChange") {
+			enterRuleChangeScreen();
 		}
 		// チーム変更(Lobby screen)
 		if(e.getActionCommand() == "Lobby_TeamChange") {
@@ -3286,6 +3508,59 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		if(e.getActionCommand() == "MPRanking_OK") {
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
+		// Cancel button (Rule change)
+		if(e.getActionCommand() == "RuleChange_Cancel") {
+			changeCurrentScreenCard(SCREENCARD_LOBBY);
+		}
+		// OK button (Rule change)
+		if(e.getActionCommand() == "RuleChange_OK") {
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+				int id = listboxRuleChangeRuleList[i].getSelectedIndex();
+				LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
+				RuleEntry entry = subEntries.get(id);
+
+				if(i == 0) {
+					if(id >= 0) {
+						propGlobal.setProperty(0 + ".rule", entry.filepath);
+						propGlobal.setProperty(0 + ".rulefile", entry.filename);
+						propGlobal.setProperty(0 + ".rulename", entry.rulename);
+					} else {
+						propGlobal.setProperty(0 + ".rule", "");
+						propGlobal.setProperty(0 + ".rulefile", "");
+						propGlobal.setProperty(0 + ".rulename", "");
+					}
+				} else {
+					if(id >= 0) {
+						propGlobal.setProperty(0 + ".rule." + i, entry.filepath);
+						propGlobal.setProperty(0 + ".rulefile." + i, entry.filename);
+						propGlobal.setProperty(0 + ".rulename." + i, entry.rulename);
+					} else {
+						propGlobal.setProperty(0 + ".rule." + i, "");
+						propGlobal.setProperty(0 + ".rulefile." + i, "");
+						propGlobal.setProperty(0 + ".rulename." + i, "");
+					}
+				}
+			}
+			saveGlobalConfig();
+
+			// Load rule
+			String strFileName = propGlobal.getProperty(0 + ".rule", "");
+			CustomProperties propRule = new CustomProperties();
+			try {
+				FileInputStream in = new FileInputStream(strFileName);
+				propRule.load(in);
+				in.close();
+			} catch (Exception e2) {}
+			ruleOptPlayer = new RuleOptions();
+			ruleOptPlayer.readProperty(propRule, 0);
+
+			// Send rule
+			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
+				sendMyRuleDataToServer();
+			}
+
+			changeCurrentScreenCard(SCREENCARD_LOBBY);
+		}
 	}
 
 	/*
@@ -3297,7 +3572,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// 接続完了
 		if(message[0].equals("welcome")) {
 			//welcome\t[VERSION]\t[PLAYERS]
-			// チャットログファイル作成
+			// Chat logファイル作成
 			if(writerLobbyLog == null) {
 				try {
 					GregorianCalendar currentTime = new GregorianCalendar();
@@ -4155,7 +4430,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム一覧 table用ポップアップMenu
+	 * Room list table用ポップアップMenu
 	 */
 	protected class RoomTablePopupMenu extends JPopupMenu {
 		private static final long serialVersionUID = 1L;
@@ -4217,7 +4492,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム一覧 table用MouseAdapter
+	 * Room list table用MouseAdapter
 	 */
 	protected class RoomTableMouseAdapter extends MouseAdapter {
 		@Override
@@ -4237,7 +4512,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * ルーム一覧 table用KeyAdapter
+	 * Room list table用KeyAdapter
 	 */
 	protected class RoomTableKeyAdapter extends KeyAdapter {
 		@Override
@@ -4374,5 +4649,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			copyAction.setEnabled(flg);
 			super.show(c, x, y);
 		}
+	}
+
+	/**
+	 * Rule entry for rule change screen
+	 */
+	protected class RuleEntry {
+		/** File name */
+		public String filename;
+		/** File path */
+		public String filepath;
+		/** Rule name */
+		public String rulename;
+		/** Game style */
+		public int style;
 	}
 }

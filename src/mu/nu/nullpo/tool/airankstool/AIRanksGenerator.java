@@ -334,7 +334,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 		// Load language files
 		propLangDefault = new CustomProperties();
 		try {
-			FileInputStream in = new FileInputStream("config/lang/airanksgenerator_default.properties");
+			FileInputStream in = new FileInputStream("config/lang/airankstool_default.properties");
 			propLangDefault.load(in);
 			in.close();
 		} catch (IOException e) {
@@ -344,7 +344,7 @@ public class AIRanksGenerator extends JFrame implements ActionListener {
 
 		propLang = new CustomProperties();
 		try {
-			FileInputStream in = new FileInputStream("config/lang/airanksgenerator_" + Locale.getDefault().getCountry() + ".properties");
+			FileInputStream in = new FileInputStream("config/lang/airankstool_" + Locale.getDefault().getCountry() + ".properties");
 			propLang.load(in);
 			in.close();
 		} catch(IOException e) {}

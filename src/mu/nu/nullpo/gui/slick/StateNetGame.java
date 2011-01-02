@@ -107,6 +107,9 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		appContainer.setAlwaysRender(true);
 		appContainer.setUpdateOnlyWhenVisible(false);
 
+		// Clear each frame
+		appContainer.setClearEachFrame(true);
+
 		// gameManager initialization
 		gameManager = new GameManager(new RendererSlick());
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
@@ -136,11 +139,15 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			netLobby.shutdown();
 			netLobby = null;
 		}
+		container.setClearEachFrame(false);
 
-		// FPS復帰
+		// FPS restore
 		NullpoMinoSlick.altMaxFPS = NullpoMinoSlick.propConfig.getProperty("option.maxfps", 60);
 		appContainer.setAlwaysRender(false);
 		appContainer.setUpdateOnlyWhenVisible(true);
+
+		// Reload global config (because it can change rules)
+		NullpoMinoSlick.loadGlobalConfig();
 	}
 
 	/*

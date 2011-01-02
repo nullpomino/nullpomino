@@ -243,11 +243,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			propConfig.load(in);
 			in.close();
 		} catch(IOException e) {}
-		try {
-			FileInputStream in = new FileInputStream("config/setting/global.cfg");
-			propGlobal.load(in);
-			in.close();
-		} catch(IOException e) {}
+		loadGlobalConfig();
 		try {
 			FileInputStream in = new FileInputStream("config/setting/music.cfg");
 			propMusic.load(in);
@@ -390,6 +386,17 @@ public class NullpoMinoSlick extends StateBasedGame {
 		} catch(IOException e) {
 			log.error("Failed to save global config", e);
 		}
+	}
+
+	/**
+	 * (Re-)Load global config file
+	 */
+	public static void loadGlobalConfig() {
+		try {
+			FileInputStream in = new FileInputStream("config/setting/global.cfg");
+			propGlobal.load(in);
+			in.close();
+		} catch(IOException e) {}
 	}
 
 	/**

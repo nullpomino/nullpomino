@@ -644,6 +644,17 @@ public class NullpoMinoSDL {
 	}
 
 	/**
+	 * (Re-)Load global config file
+	 */
+	public static void loadGlobalConfig() {
+		try {
+			FileInputStream in = new FileInputStream("config/setting/global.cfg");
+			propGlobal.load(in);
+			in.close();
+		} catch(IOException e) {}
+	}
+
+	/**
 	 * Screenshotを保存
 	 * @throws SDLException 保存に失敗した場合
 	 */

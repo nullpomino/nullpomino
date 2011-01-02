@@ -114,10 +114,13 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			netLobby = null;
 		}
 
-		// FPS復帰
+		// FPS restore
 		NullpoMinoSDL.maxFPS = NullpoMinoSDL.propConfig.getProperty("option.maxfps", 60);
 		NullpoMinoSDL.allowQuit = true;
 		NullpoMinoSDL.disableAutoInputUpdate = false;
+
+		// Reload global config (because it can change rules)
+		NullpoMinoSDL.loadGlobalConfig();
 	}
 
 	/*

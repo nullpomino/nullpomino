@@ -207,11 +207,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		} catch(IOException e) {}
 
 		propGlobal = new CustomProperties();
-		try {
-			FileInputStream in = new FileInputStream("config/setting/global.cfg");
-			propGlobal.load(in);
-			in.close();
-		} catch(IOException e) {}
+		loadGlobalConfig();
 
 		// Mode読み込み
 		modeManager = new ModeManager();
@@ -369,6 +365,17 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		} catch(IOException e) {
 			log.error("Failed to save global config", e);
 		}
+	}
+
+	/**
+	 * (Re-)Load global config file
+	 */
+	public static void loadGlobalConfig() {
+		try {
+			FileInputStream in = new FileInputStream("config/setting/global.cfg");
+			propGlobal.load(in);
+			in.close();
+		} catch(IOException e) {}
 	}
 
 	/**

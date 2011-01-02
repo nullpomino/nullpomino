@@ -214,6 +214,9 @@ public class GameFrame extends JFrame implements Runnable {
 				}
 				NullpoMinoSwing.netLobby = null;
 			}
+
+			// Reload global config (because it can change rules)
+			NullpoMinoSwing.loadGlobalConfig();
 		}
 		running = false;
 		owner.setVisible(true);
