@@ -493,15 +493,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** 誰かCancelしたらTimer無効化(Create room screen) */
 	protected JCheckBox chkboxCreateRoomDisableTimerAfterSomeoneCancelled;
 
-	/** Rule list listbox (Create room screen) */
-	protected JList listboxCreateRoomRuleList;
-
-	/** Rule list list data (Create room screen) */
-	protected DefaultListModel listmodelCreateRoomRuleList;
-
-	/** Custom rated game (Create room screen) */
-	protected JCheckBox chkboxCreateRoomCustomRated;
-
 	/** Preset number (Create room screen) */
 	protected JSpinner spinnerCreateRoomPresetID;
 
@@ -1410,10 +1401,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel containerpanelCreateRoomMiscOwner = new JPanel(new BorderLayout());
 		tabbedPane.addTab(getUIText("CreateRoom_Tab_Misc"), containerpanelCreateRoomMiscOwner);
 
-		// * Rated Rule tab
-		JPanel containerpanelCreateRoomRatedRuleOwner = new JPanel(new BorderLayout());
-		tabbedPane.addTab(getUIText("CreateRoom_Tab_RatedRule"), containerpanelCreateRoomRatedRuleOwner);
-
 		// * Preset tab
 		JPanel containerpanelCreateRoomPresetOwner = new JPanel(new BorderLayout());
 		tabbedPane.addTab(getUIText("CreateRoom_Tab_Preset"), containerpanelCreateRoomPresetOwner);
@@ -1790,23 +1777,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(propConfig.getProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", false));
 		chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setToolTipText(getUIText("CreateRoom_DisableTimerAfterSomeoneCancelled_Tip"));
 		containerpanelCreateRoomMisc.add(chkboxCreateRoomDisableTimerAfterSomeoneCancelled);
-
-		// Rated Rule tab
-		JPanel containerpanelCreateRoomRatedRule = new JPanel(new BorderLayout());
-		containerpanelCreateRoomRatedRuleOwner.add(containerpanelCreateRoomRatedRule);
-
-		// * Custom rated game
-		chkboxCreateRoomCustomRated = new JCheckBox(getUIText("CreateRoom_CustomRated"));
-		chkboxCreateRoomCustomRated.setMnemonic('R');
-		chkboxCreateRoomCustomRated.setSelected(propConfig.getProperty("createroom.defaultCustomRated", false));
-		chkboxCreateRoomCustomRated.setToolTipText(getUIText("CreateRoom_CustomRated_Tip"));
-		containerpanelCreateRoomRatedRule.add(chkboxCreateRoomCustomRated, BorderLayout.NORTH);
-
-		// * Rule list
-		listmodelCreateRoomRuleList = new DefaultListModel();
-		listboxCreateRoomRuleList = new JList(listmodelCreateRoomRuleList);
-		JScrollPane spCreateRoomRuleList = new JScrollPane(listboxCreateRoomRuleList);
-		containerpanelCreateRoomRatedRule.add(spCreateRoomRuleList, BorderLayout.CENTER);
 
 		// Preset tab
 
@@ -2928,15 +2898,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultMapSetID", (Integer)spinnerCreateRoomMapSetID.getValue());
 		}
 
-		Object listboxCreateRoomRuleListSelectedValue = listboxCreateRoomRuleList.getSelectedValue();
-		if((listboxCreateRoomRuleListSelectedValue != null) && (listboxCreateRoomRuleListSelectedValue instanceof String) &&
-		   (listboxCreateRoomRuleList.getSelectedIndex() >= 1))
-		{
-			propConfig.setProperty("createroom.listboxCreateRoomRuleList.value", (String)listboxCreateRoomRuleListSelectedValue);
-		} else {
-			propConfig.setProperty("createroom.listboxCreateRoomRuleList.value", "");
-		}
-
 		Object listboxCreateRoom1PModeListSelectedValue = listboxCreateRoom1PModeList.getSelectedValue();
 		if((listboxCreateRoom1PModeListSelectedValue != null) && (listboxCreateRoom1PModeListSelectedValue instanceof String)) {
 			propConfig.setProperty("createroom1p.listboxCreateRoom1PModeList.value", (String)listboxCreateRoom1PModeListSelectedValue);
@@ -3181,7 +3142,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			boolean garbageChangePerAttack = chkboxCreateRoomGarbageChangePerAttack.isSelected();
 			Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
 			boolean b2bChunk = chkboxCreateRoomB2BChunk.isSelected();
-			boolean customRated = chkboxCreateRoomCustomRated.isSelected();
 
 			roomInfo.strName = roomName;
 			roomInfo.maxPlayers = integerMaxPlayers;
@@ -3212,7 +3172,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			roomInfo.garbageChangePerAttack = garbageChangePerAttack;
 			roomInfo.garbagePercent = integerGarbagePercent;
 			roomInfo.b2bChunk = b2bChunk;
-			roomInfo.customRated = customRated;
 
 			return roomInfo;
 		} catch (Exception e) {
@@ -3256,8 +3215,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
 			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
-			chkboxCreateRoomCustomRated.setSelected(r.customRated);
-			if(r.rated) listboxCreateRoomRuleList.setSelectedValue(r.ruleName, true);
 		}
 	}
 
@@ -3625,15 +3582,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t" + r.customRated + "\t";
 				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
 
-				// Rule
-				if(listboxCreateRoomRuleList.getSelectedIndex() >= 1) {
-					backupRoomInfo.ruleName = (String)listboxCreateRoomRuleList.getSelectedValue();
-					msg += (String)listboxCreateRoomRuleList.getSelectedValue() + "\t";
-				} else {
-					backupRoomInfo.ruleName = "";
-					msg += "\t";
-				}
-
 				// Map send
 				if(r.useMap) {
 					int setID = getCurrentSelectedMapSetID();
@@ -3924,21 +3872,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 
 			if(style == 0) {
-				listmodelCreateRoomRuleList.clear();
-				listmodelCreateRoomRuleList.addElement(getUIText("CreateRoom_YourRule"));
-				listboxCreateRoomRuleList.setSelectedIndex(0);
-
 				listmodelCreateRoom1PRuleList.clear();
 				listmodelCreateRoom1PRuleList.addElement(getUIText("CreateRoom1P_YourRule"));
 				listboxCreateRoom1PRuleList.setSelectedIndex(0);
 
 				for(int i = 0; i < listRatedRuleName[style].size(); i++) {
 					String name = (String)listRatedRuleName[style].get(i);
-					listmodelCreateRoomRuleList.addElement(name);
 					listmodelCreateRoom1PRuleList.addElement(name);
 				}
-
-				listboxCreateRoomRuleList.setSelectedValue(propConfig.getProperty("createroom.listboxCreateRoomRuleList.value", ""), true);
+				
 				listboxCreateRoom1PRuleList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PRuleList.value", ""), true);
 			}
 		}
@@ -4035,20 +3977,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// Receive presets
 		if(message[0].equals("ratedpresets")) {
-			if (message.length == 1) {
-				// TODO go straight to custom
-			}
-			comboboxCreateRatedPresets.removeAllItems();
-			String preset;
-			for (int i = 1; i < message.length; i++) {
-				preset = NetUtil.decompressString(message[i]);
-				NetRoomInfo r = new NetRoomInfo(preset);
-				presets.add(r);
-				comboboxCreateRatedPresets.addItem(r.strName);
-			}
-			// this changes the card if you are in the waiting card
 			if (currentScreenCardNumber == SCREENCARD_CREATERATED_WAITING) {
-				changeCurrentScreenCard(SCREENCARD_CREATERATED);				
+				if (message.length == 1) {
+					currentViewDetailRoomID = -1;
+					setCreateRoomUIType(false, null);
+					changeCurrentScreenCard(SCREENCARD_CREATEROOM);
+				} else {
+					comboboxCreateRatedPresets.removeAllItems();
+					String preset;
+					for (int i = 1; i < message.length; i++) {
+						preset = NetUtil.decompressString(message[i]);
+						NetRoomInfo r = new NetRoomInfo(preset);
+						presets.add(r);
+						comboboxCreateRatedPresets.addItem(r.strName);
+					}
+					changeCurrentScreenCard(SCREENCARD_CREATERATED);	
+				}	
 			}
 		}
 		// 新規ルーム出現
