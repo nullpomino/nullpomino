@@ -708,6 +708,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		initLobbyUI();
 		initServerAddUI();
 		initCreateRatedWaitingUI();
+		initCreateRatedUI();
 		initCreateRoomUI();
 		initCreateRoom1PUI();
 		initMPRankingUI();
