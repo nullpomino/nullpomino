@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2010, NullNoname
     All rights reserved.
 
