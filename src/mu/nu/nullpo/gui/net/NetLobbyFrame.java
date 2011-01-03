@@ -3412,8 +3412,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// Create Room Multiplayer
 		if(e.getActionCommand() == "Lobby_RoomCreate") {
 			currentViewDetailRoomID = -1;
-			setCreateRoomUIType(false, null);
-			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
+			// setCreateRoomUIType(false, null);
+			changeCurrentScreenCard(SCREENCARD_CREATERATED_WAITING);
+			netPlayerClient.send("getpresets\n");
 		}
 		// Rule Change
 		if(e.getActionCommand() == "Lobby_RuleChange") {
@@ -3577,6 +3578,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// Create rated cancel from waiting card
 		if(e.getActionCommand() == "CreateRated_Custom") {
 			NetRoomInfo r = presets.get(comboboxCreateRatedPresets.getSelectedIndex());
+			setCreateRoomUIType(false, null);
 			importRoomInfoToCreateRoomScreen(r);
 			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
 		}
