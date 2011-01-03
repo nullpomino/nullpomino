@@ -1742,7 +1742,7 @@ public class NetServer {
 			
 			send(client, str);
 			
-			log.info("Sent preset message: " + str);
+			//log.info("Sent preset message: " + str);
 			
 			return;
 		}
