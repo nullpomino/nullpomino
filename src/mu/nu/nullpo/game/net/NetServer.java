@@ -261,6 +261,7 @@ public class NetServer {
 				ratedInfoList.add(strInfo);
 			}
 		}
+		log.info("Loaded " + ratedInfoList.size() + " presets.");
 	}
 	
 	/**
@@ -1741,6 +1742,8 @@ public class NetServer {
 			
 			send(client, str);
 			
+			log.info("Sent preset message: " + str);
+			
 			return;
 		}
 		// Send rule data to server (Client->Server)
@@ -2099,31 +2102,43 @@ public class NetServer {
 			return;
 		}
 		if(message[0].equals("ratedroomcreate")){
-			int i = Integer.parseInt(message[2]);
-			String strPreset = NetUtil.decompressString(ratedInfoList.get(i));
-			NetRoomInfo roomInfo = new NetRoomInfo(strPreset);
-			
-			roomInfo.strName = NetUtil.urlDecode(message[1]);
-			roomInfo.rated = true;
-			roomInfo.ruleLock = false; //TODO: implement rule whitelists or rule locks in presets where it is relevant
-			
-			roomInfo.roomID = roomCount; //TODO: fix copy-paste code
+			if((pInfo != null) && (pInfo.roomID == -1)) {
+				int i = Integer.parseInt(message[3]);
+				String strPreset = NetUtil.decompressString(ratedInfoList.get(i));
+				NetRoomInfo roomInfo = new NetRoomInfo(strPreset);
+				
+				roomInfo.strName = NetUtil.urlDecode(message[1]);
+				if(roomInfo.strName.length() < 1) roomInfo.strName = "No Title";
 
-			roomCount++;
-			if(roomCount == -1) roomCount = 0;
+				roomInfo.maxPlayers = Integer.parseInt(message[2]);
+				if(roomInfo.maxPlayers < 1) roomInfo.maxPlayers = 1;
+				if(roomInfo.maxPlayers > 6) roomInfo.maxPlayers = 6;
+				
+				roomInfo.strMode = NetUtil.urlDecode(message[4]);
+				
+				roomInfo.rated = true;
+				roomInfo.ruleLock = false; //TODO: implement rule whitelists or rule locks in presets where it is relevant
+				
+				roomInfo.roomID = roomCount; //TODO: fix copy-paste code
 
-			roomInfoList.add(roomInfo);
+				roomCount++;
+				if(roomCount == -1) roomCount = 0;
 
-			pInfo.roomID = roomInfo.roomID;
-			pInfo.resetPlayState();
+				roomInfoList.add(roomInfo);
 
-			roomInfo.playerList.add(pInfo);
-			pInfo.seatID = roomInfo.joinSeat(pInfo);
+				pInfo.roomID = roomInfo.roomID;
+				pInfo.resetPlayState();
 
-			broadcastPlayerInfoUpdate(pInfo);
-			broadcastRoomInfoUpdate(roomInfo, "roomcreate");
-			send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
-			
+				roomInfo.playerList.add(pInfo);
+				pInfo.seatID = roomInfo.joinSeat(pInfo);
+
+				broadcastPlayerInfoUpdate(pInfo);
+				broadcastRoomInfoUpdate(roomInfo, "roomcreate");
+				send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
+				
+				log.info("NewRatedRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName + " RuleLock:" + roomInfo.ruleLock +
+						 " Map:" + roomInfo.useMap + " Mode:" + roomInfo.strMode);
+			}
 			return;
 		}
 		// Join room (If roomID is -1, the player will return to lobby)
