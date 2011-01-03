@@ -150,13 +150,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	public static final int SCREENCARD_SERVERSELECT = 0,
 							SCREENCARD_LOBBY = 1,
 							SCREENCARD_SERVERADD = 2,
-							SCREENCARD_CREATEROOM = 3,
-							SCREENCARD_CREATEROOM1P = 4,
-							SCREENCARD_MPRANKING = 5,
-							SCREENCARD_RULECHANGE = 6;
+							SCREENCARD_CREATERATED_WAITING = 3,
+							SCREENCARD_CREATERATED = 4,
+							SCREENCARD_CREATEROOM = 5,
+							SCREENCARD_CREATEROOM1P = 6,
+							SCREENCARD_MPRANKING = 7,
+							SCREENCARD_RULECHANGE = 8;
 
 	/** Names for each screen-card */
-	public static final String[] SCREENCARD_NAMES = {"ServerSelect","Lobby","ServerAdd","CreateRoom","CreateRoom1P","MPRanking","RuleChange"};
+	public static final String[] SCREENCARD_NAMES = {"ServerSelect","Lobby","ServerAdd",
+		"CreateRatedWaiting","CreateRated","CreateRoom","CreateRoom1P","MPRanking","RuleChange"};
 
 	/** Log */
 	static final Logger log = Logger.getLogger(NetLobbyFrame.class);
@@ -172,6 +175,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Event listeners */
 	protected LinkedList<NetLobbyListener> listeners = new LinkedList<NetLobbyListener>();
+	
+	/** Preset info */
+	protected LinkedList<NetRoomInfo> presets = new LinkedList<NetRoomInfo>();
 
 	/** Current game mode (act as special NetLobbyListener) */
 	protected NetDummyMode netDummyMode;
@@ -376,6 +382,23 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** OK button(Server add screen) */
 	protected JButton btnServerAddOK;
+	
+	protected JTextField txtfldCreateRatedName;
+	
+	/** Cancel button (Created rated waiting screen) */
+	protected JButton btnCreateRatedWaitingCancel;
+	
+	/** Presets box (Create rated screen) */
+	protected JComboBox comboboxCreateRatedPresets;
+	
+	/** OK button (Create rated screen) */
+	protected JButton btnCreateRatedOK;
+	
+	/** Custom button (Create rated screen) */
+	protected JButton btnCreateRatedCustom;
+	
+	/** Cancel button (Created rated screen) */
+	protected JButton btnCreateRatedCancel;
 
 	/** ルーム名(Create room screen) */
 	protected JTextField txtfldCreateRoomName;
@@ -684,6 +707,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		initServerSelectUI();
 		initLobbyUI();
 		initServerAddUI();
+		initCreateRatedWaitingUI();
 		initCreateRoomUI();
 		initCreateRoom1PUI();
 		initMPRankingUI();
@@ -1228,6 +1252,109 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnServerAddCancel.setMnemonic('C');
 		btnServerAddCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, btnServerAddCancel.getMaximumSize().height));
 		subpanelButtons.add(btnServerAddCancel);
+	}
+	
+	/**
+	 * Create rated screen card while waiting for presets to arrive from server
+	 */
+	protected void initCreateRatedWaitingUI() {
+		// Main panel
+		JPanel mainpanelCreateRatedWaiting = new JPanel(new BorderLayout());
+		this.getContentPane().add(mainpanelCreateRatedWaiting, SCREENCARD_NAMES[SCREENCARD_CREATERATED_WAITING]);
+		
+		// * Container panel
+		JPanel containerpanelCreateRatedWaiting = new JPanel();
+		containerpanelCreateRatedWaiting.setLayout(new BoxLayout(containerpanelCreateRatedWaiting, BoxLayout.Y_AXIS));
+		mainpanelCreateRatedWaiting.add(containerpanelCreateRatedWaiting, BorderLayout.NORTH);
+		
+		// ** Subpanel for label
+		JPanel subpanelText = new JPanel(new BorderLayout());
+		containerpanelCreateRatedWaiting.add(subpanelText, BorderLayout.CENTER);		
+		
+		// *** "Please wait while presets information is retrieved from the server" label
+		JLabel labelWaiting = new JLabel(getUIText("CreateRated_Waiting_Text"));
+		subpanelText.add(labelWaiting);
+		
+		// ** Subpanel for cancel button
+		JPanel subpanelButtons = new JPanel();
+		mainpanelCreateRatedWaiting.add(subpanelButtons, BorderLayout.SOUTH);
+		
+		// *** Cancel Button
+		btnCreateRatedWaitingCancel = new JButton(getUIText("CreateRated_Waiting_Cancel"));
+		btnCreateRatedWaitingCancel.addActionListener(this);
+		btnCreateRatedWaitingCancel.setActionCommand("CreateRated_Waiting_Cancel");
+		btnCreateRatedWaitingCancel.setMnemonic('C');
+		btnCreateRatedWaitingCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, 
+				btnCreateRatedWaitingCancel.getMaximumSize().height));
+		subpanelButtons.add(btnCreateRatedWaitingCancel, BorderLayout.SOUTH);
+	}
+	
+	protected void initCreateRatedUI() {
+		// Main panel
+		JPanel mainpanelCreateRated = new JPanel(new BorderLayout());
+		this.getContentPane().add(mainpanelCreateRated, SCREENCARD_NAMES[SCREENCARD_CREATERATED_WAITING]);
+		
+		// * Container panel
+		JPanel containerpanelCreateRated = new JPanel();
+		containerpanelCreateRated.setLayout(new BoxLayout(containerpanelCreateRated, BoxLayout.Y_AXIS));
+		mainpanelCreateRated.add(containerpanelCreateRated, BorderLayout.NORTH);
+		
+		// ** Subpanel for preset selection
+		JPanel subpanelName = new JPanel(new BorderLayout());
+		containerpanelCreateRated.add(subpanelName);		
+		
+		// *** "Room Name:" label
+		JLabel labelName = new JLabel(getUIText("CreateRated_Name"));
+		subpanelName.add(labelName);
+		
+		// *** Room name textfield
+		txtfldCreateRatedName = new JTextField();
+		txtfldCreateRatedName.setComponentPopupMenu(new TextComponentPopupMenu(txtfldCreateRatedName));
+		txtfldCreateRatedName.setToolTipText(getUIText("CreateRated_Name_Tip"));
+		subpanelName.add(txtfldCreateRatedName, BorderLayout.CENTER);
+		
+		// ** Subpanel for preset selection
+		JPanel subpanelPresetSelect = new JPanel(new BorderLayout());
+		containerpanelCreateRated.add(subpanelPresetSelect);		
+		
+		// *** "Preset:" label
+		JLabel labelWaiting = new JLabel(getUIText("CreateRated_Preset"));
+		subpanelPresetSelect.add(labelWaiting);
+		
+		// *** Presets
+		comboboxCreateRatedPresets = new JComboBox();
+		comboboxCreateRatedPresets.setSelectedIndex(propConfig.getProperty("createrated.defaultPreset", 0));
+		comboboxCreateRatedPresets.setPreferredSize(new Dimension(200, 20));
+		comboboxCreateRatedPresets.setToolTipText(getUIText("CreateRated_Preset_Tip"));
+		subpanelPresetSelect.add(comboboxCreateRatedPresets, BorderLayout.EAST);
+		
+		// ** Subpanel for buttons
+		JPanel subpanelButtons = new JPanel();
+		mainpanelCreateRated.add(subpanelButtons, BorderLayout.SOUTH);
+		
+		// *** OK button
+		btnCreateRatedOK = new JButton(getUIText("CreateRated_OK"));
+		btnCreateRatedOK.addActionListener(this);
+		btnCreateRatedOK.setActionCommand("CreateRated_OK");
+		btnCreateRatedOK.setMnemonic('O');
+		btnCreateRatedOK.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRatedOK.getMaximumSize().height));
+		subpanelButtons.add(btnCreateRatedOK);
+		
+		// *** Custom button
+		btnCreateRatedCustom = new JButton(getUIText("CreateRated_Custom"));
+		btnCreateRatedCustom.addActionListener(this);
+		btnCreateRatedCustom.setActionCommand("CreateRated_Custom");
+		btnCreateRatedCustom.setMnemonic('U');
+		btnCreateRatedCustom.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRatedCustom.getMaximumSize().height));
+		subpanelButtons.add(btnCreateRatedCustom);
+
+		// *** Cancel Button
+		btnCreateRatedCancel = new JButton(getUIText("CreateRated_Cancel"));
+		btnCreateRatedCancel.addActionListener(this);
+		btnCreateRatedCancel.setActionCommand("CreateRated_Cancel");
+		btnCreateRatedCancel.setMnemonic('C');
+		btnCreateRatedCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRatedCancel.getMaximumSize().height));
+		subpanelButtons.add(btnCreateRatedCancel);
 	}
 
 	/**
@@ -3421,6 +3548,43 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			txtfldServerAddHost.setText("");
 			changeCurrentScreenCard(SCREENCARD_SERVERSELECT);
 		}
+		// Create rated cancel from waiting card
+		if(e.getActionCommand() == "CreateRated_Waiting_Cancel") {
+			currentViewDetailRoomID = -1;
+			changeCurrentScreenCard(SCREENCARD_LOBBY);
+		}
+		// Create rated cancel from waiting card
+		if(e.getActionCommand() == "CreateRated_OK") {
+			try {
+				int presetIndex = comboboxCreateRatedPresets.getSelectedIndex();
+				NetRoomInfo r = presets.get(presetIndex);
+				r.strName = txtfldCreateRatedName.getText();
+				backupRoomInfo = r;
+
+				String msg = "ratedroomcreate\t"+NetUtil.urlEncode(r.strName)+"\t"+presetIndex+"\n";
+
+				txtpaneRoomChatLog.setText("");
+				setRoomButtonsEnabled(false);
+				tabLobbyAndRoom.setEnabledAt(1, true);
+				tabLobbyAndRoom.setSelectedIndex(1);
+				changeCurrentScreenCard(SCREENCARD_LOBBY);
+
+				netPlayerClient.send(msg);
+			} catch (Exception e2) {
+				log.error("Error on CreateRated_OK", e2);
+			}
+		}
+		// Create rated cancel from waiting card
+		if(e.getActionCommand() == "CreateRated_Custom") {
+			NetRoomInfo r = presets.get(comboboxCreateRatedPresets.getSelectedIndex());
+			importRoomInfoToCreateRoomScreen(r);
+			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
+		}
+		// Create rated cancel from waiting card
+		if(e.getActionCommand() == "CreateRated_Cancel") {
+			currentViewDetailRoomID = -1;
+			changeCurrentScreenCard(SCREENCARD_LOBBY);
+		}
 		// ルーム作成画面でのOK button
 		if(e.getActionCommand() == "CreateRoom_OK") {
 			try {
@@ -3844,6 +4008,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			for(int i = 0; i < size; i++) {
 				NetRoomInfo r = new NetRoomInfo(message[2 + i]);
 				tablemodelRoomList.addRow(createRoomListRowData(r));
+			}
+		}
+		// Receive presets
+		if(message[0].equals("ratedpresets")) {
+			comboboxCreateRatedPresets.removeAllItems();
+			String preset;
+			for (int i = 1; i < message.length; i++) {
+				preset = NetUtil.decompressString(message[i]);
+				NetRoomInfo r = new NetRoomInfo(preset);
+				presets.add(r);
+				comboboxCreateRatedPresets.addItem(r.strName);
+			}
+			// this changes the card if you are in the waiting card
+			if (currentScreenCardNumber == SCREENCARD_CREATERATED_WAITING) {
+				changeCurrentScreenCard(SCREENCARD_CREATERATED);				
 			}
 		}
 		// 新規ルーム出現
