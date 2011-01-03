@@ -230,7 +230,8 @@ public class GameFrame extends JFrame implements Runnable {
 	 * スレッドの処理
 	 */
 	public void run() {
-		long beforeTime, afterTime, timeDiff, sleepTime;
+		boolean sleepFlag;
+		long beforeTime, afterTime, timeDiff, sleepTime, sleepTimeInMillis;
 		long overSleepTime = 0L;
 		int noDelays = 0;
 
@@ -273,46 +274,52 @@ public class GameFrame extends JFrame implements Runnable {
 				GameKeySwing.gamekey[1].clear();
 			}
 
-			// 休止・FPS計算処理
+			// FPS cap
+			sleepFlag = false;
+
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回の frame の休止 time誤差も引いておく
-			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
-			if(perfectFPSMode) {
+			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
+			sleepTimeInMillis = sleepTime / 1000000L;
+
+			if((sleepTimeInMillis >= 4) && (!perfectFPSMode)) {
+				// If it is possible to use sleep
+				if(maxfps > 0) {
+					try {
+						Thread.sleep(sleepTimeInMillis);
+					} catch(InterruptedException e) {
+						log.debug("Game thread interrupted", e);
+					}
+				}
+				// sleep() oversleep
+				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+				perfectFPSDelay = System.nanoTime();
+				sleepFlag = true;
+			} else if((perfectFPSMode) || (sleepTime > 0)) {
 				// Perfect FPS
+				overSleepTime = 0L;
+				if(maxfpsCurrent > maxfps + 5) maxfpsCurrent = maxfps + 5;
 				if(perfectYield) {
 					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {Thread.yield();}
 				} else {
 					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
 				}
 				perfectFPSDelay += 1000000000 / maxfps;
-			} else if(sleepTime > 0) {
-				// 休止 timeがとれる場合
-				if(maxfps > 0) {
-					try {
-						Thread.sleep(sleepTime / 1000000L);
-					} catch(InterruptedException e) {
-						log.debug("Game thread interrupted", e);
-					}
-				}
-				// sleep()の誤差
-				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
-			} else {
-				// 状態更新・レンダリングで timeを使い切ってしまい
-				// 休止 timeがとれない場合
+				sleepFlag = true;
+			}
+
+			if(!sleepFlag) {
+				// Impossible to sleep!
 				overSleepTime = 0L;
-				// 休止なしが16回以上続いたら
 				if(++noDelays >= 16) {
-					Thread.yield(); // 他のスレッドを強制実行
+					Thread.yield();
 					noDelays = 0;
 				}
+				perfectFPSDelay = System.nanoTime();
 			}
 
 			beforeTime = System.nanoTime();
-			if(!perfectFPSMode) perfectFPSDelay = beforeTime;
-
-			// FPSを計算
 			calcFPS(periodCurrent);
 		}
 
@@ -731,17 +738,17 @@ public class GameFrame extends JFrame implements Runnable {
 			calcInterval = 0L;
 			prevCalcTime = timeNow;
 
-			// 新しい目標FPSを設定
+			// Set new target fps
 			if((maxfps > 0) && (!perfectFPSMode)) {
 				if(actualFPS < maxfps - 1) {
-					// 遅すぎ
+					// Too slow
 					maxfpsCurrent++;
-					if(maxfpsCurrent > maxfps + 10) maxfpsCurrent = maxfps + 10;
+					if(maxfpsCurrent > maxfps + 20) maxfpsCurrent = maxfps + 20;
 					periodCurrent = (long) (1.0 / maxfpsCurrent * 1000000000);
 				} else if(actualFPS > maxfps + 1) {
-					// 速すぎ
+					// Too fast
 					maxfpsCurrent--;
-					if(maxfpsCurrent < maxfps - 10) maxfpsCurrent = maxfps - 10;
+					if(maxfpsCurrent < maxfps - 0) maxfpsCurrent = maxfps - 0;
 					if(maxfpsCurrent < 0) maxfpsCurrent = 0;
 					periodCurrent = (long) (1.0 / maxfpsCurrent * 1000000000);
 				}

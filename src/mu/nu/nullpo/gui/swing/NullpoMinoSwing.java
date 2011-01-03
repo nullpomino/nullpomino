@@ -1121,6 +1121,8 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	 * @param modeName Mode name
 	 */
 	public void enterNewMode(String modeName) {
+		loadGlobalConfig();	// Reload global config file
+
 		GameMode previousMode = gameManager.mode;
 		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSwing.modeManager.getMode(modeName);
 

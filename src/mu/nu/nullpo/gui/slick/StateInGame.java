@@ -280,6 +280,11 @@ public class StateInGame extends BasicGameState {
 	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+		if(!container.hasFocus()) {
+			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
+			return;
+		}
+
 		// ゲーム画面
 		if(gameManager != null) {
 			gameManager.renderAll();

@@ -143,7 +143,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 		// FPS restore
 		NullpoMinoSlick.altMaxFPS = NullpoMinoSlick.propConfig.getProperty("option.maxfps", 60);
-		appContainer.setAlwaysRender(false);
+		appContainer.setAlwaysRender(!NullpoMinoSlick.alternateFPSTiming);
 		appContainer.setUpdateOnlyWhenVisible(true);
 
 		// Reload global config (because it can change rules)
@@ -258,6 +258,8 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	 * @param modeName Mode name
 	 */
 	private void enterNewMode(String modeName) {
+		NullpoMinoSlick.loadGlobalConfig();	// Reload global config file
+
 		GameMode previousMode = gameManager.mode;
 		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSlick.modeManager.getMode(modeName);
 

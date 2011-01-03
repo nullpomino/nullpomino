@@ -215,6 +215,8 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	 * @param modeName Mode name
 	 */
 	private void enterNewMode(String modeName) {
+		NullpoMinoSDL.loadGlobalConfig();	// Reload global config file
+
 		GameMode previousMode = gameManager.mode;
 		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSDL.modeManager.getMode(modeName);
 

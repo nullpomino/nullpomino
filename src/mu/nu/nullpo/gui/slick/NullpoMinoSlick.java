@@ -414,8 +414,10 @@ public class NullpoMinoSlick extends StateBasedGame {
 		alternateFPSPerfectYield = propConfig.getProperty("option.alternateFPSPerfectYield", true);
 		altMaxFPS = propConfig.getProperty("option.maxfps", 60);
 		altMaxFPSCurrent = altMaxFPS;
+		periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
 
 		appGameContainer.setVSync(propConfig.getProperty("option.vsync", false));
+		appGameContainer.setAlwaysRender(!alternateFPSTiming);
 
 		int sevolume = propConfig.getProperty("option.sevolume", 128);
 		appGameContainer.setSoundVolume(sevolume / (float)128);
@@ -520,46 +522,50 @@ public class NullpoMinoSlick extends StateBasedGame {
 		int maxfps = altMaxFPSCurrent;
 
 		if(maxfps > 0) {
-			periodCurrent = (long) (1.0 / maxfps * 1000000000);
+			boolean sleepFlag = false;
+			long afterTime, timeDiff, sleepTime, sleepTimeInMillis;
 
-			long afterTime, timeDiff, sleepTime;
-
-			// 休止・FPS計算処理
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回の frame の休止 time誤差も引いておく
-			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
 
-			if(alternateFPSPerfectMode && ingame) {
+			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
+			sleepTimeInMillis = sleepTime / 1000000L;
+
+			if((sleepTimeInMillis >= 10) && (!alternateFPSPerfectMode || !ingame)) {
+				// If it is possible to use sleep
+				if(maxfps > 0) {
+					try {
+						Thread.sleep(sleepTimeInMillis);
+					} catch(InterruptedException e) {}
+				}
+				// sleep() oversleep
+				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+				perfectFPSDelay = System.nanoTime();
+				sleepFlag = true;
+			} else if((alternateFPSPerfectMode && ingame) || (sleepTime > 0)) {
+				// Perfect FPS
+				overSleepTime = 0L;
+				if(altMaxFPSCurrent > altMaxFPS + 5) altMaxFPSCurrent = altMaxFPS + 5;
 				if(alternateFPSPerfectYield) {
 					while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {Thread.yield();}
 				} else {
 					while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {}
 				}
 				perfectFPSDelay += 1000000000 / altMaxFPS;
-			} else if(sleepTime > 0) {
-				// 休止 timeがとれる場合
-				if(maxfps > 0) {
-					try {
-						Thread.sleep(sleepTime / 1000000L);
-					} catch(InterruptedException e) {}
-					//appGameContainer.sleep((int) (sleepTime / 1000000L));
-				}
-				// sleep()の誤差
-				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
-			} else {
-				// 状態更新・レンダリングで timeを使い切ってしまい
-				// 休止 timeがとれない場合
+				sleepFlag = true;
+			}
+
+			if(!sleepFlag) {
+				// Impossible to sleep!
 				overSleepTime = 0L;
-				// 休止なしが16回以上続いたら
 				if(++noDelays >= 16) {
-					Thread.yield(); // 他のスレッドを強制実行
+					Thread.yield();
 					noDelays = 0;
 				}
+				perfectFPSDelay = System.nanoTime();
 			}
 
 			beforeTime = System.nanoTime();
-			if(!alternateFPSPerfectMode || !ingame) perfectFPSDelay = beforeTime;
 			calcFPS(ingame, periodCurrent);
 		} else {
 			periodCurrent = (long) (1.0 / 60 * 1000000000);
@@ -591,17 +597,22 @@ public class NullpoMinoSlick extends StateBasedGame {
 			prevCalcTime = timeNow;
 
 			// Set new target fps
-			if((altMaxFPS > 0) && (alternateFPSDynamicAdjust) && (!alternateFPSPerfectMode || !ingame)) {
-				if(actualFPS < altMaxFPS - 1) {
-					// Too Slow
-					altMaxFPSCurrent++;
-					if(altMaxFPSCurrent > altMaxFPS + 5) altMaxFPSCurrent = altMaxFPS + 5;
-					periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
-				} else if(actualFPS > altMaxFPS + 1) {
-					// Too Fast
-					altMaxFPSCurrent--;
-					if(altMaxFPSCurrent < altMaxFPS - 5) altMaxFPSCurrent = altMaxFPS - 5;
-					if(altMaxFPSCurrent < 0) altMaxFPSCurrent = 0;
+			if((altMaxFPS > 0) && (alternateFPSDynamicAdjust) && (!alternateFPSPerfectMode)) {
+				if(ingame) {
+					if(actualFPS < altMaxFPS - 1) {
+						// Too Slow
+						altMaxFPSCurrent++;
+						if(altMaxFPSCurrent > altMaxFPS + 20) altMaxFPSCurrent = altMaxFPS + 20;
+						periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
+					} else if(actualFPS > altMaxFPS + 1) {
+						// Too Fast
+						altMaxFPSCurrent--;
+						if(altMaxFPSCurrent < altMaxFPS - 0) altMaxFPSCurrent = altMaxFPS - 0;
+						if(altMaxFPSCurrent < 1) altMaxFPSCurrent = 1;
+						periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
+					}
+				} else if((!ingame) && (altMaxFPSCurrent != altMaxFPS)) {
+					altMaxFPSCurrent = altMaxFPS;
 					periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
 				}
 			}
@@ -677,7 +688,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	 */
 	public static void drawFPS(GameContainer container, boolean ingame) {
 		if(propConfig.getProperty("option.showfps", true) == true) {
-			if(!alternateFPSDynamicAdjust || (alternateFPSPerfectMode && ingame))
+			if(!alternateFPSDynamicAdjust || alternateFPSPerfectMode || !ingame)
 				NormalFont.printFont(0, 480 - 16, df.format(actualFPS), NormalFont.COLOR_BLUE);
 			else
 				NormalFont.printFont(0, 480 - 16, df.format(actualFPS) + "/" + altMaxFPSCurrent, NormalFont.COLOR_BLUE);
