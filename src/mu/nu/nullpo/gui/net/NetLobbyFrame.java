@@ -391,6 +391,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Presets box (Create rated screen) */
 	protected JComboBox comboboxCreateRatedPresets;
 	
+	/** 参加人count(Create rated screen) */
+	protected JSpinner spinnerCreateRatedMaxPlayers;
+	
 	/** OK button (Create rated screen) */
 	protected JButton btnCreateRatedOK;
 	
@@ -1272,9 +1275,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		JPanel subpanelText = new JPanel(new BorderLayout());
 		containerpanelCreateRatedWaiting.add(subpanelText, BorderLayout.CENTER);		
 		
-		// *** "Please wait while presets information is retrieved from the server" label
+		// *** "Please wait while preset information is retrieved from the server" label
 		JLabel labelWaiting = new JLabel(getUIText("CreateRated_Waiting_Text"));
-		subpanelText.add(labelWaiting);
+		subpanelText.add(labelWaiting,BorderLayout.CENTER);
 		
 		// ** Subpanel for cancel button
 		JPanel subpanelButtons = new JPanel();
@@ -1306,7 +1309,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		
 		// *** "Room Name:" label
 		JLabel labelName = new JLabel(getUIText("CreateRated_Name"));
-		subpanelName.add(labelName);
+		subpanelName.add(labelName, BorderLayout.WEST);
 		
 		// *** Room name textfield
 		txtfldCreateRatedName = new JTextField();
@@ -1320,7 +1323,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		
 		// *** "Preset:" label
 		JLabel labelWaiting = new JLabel(getUIText("CreateRated_Preset"));
-		subpanelPresetSelect.add(labelWaiting);
+		subpanelPresetSelect.add(labelWaiting, BorderLayout.WEST);
 		
 		// *** Presets
 		comboboxCreateRatedPresets = new JComboBox(new String[] {"Select..."});
@@ -1328,6 +1331,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		comboboxCreateRatedPresets.setPreferredSize(new Dimension(200, 20));
 		comboboxCreateRatedPresets.setToolTipText(getUIText("CreateRated_Preset_Tip"));
 		subpanelPresetSelect.add(comboboxCreateRatedPresets, BorderLayout.EAST);
+		
+		// ** 参加人countパネル
+		JPanel subpanelMaxPlayers = new JPanel(new BorderLayout());
+		containerpanelCreateRated.add(subpanelMaxPlayers);
+
+		// *** 「参加人count:」ラベル
+		JLabel labelMaxPlayers = new JLabel(getUIText("CreateRated_MaxPlayers"));
+		subpanelMaxPlayers.add(labelMaxPlayers, BorderLayout.WEST);
+
+		// *** 参加人count選択
+		int defaultMaxPlayers = propConfig.getProperty("createrated.defaultMaxPlayers", 6);
+		spinnerCreateRatedMaxPlayers = new JSpinner(new SpinnerNumberModel(defaultMaxPlayers, 2, 6, 1));
+		spinnerCreateRatedMaxPlayers.setPreferredSize(new Dimension(200, 20));
+		spinnerCreateRatedMaxPlayers.setToolTipText(getUIText("CreateRated_MaxPlayers_Tip"));
+		subpanelMaxPlayers.add(spinnerCreateRatedMaxPlayers, BorderLayout.EAST);
 		
 		// ** Subpanel for buttons
 		JPanel subpanelButtons = new JPanel();
@@ -3563,7 +3581,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				r.strName = txtfldCreateRatedName.getText();
 				backupRoomInfo = r;
 
-				String msg = "ratedroomcreate\t"+NetUtil.urlEncode(r.strName)+"\t"+presetIndex+"\n";
+				String msg = "ratedroomcreate\t"+NetUtil.urlEncode(r.strName)+"\t"
+				+spinnerCreateRatedMaxPlayers.getValue()+"\t"+presetIndex+"\t"
+				+NetUtil.urlEncode("NET-VS-BATTLE")+"\n";
 
 				txtpaneRoomChatLog.setText("");
 				setRoomButtonsEnabled(false);
@@ -4015,6 +4035,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// Receive presets
 		if(message[0].equals("ratedpresets")) {
+			if (message.length == 1) {
+				// TODO go straight to custom
+			}
 			comboboxCreateRatedPresets.removeAllItems();
 			String preset;
 			for (int i = 1; i < message.length; i++) {
