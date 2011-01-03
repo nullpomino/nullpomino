@@ -2216,7 +2216,9 @@ public class NetServer {
 					}
 
 					// Send rule data if rule-lock is enabled
-					if(newRoom.ruleLock || newRoom.rated) {
+					if(newRoom.ruleLock 
+						//	|| newRoom.rated //XXX: This breaks the new Rated with room info preset system, as there is no Rule Lock for Rated now.
+							) {
 						CustomProperties prop = new CustomProperties();
 						newRoom.ruleOpt.writeProperty(prop, 0);
 						String strRuleTemp = prop.encode("RuleData");
