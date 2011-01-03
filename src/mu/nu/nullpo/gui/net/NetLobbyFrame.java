@@ -1323,7 +1323,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		subpanelPresetSelect.add(labelWaiting);
 		
 		// *** Presets
-		comboboxCreateRatedPresets = new JComboBox();
+		comboboxCreateRatedPresets = new JComboBox(new String[] {"Select..."});
 		comboboxCreateRatedPresets.setSelectedIndex(propConfig.getProperty("createrated.defaultPreset", 0));
 		comboboxCreateRatedPresets.setPreferredSize(new Dimension(200, 20));
 		comboboxCreateRatedPresets.setToolTipText(getUIText("CreateRated_Preset_Tip"));
