@@ -118,13 +118,18 @@ public class NetSPRecord implements Serializable {
 				return true;
 			}
 		} else if(type == RANKINGTYPE_TIMEATTACK) {
+			// Cap the line count at 150 or 200
+			int maxLines = (r1.gameType >= 5) ? 200 : 150;
+			int l1 = Math.max(s1.lines, maxLines);
+			int l2 = Math.max(s2.lines, maxLines);
+
 			if(s1.rollclear > s2.rollclear) {
 				return true;
-			} else if((s1.rollclear == s2.rollclear) && (s1.lines > s2.lines)) {
+			} else if((s1.rollclear == s2.rollclear) && (l1 > l2)) {
 				return true;
-			} else if((s1.rollclear == s2.rollclear) && (s1.lines == s2.lines) && (s1.time < s2.time)) {
+			} else if((s1.rollclear == s2.rollclear) && (l1 == l2) && (s1.time < s2.time)) {
 				return true;
-			} else if((s1.rollclear == s2.rollclear) && (s1.lines == s2.lines) && (s1.time == s2.time) && (s1.pps > s2.pps)) {
+			} else if((s1.rollclear == s2.rollclear) && (l1 == l2) && (s1.time == s2.time) && (s1.pps > s2.pps)) {
 				return true;
 			}
 		}
