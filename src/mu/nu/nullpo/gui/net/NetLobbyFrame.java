@@ -3700,7 +3700,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				int id = listboxRuleChangeRuleList[i].getSelectedIndex();
 				LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
-				RuleEntry entry = subEntries.get(id);
+				RuleEntry entry = null;
+				if (id >= 0) { entry = subEntries.get(id); }
+				
 
 				if(i == 0) {
 					if(id >= 0) {
