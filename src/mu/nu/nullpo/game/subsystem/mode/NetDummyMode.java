@@ -704,7 +704,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * @param engine GameEngine
 	 */
 	protected void netDrawAllPlayersCount(GameEngine engine) {
-		if(netIsNetPlay && (netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
+		if((netLobby != null) && (netLobby.netPlayerClient != null) && (netLobby.netPlayerClient.isConnected())) {
 			int fontcolor = EventReceiver.COLOR_BLUE;
 			if(netLobby.netPlayerClient.getObserverCount() > 0) fontcolor = EventReceiver.COLOR_GREEN;
 			if(netLobby.netPlayerClient.getPlayerCount() > 1) fontcolor = EventReceiver.COLOR_RED;

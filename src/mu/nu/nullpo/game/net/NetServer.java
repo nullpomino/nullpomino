@@ -168,7 +168,7 @@ public class NetServer {
 
 	/** Rated room info presets (compressed NetRoomInfo Strings) */
 	private static LinkedList<String> ratedInfoList;
-	
+
 	/** Rule list for rated game. */
 	private static LinkedList<RuleOptions>[] ruleList;
 
@@ -208,7 +208,7 @@ public class NetServer {
 	/** Player info */
 	private Map<SocketChannel, NetPlayerInfo> playerInfoMap = new HashMap<SocketChannel, NetPlayerInfo>();
 
-		
+
 	/** Room info list */
 	private LinkedList<NetRoomInfo> roomInfoList = new LinkedList<NetRoomInfo>();
 
@@ -253,7 +253,7 @@ public class NetServer {
 	 */
 	private static void loadPresetList() {
 		ratedInfoList = new LinkedList<String>();
-		
+
 		String strInfo = ""; int i = 0;
 		while (strInfo != null){	//Iterate over the available presets in the server config
 			strInfo = propServer.getProperty("0.preset." + (i++));
@@ -263,7 +263,7 @@ public class NetServer {
 		}
 		log.info("Loaded " + ratedInfoList.size() + " presets.");
 	}
-	
+
 	/**
 	 * Load rated-game rule list
 	 */
@@ -584,7 +584,7 @@ public class NetServer {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get NetSPRanking for all rule types
 	 * @param mode Mode Name
@@ -956,13 +956,13 @@ public class NetServer {
 		spMinGameRate = propServer.getProperty("netserver.spMinGameRate", DEFAULT_MIN_GAMERATE);
 		maxLobbyChatHistory = propServer.getProperty("netserver.maxLobbyChatHistory", DEFAULT_MAX_LOBBYCHAT_HISTORY);
 		maxRoomChatHistory = propServer.getProperty("netserver.maxRoomChatHistory", DEFAULT_MAX_ROOMCHAT_HISTORY);
-		
+
 		// Load rules for rated game
 		loadRuleList();
 
 		// Load room info presets for rated multiplayer games
 		loadPresetList();
-		
+
 		// Load multiplayer leaderboard
 		loadMPRankingList();
 		propMPRanking.clear();	// Clear all entries in order to reduce file size
@@ -1732,18 +1732,18 @@ public class NetServer {
 		// Send rated presets to client
 		if(message[0].equals("getpresets")){
 			String str = "ratedpresets";
-			
+
 			Iterator<String> iter = ratedInfoList.iterator();
 			while(iter.hasNext()){
 				str += "\t" + iter.next();
 			}
-			
+
 			str += "\n";
-			
+
 			send(client, str);
-			
+
 			//log.info("Sent preset message: " + str);
-			
+
 			return;
 		}
 		// Send rule data to server (Client->Server)
@@ -2106,19 +2106,19 @@ public class NetServer {
 				int i = Integer.parseInt(message[3]);
 				String strPreset = NetUtil.decompressString(ratedInfoList.get(i));
 				NetRoomInfo roomInfo = new NetRoomInfo(strPreset);
-				
+
 				roomInfo.strName = NetUtil.urlDecode(message[1]);
 				if(roomInfo.strName.length() < 1) roomInfo.strName = "No Title";
 
 				roomInfo.maxPlayers = Integer.parseInt(message[2]);
 				if(roomInfo.maxPlayers < 1) roomInfo.maxPlayers = 1;
 				if(roomInfo.maxPlayers > 6) roomInfo.maxPlayers = 6;
-				
+
 				roomInfo.strMode = NetUtil.urlDecode(message[4]);
-				
+
 				roomInfo.rated = true;
 				roomInfo.ruleLock = false; //TODO: implement rule whitelists or rule locks in presets where it is relevant
-				
+
 				roomInfo.roomID = roomCount; //TODO: fix copy-paste code
 
 				roomCount++;
@@ -2135,7 +2135,7 @@ public class NetServer {
 				broadcastPlayerInfoUpdate(pInfo);
 				broadcastRoomInfoUpdate(roomInfo, "roomcreate");
 				send(client, "roomcreatesuccess\t" + roomInfo.roomID + "\t" + pInfo.seatID + "\t-1\n");
-				
+
 				log.info("NewRatedRoom ID:" + roomInfo.roomID + " Title:" + roomInfo.strName + " RuleLock:" + roomInfo.ruleLock +
 						 " Map:" + roomInfo.useMap + " Mode:" + roomInfo.strMode);
 			}
@@ -2216,7 +2216,7 @@ public class NetServer {
 					}
 
 					// Send rule data if rule-lock is enabled
-					if(newRoom.ruleLock 
+					if(newRoom.ruleLock
 						//	|| newRoom.rated //XXX: This breaks the new Rated with room info preset system, as there is no Rule Lock for Rated now.
 							) {
 						CustomProperties prop = new CustomProperties();
@@ -2477,11 +2477,7 @@ public class NetServer {
 							}
 
 							log.info("Name:" + pInfo.strName + " Mode:" + record.strModeName + " AllTime:" + rank + " Daily:" + rankDaily);
-							if (roomInfo.rated) {
-								broadcast("spsendok\t" + rank + "\t" + isPB + "\t" + rankDaily + "\n", pInfo.roomID);
-							} else {
-								broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
-							}
+							broadcast("spsendok\t" + rank + "\t" + isPB + "\t" + rankDaily + "\n", pInfo.roomID);
 						} else {
 							broadcast("spsendok\t-1\tfalse\t-1\n", pInfo.roomID);
 						}
