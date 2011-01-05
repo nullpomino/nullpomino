@@ -417,6 +417,8 @@ public class MarathonPlusMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {
+		if(owner.menuOnly) return;
+
 		receiver.drawScoreFont(engine, playerID, 0, 0, "MARATHON+", EventReceiver.COLOR_GREEN);
 
 		if(startlevel == 20) {

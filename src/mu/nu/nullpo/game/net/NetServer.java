@@ -2558,6 +2558,13 @@ public class NetServer {
 			boolean isDaily = Boolean.parseBoolean(message[4]);
 			String strName = NetUtil.urlDecode(message[5]);
 
+			// Is any rule room?
+			if((pInfo != null) && (pInfo.roomID != -1)) {
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+				if((roomInfo != null) && !roomInfo.rated)
+					strRule = "any";
+			}
+
 			if(isDaily) {
 				if(updateSPDailyRanking()) {
 					writeSPRankingToFile();
@@ -2578,7 +2585,14 @@ public class NetServer {
 
 					String strMsg = "spdownload\t" + sChecksum + "\t" + record.strReplayProp + "\n";
 					send(client, strMsg);
+				} else {
+					log.warn("Record not found (Mode:" + strMode + ", Rule:" + strRule + ", Type:" + gameType + " Name:" + strName + ")");
 				}
+			} else {
+				if(!isDaily)
+					log.warn("All-time ranking not found (Mode:" + strMode + ", Rule:" + strRule + ", Type:" + gameType + ")");
+				else
+					log.warn("Daily ranking not found (Mode:" + strMode + ", Rule:" + strRule + ", Type:" + gameType + ")");
 			}
 		}
 		// Single player mode reset
