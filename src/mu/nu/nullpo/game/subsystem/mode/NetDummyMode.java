@@ -569,6 +569,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						//int pieceBottomY = Integer.parseInt(message[8]);
 						int pieceColor = Integer.parseInt(message[9]);
 						int pieceSkin = Integer.parseInt(message[10]);
+						boolean pieceBig = (message.length > 11) ? Boolean.parseBoolean(message[11]) : false;
 
 						engine.nowPieceObject = new Piece(id);
 						engine.nowPieceObject.direction = pieceDir;
@@ -578,6 +579,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						engine.nowPieceX = pieceX;
 						engine.nowPieceY = pieceY;
 						//engine.nowPieceBottomY = pieceBottomY;
+						engine.nowPieceObject.big = pieceBig;
 						engine.nowPieceObject.updateConnectData();
 						engine.nowPieceBottomY =
 							engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
@@ -776,7 +778,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		{
 			netPrevPieceID = Piece.PIECE_NONE;
 			netLobby.netPlayerClient.send("game\tpiece\t" + netPrevPieceID + "\t" + netPrevPieceX + "\t" + netPrevPieceY + "\t" +
-					netPrevPieceDir + "\t" + 0 + "\t" + engine.getSkin() + "\n");
+					netPrevPieceDir + "\t" + 0 + "\t" + engine.getSkin() + "\t" + false + "\n");
 			return true;
 		}
 		else if((engine.nowPieceObject.id != netPrevPieceID) || (engine.nowPieceX != netPrevPieceX) ||
@@ -791,7 +793,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			int x = netPrevPieceX + engine.nowPieceObject.dataOffsetX[netPrevPieceDir];
 			int y = netPrevPieceY + engine.nowPieceObject.dataOffsetY[netPrevPieceDir];
 			netLobby.netPlayerClient.send("game\tpiece\t" + netPrevPieceID + "\t" + x + "\t" + y + "\t" + netPrevPieceDir + "\t" +
-							engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[netPrevPieceID] + "\t" + engine.getSkin() + "\n");
+							engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[netPrevPieceID] + "\t" + engine.getSkin() + "\t" +
+							engine.nowPieceObject.big + "\n");
 			return true;
 		}
 		return false;
