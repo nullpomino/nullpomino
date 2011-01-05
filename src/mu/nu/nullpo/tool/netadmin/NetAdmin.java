@@ -1054,6 +1054,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 		// Welcome
 		if(message[0].equals("welcome")) {
+			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[PING INTERVAL]
 			labelLoginMessage.setForeground(Color.black);
 			labelLoginMessage.setText(getUIText("Login_Message_LoggingIn"));
 
@@ -1069,6 +1070,12 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				return;
 			}
 			serverFullVer = message[5];
+
+			// Ping interval
+			long pingInterval = (message.length > 6) ? Long.parseLong(message[6]) : NetBaseClient.PING_INTERVAL;
+			if(pingInterval != NetBaseClient.PING_INTERVAL) {
+				client.startPingTask(pingInterval);
+			}
 
 			// Send login message
 			String strUsername = txtfldUsername.getText();

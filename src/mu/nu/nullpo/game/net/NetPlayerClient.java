@@ -129,9 +129,15 @@ public class NetPlayerClient extends NetBaseClient {
 
 		// 接続完了
 		if(message[0].equals("welcome")) {
-			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]
+			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]
 			playerCount = Integer.parseInt(message[2]);
 			observerCount = Integer.parseInt(message[3]);
+
+			long pingInterval = (message.length > 6) ? Long.parseLong(message[6]) : PING_INTERVAL;
+			if(pingInterval != PING_INTERVAL) {
+				startPingTask(pingInterval);
+			}
+
 			send("login\t" + GameManager.getVersionMajor() + "\t" + NetUtil.urlEncode(playerName) + "\t" + Locale.getDefault().getCountry() + "\t" +
 				 NetUtil.urlEncode(playerTeam) + "\n");
 		}

@@ -50,11 +50,11 @@ public class NetBaseClient extends Thread {
 	/** 読み込みバッファのサイズ */
 	public static final int BUF_SIZE = 2048;
 
-	/** pingを打つ間隔(1000=1秒) */
-	public static final int PING_INTERVAL = 10 * 1000;
+	/** Default ping interval (1000=1s) */
+	public static final int PING_INTERVAL = 5 * 1000;
 
 	/** この countだけpingを打っても反応がない場合は自動切断 */
-	public static final int PING_AUTO_DISCONNECT_COUNT = 3;
+	public static final int PING_AUTO_DISCONNECT_COUNT = 6;
 
 	/** trueの間スレッドが動く */
 	public volatile boolean threadRunning;
@@ -82,6 +82,9 @@ public class NetBaseClient extends Thread {
 
 	/** ping打った count(サーバーからpongメッセージを受信するとリセット) */
 	protected int pingCount;
+
+	/** Ping task */
+	protected TimerTask taskPing;
 
 	/** 自動ping打ちTimer */
 	protected Timer timerPing;
@@ -134,32 +137,7 @@ public class NetBaseClient extends Thread {
 			ip = socket.getInetAddress().getHostAddress();
 
 			// ping打ちTimer準備
-			pingCount = 0;
-			TimerTask taskPing = new TimerTask() {
-				@Override
-				public void run() {
-					if(isConnected()) {
-						if(pingCount >= PING_AUTO_DISCONNECT_COUNT) {
-							log.error("Ping timeout");
-							threadRunning = false;
-							connectedFlag = false;
-							timerPing.cancel();
-						} else {
-							send("ping\n");
-							pingCount++;
-
-							if(pingCount >= 2) {
-								log.debug("Ping " + pingCount + "/" + PING_AUTO_DISCONNECT_COUNT);
-							}
-						}
-					} else {
-						log.info("Ping Timer Cancelled");
-						timerPing.cancel();
-					}
-				}
-			};
-			timerPing = new Timer(true);
-			timerPing.schedule(taskPing, PING_INTERVAL, PING_INTERVAL);
+			startPingTask();
 
 			// メッセージ受信
 			byte[] buf = new byte[BUF_SIZE];
@@ -308,5 +286,60 @@ public class NetBaseClient extends Thread {
 	 */
 	public boolean removeListener(NetMessageListener l) {
 		return listeners.remove(l);
+	}
+
+	/**
+	 * Start Ping timer task
+	 */
+	public void startPingTask() {
+		startPingTask(PING_INTERVAL);
+	}
+
+	/**
+	 * Start Ping timer task
+	 * @param interval Interval
+	 */
+	public void startPingTask(long interval) {
+		log.debug("Ping interval:" + interval);
+		if(timerPing != null) timerPing.cancel();
+		if(interval <= 0) return;
+		pingCount = 0;
+		taskPing = new PingTask();
+		timerPing = new Timer(true);
+		timerPing.schedule(taskPing, interval, interval);
+	}
+
+	/**
+	 * Stop the Ping timer task
+	 */
+	public void stopPingTask() {
+		if(timerPing != null) timerPing.cancel();
+	}
+
+	/**
+	 * Ping task
+	 */
+	protected class PingTask extends TimerTask {
+		@Override
+		public void run() {
+			if(isConnected()) {
+				if(pingCount >= PING_AUTO_DISCONNECT_COUNT) {
+					log.error("Ping timeout");
+					threadRunning = false;
+					connectedFlag = false;
+					timerPing.cancel();
+				} else {
+					send("ping\n");
+					pingCount++;
+
+					if(pingCount >= (PING_AUTO_DISCONNECT_COUNT / 2)) {
+						log.debug("Ping " + pingCount + "/" + PING_AUTO_DISCONNECT_COUNT);
+					}
+				}
+			} else {
+				log.info("Ping Timer Cancelled");
+				timerPing.cancel();
+			}
+		}
 	}
 }

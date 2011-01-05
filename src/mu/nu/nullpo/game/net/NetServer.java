@@ -133,6 +133,9 @@ public class NetServer {
 	/** Timeout time (0=Disable) */
 	private static long timeoutTime;
 
+	/** Client's ping interval */
+	private static long clientPingInterval;
+
 	/** Default rating */
 	private static int ratingDefault;
 
@@ -944,6 +947,7 @@ public class NetServer {
 		// Load settings
 		allowDNSAccess = propServer.getProperty("netserver.allowDNSAccess", true);
 		timeoutTime = propServer.getProperty("netserver.timeoutTime", DEFAULT_TIMEOUT_TIME);
+		clientPingInterval = propServer.getProperty("netserver.clientPingInterval", (long)(5 * 1000));
 		ratingDefault = propServer.getProperty("netserver.ratingDefault", NetPlayerInfo.DEFAULT_MULTIPLAYER_RATING);
 		ratingNormalMaxDiff = propServer.getProperty("netserver.ratingNormalMaxDiff", NORMAL_MAX_DIFF);
 		ratingProvisionalGames = propServer.getProperty("netserver.ratingProvisionalGames", PROVISIONAL_GAMES);
@@ -1128,7 +1132,7 @@ public class NetServer {
 			// Send welcome message
 			log.debug("Accept:" + getHostName(socketChannel));
 			send(socketChannel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\t" +
-				GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\n");
+				GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\t" + clientPingInterval + "\n");
 		}
 	}
 
