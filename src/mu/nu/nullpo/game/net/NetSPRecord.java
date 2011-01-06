@@ -120,8 +120,8 @@ public class NetSPRecord implements Serializable {
 		} else if(type == RANKINGTYPE_TIMEATTACK) {
 			// Cap the line count at 150 or 200
 			int maxLines = (r1.gameType >= 5) ? 200 : 150;
-			int l1 = Math.max(s1.lines, maxLines);
-			int l2 = Math.max(s2.lines, maxLines);
+			int l1 = Math.min(s1.lines, maxLines);
+			int l2 = Math.min(s2.lines, maxLines);
 
 			if(s1.rollclear > s2.rollclear) {
 				return true;
