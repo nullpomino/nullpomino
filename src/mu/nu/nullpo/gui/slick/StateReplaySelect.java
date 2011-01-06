@@ -92,7 +92,10 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		list = getReplayFileList();
-		maxCursor = list.length-1;
+		
+		if (list != null)
+			maxCursor = list.length-1;
+		
 		setReplayRuleAndModeList();
 	}
 
