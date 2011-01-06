@@ -62,7 +62,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Maximum number of players */
 	private static final int MAX_PLAYERS = 6;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event type constants */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -84,7 +84,7 @@ public class NetVSBattleMode extends NetDummyMode {
 							 ATTACK_CATEGORY_GEM = 5,
 							 ATTACK_CATEGORIES = 6;
 
-	/** ゲーム席とゲーム画面上でのfield numberの対応表 */
+	/** Numbers of seats numbers corresponding to frames on player's screen */
 	private static final int[][] GAME_SEAT_NUMBERS =
 	{
 		{0,1,2,3,4,5},
@@ -107,13 +107,13 @@ public class NetVSBattleMode extends NetDummyMode {
 		GameEngine.FRAME_COLOR_YELLOW, GameEngine.FRAME_COLOR_PURPLE, GameEngine.FRAME_COLOR_CYAN
 	};
 
-	/** 操作中Blockが強制固定されるまでの time */
+	/** Time before forced piece lock */
 	private static final int PIECE_AUTO_LOCK_TIME = 60 * 60;
 
-	/** 攻撃力 table(旧T-Spin用) */
+	/** Attack table (for T-Spin only) */
 	private static final int[][] LINE_ATTACK_TABLE =
 	{
-		// 1-2人, 3人, 4人, 5人, 6人
+		// 1-2P, 3P, 4P, 5P, 6P
 		{0, 0, 0, 0, 0},	// Single
 		{1, 1, 0, 0, 0},	// Double
 		{2, 2, 1, 1, 1},	// Triple
@@ -126,10 +126,10 @@ public class NetVSBattleMode extends NetDummyMode {
 		{1, 1, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力 table(新スピン用) */
+	/** Attack table(for All Spin) */
 	private static final int[][] LINE_ATTACK_TABLE_ALLSPIN =
 	{
-		// 1-2人, 3人, 4人, 5人, 6人
+		// 1-2P, 3P, 4P, 5P, 6P
 		{0, 0, 0, 0, 0},	// Single
 		{1, 1, 0, 0, 0},	// Double
 		{2, 2, 1, 1, 1},	// Triple
@@ -142,7 +142,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		{0,	0, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力 table参照用のindex number */
+	/** Indexes of attack types in attack table */
 	private static final int LINE_ATTACK_INDEX_SINGLE = 0,
 							 LINE_ATTACK_INDEX_DOUBLE = 1,
 							 LINE_ATTACK_INDEX_TRIPLE = 2,
@@ -154,13 +154,13 @@ public class NetVSBattleMode extends NetDummyMode {
 							 LINE_ATTACK_INDEX_TMINI_D = 8,
 							 LINE_ATTACK_INDEX_EZ_T = 9;
 
-	/** Comboの攻撃力 */
+	/** Combo attack table */
 	private static final int[][] COMBO_ATTACK_TABLE = {
-		{0,0,1,1,2,2,3,3,4,4,4,5}, // 1-2人
-		{0,0,1,1,1,2,2,3,3,4,4,4}, // 3人
-		{0,0,0,1,1,1,2,2,3,3,4,4}, // 4人
-		{0,0,0,1,1,1,1,2,2,3,3,4}, // 5人
-		{0,0,0,0,1,1,1,1,2,2,3,3}, // 6人
+		{0,0,1,1,2,2,3,3,4,4,4,5}, // 1-2 Player(s)
+		{0,0,1,1,1,2,2,3,3,4,4,4}, // 3 Player
+		{0,0,0,1,1,1,2,2,3,3,4,4}, // 4 Player
+		{0,0,0,1,1,1,1,2,2,3,3,4}, // 5 Player
+		{0,0,0,0,1,1,1,1,2,2,3,3}, // 6 Payers
 	};
 
 	private static int GARBAGE_DENOMINATOR = 60; // can be divided by 2,3,4,5
@@ -168,37 +168,40 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** ルームID */
+	/** Current room ID */
 	private int currentRoomID;
 
-	/** Current ルーム情報 */
+	/** Current room informations */
 	private NetRoomInfo currentRoomInfo;
 
-	/** ルール固定部屋ならtrue */
+	/** True if rule is locked */
 	private boolean rulelockFlag;
 
-	/** 3人以上生きている場合に攻撃力を減らす */
+	/** Use reduced attack tables if 3 or more players are alive */
 	private boolean reduceLineSend;
 
-	/** 新しい断片的garbage blockシステムを使う */
+	/** Use fractional garbage system */
 	private boolean useFractionalGarbage;
 
+	/** Garbage hole change probability */
 	private int garbagePercent;
 
+	/** Change garbage on attack */
 	private boolean garbageChangePerAttack;
 
+	/** Column number of hole in most recent garbage line */
 	private int lastHole = -1;
 
-	/** Hurryup開始までの秒count(-1でHurryupなし) */
+	/** Time in seconds before hurry up (-1 if hurry up disabled) */
 	private int hurryupSeconds;
 
-	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
+	/** Number of pieces to be placed between adding Hurry Up lines */
 	private int hurryupInterval;
 
-	/** Hurryup始まったらtrue */
+	/** True if Hurry Up has started */
 	private boolean hurryupStarted;
 
-	/** "HURRY UP!"表示の残り time */
+	/** Number of frames left to show "HURRY UP!" text */
 	private int hurryupShowFrames;
 
 	/** 自分のゲーム席の number(-1:観戦中) */

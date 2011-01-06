@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Sat Jul 31 22:16:39 CEST 2010
+#Thu Jan 06 06:11:25 CET 2011
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.StandardSymmetricWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -59,6 +59,7 @@
 0.ruleopt.dasStoreChargeOnNeutral=false
 0.ruleopt.pieceOffsetX.10.1=0
 0.ruleopt.pieceOffsetX.10.0=0
+0.ruleopt.softdropGravitySpeedLimit=false
 0.ruleopt.lockflashOnlyFrame=true
 0.ruleopt.pieceOffsetX.6.3=0
 0.ruleopt.pieceColor.10=3
@@ -100,6 +101,7 @@
 0.ruleopt.softdropMultiplyNativeSpeed=false
 0.ruleopt.lineCancelRotate=false
 0.ruleopt.softdropSpeed=0.7
+0.ruleopt.style=0
 0.ruleopt.maxLineDelay=10
 0.ruleopt.pieceSpawnY.10.3=0
 0.ruleopt.fieldLockoutDeath=false
@@ -123,7 +125,7 @@
 0.ruleopt.maxARE=10
 0.ruleopt.pieceSpawnYBig.2.3=0
 0.ruleopt.pieceSpawnYBig.2.2=0
-0.ruleopt.strRuleName=Standard-GIZA
+0.ruleopt.strRuleName=STANDARD-GIZA
 0.ruleopt.pieceSpawnYBig.2.1=0
 0.ruleopt.pieceSpawnYBig.2.0=0
 0.ruleopt.softdropLock=false

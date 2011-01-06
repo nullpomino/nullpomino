@@ -52,7 +52,7 @@ public class VSBattleMode extends DummyMode {
 	/** Number of players */
 	private static final int MAX_PLAYERS = 2;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event type constants */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -65,7 +65,7 @@ public class VSBattleMode extends DummyMode {
 							 EVENT_TSPIN_DOUBLE_MINI = 9,
 							 EVENT_TSPIN_EZ = 10;
 
-	/** Comboの Attack 力 */
+	/** Combo attack table */
 	private final int[] COMBO_ATTACK_TABLE = {0,0,1,1,2,2,3,3,4,4,4,5};
 
 	/** garbage blockの穴の位置が普通にランダムに変わる */
