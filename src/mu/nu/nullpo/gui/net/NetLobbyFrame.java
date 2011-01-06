@@ -72,6 +72,9 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -229,6 +232,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Layout manager for main screen */
 	protected CardLayout contentPaneCardLayout;
+	
+	/** Menu bars (all screens) */
+	protected JMenuBar[] menuBar;
 
 	/** Text field of player name (Server select screen) */
 	protected JTextField txtfldPlayerName;
@@ -256,6 +262,27 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** ロビー画面上部のパネル */
 	protected JPanel subpanelRoomListTopBar;
+	
+	/** Lobby menu (Lobby screen) */
+	protected JMenu menuLobbyMenu;
+	
+	/** Quick Start menu item (Lobby screen) */
+	protected JMenuItem itemLobbyMenuQuickStart;
+	
+	/** Create Room menu item (Lobby screen) */
+	protected JMenuItem itemLobbyMenuRoomCreate;
+	
+	/** Create Room 1P menu item (Lobby screen) */
+	protected JMenuItem itemLobbyMenuRoomCreate1P;
+	
+	/** Rule change menu item (Lobby screen) */
+	protected JMenuItem itemLobbyMenuRuleChange;
+	
+	/** Team change menu item (Lobby screen) */
+	protected JMenuItem itemLobbyMenuTeamChange;
+	
+	/** Leaderboard menu item (Lobby screen) */
+	protected JMenuItem itemLobbyMenuRanking;
 
 	/** クイックスタート button(Lobby screen) */
 	protected JButton btnRoomListQuickStart;
@@ -265,15 +292,6 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Create Room 1P (Lobby screen) */
 	protected JButton btnRoomListRoomCreate1P;
-
-	/** Rule change button (Lobby screen) */
-	protected JButton btnRoomListRuleChange;
-
-	/** チーム変更 button(Lobby screen) */
-	protected JButton btnRoomListTeamChange;
-
-	/** Leaderboard button (Lobby screen) */
-	protected JButton btnRoomListRanking;
 
 	/** Team name input 欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
@@ -697,6 +715,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	protected void initUI() {
 		contentPaneCardLayout = new CardLayout();
 		this.getContentPane().setLayout(contentPaneCardLayout);
+		
+		menuBar = new JMenuBar[SCREENCARD_NAMES.length];
+		for (int i = 0; i < SCREENCARD_NAMES.length; i++) {
+			menuBar[i] = new JMenuBar();
+		}
 
 		initServerSelectUI();
 		initLobbyUI();
@@ -830,6 +853,76 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	protected void initLobbyUI() {
 		tabLobbyAndRoom = new JTabbedPane();
 		this.getContentPane().add(tabLobbyAndRoom, SCREENCARD_NAMES[SCREENCARD_LOBBY]);
+		
+		// === Menubar ===
+		
+		// * Menu
+		menuLobbyMenu = new JMenu(getUIText("Lobby_Menu"));
+		menuLobbyMenu.setMnemonic('M');
+		menuBar[SCREENCARD_LOBBY].add(menuLobbyMenu);
+		
+		// ** Quick Start
+		itemLobbyMenuQuickStart = new JMenuItem(getUIText("Lobby_QuickStart"));
+		itemLobbyMenuQuickStart.addActionListener(this);
+		itemLobbyMenuQuickStart.setActionCommand("Lobby_QuickStart");
+		itemLobbyMenuQuickStart.setMnemonic('Q');
+		itemLobbyMenuQuickStart.setToolTipText(getUIText("Lobby_QuickStart_Tip"));
+		itemLobbyMenuQuickStart.setVisible(false);
+		menuLobbyMenu.add(itemLobbyMenuQuickStart);
+		
+		// ** Create Room
+		itemLobbyMenuRoomCreate = new JMenuItem(getUIText("Lobby_RoomCreate"));
+		itemLobbyMenuRoomCreate.addActionListener(this);
+		itemLobbyMenuRoomCreate.setActionCommand("Lobby_RoomCreate");
+		itemLobbyMenuRoomCreate.setMnemonic('N');
+		itemLobbyMenuRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
+		menuLobbyMenu.add(itemLobbyMenuRoomCreate);
+		
+		// ** Create Room (1P)
+		itemLobbyMenuRoomCreate1P = new JMenuItem(getUIText("Lobby_RoomCreate1P"));
+		itemLobbyMenuRoomCreate1P.addActionListener(this);
+		itemLobbyMenuRoomCreate1P.setActionCommand("Lobby_RoomCreate1P");
+		itemLobbyMenuRoomCreate1P.setMnemonic('1');
+		itemLobbyMenuRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
+		menuLobbyMenu.add(itemLobbyMenuRoomCreate1P);
+		
+		// * Separator
+		menuLobbyMenu.addSeparator();
+
+		// ** Rule change
+		itemLobbyMenuRuleChange = new JMenuItem(getUIText("Lobby_RuleChange"));
+		itemLobbyMenuRuleChange.addActionListener(this);
+		itemLobbyMenuRuleChange.setActionCommand("Lobby_RuleChange");
+		itemLobbyMenuRuleChange.setMnemonic('R');
+		itemLobbyMenuRuleChange.setToolTipText(getUIText("Lobby_RuleChange_Tip"));
+		menuLobbyMenu.add(itemLobbyMenuRuleChange);
+
+		// ** Team change
+		itemLobbyMenuTeamChange = new JMenuItem(getUIText("Lobby_TeamChange"));
+		itemLobbyMenuTeamChange.addActionListener(this);
+		itemLobbyMenuTeamChange.setActionCommand("Lobby_TeamChange");
+		itemLobbyMenuTeamChange.setMnemonic('T');
+		itemLobbyMenuTeamChange.setToolTipText(getUIText("Lobby_TeamChange_Tip"));
+		menuLobbyMenu.add(itemLobbyMenuTeamChange);
+
+		// ** Leaderboard
+		itemLobbyMenuRanking = new JMenuItem(getUIText("Lobby_Ranking"));
+		itemLobbyMenuRanking.addActionListener(this);
+		itemLobbyMenuRanking.setActionCommand("Lobby_Ranking");
+		itemLobbyMenuRanking.setMnemonic('K');
+		itemLobbyMenuRanking.setToolTipText(getUIText("Lobby_Ranking_Tip"));
+		menuLobbyMenu.add(itemLobbyMenuRanking);
+		
+		// * Separator
+		menuLobbyMenu.addSeparator();
+		
+		// ** Disconnect
+		JMenuItem itemLobbyMenuDisconnect = new JMenuItem(getUIText("Lobby_Disconnect"));
+		itemLobbyMenuDisconnect.addActionListener(this);
+		itemLobbyMenuDisconnect.setActionCommand("Lobby_Disconnect");
+		itemLobbyMenuDisconnect.setMnemonic('L');
+		itemLobbyMenuDisconnect.setToolTipText(getUIText("Lobby_Disconnect_Tip"));
+		menuLobbyMenu.add(itemLobbyMenuDisconnect);
 
 		// === Lobby Tab ===
 		JPanel mainpanelLobby = new JPanel(new BorderLayout());
@@ -873,7 +966,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate.setMnemonic('N');
 		btnRoomListRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate);
-
+		
 		// ***** Create Room (1P) button
 		btnRoomListRoomCreate1P = new JButton(getUIText("Lobby_RoomCreate1P"));
 		btnRoomListRoomCreate1P.addActionListener(this);
@@ -881,31 +974,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate1P.setMnemonic('1');
 		btnRoomListRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate1P);
-
-		// ***** Rule change button
-		btnRoomListRuleChange = new JButton(getUIText("Lobby_RuleChange"));
-		btnRoomListRuleChange.addActionListener(this);
-		btnRoomListRuleChange.setActionCommand("Lobby_RuleChange");
-		btnRoomListRuleChange.setMnemonic('R');
-		btnRoomListRuleChange.setToolTipText(getUIText("Lobby_RuleChange_Tip"));
-		subpanelRoomListButtons.add(btnRoomListRuleChange);
-
-		// ***** チーム変更 button
-		btnRoomListTeamChange = new JButton(getUIText("Lobby_TeamChange"));
-		btnRoomListTeamChange.addActionListener(this);
-		btnRoomListTeamChange.setActionCommand("Lobby_TeamChange");
-		btnRoomListTeamChange.setMnemonic('T');
-		btnRoomListTeamChange.setToolTipText(getUIText("Lobby_TeamChange_Tip"));
-		subpanelRoomListButtons.add(btnRoomListTeamChange);
-
-		// ***** Leaderboard button
-		btnRoomListRanking = new JButton(getUIText("Lobby_Ranking"));
-		btnRoomListRanking.addActionListener(this);
-		btnRoomListRanking.setActionCommand("Lobby_Ranking");
-		btnRoomListRanking.setMnemonic('K');
-		btnRoomListRanking.setToolTipText(getUIText("Lobby_Ranking_Tip"));
-		subpanelRoomListButtons.add(btnRoomListRanking);
-
+		
 		// ***** 切断 button
 		JButton btnRoomListDisconnect = new JButton(getUIText("Lobby_Disconnect"));
 		btnRoomListDisconnect.addActionListener(this);
@@ -2071,6 +2140,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	public void changeCurrentScreenCard(int cardNumber) {
 		contentPaneCardLayout.show(this.getContentPane(), SCREENCARD_NAMES[cardNumber]);
 		currentScreenCardNumber = cardNumber;
+		
+		// Set menu bar
+		setJMenuBar(menuBar[cardNumber]);
 
 		// Set default button
 		JButton defaultButton = null;
@@ -2429,14 +2501,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * @param mode 0=Disable all 1=Full Lobby 2=Inside Room
 	 */
 	public void setLobbyButtonsEnabled(int mode) {
-		btnRoomListQuickStart.setEnabled((mode == 1));
-		btnRoomListRoomCreate.setEnabled((mode == 1));
-		btnRoomListRoomCreate1P.setEnabled((mode == 1));
-		btnRoomListRuleChange.setEnabled((mode == 1));
-		btnRoomListTeamChange.setEnabled((mode >= 1));
-		btnRoomListRanking.setEnabled((mode >= 1));
-		btnLobbyChatSend.setEnabled((mode >= 1));
-		txtfldLobbyChatInput.setEnabled((mode >= 1));
+		btnRoomListQuickStart.setEnabled(mode == 1);
+		btnRoomListRoomCreate.setEnabled(mode == 1);
+		btnRoomListRoomCreate1P.setEnabled(mode == 1);
+		
+		itemLobbyMenuQuickStart.setEnabled(mode == 1);
+		itemLobbyMenuRoomCreate.setEnabled(mode == 1);
+		itemLobbyMenuRoomCreate1P.setEnabled(mode == 1);
+		itemLobbyMenuRuleChange.setEnabled(mode == 1);
+		itemLobbyMenuTeamChange.setEnabled(mode == 1);
+		itemLobbyMenuRanking.setEnabled(mode >= 1);
+		
+		btnLobbyChatSend.setEnabled(mode >= 1);
+		txtfldLobbyChatInput.setEnabled(mode >= 1);
 	}
 
 	/**
@@ -4229,7 +4306,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			if(netPlayerClient.getYourPlayerInfo().seatID != -1) {
 				btnRoomButtonsSitOut.setEnabled(false);
 				btnRoomButtonsTeamChange.setEnabled(false);
-				btnRoomListTeamChange.setEnabled(false);
+				itemLobbyMenuTeamChange.setEnabled(false);
 				roomTopBarCardLayout.first(subpanelRoomTopBar);
 			}
 		}
@@ -4246,7 +4323,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			if(uid == netPlayerClient.getPlayerUID()) {
 				btnRoomButtonsSitOut.setEnabled(true);
 				btnRoomButtonsTeamChange.setEnabled(true);
-				btnRoomListTeamChange.setEnabled(true);
+				itemLobbyMenuTeamChange.setEnabled(true);
 			}
 		}
 		// Game stats (Multiplayer)
@@ -4331,7 +4408,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			btnRoomButtonsSitOut.setEnabled(true);
 			btnRoomButtonsTeamChange.setEnabled(true);
-			btnRoomListTeamChange.setEnabled(true);
+			itemLobbyMenuTeamChange.setEnabled(true);
 		}
 		// Rating change
 		if(message[0].equals("rating")) {
