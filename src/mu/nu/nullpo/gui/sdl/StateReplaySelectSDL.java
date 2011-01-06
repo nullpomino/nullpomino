@@ -76,7 +76,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	@Override
 	public void enter() throws SDLException {
 		list = getReplayFileList();
-		maxCursor = list.length-1;
+		if (list != null) { maxCursor = list.length-1; }
 		setReplayRuleAndModeList();
 	}
 
