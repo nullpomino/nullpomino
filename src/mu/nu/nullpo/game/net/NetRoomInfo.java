@@ -609,7 +609,7 @@ public class NetRoomInfo implements Serializable {
 						return false;
 					} else if(teamname == null) {
 						teamname = pInfo.strTeam;
-					} else if(!teamname.equalsIgnoreCase(pInfo.strTeam)) {
+					} else if(!teamname.equals(pInfo.strTeam)) {
 						return false;
 					}
 				}

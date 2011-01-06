@@ -2268,7 +2268,7 @@ public class NetServer {
 				String strTeam = "";
 				if(message.length > 1) strTeam = NetUtil.urlDecode(message[1]);
 
-				if(!strTeam.equalsIgnoreCase(pInfo.strTeam)) {
+				if(!strTeam.equals(pInfo.strTeam)) {
 					pInfo.strTeam = strTeam;
 					broadcastPlayerInfoUpdate(pInfo);
 
