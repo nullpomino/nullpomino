@@ -175,7 +175,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Event listeners */
 	protected LinkedList<NetLobbyListener> listeners = new LinkedList<NetLobbyListener>();
-	
+
 	/** Preset info */
 	protected LinkedList<NetRoomInfo> presets = new LinkedList<NetRoomInfo>();
 
@@ -382,24 +382,24 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** OK button(Server add screen) */
 	protected JButton btnServerAddOK;
-	
+
 	protected JTextField txtfldCreateRatedName;
-	
+
 	/** Cancel button (Created rated waiting screen) */
 	protected JButton btnCreateRatedWaitingCancel;
-	
+
 	/** Presets box (Create rated screen) */
 	protected JComboBox comboboxCreateRatedPresets;
-	
+
 	/** 参加人count(Create rated screen) */
 	protected JSpinner spinnerCreateRatedMaxPlayers;
-	
+
 	/** OK button (Create rated screen) */
 	protected JButton btnCreateRatedOK;
-	
+
 	/** Custom button (Create rated screen) */
 	protected JButton btnCreateRatedCustom;
-	
+
 	/** Cancel button (Created rated screen) */
 	protected JButton btnCreateRatedCancel;
 
@@ -862,6 +862,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListQuickStart.addActionListener(this);
 		btnRoomListQuickStart.setActionCommand("Lobby_QuickStart");
 		btnRoomListQuickStart.setMnemonic('Q');
+		btnRoomListQuickStart.setToolTipText(getUIText("Lobby_QuickStart_Tip"));
 		btnRoomListQuickStart.setVisible(false);
 		subpanelRoomListButtons.add(btnRoomListQuickStart);
 
@@ -869,7 +870,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate = new JButton(getUIText("Lobby_RoomCreate"));
 		btnRoomListRoomCreate.addActionListener(this);
 		btnRoomListRoomCreate.setActionCommand("Lobby_RoomCreate");
-		btnRoomListRoomCreate.setMnemonic('C');
+		btnRoomListRoomCreate.setMnemonic('N');
+		btnRoomListRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate);
 
 		// ***** Create Room (1P) button
@@ -877,6 +879,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate1P.addActionListener(this);
 		btnRoomListRoomCreate1P.setActionCommand("Lobby_RoomCreate1P");
 		btnRoomListRoomCreate1P.setMnemonic('1');
+		btnRoomListRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate1P);
 
 		// ***** Rule change button
@@ -884,6 +887,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRuleChange.addActionListener(this);
 		btnRoomListRuleChange.setActionCommand("Lobby_RuleChange");
 		btnRoomListRuleChange.setMnemonic('R');
+		btnRoomListRuleChange.setToolTipText(getUIText("Lobby_RuleChange_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRuleChange);
 
 		// ***** チーム変更 button
@@ -891,20 +895,23 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListTeamChange.addActionListener(this);
 		btnRoomListTeamChange.setActionCommand("Lobby_TeamChange");
 		btnRoomListTeamChange.setMnemonic('T');
+		btnRoomListTeamChange.setToolTipText(getUIText("Lobby_TeamChange_Tip"));
 		subpanelRoomListButtons.add(btnRoomListTeamChange);
 
 		// ***** Leaderboard button
 		btnRoomListRanking = new JButton(getUIText("Lobby_Ranking"));
 		btnRoomListRanking.addActionListener(this);
 		btnRoomListRanking.setActionCommand("Lobby_Ranking");
-		btnRoomListRanking.setMnemonic('L');
+		btnRoomListRanking.setMnemonic('K');
+		btnRoomListRanking.setToolTipText(getUIText("Lobby_Ranking_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRanking);
 
 		// ***** 切断 button
 		JButton btnRoomListDisconnect = new JButton(getUIText("Lobby_Disconnect"));
 		btnRoomListDisconnect.addActionListener(this);
 		btnRoomListDisconnect.setActionCommand("Lobby_Disconnect");
-		btnRoomListDisconnect.setMnemonic('D');
+		btnRoomListDisconnect.setMnemonic('L');
+		btnRoomListDisconnect.setToolTipText(getUIText("Lobby_Disconnect_Tip"));
 		subpanelRoomListButtons.add(btnRoomListDisconnect);
 
 		// **** チーム変更パネル
@@ -1033,6 +1040,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsLeave.addActionListener(this);
 		btnRoomButtonsLeave.setActionCommand("Room_Leave");
 		btnRoomButtonsLeave.setMnemonic('L');
+		btnRoomButtonsLeave.setToolTipText(getUIText("Room_Leave_Tip"));
 		subpanelRoomButtons.add(btnRoomButtonsLeave);
 
 		// ***** 参戦 button
@@ -1040,6 +1048,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsJoin.addActionListener(this);
 		btnRoomButtonsJoin.setActionCommand("Room_Join");
 		btnRoomButtonsJoin.setMnemonic('J');
+		btnRoomButtonsJoin.setToolTipText(getUIText("Room_Join_Tip"));
 		btnRoomButtonsJoin.setVisible(false);
 		subpanelRoomButtons.add(btnRoomButtonsJoin);
 
@@ -1047,7 +1056,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsSitOut = new JButton(getUIText("Room_SitOut"));
 		btnRoomButtonsSitOut.addActionListener(this);
 		btnRoomButtonsSitOut.setActionCommand("Room_SitOut");
-		btnRoomButtonsSitOut.setMnemonic('O');
+		btnRoomButtonsSitOut.setMnemonic('W');
+		btnRoomButtonsSitOut.setToolTipText(getUIText("Room_SitOut_Tip"));
 		btnRoomButtonsSitOut.setVisible(false);
 		subpanelRoomButtons.add(btnRoomButtonsSitOut);
 
@@ -1056,6 +1066,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsTeamChange.addActionListener(this);
 		btnRoomButtonsTeamChange.setActionCommand("Room_TeamChange");
 		btnRoomButtonsTeamChange.setMnemonic('T');
+		btnRoomButtonsTeamChange.setToolTipText(getUIText("Room_TeamChange_Tip"));
 		subpanelRoomButtons.add(btnRoomButtonsTeamChange);
 
 		// **** チーム変更パネル
@@ -1089,13 +1100,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomButtonsViewSetting.addActionListener(this);
 		btnRoomButtonsViewSetting.setActionCommand("Room_ViewSetting");
 		btnRoomButtonsViewSetting.setMnemonic('V');
+		btnRoomButtonsViewSetting.setToolTipText(getUIText("Room_ViewSetting_Tip"));
 		subpanelRoomButtons.add(btnRoomButtonsViewSetting);
 
 		// ***** Leaderboard button
 		btnRoomButtonsRanking = new JButton(getUIText("Room_Ranking"));
 		btnRoomButtonsRanking.addActionListener(this);
 		btnRoomButtonsRanking.setActionCommand("Room_Ranking");
-		btnRoomButtonsRanking.setMnemonic('L');
+		btnRoomButtonsRanking.setMnemonic('K');
+		btnRoomButtonsRanking.setToolTipText(getUIText("Room_Ranking_Tip"));
 		btnRoomButtonsRanking.setVisible(false);
 		subpanelRoomButtons.add(btnRoomButtonsRanking);
 
@@ -1248,7 +1261,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnServerAddCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, btnServerAddCancel.getMaximumSize().height));
 		subpanelButtons.add(btnServerAddCancel);
 	}
-	
+
 	/**
 	 * Create rated screen card while waiting for presets to arrive from server
 	 */
@@ -1256,73 +1269,73 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		// Main panel
 		JPanel mainpanelCreateRatedWaiting = new JPanel(new BorderLayout());
 		this.getContentPane().add(mainpanelCreateRatedWaiting, SCREENCARD_NAMES[SCREENCARD_CREATERATED_WAITING]);
-		
+
 		// * Container panel
 		JPanel containerpanelCreateRatedWaiting = new JPanel();
 		containerpanelCreateRatedWaiting.setLayout(new BoxLayout(containerpanelCreateRatedWaiting, BoxLayout.Y_AXIS));
 		mainpanelCreateRatedWaiting.add(containerpanelCreateRatedWaiting, BorderLayout.NORTH);
-		
+
 		// ** Subpanel for label
 		JPanel subpanelText = new JPanel(new BorderLayout());
-		containerpanelCreateRatedWaiting.add(subpanelText, BorderLayout.CENTER);		
-		
+		containerpanelCreateRatedWaiting.add(subpanelText, BorderLayout.CENTER);
+
 		// *** "Please wait while preset information is retrieved from the server" label
 		JLabel labelWaiting = new JLabel(getUIText("CreateRated_Waiting_Text"));
 		subpanelText.add(labelWaiting,BorderLayout.CENTER);
-		
+
 		// ** Subpanel for cancel button
 		JPanel subpanelButtons = new JPanel();
 		mainpanelCreateRatedWaiting.add(subpanelButtons, BorderLayout.SOUTH);
-		
+
 		// *** Cancel Button
 		btnCreateRatedWaitingCancel = new JButton(getUIText("CreateRated_Waiting_Cancel"));
 		btnCreateRatedWaitingCancel.addActionListener(this);
 		btnCreateRatedWaitingCancel.setActionCommand("CreateRated_Waiting_Cancel");
 		btnCreateRatedWaitingCancel.setMnemonic('C');
-		btnCreateRatedWaitingCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, 
+		btnCreateRatedWaitingCancel.setMaximumSize(new Dimension(Short.MAX_VALUE,
 				btnCreateRatedWaitingCancel.getMaximumSize().height));
 		subpanelButtons.add(btnCreateRatedWaitingCancel, BorderLayout.SOUTH);
 	}
-	
+
 	protected void initCreateRatedUI() {
 		// Main panel
 		JPanel mainpanelCreateRated = new JPanel(new BorderLayout());
 		this.getContentPane().add(mainpanelCreateRated, SCREENCARD_NAMES[SCREENCARD_CREATERATED_WAITING]);
-		
+
 		// * Container panel
 		JPanel containerpanelCreateRated = new JPanel();
 		containerpanelCreateRated.setLayout(new BoxLayout(containerpanelCreateRated, BoxLayout.Y_AXIS));
 		mainpanelCreateRated.add(containerpanelCreateRated, BorderLayout.NORTH);
-		
+
 		// ** Subpanel for preset selection
 		JPanel subpanelName = new JPanel(new BorderLayout());
-		containerpanelCreateRated.add(subpanelName);		
-		
+		containerpanelCreateRated.add(subpanelName);
+
 		// *** "Room Name:" label
 		JLabel labelName = new JLabel(getUIText("CreateRated_Name"));
 		subpanelName.add(labelName, BorderLayout.WEST);
-		
+
 		// *** Room name textfield
 		txtfldCreateRatedName = new JTextField();
 		txtfldCreateRatedName.setComponentPopupMenu(new TextComponentPopupMenu(txtfldCreateRatedName));
 		txtfldCreateRatedName.setToolTipText(getUIText("CreateRated_Name_Tip"));
 		subpanelName.add(txtfldCreateRatedName, BorderLayout.CENTER);
-		
+
 		// ** Subpanel for preset selection
 		JPanel subpanelPresetSelect = new JPanel(new BorderLayout());
-		containerpanelCreateRated.add(subpanelPresetSelect);		
-		
+		containerpanelCreateRated.add(subpanelPresetSelect);
+
 		// *** "Preset:" label
 		JLabel labelWaiting = new JLabel(getUIText("CreateRated_Preset"));
 		subpanelPresetSelect.add(labelWaiting, BorderLayout.WEST);
-		
+
 		// *** Presets
 		comboboxCreateRatedPresets = new JComboBox(new String[] {"Select..."});
 		comboboxCreateRatedPresets.setSelectedIndex(propConfig.getProperty("createrated.defaultPreset", 0));
 		comboboxCreateRatedPresets.setPreferredSize(new Dimension(200, 20));
 		comboboxCreateRatedPresets.setToolTipText(getUIText("CreateRated_Preset_Tip"));
 		subpanelPresetSelect.add(comboboxCreateRatedPresets, BorderLayout.EAST);
-		
+
 		// ** 参加人countパネル
 		JPanel subpanelMaxPlayers = new JPanel(new BorderLayout());
 		containerpanelCreateRated.add(subpanelMaxPlayers);
@@ -1337,11 +1350,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRatedMaxPlayers.setPreferredSize(new Dimension(200, 20));
 		spinnerCreateRatedMaxPlayers.setToolTipText(getUIText("CreateRated_MaxPlayers_Tip"));
 		subpanelMaxPlayers.add(spinnerCreateRatedMaxPlayers, BorderLayout.EAST);
-		
+
 		// ** Subpanel for buttons
 		JPanel subpanelButtons = new JPanel();
 		mainpanelCreateRated.add(subpanelButtons, BorderLayout.SOUTH);
-		
+
 		// *** OK button
 		btnCreateRatedOK = new JButton(getUIText("CreateRated_OK"));
 		btnCreateRatedOK.addActionListener(this);
@@ -1349,7 +1362,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnCreateRatedOK.setMnemonic('O');
 		btnCreateRatedOK.setMaximumSize(new Dimension(Short.MAX_VALUE, btnCreateRatedOK.getMaximumSize().height));
 		subpanelButtons.add(btnCreateRatedOK);
-		
+
 		// *** Custom button
 		btnCreateRatedCustom = new JButton(getUIText("CreateRated_Custom"));
 		btnCreateRatedCustom.addActionListener(this);
@@ -3702,7 +3715,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
 				RuleEntry entry = null;
 				if (id >= 0) { entry = subEntries.get(id); }
-				
+
 
 				if(i == 0) {
 					if(id >= 0) {
@@ -3882,7 +3895,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					String name = (String)listRatedRuleName[style].get(i);
 					listmodelCreateRoom1PRuleList.addElement(name);
 				}
-				
+
 				listboxCreateRoom1PRuleList.setSelectedValue(propConfig.getProperty("createroom1p.listboxCreateRoom1PRuleList.value", ""), true);
 			}
 		}
@@ -3993,8 +4006,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 						presets.add(r);
 						comboboxCreateRatedPresets.addItem(r.strName);
 					}
-					changeCurrentScreenCard(SCREENCARD_CREATERATED);	
-				}	
+					changeCurrentScreenCard(SCREENCARD_CREATERATED);
+				}
 			}
 		}
 		// 新規ルーム出現
