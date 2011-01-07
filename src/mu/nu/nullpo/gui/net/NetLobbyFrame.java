@@ -861,32 +861,37 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		menuLobbyMenu.setMnemonic('M');
 		menuBar[SCREENCARD_LOBBY].add(menuLobbyMenu);
 		
-		// ** Quick Start
-		itemLobbyMenuQuickStart = new JMenuItem(getUIText("Lobby_QuickStart"));
+		// ** Create Game
+		JMenu menuLobbyMenuGame = new JMenu(getUIText("Lobby_Menu_CreateGame"));
+		menuLobbyMenuGame.setMnemonic('G');
+		menuLobbyMenu.add(menuLobbyMenuGame);
+		
+		// *** Quick Start
+		itemLobbyMenuQuickStart = new JMenuItem(getUIText("Lobby_Menu_QuickStart"));
 		itemLobbyMenuQuickStart.addActionListener(this);
 		itemLobbyMenuQuickStart.setActionCommand("Lobby_QuickStart");
 		itemLobbyMenuQuickStart.setMnemonic('Q');
 		itemLobbyMenuQuickStart.setToolTipText(getUIText("Lobby_QuickStart_Tip"));
 		itemLobbyMenuQuickStart.setVisible(false);
-		menuLobbyMenu.add(itemLobbyMenuQuickStart);
+		menuLobbyMenuGame.add(itemLobbyMenuQuickStart);
 		
-		// ** Create Room
-		itemLobbyMenuRoomCreate = new JMenuItem(getUIText("Lobby_RoomCreate"));
+		// *** Create Room
+		itemLobbyMenuRoomCreate = new JMenuItem(getUIText("Lobby_Menu_RoomCreate"));
 		itemLobbyMenuRoomCreate.addActionListener(this);
 		itemLobbyMenuRoomCreate.setActionCommand("Lobby_RoomCreate");
 		itemLobbyMenuRoomCreate.setMnemonic('N');
 		itemLobbyMenuRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
-		menuLobbyMenu.add(itemLobbyMenuRoomCreate);
+		menuLobbyMenuGame.add(itemLobbyMenuRoomCreate);
 		
-		// ** Create Room (1P)
-		itemLobbyMenuRoomCreate1P = new JMenuItem(getUIText("Lobby_RoomCreate1P"));
+		// *** Create Room (1P)
+		itemLobbyMenuRoomCreate1P = new JMenuItem(getUIText("Lobby_Menu_RoomCreate1P"));
 		itemLobbyMenuRoomCreate1P.addActionListener(this);
 		itemLobbyMenuRoomCreate1P.setActionCommand("Lobby_RoomCreate1P");
 		itemLobbyMenuRoomCreate1P.setMnemonic('1');
 		itemLobbyMenuRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
-		menuLobbyMenu.add(itemLobbyMenuRoomCreate1P);
+		menuLobbyMenuGame.add(itemLobbyMenuRoomCreate1P);
 		
-		// * Separator
+		// ** Separator
 		menuLobbyMenu.addSeparator();
 
 		// ** Rule change
@@ -913,7 +918,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuRanking.setToolTipText(getUIText("Lobby_Ranking_Tip"));
 		menuLobbyMenu.add(itemLobbyMenuRanking);
 		
-		// * Separator
+		// ** Separator
 		menuLobbyMenu.addSeparator();
 		
 		// ** Disconnect
