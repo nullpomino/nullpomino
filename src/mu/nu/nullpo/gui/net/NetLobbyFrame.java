@@ -3620,7 +3620,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			currentViewDetailRoomID = -1;
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
 		}
-		// Create rated cancel from waiting card
+		// Create rated OK
 		if(e.getActionCommand() == "CreateRated_OK") {
 			try {
 				int presetIndex = comboboxCreateRatedPresets.getSelectedIndex();
@@ -3643,14 +3643,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				log.error("Error on CreateRated_OK", e2);
 			}
 		}
-		// Create rated cancel from waiting card
+		// Create rated - go to custom settings
 		if(e.getActionCommand() == "CreateRated_Custom") {
+			// Load preset into field
 			NetRoomInfo r = presets.get(comboboxCreateRatedPresets.getSelectedIndex());
 			setCreateRoomUIType(false, null);
 			importRoomInfoToCreateRoomScreen(r);
+			// Copy name and number of players
+			txtfldCreateRoomName.setText(txtfldCreateRatedName.getText());
+			spinnerCreateRoomMaxPlayers.setValue(spinnerCreateRatedMaxPlayers.getValue());
+			// Change screen card
 			changeCurrentScreenCard(SCREENCARD_CREATEROOM);
 		}
-		// Create rated cancel from waiting card
+		// Create rated cancel
 		if(e.getActionCommand() == "CreateRated_Cancel") {
 			currentViewDetailRoomID = -1;
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
