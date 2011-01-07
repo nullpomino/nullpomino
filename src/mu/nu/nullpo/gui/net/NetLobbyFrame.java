@@ -2745,48 +2745,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					name += " (" + pInfo.strCountry + ")";
 				}
 
-				// Hostname
+				/* XXX Hostname
 				if(pInfo.strHost.length() > 0) {
 					name += " {" + pInfo.strHost + "}";
 				}
+				*/
 
 				if(pInfo.roomID == -1) {
 					listmodelLobbyChatPlayerList.addElement(name);
-				}
-			}
-			for(int i = 0; i < pList.size(); i++) {
-				NetPlayerInfo pInfo = pList.get(i);
-
-				// Name
-				String name = getPlayerNameWithTripCode(pInfo);
-				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
-
-				// Team
-				if(pInfo.strTeam.length() > 0) {
-					name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
-					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
-				}
-
-				// Rating
-				name += " |" + pInfo.rating[0] + "|";
-				/*
-				name += " |T:" + pInfo.rating[0] + "|";
-				name += "A:" + pInfo.rating[1] + "|";
-				name += "P:" + pInfo.rating[2] + "|";
-				name += "S:" + pInfo.rating[3] + "|";
-				*/
-
-				// Country code
-				if(pInfo.strCountry.length() > 0) {
-					name += " (" + pInfo.strCountry + ")";
-				}
-
-				// Hostname
-				if(pInfo.strHost.length() > 0) {
-					name += " {" + pInfo.strHost + "}";
-				}
-
-				if(pInfo.roomID != -1) {
+				} else {
 					listmodelLobbyChatPlayerList.addElement("{" + pInfo.roomID + "} " + name);
 				}
 			}
@@ -2811,35 +2778,36 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			for(int i = 0; i < pList.size(); i++) {
 				NetPlayerInfo pInfo = pList.get(i);
-
-				// Name
-				String name = getPlayerNameWithTripCode(pInfo);
-				if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
-
-				// Team
-				if(pInfo.strTeam.length() > 0) {
-					name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
-					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
-				}
-
-				// Rating
-				name += " |" + pInfo.rating[roomInfo.style] + "|";
-
-				// Country code
-				if(pInfo.strCountry.length() > 0) {
-					name += " (" + pInfo.strCountry + ")";
-				}
-
-				// Hostname
-				if(pInfo.strHost.length() > 0) {
-					name += " {" + pInfo.strHost + "}";
-				}
-
-				// Status
-				if(pInfo.playing) name += getUIText("RoomUserList_Playing");
-				else if(pInfo.ready) name += getUIText("RoomUserList_Ready");
-
+				
 				if(pInfo.roomID == roomInfo.roomID) {
+					// Name
+					String name = getPlayerNameWithTripCode(pInfo);
+					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
+	
+					// Team
+					if(pInfo.strTeam.length() > 0) {
+						name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
+						if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
+					}
+	
+					// Rating
+					name += " |" + pInfo.rating[roomInfo.style] + "|";
+	
+					// Country code
+					if(pInfo.strCountry.length() > 0) {
+						name += " (" + pInfo.strCountry + ")";
+					}
+	
+					/* XXX Hostname
+					if(pInfo.strHost.length() > 0) {
+						name += " {" + pInfo.strHost + "}";
+					}
+					*/
+	
+					// Status
+					if(pInfo.playing) name += getUIText("RoomUserList_Playing");
+					else if(pInfo.ready) name += getUIText("RoomUserList_Ready");
+				
 					if((pInfo.seatID >= 0) && (pInfo.seatID < roomInfo.maxPlayers)) {
 						listmodelRoomChatPlayerList.set(pInfo.seatID, "[" + (pInfo.seatID + 1) + "] " + name);
 					} else if(pInfo.queueID != -1) {
