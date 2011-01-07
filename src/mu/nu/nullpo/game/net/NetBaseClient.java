@@ -103,7 +103,7 @@ public class NetBaseClient extends Thread {
 	 * @param host 接続先ホスト
 	 */
 	public NetBaseClient(String host) {
-		super();
+		super("NET_"+host);
 		this.host = host;
 		this.port = DEFAULT_PORT;
 	}
@@ -114,7 +114,7 @@ public class NetBaseClient extends Thread {
 	 * @param port 接続先ポート number
 	 */
 	public NetBaseClient(String host, int port) {
-		super();
+		super("NET_"+host+":"+port);
 		this.host = host;
 		this.port = port;
 	}

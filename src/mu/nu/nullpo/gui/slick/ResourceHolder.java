@@ -83,7 +83,7 @@ public class ResourceHolder {
 	public static Image imgFrame;
 
 	/** Field background */
-	public static Image imgFieldbg2;
+	public static Image imgFieldbg2, imgFieldbg2Small, imgFieldbg2Big;
 	//public static Image imgFieldbg;
 
 	/** Block spatter animation during line clears */
@@ -131,6 +131,8 @@ public class ResourceHolder {
 		imgMenu = loadImage(skindir + "/graphics/menu.png");
 		imgFrame = loadImage(skindir + "/graphics/frame.png");
 		imgFieldbg2 = loadImage(skindir + "/graphics/fieldbg2.png");
+		imgFieldbg2Small = loadImage(skindir + "/graphics/fieldbg2_small.png");
+		imgFieldbg2Big = loadImage(skindir + "/graphics/fieldbg2_big.png");
 
 		if(NullpoMinoSlick.propConfig.getProperty("option.showlineeffect", true) == true) {
 			loadLineClearEffectImages();

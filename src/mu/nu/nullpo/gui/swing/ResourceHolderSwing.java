@@ -61,7 +61,7 @@ public class ResourceHolderSwing {
 	public static Image imgFrame;
 
 	/** Field background */
-	public static Image imgFieldbg, imgFieldbg2;
+	public static Image imgFieldbg, imgFieldbg2, imgFieldbg2Small, imgFieldbg2Big;
 
 	/** プレイ中のBackground */
 	public static Image[] imgPlayBG;
@@ -89,6 +89,8 @@ public class ResourceHolderSwing {
 		imgFrame = loadImage(getURL(skindir + "/graphics/frame.png"));
 		imgFieldbg = loadImage(getURL(skindir + "/graphics/fieldbg.png"));
 		imgFieldbg2 = loadImage(getURL(skindir + "/graphics/fieldbg2.png"));
+		imgFieldbg2Small = loadImage(getURL(skindir + "/graphics/fieldbg2_small.png"));
+		imgFieldbg2Big = loadImage(getURL(skindir + "/graphics/fieldbg2_big.png"));
 
 		if(NullpoMinoSwing.propConfig.getProperty("option.showbg", true) == true) {
 			loadBackgroundImages();

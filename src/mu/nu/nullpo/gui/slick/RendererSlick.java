@@ -781,12 +781,17 @@ public class RendererSlick extends EventReceiver {
 			offsetX = engine.framecolor * 16;
 		}
 
-		// fieldBackground
+		// Field Background
 		if(fieldbgbright > 0) {
-			if((width == 10) && (height == 20) && (ResourceHolder.imgFieldbg2 != null)) {
+			if((width <= 10) && (height <= 20)) {
 				Color filter = new Color(Color.white);
 				filter.a = fieldbgbright;
-				graphics.drawImage(ResourceHolder.imgFieldbg2, x + 4, y + 4, filter);
+
+				Image img = ResourceHolder.imgFieldbg2;
+				if(displaysize == -1) img = ResourceHolder.imgFieldbg2Small;
+				if(displaysize == 1) img = ResourceHolder.imgFieldbg2Big;
+
+				graphics.drawImage(img, x + 4, y + 4, (x + 4)+(width*size*4), (y + 4)+(height*size*4), 0, 0, width*size*4, height*size*4, filter);
 			} else if(showbg) {
 				Color filter = new Color(Color.black);
 				filter.a = fieldbgbright;

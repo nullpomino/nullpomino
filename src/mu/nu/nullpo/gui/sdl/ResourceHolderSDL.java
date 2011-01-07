@@ -82,7 +82,7 @@ public class ResourceHolderSDL {
 	public static SDLSurface imgFrame;
 
 	/** Field background */
-	public static SDLSurface imgFieldbg, imgFieldbg2;
+	public static SDLSurface imgFieldbg, imgFieldbg2, imgFieldbg2Small, imgFieldbg2Big;
 
 	/** 真っ黒画像と真っ白画像 */
 	public static SDLSurface imgBlankBlack, imgBlankWhite;
@@ -134,6 +134,8 @@ public class ResourceHolderSDL {
 		imgFrame = loadImage(skindir + "/graphics/frame.png");
 		imgFieldbg = loadImage(skindir + "/graphics/fieldbg.png");
 		imgFieldbg2 = loadImage(skindir + "/graphics/fieldbg2.png");
+		imgFieldbg2Small = loadImage(skindir + "/graphics/fieldbg2_small.png");
+		imgFieldbg2Big = loadImage(skindir + "/graphics/fieldbg2_big.png");
 		imgBlankBlack = loadImage(skindir + "/graphics/blank_black.png");
 		imgBlankWhite = loadImage(skindir + "/graphics/blank_white.png");
 

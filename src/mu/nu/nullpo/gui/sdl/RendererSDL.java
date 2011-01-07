@@ -764,7 +764,7 @@ public class RendererSDL extends EventReceiver {
 		}
 
 		SDLSurface imgFieldbg = ResourceHolderSDL.imgFieldbg;
-		if((width == 10) && (height == 20)) imgFieldbg = ResourceHolderSDL.imgFieldbg2;
+		//if((width == 10) && (height == 20)) imgFieldbg = ResourceHolderSDL.imgFieldbg2;
 		if(engine.owner.getPlayers() < 2)
 			imgFieldbg.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, fieldbgbright);
 		else
@@ -789,9 +789,7 @@ public class RendererSDL extends EventReceiver {
 					}
 
 					if( (!blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE) || (blk.alpha < 1.0f)) && (fieldbgbright > 0) ) {
-						if((width == 10) && (height == 20)) {
-							imgFieldbg.blitSurface(new SDLRect(j*blksize,i*blksize,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
-						} else {
+						if((width > 10) && (height > 20)) {
 							int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
 							imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
 						}
@@ -832,9 +830,7 @@ public class RendererSDL extends EventReceiver {
 						ResourceHolderSDL.imgSprite.setAlpha(0, 255);
 					}
 				} else if(fieldbgbright > 0) {
-					if((width == 10) && (height == 20)) {
-						imgFieldbg.blitSurface(new SDLRect(j*blksize,i*blksize,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
-					} else {
+					if((width > 10) && (height > 20)) {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
 						imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
 					}
@@ -880,6 +876,22 @@ public class RendererSDL extends EventReceiver {
 		}
 		if(engine != null) {
 			offsetX = engine.framecolor * 16;
+		}
+
+		// Field Background
+		if(fieldbgbright > 0) {
+			if((width <= 10) && (height <= 20)) {
+				SDLSurface img = ResourceHolderSDL.imgFieldbg2;
+				if(displaysize == -1) img = ResourceHolderSDL.imgFieldbg2Small;
+				if(displaysize == 1) img = ResourceHolderSDL.imgFieldbg2Big;
+
+				if(engine.owner.getPlayers() < 2)
+					img.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, fieldbgbright);
+				else
+					img.setAlpha(0, 255);
+
+				img.blitSurface(new SDLRect(0, 0, width*size*4, height*size*4), graphics, new SDLRect(x + 4, y + 4, width*size*4, height*size*4));
+			}
 		}
 
 		SDLRect rectSrc = null;
