@@ -853,16 +853,22 @@ public class NetServer {
 
 	/**
 	 * Main (Entry point)
-	 * @param args Command-line options
+	 * @param args optional command-line arguments (0: server port  1: netserver.cfg path)
 	 */
 	public static void main(String[] args) {
 		// Init log system (should be first!)
 		PropertyConfigurator.configure("config/etc/log_server.cfg");
 
+		// get netserver.cfg file path from 2nd command-line argument, if specified
+		String servcfg = "config/etc/netserver.cfg";  // default location
+		if (args.length >= 2) {
+			servcfg = args[1];
+		}		
+		
 		// Load server config file
 		propServer = new CustomProperties();
 		try {
-			FileInputStream in = new FileInputStream("config/etc/netserver.cfg");
+			FileInputStream in = new FileInputStream(servcfg);
 			propServer.load(in);
 			in.close();
 		} catch (IOException e) {
