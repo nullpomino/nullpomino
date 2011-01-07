@@ -34,13 +34,12 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * 全般の設定画面のステート
  */
-public class StateConfigGeneral extends BasicGameState {
+public class StateConfigGeneral extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 6;
 
@@ -82,9 +81,6 @@ public class StateConfigGeneral extends BasicGameState {
 	{
 		{320,240}, {400,300}, {480,360}, {512,384}, {640,480}, {800,600}, {1024,768}, {1152,864}, {1280,960}
 	};
-
-	/** Screenshot撮影 flag */
-	protected boolean ssflag = false;
 
 	/** Cursor position */
 	protected int cursor = 0;
@@ -178,6 +174,7 @@ public class StateConfigGeneral extends BasicGameState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		loadConfig(NullpoMinoSlick.propConfig);
 	}
@@ -283,7 +280,8 @@ public class StateConfigGeneral extends BasicGameState {
 	/*
 	 * Draw the screen
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	@Override
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
@@ -335,30 +333,13 @@ public class StateConfigGeneral extends BasicGameState {
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// Observer
-		NullpoMinoSlick.drawObserverClient();
-		// Screenshot
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
-			ssflag = false;
-		}
-
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
 	 * Update game state
 	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			GameKey.gamekey[0].clear();
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
+	@Override
+	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// TTF font
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
@@ -497,13 +478,5 @@ public class StateConfigGeneral extends BasicGameState {
 		    loadConfig(NullpoMinoSlick.propConfig);
 			game.enterState(StateConfigMainMenu.ID);
 		}
-
-		// Screenshot button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// Exit button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }

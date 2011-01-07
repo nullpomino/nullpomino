@@ -29,21 +29,16 @@
 package mu.nu.nullpo.gui.slick;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * Dummy class for menus where the player picks from a list of options
  */
-public abstract class DummyMenuChooseState extends BasicGameState {
+public abstract class DummyMenuChooseState extends BaseGameState {
 	/** Cursor position */
 	protected int cursor = 0;
-
-	/** Screenshot撮影 flag */
-	protected boolean ssflag = false;
 
 	/** Max cursor value */
 	protected int maxCursor;
@@ -60,30 +55,10 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 		mouseEnabled = true;
 	}
 
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// Observer
-		NullpoMinoSlick.drawObserverClient();
-		// Screenshot
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
-			ssflag = false;
-		}
-
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-	}
-
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException
+	@Override
+	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException
 	{
-		if(!container.hasFocus()) {
-			GameKey.gamekey[0].clear();
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
-		// TTF font 描画
+		// TTF font load
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
 		// Update key input states
@@ -131,14 +106,6 @@ public abstract class DummyMenuChooseState extends BasicGameState {
 			if (onCancel(container, game, delta));
 				return;
 		}
-
-		// Screenshot button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// Exit button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	protected boolean updateMouseInput(Input input)

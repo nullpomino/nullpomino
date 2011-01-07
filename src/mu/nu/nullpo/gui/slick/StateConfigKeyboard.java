@@ -123,6 +123,11 @@ public class StateConfigKeyboard extends BasicGameState {
 	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+		if(!container.hasFocus()) {
+			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
+
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		if(!isNavSetting) {

@@ -100,6 +100,11 @@ public class StateConfigJoystickTest extends BasicGameState {
 	 * Draw the screen
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+		if(!container.hasFocus()) {
+			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
+			return;
+		}
+
 		ResourceHolder.imgMenu.draw(0, 0);
 
 		NormalFont.printFontGrid(1, 1, "JOYSTICK INPUT TEST (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);

@@ -35,6 +35,7 @@ public class StateConfigKeyboardReset extends DummyMenuChooseState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 	}
 
@@ -42,7 +43,7 @@ public class StateConfigKeyboardReset extends DummyMenuChooseState {
 	 * Draw the screen
 	 */
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
@@ -56,8 +57,6 @@ public class StateConfigKeyboardReset extends DummyMenuChooseState {
 		NormalFont.printFontGrid(2, 4, "BLOCKBOX STYLE (DEFAULT)", (cursor == 0));
 		NormalFont.printFontGrid(2, 5, "GUIDELINE STYLE", (cursor == 1));
 		NormalFont.printFontGrid(2, 6, "NULLPOMINO CLASSIC STYLE", (cursor == 2));
-
-		super.render(container, game, g);
 	}
 
 	/*

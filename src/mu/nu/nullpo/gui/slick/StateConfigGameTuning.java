@@ -34,10 +34,12 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class StateConfigGameTuning extends BasicGameState {
+/**
+ * Game Tuning menu state
+ */
+public class StateConfigGameTuning extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 14;
 
@@ -47,19 +49,16 @@ public class StateConfigGameTuning extends BasicGameState {
 	/** Cursor position */
 	protected int cursor = 0;
 
-	/** Screenshot撮影 flag */
-	protected boolean ssflag = false;
-
-	/** A buttonでのrotationDirectionを -1=ルールに従う 0= always 左rotation 1= always 右rotation */
+	/** A button rotation -1=Auto 0=Always CCW 1=Always CW */
 	protected int owRotateButtonDefaultRight;
 
-	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */
+	/** Block Skin -1=Auto 0 or above=Fixed */
 	protected int owSkin;
 
-	/** 最低/Maximum横溜め速度 -1=ルールに従う 0以上=固定 */
+	/** Min/Max DAS -1=Auto 0 or above=Fixed */
 	protected int owMinDAS, owMaxDAS;
 
-	/** 横移動速度 -1=ルールに従う 0以上=固定 */
+	/** DAS Delay -1=Auto 0 or above=Fixed */
 	protected int owDasDelay;
 
 	/** Reverse the roles of up/down keys in-game */
@@ -79,6 +78,7 @@ public class StateConfigGameTuning extends BasicGameState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
@@ -121,7 +121,8 @@ public class StateConfigGameTuning extends BasicGameState {
 	/*
 	 * Draw the game screen
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	@Override
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Menu
 		String strTemp = "";
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
@@ -148,29 +149,13 @@ public class StateConfigGameTuning extends BasicGameState {
 		if(owMoveDiagonal == 0) strTemp = "e";
 		if(owMoveDiagonal == 1) strTemp = "c";
 		NormalFont.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// Observer
-		NullpoMinoSlick.drawObserverClient();
-		// Screenshot
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
-			ssflag = false;
-		}
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
 	 * Update game state
 	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			GameKey.gamekey[0].clear();
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
+	@Override
+	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		GameKey.gamekey[0].update(container.getInput());
 
 		// Cursor movement
@@ -230,7 +215,7 @@ public class StateConfigGameTuning extends BasicGameState {
 			}
 		}
 
-		// 決定 button
+		// Confirm button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			ResourceHolder.soundManager.play("decide");
 
@@ -245,13 +230,5 @@ public class StateConfigGameTuning extends BasicGameState {
 		    loadConfig(NullpoMinoSlick.propGlobal);
 			game.enterState(StateConfigMainMenu.ID);
 		}
-
-		// Screenshot button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// Exit button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }

@@ -75,6 +75,7 @@ public class StateTitle extends DummyMenuChooseState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
@@ -120,7 +121,7 @@ public class StateTitle extends DummyMenuChooseState {
 	 * Draw the screen
 	 */
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
 		g.drawImage(ResourceHolder.imgTitle, 0, 0);
 
@@ -137,8 +138,6 @@ public class StateTitle extends DummyMenuChooseState {
 					UpdateChecker.getLatestVersionFullString(), UpdateChecker.getStrReleaseDate());
 			NormalFont.printTTFFont(16, 416, strTemp);
 		}
-
-		super.render(container, game, g);
 	}
 
 	@Override

@@ -34,6 +34,7 @@ public class StateConfigRuleStyleSelect extends DummyMenuChooseState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
@@ -41,7 +42,7 @@ public class StateConfigRuleStyleSelect extends DummyMenuChooseState {
 	 * Draw the screen
 	 */
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
@@ -53,8 +54,6 @@ public class StateConfigRuleStyleSelect extends DummyMenuChooseState {
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			NormalFont.printFontGrid(2, 3 + i, GameEngine.GAMESTYLE_NAMES[i], (cursor == i));
 		}
-
-		super.render(container, game, g);
 	}
 
 	/*

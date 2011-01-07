@@ -62,6 +62,7 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		gameObj = game;
 	}
@@ -79,7 +80,8 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/*
 	 * Draw the screen
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	@Override
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		NormalFont.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
@@ -88,12 +90,6 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 
 		NormalFont.printFontGrid(2, 3, "COPY FROM GAME KEYS", (cursor == 0));
 		NormalFont.printFontGrid(2, 4, "CUSTOMIZE", (cursor == 1));
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// Observer
-		NullpoMinoSlick.drawObserverClient();
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	@Override

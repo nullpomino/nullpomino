@@ -71,6 +71,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
@@ -78,7 +79,7 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	 * Draw the screen
 	 */
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
@@ -97,8 +98,6 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		NormalFont.printFontGrid(2, 10, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 7));
 
 		NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
-
-		super.render(container, game, g);
 	}
 
 	@Override

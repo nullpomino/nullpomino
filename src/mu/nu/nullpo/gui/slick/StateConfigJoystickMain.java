@@ -34,13 +34,12 @@ import mu.nu.nullpo.util.GeneralUtil;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * Joystick 設定メインMenu のステート
  */
-public class StateConfigJoystickMain extends BasicGameState {
+public class StateConfigJoystickMain extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 12;
 
@@ -66,9 +65,6 @@ public class StateConfigJoystickMain extends BasicGameState {
 
 	/** Cursor position */
 	protected int cursor = 0;
-
-	/** Screenshot撮影 flag */
-	protected boolean ssflag = false;
 
 	/** 使用するJoystick の number */
 	protected int joyUseNumber;
@@ -128,13 +124,15 @@ public class StateConfigJoystickMain extends BasicGameState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 	}
 
 	/*
 	 * Draw the game screen
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	@Override
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Menu
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
@@ -151,30 +149,14 @@ public class StateConfigJoystickMain extends BasicGameState {
 		NormalFont.printFontGrid(2, 9, "JOYSTICK METHOD:" + JOYSTICK_METHOD_STRINGS[joyMethod], (cursor == 6));
 
 		if(cursor < UI_TEXT.length) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// Observer
-		NullpoMinoSlick.drawObserverClient();
-		// Screenshot
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
-			ssflag = false;
-		}
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
 	 * Update game state
 	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			GameKey.gamekey[0].clear();
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
-		// TTF font 描画
+	@Override
+	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		// TTF font load
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
 		// Update key input states
@@ -225,7 +207,7 @@ public class StateConfigJoystickMain extends BasicGameState {
 			}
 		}
 
-		// 決定 button
+		// Confirm button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 			ResourceHolder.soundManager.play("decide");
 
@@ -251,13 +233,5 @@ public class StateConfigJoystickMain extends BasicGameState {
 			loadConfig(NullpoMinoSlick.propConfig);
 			game.enterState(StateConfigMainMenu.ID);
 		}
-
-		// Screenshot button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// Exit button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }

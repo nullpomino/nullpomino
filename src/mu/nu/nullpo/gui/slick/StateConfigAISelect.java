@@ -40,13 +40,12 @@ import org.apache.log4j.Logger;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * AI選択画面のステート
+ * AI config screen state
  */
-public class StateConfigAISelect extends BasicGameState {
+public class StateConfigAISelect extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 8;
 
@@ -85,9 +84,6 @@ public class StateConfigAISelect extends BasicGameState {
 	/** Cursor position */
 	protected int cursor = 0;
 
-	/** Screenshot撮影 flag */
-	protected boolean ssflag = false;
-
 	/*
 	 * Fetch this state's ID
 	 */
@@ -99,6 +95,7 @@ public class StateConfigAISelect extends BasicGameState {
 	/*
 	 * State initialization
 	 */
+	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader("config/list/ai.lst"));
@@ -185,7 +182,8 @@ public class StateConfigAISelect extends BasicGameState {
 	/*
 	 * Draw the screen
 	 */
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	@Override
+	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
@@ -203,30 +201,13 @@ public class StateConfigAISelect extends BasicGameState {
 		NormalFont.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
 		NormalFont.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
 		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFont.COLOR_GREEN);
-
-		// FPS
-		NullpoMinoSlick.drawFPS(container);
-		// Observer
-		NullpoMinoSlick.drawObserverClient();
-		// Screenshot
-		if(ssflag) {
-			NullpoMinoSlick.saveScreenShot(container, g);
-			ssflag = false;
-		}
-
-		if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 
 	/*
 	 * Update game state
 	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		if(!container.hasFocus()) {
-			GameKey.gamekey[0].clear();
-			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
-			return;
-		}
-
+	@Override
+	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// Update key input states
 		GameKey.gamekey[0].update(container.getInput());
 
@@ -275,7 +256,7 @@ public class StateConfigAISelect extends BasicGameState {
 			}
 		}
 
-		// 決定 button
+		// Confirm button
 		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
 		    ResourceHolder.soundManager.play("decide");
 
@@ -296,13 +277,5 @@ public class StateConfigAISelect extends BasicGameState {
 		    game.enterState(StateConfigMainMenu.ID);
 			return;
 		}
-
-		// Screenshot button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) ssflag = true;
-
-		// Exit button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
-
-		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 	}
 }
