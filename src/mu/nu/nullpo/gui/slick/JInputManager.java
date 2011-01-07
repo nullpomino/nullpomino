@@ -183,13 +183,21 @@ public class JInputManager {
 			Controller c = controllers[i];
 
 			if((c.getType() == Controller.Type.KEYBOARD) && (c instanceof Keyboard)) {
-				log.debug("initKeyboard: Keyboard found");
+				if(NullpoMinoSlick.useJInputKeyboard) {
+					log.debug("initKeyboard: Keyboard found");
+				}
 				keyboard = (Keyboard)c;
 			}
 		}
 
-		if(keyboard == null) {
-			log.warn("initKeyboard: Keyboard NOT FOUND");
+		if((keyboard == null) && (NullpoMinoSlick.useJInputKeyboard)) {
+			log.error("initKeyboard: Keyboard NOT FOUND");
+
+			// Linux
+			if(System.getProperty("os.name").startsWith("Linux")) {
+				log.error("If you can use sudo, try the following command and start NullpoMino again:");
+				log.error("sudo chmod go+r /dev/input/*");
+			}
 		}
 	}
 

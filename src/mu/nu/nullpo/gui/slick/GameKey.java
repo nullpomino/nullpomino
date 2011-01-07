@@ -135,8 +135,11 @@ public class GameKey extends GameKeyDummy {
 		for(int i = 0; i < MAX_BUTTON; i++) {
 			int[] kmap = ingame ? keymap : keymapNav;
 
-			boolean flag = NullpoMinoSlick.useJInputKeyboard ?
-								JInputManager.isKeyDown(kmap[i]) : input.isKeyDown(kmap[i]);
+			boolean flag = false;
+			if(kmap[i] != 0) {
+				flag = NullpoMinoSlick.useJInputKeyboard ?
+						JInputManager.isKeyDown(kmap[i]) : input.isKeyDown(kmap[i]);
+			}
 
 			switch(i) {
 			case BUTTON_UP:
@@ -167,6 +170,7 @@ public class GameKey extends GameKeyDummy {
 	 * Load navigation key settings
 	 * @param prop Property file to read from
 	 */
+	@Override
 	public void loadConfig(CustomProperties prop) {
 		super.loadConfig(prop);
 

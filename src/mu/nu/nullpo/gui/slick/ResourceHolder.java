@@ -83,6 +83,7 @@ public class ResourceHolder {
 	public static Image imgFrame;
 
 	/** Field background */
+	public static Image imgFieldbg2;
 	//public static Image imgFieldbg;
 
 	/** Block spatter animation during line clears */
@@ -129,6 +130,7 @@ public class ResourceHolder {
 		imgTitle = loadImage(skindir + "/graphics/title.png");
 		imgMenu = loadImage(skindir + "/graphics/menu.png");
 		imgFrame = loadImage(skindir + "/graphics/frame.png");
+		imgFieldbg2 = loadImage(skindir + "/graphics/fieldbg2.png");
 
 		if(NullpoMinoSlick.propConfig.getProperty("option.showlineeffect", true) == true) {
 			loadLineClearEffectImages();

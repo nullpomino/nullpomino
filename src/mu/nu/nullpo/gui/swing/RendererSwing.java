@@ -766,6 +766,9 @@ public class RendererSwing extends EventReceiver {
 						drawBlockForceVisible(x2, y2, blk, scale);
 					} else if(showfieldblockgraphics && blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
 						drawBlock(x2, y2, blk, scale);
+					} else if((width == 10) && (height == 20)) {
+						graphics.drawImage(ResourceHolderSwing.imgFieldbg2, x2, y2, x2+blksize, y2+blksize,
+								j*blksize, i*blksize, (j+1)*blksize, (i+1)*blksize, null);
 					} else {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
 						graphics.drawImage(ResourceHolderSwing.imgFieldbg, x2, y2, x2+blksize, y2+blksize, sx, 0, sx+16, 16, null);
@@ -791,7 +794,10 @@ public class RendererSwing extends EventReceiver {
 							if(field.getBlockColor(j + 1, i) != blk.color) graphics.drawLine(x2 + ls, y2, x2 + ls, y2 + ls);
 						}
 					}
-				} else if(showbg) {
+				} else if((width == 10) && (height == 20)) {
+					graphics.drawImage(ResourceHolderSwing.imgFieldbg2, x2, y2, x2+blksize, y2+blksize,
+							j*blksize, i*blksize, (j+1)*blksize, (i+1)*blksize, null);
+				} else {
 					int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
 					graphics.drawImage(ResourceHolderSwing.imgFieldbg, x2, y2, x2+blksize, y2+blksize, sx, 0, sx+16, 16, null);
 				}

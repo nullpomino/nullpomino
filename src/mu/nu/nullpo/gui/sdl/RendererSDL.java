@@ -763,6 +763,13 @@ public class RendererSDL extends EventReceiver {
 			viewHeight -= engine.heboHiddenYNow;
 		}
 
+		SDLSurface imgFieldbg = ResourceHolderSDL.imgFieldbg;
+		if((width == 10) && (height == 20)) imgFieldbg = ResourceHolderSDL.imgFieldbg2;
+		if(engine.owner.getPlayers() < 2)
+			imgFieldbg.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, fieldbgbright);
+		else
+			imgFieldbg.setAlpha(0, 255);
+
 		for(int i = 0; i < viewHeight; i++) {
 			for(int j = 0; j < width; j++) {
 				int x2 = x + (j * blksize);
@@ -782,13 +789,12 @@ public class RendererSDL extends EventReceiver {
 					}
 
 					if( (!blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE) || (blk.alpha < 1.0f)) && (fieldbgbright > 0) ) {
-						if((showbg) && (engine.owner.getPlayers() < 2))
-							ResourceHolderSDL.imgFieldbg.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, fieldbgbright);
-						else
-							ResourceHolderSDL.imgFieldbg.setAlpha(0, 255);
-
-						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
-						ResourceHolderSDL.imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
+						if((width == 10) && (height == 20)) {
+							imgFieldbg.blitSurface(new SDLRect(j*blksize,i*blksize,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
+						} else {
+							int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
+							imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
+						}
 					}
 
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
@@ -826,13 +832,12 @@ public class RendererSDL extends EventReceiver {
 						ResourceHolderSDL.imgSprite.setAlpha(0, 255);
 					}
 				} else if(fieldbgbright > 0) {
-					if((showbg) && (engine.owner.getPlayers() < 2))
-						ResourceHolderSDL.imgFieldbg.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, fieldbgbright);
-					else
-						ResourceHolderSDL.imgFieldbg.setAlpha(0, 255);
-
-					int dx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
-					ResourceHolderSDL.imgFieldbg.blitSurface(new SDLRect(dx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
+					if((width == 10) && (height == 20)) {
+						imgFieldbg.blitSurface(new SDLRect(j*blksize,i*blksize,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
+					} else {
+						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
+						imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
+					}
 				}
 			}
 		}
