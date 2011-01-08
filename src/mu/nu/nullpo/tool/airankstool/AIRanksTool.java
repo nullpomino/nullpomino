@@ -151,7 +151,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 		// Loads the ranks file list from the ranksAI directory (/res/ranksai)
 		String [] children=new File(RANKSAI_DIR).list();
 
-		int fileIndex=0;
+		int fileIndex=-1;
 
 		//Find the index of default Ranks File
 		if (children != null){
@@ -238,10 +238,12 @@ public class AIRanksTool extends JFrame implements ActionListener {
 
 		//Ranks File Used
 		ranksFileUsedLabel=new JLabel(getUIText("Main_Ranks_File_Used_Label"));
-		ranksFileUsedComboBox=new JComboBox(children);
-		if (fileIndex>=0)
+
+		if (fileIndex>=0){
+			ranksFileUsedComboBox=new JComboBox(children);
 
 			ranksFileUsedComboBox.setSelectedIndex(fileIndex);
+		}
 		else {
 
 			if ((children==null)||(children.length==0)){
