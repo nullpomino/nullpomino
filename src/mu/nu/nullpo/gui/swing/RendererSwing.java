@@ -277,22 +277,12 @@ public class RendererSwing extends EventReceiver {
 		drawBlock(x, y, color, skin, bone, darkness, alpha, scale);
 	}
 
-	/**
-	 * Blockを描画
-	 * @param x X-coordinate
-	 * @param y Y-coordinate
-	 * @param color 色
-	 * @param skin 模様
-	 * @param bone 骨Block
-	 * @param darkness 暗さもしくは明るさ
-	 * @param alpha 透明度
-	 * @param scale 拡大率
-	 */
-	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
+	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale, int attr) {
 		if(graphics == null) return;
 
 		if((color <= Block.BLOCK_COLOR_INVALID)) return;
 		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
+		boolean isSticky = false;
 
 		int size = 16;
 		Image img = ResourceHolderSwing.imgBlock;
@@ -310,6 +300,23 @@ public class RendererSwing extends EventReceiver {
 		int sy = skin * size;
 
 		if(isSpecialBlocks) sx = ((color - Block.BLOCK_COLOR_COUNT) + 18) * size;
+
+		// Uncomment this block to enable the experimental sticky blocks
+		/*
+		if((scale == 1.0f) && (!isSpecialBlocks)) {
+			isSticky = true;
+			img = ResourceHolderSwing.imgBlockSticky;
+
+			sx = 0;
+			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) sx |= 0x1;
+			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) sx |= 0x2;
+			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) sx |= 0x4;
+			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) sx |= 0x8;
+			sx *= size;
+
+			sy = color * size;
+		}
+		*/
 
 		int imageWidth = img.getWidth(null);
 		if((sx >= imageWidth) && (imageWidth != -1)) sx = 0;
@@ -361,6 +368,20 @@ public class RendererSwing extends EventReceiver {
 			}
 		} else {
 			graphics.drawImage(img, x, y, x + size, y + size, sx, sy, sx + size, sy + size, null);
+
+			if(isSticky) {
+				int d = 16 * size;
+				int h = (size/2);
+
+				if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) )
+					graphics.drawImage(img, x, y, x + h, y + h, d, sy, d + h, sy + h, null);
+				if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) )
+					graphics.drawImage(img, x + h, y, x + h + h, y + h, d + h, sy, d + h + h, sy + h, null);
+				if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) )
+					graphics.drawImage(img, x, y + h, x + h, y + h + h, d, sy + h, d + h, sy + h + h, null);
+				if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) )
+					graphics.drawImage(img, x + h, y + h, x + h + h, y + h + h, d + h, sy + h, d + h + h, sy + h + h, null);
+			}
 		}
 
 		graphics.setComposite(backupComposite);
@@ -384,13 +405,28 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/**
+	 * Blockを描画
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param color 色
+	 * @param skin 模様
+	 * @param bone 骨Block
+	 * @param darkness 暗さもしくは明るさ
+	 * @param alpha 透明度
+	 * @param scale 拡大率
+	 */
+	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
+		drawBlock(x, y, color, skin, bone, darkness, alpha, scale, 0);
+	}
+
+	/**
 	 * Blockクラスのインスタンスを使用してBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param blk Blockクラスのインスタンス
 	 */
 	protected void drawBlock(int x, int y, Block blk) {
-		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f, blk.attribute);
 	}
 
 	/**
@@ -401,7 +437,7 @@ public class RendererSwing extends EventReceiver {
 	 * @param scale 拡大率
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) {
-		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	/**
@@ -413,12 +449,12 @@ public class RendererSwing extends EventReceiver {
 	 * @param darkness 暗さもしくは明るさ
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
-		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	protected void drawBlockForceVisible(int x, int y, Block blk, float scale) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness,
-				(0.5f*blk.alpha)+0.5f, scale);
+				(0.5f*blk.alpha)+0.5f, scale, blk.attribute);
 	}
 
 	/**
@@ -761,7 +797,7 @@ public class RendererSwing extends EventReceiver {
 				if((field != null) && (blk != null) && (blk.color > Block.BLOCK_COLOR_NONE)) {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
-								  blk.darkness, blk.alpha, scale);
+								  blk.darkness, blk.alpha, scale, blk.attribute);
 					} else if (showfieldblockgraphics && engine.owner.replayMode && engine.owner.replayShowInvisible) {
 						drawBlockForceVisible(x2, y2, blk, scale);
 					} else if(showfieldblockgraphics && blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {

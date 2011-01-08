@@ -50,6 +50,7 @@ public class ResourceHolderSwing {
 
 	/** Block images */
 	public static Image imgBlock, imgBlockSmall, imgBlockBig;
+	public static Image imgBlockSticky;
 
 	/** 特殊Block images - old */
 	//public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
@@ -79,6 +80,7 @@ public class ResourceHolderSwing {
 		imgBlock = loadImage(getURL(skindir + "/graphics/block.png"));
 		imgBlockSmall = loadImage(getURL(skindir + "/graphics/block_small.png"));
 		imgBlockBig = loadImage(getURL(skindir + "/graphics/block_big.png"));
+		imgBlockSticky = loadImage(getURL(skindir + "/graphics/block_sticky.png"));
 		/* old special blocks
 		 * imgSpBlock = loadImage(getURL(skindir + "/graphics/block_sp.png"));
 		 * imgSpBlockSmall = loadImage(getURL(skindir + "/graphics/block_sp_small.png"));
