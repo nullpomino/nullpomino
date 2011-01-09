@@ -379,7 +379,7 @@ public class RendererSwing extends EventReceiver {
 		} else {
 			graphics.drawImage(img, x, y, x + size, y + size, sx, sy, sx + size, sy + size, null);
 
-			if(isSticky) {
+			if(isSticky && !isSpecialBlocks) {
 				int d = 16 * size;
 				int h = (size/2);
 

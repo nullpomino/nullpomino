@@ -197,7 +197,7 @@ public class Piece implements Serializable {
 		}
 		return "?";
 	}
-	
+
 
 	/**
 	 * Constructor
@@ -652,7 +652,110 @@ public class Piece implements Serializable {
 				for(int l = 0; l < size; l++){
 					int x3 = x2 + k;
 					int y3 = y2 + l;
-					fld.setBlock(x3, y3, new Block(block[i]));
+					Block blk = new Block(block[i]);
+
+					// Set Big block connections
+					if(big) {
+						if(block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) && block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
+							// Top
+							if(l == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							// Bottom
+							if(l == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+							}
+						}
+						else if(block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) {
+							// Top
+							if(l == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							// Bottom
+							if(l == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+							}
+							// Left
+							if(k == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
+							// Right
+							if(k == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							}
+						}
+						else if(block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) {
+							// Top
+							if(l == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							// Bottom
+							if(l == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+							}
+							// Left
+							if(k == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
+							// Right
+							if(k == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
+						}
+
+						if(block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP) && block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							// Left
+							if(k == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
+							// Right
+							if(k == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							}
+						}
+						else if(block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) {
+							// Left
+							if(k == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
+							// Right
+							if(k == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							}
+							// Top
+							if(l == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							// Bottom
+							if(l == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+							}
+						}
+						else if(block[i].getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) {
+							// Left
+							if(k == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+							}
+							// Right
+							if(k == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							}
+							// Top
+							if(l == 0) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+							// Bottom
+							if(l == 1) {
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+								blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+							}
+						}
+					}
+
+					fld.setBlock(x3, y3, blk);
 					if(y3 >= 0) placed = true;
 				}
 			}

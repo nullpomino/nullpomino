@@ -392,7 +392,7 @@ public class RendererSDL extends EventReceiver {
 
 		img.blitSurface(rectSrc, graphics, rectDst);
 
-		if(isSticky) {
+		if(isSticky && !isSpecialBlocks) {
 			int d = 16 * size;
 			int h = (size/2);
 

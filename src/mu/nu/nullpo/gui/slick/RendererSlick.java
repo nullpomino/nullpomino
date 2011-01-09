@@ -320,7 +320,7 @@ public class RendererSlick extends EventReceiver {
 
 		graphics.drawImage(img, x, y, x + size, y + size, sx, sy, sx + size, sy + size, filter);
 
-		if(isSticky) {
+		if(isSticky && !isSpecialBlocks) {
 			int d = 16 * size;
 			int h = (size/2);
 
