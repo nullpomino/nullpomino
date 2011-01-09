@@ -322,39 +322,56 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockを描画
-	 * @param x X-coordinate
-	 * @param y Y-coordinate
-	 * @param color 色
-	 * @param skin 模様
-	 * @param bone 骨Block
-	 * @param darkness 暗さもしくは明るさ
-	 * @param alpha 透明度
-	 * @param scale 拡大率
-	 * @throws SDLException 描画に失敗した場合
+	 * Draw a block
+	 * @param x X pos
+	 * @param y Y pos
+	 * @param color Color
+	 * @param skin Skin
+	 * @param bone true to use bone block ([][][][])
+	 * @param darkness Darkness or brightness
+	 * @param alpha Alpha
+	 * @param scale Size (0.5f, 1.0f, 2.0f)
+	 * @param attr Attribute
+	 * @throws SDLException When something bad happens
 	 */
-	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) throws SDLException {
+	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale, int attr) throws SDLException {
 		if(graphics == null) return;
 
 		if(color <= Block.BLOCK_COLOR_INVALID) return;
-		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
+		if(skin >= ResourceHolderSDL.imgNormalBlockList.size()) skin = 0;
 
-		int size = 16;
-		SDLSurface img = ResourceHolderSDL.imgBlock;
-		if(scale == 0.5f) {
-			size = 8;
-			img = ResourceHolderSDL.imgBlockSmall;
-		}
-		if(scale == 2.0f) {
-			size = 32;
-			img = ResourceHolderSDL.imgBlockBig;
-		}
+		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
+		boolean isSticky = ResourceHolderSDL.blockStickyFlagList.get(skin);
+
+		int size = (int)(16 * scale);
+		SDLSurface img = null;
+		if(scale == 0.5f)
+			img = ResourceHolderSDL.imgSmallBlockList.get(skin);
+		else if(scale == 2.0f)
+			img = ResourceHolderSDL.imgBigBlockList.get(skin);
+		else
+			img = ResourceHolderSDL.imgNormalBlockList.get(skin);
 
 		int sx = color * size;
 		if(bone) sx += 9 * size;
-		int sy = skin * size;
-
+		int sy = 0;
 		if(isSpecialBlocks) sx = ((color - Block.BLOCK_COLOR_COUNT) + 18) * size;
+
+		if(isSticky) {
+			if(isSpecialBlocks) {
+				sx = (color - Block.BLOCK_COLOR_COUNT) * size;
+				sy = 18 * size;
+			} else {
+				sx = 0;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) sx |= 0x1;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) sx |= 0x2;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) sx |= 0x4;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) sx |= 0x8;
+				sx *= size;
+				sy = color * size;
+				if(bone) sy += 9 * size;
+			}
+		}
 
 		int imageWidth = img.getWidth();
 		if((sx >= imageWidth) && (imageWidth != -1)) sx = 0;
@@ -375,6 +392,43 @@ public class RendererSDL extends EventReceiver {
 
 		img.blitSurface(rectSrc, graphics, rectDst);
 
+		if(isSticky) {
+			int d = 16 * size;
+			int h = (size/2);
+
+			SDLRect rectDst2 = null;
+			SDLRect rectSrc2 = null;
+
+			if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) ) {
+				rectDst2 = new SDLRect(x, y, h, h);
+				rectSrc2 = new SDLRect(d, sy, h, h);
+				NullpoMinoSDL.fixRect(rectSrc2, rectDst2);
+				img.blitSurface(rectSrc2, graphics, rectDst2);
+				//graphics.drawImage(img, x, y, x + h, y + h, d, sy, d + h, sy + h, filter);
+			}
+			if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) ) {
+				rectDst2 = new SDLRect(x + h, y, h, h);
+				rectSrc2 = new SDLRect(d + h, sy, h, h);
+				NullpoMinoSDL.fixRect(rectSrc2, rectDst2);
+				img.blitSurface(rectSrc2, graphics, rectDst2);
+				//graphics.drawImage(img, x + h, y, x + h + h, y + h, d + h, sy, d + h + h, sy + h, filter);
+			}
+			if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) ) {
+				rectDst2 = new SDLRect(x, y + h, h, h);
+				rectSrc2 = new SDLRect(d, sy + h, h, h);
+				NullpoMinoSDL.fixRect(rectSrc2, rectDst2);
+				img.blitSurface(rectSrc2, graphics, rectDst2);
+				//graphics.drawImage(img, x, y + h, x + h, y + h + h, d, sy + h, d + h, sy + h + h, filter);
+			}
+			if( ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) && ((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) ) {
+				rectDst2 = new SDLRect(x + h, y + h, h, h);
+				rectSrc2 = new SDLRect(d + h, sy + h, h, h);
+				NullpoMinoSDL.fixRect(rectSrc2, rectDst2);
+				img.blitSurface(rectSrc2, graphics, rectDst2);
+				//graphics.drawImage(img, x + h, y + h, x + h + h, y + h + h, d + h, sy + h, d + h + h, sy + h + h, filter);
+			}
+		}
+
 		if(darkness > 0) {
 			int alphalv = (int)(255 * darkness);
 			ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alphalv);
@@ -387,6 +441,22 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
+	 * Blockを描画
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param color 色
+	 * @param skin 模様
+	 * @param bone 骨Block
+	 * @param darkness 暗さもしくは明るさ
+	 * @param alpha 透明度
+	 * @param scale 拡大率
+	 * @throws SDLException 描画に失敗した場合
+	 */
+	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) throws SDLException {
+		drawBlock(x, y, color, skin, bone, darkness, alpha, scale, 0);
+	}
+
+	/**
 	 * Blockクラスのインスタンスを使用してBlockを描画
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
@@ -394,7 +464,7 @@ public class RendererSDL extends EventReceiver {
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	protected void drawBlock(int x, int y, Block blk) throws SDLException {
-		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f, blk.attribute);
 	}
 
 	/**
@@ -406,7 +476,7 @@ public class RendererSDL extends EventReceiver {
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) throws SDLException {
-		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	/**
@@ -419,12 +489,12 @@ public class RendererSDL extends EventReceiver {
 	 * @throws SDLException 描画に失敗した場合
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) throws SDLException {
-		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale);
+		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	protected void drawBlockForceVisible(int x, int y, Block blk, float scale) throws SDLException {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness,
-				(0.5f*blk.alpha)+0.5f, scale);
+				(0.5f*blk.alpha)+0.5f, scale, blk.attribute);
 	}
 
 	/**
@@ -781,7 +851,7 @@ public class RendererSDL extends EventReceiver {
 				if((field != null) && (blk != null) && (blk.color > Block.BLOCK_COLOR_NONE)) {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_WALL)) {
 						drawBlock(x2, y2, Block.BLOCK_COLOR_NONE, blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE),
-								  blk.darkness, blk.alpha, scale);
+								  blk.darkness, blk.alpha, scale, blk.attribute);
 					} else if (engine.owner.replayMode && engine.owner.replayShowInvisible) {
 						drawBlockForceVisible(x2, y2, blk, scale);
 					} else if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {

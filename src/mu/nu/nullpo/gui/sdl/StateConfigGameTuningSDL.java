@@ -124,10 +124,20 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 3, "A BUTTON ROTATE:" + strTemp, (cursor == 0));
 
 		NormalFontSDL.printFontGrid(2, 4, "BLOCK SKIN:" + ((owSkin == -1) ? "AUTO": String.valueOf(owSkin)), (cursor == 1));
-		if((owSkin >= 0) && (owSkin * 16 < ResourceHolderSDL.imgBlock.getHeight())) {
-			SDLRect rectSkinSrc = new SDLRect(0, owSkin * 16, 144, 16);
-			SDLRect rectSkinDst = new SDLRect(256, 64, 144, 16);
-			ResourceHolderSDL.imgBlock.blitSurface(rectSkinSrc, screen, rectSkinDst);
+		if((owSkin >= 0) && (owSkin < ResourceHolderSDL.imgNormalBlockList.size())) {
+			SDLSurface imgBlock = ResourceHolderSDL.imgNormalBlockList.get(owSkin);
+
+			if(ResourceHolderSDL.blockStickyFlagList.get(owSkin) == true) {
+				for(int j = 0; j < 9; j++) {
+					SDLRect rectSkinSrc = new SDLRect(0, j * 16, 16, 16);
+					SDLRect rectSkinDst = new SDLRect(256 + (j * 16), 64, 144, 16);
+					imgBlock.blitSurface(rectSkinSrc, screen, rectSkinDst);
+				}
+			} else {
+				SDLRect rectSkinSrc = new SDLRect(0, 0, 144, 16);
+				SDLRect rectSkinDst = new SDLRect(256, 64, 144, 16);
+				imgBlock.blitSurface(rectSkinSrc, screen, rectSkinDst);
+			}
 		}
 
 		NormalFontSDL.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
@@ -174,8 +184,8 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 				break;
 			case 1:
 				owSkin += change;
-				if(owSkin < -1) owSkin = (ResourceHolderSDL.imgBlock.getHeight() / 16) - 1;
-				if(owSkin > (ResourceHolderSDL.imgBlock.getHeight() / 16) - 1) owSkin = -1;
+				if(owSkin < -1) owSkin = ResourceHolderSDL.imgNormalBlockList.size() - 1;
+				if(owSkin > ResourceHolderSDL.imgNormalBlockList.size() - 1) owSkin = -1;
 				break;
 			case 2:
 				owMinDAS += change;

@@ -33,6 +33,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
@@ -49,11 +50,10 @@ public class ResourceHolderSwing {
 	static Logger log = Logger.getLogger(ResourceHolderSwing.class);
 
 	/** Block images */
-	public static Image imgBlock, imgBlockSmall, imgBlockBig;
-	public static Image imgBlockSticky;
+	public static LinkedList<Image> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
 
-	/** 特殊Block images - old */
-	//public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
+	/** Block sticky flag */
+	public static LinkedList<Boolean> blockStickyFlagList;
 
 	/** Regular font */
 	public static Image imgFont, imgFontSmall;
@@ -76,16 +76,38 @@ public class ResourceHolderSwing {
 	public static void load() {
 		String skindir = NullpoMinoSwing.propConfig.getProperty("custom.skin.directory", "res");
 
-		// 画像
-		imgBlock = loadImage(getURL(skindir + "/graphics/block.png"));
-		imgBlockSmall = loadImage(getURL(skindir + "/graphics/block_small.png"));
-		imgBlockBig = loadImage(getURL(skindir + "/graphics/block_big.png"));
-		imgBlockSticky = loadImage(getURL(skindir + "/graphics/block_sticky.png"));
-		/* old special blocks
-		 * imgSpBlock = loadImage(getURL(skindir + "/graphics/block_sp.png"));
-		 * imgSpBlockSmall = loadImage(getURL(skindir + "/graphics/block_sp_small.png"));
-		 * imgSpBlockBig = loadImage(getURL(skindir + "/graphics/block_sp_big.png"));
-		 */
+		// Blocks
+		int numBlocks = 0;
+		File file = null;
+		while(true) {
+			file = new File(skindir + "/graphics/blockskin/normal/n" + numBlocks + ".png");
+			if(file.canRead()) {
+				numBlocks++;
+			} else {
+				break;
+			}
+		}
+		log.debug(numBlocks + " block skins found");
+
+		imgNormalBlockList = new LinkedList<Image>();
+		imgSmallBlockList = new LinkedList<Image>();
+		imgBigBlockList = new LinkedList<Image>();
+		blockStickyFlagList = new LinkedList<Boolean>();
+
+		for(int i = 0; i < numBlocks; i++) {
+			Image imgNormal = loadImage(getURL(skindir + "/graphics/blockskin/normal/n" + i + ".png"));
+			imgNormalBlockList.add(imgNormal);
+			imgSmallBlockList.add(loadImage(getURL(skindir + "/graphics/blockskin/small/s" + i + ".png")));
+			imgBigBlockList.add(loadImage(getURL(skindir + "/graphics/blockskin/big/b" + i + ".png")));
+
+			if((imgNormal.getWidth(null) >= 400) && (imgNormal.getHeight(null) >= 304)) {
+				blockStickyFlagList.add(Boolean.TRUE);
+			} else {
+				blockStickyFlagList.add(Boolean.FALSE);
+			}
+		}
+
+		// Other images
 		imgFont = loadImage(getURL(skindir + "/graphics/font.png"));
 		imgFontSmall = loadImage(getURL(skindir + "/graphics/font_small.png"));
 		imgFrame = loadImage(getURL(skindir + "/graphics/frame.png"));

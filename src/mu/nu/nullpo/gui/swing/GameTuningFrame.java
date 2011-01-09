@@ -252,14 +252,22 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	 * Block画像を読み込み
 	 */
 	protected void loadBlockSkins() {
-		BufferedImage imgBlock = (BufferedImage) ResourceHolderSwing.imgBlock;
-		int numSkins = imgBlock.getHeight() / 16;
-
+		int numSkins = ResourceHolderSwing.imgNormalBlockList.size();
 		imgBlockSkins = new BufferedImage[numSkins];
 
 		for(int i = 0; i < numSkins; i++) {
+			BufferedImage imgBlock = (BufferedImage) ResourceHolderSwing.imgNormalBlockList.get(i);
+			boolean isSticky = ResourceHolderSwing.blockStickyFlagList.get(i);
+
 			imgBlockSkins[i] = new BufferedImage(144, 16, BufferedImage.TYPE_INT_RGB);
-			imgBlockSkins[i].getGraphics().drawImage(imgBlock, 0, 0, 144, 16, 0, i * 16, 144, (i * 16) + 16, null);
+
+			if(isSticky) {
+				for(int j = 0; j < 9; j++) {
+					imgBlockSkins[i].getGraphics().drawImage(imgBlock, j * 16, 0, (j * 16) + 16, 16, 0, j * 16, 16, (j * 16) + 16, null);
+				}
+			} else {
+				imgBlockSkins[i].getGraphics().drawImage(imgBlock, 0, 0, 144, 16, 0, 0, 144, 16, null);
+			}
 		}
 	}
 

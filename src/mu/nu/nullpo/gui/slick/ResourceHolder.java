@@ -29,6 +29,8 @@
 package mu.nu.nullpo.gui.slick;
 
 import java.awt.Color;
+import java.io.File;
+import java.util.LinkedList;
 
 import mu.nu.nullpo.game.component.BGMStatus;
 
@@ -62,10 +64,10 @@ public class ResourceHolder {
 	public static final int PERASE_MAX = 7;
 
 	/** Block images */
-	public static Image imgBlock, imgBlockSmall, imgBlockBig;
+	public static LinkedList<Image> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
 
-	/** 特殊Block images - old */
-	//public static Image imgSpBlock, imgSpBlockSmall, imgSpBlockBig;
+	/** Block sticky flag */
+	public static LinkedList<Boolean> blockStickyFlagList;
 
 	/** Regular font */
 	public static Image imgFont, imgFontSmall;
@@ -114,17 +116,40 @@ public class ResourceHolder {
 	public static void load() throws SlickException {
 		String skindir = NullpoMinoSlick.propConfig.getProperty("custom.skin.directory", "res");
 
-		// 画像
 		log.info("Loading Image");
 
-		imgBlock = loadImage(skindir + "/graphics/block.png");
-		imgBlockSmall = loadImage(skindir + "/graphics/block_small.png");
-		imgBlockBig = loadImage(skindir + "/graphics/block_big.png");
-		/* old special blocks
-		 * imgSpBlock = loadImage(skindir + "/graphics/block_sp.png");
-		 * imgSpBlockSmall = loadImage(skindir + "/graphics/block_sp_small.png");
-		 * imgSpBlockBig = loadImage(skindir + "/graphics/block_sp_big.png");
-		 */
+		// Blocks
+		int numBlocks = 0;
+		File file = null;
+		while(true) {
+			file = new File(skindir + "/graphics/blockskin/normal/n" + numBlocks + ".png");
+			if(file.canRead()) {
+				numBlocks++;
+			} else {
+				break;
+			}
+		}
+		log.debug(numBlocks + " block skins found");
+
+		imgNormalBlockList = new LinkedList<Image>();
+		imgSmallBlockList = new LinkedList<Image>();
+		imgBigBlockList = new LinkedList<Image>();
+		blockStickyFlagList = new LinkedList<Boolean>();
+
+		for(int i = 0; i < numBlocks; i++) {
+			Image imgNormal = loadImage(skindir + "/graphics/blockskin/normal/n" + i + ".png");
+			imgNormalBlockList.add(imgNormal);
+			imgSmallBlockList.add(loadImage(skindir + "/graphics/blockskin/small/s" + i + ".png"));
+			imgBigBlockList.add(loadImage(skindir + "/graphics/blockskin/big/b" + i + ".png"));
+
+			if((imgNormal.getWidth() >= 400) && (imgNormal.getHeight() >= 304)) {
+				blockStickyFlagList.add(Boolean.TRUE);
+			} else {
+				blockStickyFlagList.add(Boolean.FALSE);
+			}
+		}
+
+		// Other images
 		imgFont = loadImage(skindir + "/graphics/font.png");
 		imgFontSmall = loadImage(skindir + "/graphics/font_small.png");
 		imgTitle = loadImage(skindir + "/graphics/title.png");

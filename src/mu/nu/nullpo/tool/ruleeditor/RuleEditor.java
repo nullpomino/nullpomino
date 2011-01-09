@@ -1308,14 +1308,33 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private void loadBlockSkins() {
 		String skindir = propConfig.getProperty("custom.skin.directory", "res");
 
-		BufferedImage imgBlock = loadImage(getURL(skindir + "/graphics/block.png"));
-		int numSkins = imgBlock.getHeight() / 16;
+		int numBlocks = 0;
+		File file = null;
+		while(true) {
+			file = new File(skindir + "/graphics/blockskin/normal/n" + numBlocks + ".png");
+			if(file.canRead()) {
+				numBlocks++;
+			} else {
+				break;
+			}
+		}
+		log.debug(numBlocks + " block skins found");
 
-		imgBlockSkins = new BufferedImage[numSkins];
+		imgBlockSkins = new BufferedImage[numBlocks];
 
-		for(int i = 0; i < numSkins; i++) {
+		for(int i = 0; i < numBlocks; i++) {
+			BufferedImage imgBlock = (BufferedImage) loadImage(getURL(skindir + "/graphics/blockskin/normal/n" + i + ".png"));
+			boolean isSticky = ((imgBlock != null) && (imgBlock.getWidth() >= 400) && (imgBlock.getHeight() >= 304));
+
 			imgBlockSkins[i] = new BufferedImage(144, 16, BufferedImage.TYPE_INT_RGB);
-			imgBlockSkins[i].getGraphics().drawImage(imgBlock, 0, 0, 144, 16, 0, i * 16, 144, (i * 16) + 16, null);
+
+			if(isSticky) {
+				for(int j = 0; j < 9; j++) {
+					imgBlockSkins[i].getGraphics().drawImage(imgBlock, j * 16, 0, (j * 16) + 16, 16, 0, j * 16, 16, (j * 16) + 16, null);
+				}
+			} else {
+				imgBlockSkins[i].getGraphics().drawImage(imgBlock, 0, 0, 144, 16, 0, 0, 144, 16, null);
+			}
 		}
 	}
 

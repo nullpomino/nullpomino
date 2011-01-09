@@ -277,46 +277,56 @@ public class RendererSwing extends EventReceiver {
 		drawBlock(x, y, color, skin, bone, darkness, alpha, scale);
 	}
 
+	/**
+	 * Draw a block
+	 * @param x X pos
+	 * @param y Y pos
+	 * @param color Color
+	 * @param skin Skin
+	 * @param bone true to use bone block ([][][][])
+	 * @param darkness Darkness or brightness
+	 * @param alpha Alpha
+	 * @param scale Size (0.5f, 1.0f, 2.0f)
+	 * @param attr Attribute
+	 */
 	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale, int attr) {
 		if(graphics == null) return;
 
 		if((color <= Block.BLOCK_COLOR_INVALID)) return;
-		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
-		boolean isSticky = false;
+		if(skin >= ResourceHolderSwing.imgNormalBlockList.size()) skin = 0;
 
-		int size = 16;
-		Image img = ResourceHolderSwing.imgBlock;
-		if(scale == 0.5f) {
-			size = 8;
-			img = ResourceHolderSwing.imgBlockSmall;
-		}
-		if(scale == 2.0f) {
-			size = 32;
-			img = ResourceHolderSwing.imgBlockBig;
-		}
+		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
+		boolean isSticky = ResourceHolderSwing.blockStickyFlagList.get(skin);
+
+		int size = (int)(16 * scale);
+		Image img = null;
+		if(scale == 0.5f)
+			img = ResourceHolderSwing.imgSmallBlockList.get(skin);
+		else if(scale == 2.0f)
+			img = ResourceHolderSwing.imgBigBlockList.get(skin);
+		else
+			img = ResourceHolderSwing.imgNormalBlockList.get(skin);
 
 		int sx = color * size;
 		if(bone) sx += 9 * size;
-		int sy = skin * size;
-
+		int sy = 0;
 		if(isSpecialBlocks) sx = ((color - Block.BLOCK_COLOR_COUNT) + 18) * size;
 
-		// Uncomment this block to enable the experimental sticky blocks
-		/*
-		if((scale == 1.0f) && (!isSpecialBlocks)) {
-			isSticky = true;
-			img = ResourceHolderSwing.imgBlockSticky;
-
-			sx = 0;
-			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) sx |= 0x1;
-			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) sx |= 0x2;
-			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) sx |= 0x4;
-			if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) sx |= 0x8;
-			sx *= size;
-
-			sy = color * size;
+		if(isSticky) {
+			if(isSpecialBlocks) {
+				sx = (color - Block.BLOCK_COLOR_COUNT) * size;
+				sy = 18 * size;
+			} else {
+				sx = 0;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_UP) != 0) sx |= 0x1;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_DOWN) != 0) sx |= 0x2;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_LEFT) != 0) sx |= 0x4;
+				if((attr & Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT) != 0) sx |= 0x8;
+				sx *= size;
+				sy = color * size;
+				if(bone) sy += 9 * size;
+			}
 		}
-		*/
 
 		int imageWidth = img.getWidth(null);
 		if((sx >= imageWidth) && (imageWidth != -1)) sx = 0;

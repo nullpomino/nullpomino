@@ -33,6 +33,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -136,8 +137,17 @@ public class StateConfigGameTuning extends BaseGameState {
 		NormalFont.printFontGrid(2, 3, "A BUTTON ROTATE:" + strTemp, (cursor == 0));
 
 		NormalFont.printFontGrid(2, 4, "BLOCK SKIN:" + ((owSkin == -1) ? "AUTO": String.valueOf(owSkin)), (cursor == 1));
-		if((owSkin >= 0) && (owSkin * 16 < ResourceHolder.imgBlock.getHeight())) {
-			ResourceHolder.imgBlock.draw(256, 64, 256 + 144, 64 + 16, 0, owSkin * 16, 144, (owSkin * 16) + 16);
+		if((owSkin >= 0) && (owSkin < ResourceHolder.imgNormalBlockList.size())) {
+			//ResourceHolder.imgBlock.draw(256, 64, 256 + 144, 64 + 16, 0, owSkin * 16, 144, (owSkin * 16) + 16);
+			Image imgBlock = ResourceHolder.imgNormalBlockList.get(owSkin);
+
+			if(ResourceHolder.blockStickyFlagList.get(owSkin) == true) {
+				for(int j = 0; j < 9; j++) {
+					imgBlock.draw(256 + (j * 16), 64, 256 + (j * 16) + 16, 64 + 16, 0, (j * 16), 16, (j * 16) + 16);
+				}
+			} else {
+				imgBlock.draw(256, 64, 256+144, 64+16, 0, 0, 144, 16);
+			}
 		}
 
 		NormalFont.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
@@ -186,8 +196,8 @@ public class StateConfigGameTuning extends BaseGameState {
 				break;
 			case 1:
 				owSkin += change;
-				if(owSkin < -1) owSkin = (ResourceHolder.imgBlock.getHeight() / 16) - 1;
-				if(owSkin > (ResourceHolder.imgBlock.getHeight() / 16) - 1) owSkin = -1;
+				if(owSkin < -1) owSkin = ResourceHolder.imgNormalBlockList.size() - 1;
+				if(owSkin > ResourceHolder.imgNormalBlockList.size() - 1) owSkin = -1;
 				break;
 			case 2:
 				owMinDAS += change;
