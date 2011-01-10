@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Thu Jul 29 00:27:50 EDT 2010
+#Mon Jan 10 20:01:22 JST 2011
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.StandardWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -56,8 +56,10 @@
 0.ruleopt.nextDisplay=3
 0.ruleopt.pieceOffsetX.10.3=0
 0.ruleopt.pieceOffsetX.10.2=0
+0.ruleopt.dasStoreChargeOnNeutral=false
 0.ruleopt.pieceOffsetX.10.1=0
 0.ruleopt.pieceOffsetX.10.0=0
+0.ruleopt.softdropGravitySpeedLimit=false
 0.ruleopt.lockflashOnlyFrame=true
 0.ruleopt.pieceOffsetX.6.3=1
 0.ruleopt.pieceColor.10=4
@@ -86,6 +88,7 @@
 0.ruleopt.pieceSpawnXBig.1.0=0
 0.ruleopt.fieldCeiling=false
 0.ruleopt.pieceSpawnY.7.3=0
+0.ruleopt.dasRedirectInARE=false
 0.ruleopt.pieceSpawnY.7.2=0
 0.ruleopt.pieceSpawnY.7.1=0
 0.ruleopt.pieceSpawnY.7.0=0
@@ -98,6 +101,7 @@
 0.ruleopt.softdropMultiplyNativeSpeed=false
 0.ruleopt.lineCancelRotate=false
 0.ruleopt.softdropSpeed=0.5
+0.ruleopt.style=0
 0.ruleopt.maxLineDelay=-1
 0.ruleopt.pieceSpawnY.10.3=0
 0.ruleopt.fieldLockoutDeath=true
@@ -188,7 +192,7 @@
 0.ruleopt.pieceSpawnYBig.10.1=0
 0.ruleopt.moveLeftAndRightUsePreviousInput=false
 0.ruleopt.pieceSpawnYBig.10.0=0
-0.ruleopt.skin=12
+0.ruleopt.skin=27
 0.ruleopt.lockresetMove=true
 0.ruleopt.rotateInitial=true
 0.ruleopt.maxLockDelay=-1
@@ -337,6 +341,7 @@
 0.ruleopt.pieceSpawnXBig.6.2=0
 0.ruleopt.pieceSpawnXBig.6.1=0
 0.ruleopt.pieceSpawnXBig.6.0=0
+0.ruleopt.dasOnBlockedMove=false
 0.ruleopt.pieceSpawnXBig.2.3=0
 0.ruleopt.pieceSpawnXBig.2.2=0
 0.ruleopt.pieceSpawnXBig.2.1=0
