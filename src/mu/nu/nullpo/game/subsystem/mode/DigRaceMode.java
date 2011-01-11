@@ -403,6 +403,19 @@ public class DigRaceMode extends NetDummyMode {
 					engine.field.setBlock(x,y,new Block(color,engine.getSkin(),Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_GARBAGE));
 				}
 			}
+
+			// Set connections
+			if(receiver.isStickySkin(engine) && (y != h - 1)) {
+				for(int x = 0; x < w; x++) {
+					if(x != hole) {
+						Block blk = engine.field.getBlock(x, y);
+						if(blk != null) {
+							if(!engine.field.getBlockEmpty(x-1, y)) blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							if(!engine.field.getBlockEmpty(x+1, y)) blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+						}
+					}
+				}
+			}
 		}
 	}
 

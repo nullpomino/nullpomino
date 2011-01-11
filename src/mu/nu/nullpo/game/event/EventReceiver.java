@@ -826,6 +826,25 @@ public class EventReceiver {
 	}
 
 	/**
+	 * Check if the skin is sticky type
+	 * @param skin Skin ID
+	 * @return true if the skin is sticky type
+	 */
+	public boolean isStickySkin(int skin) {
+		return false;
+	}
+
+	/**
+	 * [You don't have to override this]
+	 * Check if the current skin is sticky type
+	 * @param engine GameEngine
+	 * @return true if the current skin is sticky type
+	 */
+	public boolean isStickySkin(GameEngine engine) {
+		return isStickySkin(engine.getSkin());
+	}
+
+	/**
 	 * Play sound effects
 	 * @param name Name of SFX
 	 */

@@ -221,6 +221,17 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
+	 * Is the skin sticky?
+	 */
+	@Override
+	public boolean isStickySkin(int skin) {
+		if((skin >= 0) && (skin < ResourceHolder.blockStickyFlagList.size()) && (ResourceHolder.blockStickyFlagList.get(skin) == true)) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
 	 * Sound effects再生
 	 */
 	@Override

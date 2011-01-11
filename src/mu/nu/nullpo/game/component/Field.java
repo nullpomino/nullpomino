@@ -1458,6 +1458,42 @@ public class Field implements Serializable {
 	}
 
 	/**
+	 * Add a single hole garbage (Attributes are automatically set)
+	 * @param hole Hole position
+	 * @param color Color
+	 * @param skin Skin
+	 * @param lines Number of garbage lines to add
+	 */
+	public void addSingleHoleGarbage(int hole, int color, int skin, int lines) {
+		for(int k = 0; k < lines; k++) {
+			pushUp(1);
+
+			int y = getHeightWithoutHurryupFloor() - 1;
+
+			for(int j = 0; j < width; j++) {
+				if(j != hole) {
+					Block blk = new Block();
+					blk.color = color;
+					blk.skin = skin;
+					blk.attribute = Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE | Block.BLOCK_ATTRIBUTE_GARBAGE;
+					setBlock(j, y, blk);
+				}
+			}
+
+			// Set connections
+			for(int j = 0; j < width; j++) {
+				if(j != hole) {
+					Block blk = getBlock(j, y);
+						if(blk != null) {
+						if(!getBlockEmpty(j - 1, y)) blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+						if(!getBlockEmpty(j + 1, y)) blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * 一番下のLinesの形をコピーしたgarbage blockを一番下に追加
 	 * @param color garbage block color
 	 * @param skin garbage blockの絵柄
@@ -2407,6 +2443,100 @@ public class Field implements Serializable {
 			try{
 				String substr = str.substring(index, Math.min(str.length(), index+getWidth()));
 				Block[] row = stringToRow(substr, skin, (i >= highestGarbageY), (i >= highestWallY));
+				for(int j = 0; j < getWidth(); j++){
+					setBlock(j, i, row[j]);
+				}
+			}
+			catch(Exception e){
+				for(int j = 0; j < getWidth(); j++){
+					setBlock(j, i, new Block(Block.BLOCK_COLOR_NONE));
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param row Row of blocks
+	 * @return a String representing the row with attributes
+	 */
+	public String attrRowToString(Block[] row){
+		String strResult = "";
+
+		for(int x = 0; x < row.length; x++) {
+			strResult += Integer.toString(row[x].color, 16) + "/";
+			strResult += Integer.toString(row[x].attribute, 16) + ";";
+		}
+
+		return strResult;
+	}
+
+	/**
+	 * Convert this field to a String with attributes
+	 * @return a String representing the field with attributes
+	 */
+	public String attrFieldToString() {
+		String strResult = "";
+
+		for(int i = getHeight() - 1; i >= Math.max(-1, getHighestBlockY()); i--) {
+			strResult += attrRowToString(getRow(i));
+		}
+		while(strResult.endsWith("0/0;")) {
+			strResult = strResult.substring(0, strResult.length() - 4);
+		}
+
+		return strResult;
+	}
+
+	public Block[] attrStringToRow(String str, int skin) {
+		return attrStringToRow(str.split(";"), skin);
+	}
+
+	public Block[] attrStringToRow(String[] strArray, int skin) {
+		Block[] row = new Block[getWidth()];
+
+		for(int j = 0; j < getWidth(); j++) {
+			int blkColor = Block.BLOCK_COLOR_NONE;
+			int attr = 0;
+
+			try {
+				String[] strSubArray = strArray[j].split("/");
+				if(strSubArray.length > 0)
+					blkColor = Integer.parseInt(strSubArray[0], 16);
+				if(strSubArray.length > 1)
+					attr = Integer.parseInt(strSubArray[1], 16);
+			} catch (Exception e) {}
+
+			row[j] = new Block();
+			row[j].color = blkColor;
+			row[j].skin = skin;
+			row[j].elapsedFrames = -1;
+			row[j].attribute = attr;
+			row[j].setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+			row[j].setAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
+		}
+
+		return row;
+	}
+
+	public void attrStringToField(String str, int skin) {
+		String[] strArray = str.split(";");
+
+		for(int i = -1; i < getHeight(); i++) {
+			int index = (getHeight() - 1 - i) * getWidth();
+
+			try{
+				String strTemp = "";
+				String[] strArray2 = new String[getWidth()];
+				for(int j = 0; j < getWidth(); j++){
+					if(index + j < strArray.length)
+						strArray2[j] = strArray[index + j];
+					else
+						strArray2[j] = "";
+
+					strTemp += strArray2[j] + "/";
+				}
+
+				Block[] row = attrStringToRow(strArray2, skin);
 				for(int j = 0; j < getWidth(); j++){
 					setBlock(j, i, row[j]);
 				}

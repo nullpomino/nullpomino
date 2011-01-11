@@ -260,6 +260,17 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
+	 * Is the skin sticky?
+	 */
+	@Override
+	public boolean isStickySkin(int skin) {
+		if((skin >= 0) && (skin < ResourceHolderSwing.blockStickyFlagList.size()) && (ResourceHolderSwing.blockStickyFlagList.get(skin) == true)) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
 	 * リプレイを保存
 	 */
 	@Override

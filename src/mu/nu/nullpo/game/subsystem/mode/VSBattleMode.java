@@ -1119,9 +1119,7 @@ public class VSBattleMode extends DummyMode {
 					if(garbageType[playerID] == GARBAGE_TYPE_NORMAL) {
 						// ノーマルな穴位置変更
 						while(garbageEntry.lines > 0) {
-							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-									  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
-									  1);
+							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(), 1);
 
 							if(version >= 5) {
 								if(engine.random.nextInt(100) < garbagePercent[playerID]) {
@@ -1149,9 +1147,7 @@ public class VSBattleMode extends DummyMode {
 							hole = engine.random.nextInt(engine.field.getWidth());
 						}
 
-						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-														  Block.BLOCK_ATTRIBUTE_GARBAGE|Block.BLOCK_ATTRIBUTE_VISIBLE|Block.BLOCK_ATTRIBUTE_OUTLINE,
-														  garbage[playerID]);
+						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(), garbage[playerID]);
 						garbageEntries[playerID].clear();
 						break;
 					} else if(garbageType[playerID] == GARBAGE_TYPE_NOCHANGE_ONE_ATTACK) {
@@ -1168,9 +1164,7 @@ public class VSBattleMode extends DummyMode {
 							hole = engine.random.nextInt(engine.field.getWidth());
 						}
 
-						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-														  Block.BLOCK_ATTRIBUTE_GARBAGE|Block.BLOCK_ATTRIBUTE_VISIBLE|Block.BLOCK_ATTRIBUTE_OUTLINE,
-														  garbageEntry.lines);
+						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(), garbageEntry.lines);
 					}
 
 					lastHole[playerID] = hole;

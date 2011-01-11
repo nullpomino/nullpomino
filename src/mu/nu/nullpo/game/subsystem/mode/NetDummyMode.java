@@ -61,6 +61,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: The skin player using (Declared in NetDummyMode) */
 	protected int netPlayerSkin;
 
+	/** NET: If true, NetDummyMode will always send attributes when sending the field (Declared in NetDummyMode) */
+	protected boolean netAlwaysSendFieldAttributes;
+
 	/** NET: Player name (Declared in NetDummyMode) */
 	protected String netPlayerName;
 
@@ -224,6 +227,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netRankingRank[1] = -1;
 		netIsPB = false;
 		netIsNetRankingDisplayMode = false;
+		netAlwaysSendFieldAttributes = false;
 
 		if(netIsWatch) {
 			engine.isNextVisible = false;
@@ -551,7 +555,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					netRecvOptions(engine, message);
 				}
 				// Field
-				if(message[3].equals("field")) {
+				if(message[3].equals("field") || message[3].equals("fieldattr")) {
 					netRecvField(engine, message);
 				}
 				// Stats
@@ -820,24 +824,46 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * @param engine GameEngine
 	 */
 	protected void netSendField(GameEngine engine) {
-		String strSrcFieldData = engine.field.fieldToString();
-		int nocompSize = strSrcFieldData.length();
+		if(owner.receiver.isStickySkin(engine) || netAlwaysSendFieldAttributes) {
+			// Send with attributes
+			String strSrcFieldData = engine.field.attrFieldToString();
+			int nocompSize = strSrcFieldData.length();
 
-		String strCompFieldData = NetUtil.compressString(strSrcFieldData);
-		int compSize = strCompFieldData.length();
+			String strCompFieldData = NetUtil.compressString(strSrcFieldData);
+			int compSize = strCompFieldData.length();
 
-		String strFieldData = strSrcFieldData;
-		boolean isCompressed = false;
-		if(compSize < nocompSize) {
-			strFieldData = strCompFieldData;
-			isCompressed = true;
+			String strFieldData = strSrcFieldData;
+			boolean isCompressed = false;
+			if(compSize < nocompSize) {
+				strFieldData = strCompFieldData;
+				isCompressed = true;
+			}
+
+			String msg = "game\tfieldattr\t";
+			msg += engine.getSkin() + "\t";
+			msg += strFieldData + "\t" + isCompressed + "\n";
+			netLobby.netPlayerClient.send(msg);
+		} else {
+			// Send without attributes
+			String strSrcFieldData = engine.field.fieldToString();
+			int nocompSize = strSrcFieldData.length();
+
+			String strCompFieldData = NetUtil.compressString(strSrcFieldData);
+			int compSize = strCompFieldData.length();
+
+			String strFieldData = strSrcFieldData;
+			boolean isCompressed = false;
+			if(compSize < nocompSize) {
+				strFieldData = strCompFieldData;
+				isCompressed = true;
+			}
+
+			String msg = "game\tfield\t";
+			msg += engine.getSkin() + "\t";
+			msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
+			msg += strFieldData + "\t" + isCompressed + "\n";
+			netLobby.netPlayerClient.send(msg);
 		}
-
-		String msg = "game\tfield\t";
-		msg += engine.getSkin() + "\t";
-		msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
-		msg += strFieldData + "\t" + isCompressed + "\n";
-		netLobby.netPlayerClient.send(msg);
 	}
 
 	/**
@@ -846,22 +872,42 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * @param message Message array
 	 */
 	protected void netRecvField(GameEngine engine, String[] message) {
-		if(message.length > 5) {
-			engine.nowPieceObject = null;
-			engine.holdDisable = false;
-			if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
-			int skin = Integer.parseInt(message[4]);
-			int highestWallY = Integer.parseInt(message[5]);
-			netPlayerSkin = skin;
-			if(message.length > 7) {
-				String strFieldData = message[6];
-				boolean isCompressed = Boolean.parseBoolean(message[7]);
-				if(isCompressed) {
-					strFieldData = NetUtil.decompressString(strFieldData);
+		if(message[3].equals("fieldattr")) {
+			// With attributes
+			if(message.length > 4) {
+				engine.nowPieceObject = null;
+				engine.holdDisable = false;
+				if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
+				int skin = Integer.parseInt(message[4]);
+				netPlayerSkin = skin;
+				if(message.length > 6) {
+					boolean isCompressed = Boolean.parseBoolean(message[6]);
+					String strFieldData = message[5];
+					if(isCompressed) {
+						strFieldData = NetUtil.decompressString(strFieldData);
+					}
+					engine.field.attrStringToField(strFieldData, skin);
 				}
-				engine.field.stringToField(strFieldData, skin, highestWallY, highestWallY);
-			} else {
-				engine.field.reset();
+			}
+		} else {
+			// Without attributes
+			if(message.length > 5) {
+				engine.nowPieceObject = null;
+				engine.holdDisable = false;
+				if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
+				int skin = Integer.parseInt(message[4]);
+				int highestWallY = Integer.parseInt(message[5]);
+				netPlayerSkin = skin;
+				if(message.length > 7) {
+					String strFieldData = message[6];
+					boolean isCompressed = Boolean.parseBoolean(message[7]);
+					if(isCompressed) {
+						strFieldData = NetUtil.decompressString(strFieldData);
+					}
+					engine.field.stringToField(strFieldData, skin, highestWallY, highestWallY);
+				} else {
+					engine.field.reset();
+				}
 			}
 		}
 	}
@@ -922,6 +968,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 						engine.holdPieceObject.direction = pieceDirection;
 						engine.holdPieceObject.setColor(pieceColor);
 						engine.holdPieceObject.setSkin(netPlayerSkin);
+						engine.holdPieceObject.updateConnectData();
 					}
 				} else {
 					if((engine.nextPieceArrayObject == null) || (engine.nextPieceArrayObject.length < maxNext)) {
@@ -931,6 +978,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 					engine.nextPieceArrayObject[i - 1].direction = pieceDirection;
 					engine.nextPieceArrayObject[i - 1].setColor(pieceColor);
 					engine.nextPieceArrayObject[i - 1].setSkin(netPlayerSkin);
+					engine.nextPieceArrayObject[i - 1].updateConnectData();
 				}
 			}
 		}

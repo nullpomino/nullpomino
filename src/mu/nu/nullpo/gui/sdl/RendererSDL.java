@@ -282,6 +282,17 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
+	 * Is the skin sticky?
+	 */
+	@Override
+	public boolean isStickySkin(int skin) {
+		if((skin >= 0) && (skin < ResourceHolderSDL.blockStickyFlagList.size()) && (ResourceHolderSDL.blockStickyFlagList.get(skin) == true)) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
 	 * Sound effects再生
 	 */
 	@Override

@@ -681,26 +681,49 @@ public class NetVSBattleMode extends NetDummyMode {
 		if(isPractice) return;
 		if(numPlayers + numSpectators < 2) return;
 
-		String strSrcFieldData = engine.field.fieldToString();
-		int nocompSize = strSrcFieldData.length();
+		if(owner.receiver.isStickySkin(engine) || netAlwaysSendFieldAttributes) {
+			// Send with attributes
+			String strSrcFieldData = engine.field.attrFieldToString();
+			int nocompSize = strSrcFieldData.length();
 
-		String strCompFieldData = NetUtil.compressString(strSrcFieldData);
-		int compSize = strCompFieldData.length();
+			String strCompFieldData = NetUtil.compressString(strSrcFieldData);
+			int compSize = strCompFieldData.length();
 
-		String strFieldData = strSrcFieldData;
-		boolean isCompressed = false;
-		if(compSize < nocompSize) {
-			strFieldData = strCompFieldData;
-			isCompressed = true;
+			String strFieldData = strSrcFieldData;
+			boolean isCompressed = false;
+			if(compSize < nocompSize) {
+				strFieldData = strCompFieldData;
+				isCompressed = true;
+			}
+
+			garbage[engine.playerID] = getTotalGarbageLines();
+
+			String msg = "game\tfieldattr\t" + garbage[engine.playerID] + "\t" + engine.getSkin() + "\t";
+			msg += strFieldData + "\t" + isCompressed + "\n";
+			netLobby.netPlayerClient.send(msg);
+		} else {
+			// Send without attributes
+			String strSrcFieldData = engine.field.fieldToString();
+			int nocompSize = strSrcFieldData.length();
+
+			String strCompFieldData = NetUtil.compressString(strSrcFieldData);
+			int compSize = strCompFieldData.length();
+
+			String strFieldData = strSrcFieldData;
+			boolean isCompressed = false;
+			if(compSize < nocompSize) {
+				strFieldData = strCompFieldData;
+				isCompressed = true;
+			}
+			//log.debug("nocompSize:" + nocompSize + " compSize:" + compSize + " isCompressed:" + isCompressed);
+
+			garbage[engine.playerID] = getTotalGarbageLines();
+
+			String msg = "game\tfield\t" + garbage[engine.playerID] + "\t" + engine.getSkin() + "\t" + engine.field.getHighestGarbageBlockY() + "\t";
+			msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
+			msg += strFieldData + "\t" + isCompressed + "\n";
+			netLobby.netPlayerClient.send(msg);
 		}
-		//log.debug("nocompSize:" + nocompSize + " compSize:" + compSize + " isCompressed:" + isCompressed);
-
-		garbage[engine.playerID] = getTotalGarbageLines();
-
-		String msg = "game\tfield\t" + garbage[engine.playerID] + "\t" + engine.getSkin() + "\t" + engine.field.getHighestGarbageBlockY() + "\t";
-		msg += engine.field.getHeightWithoutHurryupFloor() + "\t";
-		msg += strFieldData + "\t" + isCompressed + "\n";
-		netLobby.netPlayerClient.send(msg);
 	}
 
 	/**
@@ -1250,7 +1273,6 @@ public class NetVSBattleMode extends NetDummyMode {
 							hole = newHole;
 						}
 						engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
 								  garbageEntry.lines / GARBAGE_DENOMINATOR);
 					} else {
 						for(int i = garbageEntry.lines / GARBAGE_DENOMINATOR; i > 0; i--) {
@@ -1262,8 +1284,7 @@ public class NetVSBattleMode extends NetDummyMode {
 								hole = newHole;
 							}
 
-							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(),
-									Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE, 1);
+							engine.field.addSingleHoleGarbage(hole, garbageColor, engine.getSkin(), 1);
 						}
 					}
 				}
@@ -1289,7 +1310,6 @@ public class NetVSBattleMode extends NetDummyMode {
 							hole = newHole;
 						}
 						engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
-								  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE,
 								  smallGarbageCount / GARBAGE_DENOMINATOR);
 					} else {
 						for(int i = smallGarbageCount / GARBAGE_DENOMINATOR; i > 0; i--) {
@@ -1301,8 +1321,7 @@ public class NetVSBattleMode extends NetDummyMode {
 								hole = newHole;
 							}
 
-							engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
-									  Block.BLOCK_ATTRIBUTE_GARBAGE | Block.BLOCK_ATTRIBUTE_VISIBLE | Block.BLOCK_ATTRIBUTE_OUTLINE, 1);
+							engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(), 1);
 						}
 					}
 
@@ -2217,7 +2236,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				owner.engine[playerID].field = new Field();
 			}
 
-			// field
+			// Field without attributes
 			if(message[3].equals("field")) {
 				if(message.length > 7) {
 					owner.engine[playerID].nowPieceObject = null;
@@ -2234,6 +2253,26 @@ public class NetVSBattleMode extends NetDummyMode {
 							strFieldData = NetUtil.decompressString(strFieldData);
 						}
 						owner.engine[playerID].field.stringToField(strFieldData, skin, highestGarbageY, highestWallY);
+					} else {
+						owner.engine[playerID].field.reset();
+					}
+				}
+			}
+			// Field with attributes
+			if(message[3].equals("fieldattr")) {
+				if(message.length > 5) {
+					owner.engine[playerID].nowPieceObject = null;
+					owner.engine[playerID].holdDisable = false;
+					garbage[playerID] = Integer.parseInt(message[4]);
+					int skin = Integer.parseInt(message[5]);
+					playerSkin[playerID] = skin;
+					if(message.length > 7) {
+						String strFieldData = message[6];
+						boolean isCompressed = Boolean.parseBoolean(message[7]);
+						if(isCompressed) {
+							strFieldData = NetUtil.decompressString(strFieldData);
+						}
+						owner.engine[playerID].field.attrStringToField(strFieldData, skin);
 					} else {
 						owner.engine[playerID].field.reset();
 					}
@@ -2364,6 +2403,7 @@ public class NetVSBattleMode extends NetDummyMode {
 								owner.engine[playerID].holdPieceObject.direction = pieceDirection;
 								owner.engine[playerID].holdPieceObject.setColor(pieceColor);
 								owner.engine[playerID].holdPieceObject.setSkin(playerSkin[playerID]);
+								owner.engine[playerID].holdPieceObject.updateConnectData();
 							}
 						} else {
 							if((owner.engine[playerID].nextPieceArrayObject == null) || (owner.engine[playerID].nextPieceArrayObject.length < maxNext)) {
@@ -2373,6 +2413,7 @@ public class NetVSBattleMode extends NetDummyMode {
 							owner.engine[playerID].nextPieceArrayObject[i - 1].direction = pieceDirection;
 							owner.engine[playerID].nextPieceArrayObject[i - 1].setColor(pieceColor);
 							owner.engine[playerID].nextPieceArrayObject[i - 1].setSkin(playerSkin[playerID]);
+							owner.engine[playerID].nextPieceArrayObject[i - 1].updateConnectData();
 						}
 					}
 				}

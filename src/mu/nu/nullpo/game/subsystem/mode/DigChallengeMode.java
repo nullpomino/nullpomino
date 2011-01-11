@@ -749,6 +749,19 @@ public class DigChallengeMode extends NetDummyMode {
 					);
 				}
 			}
+
+			// Set connections
+			if(receiver.isStickySkin(engine)) {
+				for(int x = 0; x < w; x++) {
+					if(x != garbageHole) {
+						Block blk = field.getBlock(x, h-1);
+						if(blk != null) {
+							if(!field.getBlockEmpty(x-1, h-1)) blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+							if(!field.getBlockEmpty(x+1, h-1)) blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+						}
+					}
+				}
+			}
 		}
 
 		// Levelup
