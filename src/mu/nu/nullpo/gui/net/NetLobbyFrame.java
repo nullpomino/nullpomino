@@ -232,7 +232,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Layout manager for main screen */
 	protected CardLayout contentPaneCardLayout;
-	
+
 	/** Menu bars (all screens) */
 	protected JMenuBar[] menuBar;
 
@@ -262,25 +262,25 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** ロビー画面上部のパネル */
 	protected JPanel subpanelRoomListTopBar;
-	
+
 	/** Lobby menu (Lobby screen) */
 	protected JMenu menuLobbyMenu;
-	
+
 	/** Quick Start menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuQuickStart;
-	
+
 	/** Create Room menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuRoomCreate;
-	
+
 	/** Create Room 1P menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuRoomCreate1P;
-	
+
 	/** Rule change menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuRuleChange;
-	
+
 	/** Team change menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuTeamChange;
-	
+
 	/** Leaderboard menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuRanking;
 
@@ -514,6 +514,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Preset number (Create room screen) */
 	protected JSpinner spinnerCreateRoomPresetID;
 
+	/** Preset code (Create room screen) */
+	protected JTextField txtfldCreateRoomPresetCode;
+
 	/** OK button(Create room screen) */
 	protected JButton btnCreateRoomOK;
 
@@ -715,7 +718,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	protected void initUI() {
 		contentPaneCardLayout = new CardLayout();
 		this.getContentPane().setLayout(contentPaneCardLayout);
-		
+
 		menuBar = new JMenuBar[SCREENCARD_NAMES.length];
 		for (int i = 0; i < SCREENCARD_NAMES.length; i++) {
 			menuBar[i] = new JMenuBar();
@@ -853,19 +856,19 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	protected void initLobbyUI() {
 		tabLobbyAndRoom = new JTabbedPane();
 		this.getContentPane().add(tabLobbyAndRoom, SCREENCARD_NAMES[SCREENCARD_LOBBY]);
-		
+
 		// === Menubar ===
-		
+
 		// * Menu
 		menuLobbyMenu = new JMenu(getUIText("Lobby_Menu"));
 		menuLobbyMenu.setMnemonic('M');
 		menuBar[SCREENCARD_LOBBY].add(menuLobbyMenu);
-		
+
 		// ** Create Game
 		JMenu menuLobbyMenuGame = new JMenu(getUIText("Lobby_Menu_CreateGame"));
 		menuLobbyMenuGame.setMnemonic('G');
 		menuLobbyMenu.add(menuLobbyMenuGame);
-		
+
 		// *** Quick Start
 		itemLobbyMenuQuickStart = new JMenuItem(getUIText("Lobby_Menu_QuickStart"));
 		itemLobbyMenuQuickStart.addActionListener(this);
@@ -874,7 +877,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuQuickStart.setToolTipText(getUIText("Lobby_QuickStart_Tip"));
 		itemLobbyMenuQuickStart.setVisible(false);
 		menuLobbyMenuGame.add(itemLobbyMenuQuickStart);
-		
+
 		// *** Create Room
 		itemLobbyMenuRoomCreate = new JMenuItem(getUIText("Lobby_Menu_RoomCreate"));
 		itemLobbyMenuRoomCreate.addActionListener(this);
@@ -882,7 +885,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuRoomCreate.setMnemonic('N');
 		itemLobbyMenuRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
 		menuLobbyMenuGame.add(itemLobbyMenuRoomCreate);
-		
+
 		// *** Create Room (1P)
 		itemLobbyMenuRoomCreate1P = new JMenuItem(getUIText("Lobby_Menu_RoomCreate1P"));
 		itemLobbyMenuRoomCreate1P.addActionListener(this);
@@ -890,7 +893,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuRoomCreate1P.setMnemonic('1');
 		itemLobbyMenuRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
 		menuLobbyMenuGame.add(itemLobbyMenuRoomCreate1P);
-		
+
 		// ** Separator
 		menuLobbyMenu.addSeparator();
 
@@ -917,10 +920,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuRanking.setMnemonic('K');
 		itemLobbyMenuRanking.setToolTipText(getUIText("Lobby_Ranking_Tip"));
 		menuLobbyMenu.add(itemLobbyMenuRanking);
-		
+
 		// ** Separator
 		menuLobbyMenu.addSeparator();
-		
+
 		// ** Disconnect
 		JMenuItem itemLobbyMenuDisconnect = new JMenuItem(getUIText("Lobby_Disconnect"));
 		itemLobbyMenuDisconnect.addActionListener(this);
@@ -971,7 +974,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate.setMnemonic('N');
 		btnRoomListRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate);
-		
+
 		// ***** Create Room (1P) button
 		btnRoomListRoomCreate1P = new JButton(getUIText("Lobby_RoomCreate1P"));
 		btnRoomListRoomCreate1P.addActionListener(this);
@@ -979,7 +982,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate1P.setMnemonic('1');
 		btnRoomListRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate1P);
-		
+
 		// ***** 切断 button
 		JButton btnRoomListDisconnect = new JButton(getUIText("Lobby_Disconnect"));
 		btnRoomListDisconnect.addActionListener(this);
@@ -1410,15 +1413,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		comboboxCreateRatedPresets.setToolTipText(getUIText("CreateRated_Preset_Tip"));
 		subpanelPresetSelect.add(comboboxCreateRatedPresets, BorderLayout.EAST);
 
-		// ** 参加人countパネル
+		// ** Number of players panel
 		JPanel subpanelMaxPlayers = new JPanel(new BorderLayout());
 		containerpanelCreateRated.add(subpanelMaxPlayers);
 
-		// *** 「参加人count:」ラベル
+		// *** Number of players label
 		JLabel labelMaxPlayers = new JLabel(getUIText("CreateRated_MaxPlayers"));
 		subpanelMaxPlayers.add(labelMaxPlayers, BorderLayout.WEST);
 
-		// *** 参加人count選択
+		// *** Number of players textfield
 		int defaultMaxPlayers = propConfig.getProperty("createrated.defaultMaxPlayers", 6);
 		spinnerCreateRatedMaxPlayers = new JSpinner(new SpinnerNumberModel(defaultMaxPlayers, 2, 6, 1));
 		spinnerCreateRatedMaxPlayers.setPreferredSize(new Dimension(200, 20));
@@ -1905,6 +1908,38 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnPresetLoad.setMaximumSize(new Dimension(Short.MAX_VALUE, btnPresetLoad.getMaximumSize().height));
 		containerpanelCreateRoomPreset.add(btnPresetLoad);
 
+		// ** Preset code panel
+		JPanel subpanelPresetCode = new JPanel(new BorderLayout());
+		subpanelPresetCode.setAlignmentX(0f);
+		containerpanelCreateRoomPreset.add(subpanelPresetCode);
+
+		// *** "Preset code:" Label
+		JLabel labelPresetCode = new JLabel(getUIText("CreateRoom_PresetCode"));
+		subpanelPresetCode.add(labelPresetCode, BorderLayout.WEST);
+
+		// *** Preset code textfield
+		txtfldCreateRoomPresetCode = new JTextField();
+		txtfldCreateRoomPresetCode.setComponentPopupMenu(new TextComponentPopupMenu(txtfldCreateRoomPresetCode));
+		subpanelPresetCode.add(txtfldCreateRoomPresetCode, BorderLayout.CENTER);
+
+		// *** Preset code export
+		JButton btnPresetCodeExport = new JButton(getUIText("CreateRoom_PresetCodeExport"));
+		btnPresetCodeExport.setAlignmentX(0f);
+		btnPresetCodeExport.addActionListener(this);
+		btnPresetCodeExport.setActionCommand("CreateRoom_PresetCodeExport");
+		btnPresetCodeExport.setMnemonic('E');
+		btnPresetCodeExport.setMaximumSize(new Dimension(Short.MAX_VALUE, btnPresetCodeExport.getMaximumSize().height));
+		containerpanelCreateRoomPreset.add(btnPresetCodeExport);
+
+		// *** Preset code import
+		JButton btnPresetCodeImport = new JButton(getUIText("CreateRoom_PresetCodeImport"));
+		btnPresetCodeImport.setAlignmentX(0f);
+		btnPresetCodeImport.addActionListener(this);
+		btnPresetCodeImport.setActionCommand("CreateRoom_PresetCodeImport");
+		btnPresetCodeImport.setMnemonic('I');
+		btnPresetCodeImport.setMaximumSize(new Dimension(Short.MAX_VALUE, btnPresetCodeImport.getMaximumSize().height));
+		containerpanelCreateRoomPreset.add(btnPresetCodeImport);
+
 		// buttons
 
 		// **  button類パネル
@@ -2145,7 +2180,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	public void changeCurrentScreenCard(int cardNumber) {
 		contentPaneCardLayout.show(this.getContentPane(), SCREENCARD_NAMES[cardNumber]);
 		currentScreenCardNumber = cardNumber;
-		
+
 		// Set menu bar
 		setJMenuBar(menuBar[cardNumber]);
 
@@ -2509,14 +2544,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListQuickStart.setEnabled(mode == 1);
 		btnRoomListRoomCreate.setEnabled(mode == 1);
 		btnRoomListRoomCreate1P.setEnabled(mode == 1);
-		
+
 		itemLobbyMenuQuickStart.setEnabled(mode == 1);
 		itemLobbyMenuRoomCreate.setEnabled(mode == 1);
 		itemLobbyMenuRoomCreate1P.setEnabled(mode == 1);
 		itemLobbyMenuRuleChange.setEnabled(mode == 1);
 		itemLobbyMenuTeamChange.setEnabled(mode == 1);
 		itemLobbyMenuRanking.setEnabled(mode >= 1);
-		
+
 		btnLobbyChatSend.setEnabled(mode >= 1);
 		txtfldLobbyChatInput.setEnabled(mode >= 1);
 	}
@@ -2783,36 +2818,36 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 			for(int i = 0; i < pList.size(); i++) {
 				NetPlayerInfo pInfo = pList.get(i);
-				
+
 				if(pInfo.roomID == roomInfo.roomID) {
 					// Name
 					String name = getPlayerNameWithTripCode(pInfo);
 					if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo);
-	
+
 					// Team
 					if(pInfo.strTeam.length() > 0) {
 						name = getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 						if(pInfo.uid == netPlayerClient.getPlayerUID()) name = "*" + getPlayerNameWithTripCode(pInfo) + " - " + pInfo.strTeam;
 					}
-	
+
 					// Rating
 					name += " |" + pInfo.rating[roomInfo.style] + "|";
-	
+
 					// Country code
 					if(pInfo.strCountry.length() > 0) {
 						name += " (" + pInfo.strCountry + ")";
 					}
-	
+
 					/* XXX Hostname
 					if(pInfo.strHost.length() > 0) {
 						name += " {" + pInfo.strHost + "}";
 					}
 					*/
-	
+
 					// Status
 					if(pInfo.playing) name += getUIText("RoomUserList_Playing");
 					else if(pInfo.ready) name += getUIText("RoomUserList_Ready");
-				
+
 					if((pInfo.seatID >= 0) && (pInfo.seatID < roomInfo.maxPlayers)) {
 						listmodelRoomChatPlayerList.set(pInfo.seatID, "[" + (pInfo.seatID + 1) + "] " + name);
 					} else if(pInfo.queueID != -1) {
@@ -3710,6 +3745,28 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				String strPreset = NetUtil.decompressString(strPresetC);
 				NetRoomInfo r = new NetRoomInfo(strPreset);
 				importRoomInfoToCreateRoomScreen(r);
+			}
+		}
+		// Preset code export (Create Room)
+		if(e.getActionCommand() == "CreateRoom_PresetCodeExport") {
+			NetRoomInfo r = exportRoomInfoFromCreateRoomScreen();
+			if(r == null) {
+				txtfldCreateRoomPresetCode.setText("");
+			} else {
+				txtfldCreateRoomPresetCode.setText(NetUtil.compressString(r.exportString()));
+			}
+		}
+		// Preset code import (Create Room)
+		if(e.getActionCommand() == "CreateRoom_PresetCodeImport") {
+			try {
+				String strPresetCode = txtfldCreateRoomPresetCode.getText();
+				if(strPresetCode.length() > 0) {
+					String strPresetCodeD = NetUtil.decompressString(strPresetCode);
+					NetRoomInfo r = new NetRoomInfo(strPresetCodeD);
+					importRoomInfoToCreateRoomScreen(r);
+				}
+			} catch (Exception e2) {
+				log.error("Failed to import preset code", e2);
 			}
 		}
 		// ルーム作成画面での参戦 button

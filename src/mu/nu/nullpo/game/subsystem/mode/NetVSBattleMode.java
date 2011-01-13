@@ -1025,7 +1025,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			{
 				prevPieceID = Piece.PIECE_NONE;
 				netLobby.netPlayerClient.send("game\tpiece\t" + prevPieceID + "\t" + prevPieceX + "\t" + prevPieceY + "\t" + prevPieceDir + "\t" +
-						0 + "\t" + engine.getSkin() + "\n");
+						0 + "\t" + engine.getSkin() + "\t" + false + "\n");
 
 				if((numNowPlayers == 2) && (numMaxPlayers == 2)) netSendNextAndHold(engine);
 			}
@@ -1040,7 +1040,8 @@ public class NetVSBattleMode extends NetDummyMode {
 				int x = prevPieceX + engine.nowPieceObject.dataOffsetX[prevPieceDir];
 				int y = prevPieceY + engine.nowPieceObject.dataOffsetY[prevPieceDir];
 				netLobby.netPlayerClient.send("game\tpiece\t" + prevPieceID + "\t" + x + "\t" + y + "\t" + prevPieceDir + "\t" +
-								engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[prevPieceID] + "\t" + engine.getSkin() + "\n");
+								engine.nowPieceBottomY + "\t" + engine.ruleopt.pieceColor[prevPieceID] + "\t" + engine.getSkin() + "\t" +
+								engine.nowPieceObject.big + "\n");
 
 				if((numNowPlayers == 2) && (numMaxPlayers == 2)) netSendNextAndHold(engine);
 			}
@@ -2289,6 +2290,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					//int pieceBottomY = Integer.parseInt(message[8]);
 					int pieceColor = Integer.parseInt(message[9]);
 					int pieceSkin = Integer.parseInt(message[10]);
+					boolean pieceBig = (message.length > 11) ? Boolean.parseBoolean(message[11]) : false;
 
 					owner.engine[playerID].nowPieceObject = new Piece(id);
 					owner.engine[playerID].nowPieceObject.direction = pieceDir;
@@ -2298,6 +2300,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					owner.engine[playerID].nowPieceX = pieceX;
 					owner.engine[playerID].nowPieceY = pieceY;
 					//owner.engine[playerID].nowPieceBottomY = pieceBottomY;
+					owner.engine[playerID].nowPieceObject.big = pieceBig;
 					owner.engine[playerID].nowPieceObject.updateConnectData();
 					owner.engine[playerID].nowPieceBottomY =
 						owner.engine[playerID].nowPieceObject.getBottom(pieceX, pieceY, owner.engine[playerID].field);

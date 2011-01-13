@@ -231,7 +231,9 @@ public class NetUtil {
 			try {
 				int count = decompressor.inflate(buf);
 				bos.write(buf, 0, count);
-			} catch (DataFormatException e) {}
+			} catch (DataFormatException e) {
+				throw new RuntimeException("This byte array is not a valid compressed data", e);
+			}
 		}
 
 		// Get the decompressed data
