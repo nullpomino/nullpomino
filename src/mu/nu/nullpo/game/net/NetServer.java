@@ -1960,107 +1960,25 @@ public class NetServer {
 		}
 		// Multiplayer room
 		if(message[0].equals("roomcreate")) {
-			/*
-				String msg;
-				msg = "roomcreate\t" + NetUtil.urlEncode(r.strName) + "\t" + r.maxPlayers + "\t" + r.autoStartSeconds + "\t";
-				msg += r.gravity + "\t" + r.denominator + "\t" + r.are + "\t" + r.areLine + "\t";
-				msg += r.lineDelay + "\t" + r.lockDelay + "\t" + r.das + "\t" + r.ruleLock + "\t";
-				msg += r.tspinEnableType + "\t" + r.b2b + "\t" + r.combo + "\t" + r.rensaBlock + "\t";
-				msg += r.counter + "\t" + r.bravo + "\t" + r.reduceLineSend + "\t" + r.hurryupSeconds + "\t";
-				msg += r.hurryupInterval + "\t" + r.autoStartTNET2 + "\t" + r.disableTimerAfterSomeoneCancelled + "\t";
-				msg += r.useMap + "\t" + r.useFractionalGarbage + "\t" + r.garbageChangePerAttack + "\t" + r.garbagePercent + "\t";
-				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t" + r.customRated + "\t";
-				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
-			 */
 			if((pInfo != null) && (pInfo.roomID == -1)) {
-				NetRoomInfo roomInfo = new NetRoomInfo();
+				String strRoomInfo = NetUtil.urlDecode(message[2]);
+				NetRoomInfo roomInfo = new NetRoomInfo(strRoomInfo);
 
 				roomInfo.strName = NetUtil.urlDecode(message[1]);
 				if(roomInfo.strName.length() < 1) roomInfo.strName = "No Title";
 
-				roomInfo.maxPlayers = Integer.parseInt(message[2]);
 				if(roomInfo.maxPlayers < 1) roomInfo.maxPlayers = 1;
 				if(roomInfo.maxPlayers > 6) roomInfo.maxPlayers = 6;
 
-				roomInfo.autoStartSeconds = Integer.parseInt(message[3]);
-				roomInfo.gravity = Integer.parseInt(message[4]);
-				roomInfo.denominator = Integer.parseInt(message[5]);
-				roomInfo.are = Integer.parseInt(message[6]);
-				roomInfo.areLine = Integer.parseInt(message[7]);
-				roomInfo.lineDelay = Integer.parseInt(message[8]);
-				roomInfo.lockDelay = Integer.parseInt(message[9]);
-				roomInfo.das = Integer.parseInt(message[10]);
-
-				roomInfo.ruleLock = Boolean.parseBoolean(message[11]);
 				if(roomInfo.ruleLock) {
 					roomInfo.ruleName = pInfo.ruleOpt.strRuleName;
 					roomInfo.ruleOpt = new RuleOptions(pInfo.ruleOpt);
 				}
 
-				roomInfo.tspinEnableType = Integer.parseInt(message[12]);
-				roomInfo.b2b = Boolean.parseBoolean(message[13]);
-				roomInfo.combo = Boolean.parseBoolean(message[14]);
-				roomInfo.rensaBlock = Boolean.parseBoolean(message[15]);
-				roomInfo.counter = Boolean.parseBoolean(message[16]);
-				roomInfo.bravo = Boolean.parseBoolean(message[17]);
-				roomInfo.reduceLineSend = Boolean.parseBoolean(message[18]);
-				roomInfo.hurryupSeconds = Integer.parseInt(message[19]);
-				roomInfo.hurryupInterval = Integer.parseInt(message[20]);
-				roomInfo.autoStartTNET2 = Boolean.parseBoolean(message[21]);
-				roomInfo.disableTimerAfterSomeoneCancelled = Boolean.parseBoolean(message[22]);
-				roomInfo.useMap = Boolean.parseBoolean(message[23]);
-				roomInfo.useFractionalGarbage = Boolean.parseBoolean(message[24]);
-				roomInfo.garbageChangePerAttack = Boolean.parseBoolean(message[25]);
-				roomInfo.garbagePercent = Integer.parseInt(message[26]);
-				roomInfo.spinCheckType = Integer.parseInt(message[27]);
-				roomInfo.tspinEnableEZ = Boolean.parseBoolean(message[28]);
-				roomInfo.b2bChunk = Boolean.parseBoolean(message[29]);
-				roomInfo.customRated = Boolean.parseBoolean(message[30]);
-				roomInfo.strMode = NetUtil.urlDecode(message[31]);
-				roomInfo.style = Integer.parseInt(message[32]);
-
-				// Rule
-				if((message.length > 33) && (message[33].length() > 0)) {
-					roomInfo.ruleName = NetUtil.urlDecode(message[33]);
-					roomInfo.ruleOpt = new RuleOptions(getRatedRule(roomInfo.style, roomInfo.ruleName));
-					roomInfo.ruleLock = true;
-					roomInfo.rated = true;
-				}
-
-				// If ranked & not-custom room, overwrite most settings with predefined ones
-				if(roomInfo.rated && !roomInfo.customRated) {
-					int style = roomInfo.style;
-					// TODO: Add proper settings selector
-					int id = (Integer)ruleSettingIDList[style].get(getRatedRuleIndex(style, roomInfo.ruleName));
-
-					roomInfo.gravity = propServer.getProperty(style + "." + id + ".ranked.gravity", 1);
-					roomInfo.denominator = propServer.getProperty(style + "." + id + ".ranked.denominator", 60);
-					roomInfo.are = propServer.getProperty(style + "." + id + ".ranked.are", 0);
-					roomInfo.areLine = propServer.getProperty(style + "." + id + ".ranked.areLine", 0);
-					roomInfo.lineDelay = propServer.getProperty(style + "." + id + ".ranked.lineDelay", 0);
-					roomInfo.lockDelay = propServer.getProperty(style + "." + id + ".ranked.lockDelay", 30);
-					roomInfo.das = propServer.getProperty(style + "." + id + ".ranked.das", 12);
-
-					roomInfo.tspinEnableType = propServer.getProperty(style + "." + id + ".ranked.tspinEnableType", 2);
-					roomInfo.b2b = propServer.getProperty(style + "." + id + ".ranked.b2b", true);
-					roomInfo.combo = propServer.getProperty(style + "." + id + ".ranked.combo", true);
-					roomInfo.rensaBlock = propServer.getProperty(style + "." + id + ".ranked.rensaBlock", true);
-					roomInfo.counter = propServer.getProperty(style + "." + id + ".ranked.counter", true);
-					roomInfo.bravo = propServer.getProperty(style + "." + id + ".ranked.bravo", true);
-					roomInfo.reduceLineSend = propServer.getProperty(style + "." + id + ".ranked.reduceLineSend", true);
-					roomInfo.useFractionalGarbage = propServer.getProperty(style + "." + id + ".ranked.useFractionalGarbage", false);
-					roomInfo.garbageChangePerAttack = propServer.getProperty(style + "." + id + ".ranked.garbageChangePerAttack", true);
-					roomInfo.garbagePercent = propServer.getProperty(style + "." + id + ".ranked.garbagePercent", 100);
-					roomInfo.spinCheckType = propServer.getProperty(style + "." + id + ".ranked.spinCheckType", 0);
-					roomInfo.tspinEnableEZ = propServer.getProperty(style + "." + id + ".ranked.tspinEnableEZ", false);
-					roomInfo.b2bChunk = propServer.getProperty(style + "." + id + ".ranked.b2bChunk", false);
-					roomInfo.hurryupSeconds = propServer.getProperty(style + "." + id + ".ranked.hurryupSeconds", -1);
-					roomInfo.hurryupInterval = propServer.getProperty(style + "." + id + ".ranked.hurryupInterval", 5);
-					roomInfo.useMap = false;	// TODO: Add force map to use
-				}
-
+				roomInfo.strMode = NetUtil.urlDecode(message[3]);
+				
 				// Set map
-				if(roomInfo.useMap && (message.length > 34)) {
+				if(roomInfo.useMap && (message.length > 4)) {
 					String strDecompressed = NetUtil.decompressString(message[34]);
 					String[] strMaps = strDecompressed.split("\t");
 
@@ -2093,7 +2011,7 @@ public class NetServer {
 				pInfo.seatID = roomInfo.joinSeat(pInfo);
 
 				// Send rule data if rule-lock is enabled
-				if(roomInfo.ruleLock || roomInfo.rated) {
+				if(roomInfo.ruleLock) {
 					CustomProperties prop = new CustomProperties();
 					roomInfo.ruleOpt.writeProperty(prop, 0);
 					String strRuleTemp = prop.encode("RuleData");

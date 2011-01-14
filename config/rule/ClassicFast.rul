@@ -1,5 +1,5 @@
 #NullpoMino RuleData
-#Tue Dec 28 17:05:50 PST 2010
+#Fri Jan 14 00:47:08 PST 2011
 0.ruleopt.strWallkick=mu.nu.nullpo.game.subsystem.wallkick.ClassicPlusWallkick
 0.ruleopt.pieceSpawnX.8.3=0
 0.ruleopt.pieceSpawnX.8.2=0
@@ -51,7 +51,7 @@
 0.ruleopt.pieceOffsetY.2.1=0
 0.ruleopt.pieceOffsetY.2.0=0
 0.ruleopt.holdInitialLimit=false
-0.ruleopt.harddropLimit=true
+0.ruleopt.harddropLimit=false
 0.ruleopt.lockresetLimitRotate=-1
 0.ruleopt.nextDisplay=6
 0.ruleopt.pieceOffsetX.10.3=0
@@ -128,7 +128,7 @@
 0.ruleopt.strRuleName=CLASSIC-FAST
 0.ruleopt.pieceSpawnYBig.2.1=0
 0.ruleopt.pieceSpawnYBig.2.0=0
-0.ruleopt.softdropLock=false
+0.ruleopt.softdropLock=true
 0.ruleopt.dasInLockFlash=true
 0.ruleopt.pieceOffsetY.9.3=0
 0.ruleopt.lockresetFall=true
@@ -136,7 +136,7 @@
 0.ruleopt.holdResetDirection=true
 0.ruleopt.pieceOffsetY.9.1=0
 0.ruleopt.pieceOffsetY.9.0=0
-0.ruleopt.harddropLock=true
+0.ruleopt.harddropLock=false
 0.ruleopt.pieceOffsetY.5.3=0
 0.ruleopt.pieceOffsetY.5.2=0
 0.ruleopt.pieceOffsetY.5.1=0
@@ -157,7 +157,7 @@
 0.ruleopt.pieceSpawnX.10.1=0
 0.ruleopt.pieceOffsetX.9.0=0
 0.ruleopt.pieceSpawnX.10.0=0
-0.ruleopt.softdropLimit=false
+0.ruleopt.softdropLimit=true
 0.ruleopt.pieceOffsetX.5.3=0
 0.ruleopt.pieceOffsetX.5.2=0
 0.ruleopt.pieceOffsetX.5.1=0

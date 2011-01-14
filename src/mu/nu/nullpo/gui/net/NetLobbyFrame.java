@@ -498,6 +498,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Set garbage type */
 	protected JCheckBox chkboxCreateRoomGarbageChangePerAttack;
+	
+	/** Set garbage type */
+	protected JCheckBox chkboxCreateRoomDivideChangeRateByPlayers;
 
 	/** B2B chunk type */
 	protected JCheckBox chkboxCreateRoomB2BChunk;
@@ -1796,6 +1799,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
 		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomGarbageChangePerAttack);
+		
+		// ** Divide change rate by live players/teams
+		chkboxCreateRoomDivideChangeRateByPlayers = new JCheckBox(getUIText("CreateRoom_DivideChangeRateByPlayers"));
+		chkboxCreateRoomDivideChangeRateByPlayers.setSelected(propConfig.getProperty("createroom.defaultDivideChangeRateByPlayers", false));
+		chkboxCreateRoomDivideChangeRateByPlayers.setToolTipText(getUIText("CreateRoom_DivideChangeRateByPlayers_Tip"));
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomDivideChangeRateByPlayers);
 
 		// ** B2B chunk
 		chkboxCreateRoomB2BChunk = new JCheckBox(getUIText("CreateRoom_B2BChunk"));
@@ -3238,6 +3247,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			boolean useMap = chkboxCreateRoomUseMap.isSelected();
 			boolean useFractionalGarbage = chkboxCreateRoomUseFractionalGarbage.isSelected();
 			boolean garbageChangePerAttack = chkboxCreateRoomGarbageChangePerAttack.isSelected();
+			boolean divideChangeRateByPlayers = chkboxCreateRoomDivideChangeRateByPlayers.isSelected();
 			Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
 			boolean b2bChunk = chkboxCreateRoomB2BChunk.isSelected();
 
@@ -3268,6 +3278,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			roomInfo.useMap = useMap;
 			roomInfo.useFractionalGarbage = useFractionalGarbage;
 			roomInfo.garbageChangePerAttack = garbageChangePerAttack;
+			roomInfo.divideChangeRateByPlayers = divideChangeRateByPlayers;
 			roomInfo.garbagePercent = integerGarbagePercent;
 			roomInfo.b2bChunk = b2bChunk;
 
@@ -3309,6 +3320,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			chkboxCreateRoomBravo.setSelected(r.bravo);
 			chkboxCreateRoomReduceLineSend.setSelected(r.reduceLineSend);
 			chkboxCreateRoomGarbageChangePerAttack.setSelected(r.garbageChangePerAttack);
+			chkboxCreateRoomDivideChangeRateByPlayers.setSelected(r.divideChangeRateByPlayers);
 			chkboxCreateRoomB2BChunk.setSelected(r.b2bChunk);
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
@@ -3675,15 +3687,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				backupRoomInfo = r;
 
 				String msg;
-				msg = "roomcreate\t" + NetUtil.urlEncode(r.strName) + "\t" + r.maxPlayers + "\t" + r.autoStartSeconds + "\t";
-				msg += r.gravity + "\t" + r.denominator + "\t" + r.are + "\t" + r.areLine + "\t";
-				msg += r.lineDelay + "\t" + r.lockDelay + "\t" + r.das + "\t" + r.ruleLock + "\t";
-				msg += r.tspinEnableType + "\t" + r.b2b + "\t" + r.combo + "\t" + r.rensaBlock + "\t";
-				msg += r.counter + "\t" + r.bravo + "\t" + r.reduceLineSend + "\t" + r.hurryupSeconds + "\t";
-				msg += r.hurryupInterval + "\t" + r.autoStartTNET2 + "\t" + r.disableTimerAfterSomeoneCancelled + "\t";
-				msg += r.useMap + "\t" + r.useFractionalGarbage + "\t" + r.garbageChangePerAttack + "\t" + r.garbagePercent + "\t";
-				msg += r.spinCheckType + "\t" + r.tspinEnableEZ + "\t"  + r.b2bChunk + "\t" + r.customRated + "\t";
-				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t" + 0 + "\t";
+				msg = "roomcreate\t" + NetUtil.urlEncode(r.strName) + "\t";
+				msg += NetUtil.urlEncode(r.exportString()) + "\t";
+				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t";
 
 				// Map send
 				if(r.useMap) {

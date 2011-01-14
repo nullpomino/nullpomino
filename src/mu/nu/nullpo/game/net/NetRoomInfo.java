@@ -5,12 +5,12 @@
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
-        * Redistributions of source code must retain the above copyright
+ * Redistributions of source code must retain the above copyright
           notice, this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above copyright
+ * Redistributions in binary form must reproduce the above copyright
           notice, this list of conditions and the following disclaimer in the
           documentation and/or other materials provided with the distribution.
-        * Neither the name of NullNoname nor the names of its
+ * Neither the name of NullNoname nor the names of its
           contributors may be used to endorse or promote products derived from
           this software without specific prior written permission.
 
@@ -25,7 +25,7 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package mu.nu.nullpo.game.net;
 
 import java.io.Serializable;
@@ -77,8 +77,7 @@ public class NetRoomInfo implements Serializable {
 	public int tspinEnableType = 1;
 
 	/** Spin detection type */
-	public static final int SPINTYPE_4POINT = 0,
-							SPINTYPE_IMMOBILE = 1;
+	public static final int SPINTYPE_4POINT = 0, SPINTYPE_IMMOBILE = 1;
 
 	public int spinCheckType = SPINTYPE_4POINT;
 
@@ -88,20 +87,20 @@ public class NetRoomInfo implements Serializable {
 	/** Flag for enabling B2B */
 	public boolean b2b = true;
 
-   /** b2b adds as a separate garbage chunk */
-   public boolean b2bChunk;
+	/** b2b adds as a separate garbage chunk */
+	public boolean b2bChunk;
 
 	/** Flag for enabling combos */
 	public boolean combo = true;
 
 	/** Allow Rensa/Combo Block */
-   public boolean rensaBlock = true;
+	public boolean rensaBlock = true;
 
-   /** Allow garbage countering */
-   public boolean counter = true;
+	/** Allow garbage countering */
+	public boolean counter = true;
 
-   /** Enable bravo bonus */
-   public boolean bravo = true;
+	/** Enable bravo bonus */
+	public boolean bravo = true;
 
 	/** ルール固定 flag */
 	public boolean ruleLock = false;
@@ -142,8 +141,11 @@ public class NetRoomInfo implements Serializable {
 	/** Rate of change of garbage holes */
 	public int garbagePercent = 100;
 
-	/** Hole change style (false=line true=attack)*/
+	/** Hole change style (false=line true=attack) */
 	public boolean garbageChangePerAttack = true;
+
+	/** Divide change rate by number of live players/teams to mimic feel of 1v1 */
+	public boolean divideChangeRateByPlayers = false;
 
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	public int hurryupSeconds = -1;
@@ -210,7 +212,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Copy constructor
-	 * @param n Copy source
+	 * 
+	 * @param n
+	 *            Copy source
 	 */
 	public NetRoomInfo(NetRoomInfo n) {
 		copy(n);
@@ -218,7 +222,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列から data代入するConstructor
-	 * @param rdata Stringの配列(String[7])
+	 * 
+	 * @param rdata
+	 *            Stringの配列(String[7])
 	 */
 	public NetRoomInfo(String[] rdata) {
 		importStringArray(rdata);
@@ -226,7 +232,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringから data代入するConstructor
-	 * @param str String
+	 * 
+	 * @param str
+	 *            String
 	 */
 	public NetRoomInfo(String str) {
 		importString(str);
@@ -234,7 +242,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 他のNetRoomInfoからコピー
-	 * @param n Copy source
+	 * 
+	 * @param n
+	 *            Copy source
 	 */
 	public void copy(NetRoomInfo n) {
 		roomID = n.roomID;
@@ -260,7 +270,7 @@ public class NetRoomInfo implements Serializable {
 
 		ruleLock = n.ruleLock;
 		ruleName = n.ruleName;
-		if(n.ruleOpt != null) {
+		if (n.ruleOpt != null) {
 			ruleOpt = new RuleOptions(n.ruleOpt);
 		} else {
 			ruleOpt = null;
@@ -284,6 +294,7 @@ public class NetRoomInfo implements Serializable {
 		useFractionalGarbage = n.useFractionalGarbage;
 		garbageChangePerAttack = n.garbageChangePerAttack;
 		garbagePercent = n.garbagePercent;
+		divideChangeRateByPlayers = n.divideChangeRateByPlayers;
 		strMode = n.strMode;
 		singleplayer = n.singleplayer;
 		rated = n.rated;
@@ -308,7 +319,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列から data代入(Playerリスト除く)
-	 * @param rdata Stringの配列(String[40])
+	 * 
+	 * @param rdata
+	 *            Stringの配列(String[40])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -351,11 +364,14 @@ public class NetRoomInfo implements Serializable {
 		rated = Boolean.parseBoolean(rdata[37]);
 		customRated = Boolean.parseBoolean(rdata[38]);
 		style = Integer.parseInt(rdata[39]);
+		divideChangeRateByPlayers = Boolean.parseBoolean(rdata[40]);
 	}
 
 	/**
 	 * String(;で区切り)から data代入(Playerリスト除く)
-	 * @param str String
+	 * 
+	 * @param str
+	 *            String
 	 */
 	public void importString(String str) {
 		importStringArray(str.split(";"));
@@ -363,10 +379,11 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(Playerリスト除く)
+	 * 
 	 * @return Stringの配列(String[40])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[40];
+		String[] rdata = new String[41];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -407,20 +424,24 @@ public class NetRoomInfo implements Serializable {
 		rdata[37] = Boolean.toString(rated);
 		rdata[38] = Boolean.toString(customRated);
 		rdata[39] = Integer.toString(style);
+		rdata[40] = Boolean.toString(divideChangeRateByPlayers);
+		
 		return rdata;
 	}
 
 	/**
 	 * Stringに変換(;で区切り)(Playerリスト除く)
+	 * 
 	 * @return String
 	 */
 	public String exportString() {
 		String[] data = exportStringArray();
 		String strResult = "";
 
-		for(int i = 0; i < data.length; i++) {
+		for (int i = 0; i < data.length; i++) {
 			strResult += data[i];
-			if(i < data.length - 1) strResult += ";";
+			if (i < data.length - 1)
+				strResult += ";";
 		}
 
 		return strResult;
@@ -437,19 +458,23 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 今ゲーム席にいる人のcountをcountえる(null席はカウントしない)
+	 * 
 	 * @return 今ゲーム席にいる人のcount
 	 */
 	public int getNumberOfPlayerSeated() {
 		int count = 0;
-		for(int i = 0; i < playerSeat.size(); i++) {
-			if(playerSeat.get(i) != null) count++;
+		for (int i = 0; i < playerSeat.size(); i++) {
+			if (playerSeat.get(i) != null)
+				count++;
 		}
 		return count;
 	}
 
 	/**
 	 * 指定したPlayerがゲーム席にいるかどうか調べる
-	 * @param pInfo Player
+	 * 
+	 * @param pInfo
+	 *            Player
 	 * @return 指定したPlayerがゲーム席にいるならtrue
 	 */
 	public boolean isPlayerInSeat(NetPlayerInfo pInfo) {
@@ -458,12 +483,14 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerがどの numberのゲーム席にいるか調べる
-	 * @param pInfo Player
+	 * 
+	 * @param pInfo
+	 *            Player
 	 * @return ゲーム席 number(いないなら-1)
 	 */
 	public int getPlayerSeatNumber(NetPlayerInfo pInfo) {
-		for(int i = 0; i < playerSeat.size(); i++) {
-			if(playerSeat.get(i) == pInfo) {
+		for (int i = 0; i < playerSeat.size(); i++) {
+			if (playerSeat.get(i) == pInfo) {
 				return i;
 			}
 		}
@@ -479,15 +506,17 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * ゲーム席に入る
-	 * @param pInfo Player
+	 * 
+	 * @param pInfo
+	 *            Player
 	 * @return ゲーム席の number(満員だったら-1)
 	 */
 	public int joinSeat(NetPlayerInfo pInfo) {
-		if(canJoinSeat()) {
+		if (canJoinSeat()) {
 			exitQueue(pInfo);
 
-			for(int i = 0; i < playerSeat.size(); i++) {
-				if(playerSeat.get(i) == null) {
+			for (int i = 0; i < playerSeat.size(); i++) {
+				if (playerSeat.get(i) == null) {
 					playerSeat.set(i, pInfo);
 					return i;
 				}
@@ -501,11 +530,13 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerをゲーム席から外す
-	 * @param pInfo Player
+	 * 
+	 * @param pInfo
+	 *            Player
 	 */
 	public void exitSeat(NetPlayerInfo pInfo) {
-		for(int i = 0; i < playerSeat.size(); i++) {
-			if(playerSeat.get(i) == pInfo) {
+		for (int i = 0; i < playerSeat.size(); i++) {
+			if (playerSeat.get(i) == pInfo) {
 				playerSeat.set(i, null);
 			}
 		}
@@ -513,11 +544,13 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 順番待ちに入る
-	 * @param pInfo Player
+	 * 
+	 * @param pInfo
+	 *            Player
 	 * @return 順番待ち number
 	 */
 	public int joinQueue(NetPlayerInfo pInfo) {
-		if(playerQueue.contains(pInfo)) {
+		if (playerQueue.contains(pInfo)) {
 			return playerQueue.indexOf(pInfo);
 		}
 		playerQueue.add(pInfo);
@@ -526,7 +559,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerを順番待ちから外す
-	 * @param pInfo Player
+	 * 
+	 * @param pInfo
+	 *            Player
 	 */
 	public void exitQueue(NetPlayerInfo pInfo) {
 		playerQueue.remove(pInfo);
@@ -534,13 +569,15 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 何人のPlayerが準備完了したかcountえる
+	 * 
 	 * @return 準備完了したNumber of players
 	 */
 	public int getHowManyPlayersReady() {
 		int count = 0;
-		for(NetPlayerInfo pInfo: playerSeat) {
-			if(pInfo != null) {
-				if(pInfo.ready) count++;
+		for (NetPlayerInfo pInfo : playerSeat) {
+			if (pInfo != null) {
+				if (pInfo.ready)
+					count++;
 			}
 		}
 		return count;
@@ -548,13 +585,15 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 何人のPlayerがプレイ中かcountえる(死んだ人とまだ部屋に来た直後の人は含みません)
+	 * 
 	 * @return プレイ中のNumber of players
 	 */
 	public int getHowManyPlayersPlaying() {
 		int count = 0;
-		for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
-			if(pInfo != null) {
-				if(pInfo.playing && playerSeat.contains(pInfo)) count++;
+		for (NetPlayerInfo pInfo : playerSeatNowPlaying) {
+			if (pInfo != null) {
+				if (pInfo.playing && playerSeat.contains(pInfo))
+					count++;
 			}
 		}
 		return count;
@@ -562,13 +601,16 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 最後に生き残ったPlayerの情報を取得
+	 * 
 	 * @return 最後に生き残ったPlayerの情報(まだ2人以上生きている場合や, そもそもゲームが始まっていない場合はnull)
 	 */
 	public NetPlayerInfo getWinner() {
-		if((startPlayers >= 2) && (getHowManyPlayersPlaying() < 2) && (playing == true)) {
-			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
-				if(pInfo != null) {
-					if(pInfo.playing && pInfo.connected && playerSeat.contains(pInfo))
+		if ((startPlayers >= 2) && (getHowManyPlayersPlaying() < 2)
+				&& (playing == true)) {
+			for (NetPlayerInfo pInfo : playerSeatNowPlaying) {
+				if (pInfo != null) {
+					if (pInfo.playing && pInfo.connected
+							&& playerSeat.contains(pInfo))
 						return pInfo;
 				}
 			}
@@ -578,13 +620,16 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 最後に生き残ったTeam nameを取得
+	 * 
 	 * @return 最後に生き残ったTeam name
 	 */
 	public String getWinnerTeam() {
-		if((startPlayers >= 2) && (getHowManyPlayersPlaying() >= 2) && (playing == true)) {
-			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
-				if((pInfo != null) && pInfo.playing && pInfo.connected && playerSeat.contains(pInfo)) {
-					if(pInfo.strTeam.length() <= 0) {
+		if ((startPlayers >= 2) && (getHowManyPlayersPlaying() >= 2)
+				&& (playing == true)) {
+			for (NetPlayerInfo pInfo : playerSeatNowPlaying) {
+				if ((pInfo != null) && pInfo.playing && pInfo.connected
+						&& playerSeat.contains(pInfo)) {
+					if (pInfo.strTeam.length() <= 0) {
 						return null;
 					} else {
 						return pInfo.strTeam;
@@ -602,14 +647,16 @@ public class NetRoomInfo implements Serializable {
 	public boolean isTeamWin() {
 		String teamname = null;
 
-		if((startPlayers >= 2) && (getHowManyPlayersPlaying() >= 2) && (playing == true)) {
-			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
-				if((pInfo != null) && pInfo.playing && pInfo.connected && playerSeat.contains(pInfo)) {
-					if(pInfo.strTeam.length() <= 0) {
+		if ((startPlayers >= 2) && (getHowManyPlayersPlaying() >= 2)
+				&& (playing == true)) {
+			for (NetPlayerInfo pInfo : playerSeatNowPlaying) {
+				if ((pInfo != null) && pInfo.playing && pInfo.connected
+						&& playerSeat.contains(pInfo)) {
+					if (pInfo.strTeam.length() <= 0) {
 						return false;
-					} else if(teamname == null) {
+					} else if (teamname == null) {
 						teamname = pInfo.strTeam;
-					} else if(!teamname.equals(pInfo.strTeam)) {
+					} else if (!teamname.equals(pInfo.strTeam)) {
 						return false;
 					}
 				}
@@ -625,10 +672,10 @@ public class NetRoomInfo implements Serializable {
 	public boolean isTeamGame() {
 		LinkedList<String> teamList = new LinkedList<String>();
 
-		if(startPlayers >= 2) {
-			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
-				if((pInfo != null) && (pInfo.strTeam.length() > 0)) {
-					if(teamList.contains(pInfo.strTeam)) {
+		if (startPlayers >= 2) {
+			for (NetPlayerInfo pInfo : playerSeatNowPlaying) {
+				if ((pInfo != null) && (pInfo.strTeam.length() > 0)) {
+					if (teamList.contains(pInfo.strTeam)) {
 						return true;
 					} else {
 						teamList.add(pInfo.strTeam);
@@ -646,10 +693,10 @@ public class NetRoomInfo implements Serializable {
 	public boolean hasSameIPPlayers() {
 		LinkedList<String> ipList = new LinkedList<String>();
 
-		if(startPlayers >= 2) {
-			for(NetPlayerInfo pInfo: playerSeatNowPlaying) {
-				if((pInfo != null) && (pInfo.strRealIP.length() > 0)) {
-					if(ipList.contains(pInfo.strRealIP)) {
+		if (startPlayers >= 2) {
+			for (NetPlayerInfo pInfo : playerSeatNowPlaying) {
+				if ((pInfo != null) && (pInfo.strRealIP.length() > 0)) {
+					if (ipList.contains(pInfo.strRealIP)) {
 						return true;
 					} else {
 						ipList.add(pInfo.strRealIP);
