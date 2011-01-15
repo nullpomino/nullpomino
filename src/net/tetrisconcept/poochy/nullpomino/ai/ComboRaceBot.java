@@ -772,7 +772,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 							}
 							
 							if (!pieces[p].checkCollision(newX, newY, rot, fldTemp)
-									&& newY > pieces[p].getBottom(newX, 0, fldTemp))
+									&& newY > pieces[p].getBottom(newX, 0, rot, fldTemp))
 							{
 								pieces[p].placeToField(newX, newY, rot, fldTemp);
 								if (fldTemp.checkLine() == 1)
@@ -808,7 +808,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 							}
 							
 							if (!pieces[p].checkCollision(newX, newY, rot, fldTemp)
-									&& newY > pieces[p].getBottom(newX, 0, fldTemp))
+									&& newY > pieces[p].getBottom(newX, 0, rot, fldTemp))
 							{
 								pieces[p].placeToField(newX, newY, rot, fldTemp);
 								if (fldTemp.checkLine() == 1)
