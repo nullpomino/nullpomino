@@ -147,6 +147,8 @@ public class NetRoomInfo implements Serializable {
 	/** Divide change rate by number of live players/teams to mimic feel of 1v1 */
 	public boolean divideChangeRateByPlayers = false;
 
+	//public boolean useTankMode = false;
+	
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	public int hurryupSeconds = -1;
 
@@ -295,6 +297,7 @@ public class NetRoomInfo implements Serializable {
 		garbageChangePerAttack = n.garbageChangePerAttack;
 		garbagePercent = n.garbagePercent;
 		divideChangeRateByPlayers = n.divideChangeRateByPlayers;
+		//useTankMode = n.useTankMode;
 		strMode = n.strMode;
 		singleplayer = n.singleplayer;
 		rated = n.rated;
@@ -365,6 +368,7 @@ public class NetRoomInfo implements Serializable {
 		customRated = Boolean.parseBoolean(rdata[38]);
 		style = Integer.parseInt(rdata[39]);
 		divideChangeRateByPlayers = Boolean.parseBoolean(rdata[40]);
+		//useTankMode = Boolean.parseBoolean(rdata[41]);
 	}
 
 	/**
@@ -425,6 +429,7 @@ public class NetRoomInfo implements Serializable {
 		rdata[38] = Boolean.toString(customRated);
 		rdata[39] = Integer.toString(style);
 		rdata[40] = Boolean.toString(divideChangeRateByPlayers);
+		//rdata[41] = Boolean.toString(useTankMode);
 		
 		return rdata;
 	}

@@ -191,6 +191,8 @@ public class NetVSBattleMode extends NetDummyMode {
 
 	private int lastHole = -1;
 
+	//private boolean useTankMode = false;  
+	
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	private int hurryupSeconds;
 
@@ -469,6 +471,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		garbagePercent = 100;
 		garbageChangePerAttack = true;
 		divideChangeRateByPlayers = false;
+		//useTankMode = false;
 		isReady = new boolean[MAX_PLAYERS];
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
@@ -542,7 +545,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			garbagePercent = roomInfo.garbagePercent;
 			garbageChangePerAttack = roomInfo.garbageChangePerAttack;
 			divideChangeRateByPlayers = roomInfo.divideChangeRateByPlayers;
-			
+			//useTankMode = roomInfo.useTankMode;
 
 			for(int i = 0; i < getPlayers(); i++) {
 				owner.engine[i].speed.gravity = roomInfo.gravity;
@@ -794,7 +797,7 @@ public class NetVSBattleMode extends NetDummyMode {
 
 //	@Override
 //	public void onFirst(GameEngine engine, int playerID) {
-//		if( (!isPractice) && (isNetGameActive) ){
+//		if( (useTankMode == true) && (!isPractice) && (isNetGameActive) ){
 //			if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 //				if((!playerTeamsIsTank[0]) || (!isTank)) {
 //					playerTeamsIsTank[0] = true;
@@ -2109,7 +2112,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			int koUID = -1;
 			if(message.length > 5) koUID = Integer.parseInt(message[5]);
 
-//			if(playerTeamsIsTank[playerID] == true) {
+//			if((useTankMode == true) && (playerTeamsIsTank[playerID] == true)) {
 //				String teamName = playerTeams[playerID];
 //				for(int i = 0; i < MAX_PLAYERS; i++ ){
 //					if((playerTeams[i].length() > 0) && (isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
@@ -2304,7 +2307,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					owner.engine[0].statc[0] = owner.engine[0].goEnd;
 				}
 			}
-//			if(message[3].equals("tank")){
+//			if((message[3].equals("tank")) && (useTankMode == true)){
 //				String teamName = playerTeams[playerID];
 //				for(int i = 0; i < MAX_PLAYERS; i++ ){
 //					if((playerTeams[i].length() > 0) && (isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
