@@ -477,6 +477,8 @@ public class ComboRaceMode extends NetDummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.createFieldIfNeeded();
+			engine.meterColor = GameEngine.METER_COLOR_GREEN;
+			engine.meterValue = (GOAL_TABLE[goaltype] == -1) ? 0 : receiver.getMeterMax(engine);
 
 			if(!netIsWatch) {
 				fillStack(engine, goaltype);
@@ -503,8 +505,6 @@ public class ComboRaceMode extends NetDummyMode {
 		} else {
 			owner.bgmStatus.bgm = bgmno;
 		}
-		engine.meterColor = GameEngine.METER_COLOR_GREEN;
-		engine.meterValue = receiver.getMeterMax(engine);
 		engine.comboType = GameEngine.COMBO_TYPE_NORMAL;
 		engine.tspinEnable = true;
 		engine.tspinAllowKick = true;
