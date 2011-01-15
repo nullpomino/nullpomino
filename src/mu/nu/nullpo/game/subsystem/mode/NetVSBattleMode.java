@@ -2109,6 +2109,19 @@ public class NetVSBattleMode extends NetDummyMode {
 			int koUID = -1;
 			if(message.length > 5) koUID = Integer.parseInt(message[5]);
 
+//			if(playerTeamsIsTank[playerID] == true) {
+//				String teamName = playerTeams[playerID];
+//				for(int i = 0; i < MAX_PLAYERS; i++ ){
+//					if((playerTeams[i].length() > 0) && (isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
+//						if(i != playerID) {
+//							playerTeamsIsTank[i] = true;
+//						}
+//					}
+//
+//				}
+//				isTank = true;
+//			}
+
 			if(!isDead[playerID]) {
 				isDead[playerID] = true;
 				playerPlace[playerID] = Integer.parseInt(message[4]);
@@ -2294,7 +2307,7 @@ public class NetVSBattleMode extends NetDummyMode {
 //			if(message[3].equals("tank")){
 //				String teamName = playerTeams[playerID];
 //				for(int i = 0; i < MAX_PLAYERS; i++ ){
-//					if((isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
+//					if((playerTeams[i].length() > 0) && (isPlayerExist[i]) && (playerTeams[i].equals(teamName))) {
 //						if(i != playerID) {
 //							playerTeamsIsTank[i] = false;
 //						}
