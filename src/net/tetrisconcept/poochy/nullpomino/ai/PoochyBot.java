@@ -654,17 +654,21 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 			if (rotateDir != 0)
 			{
+				boolean defaultRotateRight = (engine.owRotateButtonDefaultRight == 1 ||
+						(engine.owRotateButtonDefaultRight == -1 &&
+								engine.ruleopt.rotateButtonDefaultRight));
+				
 				if(engine.ruleopt.rotateButtonAllowDouble &&
 						rotateDir == 2 && !ctrl.isPress(Controller.BUTTON_E))
 					input |= Controller.BUTTON_BIT_E;
 				else if(engine.ruleopt.rotateButtonAllowReverse &&
-						  !engine.ruleopt.rotateButtonDefaultRight && (rotateDir == 1))
+						  !defaultRotateRight && (rotateDir == 1))
 				{
 					if(!ctrl.isPress(Controller.BUTTON_B))
 						input |= Controller.BUTTON_BIT_B;
 				}
 				else if(engine.ruleopt.rotateButtonAllowReverse &&
-						  engine.ruleopt.rotateButtonDefaultRight && (rotateDir == -1))
+						defaultRotateRight && (rotateDir == -1))
 				{
 					if(!ctrl.isPress(Controller.BUTTON_B))
 						input |= Controller.BUTTON_BIT_B;

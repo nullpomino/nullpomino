@@ -90,7 +90,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 * AI's name
 	 */
 	public String getName() {
-		return "Combo Race AI V0.01";
+		return "Combo Race AI V1.00";
 	}
 
 	/*
