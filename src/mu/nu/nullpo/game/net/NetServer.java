@@ -111,6 +111,9 @@ public class NetServer {
 
 	/** Server config file */
 	private static CustomProperties propServer;
+	
+	/** Server Rated presets file */
+	private static CustomProperties propPresets;
 
 	/** Properties of player data list (mainly for rating) */
 	private static CustomProperties propPlayerData;
@@ -255,11 +258,20 @@ public class NetServer {
 	 * Load rated-game room presets from the server config
 	 */
 	private static void loadPresetList() {
+		propPresets = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/etc/netserver_presets.cfg");
+			propPresets.load(in);
+			in.close();
+		} catch (IOException e) {
+			log.warn("Failed to load config file", e);
+		}
+		
 		ratedInfoList = new LinkedList<String>();
 
 		String strInfo = ""; int i = 0;
 		while (strInfo != null){	//Iterate over the available presets in the server config
-			strInfo = propServer.getProperty("0.preset." + (i++));
+			strInfo = propPresets.getProperty("0.preset." + (i++));
 			if(strInfo != null){
 				ratedInfoList.add(strInfo);
 			}
