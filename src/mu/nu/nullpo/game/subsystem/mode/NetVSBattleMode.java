@@ -1277,7 +1277,7 @@ public class NetVSBattleMode extends NetDummyMode {
 					lastAttackerUID = -1;
 
 					if(garbageChangePerAttack == true){
-						if(engine.random.nextInt(100) < garbagePercent) {
+						if(engine.random.nextInt(100) < finalGarbagePercent) {
 							newHole = engine.random.nextInt(engine.field.getWidth() - 1);
 							if(newHole >= hole) {
 								newHole++;
@@ -1288,7 +1288,7 @@ public class NetVSBattleMode extends NetDummyMode {
 								  smallGarbageCount / GARBAGE_DENOMINATOR);
 					} else {
 						for(int i = smallGarbageCount / GARBAGE_DENOMINATOR; i > 0; i--) {
-							if(engine.random.nextInt(100) < garbagePercent) {
+							if(engine.random.nextInt(100) < finalGarbagePercent) {
 								newHole = engine.random.nextInt(engine.field.getWidth() - 1);
 								if(newHole >= hole) {
 									newHole++;
