@@ -64,12 +64,12 @@ public class StateConfigGeneral extends BaseGameState {
 		"ConfigGeneral_ShowFPS",
 		"ConfigGeneral_MaxFPS",
 		"ConfigGeneral_FrameStep",
+		"ConfigGeneral_AlternateFPSPerfectMode",
+		"ConfigGeneral_AlternateFPSPerfectYield",
 		"ConfigGeneral_BGMStreaming",
 		"ConfigGeneral_VSync",
 		"ConfigGeneral_AlternateFPSTiming",
 		"ConfigGeneral_AlternateFPSDynamicAdjust",
-		"ConfigGeneral_AlternateFPSPerfectMode",
-		"ConfigGeneral_AlternateFPSPerfectYield",
 		"ConfigGeneral_ScreenSizeType",
 	};
 
@@ -307,7 +307,7 @@ public class StateConfigGeneral extends BaseGameState {
 			NormalFont.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
 		}
 		// Advanced Options
-		else if(cursor < 19) {
+		else if(cursor < 21) {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFont.COLOR_ORANGE);
 			NormalFont.printFontGrid(1, 3 + (cursor - 15), "b", NormalFont.COLOR_RED);
 
@@ -315,21 +315,20 @@ public class StateConfigGeneral extends BaseGameState {
 			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 16));
 			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 17));
 			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 18));
+			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 19));
+			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 20));
 		}
 		// Slick Options
 		else {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: SLICK (3/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 19), "b", NormalFont.COLOR_RED);
+			NormalFont.printFontGrid(1, 3 + (cursor - 21), "b", NormalFont.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 19));
-			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 20));
-			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 21));
-			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 22));
-			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 23));
-			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 24));
-			NormalFont.printFontGrid(2,  9, "SCREEN SIZE:" + SCREENSIZE_TABLE[screenSizeType][0] + "e" + SCREENSIZE_TABLE[screenSizeType][1],
+			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 21));
+			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 22));
+			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 23));
+			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 24));
+			NormalFont.printFontGrid(2,  7, "SCREEN SIZE:" + SCREENSIZE_TABLE[screenSizeType][0] + "e" + SCREENSIZE_TABLE[screenSizeType][1],
 									 (cursor == 25));
-
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
@@ -437,22 +436,22 @@ public class StateConfigGeneral extends BaseGameState {
 				enableframestep = !enableframestep;
 				break;
 			case 19:
-				bgmstreaming = !bgmstreaming;
-				break;
-			case 20:
-				vsync = !vsync;
-				break;
-			case 21:
-				alternateFPSTiming = !alternateFPSTiming;
-				break;
-			case 22:
-				alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
-				break;
-			case 23:
 				alternateFPSPerfectMode = !alternateFPSPerfectMode;
 				break;
-			case 24:
+			case 20:
 				alternateFPSPerfectYield = !alternateFPSPerfectYield;
+				break;
+			case 21:
+				bgmstreaming = !bgmstreaming;
+				break;
+			case 22:
+				vsync = !vsync;
+				break;
+			case 23:
+				alternateFPSTiming = !alternateFPSTiming;
+				break;
+			case 24:
+				alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
 				break;
 			case 25:
 				screenSizeType += change;

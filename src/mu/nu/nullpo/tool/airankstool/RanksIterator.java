@@ -126,7 +126,7 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
         		ranksFrom=new Ranks(4,9);
         	else {
         		  try {
-        			fis = new FileInputStream(AIRanksTool.RANKSAI_DIR+inputFile);
+        			fis = new FileInputStream(AIRanksConstants.RANKSAI_DIR+inputFile);
         			   in = new ObjectInputStream(fis);
         			   ranksFrom = (Ranks)in.readObject();
         			   in.close();
@@ -183,13 +183,13 @@ public class RanksIterator extends JDialog implements PropertyChangeListener,Act
        	 progressLabel.setText(AIRanksTool.getUIText("Progress_Note_Save_File"));
 
            try {
-           	File ranksAIDir=new File(AIRanksTool.RANKSAI_DIR);
+           	File ranksAIDir=new File(AIRanksConstants.RANKSAI_DIR);
            	if (!ranksAIDir.exists()){
            		ranksAIDir.mkdirs();
            	}
                FileOutputStream fos=null;
                ObjectOutputStream out=null;
-               fos=new FileOutputStream(AIRanksTool.RANKSAI_DIR+ outputFile);
+               fos=new FileOutputStream(AIRanksConstants.RANKSAI_DIR+ outputFile);
                out = new ObjectOutputStream(fos);
                ranks.freeRanksFrom();
                out.writeObject(ranks);

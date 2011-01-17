@@ -39,8 +39,8 @@ import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
-import mu.nu.nullpo.tool.airankstool.AIRanksTool;
 import mu.nu.nullpo.tool.airankstool.Ranks;
+import mu.nu.nullpo.tool.airankstool.AIRanksConstants;
 import mu.nu.nullpo.util.CustomProperties;
 
 import org.apache.log4j.Logger;
@@ -183,7 +183,7 @@ public class RanksAI extends DummyAI implements Runnable {
 		threadRunning = false;
 		CustomProperties propRanksAI = new CustomProperties();
 		try {
-			FileInputStream in = new FileInputStream(AIRanksTool.RANKSAI_CONFIG_FILE);
+			FileInputStream in = new FileInputStream(AIRanksConstants.RANKSAI_CONFIG_FILE);
 			propRanksAI.load(in);
 			in.close();
 		} catch (IOException e) {}
@@ -197,7 +197,7 @@ public class RanksAI extends DummyAI implements Runnable {
 			currentRanksFile=file;
 			String inputFile="";
 			if (file!=null && file.trim().length()>0){
-			 inputFile=AIRanksTool.RANKSAI_DIR+currentRanksFile;
+			 inputFile=AIRanksConstants.RANKSAI_DIR+currentRanksFile;
 			}
 			FileInputStream fis = null;
 			ObjectInputStream in = null;

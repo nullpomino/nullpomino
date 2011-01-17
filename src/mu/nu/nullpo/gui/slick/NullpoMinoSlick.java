@@ -41,6 +41,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.swing.JOptionPane;
+
 import mu.nu.nullpo.game.net.NetObserverClient;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.util.CustomProperties;
@@ -332,6 +334,8 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		perfectFPSDelay = System.nanoTime();
 
+		JOptionPane.showMessageDialog(null, getUIText("InitFailedMessage_Body"));
+
 		// ゲーム画面などの初期化
 		try {
 			int sWidth = propConfig.getProperty("option.screenwidth", 640);
@@ -353,8 +357,31 @@ public class NullpoMinoSlick extends StateBasedGame {
 			appGameContainer.setForceExit(false);
 			appGameContainer.setDisplayMode(sWidth, sHeight, propConfig.getProperty("option.fullscreen", false));
 			appGameContainer.start();
+		} catch (SlickException e) {
+			log.fatal("Game initialize failed (SlickException)", e);
+
+			// Get driver name and version
+			String strDriverName = null;
+			String strDriverVersion = null;
+			try {
+				strDriverName = Display.getAdapter();
+				strDriverVersion = Display.getVersion();
+			} catch (Throwable e2) {
+				log.warn("Cannot get driver informations", e2);
+			}
+			if(strDriverName == null) strDriverName = "(Unknown)";
+			if(strDriverVersion == null) strDriverVersion = "(Unknown)";
+
+			// Display an error dialog
+			String strErrorTitle = getUIText("InitFailedMessage_Title");
+			String strErrorMessage = String.format(getUIText("InitFailedMessage_Body"), strDriverName, strDriverVersion, e.toString());
+			JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+
+			// Exit
+			System.exit(-1);
 		} catch (Throwable e) {
-			log.fatal("Game initialize failed", e);
+			log.fatal("Game initialize failed (NON-SlickException)", e);
+			System.exit(-2);
 		}
 
 		stopObserverClient();
@@ -701,14 +728,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 	public static void startObserverClient() {
 		log.debug("startObserverClient called");
 
-		if(propObserver == null) {
-			propObserver = new CustomProperties();
-			try {
-				FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
-				propObserver.load(in);
-				in.close();
-			} catch (IOException e) {}
-		}
+		propObserver = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
+			propObserver.load(in);
+			in.close();
+		} catch (IOException e) {}
 
 		if(propObserver.getProperty("observer.enable", false) == false) return;
 		if((netObserverClient != null) && netObserverClient.isConnected()) return;

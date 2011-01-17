@@ -59,6 +59,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		"ConfigGeneral_ShowFPS",
 		"ConfigGeneral_MaxFPS",
 		"ConfigGeneral_FrameStep",
+		"ConfigGeneral_PerfectFPS",
+		"ConfigGeneral_PerfectYield",
 		"ConfigGeneral_SoundBufferSize",
 		"ConfigGeneral_SoundChannels",
 	};
@@ -138,6 +140,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** Bigger side piece preview */
 	protected boolean bigsidenext;
 
+	/** True to use perfect FPS */
+	protected boolean perfectFPSMode;
+
+	/** Execute Thread.yield() during Perfect FPS mode */
+	protected boolean perfectYield;
+
 	/**
 	 * Constructor
 	 */
@@ -171,6 +179,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		showmeter = prop.getProperty("option.showmeter", true);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
+		perfectFPSMode = prop.getProperty("option.perfectFPSMode", false);
+		perfectYield = prop.getProperty("option.perfectYield", false);
 		nexttype = 0;
 		if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == false)) {
 			nexttype = 1;
@@ -204,6 +214,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		prop.setProperty("option.showmeter", showmeter);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
+		prop.setProperty("option.perfectFPSMode", perfectFPSMode);
+		prop.setProperty("option.perfectYield", perfectYield);
 		if(nexttype == 0) {
 			prop.setProperty("option.sidenext", false);
 			prop.setProperty("option.bigsidenext", false);
@@ -246,7 +258,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NormalFontSDL.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
 		}
 		// Advanced Options
-		else if(cursor < 19) {
+		else if(cursor < 21) {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFontSDL.COLOR_ORANGE);
 			NormalFontSDL.printFontGrid(1, 3 + (cursor - 15), "b", NormalFontSDL.COLOR_RED);
 
@@ -254,14 +266,16 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NormalFontSDL.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 16));
 			NormalFontSDL.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 17));
 			NormalFontSDL.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 18));
+			NormalFontSDL.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(perfectFPSMode), (cursor == 19));
+			NormalFontSDL.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(perfectYield), (cursor == 20));
 		}
 		// SDL Options
 		else {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: SDL (3/3)", NormalFontSDL.COLOR_ORANGE);
-			NormalFontSDL.printFontGrid(1, 3 + (cursor - 19), "b", NormalFontSDL.COLOR_RED);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 21), "b", NormalFontSDL.COLOR_RED);
 
-			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 19));
-			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 20));
+			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 21));
+			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 22));
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
@@ -275,12 +289,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 20;
+			if(cursor < 0) cursor = 22;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 20) cursor = 0;
+			if(cursor > 22) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -363,11 +377,17 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 				enableframestep = !enableframestep;
 				break;
 			case 19:
+				perfectFPSMode = !perfectFPSMode;
+				break;
+			case 20:
+				perfectYield = !perfectYield;
+				break;
+			case 21:
 				soundbuffer += change * 256;
 				if(soundbuffer < 0) soundbuffer = 65535;
 				if(soundbuffer > 65535) soundbuffer = 0;
 				break;
-			case 20:
+			case 22:
 				soundChannels += change;
 				if(soundChannels < 0) soundChannels = 50;
 				if(soundChannels > 50) soundChannels = 0;
@@ -384,6 +404,8 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 
 			NullpoMinoSDL.showfps = showfps;
 			NullpoMinoSDL.maxFPS = maxfps;
+			NullpoMinoSDL.perfectFPSMode = perfectFPSMode;
+			NullpoMinoSDL.perfectYield = perfectYield;
 
 			ResourceHolderSDL.soundManager.changeVolume(sevolume);
 			if(showlineeffect) ResourceHolderSDL.loadLineClearEffectImages();

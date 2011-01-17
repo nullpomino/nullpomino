@@ -178,6 +178,15 @@ public class NullpoMinoSDL {
 	/** FPS表示用DecimalFormat */
 	public static DecimalFormat df = new DecimalFormat("0.0");
 
+	/** Used by perfect fps mode */
+	public static long perfectFPSDelay = 0;
+
+	/** True to use perfect FPS */
+	public static boolean perfectFPSMode = false;
+
+	/** Execute Thread.yield() during Perfect FPS mode */
+	public static boolean perfectYield = true;
+
 	/** キーを押しているならtrue */
 	public static boolean[] keyPressedState;
 
@@ -216,6 +225,9 @@ public class NullpoMinoSDL {
 
 	/** Current ステート */
 	public static int currentState;
+
+	/** In-game flag (if false, Perfect FPS will not used) */
+	public static boolean isInGame;
 
 	/** Exit buttonやScreenshot buttonの使用許可 */
 	public static boolean enableSpecialKeys;
@@ -449,11 +461,15 @@ public class NullpoMinoSDL {
 	public static void run() throws SDLException {
 		maxFPS = propConfig.getProperty("option.maxfps", 60);
 
-		long beforeTime, afterTime, timeDiff, sleepTime;
+		boolean sleepFlag;
+		long period;
+		long beforeTime, afterTime, timeDiff, sleepTime, sleepTimeInMillis;
 		long overSleepTime = 0L;
 		int noDelays = 0;
 
 		showfps = propConfig.getProperty("option.showfps", true);
+		perfectFPSMode = propConfig.getProperty("option.perfectFPSMode", false);
+		perfectYield = propConfig.getProperty("option.perfectYield", false);
 
 		beforeTime = System.nanoTime();
 		prevCalcTime = beforeTime;
@@ -495,6 +511,8 @@ public class NullpoMinoSDL {
 		else {
 			enterState(STATE_TITLE);
 		}
+
+		perfectFPSDelay = System.nanoTime();
 
 		// メインループ
 		while(quit == false) {
@@ -551,36 +569,50 @@ public class NullpoMinoSDL {
 			// 画面に表示
 			surface.flip();
 
-			// 休止・FPS計算処理
+			// FPS cap
+			sleepFlag = false;
+
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
-			// 前回の frame の休止 time誤差も引いておく
-			long period = (long) (1.0 / maxFPS * 1000000000);
-			sleepTime = (period - timeDiff) - overSleepTime;
 
-			if(sleepTime > 0) {
-				// 休止 timeがとれる場合
+			period = (long) (1.0 / maxFPS * 1000000000);
+			sleepTime = (period - timeDiff) - overSleepTime;
+			sleepTimeInMillis = sleepTime / 1000000L;
+
+			if((sleepTimeInMillis >= 4) && (!perfectFPSMode || !isInGame)) {
+				// If it is possible to use sleep
 				if(maxFPS > 0) {
 					try {
-						Thread.sleep(sleepTime / 1000000L);
+						Thread.sleep(sleepTimeInMillis);
 					} catch(InterruptedException e) {}
 				}
-				// sleep()の誤差
+				// sleep() oversleep
 				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
-			} else {
-				// 状態更新・レンダリングで timeを使い切ってしまい
-				// 休止 timeがとれない場合
+				perfectFPSDelay = System.nanoTime();
+				sleepFlag = true;
+			} else if((perfectFPSMode && isInGame) || (sleepTime > 0)) {
+				// Perfect FPS
 				overSleepTime = 0L;
-				// 休止なしが16回以上続いたら
+				if(perfectYield) {
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxFPS) {Thread.yield();}
+				} else {
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxFPS) {}
+				}
+				perfectFPSDelay += 1000000000 / maxFPS;
+				sleepFlag = true;
+			}
+
+			if(!sleepFlag) {
+				// Impossible to sleep!
+				overSleepTime = 0L;
 				if(++noDelays >= 16) {
-					Thread.yield(); // 他のスレッドを強制実行
+					Thread.yield();
 					noDelays = 0;
 				}
+				perfectFPSDelay = System.nanoTime();
 			}
 
 			beforeTime = System.nanoTime();
-
-			// FPSを計算
 			calcFPS(period);
 		}
 	}
@@ -807,14 +839,12 @@ public class NullpoMinoSDL {
 	public static void startObserverClient() {
 		log.debug("startObserverClient called");
 
-		if(propObserver == null) {
-			propObserver = new CustomProperties();
-			try {
-				FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
-				propObserver.load(in);
-				in.close();
-			} catch (IOException e) {}
-		}
+		propObserver = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
+			propObserver.load(in);
+			in.close();
+		} catch (IOException e) {}
 
 		if(propObserver.getProperty("observer.enable", false) == false) return;
 		if((netObserverClient != null) && netObserverClient.isConnected()) return;

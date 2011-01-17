@@ -72,6 +72,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	@Override
 	public void enter() throws SDLException {
 		NullpoMinoSDL.disableAutoInputUpdate = true;
+		NullpoMinoSDL.isInGame = true;
 
 		// Observer停止
 		NullpoMinoSDL.stopObserverClient();
@@ -118,6 +119,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 		NullpoMinoSDL.maxFPS = NullpoMinoSDL.propConfig.getProperty("option.maxfps", 60);
 		NullpoMinoSDL.allowQuit = true;
 		NullpoMinoSDL.disableAutoInputUpdate = false;
+		NullpoMinoSDL.isInGame = false;
 
 		// Reload global config (because it can change rules)
 		NullpoMinoSDL.loadGlobalConfig();

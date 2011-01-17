@@ -1206,14 +1206,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 	public synchronized static void startObserverClient() {
 		log.debug("startObserverClient called");
 
-		if(propObserver == null) {
-			propObserver = new CustomProperties();
-			try {
-				FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
-				propObserver.load(in);
-				in.close();
-			} catch (IOException e) {}
-		}
+		propObserver = new CustomProperties();
+		try {
+			FileInputStream in = new FileInputStream("config/setting/netobserver.cfg");
+			propObserver.load(in);
+			in.close();
+		} catch (IOException e) {}
 
 		if(propObserver.getProperty("observer.enable", false) == false) return;
 		if((netObserverClient != null) && netObserverClient.isConnected()) return;

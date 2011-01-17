@@ -110,9 +110,6 @@ public class AIRanksTool extends JFrame implements ActionListener {
 	//Default variables
 	//*****************
 
-	public static String RANKSAI_DIR="res/ranksAI/";
-	public static String RANKSAI_CONFIG_FILE="config/setting/ranksai.cfg";
-	public static String DEFAULT_RANKS_FILE="ranks";
 	private String newFileText;
 
 	public AIRanksTool() {
@@ -131,7 +128,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 		// Loads Ranks AI property file, to populate the fields
 		CustomProperties propRanksAI = new CustomProperties();
 		try {
-			FileInputStream in = new FileInputStream(AIRanksTool.RANKSAI_CONFIG_FILE);
+			FileInputStream in = new FileInputStream(AIRanksConstants.RANKSAI_CONFIG_FILE);
 			propRanksAI.load(in);
 			in.close();
 		} catch (IOException e) {}
@@ -149,7 +146,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 		int speedLimit=propRanksAI.getProperty("ranksai.speedlimit", 0);
 
 		// Loads the ranks file list from the ranksAI directory (/res/ranksai)
-		String [] children=new File(RANKSAI_DIR).list();
+		String [] children=new File(AIRanksConstants.RANKSAI_DIR).list();
 
 		int fileIndex=-1;
 
@@ -197,7 +194,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 
 		// Output File
 		outputFileLabel = new JLabel(getUIText("Main_Output_Label"));
-		outputFileField = new JTextField(DEFAULT_RANKS_FILE);
+		outputFileField = new JTextField(AIRanksConstants.DEFAULT_RANKS_FILE);
 		outputFileField.setColumns(20);
 		if (inputFileComboBox.getSelectedIndex()>0){
 			outputFileField.setText((String) inputFileComboBox.getSelectedItem());
@@ -451,7 +448,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 					ranks = new Ranks(4, 9);
 				else {
 					try {
-						fis = new FileInputStream(RANKSAI_DIR+inputFile);
+						fis = new FileInputStream(AIRanksConstants.RANKSAI_DIR+inputFile);
 						in = new ObjectInputStream(fis);
 						ranks = (Ranks) in.readObject();
 						in.close();
@@ -492,7 +489,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 							outputFileField.setText((String) inputFileComboBox.getSelectedItem());
 						}
 						else {
-							outputFileField.setText(DEFAULT_RANKS_FILE);
+							outputFileField.setText(AIRanksConstants.DEFAULT_RANKS_FILE);
 						}
 					}
 				}
@@ -507,7 +504,7 @@ public class AIRanksTool extends JFrame implements ActionListener {
 		ranksAIConfig.setProperty("ranksai.allowhold", allowHoldCheckBox.isSelected());
 		ranksAIConfig.setProperty("ranksai.speedlimit", (Integer)speedLimitField.getValue());
 		try {
-			FileOutputStream out = new FileOutputStream(RANKSAI_CONFIG_FILE);
+			FileOutputStream out = new FileOutputStream(AIRanksConstants.RANKSAI_CONFIG_FILE);
 			ranksAIConfig.store(out, "Ranks AI Config");
 		} catch (IOException exc) {
 			log.error("Failed to save RanksAI config file", exc);

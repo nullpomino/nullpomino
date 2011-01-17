@@ -78,6 +78,7 @@ public class StateInGameSDL extends BaseStateSDL {
 	@Override
 	public void enter() throws SDLException {
 		NullpoMinoSDL.disableAutoInputUpdate = true;
+		NullpoMinoSDL.isInGame = true;
 		enableframestep = NullpoMinoSDL.propConfig.getProperty("option.enableframestep", false);
 		fastforward = 0;
 		cursor = 0;
@@ -247,6 +248,7 @@ public class StateInGameSDL extends BaseStateSDL {
 		gameManager.shutdown();
 		gameManager = null;
 		NullpoMinoSDL.disableAutoInputUpdate = false;
+		NullpoMinoSDL.isInGame = false;
 	}
 
 	/*
