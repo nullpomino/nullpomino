@@ -217,7 +217,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			Field fld = engine.field;
 			boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
 			int nowType = pieceNow.id;
-			int width = fld.getWidth();
+			//int width = fld.getWidth();
 
 			int moveDir = 0; //-1 = left,  1 = right
 			int rotateDir = 0; //-1 = left,  1 = right
@@ -238,19 +238,22 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 						", bestRtSub = " + bestRtSub);
 				printPieceAndDirection(nowType, rt);
 				// Rotation
+				/*
 				//Rotate iff near destination or stuck
 				int xDiff = Math.abs(nowX - bestX);
 				if (bestX < nowX && nowType == Piece.PIECE_I &&
 						rt == Piece.DIRECTION_DOWN && bestRt != rt)
 					xDiff--;
-				boolean best180 = Math.abs(rt - bestRt) == 2;
 				if((rt != bestRt && ((xDiff <= 1) ||
 						(bestX == 0 && nowX == 2 && nowType == Piece.PIECE_I) ||
 						(((nowX < bestX && pieceNow.checkCollision(nowX+1, nowY, rt, fld)) ||
 						(nowX > bestX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))) &&
 						!(pieceNow.getMaximumBlockX()+nowX == width-2 && (rt&1) == 1) &&
 						!(pieceNow.getMinimumBlockY()+nowY == 2 && pieceTouchGround && (rt&1) == 0 && nowType != Piece.PIECE_I)))))
+				*/
+				if (rt != bestRt)
 				{
+					boolean best180 = Math.abs(rt - bestRt) == 2;
 					//if (DEBUG_ALL) log.debug("Case 1 rotation");
 
 					int lrot = engine.getRotateDirection(-1);
@@ -293,37 +296,12 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 						if (rt == bestRt) {
 							// 接地rotation
 							if(bestRtSub != 0 && movestate == 0) {
-								/*
-								int bestRtNew = pieceNow.getRotateDirection(bestRtSub, bestRt);
-								if(pieceNow.checkCollision(bestX, bestY, bestRtNew, engine.field) &&
-										(engine.wallkick != null) && (engine.ruleopt.rotateWallkick)) {
-									WallkickResult kick = engine.wallkick.executeWallkick(bestX, bestY, bestRtSub,
-											bestRt, bestRtNew, (engine.ruleopt.rotateMaxUpwardWallkick != 0),
-											pieceNow, engine.field, null);
-
-									if(kick != null) {
-										bestX += kick.offsetX;
-										bestY = pieceNow.getBottom(bestX, bestY + kick.offsetY, engine.field);
-									}
-								}
-								*/
 								bestRt = pieceNow.getRotateDirection(bestRtSub, bestRt);
 								bestRtSub = 0;
 								movestate = 1;
 							}
 						}
 					}
-					/*
-					//Move left if need to move left, or if at rightmost position and can move left.
-					if (pieceTouchGround && pieceNow.id != Piece.PIECE_I &&
-							nowX+pieceNow.getMaximumBlockX() == width-1 &&
-							!pieceNow.checkCollision(nowX-1, nowY, fld))
-					{
-						if(!ctrl.isPress(Controller.BUTTON_LEFT) && (engine.aiMoveDelay >= 0))
-							input |= Controller.BUTTON_BIT_LEFT;
-						bestX = nowX - 1;
-					}
-					*/
 					if((nowX == bestX || movestate > 0) && (rt == bestRt)) {
 						moveDir = 0;
 						// 目標到達
@@ -501,14 +479,6 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		Piece pieceNow = engine.nowPieceObject;
 		Piece pieceHold = engine.holdPieceObject;
 		boolean holdBoxEmpty = (pieceHold == null);
-		/*
-		Piece pieceNow = null;
-		if (engine.nowPieceObject != null)
-			pieceNow = new Piece(engine.nowPieceObject);
-		Piece pieceHold = null;
-		if (engine.holdPieceObject != null)
-			pieceHold = new Piece(engine.holdPieceObject);
-		*/
 		int nextIndex = engine.nextPieceCount;
 		if (inARE || pieceNow == null)
 		{
@@ -638,17 +608,6 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		return result;
 	}
 
-	protected void logBest(int caseNum)
-	{
-		log.debug("New best position found (Case " + caseNum +
-				"): bestHold = " + bestHold +
-				", bestX = " + bestX +
-				", bestY = " + bestY +
-				", bestRt = " + bestRt +
-				", bestRtSub = " + bestRtSub +
-				", bestPts = " + bestPts);
-	}
-
 	/*
 	 * スレッドの処理
 	 */
@@ -687,7 +646,6 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	
 	/**
 	 * Constructs the moves table if necessary.
-	 * Note: Horizontal I placement is NOT included!
 	 */
 	public void createTables (GameEngine engine)
 	{
