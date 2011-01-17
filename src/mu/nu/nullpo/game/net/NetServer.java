@@ -46,6 +46,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -111,7 +112,7 @@ public class NetServer {
 
 	/** Server config file */
 	private static CustomProperties propServer;
-	
+
 	/** Server Rated presets file */
 	private static CustomProperties propPresets;
 
@@ -266,7 +267,7 @@ public class NetServer {
 		} catch (IOException e) {
 			log.warn("Failed to load config file", e);
 		}
-		
+
 		ratedInfoList = new LinkedList<String>();
 
 		String strInfo = ""; int i = 0;
@@ -875,8 +876,8 @@ public class NetServer {
 		String servcfg = "config/etc/netserver.cfg";  // default location
 		if (args.length >= 2) {
 			servcfg = args[1];
-		}		
-		
+		}
+
 		// Load server config file
 		propServer = new CustomProperties();
 		try {
@@ -1053,8 +1054,12 @@ public class NetServer {
 								// Delayed disconnect
 								List<ByteBuffer> queue = this.pendingData.get(change.socket);
 								if((queue == null) || queue.isEmpty()) {
-									logout(key);
-									changes.remove();
+									try {
+										changes.remove();
+										logout(key);
+									} catch (ConcurrentModificationException e) {
+										log.debug("ConcurrentModificationException on delayed disconnect", e);
+									}
 								}
 								break;
 							case ChangeRequest.CHANGEOPS:
@@ -1988,7 +1993,7 @@ public class NetServer {
 				}
 
 				roomInfo.strMode = NetUtil.urlDecode(message[3]);
-				
+
 				// Set map
 				if(roomInfo.useMap && (message.length > 4)) {
 					String strDecompressed = NetUtil.decompressString(message[34]);

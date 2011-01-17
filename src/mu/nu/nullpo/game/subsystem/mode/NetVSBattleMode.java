@@ -62,7 +62,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Maximum number of players */
 	private static final int MAX_PLAYERS = 6;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event type constants */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -84,7 +84,7 @@ public class NetVSBattleMode extends NetDummyMode {
 							 ATTACK_CATEGORY_GEM = 5,
 							 ATTACK_CATEGORIES = 6;
 
-	/** ゲーム席とゲーム画面上でのfield numberの対応表 */
+	/** Numbers of seats numbers corresponding to frames on player's screen */
 	private static final int[][] GAME_SEAT_NUMBERS =
 	{
 		{0,1,2,3,4,5},
@@ -107,13 +107,20 @@ public class NetVSBattleMode extends NetDummyMode {
 		GameEngine.FRAME_COLOR_YELLOW, GameEngine.FRAME_COLOR_PURPLE, GameEngine.FRAME_COLOR_CYAN
 	};
 
-	/** 操作中Blockが強制固定されるまでの time */
+	/** Team font colors */
+	private static final int[] TEAM_FONT_COLORS = {
+		EventReceiver.COLOR_WHITE,
+		EventReceiver.COLOR_RED, EventReceiver.COLOR_GREEN, EventReceiver.COLOR_BLUE, EventReceiver.COLOR_YELLOW,
+		EventReceiver.COLOR_PURPLE, EventReceiver.COLOR_CYAN
+	};
+
+	/** Time before forced piece lock */
 	private static final int PIECE_AUTO_LOCK_TIME = 60 * 60;
 
-	/** 攻撃力 table(旧T-Spin用) */
+	/** Attack table (for T-Spin only) */
 	private static final int[][] LINE_ATTACK_TABLE =
 	{
-		// 1-2人, 3人, 4人, 5人, 6人
+		// 1-2P, 3P, 4P, 5P, 6P
 		{0, 0, 0, 0, 0},	// Single
 		{1, 1, 0, 0, 0},	// Double
 		{2, 2, 1, 1, 1},	// Triple
@@ -126,10 +133,10 @@ public class NetVSBattleMode extends NetDummyMode {
 		{1, 1, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力 table(新スピン用) */
+	/** Attack table(for All Spin) */
 	private static final int[][] LINE_ATTACK_TABLE_ALLSPIN =
 	{
-		// 1-2人, 3人, 4人, 5人, 6人
+		// 1-2P, 3P, 4P, 5P, 6P
 		{0, 0, 0, 0, 0},	// Single
 		{1, 1, 0, 0, 0},	// Double
 		{2, 2, 1, 1, 1},	// Triple
@@ -142,7 +149,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		{0,	0, 0, 0, 0},	// EZ-T
 	};
 
-	/** 攻撃力 table参照用のindex number */
+	/** Indexes of attack types in attack table */
 	private static final int LINE_ATTACK_INDEX_SINGLE = 0,
 							 LINE_ATTACK_INDEX_DOUBLE = 1,
 							 LINE_ATTACK_INDEX_TRIPLE = 2,
@@ -154,13 +161,13 @@ public class NetVSBattleMode extends NetDummyMode {
 							 LINE_ATTACK_INDEX_TMINI_D = 8,
 							 LINE_ATTACK_INDEX_EZ_T = 9;
 
-	/** Comboの攻撃力 */
+	/** Combo attack table */
 	private static final int[][] COMBO_ATTACK_TABLE = {
-		{0,0,1,1,2,2,3,3,4,4,4,5}, // 1-2人
-		{0,0,1,1,1,2,2,3,3,4,4,4}, // 3人
-		{0,0,0,1,1,1,2,2,3,3,4,4}, // 4人
-		{0,0,0,1,1,1,1,2,2,3,3,4}, // 5人
-		{0,0,0,0,1,1,1,1,2,2,3,3}, // 6人
+		{0,0,1,1,2,2,3,3,4,4,4,5}, // 1-2 Player(s)
+		{0,0,1,1,1,2,2,3,3,4,4,4}, // 3 Player
+		{0,0,0,1,1,1,2,2,3,3,4,4}, // 4 Player
+		{0,0,0,1,1,1,1,2,2,3,3,4}, // 5 Player
+		{0,0,0,0,1,1,1,1,2,2,3,3}, // 6 Payers
 	};
 
 	private static int GARBAGE_DENOMINATOR = 60; // can be divided by 2,3,4,5
@@ -168,41 +175,46 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Drawing and event handling EventReceiver */
 	private EventReceiver receiver;
 
-	/** ルームID */
+	/** Current room ID */
 	private int currentRoomID;
 
-	/** Current ルーム情報 */
+	/** Current room informations */
 	private NetRoomInfo currentRoomInfo;
 
-	/** ルール固定部屋ならtrue */
+	/** True if rule is locked */
 	private boolean rulelockFlag;
 
-	/** 3人以上生きている場合に攻撃力を減らす */
+	/** Use reduced attack tables if 3 or more players are alive */
 	private boolean reduceLineSend;
 
-	/** 新しい断片的garbage blockシステムを使う */
+	/** Use fractional garbage system */
 	private boolean useFractionalGarbage;
 
+	/** Garbage hole change probability */
 	private int garbagePercent;
 
+	/** Change garbage on attack */
 	private boolean garbageChangePerAttack;
-	
+
+	/** Divide hole change rate by number of remaining opposing players/teams */
 	private boolean divideChangeRateByPlayers;
 
+	/** Column number of hole in most recent garbage line */
 	private int lastHole = -1;
 
-	//private boolean useTankMode = false;  
-	
-	/** Hurryup開始までの秒count(-1でHurryupなし) */
+	/** Tank mode */
+	//private boolean useTankMode = false;
+
+	/** Time in seconds before hurry up (-1 if hurry up disabled) */
 	private int hurryupSeconds;
 
-	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
+	/** Number of pieces to be placed between adding Hurry Up lines */
 	private int hurryupInterval;
 
-	/** Hurryup始まったらtrue */
+	/** True if Hurry Up has started */
 	private boolean hurryupStarted;
 
-	/** "HURRY UP!"表示の残り time */
+	/** Number of frames left to show "HURRY UP!" text */
 	private int hurryupShowFrames;
 
 	/** 自分のゲーム席の number(-1:観戦中) */
@@ -255,6 +267,9 @@ public class NetVSBattleMode extends NetDummyMode {
 
 	/** Team name */
 	private String[] playerTeams;
+
+	/** Team colors */
+	private int[] playerTeamColors;
 
 //	private boolean[] playerTeamsIsTank;
 //
@@ -475,6 +490,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		isReady = new boolean[MAX_PLAYERS];
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
+		playerTeamColors = new int[MAX_PLAYERS];
 //		playerTeamsIsTank = new boolean[MAX_PLAYERS];
 		scgettime = new int[MAX_PLAYERS];
 		lastevent = new int[MAX_PLAYERS];
@@ -516,6 +532,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	 * @param client NetPlayerClient
 	 * @param roomInfo NetRoomInfo
 	 */
+	@Override
 	protected void netOnJoin(NetLobbyFrame lobby, NetPlayerClient client, NetRoomInfo roomInfo) {
 		log.debug("onJoin on NetVSBattleMode");
 
@@ -613,6 +630,12 @@ public class NetVSBattleMode extends NetDummyMode {
 			owner.engine[0].enableSE = false;
 		}
 
+		// Apply 1vs1 layout
+		if((roomInfo != null) && (roomInfo.maxPlayers == 2)) {
+			owner.engine[0].displaysize = 0;
+			owner.engine[1].displaysize = 0;
+		}
+
 		updatePlayerExist();
 		updatePlayerNames();
 	}
@@ -622,15 +645,27 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	private void updatePlayerNames() {
 		LinkedList<NetPlayerInfo> pList = netLobby.getSameRoomPlayerInfoList();
+		LinkedList<String> teamList = new LinkedList<String>();
 
 		for(int i = 0; i < MAX_PLAYERS; i++) {
 			playerNames[i] = "";
 			playerTeams[i] = "";
+			playerTeamColors[i] = 0;
 
 			for(NetPlayerInfo pInfo: pList) {
 				if((pInfo.seatID != -1) && (getPlayerIDbySeatID(pInfo.seatID) == i)) {
 					playerNames[i] = pInfo.strName;
 					playerTeams[i] = pInfo.strTeam;
+
+					// Set team color
+					if(playerTeams[i].length() > 0) {
+						if(!teamList.contains(playerTeams[i])) {
+							teamList.add(playerTeams[i]);
+							playerTeamColors[i] = teamList.size();
+						} else {
+							playerTeamColors[i] = teamList.indexOf(playerTeams[i]) + 1;
+						}
+					}
 				}
 			}
 		}
@@ -819,6 +854,12 @@ public class NetVSBattleMode extends NetDummyMode {
 
 			engine.displaysize = 0;
 			engine.enableSE = true;
+
+			// Apply 1vs1 layout
+			if((currentRoomInfo != null) && (currentRoomInfo.maxPlayers == 2)) {
+				owner.engine[0].displaysize = 0;
+				owner.engine[1].displaysize = 0;
+			}
 
 			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
 				if((!isReadyChangePending) && (numPlayers >= 2)) {
@@ -1230,7 +1271,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			if(divideChangeRateByPlayers){
 				finalGarbagePercent /= (getNumberOfTeamsAlive() - 1);
 			}
-			
+
 			while(!garbageEntries.isEmpty()) {
 				GarbageEntry garbageEntry = garbageEntries.poll();
 				smallGarbageCount += garbageEntry.lines % GARBAGE_DENOMINATOR;
@@ -1479,22 +1520,19 @@ public class NetVSBattleMode extends NetDummyMode {
 			// Name
 			if((playerNames != null) && (playerNames[playerID] != null) && (playerNames[playerID].length() > 0)) {
 				String name = playerNames[playerID];
-
-				if( (playerSeatNumber != -1) &&
-					(playerTeams[0].length() > 0) && (playerTeams[playerID].length() > 0) &&
-					(playerTeams[0].equalsIgnoreCase(playerTeams[playerID]) == true) )
-				{
-					name = "*" + playerNames[playerID];
-				}
+				int fontcolorNum = playerTeamColors[playerID];
+				if(fontcolorNum < 0) fontcolorNum = 0;
+				if(fontcolorNum > TEAM_FONT_COLORS.length - 1) fontcolorNum = TEAM_FONT_COLORS.length - 1;
+				int fontcolor = TEAM_FONT_COLORS[fontcolorNum];
 
 				if(engine.displaysize == -1) {
 					if(name.length() > 7) name = name.substring(0, 7) + "..";
-					receiver.drawTTFDirectFont(engine, playerID, x, y - 16, name);
+					receiver.drawTTFDirectFont(engine, playerID, x, y - 16, name, fontcolor);
 				} else if(playerID == 0) {
 					if(name.length() > 14) name = name.substring(0, 14) + "..";
-					receiver.drawTTFDirectFont(engine, playerID, x, y - 20, name);
+					receiver.drawTTFDirectFont(engine, playerID, x, y - 20, name, fontcolor);
 				} else {
-					receiver.drawTTFDirectFont(engine, playerID, x, y - 20, name);
+					receiver.drawTTFDirectFont(engine, playerID, x, y - 20, name, fontcolor);
 				}
 			}
 
@@ -1734,7 +1772,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		} else {
 			if(isReady[playerID] && !isNetGameActive) {
 				receiver.drawDirectFont(engine, playerID, x + 36, y + 80, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
-			} else if(numNowPlayers == 2) {
+			} else if((numNowPlayers == 2) || (currentRoomInfo.maxPlayers == 2)) {
 				receiver.drawDirectFont(engine, playerID, x + 28, y + 80, "LOSE", EventReceiver.COLOR_WHITE, 0.5f);
 			} else if(place == 1) {
 				//receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "GAME OVER", EventReceiver.COLOR_WHITE, 0.5f);
@@ -1813,7 +1851,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		if(engine.displaysize != -1) {
 			if(isReady[playerID] && !isNetGameActive) {
 				receiver.drawDirectFont(engine, playerID, x + 68, y + 204, "OK", EventReceiver.COLOR_YELLOW);
-			} else if(numNowPlayers == 2) {
+			} else if((numNowPlayers == 2) || (currentRoomInfo.maxPlayers == 2)) {
 				receiver.drawDirectFont(engine, playerID, x + 52, y + 204, "WIN!", EventReceiver.COLOR_YELLOW);
 			} else {
 				receiver.drawDirectFont(engine, playerID, x + 4, y + 204, "1ST PLACE!", EventReceiver.COLOR_YELLOW);
@@ -1821,7 +1859,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		} else {
 			if(isReady[playerID] && !isNetGameActive) {
 				receiver.drawDirectFont(engine, playerID, x + 36, y + 80, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
-			} else if(numNowPlayers == 2) {
+			} else if((numNowPlayers == 2) || (currentRoomInfo.maxPlayers == 2)) {
 				receiver.drawDirectFont(engine, playerID, x + 28, y + 80, "WIN!", EventReceiver.COLOR_YELLOW, 0.5f);
 			} else {
 				receiver.drawDirectFont(engine, playerID, x + 4, y + 80, "1ST PLACE!", EventReceiver.COLOR_YELLOW, 0.5f);
@@ -1912,12 +1950,14 @@ public class NetVSBattleMode extends NetDummyMode {
 	public void netplayOnRetryKey(GameEngine engine, int playerID) {
 	}
 
+	@Override
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
 		for(int i = 0; i < getPlayers(); i++) {
 			owner.engine[i].stat = GameEngine.STAT_NOTHING;
 		}
 	}
 
+	@Override
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
 		// Player状態変更
 		if(message[0].equals("playerupdate")) {
@@ -1975,6 +2015,13 @@ public class NetVSBattleMode extends NetDummyMode {
 						owner.engine[i].enableSE = false;
 					}
 				}
+
+				// Apply 1vs1 layout
+				if((currentRoomInfo != null) && (currentRoomInfo.maxPlayers == 2)) {
+					owner.engine[0].displaysize = 0;
+					owner.engine[1].displaysize = 0;
+				}
+
 				isPractice = false;
 				owner.engine[0].stat = GameEngine.STAT_SETTING;
 
