@@ -29,6 +29,7 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
 import mu.nu.nullpo.game.component.BGMStatus;
+import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
@@ -517,6 +518,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			return super.getChainColor(engine, playerID);
 	}
 
+	@Override
 	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {
 		if (chain > FEVER_POWERS.length)
 			return FEVER_POWERS[FEVER_POWERS.length-1];
@@ -524,10 +526,12 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			return FEVER_POWERS[chain-1];
 	}
 
+	@Override
 	protected void onClear(GameEngine engine, int playerID) {
 		feverChainDisplay[playerID] = feverChain[playerID];
 	}
 
+	@Override
 	protected void addOjama(GameEngine engine, int playerID, int pts) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
@@ -567,7 +571,11 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			ojamaAdd[enemyID] += ojamaNew;
 	}
 
+	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
+
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 		if (ojamaAdd[enemyID] > 0)

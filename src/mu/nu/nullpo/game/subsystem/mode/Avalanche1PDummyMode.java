@@ -228,6 +228,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		}
 	}
 
+	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0)
 			return readyInit(engine, playerID);
@@ -338,6 +339,8 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
 
 		if (avalanche > 0) {
 			if (zenKeshi)
@@ -412,7 +415,11 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		chainDisplay = 60;
 	}
 
+	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
+
 		if (garbageAdd > 0)
 		{
 			garbageSent += garbageAdd;

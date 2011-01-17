@@ -2139,7 +2139,8 @@ public class Field implements Serializable {
 								Block bBelow = getBlock(l, k + 1);
 
 								if( (getCoordAttribute(l, k + 1) == COORD_WALL) ||
-									((bBelow != null) && !bBelow.isEmpty() && !bBelow.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK)) )
+									((bBelow != null) && !bBelow.isEmpty() && !bBelow.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK))
+								  )
 								{
 									fall = false;
 								}
@@ -2267,10 +2268,13 @@ public class Field implements Serializable {
 		Block blk = getBlock(x, y);
 		if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK)) {
 			blk.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, true);
-			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) checkBlockLinkSub(x, y - 1);
-			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) checkBlockLinkSub(x, y + 1);
-			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) checkBlockLinkSub(x - 1, y);
-			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) checkBlockLinkSub(x + 1, y);
+
+			if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK)) {
+				if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP)) checkBlockLinkSub(x, y - 1);
+				if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) checkBlockLinkSub(x, y + 1);
+				if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) checkBlockLinkSub(x - 1, y);
+				if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) checkBlockLinkSub(x + 1, y);
+			}
 		}
 	}
 
@@ -2299,6 +2303,65 @@ public class Field implements Serializable {
 			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN)) setBlockLinkBrokenSub(x, y + 1);
 			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT)) setBlockLinkBrokenSub(x - 1, y);
 			if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT)) setBlockLinkBrokenSub(x + 1, y);
+		}
+	}
+
+	/**
+	 * Checks the color of blocks and set the connection flags to each block.
+	 */
+	public void setBlockLinkByColor() {
+		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
+			for(int j = 0; j < width; j++) {
+				setBlockLinkByColor(j, i);
+			}
+		}
+	}
+
+	/**
+	 * Checks the color of blocks and set the connection flags to each block.
+	 * @param x X coord
+	 * @param y Y coord
+	 */
+	public void setBlockLinkByColor(int x, int y) {
+		setAllAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
+		setBlockLinkByColorSub(x, y);
+	}
+
+	/**
+	 * Subroutine for setBlockLinkByColorSub.
+	 * @param x X coord
+	 * @param y Y coord
+	 */
+	protected void setBlockLinkByColorSub(int x, int y) {
+		Block blk = getBlock(x, y);
+		if((blk != null) && !blk.isEmpty() && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK) &&
+		    !blk.getAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE) && blk.isNormalBlock())
+		{
+			blk.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, true);
+			if(getBlockColor(x, y - 1) == blk.color) {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);
+				setBlockLinkByColorSub(x, y - 1);
+			} else {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+			}
+			if(getBlockColor(x, y + 1) == blk.color) {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);
+				setBlockLinkByColorSub(x, y + 1);
+			} else {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+			}
+			if(getBlockColor(x - 1, y) == blk.color) {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);
+				setBlockLinkByColorSub(x - 1, y);
+			} else {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+			}
+			if(getBlockColor(x + 1, y) == blk.color) {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);
+				setBlockLinkByColorSub(x + 1, y);
+			} else {
+				blk.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+			}
 		}
 	}
 

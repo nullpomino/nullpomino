@@ -530,7 +530,11 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		super.renderLast(engine, playerID);
 	}
 
+	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
+
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 		if (ojamaAdd[enemyID] > 0)
@@ -614,6 +618,7 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		updateOjamaMeter(engine, playerID);
 	}
 
+	@Override
 	protected void updateOjamaMeter (GameEngine engine, int playerID) {
 		int width = 6;
 		if (engine.field != null)

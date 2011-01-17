@@ -500,7 +500,11 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 		super.renderLast(engine, playerID);
 	}
 
+	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
+
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 		if (ojamaAdd[enemyID] > 0)

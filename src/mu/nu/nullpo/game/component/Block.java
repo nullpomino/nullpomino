@@ -134,9 +134,12 @@ public class Block implements Serializable {
 
 	/** Anti-gravity flag (The block will not fall by gravity) */
 	public static final int BLOCK_ATTRIBUTE_ANTIGRAVITY = 16384;
-	
+
 	/** Last commit flag -- block was part of last placement or cascade **/
 	public static final int BLOCK_ATTRIBUTE_LAST_COMMIT = 32768;
+
+	/** Ignore block connections (for Avalanche modes) */
+	public static final int BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK = 65536;
 
 	/** Block color */
 	public int color;
@@ -334,7 +337,7 @@ public class Block implements Serializable {
 	/**
 	 * @return the character representing the color of this block
 	 */
-	public char blockToChar(){	
+	public char blockToChar(){
 		//'0'-'9','A'-'Z' represent colors 0-35.
 		//Colors beyond that would follow the ASCII table starting at '['.
 		if(color >= 10) {
@@ -342,18 +345,19 @@ public class Block implements Serializable {
 		}
 		return (char)('0' + Math.max(0, color));
 	}
-	
+
+	@Override
 	public String toString(){
 		return ""+blockToChar();
 	}
-	
+
 	/**
 	 * @param c A character representing a block
 	 * @return The int representing the block's color
 	 */
 	public static int charToBlockColor(char c){
 		int blkColor = 0;
-		
+
 		//With a radix of 36, the digits encompass '0'-'9','A'-'Z'.
 		//With a radix higher than 36, we can also have characters 'a'-'z' represent digits.
 		blkColor = Character.digit(c, 36);
@@ -366,7 +370,7 @@ public class Block implements Serializable {
 		}
 		return blkColor;
 	}
-	
+
 	public static void updateRainbowPhase(int time) {
 		rainbowPhase = time%21;
 	}

@@ -29,6 +29,7 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
 import mu.nu.nullpo.game.component.BGMStatus;
+import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.event.EventReceiver;
@@ -782,6 +783,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		}
 	}
 
+	@Override
 	protected int calcChainNewPower(GameEngine engine, int playerID, int chain) {
 		int[] powers = inFever[playerID] ? FEVER_POWERS : CHAIN_POWERS;
 		if (chain > powers.length)
@@ -790,6 +792,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			return powers[chain-1];
 	}
 
+	@Override
 	protected void onClear(GameEngine engine, int playerID) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
@@ -798,6 +801,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			ojamaAddToFever[enemyID] = inFever[enemyID];
 	}
 
+	@Override
 	protected void addOjama(GameEngine engine, int playerID, int pts) {
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
@@ -874,7 +878,11 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		}
 	}
 
+	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
+
 		int enemyID = 0;
 		if(playerID == 0) enemyID = 1;
 		if (ojamaAdd[enemyID] > 0)

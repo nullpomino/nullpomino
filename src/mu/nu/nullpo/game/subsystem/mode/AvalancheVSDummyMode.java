@@ -608,6 +608,9 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
+		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
+		engine.field.setBlockLinkByColor();
+
 		if (avalanche > 0) {
 			cleared[playerID] = true;
 
@@ -725,6 +728,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		return (pts+rate-1)/rate;
 	}
 
+	@Override
 	public abstract boolean lineClearEnd(GameEngine engine, int playerID);
 
 	/**
