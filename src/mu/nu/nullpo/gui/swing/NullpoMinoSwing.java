@@ -1021,6 +1021,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[i].aiThinkDelay = propGlobal.getProperty(i + ".aiThinkDelay", 0);
 				gameManager.engine[i].aiUseThread = propGlobal.getProperty(i + ".aiUseThread", true);
 				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint", false);
+				gameManager.engine[i].aiPrethink = propGlobal.getProperty(i+".aiPrethink", false);
 			}
 
 			// Called at initialization
@@ -1088,7 +1089,8 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[i].aiMoveDelay = propGlobal.getProperty(i + ".aiMoveDelay", 0);
 				gameManager.engine[i].aiThinkDelay = propGlobal.getProperty(i + ".aiThinkDelay", 0);
 				gameManager.engine[i].aiUseThread = propGlobal.getProperty(i + ".aiUseThread", true);
-				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint",false);
+				gameManager.engine[i].aiShowHint = propGlobal.getProperty(i+".aiShowHint", false);
+				gameManager.engine[i].aiPrethink = propGlobal.getProperty(i+".aiPrethink", false);
 			}
 
 			// Called at initialization
@@ -1183,8 +1185,9 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[0].aiMoveDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiMoveDelay", 0);
 				gameManager.engine[0].aiThinkDelay = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiThinkDelay", 0);
 				gameManager.engine[0].aiUseThread = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiUseThread", true);
-				gameManager.engine[0].aiShowHint = NullpoMinoSwing.propGlobal.getProperty(0+".aiShowHint",false);
-			}
+				gameManager.engine[0].aiShowHint = NullpoMinoSwing.propGlobal.getProperty(0+".aiShowHint", false);
+				gameManager.engine[0].aiPrethink = NullpoMinoSwing.propGlobal.getProperty(0+".aiPrethink", false);
+					}
 
 			// Initialization for each player
 			for(int i = 0; i < gameManager.getPlayers(); i++) {

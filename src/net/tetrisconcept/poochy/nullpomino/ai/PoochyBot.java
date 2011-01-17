@@ -142,7 +142,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else if (!thinking && !thinkComplete) {
+		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink
+				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
 			thinkRequest = true;
 			thinkCurrentPieceNo++;
 		}
@@ -155,15 +156,14 @@ public class PoochyBot extends DummyAI implements Runnable {
 		inputARE = 0;
 		boolean newInARE = engine.stat == GameEngine.STAT_ARE ||
 			engine.stat == GameEngine.STAT_READY;
-		if ((newInARE && !inARE) || (!thinking && !thinkSuccess))
+		if ((engine.aiPrethink && engine.getARE() > 0 && engine.getARELine() > 0)
+				&& ((newInARE && !inARE) || (!thinking && !thinkSuccess)))
 		{
 			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
-			inARE = newInARE;
 			thinkComplete = false;
 			thinkRequest = true;
 		}
-		else if (inARE && !newInARE)
-			inARE = false;
+		inARE = newInARE;
 		if(inARE && delay >= engine.aiMoveDelay) {
 			int input = 0;
 			Piece nextPiece = engine.getNextObject(engine.nextPieceCount);

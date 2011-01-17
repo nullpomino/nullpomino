@@ -80,6 +80,8 @@ public class StateConfigAISelect extends BaseGameState {
 	protected boolean aiUseThread = false;
 
 	protected boolean aiShowHint = false;
+	
+	protected boolean aiPrethink = false;
 
 	/** Cursor position */
 	protected int cursor = 0;
@@ -116,7 +118,8 @@ public class StateConfigAISelect extends BaseGameState {
 		aiMoveDelay = NullpoMinoSlick.propGlobal.getProperty(player + ".aiMoveDelay", 0);
 		aiThinkDelay = NullpoMinoSlick.propGlobal.getProperty(player + ".aiThinkDelay", 0);
 		aiUseThread = NullpoMinoSlick.propGlobal.getProperty(player + ".aiUseThread", true);
-		aiShowHint = NullpoMinoSlick.propGlobal.getProperty(player+ ".aiShowHint",false);
+		aiShowHint = NullpoMinoSlick.propGlobal.getProperty(player+ ".aiShowHint", false);
+		aiPrethink = NullpoMinoSlick.propGlobal.getProperty(player+ ".aiPrethink", false);
 
 		aiID = -1;
 		for(int i = 0; i < aiPathList.length; i++) {
@@ -200,6 +203,8 @@ public class StateConfigAISelect extends BaseGameState {
 		NormalFont.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
 		NormalFont.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
 		NormalFont.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
+		NormalFont.printFontGrid(2, 8, "AI PRE-THINK:" + GeneralUtil.getONorOFF(aiPrethink), (cursor == 5));
+
 		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFont.COLOR_GREEN);
 	}
 
@@ -214,12 +219,12 @@ public class StateConfigAISelect extends BaseGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 4;
+			if(cursor < 0) cursor = 5;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 4) cursor = 0;
+			if(cursor > 5) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -253,6 +258,9 @@ public class StateConfigAISelect extends BaseGameState {
 			case 4:
 				aiShowHint = !aiShowHint;
 				break;
+			case 5:
+				aiPrethink = !aiPrethink;
+				break;
 			}
 		}
 
@@ -266,6 +274,7 @@ public class StateConfigAISelect extends BaseGameState {
 			NullpoMinoSlick.propGlobal.setProperty(player + ".aiThinkDelay", aiThinkDelay);
 			NullpoMinoSlick.propGlobal.setProperty(player + ".aiUseThread", aiUseThread);
 			NullpoMinoSlick.propGlobal.setProperty(player + ".aiShowHint",aiShowHint);
+			NullpoMinoSlick.propGlobal.setProperty(player + ".aiPrethink",aiPrethink);
 			NullpoMinoSlick.saveConfig();
 
 			game.enterState(StateConfigMainMenu.ID);

@@ -133,7 +133,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else if (!thinking && !thinkComplete) {
+		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink) {
 			thinkRequest = true;
 			thinkCurrentPieceNo++;
 		}
@@ -143,16 +143,19 @@ public class Nohoho extends DummyAI implements Runnable {
 	 * Called at the start of each frame
 	 */
 	public void onFirst(GameEngine engine, int playerID) {
-		inputARE = 0;
-		boolean newInARE = engine.stat == GameEngine.STAT_ARE ||
-			engine.stat == GameEngine.STAT_READY;
-		if ((newInARE && !inARE) || (!thinking && !thinkSuccess))
+		if (engine.aiPrethink && engine.getARE() > 0 && engine.getARELine() > 0)
 		{
-			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
-			thinkComplete = false;
-			thinkRequest = true;
+			inputARE = 0;
+			boolean newInARE = engine.stat == GameEngine.STAT_ARE ||
+				engine.stat == GameEngine.STAT_READY;
+			if ((newInARE && !inARE) || (!thinking && !thinkSuccess))
+			{
+				if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
+				thinkComplete = false;
+				thinkRequest = true;
+			}
+			inARE = newInARE;
 		}
-		inARE = newInARE;
 	}
 
 	/*

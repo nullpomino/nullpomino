@@ -77,6 +77,8 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 
 	protected boolean aiShowHint = false;
 
+	protected boolean aiPrethink = false;
+
 	/** Cursor position */
 	protected int cursor = 0;
 
@@ -104,6 +106,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		aiThinkDelay = NullpoMinoSDL.propGlobal.getProperty(player + ".aiThinkDelay", 0);
 		aiUseThread = NullpoMinoSDL.propGlobal.getProperty(player + ".aiUseThread", true);
 		aiShowHint = NullpoMinoSDL.propGlobal.getProperty(player + ".aiShowHint", false);
+		aiPrethink = NullpoMinoSDL.propGlobal.getProperty(player + ".aiPrethink", false);
 
 		aiID = -1;
 		for(int i = 0; i < aiPathList.length; i++) {
@@ -185,6 +188,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
 		NormalFontSDL.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
 		NormalFontSDL.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
+		NormalFontSDL.printFontGrid(2, 8, "AI PRE-THINK:" + GeneralUtil.getONorOFF(aiPrethink), (cursor == 5));
 
 		NormalFontSDL.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFontSDL.COLOR_GREEN);
 	}
@@ -197,12 +201,12 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 4;
+			if(cursor < 0) cursor = 5;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 4) cursor = 0;
+			if(cursor > 5) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -236,6 +240,9 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			case 4:
 				aiShowHint = !aiShowHint;
 				break;
+			case 5:
+				aiPrethink = !aiPrethink;
+				break;
 			}
 		}
 
@@ -249,6 +256,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiThinkDelay", aiThinkDelay);
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiUseThread", aiUseThread);
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiShowHint",aiShowHint);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".aiPrethink",aiPrethink);
 			NullpoMinoSDL.saveConfig();
 
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);

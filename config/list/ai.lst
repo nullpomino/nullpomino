@@ -1,11 +1,7 @@
 mu.nu.nullpo.game.subsystem.ai.BasicAI
 mu.nu.nullpo.game.subsystem.ai.TSpinAI
 net.tetrisconcept.poochy.nullpomino.ai.PoochyBot
-net.tetrisconcept.poochy.nullpomino.ai.PoochyBotNoPrethink
 net.tetrisconcept.poochy.nullpomino.ai.PoochyBotDefensive
-net.tetrisconcept.poochy.nullpomino.ai.PoochyBotDefNoPre
 mu.nu.nullpo.game.subsystem.ai.RanksAI
 net.tetrisconcept.poochy.nullpomino.ai.Nohoho
-net.tetrisconcept.poochy.nullpomino.ai.NohohoNoPrethink
 net.tetrisconcept.poochy.nullpomino.ai.ComboRaceBot
-net.tetrisconcept.poochy.nullpomino.ai.ComboRaceNoPrethink

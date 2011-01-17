@@ -202,6 +202,9 @@ public class GameEngine {
 	/** Show Hint with AI */
 	public boolean aiShowHint;
 
+	/** Prethink with AI */
+	public boolean aiPrethink;
+
 	/** AI Hint X position */
 	public int aiHintX;
 
