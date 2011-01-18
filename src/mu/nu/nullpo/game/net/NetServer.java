@@ -1150,7 +1150,9 @@ public class NetServer {
 			String strStart = GeneralUtil.exportCalendarString(ban.startDate);
 			String strExpire = (endDate == null) ? "" : GeneralUtil.exportCalendarString(endDate);
 			send(socketChannel, "banned\t" + strStart + "\t" + strExpire + "\n");
-			this.pendingChanges.add(new ChangeRequest(socketChannel, ChangeRequest.DISCONNECT, 0));
+			synchronized (this.pendingChanges) {
+			  this.pendingChanges.add(new ChangeRequest(socketChannel, ChangeRequest.DISCONNECT, 0));
+			}
 		} else {
 			// Send welcome message
 			log.debug("Accept:" + getHostName(socketChannel));
@@ -1370,7 +1372,9 @@ public class NetServer {
 		adminList.clear();
 		playerInfoMap.clear();
 		roomInfoList.clear();
-		this.pendingData.clear();
+		synchronized (this.pendingData) {
+		  this.pendingData.clear();
+		}
 		if(this.readBuffer != null) this.readBuffer.clear();
 
 		System.gc();
@@ -1617,7 +1621,9 @@ public class NetServer {
 			if(serverVer != clientVer) {
 				send(client, "observerloginfail\tDIFFERENT_VERSION\t" + serverVer + "\n");
 				//logout(client);
-				this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
+				synchronized (this.pendingChanges) {
+				  this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
+				}
 				return;
 			}
 
