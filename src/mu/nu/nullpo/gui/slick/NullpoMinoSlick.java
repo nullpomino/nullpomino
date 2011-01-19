@@ -68,25 +68,25 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Log */
 	static Logger log = Logger.getLogger(NullpoMinoSlick.class);
 
-	/** ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã�«æ¸¡ã�•ã‚Œã�Ÿã‚³ãƒžãƒ³ãƒ‰Lineså¼•count */
+	/** プログラムに渡されたコマンドLines引count */
 	public static String[] programArgs;
 
-	/** Save settingsç”¨Property file */
+	/** Save settings用Property file */
 	public static CustomProperties propConfig;
 
-	/** Save settingsç”¨Property file (å…¨Versionå…±é€š) */
+	/** Save settings用Property file (全Version共通) */
 	public static CustomProperties propGlobal;
 
-	/** éŸ³æ¥½ãƒªã‚¹ãƒˆProperty file */
+	/** 音楽リストProperty file */
 	public static CustomProperties propMusic;
 
-	/** Observeræ©Ÿèƒ½ç”¨Property file */
+	/** Observer機能用Property file */
 	public static CustomProperties propObserver;
 
 	/** Default language file */
 	public static CustomProperties propLangDefault;
 
-	/** è¨€èªžãƒ•ã‚¡ã‚¤ãƒ« */
+	/** 言語ファイル */
 	public static CustomProperties propLang;
 
 	/** Default game mode description file */
@@ -95,58 +95,58 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Game mode description file */
 	public static CustomProperties propModeDesc;
 
-	/** Screenshotç”¨ */
+	/** Screenshot用 */
 	public static BufferedImage ssImage;
 
-	/** Mode ç®¡ç�† */
+	/** Mode 管理 */
 	public static ModeManager modeManager;
 
 	/** AppGameContainer */
 	public static AppGameContainer appGameContainer;
 
-	/** ãƒ­ãƒ¼ãƒ‰ç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** ロード画面のステート */
 	public static StateLoading stateLoading;
 
-	/** ã‚¿ã‚¤ãƒˆãƒ«ç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** タイトル画面のステート */
 	public static StateTitle stateTitle;
 
-	/** ã‚²ãƒ¼ãƒ ç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** ゲーム画面のステート */
 	public static StateInGame stateInGame;
 
-	/** Mode é�¸æŠžç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** Mode 選択画面のステート */
 	public static StateSelectMode stateSelectMode;
 
-	/** ãƒªãƒ—ãƒ¬ã‚¤é�¸æŠžç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** リプレイ選択画面のステート */
 	public static StateReplaySelect stateReplaySelect;
 
-	/** è¨­å®šç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** 設定画面のステート */
 	public static StateConfigMainMenu stateConfigMainMenu;
 
-	/** å…¨èˆ¬ã�®è¨­å®šç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** 全般の設定画面のステート */
 	public static StateConfigGeneral stateConfigGeneral;
 
-	/** ãƒ«ãƒ¼ãƒ«é�¸æŠžç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** ルール選択画面のステート */
 	public static StateConfigRuleSelect stateConfigRuleSelect;
 
-	/** AIé�¸æŠžç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** AI選択画面のステート */
 	public static StateConfigAISelect stateConfigAISelect;
 
-	/** ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰è¨­å®šç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** キーボード設定画面のステート */
 	public static StateConfigKeyboard stateConfigKeyboard;
 
-	/** Joystick buttonè¨­å®šç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** Joystick button設定画面のステート */
 	public static StateConfigJoystickButton stateConfigJoystickButton;
 
-	/** ãƒ�ãƒƒãƒˆãƒ—ãƒ¬ã‚¤ç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** ネットプレイ画面のステート */
 	public static StateNetGame stateNetGame;
 
-	/** Joystick è¨­å®šãƒ¡ã‚¤ãƒ³Menu ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** Joystick 設定メインMenu のステート */
 	public static StateConfigJoystickMain stateConfigJoystickMain;
 
-	/** Joystick ãƒ†ã‚¹ãƒˆç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** Joystick テスト画面のステート */
 	public static StateConfigJoystickTest stateConfigJoystickTest;
 
-	/** ãƒ�ãƒ¥ãƒ¼ãƒ‹ãƒ³ã‚°è¨­å®šç”»é�¢ã�®ã‚¹ãƒ†ãƒ¼ãƒˆ */
+	/** チューニング設定画面のステート */
 	public static StateConfigGameTuning stateConfigGameTuning;
 
 	/** Style select state */
@@ -185,42 +185,42 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** Used for FPS calculation */
 	protected static long periodCurrent;
 
-	/** FPSç¶­æŒ�ç”¨ */
+	/** FPS維持用 */
 	protected static long beforeTime;
 
-	/** FPSç¶­æŒ�ç”¨ */
+	/** FPS維持用 */
 	protected static long overSleepTime;
 
-	/** FPSç¶­æŒ�ç”¨ */
+	/** FPS維持用 */
 	protected static int noDelays;
 
-	/** FPSè¨ˆç®—ç”¨ */
+	/** FPS計算用 */
 	protected static long calcInterval = 0;
 
-	/** FPSè¨ˆç®—ç”¨ */
+	/** FPS計算用 */
 	protected static long prevCalcTime = 0;
 
 	/**  frame count */
 	protected static long frameCount = 0;
 
-	/** å®Ÿéš›ã�®FPS */
+	/** 実際のFPS */
 	public static double actualFPS = 0.0;
 
-	/** FPSè¡¨ç¤ºç”¨DecimalFormat */
+	/** FPS表示用DecimalFormat */
 	public static DecimalFormat df = new DecimalFormat("0.0");
 
 	/** Used by perfect fps mode */
 	public static long perfectFPSDelay = 0;
 
-	/** Observerã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ */
+	/** Observerクライアント */
 	public static NetObserverClient netObserverClient;
 
 	/** true if read keyboard input from JInput */
 	public static boolean useJInputKeyboard;
 
 	/**
-	 * ãƒ¡ã‚¤ãƒ³é–¢count
-	 * @param args ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã�«æ¸¡ã�•ã‚Œã�Ÿã‚³ãƒžãƒ³ãƒ‰Lineså¼•count
+	 * メイン関count
+	 * @param args プログラムに渡されたコマンドLines引count
 	 */
 	public static void main(String[] args) {
 		programArgs = args;
@@ -239,7 +239,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 		propGlobal = new CustomProperties();
 		propMusic = new CustomProperties();
 
-		// è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­ã�¿è¾¼ã�¿
+		// 設定ファイル読み込み
 		try {
 			FileInputStream in = new FileInputStream("config/setting/slick.cfg");
 			propConfig.load(in);
@@ -252,7 +252,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			in.close();
 		} catch (IOException e) {}
 
-		// è¨€èªžãƒ•ã‚¡ã‚¤ãƒ«èª­ã�¿è¾¼ã�¿
+		// 言語ファイル読み込み
 		propLangDefault = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/slick_default.properties");
@@ -286,7 +286,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 			in.close();
 		} catch(IOException e) {}
 
-		// Modeèª­ã�¿è¾¼ã�¿
+		// Mode読み込み
 		modeManager = new ModeManager();
 		try {
 			BufferedReader txtMode = new BufferedReader(new FileReader("config/list/mode.lst"));
@@ -334,7 +334,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		perfectFPSDelay = System.nanoTime();
 
-		// ã‚²ãƒ¼ãƒ ç”»é�¢ã�ªã�©ã�®åˆ�æœŸåŒ–
+		// ゲーム画面などの初期化
 		try {
 			int sWidth = propConfig.getProperty("option.screenwidth", 640);
 			int sHeight = propConfig.getProperty("option.screenheight", 480);
@@ -393,7 +393,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿�å­˜
+	 * 設定ファイルを保存
 	 */
 	public static void saveConfig() {
 		try {
@@ -425,7 +425,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * ã�„ã‚�ã�„ã‚�ã�ªè¨­å®šã‚’å��æ˜ ã�•ã�›ã‚‹
+	 * いろいろな設定を反映させる
 	 */
 	public static void setGeneralConfig() {
 		appGameContainer.setTargetFrameRate(-1);
@@ -463,19 +463,19 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * Screenshotä¿�å­˜
+	 * Screenshot保存
 	 * @param container GameContainer
 	 * @param g Graphics
 	 */
 	public static void saveScreenShot(GameContainer container, Graphics g) {
-		// Filenameã‚’æ±ºã‚�ã‚‹
+		// Filenameを決める
 		String dir = propGlobal.getProperty("custom.screenshot.directory", "ss");
 		Calendar c = Calendar.getInstance();
 		DateFormat dfm = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 		String filename = dir + "/" + dfm.format(c.getTime()) + ".png";
 		log.info("Saving screenshot to " + filename);
 
-		// Screenshotä½œæˆ�
+		// Screenshot作成
 		try {
 			File ssfolder = new File(dir);
 			if (!ssfolder.exists()) {
@@ -492,17 +492,17 @@ public class NullpoMinoSlick extends StateBasedGame {
 			Image screenImage = new Image(screenWidth, screenHeight);
 			g.copyArea(screenImage, 0, 0);
 
-			// ä»¥ä¸‹ã�®æ–¹æ³•ã� ã�¨ä¸Šä¸‹ã�•ã�‹ã�•ã�¾
+			// 以下の方法だと上下さかさま
 			//ImageOut.write(screenImage, filename);
 
-			// ã�ªã�®ã�§è‡ªå‰�ã�§ç”»é�¢ã‚’ã‚³ãƒ”ãƒ¼ã�™ã‚‹
+			// なので自前で画面をコピーする
 			if(ssImage == null) {
 				ssImage = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
 			}
 
 			for(int i = 0; i < screenWidth; i++)
 				for(int j = 0; j < screenHeight; j++) {
-					Color color = screenImage.getColor(i, j + 1);	// ã�©ã�†ã‚‚Y-coordinateã�¯+1ã�—ã�ªã�„ã�¨ã‚ºãƒ¬ã‚‹ã‚‰ã�—ã�„
+					Color color = screenImage.getColor(i, j + 1);	// どうもY-coordinateは+1しないとズレるらしい
 
 					int rgb =
 						((color.getRed()   & 0x000000FF) << 16) |
@@ -512,7 +512,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 					ssImage.setRGB(i, j, rgb);
 				}
 
-			// ãƒ•ã‚¡ã‚¤ãƒ«ã�«ä¿�å­˜
+			// ファイルに保存
 			javax.imageio.ImageIO.write(ssImage, "png", new File(filename));
 		} catch (Throwable e) {
 			log.error("Failed to create screen shot", e);
@@ -520,9 +520,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * ç¿»è¨³å¾Œã�®UIã�®æ–‡å­—åˆ—ã‚’å�–å¾—
-	 * @param str æ–‡å­—åˆ—
-	 * @return ç¿»è¨³å¾Œã�®UIã�®æ–‡å­—åˆ— (ç„¡ã�„ã�ªã‚‰ã��ã�®ã�¾ã�¾strã‚’è¿”ã�™ï¼‰
+	 * 翻訳後のUIの文字列を取得
+	 * @param str 文字列
+	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
 	 */
 	public static String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -599,22 +599,22 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * FPSã�®è¨ˆç®—
-	 * @param period FPSã‚’è¨ˆç®—ã�™ã‚‹é–“éš”
+	 * FPSの計算
+	 * @param period FPSを計算する間隔
 	 */
 	protected static void calcFPS(boolean ingame, long period) {
 		frameCount++;
 		calcInterval += period;
 
-		// 1ç§’ã�Šã��ã�«FPSã‚’å†�è¨ˆç®—ã�™ã‚‹
+		// 1秒おきにFPSを再計算する
 		if(calcInterval >= 1000000000L) {
 			long timeNow = System.nanoTime();
 
-			// å®Ÿéš›ã�®çµŒé�Ž timeã‚’æ¸¬å®š
-			long realElapsedTime = timeNow - prevCalcTime; // å�˜ä½�: ns
+			// 実際の経過 timeを測定
+			long realElapsedTime = timeNow - prevCalcTime; // 単位: ns
 
-			// FPSã‚’è¨ˆç®—
-			// realElapsedTimeã�®å�˜ä½�ã�¯nsã�ªã�®ã�§sã�«å¤‰æ�›ã�™ã‚‹
+			// FPSを計算
+			// realElapsedTimeの単位はnsなのでsに変換する
 			actualFPS = ((double) frameCount / realElapsedTime) * 1000000000L;
 
 			frameCount = 0L;
@@ -652,7 +652,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/*
-	 * ã‚¹ãƒ†ãƒ¼ãƒˆ (ã‚¿ã‚¤ãƒˆãƒ«ã�¨ã�‹ã‚²ãƒ¼ãƒ ã�¨ã�‹ã�®ã‚·ãƒ¼ãƒ³ã�®ã�“ã�¨ã�­ï¼‰ã‚’è¿½åŠ 
+	 * ステート (タイトルとかゲームとかのシーンのことね）を追加
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
@@ -721,7 +721,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * Observerã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’é–‹å§‹
+	 * Observerクライアントを開始
 	 */
 	public static void startObserverClient() {
 		log.debug("startObserverClient called");
@@ -746,7 +746,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * Observerã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’å�œæ­¢
+	 * Observerクライアントを停止
 	 */
 	public static void stopObserverClient() {
 		log.debug("stopObserverClient called");
@@ -763,7 +763,7 @@ public class NullpoMinoSlick extends StateBasedGame {
 	}
 
 	/**
-	 * Observerã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã�‹ã‚‰ã�®æƒ…å ±ã‚’æ��ç”»
+	 * Observerクライアントからの情報を描画
 	 */
 	public static void drawObserverClient() {
 		if((netObserverClient != null) && netObserverClient.isConnected()) {
