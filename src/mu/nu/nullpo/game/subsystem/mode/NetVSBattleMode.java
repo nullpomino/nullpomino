@@ -181,7 +181,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Current room informations */
 	private NetRoomInfo currentRoomInfo;
 
-	/** True if rule is locked */
+	/** true if rule is locked */
 	private boolean rulelockFlag;
 
 	/** Use reduced attack tables if 3 or more players are alive */
@@ -211,58 +211,58 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Number of pieces to be placed between adding Hurry Up lines */
 	private int hurryupInterval;
 
-	/** True if Hurry Up has started */
+	/** true if Hurry Up has been started */
 	private boolean hurryupStarted;
 
 	/** Number of frames left to show "HURRY UP!" text */
 	private int hurryupShowFrames;
 
-	/** 自分のゲーム席の number(-1:観戦中) */
+	/** Seat number of local player (-1: spectator) */
 	private int playerSeatNumber;
 
-	/** 自分が部屋に入ってから行われたゲームのcount */
+	/** Number of games since joining this room */
 	private int numGames;
 
-	/** 自分の勝利count */
+	/** Local player wins count */
 	private int numWins;
 
-	/** 合計Number of players(間に挟まれているnull席はカウントしない) */
+	/** Number of players */
 	private int numPlayers;
 
-	/** 観戦者のcount */
+	/** Number of spectators */
 	private int numSpectators;
 
-	/** ゲームが始まったあとの合計Number of players(間に挟まれているnull席はカウントしない) */
+	/** Number of players in current game */
 	private int numNowPlayers;
 
-	/** この部屋のMaximum人count */
+	/** Maximum number of players in this room */
 	private int numMaxPlayers;
 
-	/** まだ生きている人count */
+	/** Number of alive players */
 	private int numAlivePlayers;
 
-	/** 各fieldのゲーム席の number */
+	/** Seat numbers of players */
 	private int[] allPlayerSeatNumbers;
 
-	/** Playerが存在するfieldならtrue */
+	/** true if player field exists */
 	private boolean[] isPlayerExist;
 
-	/** 準備完了状態ならtrue */
+	/** true if player is ready */
 	private boolean[] isReady;
 
-	/** 死亡 flag */
+	/** Dead flag */
 	private boolean[] isDead;
 
-	/** 順位 */
+	/** Place */
 	private int[] playerPlace;
 
-	/** 自分がKOしたPlayerはtrue */
+	/** true if you KO'd player */
 	private boolean[] playerKObyYou;
 
-	/** 使用しているスキン */
+	/** Block skin used */
 	private int[] playerSkin;
 
-	/** PlayerのName */
+	/** Player name */
 	private String[] playerNames;
 
 	/** Team name */
@@ -275,19 +275,19 @@ public class NetVSBattleMode extends NetDummyMode {
 //
 //	private boolean isTank;
 
-	/** ゲームが続いてる間true, 開始前や全員完全に終わるとfalse */
+	/** true if room game is in progress */
 	private boolean isNetGameActive;
 
-	/** 全員完全に終わるとtrue(開始前はfalse) */
+	/** true if room game is finished */
 	private boolean isNetGameFinished;
 
-	/** 進行中の部屋に入った直後はtrue */
+	/** true if local player joined game in progress */
 	private boolean isNewcomer;
 
-	/** OK表示切り替え直後, 変更が確定するまでtrue */
+	/** true if waiting for ready status change */
 	private boolean isReadyChangePending;
 
-	/** 練習Mode ならtrue */
+	/** true if practice mode */
 	private boolean isPractice;
 
 	/** Automatic start timer is enabled */
@@ -296,16 +296,16 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Time left until automatic start */
 	private int autoStartTimer;
 
-	/** 経過 timeカウント is enabled */
+	/** true is time elapsed counter is enabled */
 	private boolean netPlayTimerActive;
 
-	/** 経過 time */
+	/** Elapsed time */
 	private int netPlayTimer;
 
-	/** 操作中Blockを動かしている time */
+	/** How long current piece is active */
 	private int pieceMoveTimer;
 
-	/** 前回の操作中Block typeや位置など */
+	/** Previous state of active piece */
 	private int prevPieceID, prevPieceX, prevPieceY, prevPieceDir;
 
 	/** Time to display the most recent increase in score */
@@ -314,22 +314,22 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Most recent scoring event type */
 	private int[] lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** true if most recent scoring event was B2B */
 	private boolean[] lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Most recent scoring event Combo count */
 	private int[] lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Most recent scoring event piece type */
 	private int[] lastpiece;
 
-	/** 送ったgarbage blockのcount */
+	/** Count of garbage lines send */
 	private int[] garbageSent;
 
-	/** 溜まっているgarbage blockのcount */
+	/** Amount of garbage in garbage queue */
 	private int[] garbage;
 
-	/** 敵から送られてきたgarbage blockのリスト */
+	/** Recieved garbage entries */
 	private LinkedList<GarbageEntry> garbageEntries;
 
 	/** APL (Attack Per Line) */
@@ -338,19 +338,19 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** APM (Attack Per Minute) */
 	private float playerAPM;
 
-	/** Hurryup後にBlockを置いた count */
+	/** Number of pieces placed after Hurry Up has started */
 	private int hurryupCount;
 
 	/** Map number to use */
 	private int mapNo;
 
-	/** Practice mode map選択用乱count */
+	/** Random for selecting map in Practice mode */
 	private Random randMap;
 
 	/** Practice mode last used map number */
 	private int mapPreviousPracticeMap;
 
-	/** 最後に攻撃してきた相手のPlayer number */
+	/** UID of player who attacked local player last */
 	private int lastAttackerUID;
 
 	/** KO count */
@@ -451,7 +451,7 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * Maximum人count
+	 * Maximum players count
 	 */
 	@Override
 	public int getPlayers() {
