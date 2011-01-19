@@ -1654,7 +1654,9 @@ public class NetServer {
 			if(serverVer != clientVer) {
 				send(client, "loginfail\tDIFFERENT_VERSION\t" + serverVer + "\n");
 				//logout(client);
-				this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
+				synchronized (this.pendingChanges) {
+				  this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
+				}
 				return;
 			}
 
