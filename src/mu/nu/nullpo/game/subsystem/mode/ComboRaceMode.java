@@ -725,15 +725,18 @@ public class ComboRaceMode extends NetDummyMode {
 
 			if (GOAL_TABLE[goaltype] == -1) {
 				engine.meterValue = Math.min(engine.statistics.maxCombo, receiver.getMeterMax(engine));
-				engine.meterColor = GameEngine.METER_COLOR_GREEN;
+				if(engine.statistics.maxCombo <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
+				else if(engine.statistics.maxCombo <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
+				else if(engine.statistics.maxCombo <= 40) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
+				else engine.meterColor = GameEngine.METER_COLOR_GREEN;
 			} else {
 				int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
 				engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
-	
+
 				if(remainLines <= 30) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 				if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 				if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
-	
+
 				// ゴール
 				if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
 					engine.ending = 1;
@@ -752,7 +755,8 @@ public class ComboRaceMode extends NetDummyMode {
 			engine.ending = 1;
 			engine.gameEnded();
 			engine.resetStatc();
-			engine.stat = GameEngine.STAT_EXCELLENT;
+			engine.stat = (engine.statistics.maxCombo >= 40) ?
+					GameEngine.STAT_EXCELLENT : GameEngine.STAT_GAMEOVER;
 		}
 	}
 
