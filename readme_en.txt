@@ -1,5 +1,5 @@
 ﻿NullpoMino
-Version 7.4.0
+Version 7.5.0
 
 1. What is this?
 A falling block puzzle game using Java.
@@ -122,7 +122,7 @@ The game ends when the pile of blocks reaches to top of the field.
 	C:Rotate
 	D:Hold (Keep a piece to use later)
 	E:180-Degree Rotate
-	F:Skip ending credits (SPEED MANIA and GARBAGE MANIA modes)
+	F:Skip ending credits (SPEED MANIA and GARBAGE MANIA modes), enter practice mode in netplay games
 	QUIT:Quit the game
 	PAUSE:Pause the game
 	GIVEUP:Return to the title screen
@@ -192,6 +192,7 @@ You can select which rule to use in the CONFIG>RULE SELECT screen.
 You can create your own rule by using Rule Editor.
 
 AVALANCHE        : A rule used to play AVALANCHE type games.
+AVALANCHE-CLASSIC: A rule used to play AVALANCHE type games, but is less flexible.
 CLASSIC0         : A classic rule that many Japanese players played like a monkey. Best suitable for RETRO MANIA mode.
 CLASSIC0-68K     : CLASSIC0 with reverse rotation.
 CLASSIC1         : Only 1 piece preview, no hold function, no hard drop function, less flexible wallkicks.
@@ -255,7 +256,7 @@ DIG RACE
 	
 COMBO RACE
 	Try to clear all the lines in the well in one combo.
-	Goal is selectable from 20, 40, and 100 lines.
+	Goal is selectable from 20, 40, 100 lines, or endless mode (stops when you break your combo).
 
 ULTRA
 	Score as many points as possible or clear as many lines as possible until the time limit.
@@ -281,6 +282,12 @@ SQUARE
 	SPRINT:		Try to get 150 points as fast as you can. Can you do it in 8 lines?
 	ULTRA:		Get as many points as you can in 3 minutes.
 	Best effect can be achieved if you use "SQUARE" rule.
+	
+DIG CHALLENGE
+	Try to survive against the tide of rising blocks! Send as many lines as you can.
+	There are two different game types.
+	NORMAL:		Rising blocks wait until you place your piece, but can build up.
+	REALTIME:	Blocks will rise no matter what when the meter runs down.
 
 RETRO MARATHON
 	A classic game that takes you to the nostalgic feeling.
@@ -408,6 +415,7 @@ List of what you can do:
 	* Join an already existing room
 	* Talk with other players
 	* Spectate games
+	* Rated multiplayer with ladder and online leaderboards for single player modes
 List of what you can't do & Known problems:
 	* Multiplayer Replay can't be saved
 	* No ID/Password system
@@ -477,6 +485,7 @@ To make "OK" signal to everyone:
 netserver.bat [PORT NUMBER]
 	For Linux/MacOS:
 ./netserver [PORT NUMBER]
+	Optionally, there is a second argument to pass in the path of the server configuration file.
 
 9. FAQ
 Q: My Joystick/Gamepads doesn't work correctly in Slick version.
@@ -512,6 +521,7 @@ NullpoMino created by:
 	sesalamander
 	teh_4matsy@lavabit.com (aka 4matsy)
 	delvalle.jacobo (aka clincher)
+	bob.inside (aka xlro)
 
 	See also "People" section of Google Code project page:
 	http://code.google.com/p/nullpomino/people/list
@@ -569,11 +579,12 @@ Also thanks to:
 	Burbruee
 	Steve
 	Blink
-	xlro (http://nullpo.nu.mu/)
+	xlro (http://nullpo.it.cx/)
 	vicar (http://vicar.bob.buttobi.net/)
 	SWR
 	hebo-MAI
 	tetrisconcept.net http://www.tetrisconcept.net/
+	 (NullpoMino Topic: http://tetrisconcept.net/forum/showthread.html?t=1381)
 	Hard Drop http://harddrop.com/
 	 (NullpoMino Topic: http://harddrop.com/forums/index.php?showtopic=2035
 	  NullpoMino Guide: http://harddrop.com/forums/index.php?showtopic=2317
@@ -585,6 +596,27 @@ http://code.google.com/p/nullpomino/
 
 12. Update History (The date and time is in JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
+
+Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
+#This version is NO LONGER compatible with 7.4.0 netplay server.
++Swing/Slick: Added screen resize options.
++Slick/SDL: Added Mode Folders to 1P Start menu, with featured modes at the start.
++Slick: LWJGL updated to version 2.6.
++Added DIG CHALLENGE mode.
++Practice: Added "Hebo Hidden" option.
++AI: Added "Avalanche-R" AI for Avalanche modes, "Combo Race" AI for Combo Race, and "Ranks AI". Also added Ranks AI Tool.
++New "Sticky" mino skins
++NetServer: Much more stable! 100% CPU bug fixed.
+#Enhanced Netplay features:
+ +Improved rated system, no longer requires rule lock, instead uses server preset game types
+ +Added MARATHON, MARATHON+, EXTREME, DIG RACE, COMBO RACE, ULTRA, TECHNICIAN, and TIME ATTACK to Netplay 1P modes
+ +Single player modes have a leaderboard for all rules, including those not rated
+ +Lobby and rooms now have chat history
+ +Team colors in Netplay games
+ +Support for changing the hole change rate in Fractional garbage style based on the number of live players.
+ *Various other tweaks to improve the experience
+-Fixed PoochyBot, "No Prethink" variations are no longer needed. Instead, No Prethink is an option in the AI menu.
+-Fixed many, many bugs.
 
 Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #This version is NO LONGER compatible with 7.3.0 netplay server.
