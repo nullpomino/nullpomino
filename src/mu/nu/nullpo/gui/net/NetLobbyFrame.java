@@ -2208,6 +2208,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		case SCREENCARD_SERVERADD:
 			defaultButton = btnServerAddOK;
 			break;
+		case SCREENCARD_CREATERATED_WAITING:
+			defaultButton = btnCreateRatedWaitingCancel;
+		case SCREENCARD_CREATERATED:
+			defaultButton = btnCreateRatedOK;
 		case SCREENCARD_CREATEROOM:
 			if (btnCreateRoomOK.isVisible())
 				defaultButton = btnCreateRoomOK;
