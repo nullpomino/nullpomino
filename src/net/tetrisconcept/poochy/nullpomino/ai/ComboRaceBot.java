@@ -90,7 +90,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 * AI's name
 	 */
 	public String getName() {
-		return "Combo Race AI V1.00";
+		return "Combo Race AI V1.01";
 	}
 
 	/*
@@ -297,6 +297,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 							// 接地rotation
 							if(bestRtSub != 0 && movestate == 0) {
 								bestRt = pieceNow.getRotateDirection(bestRtSub, bestRt);
+								rotateDir = bestRtSub;
 								bestRtSub = 0;
 								movestate = 1;
 							}
@@ -568,7 +569,16 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		if (state == -1)
 			return 0;
 		if (depth == nextQueueIDs.length)
-			return scores[state] + ((holdID == Piece.PIECE_I) ? 1000 : 0);
+		{
+			int result = scores[state]*10;
+			if (holdID == Piece.PIECE_I)
+				result += 1000;
+			else if (holdID == Piece.PIECE_T)
+				result += 3;
+			else if (holdID == Piece.PIECE_L || holdID == Piece.PIECE_J)
+				result++;
+			return result;
+		}
 		
 		int bestPts = 0;
 		Transition t = moves[state][nextQueueIDs[depth]];
