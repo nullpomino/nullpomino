@@ -724,10 +724,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 								if(kick != null) {
 									newX = x + kick.offsetX;
-									newY = pieces[p].getBottom(newX, y + kick.offsetY, fldTemp);
+									newY = pieces[p].getBottom(newX, y + kick.offsetY, rot, fldTemp);
 								}
 							}
-							
 							if (!pieces[p].checkCollision(newX, newY, rot, fldTemp)
 									&& newY > pieces[p].getBottom(newX, 0, rot, fldTemp))
 							{
@@ -760,10 +759,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 								if(kick != null) {
 									newX = x + kick.offsetX;
-									newY = pieces[p].getBottom(newX, y + kick.offsetY, fldTemp);
+									newY = pieces[p].getBottom(newX, y + kick.offsetY, rot, fldTemp);
 								}
 							}
-							
 							if (!pieces[p].checkCollision(newX, newY, rot, fldTemp)
 									&& newY > pieces[p].getBottom(newX, 0, rot, fldTemp))
 							{
