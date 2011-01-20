@@ -72,7 +72,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -263,17 +262,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** ロビー画面上部のパネル */
 	protected JPanel subpanelRoomListTopBar;
 
-	/** Lobby menu (Lobby screen) */
-	protected JMenu menuLobbyMenu;
-
-	/** Quick Start menu item (Lobby screen) */
-	protected JMenuItem itemLobbyMenuQuickStart;
-
-	/** Create Room menu item (Lobby screen) */
-	protected JMenuItem itemLobbyMenuRoomCreate;
-
-	/** Create Room 1P menu item (Lobby screen) */
-	protected JMenuItem itemLobbyMenuRoomCreate1P;
+	/** Lobby popup menu (Lobby screen) */
+	protected JPopupMenu popupLobbyOptions;
 
 	/** Rule change menu item (Lobby screen) */
 	protected JMenuItem itemLobbyMenuRuleChange;
@@ -292,6 +282,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Create Room 1P (Lobby screen) */
 	protected JButton btnRoomListRoomCreate1P;
+
+	/** Options menu button (Lobby screen) */
+	protected JButton btnRoomListOptions;
 
 	/** Team name input 欄(Lobby screen) */
 	protected JTextField txtfldRoomListTeam;
@@ -498,7 +491,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Set garbage type */
 	protected JCheckBox chkboxCreateRoomGarbageChangePerAttack;
-	
+
 	/** Set garbage type */
 	protected JCheckBox chkboxCreateRoomDivideChangeRateByPlayers;
 
@@ -860,45 +853,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		tabLobbyAndRoom = new JTabbedPane();
 		this.getContentPane().add(tabLobbyAndRoom, SCREENCARD_NAMES[SCREENCARD_LOBBY]);
 
-		// === Menubar ===
+		// === Popup Menu ===
 
-		// * Menu
-		menuLobbyMenu = new JMenu(getUIText("Lobby_Menu"));
-		menuLobbyMenu.setMnemonic('M');
-		menuBar[SCREENCARD_LOBBY].add(menuLobbyMenu);
-
-		// ** Create Game
-		JMenu menuLobbyMenuGame = new JMenu(getUIText("Lobby_Menu_CreateGame"));
-		menuLobbyMenuGame.setMnemonic('G');
-		menuLobbyMenu.add(menuLobbyMenuGame);
-
-		// *** Quick Start
-		itemLobbyMenuQuickStart = new JMenuItem(getUIText("Lobby_Menu_QuickStart"));
-		itemLobbyMenuQuickStart.addActionListener(this);
-		itemLobbyMenuQuickStart.setActionCommand("Lobby_QuickStart");
-		itemLobbyMenuQuickStart.setMnemonic('Q');
-		itemLobbyMenuQuickStart.setToolTipText(getUIText("Lobby_QuickStart_Tip"));
-		itemLobbyMenuQuickStart.setVisible(false);
-		menuLobbyMenuGame.add(itemLobbyMenuQuickStart);
-
-		// *** Create Room
-		itemLobbyMenuRoomCreate = new JMenuItem(getUIText("Lobby_Menu_RoomCreate"));
-		itemLobbyMenuRoomCreate.addActionListener(this);
-		itemLobbyMenuRoomCreate.setActionCommand("Lobby_RoomCreate");
-		itemLobbyMenuRoomCreate.setMnemonic('N');
-		itemLobbyMenuRoomCreate.setToolTipText(getUIText("Lobby_RoomCreate_Tip"));
-		menuLobbyMenuGame.add(itemLobbyMenuRoomCreate);
-
-		// *** Create Room (1P)
-		itemLobbyMenuRoomCreate1P = new JMenuItem(getUIText("Lobby_Menu_RoomCreate1P"));
-		itemLobbyMenuRoomCreate1P.addActionListener(this);
-		itemLobbyMenuRoomCreate1P.setActionCommand("Lobby_RoomCreate1P");
-		itemLobbyMenuRoomCreate1P.setMnemonic('1');
-		itemLobbyMenuRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
-		menuLobbyMenuGame.add(itemLobbyMenuRoomCreate1P);
-
-		// ** Separator
-		menuLobbyMenu.addSeparator();
+		// * Popup Menu
+		popupLobbyOptions = new JPopupMenu();
 
 		// ** Rule change
 		itemLobbyMenuRuleChange = new JMenuItem(getUIText("Lobby_RuleChange"));
@@ -906,7 +864,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuRuleChange.setActionCommand("Lobby_RuleChange");
 		itemLobbyMenuRuleChange.setMnemonic('R');
 		itemLobbyMenuRuleChange.setToolTipText(getUIText("Lobby_RuleChange_Tip"));
-		menuLobbyMenu.add(itemLobbyMenuRuleChange);
+		popupLobbyOptions.add(itemLobbyMenuRuleChange);
 
 		// ** Team change
 		itemLobbyMenuTeamChange = new JMenuItem(getUIText("Lobby_TeamChange"));
@@ -914,7 +872,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuTeamChange.setActionCommand("Lobby_TeamChange");
 		itemLobbyMenuTeamChange.setMnemonic('T');
 		itemLobbyMenuTeamChange.setToolTipText(getUIText("Lobby_TeamChange_Tip"));
-		menuLobbyMenu.add(itemLobbyMenuTeamChange);
+		popupLobbyOptions.add(itemLobbyMenuTeamChange);
 
 		// ** Leaderboard
 		itemLobbyMenuRanking = new JMenuItem(getUIText("Lobby_Ranking"));
@@ -922,18 +880,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		itemLobbyMenuRanking.setActionCommand("Lobby_Ranking");
 		itemLobbyMenuRanking.setMnemonic('K');
 		itemLobbyMenuRanking.setToolTipText(getUIText("Lobby_Ranking_Tip"));
-		menuLobbyMenu.add(itemLobbyMenuRanking);
-
-		// ** Separator
-		menuLobbyMenu.addSeparator();
-
-		// ** Disconnect
-		JMenuItem itemLobbyMenuDisconnect = new JMenuItem(getUIText("Lobby_Disconnect"));
-		itemLobbyMenuDisconnect.addActionListener(this);
-		itemLobbyMenuDisconnect.setActionCommand("Lobby_Disconnect");
-		itemLobbyMenuDisconnect.setMnemonic('L');
-		itemLobbyMenuDisconnect.setToolTipText(getUIText("Lobby_Disconnect_Tip"));
-		menuLobbyMenu.add(itemLobbyMenuDisconnect);
+		popupLobbyOptions.add(itemLobbyMenuRanking);
 
 		// === Lobby Tab ===
 		JPanel mainpanelLobby = new JPanel(new BorderLayout());
@@ -985,6 +932,14 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate1P.setMnemonic('1');
 		btnRoomListRoomCreate1P.setToolTipText(getUIText("Lobby_RoomCreate1P_Tip"));
 		subpanelRoomListButtons.add(btnRoomListRoomCreate1P);
+
+		// ***** Options menu button
+		btnRoomListOptions = new JButton(getUIText("Lobby_Options"));
+		btnRoomListOptions.addActionListener(this);
+		btnRoomListOptions.setActionCommand("Lobby_Options");
+		btnRoomListOptions.setMnemonic('O');
+		btnRoomListOptions.setToolTipText(getUIText("Lobby_Options_Tip"));
+		subpanelRoomListButtons.add(btnRoomListOptions);
 
 		// ***** 切断 button
 		JButton btnRoomListDisconnect = new JButton(getUIText("Lobby_Disconnect"));
@@ -1799,7 +1754,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomGarbageChangePerAttack.setSelected(propConfig.getProperty("createroom.defaultGarbageChangePerAttack", true));
 		chkboxCreateRoomGarbageChangePerAttack.setToolTipText(getUIText("CreateRoom_GarbageChangePerAttack_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomGarbageChangePerAttack);
-		
+
 		// ** Divide change rate by live players/teams
 		chkboxCreateRoomDivideChangeRateByPlayers = new JCheckBox(getUIText("CreateRoom_DivideChangeRateByPlayers"));
 		chkboxCreateRoomDivideChangeRateByPlayers.setSelected(propConfig.getProperty("createroom.defaultDivideChangeRateByPlayers", false));
@@ -2210,8 +2165,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			break;
 		case SCREENCARD_CREATERATED_WAITING:
 			defaultButton = btnCreateRatedWaitingCancel;
+			break;
 		case SCREENCARD_CREATERATED:
 			defaultButton = btnCreateRatedOK;
+			break;
 		case SCREENCARD_CREATEROOM:
 			if (btnCreateRoomOK.isVisible())
 				defaultButton = btnCreateRoomOK;
@@ -2558,11 +2515,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRoomListRoomCreate.setEnabled(mode == 1);
 		btnRoomListRoomCreate1P.setEnabled(mode == 1);
 
-		itemLobbyMenuQuickStart.setEnabled(mode == 1);
-		itemLobbyMenuRoomCreate.setEnabled(mode == 1);
-		itemLobbyMenuRoomCreate1P.setEnabled(mode == 1);
 		itemLobbyMenuRuleChange.setEnabled(mode == 1);
-		itemLobbyMenuTeamChange.setEnabled(mode == 1);
+		itemLobbyMenuTeamChange.setEnabled(mode >= 1);
 		itemLobbyMenuRanking.setEnabled(mode >= 1);
 
 		btnLobbyChatSend.setEnabled(mode >= 1);
@@ -3505,6 +3459,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			// setCreateRoomUIType(false, null);
 			changeCurrentScreenCard(SCREENCARD_CREATERATED_WAITING);
 			netPlayerClient.send("getpresets\n");
+		}
+		// Lobby Options
+		if(e.getActionCommand() == "Lobby_Options") {
+			popupLobbyOptions.show(btnRoomListOptions, 0, 0);
 		}
 		// Rule Change
 		if(e.getActionCommand() == "Lobby_RuleChange") {

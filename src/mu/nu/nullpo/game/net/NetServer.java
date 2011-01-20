@@ -1963,6 +1963,8 @@ public class NetServer {
 
 				pInfo.roomID = roomInfo.roomID;
 				pInfo.resetPlayState();
+				pInfo.playCountNow = 0;
+				pInfo.winCountNow = 0;
 
 				roomInfo.playerList.add(pInfo);
 				pInfo.seatID = roomInfo.joinSeat(pInfo);
@@ -2031,6 +2033,8 @@ public class NetServer {
 
 				pInfo.roomID = roomInfo.roomID;
 				pInfo.resetPlayState();
+				pInfo.playCountNow = 0;
+				pInfo.winCountNow = 0;
 
 				roomInfo.playerList.add(pInfo);
 				pInfo.seatID = roomInfo.joinSeat(pInfo);
@@ -2081,6 +2085,8 @@ public class NetServer {
 
 				pInfo.roomID = roomInfo.roomID;
 				pInfo.resetPlayState();
+				pInfo.playCountNow = 0;
+				pInfo.winCountNow = 0;
 
 				roomInfo.playerList.add(pInfo);
 				pInfo.seatID = roomInfo.joinSeat(pInfo);
@@ -2130,6 +2136,8 @@ public class NetServer {
 					pInfo.seatID = -1;
 					pInfo.queueID = -1;
 					pInfo.resetPlayState();
+					pInfo.playCountNow = 0;
+					pInfo.winCountNow = 0;
 
 					broadcastPlayerInfoUpdate(pInfo);
 					send(client, "roomjoinsuccess\t-1\t-1\t-1\n");
@@ -2157,6 +2165,9 @@ public class NetServer {
 					}
 					pInfo.roomID = newRoom.roomID;
 					pInfo.resetPlayState();
+					pInfo.playCountNow = 0;
+					pInfo.winCountNow = 0;
+
 					newRoom.playerList.add(pInfo);
 
 					pInfo.seatID = -1;
@@ -3014,6 +3025,7 @@ public class NetServer {
 			if(p != null) {
 				p.ready = false;
 				p.playing = true;
+				p.playCountNow++;
 
 				// If ranked room
 				if( roomInfo.rated && !roomInfo.isTeamGame() && (!roomInfo.hasSameIPPlayers() || ratingAllowSameIP) ) {
@@ -3054,6 +3066,7 @@ public class NetServer {
 				for(NetPlayerInfo pInfo: roomInfo.playerSeat) {
 					if((pInfo != null) && (pInfo.playing)) {
 						pInfo.resetPlayState();
+						pInfo.winCountNow++;
 						broadcastPlayerInfoUpdate(pInfo);
 						roomInfo.playerSeatDead.addFirst(pInfo);
 
@@ -3126,6 +3139,7 @@ public class NetServer {
 
 				msg += winner.uid + "\t" + winner.seatID + "\t" + NetUtil.urlEncode(winner.strName) + "\t" + isTeamWin;
 				winner.resetPlayState();
+				winner.winCountNow++;
 				broadcastPlayerInfoUpdate(winner);
 			} else {
 				// No winner(s)
@@ -3426,6 +3440,7 @@ public class NetServer {
 	 * @param name Rule Name
 	 * @return Index (-1 if not found)
 	 */
+	/*
 	private int getRatedRuleIndex(int style, String name) {
 		for(int i = 0; i < ruleList[style].size(); i++) {
 			RuleOptions rule = (RuleOptions)ruleList[style].get(i);
@@ -3437,6 +3452,7 @@ public class NetServer {
 
 		return -1;
 	}
+	*/
 
 	/**
 	 * Get new rating

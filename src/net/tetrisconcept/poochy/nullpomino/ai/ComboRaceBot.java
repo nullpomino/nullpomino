@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 public class ComboRaceBot extends DummyAI implements Runnable {
 	/** Log */
 	static Logger log = Logger.getLogger(ComboRaceBot.class);
-	
+
 	/** List of field state codes which are possible to sustain a stable combo */
 	private static final int[] FIELDS = {
 		0x7, 0xB, 0xD, 0xE,
@@ -31,13 +31,13 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		0xC4, 0xC8,
 		0x111, 0x888
 	};
-	
+
 	protected int[] scores = {6, 7, 7, 6, 8, 3, 2, 9, 3, 4, 3, 1, 8, 4, 1, 3, 1, 1, 4, 3, 9, 2, 3, 8, 4, 8, 3, 3};
-	
+
 	protected Transition[][] moves;
-	
+
 	protected int[] nextQueueIDs;
-	
+
 	protected boolean createTablesRequest;
 
 	/** 接地したあとのDirection(0: None) */
@@ -89,6 +89,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * AI's name
 	 */
+	@Override
 	public String getName() {
 		return "Combo Race AI V1.01";
 	}
@@ -96,6 +97,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * Called at initialization
 	 */
+	@Override
 	public void init(GameEngine engine, int playerID) {
 		delay = 0;
 		gEngine = engine;
@@ -123,6 +125,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * 終了処理
 	 */
+	@Override
 	public void shutdown(GameEngine engine, int playerID) {
 		if((thread != null) && (thread.isAlive())) {
 			thread.interrupt();
@@ -134,6 +137,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * Called whenever a new piece is spawned
 	 */
+	@Override
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
@@ -148,6 +152,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * Called at the start of each frame
 	 */
+	@Override
 	public void onFirst(GameEngine engine, int playerID) {
 		inputARE = 0;
 		boolean newInARE = engine.stat == GameEngine.STAT_ARE;
@@ -195,6 +200,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * Called after every frame
 	 */
+	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		if (engine.stat == GameEngine.STAT_READY && engine.statc[0] == 0)
 			createTablesRequest = true;
@@ -203,6 +209,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/*
 	 * Set button input states
 	 */
+	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
 			(delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
@@ -222,7 +229,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			int moveDir = 0; //-1 = left,  1 = right
 			int rotateDir = 0; //-1 = left,  1 = right
 			int drop = 0; //1 = up, -1 = down
-			
+
 			if((bestHold == true) && thinkComplete && engine.isHoldOK()) {
 				// Hold
 				input |= Controller.BUTTON_BIT_D;
@@ -341,7 +348,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				boolean defaultRotateRight = (engine.owRotateButtonDefaultRight == 1 ||
 						(engine.owRotateButtonDefaultRight == -1 &&
 								engine.ruleopt.rotateButtonDefaultRight));
-				
+
 				if(engine.ruleopt.rotateButtonAllowDouble &&
 						rotateDir == 2 && !ctrl.isPress(Controller.BUTTON_E))
 					input |= Controller.BUTTON_BIT_E;
@@ -493,11 +500,11 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		pieceNow = checkOffset(pieceNow, engine);
 		pieceHold = checkOffset(pieceHold, engine);
 		boolean holdOK = engine.isHoldOK();
-		
+
 		nextQueueIDs = new int[MAX_THINK_DEPTH-1];
 		for (int i = 0; i < nextQueueIDs.length; i++)
 			nextQueueIDs[i] = engine.getNextID(nextIndex+i);
-		
+
 		int state = fieldToIndex(fld);
 		if (state < 0)
 		{
@@ -505,14 +512,14 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			return;
 		}
 		Transition t = moves[state][pieceNow.id];
-		
+
 		while (t != null)
 		{
 			int holdID = -1;
 			if (engine.holdPieceObject != null)
 				holdID = engine.holdPieceObject.id;
 			int pts = thinkMain(engine, t.newField, holdID, 0);
-			
+
 			if (pts > bestPts)
 			{
 				bestPts = pts;
@@ -523,17 +530,17 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				bestHold = false;
 				thinkSuccess = true;
 			}
-			
+
 			t = t.next;
 		}
 		if (pieceHold.id != pieceNow.id && holdOK)
 		{
 			t = moves[state][pieceHold.id];
-			
+
 			while (t != null)
 			{
 				int pts = thinkMain(engine, t.newField, pieceNow.id, holdBoxEmpty ? 1 : 0);
-				
+
 				if (pts > bestPts)
 				{
 					bestPts = pts;
@@ -544,7 +551,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 					bestHold = true;
 					thinkSuccess = true;
 				}
-				
+
 				t = t.next;
 			}
 		}
@@ -556,12 +563,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 	/**
 	 * Think routine
-	 * @param x X-coordinate
-	 * @param y Y-coordinate
-	 * @param rt Direction
-	 * @param rtOld Direction before rotation (-1: None）
-	 * @param fld Field (Can be modified without problems)
-	 * @param piece Piece
+	 * @param engine GameEngine
+	 * @param state Think state
+	 * @param holdID Hold piece ID
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
 	 * @return Evaluation score
 	 */
@@ -579,17 +583,17 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				result++;
 			return result;
 		}
-		
+
 		int bestPts = 0;
 		Transition t = moves[state][nextQueueIDs[depth]];
-		
+
 		while (t != null)
 		{
 			bestPts = Math.max(bestPts,
 					thinkMain(engine, t.newField, holdID, depth+1) + 1000);
 			t = t.next;
 		}
-		
+
 		if (engine.ruleopt.holdEnable)
 		{
 			if (holdID == -1)
@@ -605,7 +609,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				}
 			}
 		}
-		
+
 		return bestPts;
 	}
 
@@ -653,7 +657,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		threadRunning = false;
 		log.info("ComboRaceBot: Thread end");
 	}
-	
+
 	/**
 	 * Constructs the moves table if necessary.
 	 */
@@ -661,22 +665,22 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	{
 		if (moves != null)
 			return;
-		
+
 		moves = new Transition[FIELDS.length][7];
-		
+
 		Field fldEmpty = new Field(4, Field.DEFAULT_HEIGHT, Field.DEFAULT_HIDDEN_HEIGHT);
 		Field fldBackup = new Field(fldEmpty);
 		Field fldTemp = new Field(fldEmpty);
-		
+
 		Piece[] pieces = new Piece[7];
 		for (int p = 0; p < 7; p++)
 		{
 			pieces[p] = checkOffset(new Piece(p), engine);
 			pieces[p].setColor(1);
 		}
-		
+
 		int count = 0;
-		
+
 		for (int i = 0; i < FIELDS.length; i++)
 		{
 			fldBackup.copy(fldEmpty);
@@ -697,7 +701,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				{
 					int minX = pieces[p].getMostMovableLeft(tempX, 0, rt, fldBackup);
 					int maxX = pieces[p].getMostMovableRight(tempX, 0, rt, fldBackup);
-					
+
 					for (int x = minX; x <= maxX; x++)
 					{
 						int y = pieces[p].getBottom(x, 0, rt, fldBackup);
@@ -761,7 +765,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 							int newX = x;
 							int newY = y;
 							fldTemp.copy(fldBackup);
-							
+
 							if(pieces[p].checkCollision(x, y, rot, fldTemp) && (engine.wallkick != null) &&
 									(engine.ruleopt.rotateWallkick)) {
 								WallkickResult kick = engine.wallkick.executeWallkick(x, y, 1, rt, rot,
@@ -790,7 +794,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 							}
 						}
 					}
-					
+
 					if (pieces[p].id == Piece.PIECE_O)
 						break;
 				}
@@ -799,7 +803,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		log.debug("Transition table created. Total entries: " + count);
 		//TODO: PageRank scores for each state
 	}
-	
+
 	/**
 	 * Converts field to field state int code
 	 * @param field Field object
@@ -823,7 +827,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	{
 		return fieldToCode(field, 3);
 	}
-	
+
 	/**
 	 * Converts field state int code to FIELDS array index
 	 * @param field Field state int code
@@ -846,7 +850,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Converts field object to FIELDS array index
 	 * @param field Field object

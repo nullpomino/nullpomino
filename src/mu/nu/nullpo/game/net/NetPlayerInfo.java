@@ -68,8 +68,14 @@ public class NetPlayerInfo implements Serializable {
 	/** Number of rated multiplayer games played */
 	public int[] playCount = new int[GameEngine.MAX_GAMESTYLE];
 
+	/** Number of games played in current room */
+	public int playCountNow = 0;
+
 	/** Number of rated multiplayer games win */
 	public int[] winCount = new int[GameEngine.MAX_GAMESTYLE];
+
+	/** Number of wins in current room */
+	public int winCountNow = 0;
 
 	/** Single player personal records */
 	public NetSPPersonalBest spPersonalBest = new NetSPPersonalBest();
@@ -161,6 +167,9 @@ public class NetPlayerInfo implements Serializable {
 		}
 		spPersonalBest = new NetSPPersonalBest(n.spPersonalBest);
 
+		playCountNow = n.playCountNow;
+		winCountNow = n.winCountNow;
+
 		uid = n.uid;
 		roomID = n.roomID;
 		seatID = n.seatID;
@@ -176,7 +185,7 @@ public class NetPlayerInfo implements Serializable {
 
 	/**
 	 * Import from String array
-	 * @param pdata String array (String[25])
+	 * @param pdata String array (String[27])
 	 */
 	public void importStringArray(String[] pdata) {
 		strName = NetUtil.urlDecode(pdata[0]);
@@ -206,6 +215,8 @@ public class NetPlayerInfo implements Serializable {
 		if(pdata.length > 24) {
 			spPersonalBest.importString(NetUtil.decompressString(pdata[24]));
 		}
+		if(pdata.length > 25) playCountNow = Integer.parseInt(pdata[25]);
+		if(pdata.length > 26) winCountNow = Integer.parseInt(pdata[26]);
 	}
 
 	/**
@@ -218,10 +229,10 @@ public class NetPlayerInfo implements Serializable {
 
 	/**
 	 * Export to String array
-	 * @return String array (String[25])
+	 * @return String array (String[27])
 	 */
 	public String[] exportStringArray() {
-		String[] pdata = new String[25];
+		String[] pdata = new String[27];
 		pdata[0] = NetUtil.urlEncode(strName);
 		pdata[1] = NetUtil.urlEncode(strCountry);
 		pdata[2] = NetUtil.urlEncode(strHost);
@@ -247,6 +258,8 @@ public class NetPlayerInfo implements Serializable {
 		pdata[22] = Integer.toString(winCount[2]);
 		pdata[23] = Integer.toString(winCount[3]);
 		pdata[24] = NetUtil.compressString(spPersonalBest.exportString());
+		pdata[25] = Integer.toString(playCountNow);
+		pdata[26] = Integer.toString(winCountNow);
 		return pdata;
 	}
 

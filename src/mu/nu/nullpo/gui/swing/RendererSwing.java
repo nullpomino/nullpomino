@@ -33,6 +33,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Field;
@@ -257,6 +258,21 @@ public class RendererSwing extends EventReceiver {
 	@Override
 	public boolean isTTFSupport() {
 		return true;
+	}
+
+	/*
+	 * Get key name by button ID
+	 */
+	@Override
+	public String getKeyNameByButtonID(GameEngine engine, int btnID) {
+		int[] keymap = engine.isInGame ? GameKeySwing.gamekey[engine.playerID].keymap : GameKeySwing.gamekey[engine.playerID].keymapNav;
+
+		if((btnID >= 0) && (btnID < keymap.length)) {
+			int keycode = keymap[btnID];
+			return KeyEvent.getKeyText(keycode);
+		}
+
+		return "";
 	}
 
 	/*

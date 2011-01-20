@@ -727,6 +727,16 @@ public class EventReceiver {
 	}
 
 	/**
+	 * Get key name by button ID
+	 * @param engine GameEngine
+	 * @param btnID Button ID
+	 * @return Key name
+	 */
+	public String getKeyNameByButtonID(GameEngine engine, int btnID) {
+		return "";
+	}
+
+	/**
 	 * Get maximum value of the meter.
 	 * @param engine GameEngine
 	 * @return Maximum value of the meter

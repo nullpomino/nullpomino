@@ -282,6 +282,24 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
+	 * Get key name by button ID
+	 */
+	@Override
+	public String getKeyNameByButtonID(GameEngine engine, int btnID) {
+		int[] keymap = engine.isInGame ? GameKeySDL.gamekey[engine.playerID].keymap : GameKeySDL.gamekey[engine.playerID].keymapNav;
+
+		if((btnID >= 0) && (btnID < keymap.length)) {
+			int keycode = keymap[btnID];
+
+			if((keycode >= 0) && (keycode < NullpoMinoSDL.SDL_KEY_MAX)) {
+				return NullpoMinoSDL.SDL_KEYNAMES[keycode];
+			}
+		}
+
+		return "";
+	}
+
+	/*
 	 * Is the skin sticky?
 	 */
 	@Override

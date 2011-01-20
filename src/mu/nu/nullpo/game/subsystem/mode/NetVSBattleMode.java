@@ -271,6 +271,12 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** Team colors */
 	private int[] playerTeamColors;
 
+	/** Number of games played */
+	private int[] playerGamesCount;
+
+	/** Number of wins */
+	private int[] playerWinCount;
+
 //	private boolean[] playerTeamsIsTank;
 //
 //	private boolean isTank;
@@ -491,6 +497,8 @@ public class NetVSBattleMode extends NetDummyMode {
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
 		playerTeamColors = new int[MAX_PLAYERS];
+		playerGamesCount = new int[MAX_PLAYERS];
+		playerWinCount = new int[MAX_PLAYERS];
 //		playerTeamsIsTank = new boolean[MAX_PLAYERS];
 		scgettime = new int[MAX_PLAYERS];
 		lastevent = new int[MAX_PLAYERS];
@@ -651,11 +659,15 @@ public class NetVSBattleMode extends NetDummyMode {
 			playerNames[i] = "";
 			playerTeams[i] = "";
 			playerTeamColors[i] = 0;
+			playerGamesCount[i] = 0;
+			playerWinCount[i] = 0;
 
 			for(NetPlayerInfo pInfo: pList) {
 				if((pInfo.seatID != -1) && (getPlayerIDbySeatID(pInfo.seatID) == i)) {
 					playerNames[i] = pInfo.strName;
 					playerTeams[i] = pInfo.strTeam;
+					playerGamesCount[i] = pInfo.playCountNow;
+					playerWinCount[i] = pInfo.winCountNow;
 
 					// Set team color
 					if(playerTeams[i].length() > 0) {
@@ -930,15 +942,24 @@ public class NetVSBattleMode extends NetDummyMode {
 
 			if((playerID == 0) && (playerSeatNumber >= 0) && (!isReadyChangePending) && (numPlayers >= 2)) {
 				if(!isReady[playerID]) {
-					receiver.drawMenuFont(engine, playerID, 1, 18, "A: READY", EventReceiver.COLOR_CYAN);
+					String strTemp = "A(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_A) + " KEY):";
+					if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
+					receiver.drawMenuFont(engine, playerID, 0, 16, strTemp, EventReceiver.COLOR_CYAN);
+					receiver.drawMenuFont(engine, playerID, 1, 17, "READY", EventReceiver.COLOR_CYAN);
 				} else {
-					receiver.drawMenuFont(engine, playerID, 1, 18, "B:CANCEL", EventReceiver.COLOR_BLUE);
+					String strTemp = "B(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_B) + " KEY):";
+					if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
+					receiver.drawMenuFont(engine, playerID, 0, 16, strTemp, EventReceiver.COLOR_BLUE);
+					receiver.drawMenuFont(engine, playerID, 1, 17, "CANCEL", EventReceiver.COLOR_BLUE);
 				}
 			}
 		}
 
 		if((playerID == 0) && (playerSeatNumber >= 0)) {
-			receiver.drawMenuFont(engine, playerID, 0, 19, "F:PRACTICE", EventReceiver.COLOR_PURPLE);
+			String strTemp = "F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):";
+			if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
+			receiver.drawMenuFont(engine, playerID, 0, 18, strTemp, EventReceiver.COLOR_PURPLE);
+			receiver.drawMenuFont(engine, playerID, 1, 19, "PRACTICE", EventReceiver.COLOR_PURPLE);
 		}
 	}
 
@@ -1560,7 +1581,9 @@ public class NetVSBattleMode extends NetDummyMode {
 		// Practice mode
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (isPracticeExitAllowed)) {
 			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120) || (lastcombo[playerID] < 2)) {
-				receiver.drawMenuFont(engine, 0, 0, 22, "F:END GAME", EventReceiver.COLOR_PURPLE);
+				receiver.drawMenuFont(engine, 0, 0, 22,
+						"F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + "): EXIT",
+						EventReceiver.COLOR_PURPLE);
 			}
 
 			if(isPractice && engine.timerActive) {
@@ -1574,8 +1597,22 @@ public class NetVSBattleMode extends NetDummyMode {
 									currentRoomInfo.autoStartTNET2, EventReceiver.COLOR_RED, EventReceiver.COLOR_YELLOW);
 		}
 
-		// Line clear event 表示
-		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
+		// Games count
+		if(isPlayerExist[playerID] && engine.isVisible && !engine.gameActive) {
+			String strTemp = playerWinCount[playerID] + "/" + playerGamesCount[playerID];
+
+			if(engine.displaysize != -1) {
+				int y = 21;
+				if(engine.stat == GameEngine.STAT_RESULT) y = 22;
+				receiver.drawMenuFont(engine, playerID, 0, y, strTemp, EventReceiver.COLOR_WHITE);
+			} else {
+				int x = receiver.getFieldDisplayPositionX(engine, playerID);
+				int y = receiver.getFieldDisplayPositionY(engine, playerID);
+				receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);
+			}
+		}
+		// Line clear event
+		else if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
 			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
 			if(engine.displaysize != -1) {
@@ -1933,13 +1970,19 @@ public class NetVSBattleMode extends NetDummyMode {
 				"TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time)));
 
 		if(!isNetGameActive && (playerSeatNumber >= 0) && (playerID == 0)) {
-			receiver.drawMenuFont(engine, playerID, 2, 18, "PUSH A", EventReceiver.COLOR_RED);
+			String strTemp = "A(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_A) + " KEY):";
+			if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
+			receiver.drawMenuFont(engine, playerID, 0, 18, strTemp, EventReceiver.COLOR_RED);
+			receiver.drawMenuFont(engine, playerID, 1, 19, "RESTART", EventReceiver.COLOR_RED);
 		}
 
+		String strTempF = "F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):";
+		if(strTempF.length() > 10) strTempF = strTempF.substring(0, 10);
+		receiver.drawMenuFont(engine, playerID, 0, 20, strTempF, EventReceiver.COLOR_PURPLE);
 		if(!isPractice) {
-			receiver.drawMenuFont(engine, playerID, 0, 19, "F:PRACTICE", EventReceiver.COLOR_PURPLE);
+			receiver.drawMenuFont(engine, playerID, 1, 21, "PRACTICE", EventReceiver.COLOR_PURPLE);
 		} else {
-			receiver.drawMenuFont(engine, playerID, 1, 19, "F: RETRY", EventReceiver.COLOR_PURPLE);
+			receiver.drawMenuFont(engine, playerID, 1, 21, "RETRY", EventReceiver.COLOR_PURPLE);
 		}
 	}
 

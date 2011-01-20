@@ -221,6 +221,23 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
+	 * Get key name by button ID
+	 */
+	@Override
+	public String getKeyNameByButtonID(GameEngine engine, int btnID) {
+		int[] keymap = engine.isInGame ? GameKey.gamekey[engine.playerID].keymap : GameKey.gamekey[engine.playerID].keymapNav;
+
+		if((btnID >= 0) && (btnID < keymap.length)) {
+			int keycode = keymap[btnID];
+			String str = org.lwjgl.input.Keyboard.getKeyName(keycode);
+			if(str == null) str = "(" + keycode + ")";
+			return str;
+		}
+
+		return "";
+	}
+
+	/*
 	 * Is the skin sticky?
 	 */
 	@Override

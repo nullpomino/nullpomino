@@ -272,6 +272,12 @@ STANDARD-ZERO　　　：STANDARD-PLUSをベースに、先行回転無し・先行ホールド無し・ソ
 　　ULTRA:　　 3分間スコアアタック
 　　基本的にどんなルールでも一応遊べますが、「SQUARE」ルールを使うと正方形を作り易い順番でブロックが落ちてきます。
 
+・DIG CHALLENGE
+　　下からどんどんせり上がってくる邪魔ブロックをひたすら消していくモードです。送り返した邪魔ブロック数が得点になります。
+　　2種類のゲームタイプを選べます。
+　　NORMAL:　　ピースを置くまでせり上がらないが、1ラインずつ溜まっていく
+　　REALTIME:　ピースを置かなくてもせり上がる
+
 ・RETRO MARATHON
 　　旧名CLASSIC MARATHONモード。
 　　MARATHONとほぼ同様のゲームが遊べますがスピードの上昇は緩やかです。
@@ -498,7 +504,7 @@ A: 名前にトリップが入っていないと記録は保存されません。
 	Zircean
 	Poochy
 	Wojtek (aka dodd)
-	olivier.vidal1 (better known as Spirale)
+	Spirale (olivier.vidal1 on the SVN)
 	kitaru2004
 	Shrapnel.City (aka Pineapple)
 	vic7070 (aka Digital)
@@ -509,6 +515,7 @@ A: 名前にトリップが入っていないと記録は保存されません。
 	sesalamander
 	teh_4matsy@lavabit.com (aka 4matsy)
 	delvalle.jacobo (aka clincher)
+	bob.inside (aka xlro)
 
 	Google CodeのPeopleページ:
 	http://code.google.com/p/nullpomino/people/list
@@ -575,6 +582,28 @@ http://code.google.com/p/nullpomino/
 
 【更新履歴】
 +は新機能、-はバグ修正、*はその他の修正、#はその他メモを意味します。
+
+Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
+#このバージョンから7.4.0のサーバーとの互換性は失われます。
++Swing/Slick: 画面サイズ設定を追加しました。
++Slick/SDL: モードフォルダ機能を追加し、STARTを選んだ直後はおすすめモード一覧が出るようにしました。
++Slick: LWGJLのバージョンを2.6に上げました。
++DIG CHALLENGEモードを追加しました。
++Practice: Hebo Hiddenオプションを追加しました。
++AI: Avalancheモード用AI"Avalanche-R"、Combo Raceモード用AI"Combo Race"、定石ファイルを使う"Ranks AI"と、定石ファイルを生成するRanks AI Toolを追加しました。
++スティッキーなブロックスキンを追加しました（#9と#27）
++NetServer: 安定性がアップしました。CPU占有率100%バグも修正しました。
+#ネットプレイの強化：
+ +レートありのルームはプリセット形式になりました。使用するルールは各人が自由に選べます。
+ [TODO:Translate them]
+ +Added MARATHON, MARATHON+, EXTREME, DIG RACE, COMBO RACE, ULTRA, TECHNICIAN, and TIME ATTACK to Netplay 1P modes
+ +Single player modes have a leaderboard for all rules, including those not rated
+ +Lobby and rooms now have chat history
+ +Team colors in Netplay games
+ +Support for changing the hole change rate in Fractional garbage style based on the number of live players.
+ *Various other tweaks to improve the experience
+-Fixed PoochyBot, "No Prethink" variations are no longer needed. Instead, No Prethink is an option in the AI menu.
+-Fixed many, many bugs.
 
 Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #このバージョンから7.3.0のサーバーとの互換性は失われます。
