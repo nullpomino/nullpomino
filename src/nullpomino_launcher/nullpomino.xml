@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar></jar>
-  <outfile>..\NullpoMino.exe</outfile>
+  <outfile>..\..\NullpoMino.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>nullpo.ico</icon>
+  <icon>..\..\res\icons\nullpomino-virulent.ico</icon>
   <classPath>
     <mainClass>mu.nu.nullpo.gui.slick.NullpoMinoSlick</mainClass>
     <cp>bin</cp>
