@@ -189,6 +189,9 @@ public class RuleOptions implements Serializable {
 	/** rotationで固定 timeリセット */
 	public boolean lockresetRotate;
 
+	/** Lock delay reset on wallkick */
+	public boolean lockresetWallkick;
+
 	/** 横移動 count制限 (-1:無限) */
 	public int lockresetLimitMove;
 
@@ -390,6 +393,7 @@ public class RuleOptions implements Serializable {
 		lockresetFall = true;
 		lockresetMove = true;
 		lockresetRotate = true;
+		lockresetWallkick = false;
 		lockresetLimitMove = 15;
 		lockresetLimitRotate = 15;
 		lockresetLimitShareCount = true;
@@ -516,6 +520,7 @@ public class RuleOptions implements Serializable {
 		lockresetFall = r.lockresetFall;
 		lockresetMove = r.lockresetMove;
 		lockresetRotate = r.lockresetRotate;
+		lockresetWallkick = r.lockresetWallkick;
 		lockresetLimitMove = r.lockresetLimitMove;
 		lockresetLimitRotate = r.lockresetLimitRotate;
 		lockresetLimitShareCount = r.lockresetLimitShareCount;
@@ -636,6 +641,7 @@ public class RuleOptions implements Serializable {
 		if(lockresetFall != r.lockresetFall) return false;
 		if(lockresetMove != r.lockresetMove) return false;
 		if(lockresetRotate != r.lockresetRotate) return false;
+		if(lockresetWallkick != r.lockresetWallkick) return false;
 		if(lockresetLimitMove != r.lockresetLimitMove) return false;
 		if(lockresetLimitRotate != r.lockresetLimitRotate) return false;
 		if(lockresetLimitShareCount != r.lockresetLimitShareCount) return false;
@@ -757,6 +763,7 @@ public class RuleOptions implements Serializable {
 		p.setProperty(id + ".ruleopt.lockresetFall", lockresetFall);
 		p.setProperty(id + ".ruleopt.lockresetMove", lockresetMove);
 		p.setProperty(id + ".ruleopt.lockresetRotate", lockresetRotate);
+		p.setProperty(id + ".ruleopt.lockresetWallkick", lockresetWallkick);
 		p.setProperty(id + ".ruleopt.lockresetLimitMove", lockresetLimitMove);
 		p.setProperty(id + ".ruleopt.lockresetLimitRotate", lockresetLimitRotate);
 		p.setProperty(id + ".ruleopt.lockresetLimitShareCount", lockresetLimitShareCount);
@@ -876,6 +883,7 @@ public class RuleOptions implements Serializable {
 		lockresetFall = p.getProperty(id + ".ruleopt.lockresetFall", lockresetFall);
 		lockresetMove = p.getProperty(id + ".ruleopt.lockresetMove", lockresetMove);
 		lockresetRotate = p.getProperty(id + ".ruleopt.lockresetRotate", lockresetRotate);
+		lockresetWallkick = p.getProperty(id + ".ruleopt.lockresetWallkick", lockresetWallkick);
 		lockresetLimitMove = p.getProperty(id + ".ruleopt.lockresetLimitMove", lockresetLimitMove);
 		lockresetLimitRotate = p.getProperty(id + ".ruleopt.lockresetLimitRotate", lockresetLimitRotate);
 		lockresetLimitShareCount = p.getProperty(id + ".ruleopt.lockresetLimitShareCount", lockresetLimitShareCount);

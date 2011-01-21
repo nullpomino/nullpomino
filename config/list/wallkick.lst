@@ -5,6 +5,7 @@ mu.nu.nullpo.game.subsystem.wallkick.StandardSymmetricMild180Wallkick
 mu.nu.nullpo.game.subsystem.wallkick.ClassicWallkick
 mu.nu.nullpo.game.subsystem.wallkick.ClassicPlusWallkick
 mu.nu.nullpo.game.subsystem.wallkick.DTETWallkick
+mu.nu.nullpo.game.subsystem.wallkick.GBCWallkick
 mu.nu.nullpo.game.subsystem.wallkick.WallOnlyWallkick
 mu.nu.nullpo.game.subsystem.wallkick.AvalancheWallkick
 mu.nu.nullpo.game.subsystem.wallkick.AvalancheClassicWallkick

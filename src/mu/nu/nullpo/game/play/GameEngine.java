@@ -2207,6 +2207,11 @@ public class GameEngine {
 						nowPieceObject.updateConnectData();
 						nowPieceX += kick.offsetX;
 						nowPieceY += kick.offsetY;
+
+						if(ruleopt.lockresetWallkick && !isRotateCountExceed()) {
+							lockDelayNow = 0;
+							nowPieceObject.setDarkness(0f);
+						}
 					}
 				}
 

@@ -268,6 +268,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** rotationで固定 timeリセット */
 	private JCheckBox chkboxLockDelayLockResetRotate;
 
+	/** Lock delay reset by wallkick */
+	private JCheckBox chkboxLockDelayLockResetWallkick;
+
 	/** 横移動 counterとrotation counterを共有 (横移動 counterだけ使う) */
 	private JCheckBox chkboxLockDelayLockResetLimitShareCount;
 
@@ -899,6 +902,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLockDelayLockResetRotate = new JCheckBox(getUIText("LockDelay_LockResetRotate"));
 		panelLockDelay.add(chkboxLockDelayLockResetRotate);
 
+		// Lock delay reset by wallkick
+		chkboxLockDelayLockResetWallkick = new JCheckBox(getUIText("LockDelay_LockResetWallkick"));
+		panelLockDelay.add(chkboxLockDelayLockResetWallkick);
+
 		// 横移動 counterとrotation counterを共有 (横移動 counterだけ使う）
 		chkboxLockDelayLockResetLimitShareCount = new JCheckBox(getUIText("LockDelay_LockDelayLockResetLimitShareCount"));
 		panelLockDelay.add(chkboxLockDelayLockResetLimitShareCount);
@@ -1485,6 +1492,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLockDelayLockResetFall.setSelected(r.lockresetFall);
 		chkboxLockDelayLockResetMove.setSelected(r.lockresetMove);
 		chkboxLockDelayLockResetRotate.setSelected(r.lockresetRotate);
+		chkboxLockDelayLockResetWallkick.setSelected(r.lockresetWallkick);
 		chkboxLockDelayLockResetLimitShareCount.setSelected(r.lockresetLimitShareCount);
 		txtfldLockDelayLockResetLimitMove.setText(String.valueOf(r.lockresetLimitMove));
 		txtfldLockDelayLockResetLimitRotate.setText(String.valueOf(r.lockresetLimitRotate));
@@ -1604,6 +1612,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		r.lockresetFall = chkboxLockDelayLockResetFall.isSelected();
 		r.lockresetMove = chkboxLockDelayLockResetMove.isSelected();
 		r.lockresetRotate = chkboxLockDelayLockResetRotate.isSelected();
+		r.lockresetWallkick = chkboxLockDelayLockResetWallkick.isSelected();
 		r.lockresetLimitShareCount = chkboxLockDelayLockResetLimitShareCount.isSelected();
 		r.lockresetLimitMove = getIntTextField(txtfldLockDelayLockResetLimitMove);
 		r.lockresetLimitRotate = getIntTextField(txtfldLockDelayLockResetLimitRotate);
