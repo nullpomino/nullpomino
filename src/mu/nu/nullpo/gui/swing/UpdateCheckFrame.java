@@ -78,11 +78,17 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	/** 最新版のダウンロードURL */
 	protected JTextField txtfldDownloadURL;
 
+	/** Windows Installer URL */
+	protected JTextField txtfldWindowsInstallerURL;
+
 	/** 今すぐ更新 check ボタン */
 	protected JButton btnCheckNow;
 
 	/** ブラウザでダウンロードボタン */
 	protected JButton btnOpenDownloadURL;
+
+	/** Installer download button */
+	protected JButton btnOpenInstallerURL;
 
 	/** 更新 check  is enabled */
 	protected JCheckBox chkboxEnable;
@@ -167,6 +173,20 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldDownloadURL.setEditable(false);
 		spDownloadURL.add(txtfldDownloadURL, BorderLayout.EAST);
 
+		// * Installer URL
+		JPanel spInstallerURL = new JPanel(new BorderLayout());
+		spInstallerURL.setAlignmentX(0f);
+		pUpdateInfo.add(spInstallerURL);
+
+		JLabel lInstallerURL = new JLabel(NullpoMinoSwing.getUIText("UpdateCheck_Label_InstallerURL"));
+		spInstallerURL.add(lInstallerURL, BorderLayout.WEST);
+
+		txtfldWindowsInstallerURL = new JTextField();
+		txtfldWindowsInstallerURL.setPreferredSize(new Dimension(320, 20));
+		txtfldWindowsInstallerURL.setEditable(false);
+		txtfldWindowsInstallerURL.setVisible(System.getProperty("os.name").startsWith("Windows"));
+		spInstallerURL.add(txtfldWindowsInstallerURL, BorderLayout.EAST);
+
 		// * 今すぐ check ボタン
 		btnCheckNow = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_CheckNow"));
 		btnCheckNow.setAlignmentX(0f);
@@ -186,6 +206,17 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnOpenDownloadURL.setEnabled(false);
 		//btnOpenDownloadURL.setVisible(Desktop.isDesktopSupported());
 		pUpdateInfo.add(btnOpenDownloadURL);
+
+		// * Installer Download
+		btnOpenInstallerURL = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_OpenInstallerURL"));
+		btnOpenInstallerURL.setAlignmentX(0f);
+		btnOpenInstallerURL.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
+		btnOpenInstallerURL.setMnemonic('I');
+		btnOpenInstallerURL.addActionListener(this);
+		btnOpenInstallerURL.setActionCommand("OpenInstallerURL");
+		btnOpenInstallerURL.setEnabled(false);
+		btnOpenInstallerURL.setVisible(System.getProperty("os.name").startsWith("Windows"));
+		pUpdateInfo.add(btnOpenInstallerURL);
 
 		// 設定パネル
 		JPanel pSetting = new JPanel(new BorderLayout());
@@ -283,6 +314,10 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		else if(e.getActionCommand() == "OpenDownloadURL") {
 			BareBonesBrowserLaunch.openURL(txtfldDownloadURL.getText());
 		}
+		// Installer Download
+		else if(e.getActionCommand() == "OpenInstallerURL") {
+			BareBonesBrowserLaunch.openURL(txtfldWindowsInstallerURL.getText());
+		}
 		// 保存
 		else if(e.getActionCommand() == "Save") {
 			NullpoMinoSwing.propGlobal.setProperty("updatechecker.enable", chkboxEnable.isSelected());
@@ -316,15 +351,22 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		} else if(status == UpdateChecker.STATUS_COMPLETE) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
+					String strURL = UpdateChecker.getStrDownloadURL();
+					String strInstaller = UpdateChecker.getStrWindowsInstallerURL();
+
 					lStatus.setText(NullpoMinoSwing.getUIText("UpdateCheck_Label_Status_Complete"));
 					txtfldLatestVersion.setText(UpdateChecker.getLatestVersionFullString());
 					txtfldReleaseDate.setText(UpdateChecker.getStrReleaseDate());
-					txtfldDownloadURL.setText(UpdateChecker.getStrDownloadURL());
+					txtfldDownloadURL.setText(strURL);
+					txtfldWindowsInstallerURL.setText(strInstaller);
 
 					if(UpdateChecker.isNewVersionAvailable(GameManager.getVersionMajor(), GameManager.getVersionMinor())) {
 						txtfldLatestVersion.setForeground(Color.red);
+						txtfldWindowsInstallerURL.setForeground(Color.red);
 					}
-					btnOpenDownloadURL.setEnabled(true);
+
+					btnOpenDownloadURL.setEnabled(((strURL != null) && (strURL.length() > 0)));
+					btnOpenInstallerURL.setEnabled(((strInstaller != null) && (strInstaller.length() > 0)));
 				}
 			});
 		}

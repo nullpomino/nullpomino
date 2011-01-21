@@ -72,6 +72,9 @@ public class UpdateChecker implements Runnable {
 	/** ダウンロードURL */
 	private static String strDownloadURL = null;
 
+	/** Installer for Windows URL */
+	private static String strWindowsInstallerURL = null;
+
 	/** 更新 check 用スレッド */
 	private static Thread thread = null;
 
@@ -115,6 +118,16 @@ public class UpdateChecker implements Runnable {
 					tempStr = tempStr.replace("</DownloadURL>", "");
 					strDownloadURL = tempStr;
 					log.debug("Download URL:" + strDownloadURL);
+				}
+
+				pat = Pattern.compile("<WindowsInstallerURL>.*</WindowsInstallerURL>");
+				matcher = pat.matcher(str);
+				if(matcher.find()) {
+					String tempStr = matcher.group();
+					tempStr = tempStr.replace("<WindowsInstallerURL>", "");
+					tempStr = tempStr.replace("</WindowsInstallerURL>", "");
+					strWindowsInstallerURL = tempStr;
+					log.debug("Windows Installer URL:" + strWindowsInstallerURL);
 				}
 			}
 
@@ -260,6 +273,14 @@ public class UpdateChecker implements Runnable {
 	 */
 	public static String getStrDownloadURL() {
 		return strDownloadURL;
+	}
+
+	/**
+	 * Get the URL of Installer (*.exe) for Windows
+	 * @return URL of Installer (*.exe) for Windows
+	 */
+	public static String getStrWindowsInstallerURL() {
+		return strWindowsInstallerURL;
 	}
 
 	/**

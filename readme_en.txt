@@ -606,10 +606,10 @@ Also thanks to:
 11. Project Page at Google code
 http://code.google.com/p/nullpomino/
 
-12. Update History (The date and time is in JST)
+12. Update History (The date and time is sometimes JST)
 + means new feature, - means bugfix, * means other updates, # means some extra notes.
 
-Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
+Version 7.5.0 (2011/01/??) {r518-r???; Stable Release}
 #This version is NO LONGER compatible with 7.4.0 netplay server.
 +Swing/Slick: Added screen resize options.
 +Slick/SDL: Added Mode Folders to 1P Start menu, with featured modes at the start.
@@ -630,6 +630,7 @@ Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
 -Fixed PoochyBot, "No Prethink" variations are no longer needed. Instead, No Prethink is an option in the AI menu.
 -Fixed many, many bugs.
 *New icons! Default is made by gif. Another one in the file is made by virulent.
+*Moved some additional documents to "doc" directory. Readme files and LICENCE.txt are still in root directory.
 
 Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #This version is NO LONGER compatible with 7.3.0 netplay server.

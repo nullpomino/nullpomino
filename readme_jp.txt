@@ -587,6 +587,8 @@ A: 名前にトリップが入っていないと記録は保存されません。
 	vicar (http://vicar.bob.buttobi.net/)
 	SWR
 	hebo-MAI
+	gif
+	virulent
 	tetrisconcept.net http://www.tetrisconcept.net/
 	Hard Drop http://harddrop.com/
 	 (NullpoMino Topic: http://harddrop.com/forums/index.php?showtopic=2035
@@ -600,7 +602,7 @@ http://code.google.com/p/nullpomino/
 【更新履歴】
 +は新機能、-はバグ修正、*はその他の修正、#はその他メモを意味します。
 
-Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
+Version 7.5.0 (2011/01/??) {r518-r???; Stable Release}
 #このバージョンから7.4.0のサーバーとの互換性は失われます。
 +Swing/Slick: 画面サイズ設定を追加しました。
 +Slick/SDL: モードフォルダ機能を追加し、STARTを選んだ直後はおすすめモード一覧が出るようにしました。
@@ -620,6 +622,8 @@ Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
  *その他いろいろ
 -PoochyBotのいろいろなバグ修正をしました。また、先行思考オプションをAI設定画面に追加し、"No Prethink"版は廃止しました。
 -その他のいろいろなバグを修正しました。
+*アイコンが新しくなりました。デフォルトのものはgifさん、それ以外のはvirulentさん作成です。ありがとう！
+*ReadmeとLICENCE.txt以外のテキストファイルを"doc"フォルダに移しました。
 
 Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #このバージョンから7.3.0のサーバーとの互換性は失われます。
