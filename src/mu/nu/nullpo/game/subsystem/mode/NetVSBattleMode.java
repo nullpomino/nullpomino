@@ -1597,22 +1597,8 @@ public class NetVSBattleMode extends NetDummyMode {
 									currentRoomInfo.autoStartTNET2, EventReceiver.COLOR_RED, EventReceiver.COLOR_YELLOW);
 		}
 
-		// Games count
-		if(isPlayerExist[playerID] && engine.isVisible && !engine.gameActive) {
-			String strTemp = playerWinCount[playerID] + "/" + playerGamesCount[playerID];
-
-			if(engine.displaysize != -1) {
-				int y = 21;
-				if(engine.stat == GameEngine.STAT_RESULT) y = 22;
-				receiver.drawMenuFont(engine, playerID, 0, y, strTemp, EventReceiver.COLOR_WHITE);
-			} else {
-				int x = receiver.getFieldDisplayPositionX(engine, playerID);
-				int y = receiver.getFieldDisplayPositionY(engine, playerID);
-				receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);
-			}
-		}
 		// Line clear event
-		else if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
+		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
 			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
 			if(engine.displaysize != -1) {
@@ -1718,6 +1704,20 @@ public class NetVSBattleMode extends NetDummyMode {
 
 				if(lastcombo[playerID] >= 2)
 					receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 176, (lastcombo[playerID] - 1) + "COMBO", EventReceiver.COLOR_CYAN, 0.5f);
+			}
+		}
+		// Games count
+		else if(isPlayerExist[playerID] && engine.isVisible && !isPractice) {
+			String strTemp = playerWinCount[playerID] + "/" + playerGamesCount[playerID];
+
+			if(engine.displaysize != -1) {
+				int y = 21;
+				if(engine.stat == GameEngine.STAT_RESULT) y = 22;
+				receiver.drawMenuFont(engine, playerID, 0, y, strTemp, EventReceiver.COLOR_WHITE);
+			} else {
+				int x = receiver.getFieldDisplayPositionX(engine, playerID);
+				int y = receiver.getFieldDisplayPositionY(engine, playerID);
+				receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);
 			}
 		}
 	}
