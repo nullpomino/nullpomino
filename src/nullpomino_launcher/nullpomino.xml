@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>..\..\res\icons\nullpomino-gif-gray2.ico</icon>
+  <icon>..\..\res\icons\nullpomino-gif-blue.ico</icon>
   <classPath>
     <mainClass>mu.nu.nullpo.gui.slick.NullpoMinoSlick</mainClass>
     <cp>bin</cp>
