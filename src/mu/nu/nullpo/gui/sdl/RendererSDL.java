@@ -36,6 +36,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.gui.EffectObject;
 import mu.nu.nullpo.util.CustomProperties;
 
 import org.apache.log4j.Logger;
@@ -56,7 +57,7 @@ public class RendererSDL extends EventReceiver {
 	protected SDLSurface graphics;
 
 	/** 演出オブジェクト */
-	protected ArrayList<EffectObjectSDL> effectlist;
+	protected ArrayList<EffectObject> effectlist;
 
 	/** Line clearエフェクト表示 */
 	protected boolean showlineeffect;
@@ -81,7 +82,7 @@ public class RendererSDL extends EventReceiver {
 	 */
 	public RendererSDL() {
 		graphics = null;
-		effectlist = new ArrayList<EffectObjectSDL>(10*4);
+		effectlist = new ArrayList<EffectObject>(10*4);
 
 		showbg = NullpoMinoSDL.propConfig.getProperty("option.showbg", true);
 		showlineeffect = NullpoMinoSDL.propConfig.getProperty("option.showlineeffect", true);
@@ -1483,8 +1484,8 @@ public class RendererSDL extends EventReceiver {
 			int color = blk.getDrawColor();
 			// 通常Block
 			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
-				EffectObjectSDL obj =
-					new EffectObjectSDL(1,
+				EffectObject obj =
+					new EffectObject(1,
 										getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
 										getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
 										color);
@@ -1492,8 +1493,8 @@ public class RendererSDL extends EventReceiver {
 			}
 			// 宝石Block
 			else if(blk.isGemBlock()) {
-				EffectObjectSDL obj =
-					new EffectObjectSDL(2,
+				EffectObject obj =
+					new EffectObject(2,
 										getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
 										getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
 										color);
@@ -1640,7 +1641,7 @@ public class RendererSDL extends EventReceiver {
 		boolean emptyflag = true;
 
 		for(int i = 0; i < effectlist.size(); i++) {
-			EffectObjectSDL obj = effectlist.get(i);
+			EffectObject obj = effectlist.get(i);
 
 			if(obj.effect != 0) emptyflag = false;
 
@@ -1664,7 +1665,7 @@ public class RendererSDL extends EventReceiver {
 	 */
 	protected void effectRender() {
 		for(int i = 0; i < effectlist.size(); i++) {
-			EffectObjectSDL obj = effectlist.get(i);
+			EffectObject obj = effectlist.get(i);
 
 			// Normal Block
 			if(obj.effect == 1) {

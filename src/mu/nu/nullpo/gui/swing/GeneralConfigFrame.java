@@ -41,6 +41,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 /**
@@ -137,12 +138,74 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	 * GUIのInitialization
 	 */
 	protected void initUI() {
-		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+		this.getContentPane().setLayout(new BorderLayout());
+
+		// * Tab pane
+		JTabbedPane tabPane = new JTabbedPane();
+		this.add(tabPane, BorderLayout.CENTER);
+
+		// ** Basic Tab
+		JPanel pBasicTab = new JPanel();
+		pBasicTab.setLayout(new BoxLayout(pBasicTab, BoxLayout.Y_AXIS));
+		tabPane.addTab(NullpoMinoSwing.getUIText("GeneralConfig_TabName_Basic"), pBasicTab);
+
+		// ---------- Sound effectsの音量 ----------
+		JPanel pSEVolume = new JPanel();
+		pSEVolume.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(pSEVolume);
+
+		JLabel lSEVolume = new JLabel(NullpoMinoSwing.getUIText("GeneralConfig_SEVolume"));
+		pSEVolume.add(lSEVolume);
+
+		txtfldSEVolume = new JTextField(5);
+		pSEVolume.add(txtfldSEVolume);
+
+		// ---------- checkボックス ----------
+		chkboxShowBackground = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowBackground"));
+		chkboxShowBackground.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxShowBackground);
+
+		chkboxShowMeter = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowMeter"));
+		chkboxShowMeter.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxShowMeter);
+
+		chkboxShowFieldBlockGraphics = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowFieldBlockGraphics"));
+		chkboxShowFieldBlockGraphics.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxShowFieldBlockGraphics);
+
+		chkboxSimpleBlock = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SimpleBlock"));
+		chkboxSimpleBlock.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxSimpleBlock);
+
+		chkboxSE = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SE"));
+		chkboxSE.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxSE);
+
+		chkboxNextShadow = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_NextShadow"));
+		chkboxNextShadow.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxNextShadow);
+
+		chkboxOutlineGhost = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_OutlineGhost"));
+		chkboxOutlineGhost.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxOutlineGhost);
+
+		chkboxSideNext = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SideNext"));
+		chkboxSideNext.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxSideNext);
+
+		chkboxBigSideNext = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_BigSideNext"));
+		chkboxBigSideNext.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxBigSideNext);
+
+		// ** Advanced Tab
+		JPanel pAdvancedTab = new JPanel();
+		pAdvancedTab.setLayout(new BoxLayout(pAdvancedTab, BoxLayout.Y_AXIS));
+		tabPane.addTab(NullpoMinoSwing.getUIText("GeneralConfig_TabName_Advanced"), pAdvancedTab);
 
 		// ---------- Screen size ----------
 		JPanel pScreenSize = new JPanel();
 		pScreenSize.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(pScreenSize);
+		pAdvancedTab.add(pScreenSize);
 
 		JLabel lScreenSize = new JLabel(NullpoMinoSwing.getUIText("GeneralConfig_ScreenSize"));
 		pScreenSize.add(lScreenSize);
@@ -158,7 +221,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		// ---------- MaximumFPS ----------
 		JPanel pMaxFPS = new JPanel();
 		pMaxFPS.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(pMaxFPS);
+		pAdvancedTab.add(pMaxFPS);
 
 		JLabel lMaxFPS = new JLabel(NullpoMinoSwing.getUIText("GeneralConfig_MaxFPS"));
 		pMaxFPS.add(lMaxFPS);
@@ -166,77 +229,30 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		txtfldMaxFPS = new JTextField(5);
 		pMaxFPS.add(txtfldMaxFPS);
 
-		// ---------- Sound effectsの音量 ----------
-		JPanel pSEVolume = new JPanel();
-		pSEVolume.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(pSEVolume);
-
-		JLabel lSEVolume = new JLabel(NullpoMinoSwing.getUIText("GeneralConfig_SEVolume"));
-		pSEVolume.add(lSEVolume);
-
-		txtfldSEVolume = new JTextField(5);
-		pSEVolume.add(txtfldSEVolume);
-
-		// ---------- checkボックス ----------
+		// ---------- Checkboxes ----------
 		chkboxShowFPS = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowFPS"));
 		chkboxShowFPS.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxShowFPS);
-
-		chkboxShowBackground = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowBackground"));
-		chkboxShowBackground.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxShowBackground);
-
-		chkboxShowMeter = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowMeter"));
-		chkboxShowMeter.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxShowMeter);
-
-		chkboxShowFieldBlockGraphics = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowFieldBlockGraphics"));
-		chkboxShowFieldBlockGraphics.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxShowFieldBlockGraphics);
-
-		chkboxSimpleBlock = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SimpleBlock"));
-		chkboxSimpleBlock.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxSimpleBlock);
-
-		chkboxSE = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SE"));
-		chkboxSE.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxSE);
+		pAdvancedTab.add(chkboxShowFPS);
 
 		chkboxUseNativeLookAndFeel = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_UseNativeLookAndFeel"));
 		chkboxUseNativeLookAndFeel.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxUseNativeLookAndFeel);
+		pAdvancedTab.add(chkboxUseNativeLookAndFeel);
 
 		chkboxEnableFrameStep = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_EnableFrameStep"));
 		chkboxEnableFrameStep.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxEnableFrameStep);
-
-		chkboxNextShadow = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_NextShadow"));
-		chkboxNextShadow.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxNextShadow);
-
-		chkboxOutlineGhost = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_OutlineGhost"));
-		chkboxOutlineGhost.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxOutlineGhost);
-
-		chkboxSideNext = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SideNext"));
-		chkboxSideNext.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxSideNext);
-
-		chkboxBigSideNext = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_BigSideNext"));
-		chkboxBigSideNext.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxBigSideNext);
+		pAdvancedTab.add(chkboxEnableFrameStep);
 
 		chkboxPerfectFPSMode = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_PerfectFPSMode"));
 		chkboxPerfectFPSMode.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxPerfectFPSMode);
+		pAdvancedTab.add(chkboxPerfectFPSMode);
 
 		chkboxPerfectYield = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_PerfectYield"));
 		chkboxPerfectYield.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxPerfectYield);
+		pAdvancedTab.add(chkboxPerfectYield);
 
 		chkboxSyncDisplay = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SyncDisplay"));
 		chkboxSyncDisplay.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(chkboxSyncDisplay);
+		pAdvancedTab.add(chkboxSyncDisplay);
 
 		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
