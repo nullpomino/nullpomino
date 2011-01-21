@@ -26,6 +26,8 @@ Windows:
 	"musiclisteditor.bat" runs MusicListEditor, where you can configure which music file to use.
 	"netserver.bat" runs NetServer (ALPHA!), which is a server for netplay feature. More details later.
 	"netadmin.bat" runs NetAdmin, which can be used to manage your running NetServer.
+	"airankstool.bat" runs AI Ranks Tool, which can be used to generate a ranks file used by Ranks AI.
+		(Requires HUGE RAM!)
 
 Linux:
 	First, open a X-terminal emulator. Next, navigate to the folder where the archive was extracted.
@@ -40,6 +42,9 @@ chmod +x play_swing
 	To start Slick version:
 chmod +x play_slick
 ./play_slick
+	** OR **
+chmod +x NullpoMino
+./NullpoMino
 
 	To start SDL version:
 chmod +x play_sdl
@@ -64,6 +69,10 @@ chmod +x netserver
 	To start NetAdmin:
 chmod +x netadmin
 ./netadmin
+
+	To start AI Ranks Tool:
+chmod +x airankstool
+./airankstool
 
 	Note: You don't have to execute chmod command from 2nd time.
 
@@ -90,6 +99,7 @@ java -cp bin:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib
 		Normally, the game will read keyboard input from LWJGL, which conflicts with SCIM.
 		However, when this option is used, the game will try to read keyboard input directly from your operating system.
 		So you can play the game with SCIM enabled.
+		Please note when "-j" option is used, some keys (such as ;) won't be detected.
 
 	SDL version problems:
 		If you tried SDL version but it didn't work, you need to manually install libsdl.

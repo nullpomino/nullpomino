@@ -1041,74 +1041,78 @@ public class NetServer {
 		// Mainloop
 		while(!shutdownRequested) {
 			try {
-				// Process any pending changes
-				synchronized (this.pendingChanges) {
-					Iterator<ChangeRequest> changes = this.pendingChanges.iterator();
-					while (changes.hasNext()) {
-						ChangeRequest change = (ChangeRequest) changes.next();
-						SelectionKey key = change.socket.keyFor(this.selector);
+				try {
+					// Process any pending changes
+					synchronized (this.pendingChanges) {
+						Iterator<ChangeRequest> changes = this.pendingChanges.iterator();
+						while (changes.hasNext()) {
+							ChangeRequest change = (ChangeRequest) changes.next();
+							SelectionKey key = change.socket.keyFor(this.selector);
 
-						if(key.isValid()) {
-							switch (change.type) {
-							case ChangeRequest.DISCONNECT:
-								// Delayed disconnect
-								List<ByteBuffer> queue = this.pendingData.get(change.socket);
-								if((queue == null) || queue.isEmpty()) {
-									try {
-										changes.remove();
-										logout(key);
-									} catch (ConcurrentModificationException e) {
-										log.debug("ConcurrentModificationException on delayed disconnect", e);
+							if(key.isValid()) {
+								switch (change.type) {
+								case ChangeRequest.DISCONNECT:
+									// Delayed disconnect
+									List<ByteBuffer> queue = this.pendingData.get(change.socket);
+									if((queue == null) || queue.isEmpty()) {
+										try {
+											changes.remove();
+											logout(key);
+										} catch (ConcurrentModificationException e) {
+											log.debug("ConcurrentModificationException on delayed disconnect", e);
+										}
 									}
+									break;
+								case ChangeRequest.CHANGEOPS:
+									// interestOps Change
+									key.interestOps(change.ops);
+									changes.remove();
+									break;
 								}
-								break;
-							case ChangeRequest.CHANGEOPS:
-								// interestOps Change
-								key.interestOps(change.ops);
+							} else {
 								changes.remove();
-								break;
 							}
-						} else {
-							changes.remove();
+						}
+						//this.pendingChanges.clear();
+					}
+
+					// Wait for an event one of the registered channels
+					this.selector.select();
+
+					// Iterate over the set of keys for which events are available
+					Iterator<SelectionKey> selectedKeys = this.selector.selectedKeys().iterator();
+					while (selectedKeys.hasNext()) {
+						SelectionKey key = (SelectionKey) selectedKeys.next();
+						selectedKeys.remove();
+
+						if (!key.isValid()) {
+							continue;
+						}
+
+						try {
+							// Check what event is available and deal with it
+							if (key.isAcceptable()) {
+								doAccept(key);
+							} else if (key.isReadable()) {
+								doRead(key);
+							} else if (key.isWritable()) {
+								doWrite(key);
+							}
+						} catch (NetServerDisconnectRequestedException e) {
+							// Intended Disconnect
+							log.debug("Socket disconnected by NetServerDisconnectRequestedException");
+							logout(key);
+						} catch (IOException e) {
+							// Disconnect when something bad happens
+							log.info("Socket disconnected by IOException", e);
+							logout(key);
+						} catch (Exception e) {
+							log.warn("Socket disconnected by Non-IOException", e);
+							logout(key);
 						}
 					}
-					//this.pendingChanges.clear();
-				}
-
-				// Wait for an event one of the registered channels
-				this.selector.select();
-
-				// Iterate over the set of keys for which events are available
-				Iterator<SelectionKey> selectedKeys = this.selector.selectedKeys().iterator();
-				while (selectedKeys.hasNext()) {
-					SelectionKey key = (SelectionKey) selectedKeys.next();
-					selectedKeys.remove();
-
-					if (!key.isValid()) {
-						continue;
-					}
-
-					try {
-						// Check what event is available and deal with it
-						if (key.isAcceptable()) {
-							doAccept(key);
-						} else if (key.isReadable()) {
-							doRead(key);
-						} else if (key.isWritable()) {
-							doWrite(key);
-						}
-					} catch (NetServerDisconnectRequestedException e) {
-						// Intended Disconnect
-						log.debug("Socket disconnected by NetServerDisconnectRequestedException");
-						logout(key);
-					} catch (IOException e) {
-						// Disconnect when something bad happens
-						log.info("Socket disconnected by IOException", e);
-						logout(key);
-					} catch (Exception e) {
-						log.warn("Socket disconnected by Non-IOException", e);
-						logout(key);
-					}
+				} catch (ConcurrentModificationException e) {
+					log.debug("ConcurrentModificationException on server mainloop", e);
 				}
 			} catch (IOException e) {
 				log.fatal("IOException on server mainloop", e);

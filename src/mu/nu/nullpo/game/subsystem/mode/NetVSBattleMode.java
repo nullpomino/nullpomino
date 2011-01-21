@@ -1580,9 +1580,9 @@ public class NetVSBattleMode extends NetDummyMode {
 
 		// Practice mode
 		if((playerID == 0) && ((isPractice) || (numNowPlayers == 1)) && (isPracticeExitAllowed)) {
-			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120) || (lastcombo[playerID] < 2)) {
-				receiver.drawMenuFont(engine, 0, 0, 22,
-						"F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + "): EXIT",
+			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120)) {
+				receiver.drawMenuFont(engine, 0, 0, 21,
+						"F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):\n END GAME",
 						EventReceiver.COLOR_PURPLE);
 			}
 

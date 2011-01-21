@@ -753,19 +753,15 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 */
 	protected void netDrawSpectatorsCount(GameEngine engine, int x, int y) {
 		if(netIsNetPlay) {
-			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+0, "SPECTATORS", EventReceiver.COLOR_CYAN);
+			int fontcolor = netIsWatch ? EventReceiver.COLOR_GREEN : EventReceiver.COLOR_RED;
+			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+0, "SPECTATORS", fontcolor);
 			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+1, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
 
-			if(netIsWatch) {
-				owner.receiver.drawScoreFont(engine, engine.playerID, x, y+2, "WATCH", EventReceiver.COLOR_GREEN);
-			} else {
-				owner.receiver.drawScoreFont(engine, engine.playerID, x, y+2, "PLAY", EventReceiver.COLOR_RED);
-			}
-
 			if(engine.stat == GameEngine.STAT_SETTING && !netIsWatch && netIsNetRankingViewOK(engine)) {
-				int y2 = y + 4;
+				int y2 = y + 2;
 				if(y2 > 24) y2 = 24;
-				owner.receiver.drawScoreFont(engine, engine.playerID, x, y2, "D:ONLINE RANKING", EventReceiver.COLOR_GREEN);
+				String strBtnD = engine.owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_D);
+				owner.receiver.drawScoreFont(engine, engine.playerID, x, y2, "D(" + strBtnD + " KEY):\n NET RANKING", EventReceiver.COLOR_GREEN);
 			}
 		}
 	}
@@ -1044,6 +1040,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 */
 	protected void netOnRenderNetPlayRanking(GameEngine engine, int playerID, EventReceiver receiver) {
 		if(netIsNetRankingDisplayMode) {
+			String strBtnA = receiver.getKeyNameByButtonID(engine, Controller.BUTTON_A);
+			String strBtnB = receiver.getKeyNameByButtonID(engine, Controller.BUTTON_B);
+
 			int d = netRankingView;
 
 			if(!netRankingNoDataFlag[d] && netRankingReady[d] && (netRankingPlace != null) && (netRankingPlace[d] != null)) {
@@ -1149,7 +1148,8 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 							EventReceiver.COLOR_CYAN);
 				}
 
-				receiver.drawMenuFont(engine, playerID, 1, 28, "A:DOWNLOAD B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
+				receiver.drawMenuFont(engine, playerID, 1, 27,
+						"A(" + strBtnA + " KEY):DOWNLOAD\nB(" + strBtnB + " KEY):BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
 						EventReceiver.COLOR_ORANGE);
 			} else if(netRankingNoDataFlag[d]) {
 				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
@@ -1160,7 +1160,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 				receiver.drawMenuFont(engine, playerID, 1, 3, "NO DATA", EventReceiver.COLOR_DARKBLUE);
 
-				receiver.drawMenuFont(engine, playerID, 1, 28, "B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
+				receiver.drawMenuFont(engine, playerID, 1, 28, "B(" + strBtnB + " KEY):BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
 						EventReceiver.COLOR_ORANGE);
 			} else if(!netRankingReady[d] && (netRankingPlace == null) || (netRankingPlace[d] == null)) {
 				receiver.drawMenuFont(engine, playerID, 0, 1, "<<", EventReceiver.COLOR_ORANGE);
@@ -1171,7 +1171,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 				receiver.drawMenuFont(engine, playerID, 1, 3, "LOADING...", EventReceiver.COLOR_CYAN);
 
-				receiver.drawMenuFont(engine, playerID, 1, 28, "B:BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
+				receiver.drawMenuFont(engine, playerID, 1, 28, "B(" + strBtnB + " KEY):BACK LEFT/RIGHT:" + ((d == 0) ? "DAILY" : "ALL-TIME"),
 						EventReceiver.COLOR_ORANGE);
 			}
 		}

@@ -13,13 +13,15 @@ Javaで作った落ちものアクションパズルゲームもどきです。
 　　play_slick.batまたはNullpoMino.exeをダブルクリックするとSlickバージョンが起動します。
 　　（OpenGLに対応したビデオカードが必要です。いくつかのPCではキーボードを認識しません。）
 　　play_sdl.batをダブルクリックするとSDLバージョンが起動します。
-　　（ほとんどのPCでSlickバージョンよりも安定して動作します。ただし32bit限定）
+　　（ほとんどのPCでSlickバージョンよりも安定して動作します。
+　　　ただしランダムにクラッシュするバグや、ネットプレイ時にメモリリークバグなどがあります。32bit限定）
 
 　　ruleeditor.batをダブルクリックするとルールエディタを起動します。ルールの作成・編集ができます。
 　　sequencer.batをダブルクリックするとシーケンスビューアを起動します。リプレイファイルを開いてNEXTの順番を確認できるツールです。（Zirceanさん開発）
 　　musiclisteditor.batをダブルクリックするとミュージックリストエディタを起動します。音楽の設定ができます。
 　　netserver.batをダブルクリックするとNetServer（ネットプレイ用サーバー）を起動します。
 　　netadmin.batをダブルクリックするとNetAdmin（NetServer管理ツール）を起動します。
+　　airankstool.batをダブルクリックするとAI Ranks Toolを起動します。RanksAIの定石ファイルを作成するツールです。（大量のメモリを必要とします）
 
 ・Linux
 　　端末ウィンドウでNullpoMinoがあるディレクトリ（このファイルがあるディレクトリ）まで移動して
@@ -33,6 +35,9 @@ chmod +x play_swing
 　　Slickバージョン:
 chmod +x play_slick
 ./play_slick
+　　または
+chmod +x NullpoMino
+./NullpoMino
 
 　　SDLバージョン:
 chmod +x play_sdl
@@ -58,6 +63,10 @@ chmod +x netserver
 chmod +x netadmin
 ./netadmin
 
+　　AI Ranks Tool:
+chmod +x airankstool
+./airankstool
+
 　　使用しているビデオカードやLinuxのバージョンによってはうまく動かないかもしれません。
 
 　　Swingバージョン固有の問題:
@@ -80,6 +89,7 @@ java -cp bin:NullpoMino.jar:lib/log4j-1.2.15.jar:lib/slick.jar:lib/lwjgl.jar:lib
 　　　2つ目のコマンドは、ゲームを"-j"オプションを付けて起動します。
 　　　通常、このゲームはキーボード入力をLWJGLから読み取ろうとしますが、SCIMとは相性が悪いです。
 　　　このオプションを使用している場合、ゲームはキーボード入力をシステムから直接読み取りますので、SCIMがあっても問題なく動作するようになります。
+　　　ただし一部認識できないキー（;など）があります。
 
 　　SDLバージョン固有の問題:
 　　　自分がUbuntu 8.04で試した限りでは、これがLinuxでは最も問題なく動作します。
@@ -112,7 +122,7 @@ B：ブロックの逆回転・キャンセル
 C：ブロックの回転
 D：ホールド（ブロックを一時的に保管して、後で使うことができます）
 E：ブロックの180度回転
-F：エンディング早送り（SPEED MANIAとGARBAGE MANIAモードで使用可能）
+F：エンディング早送り（SPEED MANIAとGARBAGE MANIAモードで使用可能）・ネットプレイで練習モードを開始／終了
 QUIT：ゲームを終了する
 PAUSE：ゲームを一時停止
 GIVEUP：タイトルに戻る
@@ -241,7 +251,8 @@ STANDARD-ZERO　　　：STANDARD-PLUSをベースに、先行回転無し・先行ホールド無し・ソ
 
 ・COMBO RACE
 　　規定ライン数を消すまでに最大で何コンボできるかを競います。
-　　規定ライン数は20ライン・40ライン・100ラインから選択可能です。
+　　規定ライン数は20ライン・40ライン・100ライン・エンドレスから選択可能です。
+　　エンドレスではコンボが途切れるまでゲームが続きます。
 
 ・ULTRA
 　　制限時間内にどれだけ多くの得点を得られるか、またはどれだけ多くのラインを消せるかを競うモードです。
@@ -482,6 +493,12 @@ java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ポ
 Linux/MacOS:
 java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ポート番号]
 
+2番目の引数を設定することで、別のnetserver.cfgから設定を読み込むこともできます。
+Windows:
+java -cp NullpoMino.jar;lib\log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ポート番号] [netserver.cfgの場所]
+Linux/MacOS:
+java -cp NullpoMino.jar:lib/log4j-1.2.15.jar mu.nu.nullpo.game.net.NetServer [ポート番号] [netserver.cfgの場所]
+
 【FAQ】
 Q: Slick版でジョイスティックが動かない
 A: GENERAL CONFIG画面の"JOYSTICK METHOD"の設定をLWGJLに変えて、JOYSTICK SETTING画面の設定をいろいろ弄ってください。
@@ -595,15 +612,14 @@ Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
 +NetServer: 安定性がアップしました。CPU占有率100%バグも修正しました。
 #ネットプレイの強化：
  +レートありのルームはプリセット形式になりました。使用するルールは各人が自由に選べます。
- [TODO:Translate them]
- +Added MARATHON, MARATHON+, EXTREME, DIG RACE, COMBO RACE, ULTRA, TECHNICIAN, and TIME ATTACK to Netplay 1P modes
- +Single player modes have a leaderboard for all rules, including those not rated
- +Lobby and rooms now have chat history
- +Team colors in Netplay games
- +Support for changing the hole change rate in Fractional garbage style based on the number of live players.
- *Various other tweaks to improve the experience
--Fixed PoochyBot, "No Prethink" variations are no longer needed. Instead, No Prethink is an option in the AI menu.
--Fixed many, many bugs.
+ +オンラインの1人プレイにMARATHON, MARATHON+, EXTREME, DIG RACE, COMBO RACE, ULTRA, TECHNICIAN, TIME ATTACKモードを追加しました。
+ +オンラインの1人プレイに全ルール共通のランキングを追加しました。ルール選択で「(今使用中のルール)」を選ぶと使われます。
+ +ロビーとルームに入室した直後に最近のチャット履歴が表示されるようになりました。
+ +チーム戦で名前が色分けされるようになりました。
+ +敵プレイヤー数に応じて穴の位置が変わる設定を追加しました。
+ *その他いろいろ
+-PoochyBotのいろいろなバグ修正をしました。また、先行思考オプションをAI設定画面に追加し、"No Prethink"版は廃止しました。
+-その他のいろいろなバグを修正しました。
 
 Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #このバージョンから7.3.0のサーバーとの互換性は失われます。
