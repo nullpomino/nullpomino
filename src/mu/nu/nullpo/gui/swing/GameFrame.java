@@ -620,7 +620,9 @@ public class GameFrame extends JFrame implements Runnable {
 		if((obClient != null) && obClient.isConnected()) {
 			int observerCount = obClient.getObserverCount();
 			int playerCount = obClient.getPlayerCount();
-			int fontcolor = (playerCount > 0) ? NormalFontSwing.COLOR_RED : NormalFontSwing.COLOR_BLUE;
+			int fontcolor = NormalFontSwing.COLOR_BLUE;
+			if(observerCount > 1) fontcolor = NormalFontSwing.COLOR_GREEN;
+			if(observerCount > 0 && playerCount > 0) fontcolor = NormalFontSwing.COLOR_RED;
 			String strObserverInfo = String.format("%d/%d", observerCount, playerCount);
 			String strObserverString = String.format("%40s", strObserverInfo);
 			NormalFontSwing.printFont(0, 480 - 16, strObserverString, fontcolor);
