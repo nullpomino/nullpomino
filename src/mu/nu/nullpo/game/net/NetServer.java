@@ -1608,6 +1608,10 @@ public class NetServer {
 			} else {
 				send(client, "pong\n");
 			}
+
+			// Kill dead connections
+			killTimeoutConnections(timeoutTime);
+
 			return;
 		}
 		// Observer login

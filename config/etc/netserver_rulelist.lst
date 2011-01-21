@@ -2,17 +2,16 @@
 
 # [Examples]
 # :TETROMINO <- Game Style. Possible styles are "TETROMINO", "AVALANCHE", "PHYSICIAN", and "SPF".
-# config/rule/test0.rul;1 <- Rule filename with room setting ID. It will use room setting #1.
-# config/rule/test1.rul   <- Rule filename. If room setting ID is not specified, it will use room setting #0.
+# config/rule/test1.rul   <- Rule filename.
 
 :TETROMINO
-config/rule/Classic3.rul;2
-config/rule/ClassicEasyA.rul;2
-config/rule/ClassicEasyB.rul;2
-config/rule/Standard.rul;1
-config/rule/StandardHard128.rul;1
-config/rule/StandardHard.rul;1
-config/rule/StandardExp.rul;1
+config/rule/Classic3.rul
+config/rule/ClassicEasyA.rul
+config/rule/ClassicEasyB.rul
+config/rule/Standard.rul
+config/rule/StandardHard128.rul
+config/rule/StandardHard.rul
+config/rule/StandardExp.rul
 config/rule/StandardFast.rul
 config/rule/StandardFastB.rul
 config/rule/StandardPlus.rul
