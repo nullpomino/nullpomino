@@ -593,6 +593,8 @@ Also thanks to:
 	vicar (http://vicar.bob.buttobi.net/)
 	SWR
 	hebo-MAI
+	gif
+	virulent
 	tetrisconcept.net http://www.tetrisconcept.net/
 	 (NullpoMino Topic: http://tetrisconcept.net/forum/showthread.html?t=1381)
 	Hard Drop http://harddrop.com/
@@ -627,6 +629,7 @@ Version 7.5.0 (2010/01/??) (r518-r???; Stable Release)
  *Various other tweaks to improve the experience
 -Fixed PoochyBot, "No Prethink" variations are no longer needed. Instead, No Prethink is an option in the AI menu.
 -Fixed many, many bugs.
+*New icons! Default is made by gif. Another one in the file is made by virulent.
 
 Version 7.4.0 (2010/10/29) {r277-r517; Unstable Release}
 #This version is NO LONGER compatible with 7.3.0 netplay server.
