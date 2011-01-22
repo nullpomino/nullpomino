@@ -566,7 +566,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 * @param engine GameEngine
 	 * @param state Think state
 	 * @param holdID Hold piece ID
-	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
+	 * @param depth Search depth
 	 * @return Evaluation score
 	 */
 	public int thinkMain(GameEngine engine, int state, int holdID, int depth) {
