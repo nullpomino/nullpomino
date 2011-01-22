@@ -518,7 +518,7 @@ A: Your record will not be saved if you don't use tripcode in your name.
 NullpoMino created by:
 	NullNoname !bzEQ7554bc (also known as pbomqlu910963, was known as Nanashi, No name, or noname) pbomqlu910963@gmail.com
 	Zircean
-	Poochy
+	Poochy.EXE
 	Wojtek (aka dodd)
 	Spirale (olivier.vidal1 on the SVN)
 	kitaru2004

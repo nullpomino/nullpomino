@@ -519,7 +519,7 @@ A: 名前にトリップが入っていないと記録は保存されません。
 製作：
 	NullNoname ◆bzEQ7554bc (別名pbomqlu910963、元名無し) pbomqlu910963@gmail.com
 	Zircean
-	Poochy
+	Poochy.EXE（ポチエグゼ）
 	Wojtek (aka dodd)
 	Spirale (olivier.vidal1 on the SVN)
 	kitaru2004
