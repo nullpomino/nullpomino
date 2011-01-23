@@ -1023,6 +1023,8 @@ public class NetServer {
 		// accepting new connections
 		serverChannel.register(socketSelector, SelectionKey.OP_ACCEPT);
 
+		log.info("Listening on port " + this.port + "...");
+		
 		return socketSelector;
 	}
 
@@ -1570,6 +1572,39 @@ public class NetServer {
 	}
 
 	/**
+	 * Find longest matching player name matching a word boundary in msg.
+	 * e.g. msg = "this is a test"
+	 *      player = "this is" will succeed, "this i" will fail
+	 *      "this is" will be returned if a player named "this" exists
+	 * Returns SocketChannel of found player or null.
+	 * @param msg Message to send (String)
+	 */
+	public SocketChannel findPlayerByMsg(String msg) {
+		// Added to support temporary private messaging code, but might be useful even so?
+		synchronized(channelList) {
+			int maxLen = 0, len = 0;
+			String player;
+			SocketChannel chMatch = null;
+			for(SocketChannel ch: channelList) {
+				NetPlayerInfo p = playerInfoMap.get(ch);
+				len = p.strName.length();
+				player = p.strName;
+				if(p.isTripUse) {
+					len -= 12;
+					player = player.substring(0, len);
+				}
+				if(len+1 < msg.length()) {
+					if ((msg.substring(0, len+1).equals(player + " ")) && (len > maxLen)) { 
+						chMatch = ch;
+						maxLen = len;
+					}
+				}
+			}
+			return chMatch;
+		}
+	}
+	
+	/**
 	 * Process a packet.
 	 * @param client The SocketChannel who sent this packet
 	 * @param fullMessage The string of packet
@@ -1877,15 +1912,43 @@ public class NetServer {
 		if(message[0].equals("lobbychat")) {
 			//lobbychat\t[MESSAGE]
 
+			
+//			String[] message = fullMessage.split("\t");	// Split by \t
+//			NetPlayerInfo pInfo = playerInfoMap.get(client);	// NetPlayerInfo of this client. null if not logged in.
+
 			if(pInfo != null) {
 				NetChatMessage chat = new NetChatMessage(NetUtil.urlDecode(message[1]), pInfo);
-				chat.outputLog();
-				lobbyChatList.add(chat);
-				while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
-				saveLobbyChatHistory();
-
-				broadcast("lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
-						GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n");
+				
+				// Begin temporary private message code here
+				String msg = chat.strMessage;
+				if((msg.length() > 5) && (msg.substring(0,5).equals("/msg "))) {
+					SocketChannel ch = findPlayerByMsg(msg.substring(5));
+					if(ch == null) {
+						send(pInfo.channel, "lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+								GeneralUtil.exportCalendarString(chat.timestamp) + "\t" +
+								NetUtil.urlEncode("(private) Cannot find user") + "\n");
+					} else {
+						NetPlayerInfo p = playerInfoMap.get(ch);
+						String playerName = p.strName;
+						int len = playerName.length();
+						if(p.isTripUse) len -= 12;
+						msg = chat.strMessage.substring(len+6);
+						send(pInfo.channel, "lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+								GeneralUtil.exportCalendarString(chat.timestamp) + "\t" +
+								NetUtil.urlEncode("-> *" + playerName.substring(0, len) + "* " + msg) + "\n");
+						send(ch, "lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+							GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode("(private) " + msg) + "\n");
+					}
+				} else {
+					// End here
+					chat.outputLog();
+					lobbyChatList.add(chat);
+					while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
+					saveLobbyChatHistory();
+	
+					broadcast("lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
+							GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n");
+				}
 			}
 			return;
 		}
