@@ -3728,6 +3728,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		if(e.getActionCommand() == "CreateRoom_PresetCodeImport") {
 			try {
 				String strPresetCode = txtfldCreateRoomPresetCode.getText();
+				strPresetCode = strPresetCode.replaceAll("[^a-zA-Z0-9+/=]", "");
 				if(strPresetCode.length() > 0) {
 					String strPresetCodeD = NetUtil.decompressString(strPresetCode);
 					NetRoomInfo r = new NetRoomInfo(strPresetCodeD);
