@@ -1134,7 +1134,6 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 			log.info("Enter new mode:" + newModeTemp.getName());
 
 			NetDummyMode newMode = (NetDummyMode)newModeTemp;
-			if(gameFrame != null) gameFrame.setTitle(getUIText("Title_Game") + " - " + newMode.getName());
 
 			if(previousMode != null) previousMode.netplayUnload(netLobby);
 			gameManager.mode = newMode;
@@ -1187,7 +1186,7 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 				gameManager.engine[0].aiUseThread = NullpoMinoSwing.propGlobal.getProperty(0 + ".aiUseThread", true);
 				gameManager.engine[0].aiShowHint = NullpoMinoSwing.propGlobal.getProperty(0+".aiShowHint", false);
 				gameManager.engine[0].aiPrethink = NullpoMinoSwing.propGlobal.getProperty(0+".aiPrethink", false);
-					}
+			}
 
 			// Initialization for each player
 			for(int i = 0; i < gameManager.getPlayers(); i++) {
@@ -1198,6 +1197,8 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 		} else {
 			log.error("This mode does not support netplay:" + modeName);
 		}
+
+		if(gameFrame != null) gameFrame.updateTitleBarCaption();
 	}
 
 	/**

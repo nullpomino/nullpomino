@@ -115,20 +115,24 @@ public class ControllerManager {
 	 * @return 上を押しているとtrue
 	 */
 	public static boolean isControllerUp(int player, Input input) {
-		int controller = controllerID[player];
+		try {
+			int controller = controllerID[player];
 
-		if(controller < 0) return false;
+			if(controller < 0) return false;
 
-		if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
-			return input.isControllerUp(controller);
-		} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
-			return input.isControllerUp(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 1) < -border[player]));
-		} else if(method == CONTROLLER_METHOD_LWJGL) {
-			if((controller >= 0) && (controller < controllers.size())) {
-				float axisValue = controllers.get(controller).getYAxisValue();
-				float povValue = controllers.get(controller).getPovY();
-				return (!ignoreAxis[player] && (axisValue < -border[player])) || (!ignorePOV[player] && (povValue < -border[player]));
+			if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
+				return input.isControllerUp(controller);
+			} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
+				return input.isControllerUp(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 1) < -border[player]));
+			} else if(method == CONTROLLER_METHOD_LWJGL) {
+				if((controller >= 0) && (controller < controllers.size())) {
+					float axisValue = controllers.get(controller).getYAxisValue();
+					float povValue = controllers.get(controller).getPovY();
+					return (!ignoreAxis[player] && (axisValue < -border[player])) || (!ignorePOV[player] && (povValue < -border[player]));
+				}
 			}
+		} catch (Throwable e) {
+			log.debug("Exception on isControllerUp", e);
 		}
 		return false;
 	}
@@ -140,20 +144,24 @@ public class ControllerManager {
 	 * @return 下を押しているとtrue
 	 */
 	public static boolean isControllerDown(int player, Input input) {
-		int controller = controllerID[player];
+		try {
+			int controller = controllerID[player];
 
-		if(controller < 0) return false;
+			if(controller < 0) return false;
 
-		if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
-			return input.isControllerDown(controller);
-		} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
-			return input.isControllerDown(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 1) > border[player]));
-		} else if(method == CONTROLLER_METHOD_LWJGL) {
-			if((controller >= 0) && (controller < controllers.size())) {
-				float axisValue = controllers.get(controller).getYAxisValue();
-				float povValue = controllers.get(controller).getPovY();
-				return (!ignoreAxis[player] && (axisValue > border[player])) || (!ignorePOV[player] && (povValue > border[player]));
+			if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
+				return input.isControllerDown(controller);
+			} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
+				return input.isControllerDown(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 1) > border[player]));
+			} else if(method == CONTROLLER_METHOD_LWJGL) {
+				if((controller >= 0) && (controller < controllers.size())) {
+					float axisValue = controllers.get(controller).getYAxisValue();
+					float povValue = controllers.get(controller).getPovY();
+					return (!ignoreAxis[player] && (axisValue > border[player])) || (!ignorePOV[player] && (povValue > border[player]));
+				}
 			}
+		} catch (Throwable e) {
+			log.debug("Exception on isControllerDown", e);
 		}
 		return false;
 	}
@@ -165,20 +173,24 @@ public class ControllerManager {
 	 * @return 左を押しているとtrue
 	 */
 	public static boolean isControllerLeft(int player, Input input) {
-		int controller = controllerID[player];
+		try {
+			int controller = controllerID[player];
 
-		if(controller < 0) return false;
+			if(controller < 0) return false;
 
-		if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
-			return input.isControllerLeft(controller);
-		} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
-			return input.isControllerLeft(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 0) < -border[player]));
-		} else if(method == CONTROLLER_METHOD_LWJGL) {
-			if((controller >= 0) && (controller < controllers.size())) {
-				float axisValue = controllers.get(controller).getXAxisValue();
-				float povValue = controllers.get(controller).getPovX();
-				return (!ignoreAxis[player] && (axisValue < -border[player])) || (!ignorePOV[player] && (povValue < -border[player]));
+			if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
+				return input.isControllerLeft(controller);
+			} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
+				return input.isControllerLeft(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 0) < -border[player]));
+			} else if(method == CONTROLLER_METHOD_LWJGL) {
+				if((controller >= 0) && (controller < controllers.size())) {
+					float axisValue = controllers.get(controller).getXAxisValue();
+					float povValue = controllers.get(controller).getPovX();
+					return (!ignoreAxis[player] && (axisValue < -border[player])) || (!ignorePOV[player] && (povValue < -border[player]));
+				}
 			}
+		} catch (Throwable e) {
+			log.debug("Exception on isControllerLeft", e);
 		}
 		return false;
 	}
@@ -190,20 +202,24 @@ public class ControllerManager {
 	 * @return 右を押しているとtrue
 	 */
 	public static boolean isControllerRight(int player, Input input) {
-		int controller = controllerID[player];
+		try {
+			int controller = controllerID[player];
 
-		if(controller < 0) return false;
+			if(controller < 0) return false;
 
-		if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
-			return input.isControllerRight(controller);
-		} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
-			return input.isControllerRight(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 0) > border[player]));
-		} else if(method == CONTROLLER_METHOD_LWJGL) {
-			if((controller >= 0) && (controller < controllers.size())) {
-				float axisValue = controllers.get(controller).getXAxisValue();
-				float povValue = controllers.get(controller).getPovX();
-				return (!ignoreAxis[player] && (axisValue > border[player])) || (!ignorePOV[player] && (povValue > border[player]));
+			if(method == CONTROLLER_METHOD_SLICK_DEFAULT) {
+				return input.isControllerRight(controller);
+			} else if(method == CONTROLLER_METHOD_SLICK_ALTERNATE) {
+				return input.isControllerRight(controller) || (!ignoreAxis[player] && (input.getAxisValue(controller, 0) > border[player]));
+			} else if(method == CONTROLLER_METHOD_LWJGL) {
+				if((controller >= 0) && (controller < controllers.size())) {
+					float axisValue = controllers.get(controller).getXAxisValue();
+					float povValue = controllers.get(controller).getPovX();
+					return (!ignoreAxis[player] && (axisValue > border[player])) || (!ignorePOV[player] && (povValue > border[player]));
+				}
 			}
+		} catch (Throwable e) {
+			log.debug("Exception on isControllerRight", e);
 		}
 		return false;
 	}
@@ -216,22 +232,27 @@ public class ControllerManager {
 	 * @return 指定した buttonが押されているとtrue
 	 */
 	public static boolean isControllerButton(int player, Input input, int button) {
-		int controller = controllerID[player];
+		try {
+			int controller = controllerID[player];
 
-		if(controller < 0) return false;
-		if(button < 0) return false;
+			if(controller < 0) return false;
+			if(button < 0) return false;
 
-		if((method == CONTROLLER_METHOD_SLICK_DEFAULT) || (method == CONTROLLER_METHOD_SLICK_ALTERNATE)) {
-			return input.isButtonPressed(button, controller);
-		} else if(method == CONTROLLER_METHOD_LWJGL) {
-			if((controller >= 0) && (controller < controllers.size())) {
-				Controller c = controllers.get(controller);
-				if(button < c.getButtonCount()) {
-					return c.isButtonPressed(button);
+			if((method == CONTROLLER_METHOD_SLICK_DEFAULT) || (method == CONTROLLER_METHOD_SLICK_ALTERNATE)) {
+				return input.isButtonPressed(button, controller);
+			} else if(method == CONTROLLER_METHOD_LWJGL) {
+				if((controller >= 0) && (controller < controllers.size())) {
+					Controller c = controllers.get(controller);
+					if(button < c.getButtonCount()) {
+						return c.isButtonPressed(button);
+					}
 				}
 			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// Invalid button
+		} catch (Throwable e) {
+			log.debug("Exception on isControllerButton (button:" + button + ")", e);
 		}
-
 		return false;
 	}
 }

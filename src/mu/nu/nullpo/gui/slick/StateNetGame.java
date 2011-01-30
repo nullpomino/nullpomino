@@ -52,7 +52,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * ネットゲーム画面のステート
+ * Game screen state (Netplay)
  */
 public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** Log */
@@ -61,23 +61,29 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	/** This state's ID */
 	public static final int ID = 11;
 
-	/** ゲームのメインクラス */
+	/** Game main class */
 	public GameManager gameManager = null;
 
-	/** ロビー画面 */
+	/** Lobby */
 	public NetLobbyFrame netLobby = null;
 
-	/** FPS表示 */
-	protected boolean showfps = true;
-
-	/** Screenshot撮影 flag */
+	/** Screenshot flag */
 	protected boolean ssflag = false;
 
-	/** AppGameContainer (これを使ってタイトルバーを変える) */
+	/** Show background flag */
+	protected boolean showbg = true;
+
+	/** Previous ingame flag (Used by title-bar text change) */
+	protected boolean prevInGameFlag = false;
+
+	/** AppGameContainer (Used by title-bar text change) */
 	protected AppGameContainer appContainer = null;
 
 	/** Mode name to enter (null=Exit) */
 	protected String strModeToEnter = "";
+
+	/** Current game mode name */
+	protected String modeName;
 
 	/*
 	 * Fetch this state's ID
@@ -99,7 +105,11 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-		// Observer停止
+		// Init variables
+		showbg = NullpoMinoSlick.propConfig.getProperty("option.showbg", true);
+		prevInGameFlag = false;
+
+		// Observer stop
 		NullpoMinoSlick.stopObserverClient();
 
 		// 60FPS
@@ -108,7 +118,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		appContainer.setUpdateOnlyWhenVisible(false);
 
 		// Clear each frame
-		appContainer.setClearEachFrame(true);
+		appContainer.setClearEachFrame(!showbg);
 
 		// gameManager initialization
 		gameManager = new GameManager(new RendererSlick());
@@ -155,7 +165,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 	 */
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		try {
-			// ゲーム画面
+			// Game screen
 			if((gameManager != null) && (gameManager.mode != null)) {
 				gameManager.renderAll();
 			}
@@ -186,8 +196,17 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				GameKey.gamekey[0].clear();
 			}
 
-			// TTF font 描画
+			// TTF font
 			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
+
+			// Title bar update
+			if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+				boolean nowInGame = gameManager.engine[0].isInGame;
+				if(prevInGameFlag != nowInGame) {
+					prevInGameFlag = nowInGame;
+					updateTitleBarCaption();
+				}
+			}
 
 			// Update key input states
 			if(container.hasFocus() && !netLobby.isFocused()) {
@@ -215,7 +234,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				}
 			}
 
-			// ゲームの処理を実行
+			// Execute game loops
 			if((gameManager != null) && (gameManager.mode != null)) {
 				GameKey.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
 				gameManager.updateAll();
@@ -255,21 +274,21 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 	/**
 	 * Enter to a new mode
-	 * @param modeName Mode name
+	 * @param newModeName Mode name
 	 */
-	private void enterNewMode(String modeName) {
+	private void enterNewMode(String newModeName) {
 		NullpoMinoSlick.loadGlobalConfig();	// Reload global config file
 
 		GameMode previousMode = gameManager.mode;
-		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSlick.modeManager.getMode(modeName);
+		GameMode newModeTemp = (newModeName == null) ? new NetDummyMode() : NullpoMinoSlick.modeManager.getMode(newModeName);
 
 		if(newModeTemp == null) {
-			log.error("Cannot find a mode:" + modeName);
+			log.error("Cannot find a mode:" + newModeName);
 		} else if(newModeTemp instanceof NetDummyMode) {
 			log.info("Enter new mode:" + newModeTemp.getName());
 
 			NetDummyMode newMode = (NetDummyMode)newModeTemp;
-			appContainer.setTitle("NullpoMino - " + newMode.getName());
+			modeName = newMode.getName();
 
 			if(previousMode != null) previousMode.netplayUnload(netLobby);
 			gameManager.mode = newMode;
@@ -331,8 +350,28 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 			newMode.netplayInit(netLobby);
 		} else {
-			log.error("This mode does not support netplay:" + modeName);
+			log.error("This mode does not support netplay:" + newModeName);
 		}
+
+		updateTitleBarCaption();
+	}
+
+	/**
+	 * Update title bar text
+	 */
+	public void updateTitleBarCaption() {
+		String strTitle = "NullpoMino Netplay - " + modeName;
+
+		if(modeName.equals("NET-DUMMY")) {
+			strTitle = "NullpoMino Netplay";
+		} else if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			if(gameManager.engine[0].isInGame && !gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[PLAY] NullpoMino Netplay - " + modeName;
+			else
+				strTitle = "[MENU] NullpoMino Netplay - " + modeName;
+		}
+
+		appContainer.setTitle(strTitle);
 	}
 
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {

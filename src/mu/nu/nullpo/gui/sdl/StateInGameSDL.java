@@ -45,32 +45,38 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * ゲーム画面のステート
+ * Game screen state (Local play)
  */
 public class StateInGameSDL extends BaseStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateInGameSDL.class);
 
-	/** ゲームのメインクラス */
+	/** Game main class */
 	protected GameManager gameManager;
 
-	/** ポーズ flag */
+	/** Game paused flag */
 	protected boolean pause = false;
 
-	/** ポーズメッセージ非表示 */
+	/** Hide pause menu */
 	protected boolean pauseMessageHide = false;
 
-	/**  frame ステップ is enabled flag */
+	/** Frame step enabled flag */
 	protected boolean enableframestep = false;
 
-	/** 倍速Mode */
+	/** Fast forward */
 	protected int fastforward = 0;
 
-	/** Pause menuのCursor position */
+	/** Pause menu cursor position */
 	protected int cursor = 0;
 
 	/** Number of frames remaining until pause key can be used */
 	protected int pauseFrame = 0;
+
+	/** Previous ingame flag (Used by title-bar text change) */
+	protected boolean prevInGameFlag = false;
+
+	/** Current game mode name */
+	protected String modeName;
 
 	/*
 	 * Called when entering this state
@@ -82,6 +88,7 @@ public class StateInGameSDL extends BaseStateSDL {
 		enableframestep = NullpoMinoSDL.propConfig.getProperty("option.enableframestep", false);
 		fastforward = 0;
 		cursor = 0;
+		prevInGameFlag = false;
 	}
 
 	/**
@@ -106,12 +113,11 @@ public class StateInGameSDL extends BaseStateSDL {
 		}
 
 		// Mode
-		String modeName = NullpoMinoSDL.propGlobal.getProperty("name.mode", "");
+		modeName = NullpoMinoSDL.propGlobal.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSDL.modeManager.getMode(modeName);
 		if(modeObj == null) {
 			log.warn("Couldn't find mode:" + modeName);
 		} else {
-			SDLVideo.wmSetCaption("NullpoMino - " + modeName, null);
 			gameManager.mode = modeObj;
 		}
 
@@ -174,6 +180,8 @@ public class StateInGameSDL extends BaseStateSDL {
 			// Called at initialization
 			gameManager.engine[i].init();
 		}
+
+		updateTitleBarCaption();
 	}
 
 	/**
@@ -193,12 +201,11 @@ public class StateInGameSDL extends BaseStateSDL {
 		}
 
 		// Mode
-		String modeName = prop.getProperty("name.mode", "");
+		modeName = prop.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSDL.modeManager.getMode(modeName);
 		if(modeObj == null) {
 			log.warn("Couldn't find mode:" + modeName);
 		} else {
-			SDLVideo.wmSetCaption("NullpoMino - " + modeName + " (Replay)", null);
 			gameManager.mode = modeObj;
 		}
 
@@ -238,6 +245,30 @@ public class StateInGameSDL extends BaseStateSDL {
 			// Called at initialization
 			gameManager.engine[i].init();
 		}
+
+		updateTitleBarCaption();
+	}
+
+	/**
+	 * Update title bar text
+	 */
+	public void updateTitleBarCaption() {
+		String strTitle = "NullpoMino - " + modeName;
+
+		if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			if(pause && !enableframestep)
+				strTitle = "[PAUSE] NullpoMino - " + modeName;
+			else if(gameManager.engine[0].isInGame && !gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[PLAY] NullpoMino - " + modeName;
+			else if(gameManager.replayMode && gameManager.replayRerecord)
+				strTitle = "[RERECORD] NullpoMino - " + modeName;
+			else if(gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[REPLAY] NullpoMino - " + modeName;
+			else
+				strTitle = "[MENU] NullpoMino - " + modeName;
+		}
+
+		SDLVideo.wmSetCaption(strTitle, null);
 	}
 
 	/*
@@ -308,7 +339,16 @@ public class StateInGameSDL extends BaseStateSDL {
 			}
 		}
 
-		// ポーズ
+		// Title bar update
+		if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			boolean nowInGame = gameManager.engine[0].isInGame;
+			if(prevInGameFlag != nowInGame) {
+				prevInGameFlag = nowInGame;
+				updateTitleBarCaption();
+			}
+		}
+
+		// Pause
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_PAUSE) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_PAUSE)) {
 			if(!pause) {
 				if((gameManager != null) && (gameManager.isGameActive()) && (pauseFrame <= 0)) {
@@ -324,6 +364,7 @@ public class StateInGameSDL extends BaseStateSDL {
 				pauseFrame = 0;
 				if(!enableframestep) ResourceHolderSDL.bgmResume();
 			}
+			updateTitleBarCaption();
 		}
 		// Pause menu
 		else if(pause && !enableframestep && !pauseMessageHide) {
@@ -375,6 +416,7 @@ public class StateInGameSDL extends BaseStateSDL {
 					ResourceHolderSDL.soundManager.play("tspin1");
 					cursor = 0;
 				}
+				updateTitleBarCaption();
 			}
 			// Unpause by cancel key
 			else if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_B) && (pauseFrame <= 0)) {
@@ -383,6 +425,7 @@ public class StateInGameSDL extends BaseStateSDL {
 				pauseFrame = 5;
 				GameKeySDL.gamekey[0].clear();
 				ResourceHolderSDL.bgmResume();
+				updateTitleBarCaption();
 			}
 		}
 		if(pauseFrame > 0) pauseFrame--;
@@ -435,7 +478,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			}
 		}
 
-		// ゲームの処理を実行
+		// Execute game loops
 		if(!pause || (GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_FRAMESTEP) && enableframestep)) {
 			if(gameManager != null) {
 				for(int i = 0; i < Math.min(gameManager.getPlayers(), 2); i++) {

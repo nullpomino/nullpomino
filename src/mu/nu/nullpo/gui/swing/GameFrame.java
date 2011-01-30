@@ -49,6 +49,7 @@ import java.util.Calendar;
 import javax.swing.JFrame;
 
 import mu.nu.nullpo.game.net.NetObserverClient;
+import mu.nu.nullpo.game.play.GameManager;
 
 import org.apache.log4j.Logger;
 
@@ -155,6 +156,12 @@ public class GameFrame extends JFrame implements Runnable {
 	/** Mode name to enter (null=Exit) */
 	public String strModeToEnter = "";
 
+	/** Previous ingame flag (Used by title-bar text change) */
+	protected boolean prevInGameFlag = false;
+
+	/** Current game mode name */
+	public String modeName;
+
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
@@ -244,9 +251,11 @@ public class GameFrame extends JFrame implements Runnable {
 		pauseMessageHide = false;
 		fastforward = 0;
 		cursor = 0;
+		prevInGameFlag = false;
 		isInGame = new boolean[2];
 		GameKeySwing.gamekey[0].clear();
 		GameKeySwing.gamekey[1].clear();
+		updateTitleBarCaption();
 
 		// 設定を反映させる
 		enableframestep = NullpoMinoSwing.propConfig.getProperty("option.enableframestep", false);
@@ -306,6 +315,12 @@ public class GameFrame extends JFrame implements Runnable {
 					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
 				}
 				perfectFPSDelay += 1000000000 / maxfps;
+
+				// Don't run in super fast after the heavy slowdown
+				if(System.nanoTime() > perfectFPSDelay + 2000000000 / maxfps) {
+					perfectFPSDelay = System.nanoTime();
+				}
+
 				sleepFlag = true;
 			}
 
@@ -356,6 +371,17 @@ public class GameFrame extends JFrame implements Runnable {
 		GameKeySwing.gamekey[0].update();
 		GameKeySwing.gamekey[1].update();
 
+		// Title bar update
+		if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.engine != null) &&
+		   (NullpoMinoSwing.gameManager.engine.length > 0) && (NullpoMinoSwing.gameManager.engine[0] != null))
+		{
+			boolean nowInGame = NullpoMinoSwing.gameManager.engine[0].isInGame;
+			if(prevInGameFlag != nowInGame) {
+				prevInGameFlag = nowInGame;
+				updateTitleBarCaption();
+			}
+		}
+
 		// Pause button
 		if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_PAUSE) || GameKeySwing.gamekey[1].isPushKey(GameKeySwing.BUTTON_PAUSE)) {
 			if(!pause) {
@@ -370,6 +396,7 @@ public class GameFrame extends JFrame implements Runnable {
 				pause = false;
 				pauseFrame = 0;
 			}
+			updateTitleBarCaption();
 		}
 		// Pause menu
 		if(pause && !enableframestep && !pauseMessageHide) {
@@ -415,6 +442,7 @@ public class GameFrame extends JFrame implements Runnable {
 					NullpoMinoSwing.gameManager.replayRerecord = true;
 					cursor = 0;
 				}
+				updateTitleBarCaption();
 			}
 			// Unpause by cancel key
 			else if(GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_B) && (pauseFrame <= 0)) {
@@ -422,6 +450,7 @@ public class GameFrame extends JFrame implements Runnable {
 				pause = false;
 				pauseFrame = 5;
 				GameKeySwing.gamekey[0].clear();
+				updateTitleBarCaption();
 			}
 		}
 		if(pauseFrame > 0) pauseFrame--;
@@ -456,7 +485,7 @@ public class GameFrame extends JFrame implements Runnable {
 			fastforward = 0;
 		}
 
-		// ゲームの処理を実行
+		// Execute game loops
 		if(!pause || (GameKeySwing.gamekey[0].isPushKey(GameKeySwing.BUTTON_FRAMESTEP) && enableframestep)) {
 			if(NullpoMinoSwing.gameManager != null) {
 				for(int i = 0; i < Math.min(NullpoMinoSwing.gameManager.getPlayers(), 2); i++) {
@@ -516,7 +545,18 @@ public class GameFrame extends JFrame implements Runnable {
 				GameKeySwing.gamekey[0].clear();
 			}
 
-			// ゲームの処理を実行
+			// Title bar update
+			if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.engine != null) &&
+			   (NullpoMinoSwing.gameManager.engine.length > 0) && (NullpoMinoSwing.gameManager.engine[0] != null))
+			{
+				boolean nowInGame = NullpoMinoSwing.gameManager.engine[0].isInGame;
+				if(prevInGameFlag != nowInGame) {
+					prevInGameFlag = nowInGame;
+					updateTitleBarCaption();
+				}
+			}
+
+			// Execute game loops
 			if((NullpoMinoSwing.gameManager != null) && (NullpoMinoSwing.gameManager.mode != null)) {
 				GameKeySwing.gamekey[0].inputStatusUpdate(NullpoMinoSwing.gameManager.engine[0].ctrl);
 				NullpoMinoSwing.gameManager.updateAll();
@@ -785,6 +825,40 @@ public class GameFrame extends JFrame implements Runnable {
 		} catch (Exception e) {
 			log.warn("Failed to save screenshot to " + filename, e);
 		}
+	}
+
+	/**
+	 * Update title bar text
+	 */
+	public void updateTitleBarCaption() {
+		GameManager gameManager = NullpoMinoSwing.gameManager;
+
+		String strModeName = null;
+		if((gameManager != null) && (gameManager.mode != null)) {
+			strModeName = gameManager.mode.getName();
+		}
+
+		String strBaseTitle = "NullpoMino - " + strModeName;
+		if(isNetPlay) strBaseTitle = "NullpoMino NetPlay - " + strModeName;
+
+		String strTitle = strBaseTitle;
+
+		if(isNetPlay && strModeName.equals("NET-DUMMY")) {
+			strTitle = "NullpoMino NetPlay";
+		} else if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			if(pause && !enableframestep)
+				strTitle = "[PAUSE] " + strBaseTitle;
+			else if(gameManager.engine[0].isInGame && !gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[PLAY] " + strBaseTitle;
+			else if(gameManager.replayMode && gameManager.replayRerecord)
+				strTitle = "[RERECORD] " + strBaseTitle;
+			else if(gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[REPLAY] " + strBaseTitle;
+			else
+				strTitle = "[MENU] " + strBaseTitle;
+		}
+
+		this.setTitle(strTitle);
 	}
 
 	/**

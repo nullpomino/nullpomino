@@ -577,6 +577,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 					while(System.nanoTime() < perfectFPSDelay + 1000000000 / altMaxFPS) {}
 				}
 				perfectFPSDelay += 1000000000 / altMaxFPS;
+
+				// Don't run in super fast after the heavy slowdown
+				if(System.nanoTime() > perfectFPSDelay + 2000000000 / altMaxFPS) {
+					perfectFPSDelay = System.nanoTime();
+				}
+
 				sleepFlag = true;
 			}
 

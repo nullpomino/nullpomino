@@ -46,44 +46,50 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * ゲーム画面のステート
+ * Game screen state (Local play)
  */
 public class StateInGame extends BasicGameState {
 	/** This state's ID */
 	public static final int ID = 2;
 
-	/** ゲームのメインクラス */
+	/** Game main class */
 	public GameManager gameManager = null;
 
 	/** Log */
 	static Logger log = Logger.getLogger(StateInGame.class);
 
-	/** ポーズ flag */
+	/** Game paused flag */
 	protected boolean pause = false;
 
-	/** ポーズメッセージ非表示 */
+	/** Hide pause menu */
 	protected boolean pauseMessageHide = false;
 
-	/**  frame ステップ is enabled flag */
+	/** Frame step enabled flag */
 	protected boolean enableframestep = false;
 
 	/** Show background flag */
 	protected boolean showbg = true;
 
-	/** 倍速Mode */
+	/** Fast forward */
 	protected int fastforward = 0;
 
-	/** Pause menuのCursor position */
+	/** Pause menu cursor position */
 	protected int cursor = 0;
 
 	/** Number of frames remaining until pause key can be used */
 	protected int pauseFrame = 0;
 
-	/** Screenshot撮影 flag */
+	/** Screenshot flag */
 	protected boolean ssflag = false;
 
-	/** AppGameContainer (これを使ってタイトルバーを変える) */
+	/** AppGameContainer (Used by title-bar text change) */
 	protected AppGameContainer appContainer = null;
+
+	/** Previous ingame flag (Used by title-bar text change) */
+	protected boolean prevInGameFlag = false;
+
+	/** Current game mode name */
+	protected String modeName;
 
 	/*
 	 * Fetch this state's ID
@@ -109,12 +115,13 @@ public class StateInGame extends BasicGameState {
 		showbg = NullpoMinoSlick.propConfig.getProperty("option.showbg", true);
 		fastforward = 0;
 		cursor = 0;
+		prevInGameFlag = false;
 
 		container.setClearEachFrame(!showbg);	// Clear each frame when there is no BG
 	}
 
 	/**
-	 * Start a new game (Rule will be user-selected one))
+	 * Start a new game (Rule will be user-selected one)
 	 */
 	public void startNewGame() {
 		startNewGame(null);
@@ -130,13 +137,11 @@ public class StateInGame extends BasicGameState {
 
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
 
-		// Mode
-		String modeName = NullpoMinoSlick.propGlobal.getProperty("name.mode", "");
+		modeName = NullpoMinoSlick.propGlobal.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSlick.modeManager.getMode(modeName);
 		if(modeObj == null) {
 			log.error("Couldn't find mode:" + modeName);
 		} else {
-			appContainer.setTitle("NullpoMino - " + modeName);
 			gameManager.mode = modeObj;
 		}
 
@@ -199,11 +204,13 @@ public class StateInGame extends BasicGameState {
 			// Called at initialization
 			gameManager.engine[i].init();
 		}
+
+		updateTitleBarCaption();
 	}
 
 	/**
-	 * リプレイを読み込んで再生
-	 * @param prop リプレイ dataの入ったプロパティセット
+	 * Start Replay game
+	 * @param prop CustomProperties with replay data in it
 	 */
 	public void startReplayGame(CustomProperties prop) {
 		gameManager = new GameManager(new RendererSlick());
@@ -214,12 +221,11 @@ public class StateInGame extends BasicGameState {
 		gameManager.receiver.setGraphics(appContainer.getGraphics());
 
 		// Mode
-		String modeName = prop.getProperty("name.mode", "");
+		modeName = prop.getProperty("name.mode", "");
 		GameMode modeObj = NullpoMinoSlick.modeManager.getMode(modeName);
 		if(modeObj == null) {
 			log.error("Couldn't find mode:" + modeName);
 		} else {
-			appContainer.setTitle("NullpoMino - " + modeName + " (Replay)");
 			gameManager.mode = modeObj;
 		}
 
@@ -257,10 +263,34 @@ public class StateInGame extends BasicGameState {
 			// Called at initialization
 			gameManager.engine[i].init();
 		}
+
+		updateTitleBarCaption();
 	}
 
 	/**
-	 * 終了時の処理
+	 * Update title bar text
+	 */
+	public void updateTitleBarCaption() {
+		String strTitle = "NullpoMino - " + modeName;
+
+		if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			if(pause && !enableframestep)
+				strTitle = "[PAUSE] NullpoMino - " + modeName;
+			else if(gameManager.engine[0].isInGame && !gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[PLAY] NullpoMino - " + modeName;
+			else if(gameManager.replayMode && gameManager.replayRerecord)
+				strTitle = "[RERECORD] NullpoMino - " + modeName;
+			else if(gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[REPLAY] NullpoMino - " + modeName;
+			else
+				strTitle = "[MENU] NullpoMino - " + modeName;
+		}
+
+		appContainer.setTitle(strTitle);
+	}
+
+	/**
+	 * Shutdown routine
 	 */
 	public void shutdown() {
 		gameManager.shutdown();
@@ -286,7 +316,7 @@ public class StateInGame extends BasicGameState {
 			return;
 		}
 
-		// ゲーム画面
+		// Game screen
 		if(gameManager != null) {
 			gameManager.renderAll();
 
@@ -337,7 +367,7 @@ public class StateInGame extends BasicGameState {
 			return;
 		}
 
-		// TTF font 描画
+		// TTF font
 		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
 		// Update key input states
@@ -347,6 +377,15 @@ public class StateInGame extends BasicGameState {
 				GameKey.gamekey[i].update(container.getInput(), true);
 			} else {
 				GameKey.gamekey[i].update(container.getInput(), false);
+			}
+		}
+
+		// Title bar update
+		if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			boolean nowInGame = gameManager.engine[0].isInGame;
+			if(prevInGameFlag != nowInGame) {
+				prevInGameFlag = nowInGame;
+				updateTitleBarCaption();
 			}
 		}
 
@@ -366,6 +405,7 @@ public class StateInGame extends BasicGameState {
 				pauseFrame = 0;
 				if(!enableframestep) ResourceHolder.bgmResume();
 			}
+			updateTitleBarCaption();
 		}
 		// Pause menu
 		else if(pause && !enableframestep && !pauseMessageHide) {
@@ -417,6 +457,7 @@ public class StateInGame extends BasicGameState {
 					ResourceHolder.soundManager.play("tspin1");
 					cursor = 0;
 				}
+				updateTitleBarCaption();
 			}
 			// Unpause by cancel key
 			else if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) && (pauseFrame <= 0)) {
@@ -425,6 +466,7 @@ public class StateInGame extends BasicGameState {
 				pauseFrame = 5;
 				GameKey.gamekey[0].clear();
 				ResourceHolder.bgmResume();
+				updateTitleBarCaption();
 			}
 		}
 		if(pauseFrame > 0) pauseFrame--;
@@ -477,7 +519,7 @@ public class StateInGame extends BasicGameState {
 			}
 		}
 
-		// ゲームの処理を実行
+		// Execute game loops
 		if(!pause || (GameKey.gamekey[0].isPushKey(GameKey.BUTTON_FRAMESTEP) && enableframestep)) {
 			if(gameManager != null) {
 				for(int i = 0; i < Math.min(gameManager.getPlayers(), 2); i++) {

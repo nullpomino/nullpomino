@@ -51,30 +51,38 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * ネットゲーム画面のステート
+ * Game screen state (Netplay)
  */
 public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	/** Log */
 	static final Logger log = Logger.getLogger(StateNetGameSDL.class);
 
-	/** ゲームのメインクラス */
+	/** Game main class */
 	protected GameManager gameManager;
 
-	/** ロビー画面 */
+	/** Lobby */
 	public NetLobbyFrame netLobby;
 
 	/** Mode name to enter (null=Exit) */
 	protected String strModeToEnter = "";
+
+	/** Previous ingame flag (Used by title-bar text change) */
+	protected boolean prevInGameFlag = false;
+
+	/** Current game mode name */
+	protected String modeName;
 
 	/*
 	 * Called when entering this state
 	 */
 	@Override
 	public void enter() throws SDLException {
+		// Init variables
 		NullpoMinoSDL.disableAutoInputUpdate = true;
 		NullpoMinoSDL.isInGame = true;
+		prevInGameFlag = false;
 
-		// Observer停止
+		// Observer stop
 		NullpoMinoSDL.stopObserverClient();
 
 		// 60FPS
@@ -165,6 +173,15 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				GameKeySDL.gamekey[0].update(NullpoMinoSDL.keyPressedState, ingame);
 			}
 
+			// Title bar update
+			if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+				boolean nowInGame = gameManager.engine[0].isInGame;
+				if(prevInGameFlag != nowInGame) {
+					prevInGameFlag = nowInGame;
+					updateTitleBarCaption();
+				}
+			}
+
 			if(gameManager != null) {
 				// BGM
 				if(ResourceHolderSDL.bgmPlaying != gameManager.bgmStatus.bgm) {
@@ -181,7 +198,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				}
 			}
 
-			// ゲームの処理を実行
+			// Execute game loops
 			if((gameManager != null) && (gameManager.mode != null)) {
 				GameKeySDL.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
 				gameManager.updateAll();
@@ -214,21 +231,21 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 
 	/**
 	 * Enter to a new mode
-	 * @param modeName Mode name
+	 * @param newModeName Mode name
 	 */
-	private void enterNewMode(String modeName) {
+	private void enterNewMode(String newModeName) {
 		NullpoMinoSDL.loadGlobalConfig();	// Reload global config file
 
 		GameMode previousMode = gameManager.mode;
-		GameMode newModeTemp = (modeName == null) ? new NetDummyMode() : NullpoMinoSDL.modeManager.getMode(modeName);
+		GameMode newModeTemp = (newModeName == null) ? new NetDummyMode() : NullpoMinoSDL.modeManager.getMode(newModeName);
 
 		if(newModeTemp == null) {
-			log.error("Cannot find a mode:" + modeName);
+			log.error("Cannot find a mode:" + newModeName);
 		} else if(newModeTemp instanceof NetDummyMode) {
 			log.info("Enter new mode:" + newModeTemp.getName());
 
 			NetDummyMode newMode = (NetDummyMode)newModeTemp;
-			SDLVideo.wmSetCaption("NullpoMino - " + newMode.getName(), null);
+			modeName = newMode.getName();
 
 			if(previousMode != null) previousMode.netplayUnload(netLobby);
 			gameManager.mode = newMode;
@@ -290,8 +307,27 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 
 			newMode.netplayInit(netLobby);
 		} else {
-			log.error("This mode does not support netplay:" + modeName);
+			log.error("This mode does not support netplay:" + newModeName);
 		}
+		updateTitleBarCaption();
+	}
+
+	/**
+	 * Update title bar text
+	 */
+	public void updateTitleBarCaption() {
+		String strTitle = "NullpoMino Netplay - " + modeName;
+
+		if(modeName.equals("NET-DUMMY")) {
+			strTitle = "NullpoMino Netplay";
+		} else if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
+			if(gameManager.engine[0].isInGame && !gameManager.replayMode && !gameManager.replayRerecord)
+				strTitle = "[PLAY] NullpoMino Netplay - " + modeName;
+			else
+				strTitle = "[MENU] NullpoMino Netplay - " + modeName;
+		}
+
+		SDLVideo.wmSetCaption(strTitle, null);
 	}
 
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {

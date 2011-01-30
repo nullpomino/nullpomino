@@ -1558,7 +1558,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			}
 
 			// garbage blockcount
-			if((garbage[playerID] > 0) && (useFractionalGarbage)) {
+			if((garbage[playerID] > 0) && (useFractionalGarbage) && (engine.stat != GameEngine.STAT_RESULT)) {
 				String strTempGarbage;
 
 				int fontColor = EventReceiver.COLOR_WHITE;
