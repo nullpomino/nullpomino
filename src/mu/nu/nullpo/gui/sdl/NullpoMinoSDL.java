@@ -40,6 +40,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.swing.JOptionPane;
+
 import mu.nu.nullpo.game.net.NetObserverClient;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.util.CustomProperties;
@@ -376,9 +378,40 @@ public class NullpoMinoSDL {
 		gameStates[STATE_SELECTRULEFROMLIST] = new StateSelectRuleFromListSDL();
 		gameStates[STATE_SELECTMODEFOLDER] = new StateSelectModeFolderSDL();
 
-		// SDLのInitializationと開始
+		// Mac? Too bad.
+		if(System.getProperty("os.name").contains("Mac OS")) {
+			String strErrorTitle = getUIText("InitFailedMessageMac_Title");
+			String strErrorMessage = getUIText("InitFailedMessageMac_Body");
+			JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+			System.exit(-2);
+		}
+
+		// SDL init
 		try {
 			init();
+		} catch (Throwable e) {
+			// Init failed
+			log.fatal("SDL init failed", e);
+
+			// Show error dialog. But unfortunately, most SDL-related-failure are not catchable...
+			// (Maybe) x64?
+			if(System.getProperty("os.arch").contains("64")) {
+				String strErrorTitle = getUIText("InitFailedMessage64bit_Title");
+				String strErrorMessage = String.format(getUIText("InitFailedMessage64bit_Body"), e.toString());
+				JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+			}
+			// Other
+			else {
+				String strErrorTitle = getUIText("InitFailedMessageGeneral_Title");
+				String strErrorMessage = String.format(getUIText("InitFailedMessageGeneral_Body"), e.toString());
+				JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+			}
+
+			System.exit(-1);
+		}
+
+		// Run
+		try {
 			run();
 		} catch (Throwable e) {
 			log.fatal("Uncaught Exception", e);

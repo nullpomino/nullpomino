@@ -229,12 +229,6 @@ public class NullpoMinoSlick extends StateBasedGame {
 		Log.setLogSystem(new LogSystemLog4j());
 		log.info("NullpoMinoSlick Start");
 
-		try {
-			log.info("Driver adapter:" + Display.getAdapter() + ", Driver version:" + Display.getVersion());
-		} catch (Throwable e) {
-			log.warn("Cannot get driver informations", e);
-		}
-
 		propConfig = new CustomProperties();
 		propGlobal = new CustomProperties();
 		propMusic = new CustomProperties();
@@ -334,6 +328,48 @@ public class NullpoMinoSlick extends StateBasedGame {
 
 		perfectFPSDelay = System.nanoTime();
 
+		// Get driver name and version
+		String strDriverName = null;
+		String strDriverVersion = null;
+		try {
+			strDriverName = Display.getAdapter();
+			strDriverVersion = Display.getVersion();
+			log.info("Driver adapter:" + strDriverName + ", Driver version:" + strDriverVersion);
+		} catch (Throwable e) {
+			log.fatal("LWJGL load failed", e);
+
+			// LWJGL Load failed! Do the file of LWJGL exist?
+			File fileLWJGL = null;
+			if(!System.getProperty("os.arch").contains("64") && System.getProperty("os.name").contains("Windows")) {
+				fileLWJGL = new File("lib/lwjgl.dll");
+			} else if(System.getProperty("os.arch").contains("64") && System.getProperty("os.name").contains("Windows")) {
+				fileLWJGL = new File("lib/lwjgl64.dll");
+			} else if(System.getProperty("os.name").contains("Mac OS")) {
+				fileLWJGL = new File("lib/liblwjgl.jnilib");
+			} else if(System.getProperty("os.arch").contains("64")) {
+				fileLWJGL = new File("lib/liblwjgl64.so");
+			} else {
+				fileLWJGL = new File("lib/liblwjgl.so");
+			}
+
+			if(fileLWJGL.isFile() && fileLWJGL.canRead()) {
+				// File exists but incompatible with your OS
+				String strErrorTitle = getUIText("LWJGLLoadFailedMessage_Title");
+				String strErrorMessage = String.format(getUIText("LWJGLLoadFailedMessage_Body"), e.toString());
+				JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+			} else {
+				// Not found
+				String strErrorTitle = getUIText("LWJGLNotFoundMessage_Title");
+				String strErrorMessage = String.format(getUIText("LWJGLNotFoundMessage_Body"), e.toString());
+				JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+			}
+
+			// Exit
+			System.exit(-3);
+		}
+		if(strDriverName == null) strDriverName = "(Unknown)";
+		if(strDriverVersion == null) strDriverVersion = "(Unknown)";
+
 		// ゲーム画面などの初期化
 		try {
 			int sWidth = propConfig.getProperty("option.screenwidth", 640);
@@ -358,27 +394,22 @@ public class NullpoMinoSlick extends StateBasedGame {
 		} catch (SlickException e) {
 			log.fatal("Game initialize failed (SlickException)", e);
 
-			// Get driver name and version
-			String strDriverName = null;
-			String strDriverVersion = null;
-			try {
-				strDriverName = Display.getAdapter();
-				strDriverVersion = Display.getVersion();
-			} catch (Throwable e2) {
-				log.warn("Cannot get driver informations", e2);
-			}
-			if(strDriverName == null) strDriverName = "(Unknown)";
-			if(strDriverVersion == null) strDriverVersion = "(Unknown)";
-
 			// Display an error dialog
-			String strErrorTitle = getUIText("InitFailedMessage_Title");
-			String strErrorMessage = String.format(getUIText("InitFailedMessage_Body"), strDriverName, strDriverVersion, e.toString());
+			String strErrorTitle = getUIText("InitFailedMessageSlick_Title");
+			String strErrorMessage = String.format(getUIText("InitFailedMessageSlick_Body"), strDriverName, strDriverVersion, e.toString());
 			JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
 
 			// Exit
 			System.exit(-1);
 		} catch (Throwable e) {
 			log.fatal("Game initialize failed (NON-SlickException)", e);
+
+			// Display an error dialog
+			String strErrorTitle = getUIText("InitFailedMessageGeneral_Title");
+			String strErrorMessage = String.format(getUIText("InitFailedMessageGeneral_Body"), strDriverName, strDriverVersion, e.toString());
+			JOptionPane.showMessageDialog(null, strErrorMessage, strErrorTitle, JOptionPane.ERROR_MESSAGE);
+
+			// Exit
 			System.exit(-2);
 		}
 

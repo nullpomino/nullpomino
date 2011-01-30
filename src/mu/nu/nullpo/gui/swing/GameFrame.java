@@ -539,6 +539,21 @@ public class GameFrame extends JFrame implements Runnable {
 		if(NullpoMinoSwing.gameManager == null) return;
 
 		try {
+			// Set ingame flag
+			boolean prevInGame = isInGame[0];
+
+			if((NullpoMinoSwing.gameManager.engine != null) && (NullpoMinoSwing.gameManager.engine.length > 0)) {
+				isInGame[0] = NullpoMinoSwing.gameManager.engine[0].isInGame;
+			}
+			if(pause && !enableframestep) {
+				isInGame[0] = false;
+			}
+
+			if(prevInGame != isInGame[0]) {
+				GameKeySwing.gamekey[0].clear();
+			}
+
+			// Update button inputs
 			if(isVisible() && isActive()) {
 				GameKeySwing.gamekey[0].update();
 			} else {
