@@ -1024,7 +1024,7 @@ public class NetServer {
 		serverChannel.register(socketSelector, SelectionKey.OP_ACCEPT);
 
 		log.info("Listening on port " + this.port + "...");
-		
+
 		return socketSelector;
 	}
 
@@ -1163,7 +1163,8 @@ public class NetServer {
 			// Send welcome message
 			log.debug("Accept:" + getHostName(socketChannel));
 			send(socketChannel, "welcome\t" + GameManager.getVersionMajor() + "\t" + playerInfoMap.size() + "\t" + observerList.size() + "\t" +
-				GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\t" + clientPingInterval + "\n");
+				GameManager.getVersionMinor() + "\t" + GameManager.getVersionString() + "\t" + clientPingInterval + "\t" +
+				GameManager.isDevBuild() + "\n");
 		}
 	}
 
@@ -1594,7 +1595,7 @@ public class NetServer {
 					player = player.substring(0, len);
 				}
 				if(len+1 < msg.length()) {
-					if ((msg.substring(0, len+1).equals(player + " ")) && (len > maxLen)) { 
+					if ((msg.substring(0, len+1).equals(player + " ")) && (len > maxLen)) {
 						chMatch = ch;
 						maxLen = len;
 					}
@@ -1603,7 +1604,7 @@ public class NetServer {
 			return chMatch;
 		}
 	}
-	
+
 	/**
 	 * Process a packet.
 	 * @param client The SocketChannel who sent this packet
@@ -1651,7 +1652,7 @@ public class NetServer {
 		}
 		// Observer login
 		if(message[0].equals("observerlogin")) {
-			//observer\t[VERSION]
+			//observer\t[MAJOR VERSION]\t[MINOR VERSION]\t[DEV BUILD]
 
 			// Ignore it if already logged in
 			if(observerList.contains(client)) return;
@@ -1670,6 +1671,17 @@ public class NetServer {
 				return;
 			}
 
+			// Build type check
+			boolean serverBuildType = GameManager.isDevBuild();
+			boolean clientBuildType = Boolean.parseBoolean(message[3]);
+			if(serverBuildType != clientBuildType) {
+				send(client, "observerloginfail\tDIFFERENT_BUILD\t" + serverBuildType + "\n");
+				synchronized (this.pendingChanges) {
+					this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
+				}
+				return;
+			}
+
 			// Kill dead connections
 			killTimeoutConnections(timeoutTime);
 
@@ -1684,7 +1696,7 @@ public class NetServer {
 		}
 		// Player login
 		if(message[0].equals("login")) {
-			//login\t[VERSION]\t[NAME]\t[COUNTRY]\t[TEAM]
+			//login\t[MAJOR VERSION]\t[NAME]\t[COUNTRY]\t[TEAM]\t[MINOR VERSION]\t[DEV BUILD]
 
 			// Ignore it if already logged in
 			if(observerList.contains(client)) return;
@@ -1699,6 +1711,17 @@ public class NetServer {
 				//logout(client);
 				synchronized (this.pendingChanges) {
 				  this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
+				}
+				return;
+			}
+
+			// Build type check
+			boolean serverBuildType = GameManager.isDevBuild();
+			boolean clientBuildType = Boolean.parseBoolean(message[6]);
+			if(serverBuildType != clientBuildType) {
+				send(client, "observerloginfail\tDIFFERENT_BUILD\t" + GameManager.getBuildTypeString() + "\n");
+				synchronized (this.pendingChanges) {
+					this.pendingChanges.add(new ChangeRequest(client, ChangeRequest.DISCONNECT, 0));
 				}
 				return;
 			}
@@ -1912,13 +1935,13 @@ public class NetServer {
 		if(message[0].equals("lobbychat")) {
 			//lobbychat\t[MESSAGE]
 
-			
+
 //			String[] message = fullMessage.split("\t");	// Split by \t
 //			NetPlayerInfo pInfo = playerInfoMap.get(client);	// NetPlayerInfo of this client. null if not logged in.
 
 			if(pInfo != null) {
 				NetChatMessage chat = new NetChatMessage(NetUtil.urlDecode(message[1]), pInfo);
-				
+
 				// Begin temporary private message code here
 				String msg = chat.strMessage;
 				if((msg.length() > 5) && (msg.substring(0,5).equals("/msg "))) {
@@ -1945,7 +1968,7 @@ public class NetServer {
 					lobbyChatList.add(chat);
 					while(lobbyChatList.size() > maxLobbyChatHistory) lobbyChatList.removeFirst();
 					saveLobbyChatHistory();
-	
+
 					broadcast("lobbychat\t" + chat.uid + "\t" + NetUtil.urlEncode(chat.strUserName) + "\t" +
 							GeneralUtil.exportCalendarString(chat.timestamp) + "\t" + NetUtil.urlEncode(chat.strMessage) + "\n");
 				}
@@ -2679,6 +2702,15 @@ public class NetServer {
 			float clientVer = Float.parseFloat(message[1]);
 			if(serverVer != clientVer) {
 				String strLogMsg = strRemoteAddr + " has tried to access admin, but client version is different (" + clientVer + ")";
+				log.warn(strLogMsg);
+				throw new NetServerDisconnectRequestedException(strLogMsg);
+			}
+
+			// Build type check
+			boolean serverBuildType = GameManager.isDevBuild();
+			boolean clientBuildType = Boolean.parseBoolean(message[4]);
+			if(serverBuildType != clientBuildType) {
+				String strLogMsg = strRemoteAddr + " has tried to access admin, but build type is different (IsDevBuild:" + clientBuildType + ")";
 				log.warn(strLogMsg);
 				throw new NetServerDisconnectRequestedException(strLogMsg);
 			}

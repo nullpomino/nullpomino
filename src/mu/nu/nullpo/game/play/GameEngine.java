@@ -253,6 +253,9 @@ public class GameEngine {
 	/** OLD minor version (Used for 6.9 or earlier replays) */
 	public float versionMinorOld;
 
+	/** Dev build flag */
+	public boolean versionIsDevBuild;
+
 	/** Game quit flag */
 	public boolean quitflag;
 
@@ -693,6 +696,7 @@ public class GameEngine {
 			versionMajor = GameManager.getVersionMajor();
 			versionMinor = GameManager.getVersionMinor();
 			versionMinorOld = GameManager.getVersionMinorOld();
+			versionIsDevBuild = GameManager.isDevBuild();
 
 			Random tempRand = new Random();
 			randSeed = tempRand.nextLong();
@@ -701,6 +705,7 @@ public class GameEngine {
 			versionMajor = owner.replayProp.getProperty("version.core.major", 0f);
 			versionMinor = owner.replayProp.getProperty("version.core.minor", 0);
 			versionMinorOld = owner.replayProp.getProperty("version.core.minor", 0f);
+			versionIsDevBuild = owner.replayProp.getProperty("version.core.dev", false);
 
 			replayData.readProperty(owner.replayProp, playerID);
 
@@ -1584,6 +1589,7 @@ public class GameEngine {
 		owner.replayProp.setProperty("version.core", versionMajor + "." + versionMinor);
 		owner.replayProp.setProperty("version.core.major", versionMajor);
 		owner.replayProp.setProperty("version.core.minor", versionMinor);
+		owner.replayProp.setProperty("version.core.dev", versionIsDevBuild);
 
 		owner.replayProp.setProperty(playerID + ".replay.randSeed", Long.toString(randSeed, 16));
 

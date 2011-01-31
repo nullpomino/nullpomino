@@ -3906,6 +3906,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				String strServerVer = message[2];
 				String strErrorMsg = String.format(getUIText("SysMsg_LoginFailDifferentVersion"), strClientVer, strServerVer);
 				addSystemChatLogLater(txtpaneLobbyChatLog, strErrorMsg, Color.red);
+			} else if((message.length > 1) && message[1].equals("DIFFERENT_BUILD")) {
+				String strClientBuildType = GameManager.getBuildTypeString();
+				String strServerBuildType = message[2];
+				String strErrorMsg = String.format(getUIText("SysMsg_LoginFailDifferentBuild"), strClientBuildType, strServerBuildType);
+				addSystemChatLogLater(txtpaneLobbyChatLog, strErrorMsg, Color.red);
 			} else {
 				String reason = "";
 				for(int i = 1; i < message.length; i++) {

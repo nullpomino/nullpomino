@@ -65,7 +65,6 @@ import net.clarenceho.crypto.RC4;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-
 import biz.source_code.base64Coder.Base64Coder;
 
 /**
@@ -1054,7 +1053,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 
 		// Welcome
 		if(message[0].equals("welcome")) {
-			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[PING INTERVAL]
+			//welcome\t[MAJOR VERSION]\t[PLAYERS]\t[OBSERVERS]\t[MINOR VERSION]\t[FULL VERSION]\t[PING INTERVAL]\t[DEV BUILD]
 			labelLoginMessage.setForeground(Color.black);
 			labelLoginMessage.setText(getUIText("Login_Message_LoggingIn"));
 
@@ -1069,6 +1068,21 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 				logout();
 				return;
 			}
+
+			// Build type check
+			boolean clientBuildType = GameManager.isDevBuild();
+			boolean serverBuildType = Boolean.parseBoolean(message[7]);
+
+			if(clientBuildType != serverBuildType) {
+				String strClientBuildType = GameManager.getBuildTypeString(clientBuildType);
+				String strServerBuildType = GameManager.getBuildTypeString(serverBuildType);
+				labelLoginMessage.setForeground(Color.red);
+				labelLoginMessage.setText(String.format(getUIText("Login_Message_BuildTypeError"), strClientBuildType, strServerBuildType));
+				isWantedDisconnect = true;
+				logout();
+				return;
+			}
+
 			serverFullVer = message[5];
 
 			// Ping interval
@@ -1084,7 +1098,7 @@ public class NetAdmin extends JFrame implements ActionListener, NetMessageListen
 			byte[] ePassword = rc4.rc4(NetUtil.stringToBytes(strUsername));
 			char[] b64Password = Base64Coder.encode(ePassword);
 
-			String strLogin = "adminlogin\t" + clientMajorVer + "\t" + strUsername + "\t" + new String(b64Password) + "\n";
+			String strLogin = "adminlogin\t" + clientMajorVer + "\t" + strUsername + "\t" + new String(b64Password) + "\t" + clientBuildType + "\n";
 			log.debug("Send login message:" + strLogin);
 			client.send(strLogin);
 		}

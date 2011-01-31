@@ -83,7 +83,7 @@ public class NetObserverClient extends NetBaseClient {
 
 		// 接続完了
 		if(message[0].equals("welcome")) {
-			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]
+			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]\t[DEV BUILD]
 			serverVersion = Float.parseFloat(message[1]);
 			playerCount = Integer.parseInt(message[2]);
 			observerCount = Integer.parseInt(message[3]);
@@ -93,7 +93,7 @@ public class NetObserverClient extends NetBaseClient {
 				startPingTask(pingInterval);
 			}
 
-			send("observerlogin\t" + GameManager.getVersionMajor() + "\n");
+			send("observerlogin\t" + GameManager.getVersionMajor() + "\t" + GameManager.getVersionMinor() + "\t" + GameManager.isDevBuild() + "\n");
 		}
 		// 人count更新
 		if(message[0].equals("observerupdate")) {

@@ -44,10 +44,13 @@ public class GameManager {
 	static Logger log = Logger.getLogger(GameManager.class);
 
 	/** Major version */
-	public static final float VERSION_MAJOR = 7.5f;
+	public static final float VERSION_MAJOR = 7.6f;
 
 	/** Minor version */
 	public static final int VERSION_MINOR = 0;
+
+	/** Development-build flag (false:Release-build true:Dev-build) */
+	public static final boolean DEV_BUILD = true;
 
 	/** Game Mode */
 	public GameMode mode;
@@ -111,7 +114,32 @@ public class GameManager {
 	 * @return Version information
 	 */
 	public static String getVersionString() {
-		return VERSION_MAJOR + "." + VERSION_MINOR;
+		return VERSION_MAJOR + "." + VERSION_MINOR + (DEV_BUILD ? "D" : "");
+	}
+
+	/**
+	 * Is this development build?
+	 * @return true if dev build
+	 */
+	public static boolean isDevBuild() {
+		return DEV_BUILD;
+	}
+
+	/**
+	 * Get build type as string
+	 * @return Build type as String
+	 */
+	public static String getBuildTypeString() {
+		return DEV_BUILD ? "Development" : "Release";
+	}
+
+	/**
+	 * Get build type name
+	 * @param type Build type (false:Release true:Development)
+	 * @return Build type as String
+	 */
+	public static String getBuildTypeString(boolean type) {
+		return type ? "Development" : "Release";
 	}
 
 	/**

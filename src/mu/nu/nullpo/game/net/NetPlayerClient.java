@@ -129,7 +129,7 @@ public class NetPlayerClient extends NetBaseClient {
 
 		// 接続完了
 		if(message[0].equals("welcome")) {
-			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]
+			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]\t[DEV BUILD]
 			playerCount = Integer.parseInt(message[2]);
 			observerCount = Integer.parseInt(message[3]);
 
@@ -139,7 +139,7 @@ public class NetPlayerClient extends NetBaseClient {
 			}
 
 			send("login\t" + GameManager.getVersionMajor() + "\t" + NetUtil.urlEncode(playerName) + "\t" + Locale.getDefault().getCountry() + "\t" +
-				 NetUtil.urlEncode(playerTeam) + "\n");
+				 NetUtil.urlEncode(playerTeam) + "\t" + GameManager.getVersionMinor() + "\t" + GameManager.isDevBuild() + "\n");
 		}
 		// 人count更新
 		if(message[0].equals("observerupdate")) {
