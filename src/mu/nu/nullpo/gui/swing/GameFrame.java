@@ -192,7 +192,7 @@ public class GameFrame extends JFrame implements Runnable {
 		setVisible(true);
 
 		screenWidth = NullpoMinoSwing.propConfig.getProperty("option.screenwidth", 640);
-		screenHeight = NullpoMinoSwing.propConfig.getProperty("option.screenheight", 640);
+		screenHeight = NullpoMinoSwing.propConfig.getProperty("option.screenheight", 480);
 		insets = getInsets();
 		int width = screenWidth + insets.left + insets.right;
 		int height = screenHeight + insets.top + insets.bottom;

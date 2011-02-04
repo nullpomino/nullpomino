@@ -218,6 +218,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	/** true if read keyboard input from JInput */
 	public static boolean useJInputKeyboard;
 
+	/** true to use safer texture loading (Use BigImage instead of regular Image) */
+	public static boolean useBigImageTextureLoad;
+
 	/**
 	 * メイン関count
 	 * @param args プログラムに渡されたコマンドLines引count
@@ -318,12 +321,20 @@ public class NullpoMinoSlick extends StateBasedGame {
 				}
 		} catch (Exception e) {}
 
-		// Use JInput option
+		// Command line options
 		useJInputKeyboard = false;
-		//log.debug("args.length:" + args.length);
-		if( (args.length > 0) && (args[0].equals("-j") || args[0].equals("/j")) ) {
-			useJInputKeyboard = true;
-			log.info("-j option is used. Use JInput to read keyboard input.");
+		useBigImageTextureLoad = false;
+
+		for(int i = 0; i < args.length; i++) {
+			String str = args[i];
+
+			if(str.equals("-j") || str.equals("/j")) {
+				useJInputKeyboard = true;
+				log.info("-j option is used. Use JInput to read keyboard input.");
+			} else if(str.equals("-b") || str.equals("/b")) {
+				useBigImageTextureLoad = true;
+				log.info("-b option is used. Use BigImage instead of normal Image.");
+			}
 		}
 
 		perfectFPSDelay = System.nanoTime();

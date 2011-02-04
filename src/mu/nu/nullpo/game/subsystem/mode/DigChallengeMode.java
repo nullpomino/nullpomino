@@ -16,7 +16,7 @@ import mu.nu.nullpo.util.GeneralUtil;
  */
 public class DigChallengeMode extends NetDummyMode {
 	/** Current version */
-	private static final int CURRENT_VERSION = 1;
+	private static final int CURRENT_VERSION = 2;
 
 	/** Number of goal type */
 	private static final int GOALTYPE_MAX = 2;
@@ -50,7 +50,7 @@ public class DigChallengeMode extends NetDummyMode {
 	/** Garbage speed table */
 	private final int[][] GARBAGE_TIMER_TABLE =
 	{
-		{180,170,160,150,140,130,120,110,100, 90, 80, 70, 60, 50, 40, 30, 20, 10,  5,  0},	// Normal
+		{180,170,160,150,140,130,120,110,100, 90, 80, 70, 60, 50, 40, 30, 20, 10,  5,  0},	// Normal (OLD)
 		{180,170,160,150,140,130,120,110,100, 90, 80, 70, 60, 50, 45, 40, 35, 30, 25, 20},	// Realtime
 	};
 
@@ -65,6 +65,9 @@ public class DigChallengeMode extends NetDummyMode {
 
 	/** Most recent increase in score */
 	private int lastscore;
+
+	/** Most recent increase in bonus score */
+	private int lastbonusscore;
 
 	/** Time to display the most recent increase in score */
 	private int scgettime;
@@ -155,6 +158,7 @@ public class DigChallengeMode extends NetDummyMode {
 		receiver = engine.owner.receiver;
 
 		lastscore = 0;
+		lastbonusscore = 0;
 		scgettime = 0;
 		lastevent = EVENT_NONE;
 		lastb2b = false;
@@ -418,11 +422,13 @@ public class DigChallengeMode extends NetDummyMode {
 			}
 		} else {
 			receiver.drawScoreFont(engine, playerID, 0, 3, "SCORE", EventReceiver.COLOR_BLUE);
-			String strScore;
+			String strScore = null;
 			if((lastscore == 0) || (scgettime >= 120)) {
 				strScore = String.valueOf(engine.statistics.score);
-			} else {
+			} else if(lastbonusscore == 0) {
 				strScore = String.valueOf(engine.statistics.score) + "(+" + String.valueOf(lastscore) + ")";
+			} else {
+				strScore = engine.statistics.score + "(+" + lastscore + "+" + lastbonusscore + ")";
 			}
 			receiver.drawScoreFont(engine, playerID, 0, 4, strScore);
 
@@ -602,8 +608,10 @@ public class DigChallengeMode extends NetDummyMode {
 	public void calcScore(GameEngine engine, int playerID, int lines) {
 		// Add Garbage (Normal)
 		if((goaltype == GOALTYPE_NORMAL) && (garbagePending > 0)) {
-			addGarbage(engine, garbagePending);
-			garbagePending = 0;
+			if((version <= 1) || (lines <= 0)) {
+				addGarbage(engine, garbagePending);
+				garbagePending = 0;
+			}
 		}
 
 		// Line clear bonus
@@ -693,10 +701,24 @@ public class DigChallengeMode extends NetDummyMode {
 			// Add to score
 			lastscore = pts;
 			lastpiece = engine.nowPieceObject.id;
+			lastbonusscore = 0;
 			if(pts > 0) {
 				if(lines >= 1) engine.statistics.scoreFromLineClear += pts;
 				else engine.statistics.scoreFromOtherBonus += pts;
 				engine.statistics.score += pts;
+			}
+
+			// Decrease waiting garbage lines (normal type)
+			if((goaltype == GOALTYPE_NORMAL) && (version >= 2)) {
+				garbagePending -= pts;
+				if(garbagePending < 0) {
+					int bonus = Math.abs(garbagePending);
+					lastbonusscore = bonus;
+					if(lines >= 1) engine.statistics.scoreFromLineClear += bonus;
+					else engine.statistics.scoreFromOtherBonus += bonus;
+					engine.statistics.score += bonus;
+					garbagePending = 0;
+				}
 			}
 		}
 	}
@@ -707,8 +729,12 @@ public class DigChallengeMode extends NetDummyMode {
 	 * @return Garbage time limi
 	 */
 	private int getGarbageMaxTime(int lv) {
-		if(lv > GARBAGE_TIMER_TABLE[goaltype].length - 1) lv = GARBAGE_TIMER_TABLE[goaltype].length - 1;
-		int limitTime = GARBAGE_TIMER_TABLE[goaltype][lv];
+		int t = 1;
+		if(version <= 1) t = goaltype;
+
+		if(lv > GARBAGE_TIMER_TABLE[t].length - 1) lv = GARBAGE_TIMER_TABLE[t].length - 1;
+		int limitTime = GARBAGE_TIMER_TABLE[t][lv];
+
 		return limitTime;
 	}
 

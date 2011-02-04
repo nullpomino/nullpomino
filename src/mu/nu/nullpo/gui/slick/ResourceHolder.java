@@ -303,11 +303,23 @@ public class ResourceHolder {
 	}
 
 	/**
-	 * 画像読み込み
+	 * Load image
 	 * @param filename Filename
-	 * @return 画像 data
+	 * @return Image data
 	 */
 	public static Image loadImage(String filename) {
+		if(NullpoMinoSlick.useBigImageTextureLoad) {
+			return (Image)loadBigImage(filename);
+		}
+		return loadNormalImage(filename);
+	}
+
+	/**
+	 * Load image (uses normal regular Image)
+	 * @param filename Filename
+	 * @return Image data
+	 */
+	public static Image loadNormalImage(String filename) {
 		log.debug("Loading image from " + filename);
 
 		Image img = null;
@@ -324,9 +336,9 @@ public class ResourceHolder {
 	}
 
 	/**
-	 * 巨大画像を読み込み
+	 * Load image (uses normal BigImage)
 	 * @param filename Filename
-	 * @return 画像 data
+	 * @return Image data
 	 */
 	public static BigImage loadBigImage(String filename) {
 		log.debug("Loading big image from " + filename);
