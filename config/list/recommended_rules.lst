@@ -120,6 +120,16 @@ config/rule/ClassicEasyB.rul
 config/rule/Classic3.rul
 config/rule/StandardHard.rul
 
+:VS-LINE RACE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
+:VS-DIG RACE
+config/rule/StandardFastB.rul
+config/rule/StandardPlus.rul
+config/rule/StandardZero.rul
+
 :VS-BATTLE
 config/rule/StandardFastB.rul
 config/rule/StandardPlus.rul

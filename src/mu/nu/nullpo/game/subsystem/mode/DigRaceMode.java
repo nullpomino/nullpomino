@@ -465,6 +465,24 @@ public class DigRaceMode extends NetDummyMode {
 				}
 			}
 		} else {
+			int remainLines = getRemainGarbageLines(engine, goaltype);
+			String strLines = String.valueOf(remainLines);
+			if(remainLines < 0) strLines = "0";
+			int fontcolor = EventReceiver.COLOR_WHITE;
+			if((remainLines <= 14) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_YELLOW;
+			if((remainLines <=  8) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_ORANGE;
+			if((remainLines <=  4) && (remainLines > 0)) fontcolor = EventReceiver.COLOR_RED;
+
+			if(remainLines > 0) {
+				if(strLines.length() == 1) {
+					receiver.drawMenuFont(engine, playerID, 4, 21, strLines, fontcolor, 2.0f);
+				} else if(strLines.length() == 2) {
+					receiver.drawMenuFont(engine, playerID, 3, 21, strLines, fontcolor, 2.0f);
+				} else if(strLines.length() == 3) {
+					receiver.drawMenuFont(engine, playerID, 2, 21, strLines, fontcolor, 2.0f);
+				}
+			}
+
 			receiver.drawScoreFont(engine, playerID, 0, 3, "LINE", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 4, String.valueOf(engine.statistics.lines));
 
