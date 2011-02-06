@@ -59,6 +59,12 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
+	/** Outline type names (before translation) */
+	protected static final String[] OUTLINE_TYPE_NAMES = {
+		"GameTuning_OutlineType_Auto", "GameTuning_OutlineType_None", "GameTuning_OutlineType_Normal",
+		"GameTuning_OutlineType_Connect", "GameTuning_OutlineType_SameColor"
+	};
+
 	/** 親ウィンドウ */
 	protected NullpoMinoSwing owner;
 
@@ -77,6 +83,9 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	/** Block画像 */
 	protected BufferedImage[] imgBlockSkins;
 
+	/** Outline type combobox */
+	protected JComboBox comboboxBlockOutlineType;
+
 	/** 最小DAS */
 	protected JTextField txtfldMinDAS;
 	/** MaximumDAS */
@@ -94,6 +103,13 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 	protected JRadioButton radioMoveDiagonalDisable;
 	/** Diagonal move: Enable */
 	protected JRadioButton radioMoveDiagonalEnable;
+
+	/** Show Outline Only: Auto */
+	protected JRadioButton radioBlockShowOutlineOnlyAuto;
+	/** Show Outline Only: Disable */
+	protected JRadioButton radioBlockShowOutlineOnlyDisable;
+	/** Show Outline Only: Enable */
+	protected JRadioButton radioBlockShowOutlineOnlyEnable;
 
 	/**
 	 * Constructor
@@ -167,6 +183,29 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		pMoveDiagonal.add(radioMoveDiagonalEnable);
 		gMoveDiagonal.add(radioMoveDiagonalEnable);
 
+		// ---------- Show Outline Only ----------
+		JPanel pBlockShowOutlineOnly = new JPanel();
+		pBlockShowOutlineOnly.setLayout(new BoxLayout(pBlockShowOutlineOnly, BoxLayout.Y_AXIS));
+		pBlockShowOutlineOnly.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(pBlockShowOutlineOnly);
+
+		JLabel lBlockShowOutlineOnly = new JLabel(NullpoMinoSwing.getUIText("GameTuning_BlockShowOutlineOnly_Label"));
+		pBlockShowOutlineOnly.add(lBlockShowOutlineOnly);
+
+		ButtonGroup gBlockShowOutlineOnly = new ButtonGroup();
+
+		radioBlockShowOutlineOnlyAuto = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_BlockShowOutlineOnly_Auto"));
+		pBlockShowOutlineOnly.add(radioBlockShowOutlineOnlyAuto);
+		gBlockShowOutlineOnly.add(radioBlockShowOutlineOnlyAuto);
+
+		radioBlockShowOutlineOnlyDisable = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_BlockShowOutlineOnly_Disable"));
+		pBlockShowOutlineOnly.add(radioBlockShowOutlineOnlyDisable);
+		gBlockShowOutlineOnly.add(radioBlockShowOutlineOnlyDisable);
+
+		radioBlockShowOutlineOnlyEnable = new JRadioButton(NullpoMinoSwing.getUIText("GameTuning_BlockShowOutlineOnly_Enable"));
+		pBlockShowOutlineOnly.add(radioBlockShowOutlineOnlyEnable);
+		gBlockShowOutlineOnly.add(radioBlockShowOutlineOnlyEnable);
+
 		// ---------- 絵柄 ----------
 		JPanel pSkin = new JPanel();
 		pSkin.setAlignmentX(LEFT_ALIGNMENT);
@@ -185,6 +224,23 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		comboboxSkin.setRenderer(new ComboLabelCellRenderer());
 		comboboxSkin.setPreferredSize(new Dimension(190, 30));
 		pSkin.add(comboboxSkin);
+
+		// ---------- Outline Type ----------
+		JPanel pOutlineType = new JPanel();
+		pOutlineType.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(pOutlineType);
+
+		JLabel lOutlineType = new JLabel(NullpoMinoSwing.getUIText("GameTuning_OutlineType_Label"));
+		pOutlineType.add(lOutlineType);
+
+		String[] strArrayOutlineType = new String[OUTLINE_TYPE_NAMES.length];
+		for(int i = 0; i < OUTLINE_TYPE_NAMES.length; i++) {
+			strArrayOutlineType[i] = NullpoMinoSwing.getUIText(OUTLINE_TYPE_NAMES[i]);
+		}
+		DefaultComboBoxModel modelOutlineType = new DefaultComboBoxModel(strArrayOutlineType);
+		comboboxBlockOutlineType = new JComboBox(modelOutlineType);
+		comboboxBlockOutlineType.setPreferredSize(new Dimension(190, 30));
+		pOutlineType.add(comboboxBlockOutlineType);
 
 		// ---------- 最低DAS ----------
 		JPanel pMinDAS = new JPanel();
@@ -290,8 +346,16 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		if(owMoveDiagonal ==  0) radioMoveDiagonalDisable.setSelected(true);
 		if(owMoveDiagonal ==  1) radioMoveDiagonalEnable.setSelected(true);
 
+		int owBlockShowOutlineOnly = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owBlockShowOutlineOnly", -1);
+		if(owBlockShowOutlineOnly == -1) radioBlockShowOutlineOnlyAuto.setSelected(true);
+		if(owBlockShowOutlineOnly ==  0) radioBlockShowOutlineOnlyDisable.setSelected(true);
+		if(owBlockShowOutlineOnly ==  1) radioBlockShowOutlineOnlyEnable.setSelected(true);
+
 		int owSkin = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owSkin", -1);
 		comboboxSkin.setSelectedIndex(owSkin + 1);
+
+		int owBlockOutlineType = NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owBlockOutlineType", -1);
+		comboboxBlockOutlineType.setSelectedIndex(owBlockOutlineType + 1);
 
 		txtfldMinDAS.setText(NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owMinDAS", "-1"));
 		txtfldMaxDAS.setText(NullpoMinoSwing.propGlobal.getProperty(playerID + ".tuning.owMaxDAS", "-1"));
@@ -315,8 +379,17 @@ public class GameTuningFrame extends JFrame implements ActionListener {
 		if(radioMoveDiagonalEnable.isSelected()) owMoveDiagonal = 1;
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owMoveDiagonal", owMoveDiagonal);
 
+		int owBlockShowOutlineOnly = -1;
+		if(radioBlockShowOutlineOnlyAuto.isSelected()) owBlockShowOutlineOnly = -1;
+		if(radioBlockShowOutlineOnlyDisable.isSelected()) owBlockShowOutlineOnly = 0;
+		if(radioBlockShowOutlineOnlyEnable.isSelected()) owBlockShowOutlineOnly = 1;
+		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owBlockShowOutlineOnly", owBlockShowOutlineOnly);
+
 		int owSkin = comboboxSkin.getSelectedIndex() - 1;
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owSkin", owSkin);
+
+		int owBlockOutlineType = comboboxBlockOutlineType.getSelectedIndex() - 1;
+		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owBlockOutlineType", owBlockOutlineType);
 
 		int owMinDAS = NullpoMinoSwing.getIntTextField(-1, txtfldMinDAS);
 		NullpoMinoSwing.propGlobal.setProperty(playerID + ".tuning.owMinDAS", owMinDAS);

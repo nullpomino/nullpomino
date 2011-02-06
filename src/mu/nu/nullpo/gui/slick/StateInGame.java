@@ -157,6 +157,8 @@ public class StateInGame extends BasicGameState {
 			gameManager.engine[i].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
 			gameManager.engine[i].owReverseUpDown = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owReverseUpDown", false);
 			gameManager.engine[i].owMoveDiagonal = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owMoveDiagonal", -1);
+			gameManager.engine[i].owBlockOutlineType = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owBlockOutlineType", -1);
+			gameManager.engine[i].owBlockShowOutlineOnly = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owBlockShowOutlineOnly", -1);
 
 			// ルール
 			RuleOptions ruleopt = null;

@@ -36,25 +36,28 @@ import sdljava.video.SDLRect;
 import sdljava.video.SDLSurface;
 
 /**
- * チューニング設定画面のステート
+ * Game Tuning menu state
  */
 public class StateConfigGameTuningSDL extends BaseStateSDL {
+	/** Outline type names */
+	protected static final String[] OUTLINE_TYPE_NAMES = {"AUTO", "NONE", "NORMAL", "CONNECT", "SAMECOLOR"};
+
 	/** Player number */
 	public int player;
 
 	/** Cursor position */
 	protected int cursor;
 
-	/** A buttonでのrotationDirectionを -1=ルールに従う 0= always 左rotation 1= always 右rotation */
+	/** A button rotation -1=Auto 0=Always CCW 1=Always CW */
 	protected int owRotateButtonDefaultRight;
 
-	/** Blockの絵柄 -1=ルールに従う 0以上=固定 */
+	/** Block Skin -1=Auto 0 or above=Fixed */
 	protected int owSkin;
 
-	/** 最低/Maximum横溜め速度 -1=ルールに従う 0以上=固定 */
+	/** Min/Max DAS -1=Auto 0 or above=Fixed */
 	protected int owMinDAS, owMaxDAS;
 
-	/** 横移動速度 -1=ルールに従う 0以上=固定 */
+	/** DAS Delay -1=Auto 0 or above=Fixed */
 	protected int owDasDelay;
 
 	/** Reverse the roles of up/down keys in-game */
@@ -62,6 +65,12 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 
 	/** Diagonal move (-1=Auto 0=Disable 1=Enable) */
 	protected int owMoveDiagonal;
+
+	/** Outline type (-1:Auto 0orAbove:Fixed) */
+	protected int owBlockOutlineType;
+
+	/** Show outline only flag (-1:Auto 0:Always Normal 1:Always Outline Only) */
+	protected int owBlockShowOutlineOnly;
 
 	/**
 	 * Constructor
@@ -83,6 +92,8 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 		owDasDelay = prop.getProperty(player + ".tuning.owDasDelay", -1);
 		owReverseUpDown = prop.getProperty(player + ".tuning.owReverseUpDown", false);
 		owMoveDiagonal = prop.getProperty(player + ".tuning.owMoveDiagonal", -1);
+		owBlockOutlineType = prop.getProperty(player + ".tuning.owBlockOutlineType", -1);
+		owBlockShowOutlineOnly = prop.getProperty(player + ".tuning.owBlockShowOutlineOnly", -1);
 	}
 
 	/**
@@ -97,6 +108,8 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 		prop.setProperty(player + ".tuning.owDasDelay", owDasDelay);
 		prop.setProperty(player + ".tuning.owReverseUpDown", owReverseUpDown);
 		prop.setProperty(player + ".tuning.owMoveDiagonal", owMoveDiagonal);
+		prop.setProperty(player + ".tuning.owBlockOutlineType", owBlockOutlineType);
+		prop.setProperty(player + ".tuning.owBlockShowOutlineOnly", owBlockShowOutlineOnly);
 	}
 
 	/*
@@ -149,6 +162,13 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 		if(owMoveDiagonal == 0) strTemp = "e";
 		if(owMoveDiagonal == 1) strTemp = "c";
 		NormalFontSDL.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
+
+		NormalFontSDL.printFontGrid(2, 10, "OUTLINE TYPE:" + OUTLINE_TYPE_NAMES[owBlockOutlineType + 1], (cursor == 7));
+
+		if(owBlockShowOutlineOnly == -1) strTemp = "AUTO";
+		if(owBlockShowOutlineOnly == 0) strTemp = "e";
+		if(owBlockShowOutlineOnly == 1) strTemp = "c";
+		NormalFontSDL.printFontGrid(2, 11, "SHOW OUTLINE ONLY:" + strTemp, (cursor == 8));
 	}
 
 	/*
@@ -159,12 +179,12 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 6;
+			if(cursor < 0) cursor = 8;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 6) cursor = 0;
+			if(cursor > 8) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -210,10 +230,20 @@ public class StateConfigGameTuningSDL extends BaseStateSDL {
 				if(owMoveDiagonal < -1) owMoveDiagonal = 1;
 				if(owMoveDiagonal > 1) owMoveDiagonal = -1;
 				break;
+			case 7:
+				owBlockOutlineType += change;
+				if(owBlockOutlineType < -1) owBlockOutlineType = 3;
+				if(owBlockOutlineType > 3) owBlockOutlineType = -1;
+				break;
+			case 8:
+				owBlockShowOutlineOnly += change;
+				if(owBlockShowOutlineOnly < -1) owBlockShowOutlineOnly = 1;
+				if(owBlockShowOutlineOnly > 1) owBlockShowOutlineOnly = -1;
+				break;
 			}
 		}
 
-		// 決定 button
+		// Confirm button
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			ResourceHolderSDL.soundManager.play("decide");
 

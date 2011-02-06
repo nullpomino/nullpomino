@@ -44,6 +44,9 @@ public class StateConfigGameTuning extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 14;
 
+	/** Outline type names */
+	protected static final String[] OUTLINE_TYPE_NAMES = {"AUTO", "NONE", "NORMAL", "CONNECT", "SAMECOLOR"};
+
 	/** Player number */
 	public int player = 0;
 
@@ -67,6 +70,12 @@ public class StateConfigGameTuning extends BaseGameState {
 
 	/** Diagonal move (-1=Auto 0=Disable 1=Enable) */
 	protected int owMoveDiagonal;
+
+	/** Outline type (-1:Auto 0orAbove:Fixed) */
+	protected int owBlockOutlineType;
+
+	/** Show outline only flag (-1:Auto 0:Always Normal 1:Always Outline Only) */
+	protected int owBlockShowOutlineOnly;
 
 	/*
 	 * Fetch this state's ID
@@ -95,6 +104,8 @@ public class StateConfigGameTuning extends BaseGameState {
 		owDasDelay = prop.getProperty(player + ".tuning.owDasDelay", -1);
 		owReverseUpDown = prop.getProperty(player + ".tuning.owReverseUpDown", false);
 		owMoveDiagonal = prop.getProperty(player + ".tuning.owMoveDiagonal", -1);
+		owBlockOutlineType = prop.getProperty(player + ".tuning.owBlockOutlineType", -1);
+		owBlockShowOutlineOnly = prop.getProperty(player + ".tuning.owBlockShowOutlineOnly", -1);
 	}
 
 	/**
@@ -109,6 +120,8 @@ public class StateConfigGameTuning extends BaseGameState {
 		prop.setProperty(player + ".tuning.owDasDelay", owDasDelay);
 		prop.setProperty(player + ".tuning.owReverseUpDown", owReverseUpDown);
 		prop.setProperty(player + ".tuning.owMoveDiagonal", owMoveDiagonal);
+		prop.setProperty(player + ".tuning.owBlockOutlineType", owBlockOutlineType);
+		prop.setProperty(player + ".tuning.owBlockShowOutlineOnly", owBlockShowOutlineOnly);
 	}
 
 	/*
@@ -159,6 +172,13 @@ public class StateConfigGameTuning extends BaseGameState {
 		if(owMoveDiagonal == 0) strTemp = "e";
 		if(owMoveDiagonal == 1) strTemp = "c";
 		NormalFont.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
+
+		NormalFont.printFontGrid(2, 10, "OUTLINE TYPE:" + OUTLINE_TYPE_NAMES[owBlockOutlineType + 1], (cursor == 7));
+
+		if(owBlockShowOutlineOnly == -1) strTemp = "AUTO";
+		if(owBlockShowOutlineOnly == 0) strTemp = "e";
+		if(owBlockShowOutlineOnly == 1) strTemp = "c";
+		NormalFont.printFontGrid(2, 11, "SHOW OUTLINE ONLY:" + strTemp, (cursor == 8));
 	}
 
 	/*
@@ -171,12 +191,12 @@ public class StateConfigGameTuning extends BaseGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 6;
+			if(cursor < 0) cursor = 8;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 6) cursor = 0;
+			if(cursor > 8) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -221,6 +241,16 @@ public class StateConfigGameTuning extends BaseGameState {
 				owMoveDiagonal += change;
 				if(owMoveDiagonal < -1) owMoveDiagonal = 1;
 				if(owMoveDiagonal > 1) owMoveDiagonal = -1;
+				break;
+			case 7:
+				owBlockOutlineType += change;
+				if(owBlockOutlineType < -1) owBlockOutlineType = 3;
+				if(owBlockOutlineType > 3) owBlockOutlineType = -1;
+				break;
+			case 8:
+				owBlockShowOutlineOnly += change;
+				if(owBlockShowOutlineOnly < -1) owBlockShowOutlineOnly = 1;
+				if(owBlockShowOutlineOnly > 1) owBlockShowOutlineOnly = -1;
 				break;
 			}
 		}

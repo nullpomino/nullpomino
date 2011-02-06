@@ -771,6 +771,9 @@ public class RendererSlick extends EventReceiver {
 			viewHeight -= engine.heboHiddenYNow;
 		}
 
+		int outlineType = engine.blockOutlineType;
+		if(engine.owBlockOutlineType != -1) outlineType = engine.owBlockOutlineType;
+
 		for(int i = 0; i < viewHeight; i++) {
 			for(int j = 0; j < width; j++) {
 				int x2 = x + (j * blksize);
@@ -794,17 +797,17 @@ public class RendererSlick extends EventReceiver {
 						filter.a = blk.alpha;
 						graphics.setColor(filter);
 						int ls = (blksize-1);
-						if(engine.blockOutlineType == GameEngine.BLOCK_OUTLINE_NORMAL) {
+						if(outlineType == GameEngine.BLOCK_OUTLINE_NORMAL) {
 							if(field.getBlockColor(j, i - 1) == Block.BLOCK_COLOR_NONE) graphics.drawLine(x2, y2, x2 + ls, y2);
 							if(field.getBlockColor(j, i + 1) == Block.BLOCK_COLOR_NONE) graphics.drawLine(x2, y2 + ls, x2 + ls, y2 + ls);
 							if(field.getBlockColor(j - 1, i) == Block.BLOCK_COLOR_NONE) graphics.drawLine(x2, y2, x2, y2 + ls);
 							if(field.getBlockColor(j + 1, i) == Block.BLOCK_COLOR_NONE) graphics.drawLine(x2 + ls, y2, x2 + ls, y2 + ls);
-						} else if(engine.blockOutlineType == GameEngine.BLOCK_OUTLINE_CONNECT) {
+						} else if(outlineType == GameEngine.BLOCK_OUTLINE_CONNECT) {
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))     graphics.drawLine(x2, y2, x2 + ls, y2);
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))   graphics.drawLine(x2, y2 + ls, x2 + ls, y2 + ls);
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT))   graphics.drawLine(x2, y2, x2, y2 + ls);
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))  graphics.drawLine(x2 + ls, y2, x2 + ls, y2 + ls);
-						} else if(engine.blockOutlineType == GameEngine.BLOCK_OUTLINE_SAMECOLOR) {
+						} else if(outlineType == GameEngine.BLOCK_OUTLINE_SAMECOLOR) {
 							if(field.getBlockColor(j, i - 1) != blk.color) graphics.drawLine(x2, y2, x2 + ls, y2);
 							if(field.getBlockColor(j, i + 1) != blk.color) graphics.drawLine(x2, y2 + ls, x2 + ls, y2 + ls);
 							if(field.getBlockColor(j - 1, i) != blk.color) graphics.drawLine(x2, y2, x2, y2 + ls);

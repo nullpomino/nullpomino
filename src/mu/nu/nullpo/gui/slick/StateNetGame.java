@@ -302,6 +302,8 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			gameManager.engine[0].owDasDelay = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owDasDelay", -1);
 			gameManager.engine[0].owReverseUpDown = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owReverseUpDown", false);
 			gameManager.engine[0].owMoveDiagonal = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owMoveDiagonal", -1);
+			gameManager.engine[0].owBlockOutlineType = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owBlockOutlineType", -1);
+			gameManager.engine[0].owBlockShowOutlineOnly = NullpoMinoSlick.propGlobal.getProperty(0 + ".tuning.owBlockShowOutlineOnly", -1);
 
 			// Rule
 			RuleOptions ruleopt = null;

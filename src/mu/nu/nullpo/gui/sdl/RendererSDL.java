@@ -863,6 +863,9 @@ public class RendererSDL extends EventReceiver {
 			viewHeight -= engine.heboHiddenYNow;
 		}
 
+		int outlineType = engine.blockOutlineType;
+		if(engine.owBlockOutlineType != -1) outlineType = engine.owBlockOutlineType;
+
 		SDLSurface imgFieldbg = ResourceHolderSDL.imgFieldbg;
 		//if((width == 10) && (height == 20)) imgFieldbg = ResourceHolderSDL.imgFieldbg2;
 		if(engine.owner.getPlayers() < 2)
@@ -898,7 +901,7 @@ public class RendererSDL extends EventReceiver {
 					if(blk.getAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
 						ResourceHolderSDL.imgSprite.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, (int)(255 * blk.alpha));
 
-						if(engine.blockOutlineType == GameEngine.BLOCK_OUTLINE_NORMAL) {
+						if(outlineType == GameEngine.BLOCK_OUTLINE_NORMAL) {
 							if(field.getBlockColor(j, i - 1) == Block.BLOCK_COLOR_NONE)
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize,1), graphics, new SDLRect(x2,y2,blksize,1));
 							if(field.getBlockColor(j, i + 1) == Block.BLOCK_COLOR_NONE)
@@ -907,7 +910,7 @@ public class RendererSDL extends EventReceiver {
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize), graphics, new SDLRect(x2,y2,1,blksize));
 							if(field.getBlockColor(j + 1, i) == Block.BLOCK_COLOR_NONE)
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize), graphics, new SDLRect(x2 + blksize-1,y2,1,blksize));
-						} else if(engine.blockOutlineType == GameEngine.BLOCK_OUTLINE_CONNECT) {
+						} else if(outlineType == GameEngine.BLOCK_OUTLINE_CONNECT) {
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP))
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize,1), graphics, new SDLRect(x2,y2,blksize,1));
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN))
@@ -916,7 +919,7 @@ public class RendererSDL extends EventReceiver {
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize), graphics, new SDLRect(x2,y2,1,blksize));
 							if(!blk.getAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT))
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(0,16,1,blksize), graphics, new SDLRect(x2 + blksize-1,y2,1,blksize));
-						} else if(engine.blockOutlineType == GameEngine.BLOCK_OUTLINE_SAMECOLOR) {
+						} else if(outlineType == GameEngine.BLOCK_OUTLINE_SAMECOLOR) {
 							if(field.getBlockColor(j, i - 1) != blk.color)
 								ResourceHolderSDL.imgSprite.blitSurface(new SDLRect(1,16,blksize,1), graphics, new SDLRect(x2,y2,blksize,1));
 							if(field.getBlockColor(j, i + 1) != blk.color)

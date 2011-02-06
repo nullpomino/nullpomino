@@ -96,7 +96,8 @@ public class GameEngine {
 							LASTMOVE_ROTATE_GROUND = 6;
 
 	/** Constants of block outline type */
-	public static final int BLOCK_OUTLINE_NONE = 0, BLOCK_OUTLINE_NORMAL = 1, BLOCK_OUTLINE_CONNECT = 2, BLOCK_OUTLINE_SAMECOLOR = 3;
+	public static final int BLOCK_OUTLINE_AUTO = -1,
+							BLOCK_OUTLINE_NONE = 0, BLOCK_OUTLINE_NORMAL = 1, BLOCK_OUTLINE_CONNECT = 2, BLOCK_OUTLINE_SAMECOLOR = 3;
 
 	/** Default duration of Ready->Go */
 	public static final int READY_START = 0, READY_END = 49, GO_START = 50, GO_END = 100;
@@ -601,6 +602,12 @@ public class GameEngine {
 	/** Diagonal move (-1=Auto 0=Disable 1=Enable) */
 	public int owMoveDiagonal;
 
+	/** Outline type (-1:Auto 0orAbove:Fixed) */
+	public int owBlockOutlineType;
+
+	/** Show outline only flag (-1:Auto 0:Always Normal 1:Always Outline Only) */
+	public int owBlockShowOutlineOnly;
+
 	/** Clear mode selection */
 	public int clearMode;
 
@@ -662,6 +669,8 @@ public class GameEngine {
 		owDasDelay = -1;
 		owReverseUpDown = false;
 		owMoveDiagonal = -1;
+		owBlockOutlineType = -1;
+		owBlockShowOutlineOnly = -1;
 	}
 
 	/**
@@ -720,6 +729,8 @@ public class GameEngine {
 			owDasDelay = owner.replayProp.getProperty(playerID + ".tuning.owDasDelay", -1);
 			owReverseUpDown = owner.replayProp.getProperty(playerID + ".tuning.owReverseUpDown", false);
 			owMoveDiagonal = owner.replayProp.getProperty(playerID + ".tuning.owMoveDiagonal", -1);
+			owBlockOutlineType = owner.replayProp.getProperty(playerID + ".tuning.owBlockOutlineType", -1);
+			owBlockShowOutlineOnly = owner.replayProp.getProperty(playerID + ".tuning.owBlockShowOutlineOnly", -1);
 
 			// Fixing old replays to accomodate for new DAS notation
 			if (versionMajor < 7.3) {
@@ -1480,6 +1491,10 @@ public class GameEngine {
 	 * fieldのBlock stateを更新
 	 */
 	public void fieldUpdate() {
+		boolean outlineOnly = blockShowOutlineOnly;	// Show outline only flag
+		if(owBlockShowOutlineOnly == 0) outlineOnly = false;
+		if(owBlockShowOutlineOnly == 1) outlineOnly = true;
+
 		if(field != null) {
 			for(int i = 0; i < field.getWidth(); i++) {
 				for(int j = (field.getHiddenHeight() * -1); j < field.getHeight(); j++) {
@@ -1491,7 +1506,7 @@ public class GameEngine {
 								blk.darkness = 0f;
 						} else if(blk.elapsedFrames < ruleopt.lockflash) {
 							blk.darkness = -0.8f;
-							if(blockShowOutlineOnly) {
+							if(outlineOnly) {
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, false);
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_BONE, false);
@@ -1499,7 +1514,7 @@ public class GameEngine {
 						} else {
 							blk.darkness = 0f;
 							blk.setAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
-							if(blockShowOutlineOnly) {
+							if(outlineOnly) {
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, false);
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_BONE, false);
 							}

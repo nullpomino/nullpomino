@@ -133,6 +133,8 @@ public class StateInGameSDL extends BaseStateSDL {
 			gameManager.engine[i].owDasDelay = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owDasDelay", -1);
 			gameManager.engine[0].owReverseUpDown = NullpoMinoSDL.propGlobal.getProperty(0 + ".tuning.owReverseUpDown", false);
 			gameManager.engine[i].owMoveDiagonal = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owMoveDiagonal", -1);
+			gameManager.engine[i].owBlockOutlineType = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owBlockOutlineType", -1);
+			gameManager.engine[i].owBlockShowOutlineOnly = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owBlockShowOutlineOnly", -1);
 
 			// ルール
 			RuleOptions ruleopt = null;
