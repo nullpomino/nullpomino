@@ -45,6 +45,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +54,8 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -62,10 +65,14 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.zip.Adler32;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -84,6 +91,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -140,6 +148,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Multiplayer leaderboard column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] MPRANKING_COLUMNNAMES  = {
 		"MPRanking_Rank", "MPRanking_Name", "MPRanking_Rating", "MPRanking_PlayCount", "MPRanking_WinCount"
+	};
+
+	/** Tuning: Generic Auto/Disable/Enable labels (before translation) */
+	public static final String[] TUNING_COMBOBOX_GENERIC = {
+		"GameTuning_ComboboxGeneric_Auto", "GameTuning_ComboboxGeneric_Disable", "GameTuning_ComboboxGeneric_Enable"
+	};
+
+	/** Tuning: A button rotation (before translation) */
+	public static final String[] TUNING_ABUTTON_ROTATE = {
+		"GameTuning_RotateButtonDefaultRight_Auto", "GameTuning_RotateButtonDefaultRight_Left", "GameTuning_RotateButtonDefaultRight_Right"
+	};
+
+	/** Tuning: Outline type names (before translation) */
+	public static final String[] TUNING_OUTLINE_TYPE_NAMES = {
+		"GameTuning_OutlineType_Auto", "GameTuning_OutlineType_None", "GameTuning_OutlineType_Normal",
+		"GameTuning_OutlineType_Connect", "GameTuning_OutlineType_SameColor"
 	};
 
 	/** Spin bonus names */
@@ -576,6 +600,27 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** Rule entries (Rule change screen) */
 	protected LinkedList<RuleEntry> ruleEntries;
 
+	/** Tuning: A button rotation Combobox */
+	protected JComboBox comboboxTuningRotateButtonDefaultRight;
+	/** Tuning: Diagonal move Combobox */
+	protected JComboBox comboboxTuningMoveDiagonal;
+	/** Tuning: Show Outline Only Combobox */
+	protected JComboBox comboboxTuningBlockShowOutlineOnly;
+	/** Tuning: Skin Combobox */
+	protected JComboBox comboboxTuningSkin;
+	/** Tuning: Skin Images */
+	protected BufferedImage[] imgTuningBlockSkins;
+	/** Tuning: Outline type combobox */
+	protected JComboBox comboboxTuningBlockOutlineType;
+	/** Tuning: Minimum DAS */
+	protected JTextField txtfldTuningMinDAS;
+	/** Tuning: Maximum DAS */
+	protected JTextField txtfldTuningMaxDAS;
+	/** Tuning: DAS dealy */
+	protected JTextField txtfldTuningDasDelay;
+	/** Tuning: Checkbox to enable swapping the roles of up/down buttons in-game */
+	protected JCheckBox chkboxTuningReverseUpDown;
+
 	/**
 	 * Constructor
 	 */
@@ -686,6 +731,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		} else {
 			createRuleEntries(strRuleFileList);
 		}
+
+		// Block skins
+		loadBlockSkins();
 
 		// GUI Init
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -2086,6 +2134,136 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			tabRuleChange.addTab(GameEngine.GAMESTYLE_NAMES[i], spRuleList);
 		}
 
+		// ** Tuning Tab
+		JPanel subpanelTuning = new JPanel();
+		subpanelTuning.setLayout(new BoxLayout(subpanelTuning, BoxLayout.Y_AXIS));
+		tabRuleChange.addTab(getUIText("RuleChange_Tab_Tuning"), subpanelTuning);
+
+		// *** A button rotate
+		JPanel pTuningRotateButtonDefaultRight = new JPanel();
+		//pTuningRotateButtonDefaultRight.setLayout(new BoxLayout(pTuningRotateButtonDefaultRight, BoxLayout.Y_AXIS));
+		pTuningRotateButtonDefaultRight.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningRotateButtonDefaultRight);
+
+		JLabel lTuningRotateButtonDefaultRight = new JLabel(getUIText("GameTuning_RotateButtonDefaultRight_Label"));
+		pTuningRotateButtonDefaultRight.add(lTuningRotateButtonDefaultRight);
+
+		String[] strArrayTuningRotateButtonDefaultRight = new String[TUNING_ABUTTON_ROTATE.length];
+		for(int i = 0; i < TUNING_ABUTTON_ROTATE.length; i++) {
+			strArrayTuningRotateButtonDefaultRight[i] = getUIText(TUNING_ABUTTON_ROTATE[i]);
+		}
+		comboboxTuningRotateButtonDefaultRight = new JComboBox(strArrayTuningRotateButtonDefaultRight);
+		pTuningRotateButtonDefaultRight.add(comboboxTuningRotateButtonDefaultRight);
+
+		// *** Diagonal move
+		JPanel pTuningMoveDiagonal = new JPanel();
+		pTuningMoveDiagonal.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningMoveDiagonal);
+
+		JLabel lTuningMoveDiagonal = new JLabel(getUIText("GameTuning_MoveDiagonal_Label"));
+		pTuningMoveDiagonal.add(lTuningMoveDiagonal);
+
+		String[] strArrayTuningMoveDiagonal = new String[TUNING_COMBOBOX_GENERIC.length];
+		for(int i = 0; i < TUNING_COMBOBOX_GENERIC.length; i++) {
+			strArrayTuningMoveDiagonal[i] = getUIText(TUNING_COMBOBOX_GENERIC[i]);
+		}
+		comboboxTuningMoveDiagonal = new JComboBox(strArrayTuningMoveDiagonal);
+		pTuningMoveDiagonal.add(comboboxTuningMoveDiagonal);
+
+		// *** Show Outline Only
+		JPanel pTuningBlockShowOutlineOnly = new JPanel();
+		pTuningBlockShowOutlineOnly.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningBlockShowOutlineOnly);
+
+		JLabel lTuningBlockShowOutlineOnly = new JLabel(getUIText("GameTuning_BlockShowOutlineOnly_Label"));
+		pTuningBlockShowOutlineOnly.add(lTuningBlockShowOutlineOnly);
+
+		String[] strArrayTuningBlockShowOutlineOnly = new String[TUNING_COMBOBOX_GENERIC.length];
+		for(int i = 0; i < TUNING_COMBOBOX_GENERIC.length; i++) {
+			strArrayTuningBlockShowOutlineOnly[i] = getUIText(TUNING_COMBOBOX_GENERIC[i]);
+		}
+		comboboxTuningBlockShowOutlineOnly = new JComboBox(strArrayTuningBlockShowOutlineOnly);
+		pTuningBlockShowOutlineOnly.add(comboboxTuningBlockShowOutlineOnly);
+
+		// *** Outline Type
+		JPanel pTuningOutlineType = new JPanel();
+		pTuningOutlineType.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningOutlineType);
+
+		JLabel lTuningOutlineType = new JLabel(getUIText("GameTuning_OutlineType_Label"));
+		pTuningOutlineType.add(lTuningOutlineType);
+
+		String[] strArrayTuningOutlineType = new String[TUNING_OUTLINE_TYPE_NAMES.length];
+		for(int i = 0; i < TUNING_OUTLINE_TYPE_NAMES.length; i++) {
+			strArrayTuningOutlineType[i] = getUIText(TUNING_OUTLINE_TYPE_NAMES[i]);
+		}
+		DefaultComboBoxModel modelTuningOutlineType = new DefaultComboBoxModel(strArrayTuningOutlineType);
+		comboboxTuningBlockOutlineType = new JComboBox(modelTuningOutlineType);
+		pTuningOutlineType.add(comboboxTuningBlockOutlineType);
+
+		// *** Skin
+		JPanel pTuningSkin = new JPanel();
+		pTuningSkin.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningSkin);
+
+		JLabel lTuningSkin = new JLabel(getUIText("GameTuning_Skin_Label"));
+		pTuningSkin.add(lTuningSkin);
+
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(new ComboLabel(getUIText("GameTuning_Skin_Auto")));
+		for(int i = 0; i < imgTuningBlockSkins.length; i++) {
+			model.addElement(new ComboLabel("" + i, new ImageIcon(imgTuningBlockSkins[i])));
+		}
+
+		comboboxTuningSkin = new JComboBox(model);
+		comboboxTuningSkin.setRenderer(new ComboLabelCellRenderer());
+		comboboxTuningSkin.setPreferredSize(new Dimension(190, 30));
+		pTuningSkin.add(comboboxTuningSkin);
+
+		// *** Minimum DAS
+		JPanel pTuningMinDAS = new JPanel();
+		pTuningMinDAS.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningMinDAS);
+
+		JLabel lTuningMinDAS = new JLabel(getUIText("GameTuning_MinDAS_Label"));
+		pTuningMinDAS.add(lTuningMinDAS);
+
+		txtfldTuningMinDAS = new JTextField(5);
+		pTuningMinDAS.add(txtfldTuningMinDAS);
+
+		// *** Maximum DAS
+		JPanel pTuningMaxDAS = new JPanel();
+		pTuningMaxDAS.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningMaxDAS);
+
+		JLabel lTuningMaxDAS = new JLabel(getUIText("GameTuning_MaxDAS_Label"));
+		pTuningMaxDAS.add(lTuningMaxDAS);
+
+		txtfldTuningMaxDAS = new JTextField(5);
+		pTuningMaxDAS.add(txtfldTuningMaxDAS);
+
+		// *** DAS delay
+		JPanel pTuningDasDelay = new JPanel();
+		pTuningDasDelay.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningDasDelay);
+
+		JLabel lTuningDasDelay = new JLabel(getUIText("GameTuning_DasDelay_Label"));
+		pTuningDasDelay.add(lTuningDasDelay);
+
+		txtfldTuningDasDelay = new JTextField(5);
+		pTuningDasDelay.add(txtfldTuningDasDelay);
+
+		// *** Reverse Up/Down
+		JPanel pTuningReverseUpDown = new JPanel();
+		pTuningReverseUpDown.setAlignmentX(LEFT_ALIGNMENT);
+		subpanelTuning.add(pTuningReverseUpDown);
+
+		JLabel lTuningReverseUpDown = new JLabel(getUIText("GameTuning_ReverseUpDown_Label"));
+		pTuningReverseUpDown.add(lTuningReverseUpDown);
+
+		chkboxTuningReverseUpDown = new JCheckBox();
+		pTuningReverseUpDown.add(chkboxTuningReverseUpDown);
+
 		// * Buttons panel
 		JPanel subpanelButtons = new JPanel();
 		subpanelButtons.setLayout(new BoxLayout(subpanelButtons, BoxLayout.X_AXIS));
@@ -2106,6 +2284,87 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		btnRuleChangeCancel.setMnemonic('C');
 		btnRuleChangeCancel.setMaximumSize(new Dimension(Short.MAX_VALUE, btnRuleChangeCancel.getMaximumSize().height));
 		subpanelButtons.add(btnRuleChangeCancel);
+	}
+
+	/**
+	 * Load block skins
+	 */
+	protected void loadBlockSkins() {
+		String skindir = propGlobal.getProperty("custom.skin.directory", "res");
+
+		int numSkins = 0;
+		File file = null;
+		while(true) {
+			file = new File(skindir + "/graphics/blockskin/normal/n" + numSkins + ".png");
+			if(file.canRead()) {
+				numSkins++;
+			} else {
+				break;
+			}
+		}
+		log.debug(numSkins + " block skins found");
+
+		imgTuningBlockSkins = new BufferedImage[numSkins];
+
+		for(int i = 0; i < numSkins; i++) {
+			BufferedImage imgBlock = (BufferedImage) loadImage(getURL(skindir + "/graphics/blockskin/normal/n" + i + ".png"));
+			boolean isSticky = ((imgBlock != null) && (imgBlock.getWidth() >= 400) && (imgBlock.getHeight() >= 304));
+
+			imgTuningBlockSkins[i] = new BufferedImage(144, 16, BufferedImage.TYPE_INT_RGB);
+
+			if(isSticky) {
+				for(int j = 0; j < 9; j++) {
+					imgTuningBlockSkins[i].getGraphics().drawImage(imgBlock, j * 16, 0, (j * 16) + 16, 16, 0, j * 16, 16, (j * 16) + 16, null);
+				}
+			} else {
+				imgTuningBlockSkins[i].getGraphics().drawImage(imgBlock, 0, 0, 144, 16, 0, 0, 144, 16, null);
+			}
+		}
+	}
+
+	/**
+	 * Load image file
+	 * @param url Image file URL
+	 * @return Image data (or null when load fails)
+	 */
+	protected BufferedImage loadImage(URL url) {
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(url);
+			log.debug("Loaded image from " + url);
+		} catch (IOException e) {
+			log.error("Failed to load image from " + url, e);
+		}
+		return img;
+	}
+
+	/**
+	 * Get the URL of filename
+	 * @param str Filename
+	 * @return URL of the filename
+	 */
+	protected URL getURL(String str) {
+		URL url = null;
+
+		try {
+			char sep = File.separator.charAt(0);
+			String file = str.replace(sep, '/');
+
+			if(file.charAt(0) != '/') {
+				String dir = System.getProperty("user.dir");
+				dir = dir.replace(sep, '/') + '/';
+				if(dir.charAt(0) != '/') {
+					dir = "/" + dir;
+				}
+				file = dir + file;
+			}
+			url = new URL("file", "", file);
+		} catch(MalformedURLException e) {
+			log.warn("Invalid URL:" + str, e);
+			return null;
+		}
+
+		return url;
 	}
 
 	/**
@@ -2135,6 +2394,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			result = propDefaultModeDesc.getProperty(str2, str2);
 		}
 		return result;
+	}
+
+	/**
+	 * Get int value from JTextField
+	 * @param value Default Value (used if convertion fails)
+	 * @param txtfld JTextField
+	 * @return int value (or default value if fails)
+	 */
+	public static int getIntTextField(int value, JTextField txtfld) {
+		int v = value;
+
+		try {
+			v = Integer.parseInt(txtfld.getText());
+		} catch(NumberFormatException e) {}
+
+		return v;
 	}
 
 	/**
@@ -3375,6 +3650,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * Enter rule change screen
 	 */
 	public void enterRuleChangeScreen() {
+		// Set rule selections
 		String[] strCurrentFileName = new String[GameEngine.MAX_GAMESTYLE];
 
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
@@ -3393,6 +3669,24 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			}
 		}
 
+		// Tuning
+		int owRotateButtonDefaultRight = propGlobal.getProperty(0 + ".tuning.owRotateButtonDefaultRight", -1) + 1;
+		comboboxTuningRotateButtonDefaultRight.setSelectedIndex(owRotateButtonDefaultRight);
+		int owMoveDiagonal = propGlobal.getProperty(0 + ".tuning.owMoveDiagonal", -1) + 1;
+		comboboxTuningMoveDiagonal.setSelectedIndex(owMoveDiagonal);
+		int owBlockShowOutlineOnly = propGlobal.getProperty(0 + ".tuning.owBlockShowOutlineOnly", -1) + 1;
+		comboboxTuningBlockShowOutlineOnly.setSelectedIndex(owBlockShowOutlineOnly);
+		int owSkin = propGlobal.getProperty(0 + ".tuning.owSkin", -1) + 1;
+		comboboxTuningSkin.setSelectedIndex(owSkin);
+		int owBlockOutlineType = propGlobal.getProperty(0 + ".tuning.owBlockOutlineType", -1) + 1;
+		comboboxTuningBlockOutlineType.setSelectedIndex(owBlockOutlineType);
+
+		txtfldTuningMinDAS.setText(propGlobal.getProperty(0 + ".tuning.owMinDAS", "-1"));
+		txtfldTuningMaxDAS.setText(propGlobal.getProperty(0 + ".tuning.owMaxDAS", "-1"));
+		txtfldTuningDasDelay.setText(propGlobal.getProperty(0 + ".tuning.owDasDelay", "-1"));
+		chkboxTuningReverseUpDown.setSelected(propGlobal.getProperty(0 + ".tuning.owReverseUpDown", false));
+
+		// Change screen
 		changeCurrentScreenCard(SCREENCARD_RULECHANGE);
 	}
 
@@ -3791,6 +4085,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 		// OK button (Rule change)
 		if(e.getActionCommand() == "RuleChange_OK") {
+			// Set rules
+			String strPrevTetrominoRuleFilename = propGlobal.getProperty(0 + ".rule", "");
+
 			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 				int id = listboxRuleChangeRuleList[i].getSelectedIndex();
 				LinkedList<RuleEntry> subEntries = getSubsetEntries(i);
@@ -3820,22 +4117,51 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 					}
 				}
 			}
+
+			// Tuning
+			int owRotateButtonDefaultRight = comboboxTuningRotateButtonDefaultRight.getSelectedIndex() - 1;
+			propGlobal.setProperty(0 + ".tuning.owRotateButtonDefaultRight", owRotateButtonDefaultRight);
+
+			int owMoveDiagonal = comboboxTuningMoveDiagonal.getSelectedIndex() - 1;
+			propGlobal.setProperty(0 + ".tuning.owMoveDiagonal", owMoveDiagonal);
+
+			int owBlockShowOutlineOnly = comboboxTuningBlockShowOutlineOnly.getSelectedIndex() - 1;
+			propGlobal.setProperty(0 + ".tuning.owBlockShowOutlineOnly", owBlockShowOutlineOnly);
+
+			int owSkin = comboboxTuningSkin.getSelectedIndex() - 1;
+			propGlobal.setProperty(0 + ".tuning.owSkin", owSkin);
+
+			int owBlockOutlineType = comboboxTuningBlockOutlineType.getSelectedIndex() - 1;
+			propGlobal.setProperty(0 + ".tuning.owBlockOutlineType", owBlockOutlineType);
+
+			int owMinDAS = getIntTextField(-1, txtfldTuningMinDAS);
+			propGlobal.setProperty(0 + ".tuning.owMinDAS", owMinDAS);
+			int owMaxDAS = getIntTextField(-1, txtfldTuningMaxDAS);
+			propGlobal.setProperty(0 + ".tuning.owMaxDAS", owMaxDAS);
+			int owDasDelay = getIntTextField(-1, txtfldTuningDasDelay);
+			propGlobal.setProperty(0 + ".tuning.owDasDelay", owDasDelay);
+			boolean owReverseUpDown = chkboxTuningReverseUpDown.isSelected();
+			propGlobal.setProperty(0 + ".tuning.owReverseUpDown", owReverseUpDown);
+
+			// Save
 			saveGlobalConfig();
 
 			// Load rule
 			String strFileName = propGlobal.getProperty(0 + ".rule", "");
-			CustomProperties propRule = new CustomProperties();
-			try {
-				FileInputStream in = new FileInputStream(strFileName);
-				propRule.load(in);
-				in.close();
-			} catch (Exception e2) {}
-			ruleOptPlayer = new RuleOptions();
-			ruleOptPlayer.readProperty(propRule, 0);
+			if(!strPrevTetrominoRuleFilename.equals(strFileName)) {
+				CustomProperties propRule = new CustomProperties();
+				try {
+					FileInputStream in = new FileInputStream(strFileName);
+					propRule.load(in);
+					in.close();
+				} catch (Exception e2) {}
+				ruleOptPlayer = new RuleOptions();
+				ruleOptPlayer.readProperty(propRule, 0);
 
-			// Send rule
-			if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
-				sendMyRuleDataToServer();
+				// Send rule
+				if((netPlayerClient != null) && (netPlayerClient.isConnected())) {
+					sendMyRuleDataToServer();
+				}
 			}
 
 			changeCurrentScreenCard(SCREENCARD_LOBBY);
@@ -4961,5 +5287,74 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		public String rulename;
 		/** Game style */
 		public int style;
+	}
+
+	/**
+	 * Each label of Image Combobox<br>
+	 * <a href="http://www.javadrive.jp/tutorial/jcombobox/index20.html">Source</a>
+	 */
+	protected class ComboLabel {
+		private String text = "";
+		private Icon icon = null;
+
+		public ComboLabel() {
+		}
+
+		public ComboLabel(String text) {
+			this.text = text;
+		}
+
+		public ComboLabel(Icon icon) {
+			this.icon = icon;
+		}
+
+		public ComboLabel(String text, Icon icon) {
+			this.text = text;
+			this.icon = icon;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public void setIcon(Icon icon) {
+			this.icon = icon;
+		}
+
+		public Icon getIcon() {
+			return icon;
+		}
+	}
+
+	/**
+	 * ListCellRenderer for Image Combobox<br>
+	 * <a href="http://www.javadrive.jp/tutorial/jcombobox/index20.html">Source</a>
+	 */
+	protected class ComboLabelCellRenderer extends JLabel implements ListCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		public ComboLabelCellRenderer() {
+			this.setOpaque(true);
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			ComboLabel data = (ComboLabel)value;
+			setText(data.getText());
+			setIcon(data.getIcon());
+
+			if(isSelected) {
+				setForeground(Color.white);
+				setBackground(Color.black);
+			} else {
+				setForeground(Color.black);
+				setBackground(Color.white);
+			}
+
+			return this;
+		}
 	}
 }
