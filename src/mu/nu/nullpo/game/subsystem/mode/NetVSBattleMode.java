@@ -259,6 +259,9 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** true if you KO'd player */
 	private boolean[] playerKObyYou;
 
+	/** Player active flag (false if newcomer) */
+	private boolean[] playerActive;
+
 	/** Block skin used */
 	private int[] playerSkin;
 
@@ -365,6 +368,12 @@ public class NetVSBattleMode extends NetDummyMode {
 	/** true if can exit from practice game */
 	private boolean isPracticeExitAllowed;
 
+	/** Target ID (-1:All) */
+	private int targetID;
+
+	/** Target Timer */
+	private int targetTimer;
+
 	/**
 	 * ゲーム席 numberを元にfield numberを返す
 	 * @param seat ゲーム席 number
@@ -435,6 +444,60 @@ public class NetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
+	 * Check if the given playerID can be targeted
+	 * @param playerID Player ID (to target)
+	 * @return true if playerID can be targeted
+	 */
+	private boolean isTargetable(int playerID) {
+		// Can't target self
+		if(playerID <= 0) return false;
+
+		// Doesn't exist?
+		if(!isPlayerExist[playerID]) return false;
+		// Dead?
+		if(isDead[playerID]) return false;
+		// Newcomer?
+		if(!playerActive[playerID]) return false;
+
+		// Is teammate?
+		String myTeam = playerTeams[0];
+		String thisTeam = playerTeams[playerID];
+		if((myTeam.length() > 0) && (thisTeam.length() > 0) && myTeam.equals(thisTeam)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get number of possible targets (number of opponents)
+	 * @return Number of possible targets (number of opponents)
+	 */
+	private int getNumberOfPossibleTargets() {
+		int count = 0;
+		for(int i = 1; i < MAX_PLAYERS; i++) {
+			if(isTargetable(i)) count++;
+		}
+		return count;
+	}
+
+	/**
+	 * Set new target
+	 */
+	private void setNewTarget() {
+		if((getNumberOfPossibleTargets() >= 1) && (currentRoomInfo != null) && (currentRoomInfo.isTarget) &&
+		   (playerSeatNumber >= 0) && (!isPractice))
+		{
+			do {
+				targetID++;
+				if(targetID >= MAX_PLAYERS) targetID = 1;
+			} while (!isTargetable(targetID));
+		} else {
+			targetID = -1;
+		}
+	}
+
+	/**
 	 * 今この部屋で参戦状態のNumber of playersを返す
 	 * @return 参戦状態のNumber of players
 	 */
@@ -494,6 +557,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		divideChangeRateByPlayers = false;
 		//useTankMode = false;
 		isReady = new boolean[MAX_PLAYERS];
+		playerActive = new boolean[MAX_PLAYERS];
 		playerNames = new String[MAX_PLAYERS];
 		playerTeams = new String[MAX_PLAYERS];
 		playerTeamColors = new int[MAX_PLAYERS];
@@ -524,6 +588,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		isDead = new boolean[MAX_PLAYERS];
 		playerPlace = new int[MAX_PLAYERS];
 		playerKObyYou = new boolean[MAX_PLAYERS];
+		playerActive = new boolean[MAX_PLAYERS];
 		isNetGameActive = false;
 		isNetGameFinished = false;
 		isNewcomer = false;
@@ -532,6 +597,8 @@ public class NetVSBattleMode extends NetDummyMode {
 		netPlayTimer = 0;
 		lastAttackerUID = -1;
 		currentKO = 0;
+		targetID = -1;
+		targetTimer = 0;
 	}
 
 	/**
@@ -1022,6 +1089,9 @@ public class NetVSBattleMode extends NetDummyMode {
 				engine.tspinEnable = true;
 				engine.useAllSpinBonus = true;
 			}
+
+			setNewTarget();
+			targetTimer = 0;
 		}
 		if(isPractice) {
 			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
@@ -1272,8 +1342,12 @@ public class NetVSBattleMode extends NetDummyMode {
 				for(int i : pts){
 					stringPts += i + "\t";
 				}
+
+				if((targetID != -1) && !isTargetable(targetID)) setNewTarget();
+				int targetSeatID = (targetID == -1) ? -1 : allPlayerSeatNumbers[targetID];
+
 				netLobby.netPlayerClient.send("game\tattack\t" + stringPts + "\t" + lastevent[playerID] + "\t" + lastb2b[playerID] + "\t" +
-						lastcombo[playerID] + "\t" + garbage[playerID] + "\t" + lastpiece[playerID] + "\n");
+						lastcombo[playerID] + "\t" + garbage[playerID] + "\t" + lastpiece[playerID] + "\t" + targetSeatID + "\n");
 			}
 		}
 
@@ -1453,6 +1527,18 @@ public class NetVSBattleMode extends NetDummyMode {
 		// Timer
 		if((playerID == 0) && (netPlayTimerActive)) netPlayTimer++;
 
+		// Target
+		if((playerID == 0) && (playerSeatNumber >= 0) && (netPlayTimerActive) && (engine.gameActive) && (engine.timerActive) &&
+		   (getNumberOfPossibleTargets() >= 1) && (currentRoomInfo != null) && (currentRoomInfo.isTarget))
+		{
+			targetTimer++;
+
+			if((targetTimer >= currentRoomInfo.targetTimer) || (!isTargetable(targetID))) {
+				targetTimer = 0;
+				setNewTarget();
+			}
+		}
+
 		// Automatically start timer
 		if((playerID == 0) && (currentRoomInfo != null) && (autoStartActive) && (!isNetGameActive)) {
 			if(numPlayers <= 1) {
@@ -1595,6 +1681,22 @@ public class NetVSBattleMode extends NetDummyMode {
 		if((playerID == 0) && (currentRoomInfo != null) && (autoStartActive) && (!isNetGameActive)) {
 			receiver.drawDirectFont(engine, 0, 496, 16, GeneralUtil.getTime(autoStartTimer),
 									currentRoomInfo.autoStartTNET2, EventReceiver.COLOR_RED, EventReceiver.COLOR_YELLOW);
+		}
+
+		// Target
+		if((playerID == targetID) && (currentRoomInfo != null) && (currentRoomInfo.isTarget) && (numAlivePlayers >= 3) &&
+		   (isNetGameActive) && (!isDead[playerID]))
+		{
+			int x = receiver.getFieldDisplayPositionX(engine, playerID);
+			int y = receiver.getFieldDisplayPositionY(engine, playerID);
+			int fontcolor = EventReceiver.COLOR_GREEN;
+			if((targetTimer >= currentRoomInfo.targetTimer - 20) && (targetTimer % 2 == 0)) fontcolor = EventReceiver.COLOR_WHITE;
+
+			if(engine.displaysize != -1) {
+				receiver.drawMenuFont(engine, playerID, 2, 12, "TARGET", fontcolor);
+			} else {
+				receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 80, "TARGET", fontcolor, 0.5f);
+			}
 		}
 
 		// Line clear event
@@ -2157,6 +2259,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				engine.resetStatc();
 
 				if(isPlayerExist[i]) {
+					playerActive[i] = true;
 					engine.stat = GameEngine.STAT_READY;
 					engine.randSeed = randseed;
 					engine.random = new Random(randseed);
@@ -2427,10 +2530,13 @@ public class NetVSBattleMode extends NetDummyMode {
 				garbage[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 8]);
 				lastpiece[playerID] = Integer.parseInt(message[ATTACK_CATEGORIES + 9]);
 				scgettime[playerID] = 0;
+				int targetSeatID = Integer.parseInt(message[ATTACK_CATEGORIES + 10]);
 
 				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (sumPts > 0) && (!isPractice) && (!isNewcomer) &&
-					    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || !playerTeams[0].equalsIgnoreCase(playerTeams[playerID])))
+					((targetSeatID == -1) || (playerSeatNumber == targetSeatID) || (!currentRoomInfo.isTarget)) &&
+					((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || !playerTeams[0].equalsIgnoreCase(playerTeams[playerID])))
 //				if( (playerSeatNumber != -1) && (owner.engine[0].timerActive) && (sumPts > 0) && (!isPractice) && (!isNewcomer) &&
+//					((targetSeatID == -1) || (playerSeatNumber == targetSeatID) || (!currentRoomInfo.isTarget)) &&
 //				    ((playerTeams[0].length() <= 0) || (playerTeams[playerID].length() <= 0) || (!playerTeams[0].equalsIgnoreCase(playerTeams[playerID]))) &&
 //				    (playerTeamsIsTank[0]) )
 				{

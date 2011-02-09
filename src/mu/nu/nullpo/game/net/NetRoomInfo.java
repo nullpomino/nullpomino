@@ -147,8 +147,14 @@ public class NetRoomInfo implements Serializable {
 	/** Divide change rate by number of live players/teams to mimic feel of 1v1 */
 	public boolean divideChangeRateByPlayers = false;
 
+	/** Garbage send type (false=Send to all, true=Target) */
+	public boolean isTarget = false;
+
+	/** Targeting time */
+	public int targetTimer = 60;
+
 	//public boolean useTankMode = false;
-	
+
 	/** Hurryup開始までの秒count(-1でHurryupなし) */
 	public int hurryupSeconds = -1;
 
@@ -214,7 +220,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Copy constructor
-	 * 
+	 *
 	 * @param n
 	 *            Copy source
 	 */
@@ -224,7 +230,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列から data代入するConstructor
-	 * 
+	 *
 	 * @param rdata
 	 *            Stringの配列(String[7])
 	 */
@@ -234,7 +240,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringから data代入するConstructor
-	 * 
+	 *
 	 * @param str
 	 *            String
 	 */
@@ -244,7 +250,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 他のNetRoomInfoからコピー
-	 * 
+	 *
 	 * @param n
 	 *            Copy source
 	 */
@@ -297,6 +303,8 @@ public class NetRoomInfo implements Serializable {
 		garbageChangePerAttack = n.garbageChangePerAttack;
 		garbagePercent = n.garbagePercent;
 		divideChangeRateByPlayers = n.divideChangeRateByPlayers;
+		isTarget = n.isTarget;
+		targetTimer = n.targetTimer;
 		//useTankMode = n.useTankMode;
 		strMode = n.strMode;
 		singleplayer = n.singleplayer;
@@ -322,9 +330,9 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列から data代入(Playerリスト除く)
-	 * 
+	 *
 	 * @param rdata
-	 *            Stringの配列(String[40])
+	 *            Stringの配列(String[43])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -368,12 +376,14 @@ public class NetRoomInfo implements Serializable {
 		customRated = Boolean.parseBoolean(rdata[38]);
 		style = Integer.parseInt(rdata[39]);
 		divideChangeRateByPlayers = Boolean.parseBoolean(rdata[40]);
-		//useTankMode = Boolean.parseBoolean(rdata[41]);
+		if(rdata.length > 41) isTarget = Boolean.parseBoolean(rdata[41]);
+		if(rdata.length > 42) targetTimer = Integer.parseInt(rdata[42]);
+		//useTankMode = Boolean.parseBoolean(rdata[43]);
 	}
 
 	/**
 	 * String(;で区切り)から data代入(Playerリスト除く)
-	 * 
+	 *
 	 * @param str
 	 *            String
 	 */
@@ -383,11 +393,11 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * Stringの配列に変換(Playerリスト除く)
-	 * 
-	 * @return Stringの配列(String[40])
+	 *
+	 * @return Stringの配列(String[43])
 	 */
 	public String[] exportStringArray() {
-		String[] rdata = new String[41];
+		String[] rdata = new String[43];
 		rdata[0] = Integer.toString(roomID);
 		rdata[1] = NetUtil.urlEncode(strName);
 		rdata[2] = Integer.toString(maxPlayers);
@@ -429,14 +439,16 @@ public class NetRoomInfo implements Serializable {
 		rdata[38] = Boolean.toString(customRated);
 		rdata[39] = Integer.toString(style);
 		rdata[40] = Boolean.toString(divideChangeRateByPlayers);
-		//rdata[41] = Boolean.toString(useTankMode);
-		
+		rdata[41] = Boolean.toString(isTarget);
+		rdata[42] = Integer.toString(targetTimer);
+		//rdata[43] = Boolean.toString(useTankMode);
+
 		return rdata;
 	}
 
 	/**
 	 * Stringに変換(;で区切り)(Playerリスト除く)
-	 * 
+	 *
 	 * @return String
 	 */
 	public String exportString() {
@@ -463,7 +475,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 今ゲーム席にいる人のcountをcountえる(null席はカウントしない)
-	 * 
+	 *
 	 * @return 今ゲーム席にいる人のcount
 	 */
 	public int getNumberOfPlayerSeated() {
@@ -477,7 +489,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerがゲーム席にいるかどうか調べる
-	 * 
+	 *
 	 * @param pInfo
 	 *            Player
 	 * @return 指定したPlayerがゲーム席にいるならtrue
@@ -488,7 +500,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerがどの numberのゲーム席にいるか調べる
-	 * 
+	 *
 	 * @param pInfo
 	 *            Player
 	 * @return ゲーム席 number(いないなら-1)
@@ -511,7 +523,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * ゲーム席に入る
-	 * 
+	 *
 	 * @param pInfo
 	 *            Player
 	 * @return ゲーム席の number(満員だったら-1)
@@ -535,7 +547,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerをゲーム席から外す
-	 * 
+	 *
 	 * @param pInfo
 	 *            Player
 	 */
@@ -549,7 +561,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 順番待ちに入る
-	 * 
+	 *
 	 * @param pInfo
 	 *            Player
 	 * @return 順番待ち number
@@ -564,7 +576,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 指定したPlayerを順番待ちから外す
-	 * 
+	 *
 	 * @param pInfo
 	 *            Player
 	 */
@@ -574,7 +586,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 何人のPlayerが準備完了したかcountえる
-	 * 
+	 *
 	 * @return 準備完了したNumber of players
 	 */
 	public int getHowManyPlayersReady() {
@@ -590,7 +602,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 何人のPlayerがプレイ中かcountえる(死んだ人とまだ部屋に来た直後の人は含みません)
-	 * 
+	 *
 	 * @return プレイ中のNumber of players
 	 */
 	public int getHowManyPlayersPlaying() {
@@ -606,7 +618,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 最後に生き残ったPlayerの情報を取得
-	 * 
+	 *
 	 * @return 最後に生き残ったPlayerの情報(まだ2人以上生きている場合や, そもそもゲームが始まっていない場合はnull)
 	 */
 	public NetPlayerInfo getWinner() {
@@ -625,7 +637,7 @@ public class NetRoomInfo implements Serializable {
 
 	/**
 	 * 最後に生き残ったTeam nameを取得
-	 * 
+	 *
 	 * @return 最後に生き残ったTeam name
 	 */
 	public String getWinnerTeam() {

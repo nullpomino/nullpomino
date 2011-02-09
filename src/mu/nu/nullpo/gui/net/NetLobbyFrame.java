@@ -525,6 +525,12 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	/** 断片的garbage blockシステムを使う(Create room screen) */
 	protected JCheckBox chkboxCreateRoomUseFractionalGarbage;
 
+	/** Use Target System (Create room screen) */
+	protected JCheckBox chkboxCreateRoomIsTarget;
+
+	/** Spinner for Targeting time (Create room screen) */
+	protected JSpinner spinnerCreateRoomTargetTimer;
+
 	/** TNET2タイプのAutomatically start timerを使う(Create room screen) */
 	protected JCheckBox chkboxCreateRoomAutoStartTNET2;
 
@@ -1796,6 +1802,21 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		spinnerCreateRoomGarbagePercent.setToolTipText(getUIText("CreateRoom_GarbagePercent_Tip"));
 		subpanelGarbagePercent.add(spinnerCreateRoomGarbagePercent, BorderLayout.EAST);
 
+		// ** Target timer panel
+		JPanel subpanelTargetTimer = new JPanel(new BorderLayout());
+		containerpanelCreateRoomGarbage.add(subpanelTargetTimer);
+
+		// ** Label for target timer
+		JLabel labelTargetTimer = new JLabel(getUIText("CreateRoom_TargetTimer"));
+		subpanelTargetTimer.add(labelTargetTimer, BorderLayout.WEST);
+
+		// ** Spinner for target timer
+		int defaultTargetTimer = propConfig.getProperty("createroom.defaultTargetTimer", 60);
+		spinnerCreateRoomTargetTimer = new JSpinner(new SpinnerNumberModel(defaultTargetTimer, 0, 3600, 1));
+		spinnerCreateRoomTargetTimer.setPreferredSize(new Dimension(200, 20));
+		spinnerCreateRoomTargetTimer.setToolTipText(getUIText("CreateRoom_TargetTimer_Tip"));
+		subpanelTargetTimer.add(spinnerCreateRoomTargetTimer, BorderLayout.EAST);
+
 		// ** Set garbage type
 		chkboxCreateRoomGarbageChangePerAttack = new JCheckBox(getUIText("CreateRoom_GarbageChangePerAttack"));
 		chkboxCreateRoomGarbageChangePerAttack.setMnemonic('G');
@@ -1843,6 +1864,13 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		chkboxCreateRoomUseFractionalGarbage.setSelected(propConfig.getProperty("createroom.defaultUseFractionalGarbage", false));
 		chkboxCreateRoomUseFractionalGarbage.setToolTipText(getUIText("CreateRoom_UseFractionalGarbage_Tip"));
 		containerpanelCreateRoomGarbage.add(chkboxCreateRoomUseFractionalGarbage);
+
+		// *** Use target system
+		chkboxCreateRoomIsTarget = new JCheckBox(getUIText("CreateRoom_IsTarget"));
+		chkboxCreateRoomIsTarget.setMnemonic('T');
+		chkboxCreateRoomIsTarget.setSelected(propConfig.getProperty("createroom.defaultIsTarget", false));
+		chkboxCreateRoomIsTarget.setToolTipText(getUIText("CreateRoom_IsTarget_Tip"));
+		containerpanelCreateRoomGarbage.add(chkboxCreateRoomIsTarget);
 
 		// misc tab
 
@@ -2465,7 +2493,11 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		}
 
 		if(defaultButton != null) {
-			this.getRootPane().setDefaultButton(defaultButton);
+			try {
+				this.getRootPane().setDefaultButton(defaultButton);
+			} catch (Exception e) {
+				// Due to possible threading issue, setDefaultButton may fail
+			}
 		}
 	}
 
@@ -3217,6 +3249,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultLockDelay", backupRoomInfo.lockDelay);
 			propConfig.setProperty("createroom.defaultDAS", backupRoomInfo.das);
 			propConfig.setProperty("createroom.defaultGarbagePercent", backupRoomInfo.garbagePercent);
+			propConfig.setProperty("createroom.defaultTargetTimer", backupRoomInfo.targetTimer);
 			propConfig.setProperty("createroom.defaultHurryupSeconds", backupRoomInfo.hurryupSeconds);
 			propConfig.setProperty("createroom.defaultHurryupInterval", backupRoomInfo.hurryupInterval);
 			propConfig.setProperty("createroom.defaultRuleLock", backupRoomInfo.ruleLock);
@@ -3232,6 +3265,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			propConfig.setProperty("createroom.defaultGarbageChangePerAttack", backupRoomInfo.garbageChangePerAttack);
 			propConfig.setProperty("createroom.defaultB2BChunk", backupRoomInfo.b2bChunk);
 			propConfig.setProperty("createroom.defaultUseFractionalGarbage", backupRoomInfo.useFractionalGarbage);
+			propConfig.setProperty("createroom.defaultIsTarget", backupRoomInfo.isTarget);
 			propConfig.setProperty("createroom.defaultAutoStartTNET2", backupRoomInfo.autoStartTNET2);
 			propConfig.setProperty("createroom.defaultDisableTimerAfterSomeoneCancelled", backupRoomInfo.disableTimerAfterSomeoneCancelled);
 			propConfig.setProperty("createroom.defaultUseMap", backupRoomInfo.useMap);
@@ -3483,6 +3517,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			boolean divideChangeRateByPlayers = chkboxCreateRoomDivideChangeRateByPlayers.isSelected();
 			Integer integerGarbagePercent = (Integer)spinnerCreateRoomGarbagePercent.getValue();
 			boolean b2bChunk = chkboxCreateRoomB2BChunk.isSelected();
+			boolean isTarget = chkboxCreateRoomIsTarget.isSelected();
+			Integer integerTargetTimer = (Integer)spinnerCreateRoomTargetTimer.getValue();
 
 			roomInfo.strName = roomName;
 			roomInfo.maxPlayers = integerMaxPlayers;
@@ -3514,6 +3550,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			roomInfo.divideChangeRateByPlayers = divideChangeRateByPlayers;
 			roomInfo.garbagePercent = integerGarbagePercent;
 			roomInfo.b2bChunk = b2bChunk;
+			roomInfo.isTarget = isTarget;
+			roomInfo.targetTimer = integerTargetTimer;
 
 			return roomInfo;
 		} catch (Exception e) {
@@ -3541,6 +3579,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			spinnerCreateRoomHurryupSeconds.setValue(r.hurryupSeconds);
 			spinnerCreateRoomHurryupInterval.setValue(r.hurryupInterval);
 			spinnerCreateRoomGarbagePercent.setValue(r.garbagePercent);
+			spinnerCreateRoomTargetTimer.setValue(r.targetTimer);
 			chkboxCreateRoomUseMap.setSelected(r.useMap);
 			chkboxCreateRoomRuleLock.setSelected(r.ruleLock);
 			comboboxCreateRoomTSpinEnableType.setSelectedIndex(r.tspinEnableType);
@@ -3556,6 +3595,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			chkboxCreateRoomDivideChangeRateByPlayers.setSelected(r.divideChangeRateByPlayers);
 			chkboxCreateRoomB2BChunk.setSelected(r.b2bChunk);
 			chkboxCreateRoomUseFractionalGarbage.setSelected(r.useFractionalGarbage);
+			chkboxCreateRoomIsTarget.setSelected(r.isTarget);
 			chkboxCreateRoomAutoStartTNET2.setSelected(r.autoStartTNET2);
 			chkboxCreateRoomDisableTimerAfterSomeoneCancelled.setSelected(r.disableTimerAfterSomeoneCancelled);
 		}
