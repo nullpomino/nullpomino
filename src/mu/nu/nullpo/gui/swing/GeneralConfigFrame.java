@@ -72,6 +72,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Sound effectsの音量 */
 	protected JTextField txtfldSEVolume;
 
+	/** Line clear effect speed */
+	protected JTextField txtfldLineClearEffectSpeed;
+
 	/** FPS表示 */
 	protected JCheckBox chkboxShowFPS;
 
@@ -116,6 +119,12 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 
 	/** Sync Display */
 	protected JCheckBox chkboxSyncDisplay;
+
+	/** Show line clear effect */
+	protected JCheckBox chkboxShowLineClearEffect;
+
+	/** Dark piece preview area */
+	protected JCheckBox chkboxDarkNextArea;
 
 	/**
 	 * Constructor
@@ -197,6 +206,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxBigSideNext.setAlignmentX(LEFT_ALIGNMENT);
 		pBasicTab.add(chkboxBigSideNext);
 
+		chkboxDarkNextArea = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_DarkNextArea"));
+		chkboxDarkNextArea.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxDarkNextArea);
+
 		// ** Advanced Tab
 		JPanel pAdvancedTab = new JPanel();
 		pAdvancedTab.setLayout(new BoxLayout(pAdvancedTab, BoxLayout.Y_AXIS));
@@ -229,6 +242,17 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		txtfldMaxFPS = new JTextField(5);
 		pMaxFPS.add(txtfldMaxFPS);
 
+		// ---------- Line clear effect speed ----------
+		JPanel pLineClearEffectSpeed = new JPanel();
+		pLineClearEffectSpeed.setAlignmentX(LEFT_ALIGNMENT);
+		pAdvancedTab.add(pLineClearEffectSpeed);
+
+		JLabel lLineClearEffectSpeed = new JLabel(NullpoMinoSwing.getUIText("GeneralConfig_LineClearEffectSpeed"));
+		pLineClearEffectSpeed.add(lLineClearEffectSpeed);
+
+		txtfldLineClearEffectSpeed = new JTextField(5);
+		pLineClearEffectSpeed.add(txtfldLineClearEffectSpeed);
+
 		// ---------- Checkboxes ----------
 		chkboxShowFPS = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowFPS"));
 		chkboxShowFPS.setAlignmentX(LEFT_ALIGNMENT);
@@ -253,6 +277,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxSyncDisplay = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_SyncDisplay"));
 		chkboxSyncDisplay.setAlignmentX(LEFT_ALIGNMENT);
 		pAdvancedTab.add(chkboxSyncDisplay);
+
+		chkboxShowLineClearEffect = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowLineClearEffect"));
+		chkboxShowLineClearEffect.setAlignmentX(LEFT_ALIGNMENT);
+		pAdvancedTab.add(chkboxShowLineClearEffect);
 
 		// ---------- 画面下の button ----------
 		JPanel pButtons = new JPanel();
@@ -288,6 +316,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 
 		txtfldMaxFPS.setText(String.valueOf(NullpoMinoSwing.propConfig.getProperty("option.maxfps", 60)));
 		txtfldSEVolume.setText(String.valueOf(NullpoMinoSwing.propConfig.getProperty("option.sevolume", 1.0d)));
+		txtfldLineClearEffectSpeed.setText(String.valueOf(NullpoMinoSwing.propConfig.getProperty("option.lineeffectspeed", 0) + 1));
 		chkboxShowFPS.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showfps", true));
 		chkboxShowBackground.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showbg", true));
 		chkboxShowMeter.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showmeter", true));
@@ -300,9 +329,11 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxOutlineGhost.setSelected(NullpoMinoSwing.propConfig.getProperty("option.outlineghost", false));
 		chkboxSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.sidenext", false));
 		chkboxBigSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false));
+		chkboxDarkNextArea.setSelected(NullpoMinoSwing.propConfig.getProperty("option.darknextarea", true));
 		chkboxPerfectFPSMode.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false));
 		chkboxPerfectYield.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectYield", true));
 		chkboxSyncDisplay.setSelected(NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true));
+		chkboxShowLineClearEffect.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showlineeffect", false));
 	}
 
 	/*
@@ -323,6 +354,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			double sevolume = NullpoMinoSwing.getDoubleTextField(1.0d, txtfldSEVolume);
 			NullpoMinoSwing.propConfig.setProperty("option.sevolume", sevolume);
 
+			int lineeffectspeed = NullpoMinoSwing.getIntTextField(0, txtfldLineClearEffectSpeed) - 1;
+			if(lineeffectspeed < 0) lineeffectspeed = 0;
+			NullpoMinoSwing.propConfig.setProperty("option.lineeffectspeed", lineeffectspeed);
+
 			NullpoMinoSwing.propConfig.setProperty("option.showfps", chkboxShowFPS.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.showbg", chkboxShowBackground.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.showmeter", chkboxShowMeter.isSelected());
@@ -335,16 +370,20 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.outlineghost", chkboxOutlineGhost.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.sidenext", chkboxSideNext.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.bigsidenext", chkboxBigSideNext.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.darknextarea", chkboxDarkNextArea.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.perfectFPSMode", chkboxPerfectFPSMode.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.perfectYield", chkboxPerfectYield.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.syncDisplay", chkboxSyncDisplay.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.showlineeffect", chkboxShowLineClearEffect.isSelected());
 
 			NullpoMinoSwing.saveConfig();
 			ResourceHolderSwing.soundManager.setVolume(sevolume);
 			if(chkboxShowBackground.isSelected()) {
 				ResourceHolderSwing.loadBackgroundImages();
 			}
-
+			if(chkboxShowLineClearEffect.isSelected()) {
+				ResourceHolderSwing.loadLineClearEffectImages();
+			}
 			this.setVisible(false);
 		}
 		else if(e.getActionCommand() == "GeneralConfig_Cancel") {

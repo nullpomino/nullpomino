@@ -830,9 +830,16 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// * サーバー選択リストボックス
 		listmodelServerList = new DefaultListModel();
-		if(!loadListToDefaultListModel(listmodelServerList, "config/setting/netlobby_serverlist.cfg")) {
-			loadListToDefaultListModel(listmodelServerList, "config/list/netlobby_serverlist_default.lst");
-			saveListFromDefaultListModel(listmodelServerList, "config/setting/netlobby_serverlist.cfg");
+		if(GameManager.isDevBuild()) {
+			if(!loadListToDefaultListModel(listmodelServerList, "config/setting/netlobby_serverlist_dev.cfg")) {
+				loadListToDefaultListModel(listmodelServerList, "config/list/netlobby_serverlist_default_dev.lst");
+				saveListFromDefaultListModel(listmodelServerList, "config/setting/netlobby_serverlist_dev.cfg");
+			}
+		} else {
+			if(!loadListToDefaultListModel(listmodelServerList, "config/setting/netlobby_serverlist.cfg")) {
+				loadListToDefaultListModel(listmodelServerList, "config/list/netlobby_serverlist_default.lst");
+				saveListFromDefaultListModel(listmodelServerList, "config/setting/netlobby_serverlist.cfg");
+			}
 		}
 		listboxServerList = new JList(listmodelServerList);
 		listboxServerList.setComponentPopupMenu(new ServerSelectListBoxPopupMenu());

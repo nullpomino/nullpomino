@@ -46,6 +46,15 @@ public class ResourceHolderSwing {
 	/** Backgroundのcount */
 	public static final int BACKGROUND_MAX = 20;
 
+	/** Number of images for block spatter animation during line clears */
+	public static final int BLOCK_BREAK_MAX = 8;
+
+	/** Number of image splits for block spatter animation during line clears */
+	public static final int BLOCK_BREAK_SEGMENTS = 2;
+
+	/** Number of gem block clear effects */
+	public static final int PERASE_MAX = 7;
+
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolderSwing.class);
 
@@ -63,6 +72,12 @@ public class ResourceHolderSwing {
 
 	/** Field background */
 	public static Image imgFieldbg, imgFieldbg2, imgFieldbg2Small, imgFieldbg2Big;
+
+	/** Block spatter animation during line clears */
+	public static Image[][] imgBreak;
+
+	/** Effects for clearing gem blocks */
+	public static Image[] imgPErase;
 
 	/** プレイ中のBackground */
 	public static Image[] imgPlayBG;
@@ -116,6 +131,9 @@ public class ResourceHolderSwing {
 		imgFieldbg2Small = loadImage(getURL(skindir + "/graphics/fieldbg2_small.png"));
 		imgFieldbg2Big = loadImage(getURL(skindir + "/graphics/fieldbg2_big.png"));
 
+		if(NullpoMinoSwing.propConfig.getProperty("option.showlineeffect", false) == true) {
+			loadLineClearEffectImages();
+		}
 		if(NullpoMinoSwing.propConfig.getProperty("option.showbg", true) == true) {
 			loadBackgroundImages();
 		}
@@ -204,6 +222,30 @@ public class ResourceHolderSwing {
 			String skindir = NullpoMinoSwing.propConfig.getProperty("custom.skin.directory", "res");
 			for(int i = 0; i < BACKGROUND_MAX; i++) {
 				imgPlayBG[i] = loadImage(getURL(skindir + "/graphics/back" + i + ".png"));
+			}
+		}
+	}
+
+	/**
+	 * Load line clear effect images.
+	 */
+	public static void loadLineClearEffectImages() {
+		String skindir = NullpoMinoSwing.propConfig.getProperty("custom.skin.directory", "res");
+
+		if(imgBreak == null) {
+			imgBreak = new Image[BLOCK_BREAK_MAX][BLOCK_BREAK_SEGMENTS];
+
+			for(int i = 0; i < BLOCK_BREAK_MAX; i++) {
+				for(int j = 0; j < BLOCK_BREAK_SEGMENTS; j++) {
+					imgBreak[i][j] = loadImage(getURL(skindir + "/graphics/break" + i + "_" + j + ".png"));
+				}
+			}
+		}
+		if(imgPErase == null) {
+			imgPErase = new Image[PERASE_MAX];
+
+			for(int i = 0; i < imgPErase.length; i++) {
+				imgPErase[i] = loadImage(getURL(skindir + "/graphics/perase" + i + ".png"));
 			}
 		}
 	}

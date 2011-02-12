@@ -34,6 +34,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Field;
@@ -41,6 +42,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.gui.EffectObject;
 import mu.nu.nullpo.util.CustomProperties;
 
 //import org.apache.log4j.Logger;
@@ -55,14 +57,26 @@ public class RendererSwing extends EventReceiver {
 	/** 描画先サーフェイス */
 	protected Graphics2D graphics;
 
+	/** Effect objects */
+	protected ArrayList<EffectObject> effectlist;
+
+	/** Line clear effect enabled flag */
+	protected boolean showlineeffect;
+
 	/** fieldのBlockを表示 (falseなら枠線だけ表示) */
 	protected boolean showfieldblockgraphics;
 
 	/** 操作Blockの絵柄をシンプルにする */
 	protected boolean simpleblock;
 
+	/** Dark piece preview area */
+	protected boolean darknextarea;
+
 	/** ghost ピースの上にNEXT表示 */
 	protected boolean nextshadow;
+
+	/** Line clear effect speed */
+	protected int lineeffectspeed;
 
 	/**
 	 * 指定した font 色をAWT用Colorとして取得
@@ -123,12 +137,16 @@ public class RendererSwing extends EventReceiver {
 	 */
 	public RendererSwing() {
 		graphics = null;
+		effectlist = new ArrayList<EffectObject>(10*4);
 
 		showbg = NullpoMinoSwing.propConfig.getProperty("option.showbg", true);
+		showlineeffect = NullpoMinoSwing.propConfig.getProperty("option.showlineeffect", false);
 		showmeter = NullpoMinoSwing.propConfig.getProperty("option.showmeter", true);
 		showfieldblockgraphics = NullpoMinoSwing.propConfig.getProperty("option.showfieldblockgraphics", true);
 		simpleblock = NullpoMinoSwing.propConfig.getProperty("option.simpleblock", false);
+		darknextarea = NullpoMinoSwing.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSwing.propConfig.getProperty("option.nextshadow", false);
+		lineeffectspeed = NullpoMinoSwing.propConfig.getProperty("option.lineeffectspeed", 0);
 		outlineghost = NullpoMinoSwing.propConfig.getProperty("option.outlineghost", false);
 		sidenext = NullpoMinoSwing.propConfig.getProperty("option.sidenext", false);
 		bigsidenext = NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false);
@@ -1052,6 +1070,43 @@ public class RendererSwing extends EventReceiver {
 			if(engine.displaysize == 1) fldBlkSize = 32;
 		}
 
+		// NEXT area background
+		if(showbg && darknextarea) {
+			graphics.setColor(Color.black);
+
+			if(getNextDisplayType() == 2) {
+				int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
+				int maxNext = engine.isNextVisible ? engine.ruleopt.nextDisplay : 0;
+
+				// HOLD area
+				if(engine.ruleopt.holdEnable && engine.isHoldVisible) {
+					graphics.fillRect(x - 64, y + 48, 64, 64);
+				}
+				// NEXT area
+				if(maxNext > 0) {
+					graphics.fillRect(x2, y + 48, 64, (64 * maxNext));
+				}
+			} else if(getNextDisplayType() == 1) {
+				int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
+				int maxNext = engine.isNextVisible ? engine.ruleopt.nextDisplay : 0;
+
+				// HOLD area
+				if(engine.ruleopt.holdEnable && engine.isHoldVisible) {
+					graphics.fillRect(x - 32, y + 48, 32, 32);
+				}
+				// NEXT area
+				if(maxNext > 0) {
+					graphics.fillRect(x2, y + 48, 32, (32 * maxNext));
+				}
+			} else {
+				int w = (fldWidth * fldBlkSize) + 15;
+
+				graphics.fillRect(x, y, w, 48);
+			}
+
+			graphics.setColor(Color.white);
+		}
+
 		if(engine.isNextVisible) {
 			if(getNextDisplayType() == 2) {
 				if(engine.ruleopt.nextDisplay >= 1) {
@@ -1303,6 +1358,32 @@ public class RendererSwing extends EventReceiver {
 	}
 
 	/*
+	 * Block break
+	 */
+	@Override
+	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
+		if(showlineeffect && (blk != null) && engine.displaysize != -1) {
+			int color = blk.getDrawColor();
+			// Normal Block
+			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
+				EffectObject obj = new EffectObject(1,
+													getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
+													getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
+													color);
+				effectlist.add(obj);
+			}
+			// Gem Block
+			else if(blk.isGemBlock()) {
+				EffectObject obj = new EffectObject(2,
+													getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
+													getFieldDisplayPositionY(engine, playerID) + 52 + (y * 16),
+													color);
+				effectlist.add(obj);
+			}
+		}
+	}
+
+	/*
 	 * EXCELLENT画面の描画処理
 	 */
 	@Override
@@ -1398,5 +1479,89 @@ public class RendererSwing extends EventReceiver {
 		int y = getFieldDisplayPositionY(engine, playerID) + 52 + (engine.fldeditY * 16);
 		float bright = (engine.fldeditFrames % 60 >= 30) ? -0.5f : -0.2f;
 		drawBlock(x, y, engine.fldeditColor, engine.getSkin(), false, bright, 1.0f, 1.0f);
+	}
+
+	/*
+	 * Executed at the end of the frame (for update)
+	 */
+	@Override
+	public void onLast(GameEngine engine, int playerID) {
+		if(playerID == engine.owner.getPlayers() - 1) effectUpdate();
+	}
+
+	/*
+	 * Executed at the end of the frame (for render)
+	 */
+	@Override
+	public void renderLast(GameEngine engine, int playerID) {
+		if(playerID == engine.owner.getPlayers() - 1) effectRender();
+	}
+
+	/**
+	 * Update effects
+	 */
+	protected void effectUpdate() {
+		boolean emptyflag = true;
+
+		for(int i = 0; i < effectlist.size(); i++) {
+			EffectObject obj = effectlist.get(i);
+
+			if(obj.effect != 0) emptyflag = false;
+
+			// Normal Block
+			if(obj.effect == 1) {
+				obj.anim += (lineeffectspeed + 1);
+				if(obj.anim >= 36) obj.effect = 0;
+			}
+			// Gem Block
+			if(obj.effect == 2) {
+				obj.anim += (lineeffectspeed + 1);
+				if(obj.anim >= 60) obj.effect = 0;
+			}
+		}
+
+		if(emptyflag) effectlist.clear();
+	}
+
+	/**
+	 * Render effects
+	 */
+	protected void effectRender() {
+		for(int i = 0; i < effectlist.size(); i++) {
+			EffectObject obj = effectlist.get(i);
+
+			// Normal Block
+			if(obj.effect == 1) {
+				int x = obj.x - 40;
+				int y = obj.y - 15;
+				int color = obj.param - Block.BLOCK_COLOR_GRAY;
+
+				if(obj.anim < 30) {
+					int srcx = ((obj.anim-1) % 6) * 96;
+					int srcy = ((obj.anim-1) / 6) * 96;
+					try {
+						graphics.drawImage(ResourceHolderSwing.imgBreak[color][0], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96, null);
+					} catch (Exception e) {}
+				} else {
+					int srcx = ((obj.anim-30) % 6) * 96;
+					int srcy = ((obj.anim-30) / 6) * 96;
+					try {
+						graphics.drawImage(ResourceHolderSwing.imgBreak[color][1], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96, null);
+					} catch (Exception e) {}
+				}
+			}
+			// Gem Block
+			if(obj.effect == 2) {
+				int x = obj.x - 8;
+				int y = obj.y - 8;
+				int srcx = ((obj.anim-1) % 10) * 32;
+				int srcy = ((obj.anim-1) / 10) * 32;
+				int color = obj.param - Block.BLOCK_COLOR_GEM_RED;
+
+				try {
+					graphics.drawImage(ResourceHolderSwing.imgPErase[color], x, y, x + 32, y + 32, srcx, srcy, srcx + 32, srcy + 32, null);
+				} catch (Exception e) {}
+			}
+		}
 	}
 }
