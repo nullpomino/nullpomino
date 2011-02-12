@@ -66,6 +66,9 @@ public class RendererSlick extends EventReceiver {
 	/** fieldBackgroundの明るさ */
 	protected float fieldbgbright;
 
+	/** Show field BG grid */
+	protected boolean showfieldbggrid;
+
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
 
@@ -110,6 +113,7 @@ public class RendererSlick extends EventReceiver {
 		}
 		if(bright > 255) bright = 255;
 		fieldbgbright = bright / (float)255;
+		showfieldbggrid = NullpoMinoSlick.propConfig.getProperty("option.showfieldbggrid", true);
 		showmeter = NullpoMinoSlick.propConfig.getProperty("option.showmeter", true);
 		darknextarea = NullpoMinoSlick.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSlick.propConfig.getProperty("option.nextshadow", false);
@@ -861,7 +865,7 @@ public class RendererSlick extends EventReceiver {
 
 		// Field Background
 		if(fieldbgbright > 0) {
-			if((width <= 10) && (height <= 20)) {
+			if((width <= 10) && (height <= 20) && (showfieldbggrid)) {
 				Color filter = new Color(Color.white);
 				filter.a = fieldbgbright;
 

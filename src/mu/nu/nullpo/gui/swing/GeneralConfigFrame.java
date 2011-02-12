@@ -126,6 +126,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Dark piece preview area */
 	protected JCheckBox chkboxDarkNextArea;
 
+	/** Show field BG grid */
+	protected JCheckBox chkboxShowFieldBGGrid;
+
 	/**
 	 * Constructor
 	 * @param owner 親ウィンドウ
@@ -209,6 +212,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxDarkNextArea = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_DarkNextArea"));
 		chkboxDarkNextArea.setAlignmentX(LEFT_ALIGNMENT);
 		pBasicTab.add(chkboxDarkNextArea);
+
+		chkboxShowFieldBGGrid = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowFieldBGGrid"));
+		chkboxShowFieldBGGrid.setAlignmentX(LEFT_ALIGNMENT);
+		pBasicTab.add(chkboxShowFieldBGGrid);
 
 		// ** Advanced Tab
 		JPanel pAdvancedTab = new JPanel();
@@ -330,6 +337,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.sidenext", false));
 		chkboxBigSideNext.setSelected(NullpoMinoSwing.propConfig.getProperty("option.bigsidenext", false));
 		chkboxDarkNextArea.setSelected(NullpoMinoSwing.propConfig.getProperty("option.darknextarea", true));
+		chkboxShowFieldBGGrid.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showfieldbggrid", true));
 		chkboxPerfectFPSMode.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false));
 		chkboxPerfectYield.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectYield", true));
 		chkboxSyncDisplay.setSelected(NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true));
@@ -371,6 +379,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.sidenext", chkboxSideNext.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.bigsidenext", chkboxBigSideNext.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.darknextarea", chkboxDarkNextArea.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.showfieldbggrid", chkboxShowFieldBGGrid.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.perfectFPSMode", chkboxPerfectFPSMode.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.perfectYield", chkboxPerfectYield.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.syncDisplay", chkboxSyncDisplay.isSelected());

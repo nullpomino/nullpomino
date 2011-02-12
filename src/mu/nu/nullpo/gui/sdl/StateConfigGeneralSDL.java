@@ -55,6 +55,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		"ConfigGeneral_NextType",
 		"ConfigGeneral_OutlineGhost",
 		"ConfigGeneral_FieldBGBright",
+		"ConfigGeneral_ShowFieldBGGrid",
 		"ConfigGeneral_Fullscreen",
 		"ConfigGeneral_ShowFPS",
 		"ConfigGeneral_MaxFPS",
@@ -109,6 +110,9 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 
 	/** fieldBackgroundの明るさ */
 	protected int fieldbgbright;
+
+	/** Show field BG grid */
+	protected boolean showfieldbggrid;
 
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
@@ -172,6 +176,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		soundbuffer = prop.getProperty("option.soundbuffer", 1024);
 		heavyeffect = prop.getProperty("option.heavyeffect", false);
 		fieldbgbright = prop.getProperty("option.fieldbgbright", 128);
+		showfieldbggrid = prop.getProperty("option.showfieldbggrid", true);
 		darknextarea = prop.getProperty("option.darknextarea", true);
 		sevolume = prop.getProperty("option.sevolume", 128);
 		bgmvolume = prop.getProperty("option.bgmvolume", 128);
@@ -207,6 +212,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		prop.setProperty("option.soundbuffer", soundbuffer);
 		prop.setProperty("option.heavyeffect", heavyeffect);
 		prop.setProperty("option.fieldbgbright", fieldbgbright);
+		prop.setProperty("option.showfieldbggrid", showfieldbggrid);
 		prop.setProperty("option.darknextarea", darknextarea);
 		prop.setProperty("option.sevolume", sevolume);
 		prop.setProperty("option.bgmvolume", bgmvolume);
@@ -237,7 +243,7 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		ResourceHolderSDL.imgMenu.blitSurface(screen);
 
 		// Basic Options
-		if(cursor < 15) {
+		if(cursor < 16) {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFontSDL.COLOR_ORANGE);
 			NormalFontSDL.printFontGrid(1, 3 + cursor, "b", NormalFontSDL.COLOR_RED);
 
@@ -256,26 +262,27 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 			NormalFontSDL.printFontGrid(2, 15, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 12));
 			NormalFontSDL.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
 			NormalFontSDL.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
+			NormalFontSDL.printFontGrid(2, 18, "SHOW FIELD BG GRID:" + GeneralUtil.getOorX(showfieldbggrid), (cursor == 15));
 		}
 		// Advanced Options
-		else if(cursor < 21) {
+		else if(cursor < 22) {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFontSDL.COLOR_ORANGE);
-			NormalFontSDL.printFontGrid(1, 3 + (cursor - 15), "b", NormalFontSDL.COLOR_RED);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 16), "b", NormalFontSDL.COLOR_RED);
 
-			NormalFontSDL.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 15));
-			NormalFontSDL.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 16));
-			NormalFontSDL.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 17));
-			NormalFontSDL.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 18));
-			NormalFontSDL.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(perfectFPSMode), (cursor == 19));
-			NormalFontSDL.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(perfectYield), (cursor == 20));
+			NormalFontSDL.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 16));
+			NormalFontSDL.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 17));
+			NormalFontSDL.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 18));
+			NormalFontSDL.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 19));
+			NormalFontSDL.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(perfectFPSMode), (cursor == 20));
+			NormalFontSDL.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(perfectYield), (cursor == 21));
 		}
 		// SDL Options
 		else {
 			NormalFontSDL.printFontGrid(1, 1, "GENERAL OPTIONS: SDL (3/3)", NormalFontSDL.COLOR_ORANGE);
-			NormalFontSDL.printFontGrid(1, 3 + (cursor - 21), "b", NormalFontSDL.COLOR_RED);
+			NormalFontSDL.printFontGrid(1, 3 + (cursor - 22), "b", NormalFontSDL.COLOR_RED);
 
-			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 21));
-			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 22));
+			NormalFontSDL.printFontGrid(2,  3, "SOUND BUFFER SIZE:" + soundbuffer, (cursor == 22));
+			NormalFontSDL.printFontGrid(2,  4, "MAX SOUND CHANNELS:" + soundChannels, (cursor == 23));
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFontSDL.printTTFFont(16, 432, NullpoMinoSDL.getUIText(UI_TEXT[cursor]));
@@ -289,12 +296,12 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 22;
+			if(cursor < 0) cursor = 23;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 22) cursor = 0;
+			if(cursor > 23) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -363,31 +370,34 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 				if(fieldbgbright > 255) fieldbgbright = 0;
 				break;
 			case 15:
-				fullscreen = !fullscreen;
+				showfieldbggrid = !showfieldbggrid;
 				break;
 			case 16:
-				showfps = !showfps;
+				fullscreen = !fullscreen;
 				break;
 			case 17:
+				showfps = !showfps;
+				break;
+			case 18:
 				maxfps += change;
 				if(maxfps < 0) maxfps = 99;
 				if(maxfps > 99) maxfps = 0;
 				break;
-			case 18:
+			case 19:
 				enableframestep = !enableframestep;
 				break;
-			case 19:
+			case 20:
 				perfectFPSMode = !perfectFPSMode;
 				break;
-			case 20:
+			case 21:
 				perfectYield = !perfectYield;
 				break;
-			case 21:
+			case 22:
 				soundbuffer += change * 256;
 				if(soundbuffer < 0) soundbuffer = 65535;
 				if(soundbuffer > 65535) soundbuffer = 0;
 				break;
-			case 22:
+			case 23:
 				soundChannels += change;
 				if(soundChannels < 0) soundChannels = 50;
 				if(soundChannels > 50) soundChannels = 0;

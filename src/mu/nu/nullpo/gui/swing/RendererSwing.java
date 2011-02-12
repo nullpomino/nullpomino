@@ -69,6 +69,9 @@ public class RendererSwing extends EventReceiver {
 	/** 操作Blockの絵柄をシンプルにする */
 	protected boolean simpleblock;
 
+	/** Show field BG grid */
+	protected boolean showfieldbggrid;
+
 	/** Dark piece preview area */
 	protected boolean darknextarea;
 
@@ -144,6 +147,7 @@ public class RendererSwing extends EventReceiver {
 		showmeter = NullpoMinoSwing.propConfig.getProperty("option.showmeter", true);
 		showfieldblockgraphics = NullpoMinoSwing.propConfig.getProperty("option.showfieldblockgraphics", true);
 		simpleblock = NullpoMinoSwing.propConfig.getProperty("option.simpleblock", false);
+		showfieldbggrid = NullpoMinoSwing.propConfig.getProperty("option.showfieldbggrid", true);
 		darknextarea = NullpoMinoSwing.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSwing.propConfig.getProperty("option.nextshadow", false);
 		lineeffectspeed = NullpoMinoSwing.propConfig.getProperty("option.lineeffectspeed", 0);
@@ -860,7 +864,7 @@ public class RendererSwing extends EventReceiver {
 						drawBlockForceVisible(x2, y2, blk, scale);
 					} else if(showfieldblockgraphics && blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE)) {
 						drawBlock(x2, y2, blk, scale);
-					} else if((width > 10) && (height > 20)) {
+					} else if( ((width > 10) && (height > 20)) || (!showfieldbggrid) ) {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
 						graphics.drawImage(ResourceHolderSwing.imgFieldbg, x2, y2, x2+blksize, y2+blksize, sx, 0, sx+16, 16, null);
 					}
@@ -885,7 +889,7 @@ public class RendererSwing extends EventReceiver {
 							if(field.getBlockColor(j + 1, i) != blk.color) graphics.drawLine(x2 + ls, y2, x2 + ls, y2 + ls);
 						}
 					}
-				} else if((width > 10) && (height > 20)) {
+				} else if( ((width > 10) && (height > 20)) || (!showfieldbggrid) ) {
 					int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 16;
 					graphics.drawImage(ResourceHolderSwing.imgFieldbg, x2, y2, x2+blksize, y2+blksize, sx, 0, sx+16, 16, null);
 				}
@@ -931,7 +935,7 @@ public class RendererSwing extends EventReceiver {
 		}
 
 		// Field Background
-		if((width <= 10) && (height <= 20)) {
+		if((width <= 10) && (height <= 20) && (showfieldbggrid)) {
 			Image img = ResourceHolderSwing.imgFieldbg2;
 			if(displaysize == -1) img = ResourceHolderSwing.imgFieldbg2Small;
 			if(displaysize == 1) img = ResourceHolderSwing.imgFieldbg2Big;

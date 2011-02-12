@@ -68,6 +68,9 @@ public class RendererSDL extends EventReceiver {
 	/** fieldBackgroundの明るさ */
 	protected int fieldbgbright;
 
+	/** Show field BG grid */
+	protected boolean showfieldbggrid;
+
 	/** NEXT欄を暗くする */
 	protected boolean darknextarea;
 
@@ -88,6 +91,7 @@ public class RendererSDL extends EventReceiver {
 		showlineeffect = NullpoMinoSDL.propConfig.getProperty("option.showlineeffect", true);
 		heavyeffect = NullpoMinoSDL.propConfig.getProperty("option.heavyeffect", false);
 		fieldbgbright = NullpoMinoSDL.propConfig.getProperty("option.fieldbgbright", 128);
+		showfieldbggrid = NullpoMinoSDL.propConfig.getProperty("option.showfieldbggrid", true);
 		showmeter = NullpoMinoSDL.propConfig.getProperty("option.showmeter", true);
 		darknextarea = NullpoMinoSDL.propConfig.getProperty("option.darknextarea", true);
 		nextshadow = NullpoMinoSDL.propConfig.getProperty("option.nextshadow", false);
@@ -892,7 +896,7 @@ public class RendererSDL extends EventReceiver {
 					}
 
 					if( (!blk.getAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE) || (blk.alpha < 1.0f)) && (fieldbgbright > 0) ) {
-						if((width > 10) && (height > 20)) {
+						if( ((width > 10) && (height > 20)) || (!showfieldbggrid) ) {
 							int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
 							imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
 						}
@@ -933,7 +937,7 @@ public class RendererSDL extends EventReceiver {
 						ResourceHolderSDL.imgSprite.setAlpha(0, 255);
 					}
 				} else if(fieldbgbright > 0) {
-					if((width > 10) && (height > 20)) {
+					if( ((width > 10) && (height > 20)) || (!showfieldbggrid) ) {
 						int sx = (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) ? 0 : 32;
 						imgFieldbg.blitSurface(new SDLRect(sx,0,blksize,blksize), graphics, new SDLRect(x2,y2,blksize,blksize));
 					}
@@ -983,7 +987,7 @@ public class RendererSDL extends EventReceiver {
 
 		// Field Background
 		if(fieldbgbright > 0) {
-			if((width <= 10) && (height <= 20)) {
+			if((width <= 10) && (height <= 20) && (showfieldbggrid)) {
 				SDLSurface img = ResourceHolderSDL.imgFieldbg2;
 				if(displaysize == -1) img = ResourceHolderSDL.imgFieldbg2Small;
 				if(displaysize == 1) img = ResourceHolderSDL.imgFieldbg2Big;
