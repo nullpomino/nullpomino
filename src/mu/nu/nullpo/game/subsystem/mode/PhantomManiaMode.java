@@ -447,7 +447,6 @@ public class PhantomManiaMode extends DummyMode {
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
 				isShowBestSectionTime = false;
-				sectionscomp = 0;
 				return false;
 			}
 
@@ -499,6 +498,8 @@ public class PhantomManiaMode extends DummyMode {
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv + 1;
+
+		sectionscomp = 0;
 	}
 
 	/**
