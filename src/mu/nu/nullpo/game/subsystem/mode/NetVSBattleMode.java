@@ -342,10 +342,13 @@ public class NetVSBattleMode extends NetDummyMode {
 	private LinkedList<GarbageEntry> garbageEntries;
 
 	/** APL (Attack Per Line) */
-	private float playerAPL;
+	private float[] playerAPL;
 
 	/** APM (Attack Per Minute) */
-	private float playerAPM;
+	private float[] playerAPM;
+
+	/** true if results are received and ready to display */
+	private boolean[] isPlayerResultReceived;
 
 	/** Number of pieces placed after Hurry Up has started */
 	private int hurryupCount;
@@ -571,6 +574,9 @@ public class NetVSBattleMode extends NetDummyMode {
 		lastpiece = new int[MAX_PLAYERS];
 		garbageSent = new int[MAX_PLAYERS];
 		garbage = new int[MAX_PLAYERS];
+		playerAPL = new float[MAX_PLAYERS];
+		playerAPM = new float[MAX_PLAYERS];
+		isPlayerResultReceived = new boolean[MAX_PLAYERS];
 		mapPreviousPracticeMap = -1;
 		playerSkin = new int[MAX_PLAYERS];
 		for(int i = 0; i < MAX_PLAYERS; i++) playerSkin[i] = -1;
@@ -854,12 +860,39 @@ public class NetVSBattleMode extends NetDummyMode {
 	private void sendGameStat(GameEngine engine, int playerID) {
 		String msg = "gstat\t";
 		msg += playerPlace[playerID] + "\t";
-		msg += ((float)garbageSent[playerID] / GARBAGE_DENOMINATOR) + "\t" + playerAPL + "\t" + playerAPM + "\t";
+		msg += ((float)garbageSent[playerID] / GARBAGE_DENOMINATOR) + "\t" + playerAPL[0] + "\t" + playerAPM[0] + "\t";
 		msg += engine.statistics.lines + "\t" + engine.statistics.lpm + "\t";
 		msg += engine.statistics.totalPieceLocked + "\t" + engine.statistics.pps + "\t";
 		msg += netPlayTimer + "\t" + currentKO + "\t" + numWins + "\t" + numGames;
 		msg += "\n";
 		netLobby.netPlayerClient.send(msg);
+	}
+
+	/**
+	 * Receive game results
+	 * @param message Message
+	 */
+	private void recvGameStat(String[] message) {
+		//int uid = Integer.parseInt(message[1]);
+		int seatID = Integer.parseInt(message[2]);
+		int playerID = getPlayerIDbySeatID(seatID);
+
+		if((playerID != 0) || (playerSeatNumber < 0)) {
+			GameEngine engine = owner.engine[playerID];
+
+			float tempGarbageSend = Float.parseFloat(message[5]);
+			garbageSent[playerID] = (int)(tempGarbageSend * GARBAGE_DENOMINATOR);
+
+			playerAPL[playerID] = Float.parseFloat(message[6]);
+			playerAPM[playerID] = Float.parseFloat(message[7]);
+			engine.statistics.lines = Integer.parseInt(message[8]);
+			engine.statistics.lpm = Float.parseFloat(message[9]);
+			engine.statistics.totalPieceLocked = Integer.parseInt(message[10]);
+			engine.statistics.pps = Float.parseFloat(message[11]);
+			engine.statistics.time = Integer.parseInt(message[12]);
+
+			isPlayerResultReceived[playerID] = true;
+		}
 	}
 
 	/*
@@ -881,6 +914,10 @@ public class NetVSBattleMode extends NetDummyMode {
 
 		garbage[playerID] = 0;
 		garbageSent[playerID] = 0;
+
+		playerAPL[playerID] = 0f;
+		playerAPM[playerID] = 0f;
+		isPlayerResultReceived[playerID] = ((playerID == 0) && (playerSeatNumber >= 0));
 
 //		playerTeamsIsTank[playerID] = true;
 
@@ -1515,12 +1552,12 @@ public class NetVSBattleMode extends NetDummyMode {
 		// APL & APM
 		if((playerID == 0) && (engine.gameActive) && (engine.timerActive)) {
 			float tempGarbageSent = (float)garbageSent[playerID] / GARBAGE_DENOMINATOR;
-			playerAPM = (tempGarbageSent * 3600) / (engine.statistics.time);
+			playerAPM[0] = (tempGarbageSent * 3600) / (engine.statistics.time);
 
 			if(engine.statistics.lines > 0) {
-				playerAPL = (float)(tempGarbageSent / engine.statistics.lines);
+				playerAPL[0] = (float)(tempGarbageSent / engine.statistics.lines);
 			} else {
-				playerAPL = 0f;
+				playerAPL[0] = 0f;
 			}
 		}
 
@@ -1594,6 +1631,9 @@ public class NetVSBattleMode extends NetDummyMode {
 		   (!owner.engine[1].isVisible || owner.engine[1].displaysize == -1 || !isNetGameActive))
 		{
 			int x = (owner.receiver.getNextDisplayType() == 2) ? 544 : 503;
+			if((owner.receiver.getNextDisplayType() == 2) && (numMaxPlayers == 2))
+				x = 321;
+
 			if(currentRoomID != -1) {
 				receiver.drawDirectFont(engine, 0, x, 286, "PLAYERS", EventReceiver.COLOR_CYAN, 0.5f);
 				receiver.drawDirectFont(engine, 0, x, 294, "" + numPlayers, EventReceiver.COLOR_WHITE, 0.5f);
@@ -1858,7 +1898,7 @@ public class NetVSBattleMode extends NetDummyMode {
 		}
 
 		if(isDead[playerID]) {
-			if(playerPlace[playerID] <= 2) {
+			if((playerPlace[playerID] <= 2) && (playerID == 0) && (playerSeatNumber >= 0)) {
 				engine.statistics.time = netPlayTimer;
 			}
 			if(engine.field == null) {
@@ -1866,7 +1906,7 @@ public class NetVSBattleMode extends NetDummyMode {
 				engine.resetStatc();
 				return true;
 			}
-			if( (engine.statc[0] < engine.field.getHeight() + 1) || ((playerID == 0) && (playerSeatNumber >= 0)) ) {
+			if((engine.statc[0] < engine.field.getHeight() + 1) || (isPlayerResultReceived[playerID])) {
 				return false;
 			}
 		}
@@ -1966,7 +2006,7 @@ public class NetVSBattleMode extends NetDummyMode {
 			engine.statc[0] = engine.field.getHeight() + 1 + 180;
 		}
 
-		if((engine.statc[0] >= engine.field.getHeight() + 1 + 180) && (!isNetGameActive) && (playerID == 0) && (playerSeatNumber != -1)) {
+		if((engine.statc[0] >= engine.field.getHeight() + 1 + 180) && (!isNetGameActive) && (isPlayerResultReceived[playerID])) {
 			if(engine.field != null) engine.field.reset();
 			engine.resetStatc();
 			engine.stat = GameEngine.STAT_RESULT;
@@ -2033,40 +2073,42 @@ public class NetVSBattleMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		if(!isPractice) {
-			receiver.drawMenuFont(engine, playerID, 0, 0, "RESULT", EventReceiver.COLOR_ORANGE);
+		float scale = 1.0f;
+		if(engine.displaysize == -1) scale = 0.5f;
 
+		if(!isPractice) {
+			receiver.drawMenuFont(engine, playerID, 0, 0, "RESULT", EventReceiver.COLOR_ORANGE, scale);
 			if(playerPlace[playerID] == 1) {
 				if(numNowPlayers == 2) {
-					receiver.drawMenuFont(engine, playerID, 6, 1, "WIN!", EventReceiver.COLOR_YELLOW);
+					receiver.drawMenuFont(engine, playerID, 6, 1, "WIN!", EventReceiver.COLOR_YELLOW, scale);
 				} else if(numNowPlayers > 2) {
-					receiver.drawMenuFont(engine, playerID, 6, 1, "1ST!", EventReceiver.COLOR_YELLOW);
+					receiver.drawMenuFont(engine, playerID, 6, 1, "1ST!", EventReceiver.COLOR_YELLOW, scale);
 				}
 			} else if(playerPlace[playerID] == 2) {
 				if(numNowPlayers == 2) {
-					receiver.drawMenuFont(engine, playerID, 6, 1, "LOSE", EventReceiver.COLOR_WHITE);
+					receiver.drawMenuFont(engine, playerID, 6, 1, "LOSE", EventReceiver.COLOR_WHITE, scale);
 				} else {
-					receiver.drawMenuFont(engine, playerID, 7, 1, "2ND", EventReceiver.COLOR_WHITE);
+					receiver.drawMenuFont(engine, playerID, 7, 1, "2ND", EventReceiver.COLOR_WHITE, scale);
 				}
 			} else if(playerPlace[playerID] == 3) {
-				receiver.drawMenuFont(engine, playerID, 7, 1, "3RD", EventReceiver.COLOR_RED);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "3RD", EventReceiver.COLOR_RED, scale);
 			} else if(playerPlace[playerID] == 4) {
-				receiver.drawMenuFont(engine, playerID, 7, 1, "4TH", EventReceiver.COLOR_GREEN);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "4TH", EventReceiver.COLOR_GREEN, scale);
 			} else if(playerPlace[playerID] == 5) {
-				receiver.drawMenuFont(engine, playerID, 7, 1, "5TH", EventReceiver.COLOR_BLUE);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "5TH", EventReceiver.COLOR_BLUE, scale);
 			} else if(playerPlace[playerID] == 6) {
-				receiver.drawMenuFont(engine, playerID, 7, 1, "6TH", EventReceiver.COLOR_DARKBLUE);
+				receiver.drawMenuFont(engine, playerID, 7, 1, "6TH", EventReceiver.COLOR_DARKBLUE, scale);
 			}
 		} else {
-			receiver.drawMenuFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_PINK);
+			receiver.drawMenuFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_PINK, scale);
 		}
 
-		drawResult(engine, playerID, receiver, 2, EventReceiver.COLOR_ORANGE,
+		drawResultScale(engine, playerID, receiver, 2, EventReceiver.COLOR_ORANGE, scale,
 				"ATTACK", String.format("%10g", (float)garbageSent[playerID] / GARBAGE_DENOMINATOR),
 				"LINE", String.format("%10d", engine.statistics.lines),
 				"PIECE", String.format("%10d", engine.statistics.totalPieceLocked),
-				"ATK/LINE", String.format("%10g", playerAPL),
-				"ATTACK/MIN", String.format("%10g", playerAPM),
+				"ATK/LINE", String.format("%10g", playerAPL[playerID]),
+				"ATTACK/MIN", String.format("%10g", playerAPM[playerID]),
 				"LINE/MIN", String.format("%10g", engine.statistics.lpm),
 				"PIECE/SEC", String.format("%10g", engine.statistics.pps),
 				"TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time)));
@@ -2078,13 +2120,15 @@ public class NetVSBattleMode extends NetDummyMode {
 			receiver.drawMenuFont(engine, playerID, 1, 19, "RESTART", EventReceiver.COLOR_RED);
 		}
 
-		String strTempF = "F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):";
-		if(strTempF.length() > 10) strTempF = strTempF.substring(0, 10);
-		receiver.drawMenuFont(engine, playerID, 0, 20, strTempF, EventReceiver.COLOR_PURPLE);
-		if(!isPractice) {
-			receiver.drawMenuFont(engine, playerID, 1, 21, "PRACTICE", EventReceiver.COLOR_PURPLE);
-		} else {
-			receiver.drawMenuFont(engine, playerID, 1, 21, "RETRY", EventReceiver.COLOR_PURPLE);
+		if((playerSeatNumber >= 0) && (playerID == 0)) {
+			String strTempF = "F(" + receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):";
+			if(strTempF.length() > 10) strTempF = strTempF.substring(0, 10);
+			receiver.drawMenuFont(engine, playerID, 0, 20, strTempF, EventReceiver.COLOR_PURPLE);
+			if(!isPractice) {
+				receiver.drawMenuFont(engine, playerID, 1, 21, "PRACTICE", EventReceiver.COLOR_PURPLE);
+			} else {
+				receiver.drawMenuFont(engine, playerID, 1, 21, "RETRY", EventReceiver.COLOR_PURPLE);
+			}
 		}
 	}
 
@@ -2334,6 +2378,10 @@ public class NetVSBattleMode extends NetDummyMode {
 					sendGameStat(owner.engine[playerID], playerID);
 				}
 			}
+		}
+		// Game Stats
+		if(message[0].equals("gstat")) {
+			recvGameStat(message);
 		}
 		// game finished
 		if(message[0].equals("finish")) {

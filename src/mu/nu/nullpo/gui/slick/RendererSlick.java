@@ -132,7 +132,11 @@ public class RendererSlick extends EventReceiver {
 		int y2 = (scale == 0.5f) ? y * 8 : y * 16;
 		if(!engine.owner.menuOnly) {
 			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
-			y2 += getFieldDisplayPositionY(engine, playerID) + 52;
+			if(engine.displaysize == -1) {
+				y2 += getFieldDisplayPositionY(engine, playerID) + 4;
+			} else {
+				y2 += getFieldDisplayPositionY(engine, playerID) + 52;
+			}
 		}
 		NormalFont.printFont(x2, y2, str, color, scale);
 	}
@@ -146,7 +150,11 @@ public class RendererSlick extends EventReceiver {
 		int y2 = y * 16;
 		if(!engine.owner.menuOnly) {
 			x2 += getFieldDisplayPositionX(engine, playerID) + 4;
-			y2 += getFieldDisplayPositionY(engine, playerID) + 52;
+			if(engine.displaysize == -1) {
+				y2 += getFieldDisplayPositionY(engine, playerID) + 4;
+			} else {
+				y2 += getFieldDisplayPositionY(engine, playerID) + 52;
+			}
 		}
 		NormalFont.printTTFFont(x2, y2, str, color);
 	}
