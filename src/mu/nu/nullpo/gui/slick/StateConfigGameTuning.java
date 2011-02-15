@@ -28,9 +28,18 @@
 */
 package mu.nu.nullpo.gui.slick;
 
+import mu.nu.nullpo.game.component.Controller;
+import mu.nu.nullpo.game.component.RuleOptions;
+import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.game.subsystem.ai.DummyAI;
+import mu.nu.nullpo.game.subsystem.mode.PreviewMode;
+import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
+import org.apache.log4j.Logger;
+import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -44,11 +53,37 @@ public class StateConfigGameTuning extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 14;
 
+	/** UI Text identifier Strings */
+	protected static final String[] UI_TEXT = {
+		"GameTuning_RotateButtonDefaultRight",
+		"GameTuning_Skin",
+		"GameTuning_MinDAS",
+		"GameTuning_MaxDAS",
+		"GameTuning_DasDelay",
+		"GameTuning_ReverseUpDown",
+		"GameTuning_MoveDiagonal",
+		"GameTuning_BlockOutlineType",
+		"GameTuning_BlockShowOutlineOnly",
+		"GameTuning_Preview",
+	};
+
+	/** Log */
+	static Logger log = Logger.getLogger(StateConfigGameTuning.class);
+
 	/** Outline type names */
 	protected static final String[] OUTLINE_TYPE_NAMES = {"AUTO", "NONE", "NORMAL", "CONNECT", "SAMECOLOR"};
 
 	/** Player number */
 	public int player = 0;
+
+	/** Preview flag */
+	protected boolean isPreview;
+
+	/** AppGameContainer (Used by preview) */
+	protected AppGameContainer appContainer;
+
+	/** Game Manager for preview */
+	protected GameManager gameManager;
 
 	/** Cursor position */
 	protected int cursor = 0;
@@ -90,6 +125,11 @@ public class StateConfigGameTuning extends BaseGameState {
 	 */
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
+		if(container instanceof AppGameContainer) {
+			appContainer = (AppGameContainer)container;
+		} else {
+			log.error("This container isn't AppGameContainer");
+		}
 	}
 
 	/**
@@ -129,7 +169,101 @@ public class StateConfigGameTuning extends BaseGameState {
 	 */
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+		isPreview = false;
 		loadConfig(NullpoMinoSlick.propGlobal);
+	}
+
+	/*
+	 * Called when leaving the state
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		stopPreviewGame();
+	}
+
+	/**
+	 * Start the preview game
+	 */
+	protected void startPreviewGame() {
+		gameManager = new GameManager(new RendererSlick());
+		gameManager.receiver.setGraphics(appContainer.getGraphics());
+
+		gameManager.mode = new PreviewMode();
+		gameManager.init();
+
+		gameManager.backgroundStatus.bg = -1;	// Force no BG
+
+		// Initialization for each player
+		for(int i = 0; i < gameManager.getPlayers(); i++) {
+			// Tuning
+			gameManager.engine[i].owRotateButtonDefaultRight = owRotateButtonDefaultRight;
+			gameManager.engine[i].owSkin = owSkin;
+			gameManager.engine[i].owMinDAS = owMinDAS;
+			gameManager.engine[i].owMaxDAS = owMaxDAS;
+			gameManager.engine[i].owDasDelay = owDasDelay;
+			gameManager.engine[i].owReverseUpDown = owReverseUpDown;
+			gameManager.engine[i].owMoveDiagonal = owMoveDiagonal;
+			gameManager.engine[i].owBlockOutlineType = owBlockOutlineType;
+			gameManager.engine[i].owBlockShowOutlineOnly = owBlockShowOutlineOnly;
+
+			// Rule
+			RuleOptions ruleopt = null;
+			String rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule", "");
+			if(gameManager.mode.getGameStyle() > 0) {
+				rulename = NullpoMinoSlick.propGlobal.getProperty(i + ".rule." + gameManager.mode.getGameStyle(), "");
+			}
+			if((rulename != null) && (rulename.length() > 0)) {
+				log.info("Load rule options from " + rulename);
+				ruleopt = GeneralUtil.loadRule(rulename);
+			} else {
+				log.info("Load rule options from setting file");
+				ruleopt = new RuleOptions();
+				ruleopt.readProperty(NullpoMinoSlick.propGlobal, i);
+			}
+			gameManager.engine[i].ruleopt = ruleopt;
+
+			// Randomizer
+			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
+				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
+				gameManager.engine[i].randomizer = randomizerObject;
+			}
+
+			// Wallkick
+			if((ruleopt.strWallkick != null) && (ruleopt.strWallkick.length() > 0)) {
+				Wallkick wallkickObject = GeneralUtil.loadWallkick(ruleopt.strWallkick);
+				gameManager.engine[i].wallkick = wallkickObject;
+			}
+
+			// AI
+			String aiName = NullpoMinoSlick.propGlobal.getProperty(i + ".ai", "");
+			if(aiName.length() > 0) {
+				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
+				gameManager.engine[i].ai = aiObj;
+				gameManager.engine[i].aiMoveDelay = NullpoMinoSlick.propGlobal.getProperty(i + ".aiMoveDelay", 0);
+				gameManager.engine[i].aiThinkDelay = NullpoMinoSlick.propGlobal.getProperty(i + ".aiThinkDelay", 0);
+				gameManager.engine[i].aiUseThread = NullpoMinoSlick.propGlobal.getProperty(i + ".aiUseThread", true);
+				gameManager.engine[i].aiShowHint = NullpoMinoSlick.propGlobal.getProperty(i + ".aiShowHint", false);
+				gameManager.engine[i].aiPrethink = NullpoMinoSlick.propGlobal.getProperty(i + ".aiPrethink", false);
+			}
+
+			// Init
+			gameManager.engine[i].init();
+		}
+
+		isPreview = true;
+	}
+
+	/**
+	 * Stop the preview game
+	 */
+	protected void stopPreviewGame() {
+		if(isPreview) {
+			isPreview = false;
+			if(gameManager != null) {
+				gameManager.shutdown();
+				gameManager = null;
+			}
+		}
 	}
 
 	/*
@@ -137,48 +271,66 @@ public class StateConfigGameTuning extends BaseGameState {
 	 */
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		// Menu
-		String strTemp = "";
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
-		NormalFont.printFontGrid(1, 1, "GAME TUNING (" + (player+1) + "P)", NormalFont.COLOR_ORANGE);
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		if(isPreview) {
+			// Preview
+			try {
+				String strButtonF = gameManager.receiver.getKeyNameByButtonID(gameManager.engine[0], Controller.BUTTON_F);
+				int fontY = (gameManager.receiver.getNextDisplayType() == 2) ? 1 : 27;
+				NormalFont.printFontGrid(1, fontY, "PUSH F BUTTON (" + strButtonF.toUpperCase() + " KEY) TO EXIT", NormalFont.COLOR_YELLOW);
 
-		if(owRotateButtonDefaultRight == -1) strTemp = "AUTO";
-		if(owRotateButtonDefaultRight == 0) strTemp = "LEFT";
-		if(owRotateButtonDefaultRight == 1) strTemp = "RIGHT";
-		NormalFont.printFontGrid(2, 3, "A BUTTON ROTATE:" + strTemp, (cursor == 0));
-
-		NormalFont.printFontGrid(2, 4, "BLOCK SKIN:" + ((owSkin == -1) ? "AUTO": String.valueOf(owSkin)), (cursor == 1));
-		if((owSkin >= 0) && (owSkin < ResourceHolder.imgNormalBlockList.size())) {
-			//ResourceHolder.imgBlock.draw(256, 64, 256 + 144, 64 + 16, 0, owSkin * 16, 144, (owSkin * 16) + 16);
-			Image imgBlock = ResourceHolder.imgNormalBlockList.get(owSkin);
-
-			if(ResourceHolder.blockStickyFlagList.get(owSkin) == true) {
-				for(int j = 0; j < 9; j++) {
-					imgBlock.draw(256 + (j * 16), 64, 256 + (j * 16) + 16, 64 + 16, 0, (j * 16), 16, (j * 16) + 16);
-				}
-			} else {
-				imgBlock.draw(256, 64, 256+144, 64+16, 0, 0, 144, 16);
+				gameManager.renderAll();
+			} catch (Exception e) {
+				log.error("Render fail", e);
 			}
+		} else {
+			// Menu
+			String strTemp = "";
+
+			NormalFont.printFontGrid(1, 1, "GAME TUNING (" + (player+1) + "P)", NormalFont.COLOR_ORANGE);
+			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+
+			if(owRotateButtonDefaultRight == -1) strTemp = "AUTO";
+			if(owRotateButtonDefaultRight == 0) strTemp = "LEFT";
+			if(owRotateButtonDefaultRight == 1) strTemp = "RIGHT";
+			NormalFont.printFontGrid(2, 3, "A BUTTON ROTATE:" + strTemp, (cursor == 0));
+
+			NormalFont.printFontGrid(2, 4, "BLOCK SKIN:" + ((owSkin == -1) ? "AUTO": String.valueOf(owSkin)), (cursor == 1));
+			if((owSkin >= 0) && (owSkin < ResourceHolder.imgNormalBlockList.size())) {
+				//ResourceHolder.imgBlock.draw(256, 64, 256 + 144, 64 + 16, 0, owSkin * 16, 144, (owSkin * 16) + 16);
+				Image imgBlock = ResourceHolder.imgNormalBlockList.get(owSkin);
+
+				if(ResourceHolder.blockStickyFlagList.get(owSkin) == true) {
+					for(int j = 0; j < 9; j++) {
+						imgBlock.draw(256 + (j * 16), 64, 256 + (j * 16) + 16, 64 + 16, 0, (j * 16), 16, (j * 16) + 16);
+					}
+				} else {
+					imgBlock.draw(256, 64, 256+144, 64+16, 0, 0, 144, 16);
+				}
+			}
+
+			NormalFont.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
+			NormalFont.printFontGrid(2, 6, "MAX DAS:" + ((owMaxDAS == -1) ? "AUTO" : String.valueOf(owMaxDAS)), (cursor == 3));
+			NormalFont.printFontGrid(2, 7, "DAS DELAY:" + ((owDasDelay == -1) ? "AUTO" : String.valueOf(owDasDelay)), (cursor == 4));
+			NormalFont.printFontGrid(2, 8, "REVERSE UP/DOWN:" + GeneralUtil.getOorX(owReverseUpDown), (cursor == 5));
+
+			if(owMoveDiagonal == -1) strTemp = "AUTO";
+			if(owMoveDiagonal == 0) strTemp = "e";
+			if(owMoveDiagonal == 1) strTemp = "c";
+			NormalFont.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
+
+			NormalFont.printFontGrid(2, 10, "OUTLINE TYPE:" + OUTLINE_TYPE_NAMES[owBlockOutlineType + 1], (cursor == 7));
+
+			if(owBlockShowOutlineOnly == -1) strTemp = "AUTO";
+			if(owBlockShowOutlineOnly == 0) strTemp = "e";
+			if(owBlockShowOutlineOnly == 1) strTemp = "c";
+			NormalFont.printFontGrid(2, 11, "SHOW OUTLINE ONLY:" + strTemp, (cursor == 8));
+
+			NormalFont.printFontGrid(2, 12, "[PREVIEW]", (cursor == 9));
+
+			if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 		}
-
-		NormalFont.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
-		NormalFont.printFontGrid(2, 6, "MAX DAS:" + ((owMaxDAS == -1) ? "AUTO" : String.valueOf(owMaxDAS)), (cursor == 3));
-		NormalFont.printFontGrid(2, 7, "DAS DELAY:" + ((owDasDelay == -1) ? "AUTO" : String.valueOf(owDasDelay)), (cursor == 4));
-		NormalFont.printFontGrid(2, 8, "REVERSE UP/DOWN:" + GeneralUtil.getOorX(owReverseUpDown), (cursor == 5));
-
-		if(owMoveDiagonal == -1) strTemp = "AUTO";
-		if(owMoveDiagonal == 0) strTemp = "e";
-		if(owMoveDiagonal == 1) strTemp = "c";
-		NormalFont.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
-
-		NormalFont.printFontGrid(2, 10, "OUTLINE TYPE:" + OUTLINE_TYPE_NAMES[owBlockOutlineType + 1], (cursor == 7));
-
-		if(owBlockShowOutlineOnly == -1) strTemp = "AUTO";
-		if(owBlockShowOutlineOnly == 0) strTemp = "e";
-		if(owBlockShowOutlineOnly == 1) strTemp = "c";
-		NormalFont.printFontGrid(2, 11, "SHOW OUTLINE ONLY:" + strTemp, (cursor == 8));
 	}
 
 	/*
@@ -186,89 +338,134 @@ public class StateConfigGameTuning extends BaseGameState {
 	 */
 	@Override
 	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		GameKey.gamekey[0].update(container.getInput());
+		if(isPreview) {
+			// Preview
+			try {
+				GameKey.gamekey[0].update(container.getInput(), true);
 
-		// Cursor movement
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
-			cursor--;
-			if(cursor < 0) cursor = 8;
-			ResourceHolder.soundManager.play("cursor");
-		}
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
-			cursor++;
-			if(cursor > 8) cursor = 0;
-			ResourceHolder.soundManager.play("cursor");
-		}
+				// Execute game loops
+				GameKey.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
+				gameManager.updateAll();
 
-		// Configuration changes
-		int change = 0;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+				// Retry button
+				if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RETRY)) {
+					gameManager.reset();
+					gameManager.backgroundStatus.bg = -1;	// Force no BG
+				}
 
-		if(change != 0) {
-			ResourceHolder.soundManager.play("change");
-
-			switch(cursor) {
-			case 0:
-				owRotateButtonDefaultRight += change;
-				if(owRotateButtonDefaultRight < -1) owRotateButtonDefaultRight = 1;
-				if(owRotateButtonDefaultRight > 1) owRotateButtonDefaultRight = -1;
-				break;
-			case 1:
-				owSkin += change;
-				if(owSkin < -1) owSkin = ResourceHolder.imgNormalBlockList.size() - 1;
-				if(owSkin > ResourceHolder.imgNormalBlockList.size() - 1) owSkin = -1;
-				break;
-			case 2:
-				owMinDAS += change;
-				if(owMinDAS < -1) owMinDAS = 99;
-				if(owMinDAS > 99) owMinDAS = -1;
-				break;
-			case 3:
-				owMaxDAS += change;
-				if(owMaxDAS < -1) owMaxDAS = 99;
-				if(owMaxDAS > 99) owMaxDAS = -1;
-				break;
-			case 4:
-				owDasDelay += change;
-				if(owDasDelay < -1) owDasDelay = 99;
-				if(owDasDelay > 99) owDasDelay = -1;
-				break;
-			case 5:
-				owReverseUpDown ^= true;
-				break;
-			case 6:
-				owMoveDiagonal += change;
-				if(owMoveDiagonal < -1) owMoveDiagonal = 1;
-				if(owMoveDiagonal > 1) owMoveDiagonal = -1;
-				break;
-			case 7:
-				owBlockOutlineType += change;
-				if(owBlockOutlineType < -1) owBlockOutlineType = 3;
-				if(owBlockOutlineType > 3) owBlockOutlineType = -1;
-				break;
-			case 8:
-				owBlockShowOutlineOnly += change;
-				if(owBlockShowOutlineOnly < -1) owBlockShowOutlineOnly = 1;
-				if(owBlockShowOutlineOnly > 1) owBlockShowOutlineOnly = -1;
-				break;
+				// Exit
+				if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_F) || GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_GIVEUP) ||
+				   gameManager.getQuitFlag())
+				{
+					stopPreviewGame();
+				}
+			} catch (Exception e) {
+				log.error("Update fail", e);
 			}
-		}
+		} else {
+			// Menu screen
+			GameKey.gamekey[0].update(container.getInput(), false);
 
-		// Confirm button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			ResourceHolder.soundManager.play("decide");
+			// TTF font
+			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
 
-			saveConfig(NullpoMinoSlick.propGlobal);
-			NullpoMinoSlick.saveConfig();
+			// Cursor movement
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+				cursor--;
+				if(cursor < 0) cursor = 9;
+				ResourceHolder.soundManager.play("cursor");
+			}
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+				cursor++;
+				if(cursor > 9) cursor = 0;
+				ResourceHolder.soundManager.play("cursor");
+			}
 
-			game.enterState(StateConfigMainMenu.ID);
-		}
+			// Configuration changes
+			int change = 0;
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
+			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
 
-		// Cancel button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
-		    loadConfig(NullpoMinoSlick.propGlobal);
-			game.enterState(StateConfigMainMenu.ID);
+			if(change != 0) {
+				ResourceHolder.soundManager.play("change");
+
+				switch(cursor) {
+				case 0:
+					owRotateButtonDefaultRight += change;
+					if(owRotateButtonDefaultRight < -1) owRotateButtonDefaultRight = 1;
+					if(owRotateButtonDefaultRight > 1) owRotateButtonDefaultRight = -1;
+					break;
+				case 1:
+					owSkin += change;
+					if(owSkin < -1) owSkin = ResourceHolder.imgNormalBlockList.size() - 1;
+					if(owSkin > ResourceHolder.imgNormalBlockList.size() - 1) owSkin = -1;
+					break;
+				case 2:
+					owMinDAS += change;
+					if(owMinDAS < -1) owMinDAS = 99;
+					if(owMinDAS > 99) owMinDAS = -1;
+					break;
+				case 3:
+					owMaxDAS += change;
+					if(owMaxDAS < -1) owMaxDAS = 99;
+					if(owMaxDAS > 99) owMaxDAS = -1;
+					break;
+				case 4:
+					owDasDelay += change;
+					if(owDasDelay < -1) owDasDelay = 99;
+					if(owDasDelay > 99) owDasDelay = -1;
+					break;
+				case 5:
+					owReverseUpDown ^= true;
+					break;
+				case 6:
+					owMoveDiagonal += change;
+					if(owMoveDiagonal < -1) owMoveDiagonal = 1;
+					if(owMoveDiagonal > 1) owMoveDiagonal = -1;
+					break;
+				case 7:
+					owBlockOutlineType += change;
+					if(owBlockOutlineType < -1) owBlockOutlineType = 3;
+					if(owBlockOutlineType > 3) owBlockOutlineType = -1;
+					break;
+				case 8:
+					owBlockShowOutlineOnly += change;
+					if(owBlockShowOutlineOnly < -1) owBlockShowOutlineOnly = 1;
+					if(owBlockShowOutlineOnly > 1) owBlockShowOutlineOnly = -1;
+					break;
+				case 9:
+					break;
+				}
+			}
+
+			// Preview by D button
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_D)) {
+				ResourceHolder.soundManager.play("decide");
+				startPreviewGame();
+				return;
+			}
+
+			// Confirm button
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
+				ResourceHolder.soundManager.play("decide");
+
+				if(cursor == 9) {
+					// Preview
+					startPreviewGame();
+					return;
+				} else {
+					// Save
+					saveConfig(NullpoMinoSlick.propGlobal);
+					NullpoMinoSlick.saveConfig();
+					game.enterState(StateConfigMainMenu.ID);
+				}
+			}
+
+			// Cancel button
+			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
+			    loadConfig(NullpoMinoSlick.propGlobal);
+				game.enterState(StateConfigMainMenu.ID);
+			}
 		}
 	}
 }
