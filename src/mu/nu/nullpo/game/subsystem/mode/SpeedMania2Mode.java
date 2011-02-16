@@ -292,7 +292,7 @@ public class SpeedMania2Mode extends DummyMode {
 			loadSetting(owner.replayProp, engine.ruleopt.strRuleName);
 		}
 
-		owner.backgroundStatus.bg = startlevel;
+		owner.backgroundStatus.bg = Math.min(startlevel, 12);
 	}
 
 	/**
@@ -362,7 +362,7 @@ public class SpeedMania2Mode extends DummyMode {
 	 * Update average section time
 	 */
 	private void setAverageSectionTime() {
-		if(sectionscomp > 0) {
+		if(sectionscomp > 0 && startlevel < 13) {
 			int temp = 0;
 			for(int i = startlevel; i < startlevel + sectionscomp; i++) {
 				if((i >= 0) && (i < sectiontime.length)) temp += sectiontime[i];
@@ -426,9 +426,9 @@ public class SpeedMania2Mode extends DummyMode {
 				switch(engine.statc[2]) {
 				case 0:
 					startlevel += change;
-					if(startlevel < 0) startlevel = 12;
-					if(startlevel > 12) startlevel = 0;
-					owner.backgroundStatus.bg = startlevel;
+					if(startlevel < 0) startlevel = 13;
+					if(startlevel > 13) startlevel = 0;
+					owner.backgroundStatus.bg = Math.min(startlevel, 12);
 					break;
 				case 1:
 					lvstopse = !lvstopse;
@@ -518,6 +518,18 @@ public class SpeedMania2Mode extends DummyMode {
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv + 2;
+		
+		if (startlevel >= 13)
+		{
+			// Ending
+			engine.statistics.level = 1300;
+			engine.timerActive = false;
+			engine.ending = 2;
+			rollclear = 1;
+			rollstarted = true;
+			engine.big = true;
+			owner.bgmStatus.bgm = BGMStatus.BGM_ENDING1;
+		}
 	}
 
 	/*

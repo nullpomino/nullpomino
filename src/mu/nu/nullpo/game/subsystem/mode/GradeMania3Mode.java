@@ -508,7 +508,7 @@ public class GradeMania3Mode extends DummyMode {
 			}
 		}
 
-		owner.backgroundStatus.bg = startlevel;
+		owner.backgroundStatus.bg = Math.min(9, startlevel);
 	}
 
 	/**
@@ -587,7 +587,7 @@ public class GradeMania3Mode extends DummyMode {
 	 * Update average section time
 	 */
 	private void setAverageSectionTime() {
-		if(sectionscomp > 0) {
+		if(sectionscomp > 0 && startlevel < 10) {
 			int temp = 0;
 			for(int i = startlevel; i < startlevel + sectionscomp; i++) {
 				if((i >= 0) && (i < sectiontime.length)) temp += sectiontime[i];
@@ -725,9 +725,9 @@ public class GradeMania3Mode extends DummyMode {
 				switch(engine.statc[2]) {
 				case 0:
 					startlevel += change;
-					if(startlevel < 0) startlevel = 9;
-					if(startlevel > 9) startlevel = 0;
-					owner.backgroundStatus.bg = startlevel;
+					if(startlevel < 0) startlevel = 11;
+					if(startlevel > 11) startlevel = 0;
+					owner.backgroundStatus.bg = Math.min(9, startlevel);
 					break;
 				case 1:
 					alwaysghost = !alwaysghost;
@@ -833,8 +833,12 @@ public class GradeMania3Mode extends DummyMode {
 		String scolorStr = "NONE";
 		if (stcolor == 1) scolorStr = "NEWRECORD";
 		else if (stcolor == 2) scolorStr = "COOL";
+		String level;
+		if (startlevel == 10) level = "ROLL";
+		else if (startlevel == 11) level = "M-ROLL";
+		else level = String.valueOf(startlevel * 100);
 		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"LEVEL", String.valueOf(startlevel * 100),
+				"LEVEL", level,
 				"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
 				"20G MODE", GeneralUtil.getONorOFF(always20g),
 				"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
@@ -851,7 +855,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.statistics.level = startlevel * 100;
+		engine.statistics.level = Math.min(999, startlevel * 100);
 
 		nextseclv = engine.statistics.level + 100;
 		if(engine.statistics.level < 0) nextseclv = 100;
@@ -866,6 +870,27 @@ public class GradeMania3Mode extends DummyMode {
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv;
+		
+		if (startlevel >= 10)
+		{
+			// Ending
+			engine.timerActive = false;
+			engine.ending = 2;
+			rollclear = 1;
+			mrollFlag = (startlevel == 11);
+			rollstarted = true;
+
+			if(mrollFlag) {
+				engine.blockHidden = engine.ruleopt.lockflash;
+				engine.blockHiddenAnim = false;
+				engine.blockShowOutlineOnly = true;
+			} else {
+				engine.blockHidden = 300;
+				engine.blockHiddenAnim = true;
+			}
+
+			owner.bgmStatus.bgm = BGMStatus.BGM_ENDING1;
+		}
 	}
 
 	/*
