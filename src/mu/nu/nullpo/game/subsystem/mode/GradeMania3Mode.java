@@ -1536,6 +1536,7 @@ public class GradeMania3Mode extends DummyMode {
 				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
+				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}
 		}
 	}
