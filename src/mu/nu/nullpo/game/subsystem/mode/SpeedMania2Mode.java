@@ -992,7 +992,7 @@ public class SpeedMania2Mode extends DummyMode {
 				engine.gameEnded();
 				engine.resetStatc();
 				engine.stat = GameEngine.STAT_EXCELLENT;
-				owner.bgmStatus.volume = 0f;
+				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}
 		}
 	}
