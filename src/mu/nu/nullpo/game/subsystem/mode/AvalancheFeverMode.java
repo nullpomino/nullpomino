@@ -693,10 +693,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		engine.field.reset();
 		engine.field.stringToField(propFeverMap.getProperty(mapSubsets[subset] +
 				"." + numColors + "colors." + chain + "chain"));
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+		engine.field.setBlockLinkByColor();
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 		engine.field.setAllSkin(engine.getSkin());
