@@ -542,29 +542,55 @@ Thank you on this occasion.
 Tools:
 	Eclipse 3.6
 	http://www.eclipse.org/
+	
 	PictBear SE
 	http://www20.pos.to/~sleipnir/
 	(Excite translation: http://www.excite.co.jp/world/english/web/?wb_url=http%3A%2F%2Fwww20.pos.to%2F%7Esleipnir%2F&wb_lp=JAEN&wb_dis=2)
 
 Libraries:
-	Slick - 2D Game Library based on LWJGL
-	http://slick.cokeandcode.com/
-	Lightweight Java Game Library (LWJGL)
-	http://www.lwjgl.org/
-	JOrbis -- Pure Java Ogg Vorbis Decoder
-	http://www.jcraft.com/jorbis/
-	IBXM Java MOD/S3M/XM Player
-	http://www.geocities.com/sunet2000/
-	sdljava - Java Binding to SDL
-	http://sdljava.sourceforge.net/
-	Simple DirectMedia Layer
-	http://www.libsdl.org/
-	Apache log4j 1.2.15
-	http://logging.apache.org/log4j/1.2/index.html
-	Crypt.java (Java-based implementation of the unix crypt(3) command)
-	http://www.cacas.org/java/gnu/tools/
-	Base64Coder
-	http://www.source-code.biz/base64coder/java
+    Slick - 2D Game Library based on LWJGL
+    http://slick.cokeandcode.com/
+    License: BSD
+
+    Lightweight Java Game Library (LWJGL)
+    http://www.lwjgl.org/
+    License: BSD
+
+    JOrbis -- Pure Java Ogg Vorbis Decoder
+    http://www.jcraft.com/jorbis/
+    License: LGPL-2
+
+    IBXM Java MOD/S3M/XM Player
+    http://sites.google.com/site/mumart/
+    License: BSD
+
+    sdljava - Java Binding to SDL
+    http://sdljava.sourceforge.net/
+    License: LGPL-2
+
+    Simple DirectMedia Layer
+    http://www.libsdl.org/
+    License: LGPL-2.1
+
+    Apache log4j 1.2.15
+    http://logging.apache.org/log4j/1.2/index.html
+    License: Apache-2.0
+
+    Crypt.java (Java-based implementation of the unix crypt(3) command)
+    http://www.cacas.org/java/gnu/tools/
+    License: BSD
+
+    Base64Coder
+    http://www.source-code.biz/base64coder/java
+    License: BSD
+
+    JInput
+    http://java.net/projects/jinput/
+    License: BSD
+
+    Swing-Layout
+    http://java.net/projects/swing-layout/
+    License: BSD
 
 Sound effects:
 	ザ・マッチメイカァズ (The matchmakers)
@@ -595,6 +621,7 @@ Also thanks to:
 	hebo-MAI
 	gif
 	virulent
+	slr
 	tetrisconcept.net http://www.tetrisconcept.net/
 	 (NullpoMino Topic: http://tetrisconcept.net/forum/showthread.html?t=1381)
 	Hard Drop http://harddrop.com/
