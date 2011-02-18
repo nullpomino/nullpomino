@@ -518,6 +518,7 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.numColors = numColors[playerID];
 		engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
 		engine.displaysize = bigDisplay ? 1 : 0;
+		engine.sticky = 2;
 
 		if(outlineType[playerID] == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
 		if(outlineType[playerID] == 1) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_SAMECOLOR;
@@ -608,9 +609,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
-		engine.field.setBlockLinkByColor();
-
 		if (avalanche > 0) {
 			cleared[playerID] = true;
 

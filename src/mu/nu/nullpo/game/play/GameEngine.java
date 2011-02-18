@@ -650,6 +650,9 @@ public class GameEngine {
 	/** If true, the game will execute double rotation to I2 piece when regular rotation fails twice */
 	public boolean dominoQuickTurn;
 
+	/** 0 = default, 1 = link by color, 2 = link by color but ignore links for cascade (Avalanche) */
+	public int sticky;
+
 	/**
 	 * Constructor
 	 * @param owner このゲームエンジンを所有するGameOwnerクラス
@@ -910,6 +913,8 @@ public class GameEngine {
 		cascadeClearDelay = 0;
 
 		rainbowAnimate = false;
+		dominoQuickTurn = false;
+		sticky = 0;
 
 		startTime = 0;
 		endTime = 0;
@@ -2749,6 +2754,10 @@ public class GameEngine {
 
 		// 最初の frame
 		if(statc[0] == 0) {
+			if (sticky > 0)
+				field.setBlockLinkByColor();
+			if (sticky == 2)
+				field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
 			// Line clear flagを設定
 			if (clearMode == CLEAR_LINE)
 				lineClearing = field.checkLine();
@@ -2919,6 +2928,8 @@ public class GameEngine {
 					statc[6] = 0;
 					return;
 				} else if (statc[6] < getCascadeClearDelay()) {
+					if (sticky > 0 && statc[6] == 0)
+						field.setBlockLinkByColor();
 					statc[6]++;
 					return;
 				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
@@ -2938,6 +2949,10 @@ public class GameEngine {
 			boolean skip = false;
 			if(owner.mode != null) skip = owner.mode.lineClearEnd(this, playerID);
 			owner.receiver.lineClearEnd(this, playerID);
+			if (sticky > 0)
+				field.setBlockLinkByColor();
+			if (sticky == 2)
+				field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
 
 			if(!skip) {
 				if(lineGravityType == LINE_GRAVITY_NATIVE) field.downFloatingBlocks();

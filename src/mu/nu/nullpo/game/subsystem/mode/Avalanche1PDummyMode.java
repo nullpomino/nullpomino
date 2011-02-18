@@ -255,6 +255,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 		zenKeshiBonus = 0;
 		maxChainBonus = 0;
 		blocksCleared = 0;
+		engine.sticky = 2;
 
 		return false;
 	}
@@ -339,9 +340,6 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int avalanche) {
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
-		engine.field.setBlockLinkByColor();
-
 		if (avalanche > 0) {
 			if (zenKeshi)
 				garbageAdd += 30;
@@ -417,9 +415,6 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 
 	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
-		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
-		engine.field.setBlockLinkByColor();
-
 		if (garbageAdd > 0)
 		{
 			garbageSent += garbageAdd;
