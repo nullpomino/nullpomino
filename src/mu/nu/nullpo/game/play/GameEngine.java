@@ -1796,8 +1796,8 @@ public class GameEngine {
 	 */
 	public void render() {
 		// 最初の処理
-		if(owner.mode != null) owner.mode.renderFirst(this, playerID);
 		owner.receiver.renderFirst(this, playerID);
+		if(owner.mode != null) owner.mode.renderFirst(this, playerID);
 
 		if (rainbowAnimate)
 			Block.updateRainbowPhase(this);
