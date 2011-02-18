@@ -2928,7 +2928,7 @@ public class GameEngine {
 					statc[6] = 0;
 					return;
 				} else if (statc[6] < getCascadeClearDelay()) {
-					if (sticky > 0 && statc[6] == 0)
+					if (sticky > 0)
 						field.setBlockLinkByColor();
 					statc[6]++;
 					return;

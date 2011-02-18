@@ -2161,6 +2161,13 @@ public class Field implements Serializable {
 								{
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, true);
+									if (bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK))
+									{
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+									}
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, true);
 									setBlock(l, k + 1, bTemp);
 									setBlock(l, k, new Block());
@@ -2232,6 +2239,13 @@ public class Field implements Serializable {
 								{
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_TEMP_MARK, false);
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CASCADE_FALL, true);
+									if (bTemp.getAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK))
+									{
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, false);
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, false);
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, false);
+										bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, false);
+									}
 									bTemp.setAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, true);
 									setBlock(l, k + 1, bTemp);
 									setBlock(l, k, new Block());
