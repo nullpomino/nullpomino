@@ -271,9 +271,9 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 26) {
+				if(engine.statc[2] == 27) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
-				} else if(engine.statc[2] == 27) {
+				} else if(engine.statc[2] == 28) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {

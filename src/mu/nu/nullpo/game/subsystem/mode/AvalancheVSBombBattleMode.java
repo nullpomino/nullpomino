@@ -310,9 +310,9 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 31) {
+				if(engine.statc[2] == 32) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "bombbattle");
-				} else if(engine.statc[2] == 32) {
+				} else if(engine.statc[2] == 33) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "bombbattle");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {

@@ -65,6 +65,9 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	/** Fever chain count when last chain hit occurred */
 	private int[] feverChainDisplay;
 
+	/** Chain size for first fever setup */
+	private int[] feverChainStart;
+
 	/*
 	 * Mode name
 	 */
@@ -83,6 +86,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		feverChain = new int[MAX_PLAYERS];
 		ojamaHandicap = new int[MAX_PLAYERS];
 		feverChainDisplay = new int[MAX_PLAYERS];
+		feverChainStart = new int[MAX_PLAYERS];
 	}
 
 	/**
@@ -96,6 +100,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		ojamaRate[playerID] = prop.getProperty("avalanchevsfever.ojamaRate.p" + playerID, 120);
 		ojamaHard[playerID] = prop.getProperty("avalanchevsfever.ojamaHard.p" + playerID, 0);
 		ojamaHandicap[playerID] = prop.getProperty("avalanchevsfever.ojamaHandicap.p" + playerID, 270);
+		feverChainStart[playerID] = prop.getProperty("avalanchevsfever.feverChainStart.p" + playerID, 5);
 	}
 
 	/**
@@ -107,6 +112,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		super.saveOtherSetting(engine, prop, "fever");
 		int playerID = engine.playerID;
 		prop.setProperty("avalanchevsfever.ojamaHandicap.p" + playerID, ojamaHandicap[playerID]);
+		prop.setProperty("avalanchevsfever.feverChainStart.p" + playerID, feverChainStart[playerID]);
 	}
 
 	/*
@@ -139,7 +145,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 		// Menu
 		if((engine.owner.replayMode == false) && (engine.statc[4] == 0)) {
 			// Configuration changes
-			int change = updateCursor(engine, 28);
+			int change = updateCursor(engine, 29);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -248,36 +254,48 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 					feverMapSet[playerID] += change;
 					if(feverMapSet[playerID] < 0) feverMapSet[playerID] = FEVER_MAPS.length-1;
 					if(feverMapSet[playerID] >= FEVER_MAPS.length) feverMapSet[playerID] = 0;
+					loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
+					if(feverChainStart[playerID] < feverChainMin[playerID])
+						feverChainStart[playerID] = feverChainMax[playerID];
+					if(feverChainStart[playerID] > feverChainMax[playerID])
+						feverChainStart[playerID] = feverChainMin[playerID];
 					break;
 				case 20:
+					feverChainStart[playerID] += change;
+					if(feverChainStart[playerID] < feverChainMin[playerID])
+						feverChainStart[playerID] = feverChainMax[playerID];
+					if(feverChainStart[playerID] > feverChainMax[playerID])
+						feverChainStart[playerID] = feverChainMin[playerID];
+					break;
+				case 21:
 					outlineType[playerID] += change;
 					if(outlineType[playerID] < 0) outlineType[playerID] = 2;
 					if(outlineType[playerID] > 2) outlineType[playerID] = 0;
 					break;
-				case 21:
+				case 22:
 					chainDisplayType[playerID] += change;
 					if(chainDisplayType[playerID] < 0) chainDisplayType[playerID] = 4;
 					if(chainDisplayType[playerID] > 4) chainDisplayType[playerID] = 0;
 					break;
-				case 22:
+				case 23:
 					cascadeSlow[playerID] = !cascadeSlow[playerID];
 					break;
-				case 23:
+				case 24:
 					newChainPower[playerID] = !newChainPower[playerID];
 					break;
-				case 24:
+				case 25:
 					bgmno += change;
 					if(bgmno < 0) bgmno = BGMStatus.BGM_COUNT - 1;
 					if(bgmno > BGMStatus.BGM_COUNT - 1) bgmno = 0;
 					break;
-				case 25:
+				case 26:
 					enableSE[playerID] = !enableSE[playerID];
 					break;
-				case 26:
+				case 27:
 					bigDisplay = !bigDisplay;
 					break;
-				case 27:
 				case 28:
+				case 29:
 					presetNumber[playerID] += change;
 					if(presetNumber[playerID] < 0) presetNumber[playerID] = 99;
 					if(presetNumber[playerID] > 99) presetNumber[playerID] = 0;
@@ -289,9 +307,9 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 27) {
+				if(engine.statc[2] == 28) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "fever");
-				} else if(engine.statc[2] == 28) {
+				} else if(engine.statc[2] == 29) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "fever");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -368,11 +386,12 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 24) {
+			} else if(engine.statc[2] < 25) {
 				initMenu(EventReceiver.COLOR_PURPLE, 18);
 				drawMenu(engine, playerID, receiver,
 						"HANDICAP", String.valueOf(ojamaHandicap[playerID]),
-						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase());
+						"F-MAP SET", FEVER_MAPS[feverMapSet[playerID]].toUpperCase(),
+						"STARTCHAIN", String.valueOf(feverChainStart[playerID]));
 				menuColor = EventReceiver.COLOR_DARKBLUE;
 				drawMenu(engine, playerID, receiver,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
@@ -385,7 +404,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
 			} else {
-				initMenu(EventReceiver.COLOR_PINK, 24);
+				initMenu(EventReceiver.COLOR_PINK, 25);
 				drawMenu(engine, playerID, receiver, "BGM", String.valueOf(bgmno));
 				menuColor = EventReceiver.COLOR_YELLOW;
 				drawMenu(engine, playerID, receiver, "SE", GeneralUtil.getONorOFF(enableSE[playerID]));
@@ -410,7 +429,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	public boolean readyInit(GameEngine engine, int playerID) {
 		super.readyInit(engine, playerID);
 		ojamaHandicapLeft[playerID] = ojamaHandicap[playerID];
-		feverChain[playerID] = 5;
+		feverChain[playerID] = feverChainStart[playerID];
 		if(engine.field != null)
 			engine.field.reset();
 		loadMapSetFever(engine, playerID, feverMapSet[playerID], true);

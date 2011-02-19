@@ -431,7 +431,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 					if(feverChainStart[playerID] < feverChainMin[playerID])
 						feverChainStart[playerID] = feverChainMax[playerID];
 					if(feverChainStart[playerID] > feverChainMax[playerID])
-						previewChain[playerID] = feverChainMin[playerID];
+						feverChainStart[playerID] = feverChainMin[playerID];
 					if(previewChain[playerID] < feverChainMin[playerID])
 						previewChain[playerID] = feverChainMax[playerID];
 					if(previewChain[playerID] > feverChainMax[playerID])
