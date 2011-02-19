@@ -376,6 +376,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		cascadeSlow[playerID] = prop.getProperty("avalanchevs" + name + ".cascadeSlow.p" + playerID, false);
 		bigDisplay = prop.getProperty("avalanchevs" + name + ".bigDisplay", false);
 		engine.colorClearSize = prop.getProperty("avalanchevs" + name + ".clearSize.p" + playerID, 4);
+		if (feverMapSet[playerID] >= 0 && feverMapSet[playerID] < FEVER_MAPS.length)
+			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
 	}
 
 	/**
@@ -746,18 +748,23 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	}
 
 	protected void loadFeverMap(GameEngine engine, int playerID, int chain) {
+		loadFeverMap(engine, playerID, engine.random, chain,
+				engine.random.nextInt(feverMapSubsets[playerID].length));
+	}
+
+	protected void loadFeverMap(GameEngine engine, int playerID, Random rand, int chain, int subset) {
 		engine.createFieldIfNeeded();
 		engine.field.reset();
-		engine.field.stringToField(propFeverMap[playerID].getProperty(
-				feverMapSubsets[playerID][engine.random.nextInt(feverMapSubsets[playerID].length)] +
+		engine.field.stringToField(propFeverMap[playerID].getProperty(feverMapSubsets[playerID][subset] +
 				"." + numColors[playerID] + "colors." + chain + "chain"));
 		engine.field.setBlockLinkByColor();
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 		engine.field.setAllSkin(engine.getSkin());
-		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], new Random(engine.random.nextLong()));
+		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], new Random(rand.nextLong()));
 	}
-
+	
+	
 	/*
 	 * Called after every frame
 	 */

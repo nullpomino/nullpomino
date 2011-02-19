@@ -28,6 +28,8 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
+import java.util.Random;
+
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
@@ -110,7 +112,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	/** Level at start of chain */
 	private int chainLevelMultiplier;
 
-	/** Names of fast-fowards settings */
+	/** Names of fast-forward settings */
 	private static final String[] FAST_NAMES = {"OFF", "CLEAR", "ALL"};
 
 	/** Fast-forward settings for debug use */
@@ -175,7 +177,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		cascadeSlow = true;
 		super.readyInit(engine, playerID);
 		loadMapSetFever(engine, playerID, mapSet, true);
-		loadFeverMap(engine, playerID, feverChain);
+		loadFeverMap(engine, feverChain);
 		timeLimit = TIME_LIMIT;
 		timeLimitAdd = 0;
 		timeLimitAddDisplay = 0;
@@ -191,7 +193,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		// Menu
 		if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, (xyzzy == 573) ? 7 : 4);
+			int change = updateCursor(engine, (xyzzy == 573) ? 8 : 4);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -199,10 +201,16 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 				switch(engine.statc[2]) {
 
 				case 0:
+				case 6:
 					mapSet += change;
 					if(mapSet < 0) mapSet = FEVER_MAPS.length - 1;
 					if(mapSet > FEVER_MAPS.length - 1) mapSet = 0;
-					if (xyzzy == 573) loadMapSetFever(engine, playerID, mapSet, true);
+					if (xyzzy == 573) {
+						loadMapSetFever(engine, playerID, mapSet, true);
+						if(previewChain < feverChainMin) previewChain = feverChainMax;
+						if(previewChain > feverChainMax) previewChain = feverChainMin;
+						if(previewSubset >= mapSubsets.length) previewSubset = 0;
+					}
 					break;
 				case 1:
 					outlinetype += change;
@@ -227,12 +235,12 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					if(fastenable < 0) fastenable = 2;
 					if(fastenable > 2) fastenable = 0;
 					break;
-				case 6:
+				case 7:
 					previewSubset += change;
 					if(previewSubset < 0) previewSubset = mapSubsets.length-1;
 					if(previewSubset >= mapSubsets.length) previewSubset = 0;
 					break;
-				case 7:
+				case 8:
 					previewChain += change;
 					if(previewChain < feverChainMin) previewChain = feverChainMax;
 					if(previewChain > feverChainMax) previewChain = feverChainMin;
@@ -271,7 +279,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			if (engine.ctrl.isPush(Controller.BUTTON_A)) {
 				if ((xyzzy == 573) && engine.statc[2] > 5) {
 					loadMapSetFever(engine, playerID, mapSet, true);
-					loadFeverMap(engine, playerID, previewChain, previewSubset);
+					loadFeverMap(engine, new Random(), previewChain, previewSubset);
 				} else if (xyzzy == 9) {
 					engine.playSE("levelup");
 					xyzzy = 573;
@@ -341,6 +349,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			receiver.drawMenuFont(engine, playerID, 0, 13, "MAP PREVIEW", EventReceiver.COLOR_YELLOW);
 			receiver.drawMenuFont(engine, playerID, 0, 14, "A:DISPLAY", EventReceiver.COLOR_GREEN);
 			drawMenu(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, 6,
+					"MAP SET", FEVER_MAPS[mapSet].toUpperCase(),
 					"SUBSET", mapSubsets[previewSubset].toUpperCase(),
 					"CHAIN", String.valueOf(previewChain));
 		}
@@ -568,7 +577,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 					timeLimit += timeLimitAdd;
 					timeLimitAddDisplay = 120;
 				}
-				loadFeverMap(engine, playerID, feverChain);
+				loadFeverMap(engine, feverChain);
 			}
 		}
 		else if (engine.field != null)
@@ -684,11 +693,11 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		}
 	}
 
-	private void loadFeverMap(GameEngine engine, int playerID, int chain) {
-		loadFeverMap(engine, playerID, chain, engine.random.nextInt(mapSubsets.length));
+	private void loadFeverMap(GameEngine engine, int chain) {
+		loadFeverMap(engine, engine.random, chain, engine.random.nextInt(mapSubsets.length));
 	}
 
-	private void loadFeverMap(GameEngine engine, int playerID, int chain, int subset) {
+	private void loadFeverMap(GameEngine engine, Random rand, int chain, int subset) {
 		engine.createFieldIfNeeded();
 		engine.field.reset();
 		engine.field.stringToField(propFeverMap.getProperty(mapSubsets[subset] +
@@ -697,7 +706,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, false);
 		engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_ANTIGRAVITY, false);
 		engine.field.setAllSkin(engine.getSkin());
-		engine.field.shuffleColors(BLOCK_COLORS, numColors, engine.random);
+		engine.field.shuffleColors(BLOCK_COLORS, numColors, rand);
 	}
 
 	/**
