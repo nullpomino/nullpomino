@@ -511,7 +511,7 @@ public class SpeedMania2Mode extends DummyMode {
 		if(engine.statistics.level >= 1300) nextseclv = 1300;
 		if(engine.statistics.level >= 1000) engine.bone = true;
 
-		owner.backgroundStatus.bg = engine.statistics.level / 100;
+		owner.backgroundStatus.bg = Math.min(startlevel, 12);
 
 		engine.big = big;
 
@@ -948,6 +948,16 @@ public class SpeedMania2Mode extends DummyMode {
 			engine.statistics.score += lastscore;
 			scgettime = 120;
 		}
+	}
+
+	/*
+	 * Ready→Goの処理
+	 */
+	@Override
+	public boolean onReady(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 0 && startlevel >= 11)
+			engine.bone = true;
+		return false;
 	}
 
 	/*

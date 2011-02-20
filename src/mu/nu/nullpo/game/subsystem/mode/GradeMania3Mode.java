@@ -863,7 +863,7 @@ public class GradeMania3Mode extends DummyMode {
 
 		internalLevel = engine.statistics.level;
 
-		owner.backgroundStatus.bg = engine.statistics.level / 100;
+		owner.backgroundStatus.bg = Math.min(startlevel, 9);
 
 		engine.big = big;
 
@@ -879,6 +879,7 @@ public class GradeMania3Mode extends DummyMode {
 			rollclear = 1;
 			mrollFlag = (startlevel == 11);
 			rollstarted = true;
+			internalLevel = 1200;
 
 			if(mrollFlag) {
 				engine.blockHidden = engine.ruleopt.lockflash;
