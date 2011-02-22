@@ -197,7 +197,7 @@ public class NetBaseClient extends Thread {
 
 		// ping返答
 		if(message[0].equals("pong")) {
-			if(pingCount >= 2) {
+			if(pingCount >= (PING_AUTO_DISCONNECT_COUNT / 2)) {
 				log.debug("pong " + pingCount);
 			}
 			pingCount = 0;
@@ -322,23 +322,28 @@ public class NetBaseClient extends Thread {
 	protected class PingTask extends TimerTask {
 		@Override
 		public void run() {
-			if(isConnected()) {
-				if(pingCount >= PING_AUTO_DISCONNECT_COUNT) {
-					log.error("Ping timeout");
-					threadRunning = false;
-					connectedFlag = false;
-					timerPing.cancel();
-				} else {
-					send("ping\n");
-					pingCount++;
+			try {
+				if(isConnected()) {
+					if(pingCount >= PING_AUTO_DISCONNECT_COUNT) {
+						log.error("Ping timeout");
+						threadRunning = false;
+						connectedFlag = false;
+						if(timerPing != null) timerPing.cancel();
+					} else {
+						send("ping\n");
+						pingCount++;
 
-					if(pingCount >= (PING_AUTO_DISCONNECT_COUNT / 2)) {
-						log.debug("Ping " + pingCount + "/" + PING_AUTO_DISCONNECT_COUNT);
+						if(pingCount >= (PING_AUTO_DISCONNECT_COUNT / 2)) {
+							log.debug("Ping " + pingCount + "/" + PING_AUTO_DISCONNECT_COUNT);
+						}
 					}
+				} else {
+					log.info("Ping Timer Cancelled");
+					if(timerPing != null) timerPing.cancel();
 				}
-			} else {
-				log.info("Ping Timer Cancelled");
-				timerPing.cancel();
+			} catch (Exception e) {
+				log.error("Exception in Ping Timer. Stopping the task.", e);
+				if(timerPing != null) timerPing.cancel();
 			}
 		}
 	}

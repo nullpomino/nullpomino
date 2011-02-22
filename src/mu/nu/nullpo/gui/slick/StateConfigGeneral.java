@@ -211,7 +211,7 @@ public class StateConfigGeneral extends BaseGameState {
 		sevolume = prop.getProperty("option.sevolume", 128);
 		bgmvolume = prop.getProperty("option.bgmvolume", 128);
 		showmeter = prop.getProperty("option.showmeter", true);
-		vsync = prop.getProperty("option.vsync", false);
+		vsync = prop.getProperty("option.vsync", true);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
 		nexttype = 0;
@@ -220,10 +220,10 @@ public class StateConfigGeneral extends BaseGameState {
 		} else if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == true)) {
 			nexttype = 2;
 		}
-		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", true);
+		alternateFPSTiming = prop.getProperty("option.alternateFPSTiming", false);
 		alternateFPSDynamicAdjust = prop.getProperty("option.alternateFPSDynamicAdjust", false);
-		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", true);
-		alternateFPSPerfectYield = prop.getProperty("option.alternateFPSPerfectYield", true);
+		alternateFPSPerfectMode = prop.getProperty("option.alternateFPSPerfectMode", false);
+		alternateFPSPerfectYield = prop.getProperty("option.alternateFPSPerfectYield", false);
 
 		screenSizeType = 4;	// Default to 640x480
 		int sWidth = prop.getProperty("option.screenwidth", -1);

@@ -475,15 +475,15 @@ public class NullpoMinoSlick extends StateBasedGame {
 		overSleepTime = 0L;
 		noDelays = 0;
 
-		alternateFPSTiming = propConfig.getProperty("option.alternateFPSTiming", true);
-		alternateFPSDynamicAdjust = propConfig.getProperty("option.alternateFPSDynamicAdjust", false);
-		alternateFPSPerfectMode = propConfig.getProperty("option.alternateFPSPerfectMode", true);
-		alternateFPSPerfectYield = propConfig.getProperty("option.alternateFPSPerfectYield", true);
+		alternateFPSTiming = propConfig.getProperty("option.alternateFPSTiming", false);
+		alternateFPSDynamicAdjust = propConfig.getProperty("option.alternateFPSDynamicAdjust", true);
+		alternateFPSPerfectMode = propConfig.getProperty("option.alternateFPSPerfectMode", false);
+		alternateFPSPerfectYield = propConfig.getProperty("option.alternateFPSPerfectYield", false);
 		altMaxFPS = propConfig.getProperty("option.maxfps", 60);
 		altMaxFPSCurrent = altMaxFPS;
 		periodCurrent = (long) (1.0 / altMaxFPSCurrent * 1000000000);
 
-		appGameContainer.setVSync(propConfig.getProperty("option.vsync", false));
+		appGameContainer.setVSync(propConfig.getProperty("option.vsync", true));
 		appGameContainer.setAlwaysRender(!alternateFPSTiming);
 
 		int sevolume = propConfig.getProperty("option.sevolume", 128);

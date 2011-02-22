@@ -3186,7 +3186,9 @@ public class GameEngine {
 								blk.color = Block.BLOCK_COLOR_GRAY;
 								blk.setAttribute(Block.BLOCK_ATTRIBUTE_GARBAGE, true);
 							}
-							blk.darkness = 0.3f;
+							if(displaysize != -1) {
+								blk.darkness = 0.3f;
+							}
 							blk.elapsedFrames = -1;
 						}
 					}

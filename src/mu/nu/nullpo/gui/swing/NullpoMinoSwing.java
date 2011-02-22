@@ -1137,7 +1137,12 @@ public class NullpoMinoSwing extends JFrame implements ActionListener, NetLobbyL
 
 			NetDummyMode newMode = (NetDummyMode)newModeTemp;
 
-			if(previousMode != null) previousMode.netplayUnload(netLobby);
+			if(previousMode != null) {
+				if(gameManager.engine[0].ai != null) {
+					gameManager.engine[0].ai.shutdown(gameManager.engine[0], 0);
+				}
+				previousMode.netplayUnload(netLobby);
+			}
 			gameManager.mode = newMode;
 			gameManager.init();
 
