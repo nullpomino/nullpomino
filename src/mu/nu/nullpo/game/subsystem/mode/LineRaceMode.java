@@ -311,7 +311,7 @@ public class LineRaceMode extends NetDummyMode {
 		if(netIsNetRankingDisplayMode) {
 			// NET: Netplay Ranking
 			netOnRenderNetPlayRanking(engine, playerID, receiver);
-		} else if(engine.statc[2] < 10) {
+		} else {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GRAVITY", String.valueOf(engine.speed.gravity),
 					"G-MAX", String.valueOf(engine.speed.denominator),
@@ -319,14 +319,18 @@ public class LineRaceMode extends NetDummyMode {
 					"ARE LINE", String.valueOf(engine.speed.areLine),
 					"LINE DELAY", String.valueOf(engine.speed.lineDelay),
 					"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
-					"DAS", String.valueOf(engine.speed.das),
+					"DAS", String.valueOf(engine.speed.das));
+			drawMenuCompact(engine, playerID, receiver,
 					"BGM", String.valueOf(bgmno),
 					"BIG",  GeneralUtil.getONorOFF(big),
 					"GOAL", String.valueOf(GOAL_TABLE[goaltype]));
-		} else {
-			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 10,
+			if (!engine.owner.replayMode)
+			{
+				menuColor = EventReceiver.COLOR_GREEN;
+				drawMenuCompact(engine, playerID, receiver,
 					"LOAD", String.valueOf(presetNumber),
 					"SAVE", String.valueOf(presetNumber));
+			}
 		}
 	}
 

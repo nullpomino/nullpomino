@@ -277,9 +277,6 @@ public class VSLineRaceMode extends DummyMode {
 			engine.statc[2] = 0;
 
 			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 9;
-			}
-			if(engine.statc[3] >= 120) {
 				engine.statc[4] = 1;
 			}
 		} else {
@@ -305,26 +302,26 @@ public class VSLineRaceMode extends DummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 9) {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
-						"GRAVITY", String.valueOf(engine.speed.gravity),
-						"G-MAX", String.valueOf(engine.speed.denominator),
-						"ARE", String.valueOf(engine.speed.are),
-						"ARE LINE", String.valueOf(engine.speed.areLine),
-						"LINE DELAY", String.valueOf(engine.speed.lineDelay),
-						"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
-						"DAS", String.valueOf(engine.speed.das));
-				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 7,
-						"LOAD", String.valueOf(presetNumber[playerID]),
-						"SAVE", String.valueOf(presetNumber[playerID]));
-			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
-						"GOAL", String.valueOf(goalLines[playerID]),
-						"BIG", GeneralUtil.getONorOFF(big[playerID]),
-						"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
-				drawMenu(engine, playerID, receiver, 6, EventReceiver.COLOR_PINK, 12,
-						"BGM", String.valueOf(bgmno));
-			}
+			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
+					"GRAVITY", String.valueOf(engine.speed.gravity),
+					"G-MAX", String.valueOf(engine.speed.denominator),
+					"ARE", String.valueOf(engine.speed.are),
+					"ARE LINE", String.valueOf(engine.speed.areLine),
+					"LINE DELAY", String.valueOf(engine.speed.lineDelay),
+					"LOCK DELAY", String.valueOf(engine.speed.lockDelay),
+					"DAS", String.valueOf(engine.speed.das));
+			menuColor = EventReceiver.COLOR_GREEN;
+			drawMenuCompact(engine, playerID, receiver,
+					"LOAD", String.valueOf(presetNumber[playerID]),
+					"SAVE", String.valueOf(presetNumber[playerID]));
+			menuColor = EventReceiver.COLOR_CYAN;
+			drawMenuCompact(engine, playerID, receiver,
+					"GOAL", String.valueOf(goalLines[playerID]),
+					"BIG", GeneralUtil.getONorOFF(big[playerID]),
+					"SE", GeneralUtil.getONorOFF(enableSE[playerID]));
+			menuColor = EventReceiver.COLOR_PINK;
+			drawMenuCompact(engine, playerID, receiver,
+					"BGM", String.valueOf(bgmno));
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);
 		}

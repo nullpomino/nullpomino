@@ -292,14 +292,14 @@ public class DummyMode implements GameMode {
 	protected void drawMenuCompact (GameEngine engine, int playerID, EventReceiver receiver, String... str) {
 		for (int i = 0; i < str.length-1; i+= 2)
 		{
-			receiver.drawMenuFont(engine, playerID, 1, menuY, str[i], menuColor);
+			receiver.drawMenuFont(engine, playerID, 1, menuY, str[i] + ":", menuColor);
 			if (engine.statc[2] == statcMenu && !engine.owner.replayMode)
 			{
 				receiver.drawMenuFont(engine, playerID, 0, menuY, "b", true);
-				receiver.drawMenuFont(engine, playerID, str[i].length()+1, menuY, str[i+1], true);
+				receiver.drawMenuFont(engine, playerID, str[i].length()+2, menuY, str[i+1], true);
 			}
 			else
-				receiver.drawMenuFont(engine, playerID, str[i].length()+1, menuY, str[i+1]);
+				receiver.drawMenuFont(engine, playerID, str[i].length()+2, menuY, str[i+1]);
 			statcMenu++;
 			menuY++;
 		}

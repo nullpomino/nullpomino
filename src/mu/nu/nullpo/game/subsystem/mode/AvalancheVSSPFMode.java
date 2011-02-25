@@ -292,21 +292,21 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 				engine.statc[2]--;
 				if(engine.statc[2] < 0){
-					engine.statc[2] = 32;
+					engine.statc[2] = 33;
 					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 				}
-				else if (engine.statc[2] == 30)
+				else if (engine.statc[2] == 31)
 					engine.field = null;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
 				engine.statc[2]++;
-				if(engine.statc[2] > 32) {
+				if(engine.statc[2] > 33) {
 					engine.statc[2] = 0;
 					engine.field = null;
 				}
-				else if (engine.statc[2] == 31)
+				else if (engine.statc[2] == 32)
 					loadDropMapPreview(engine, playerID, DROP_PATTERNS[dropSet[playerID]][dropMap[playerID]]);
 				engine.playSE("cursor");
 			}

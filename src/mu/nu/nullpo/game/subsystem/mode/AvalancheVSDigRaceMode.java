@@ -293,10 +293,8 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			engine.statc[3]++;
 			engine.statc[2] = 0;
 
-			if(engine.statc[3] >= 240)
+			if(engine.statc[3] >= 180)
 				engine.statc[4] = 1;
-			else if(engine.statc[3] >= 180)
-				engine.statc[2] = 27;
 			else if(engine.statc[3] >= 120)
 				engine.statc[2] = 18;
 			else if(engine.statc[3] >= 60)
@@ -336,7 +334,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"FALL DELAY", String.valueOf(engine.cascadeDelay),
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/4", EventReceiver.COLOR_YELLOW);
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/3", EventReceiver.COLOR_YELLOW);
 			} else if(engine.statc[2] < 18) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
@@ -349,8 +347,8 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"X COLUMN", dangerColumnDouble[playerID] ? "3 AND 4" : "3 ONLY",
 						"X SHOW", GeneralUtil.getONorOFF(dangerColumnShowX[playerID]));
 
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/4", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 27) {
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 2/3", EventReceiver.COLOR_YELLOW);
+			} else {
 				initMenu(EventReceiver.COLOR_PURPLE, 18);
 				drawMenu(engine, playerID, receiver, "ROWS", String.valueOf(handicapRows[playerID]));
 				menuColor = EventReceiver.COLOR_CYAN;
@@ -363,19 +361,17 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"SHOW CHAIN", CHAIN_DISPLAY_NAMES[chainDisplayType[playerID]],
 						"FALL ANIM", cascadeSlow[playerID] ? "FEVER" : "CLASSIC");
 				menuColor = EventReceiver.COLOR_PINK;
-				drawMenu(engine, playerID, receiver, "BGM", String.valueOf(bgmno));
+				drawMenuCompact(engine, playerID, receiver, "BGM", String.valueOf(bgmno));
 				menuColor = EventReceiver.COLOR_YELLOW;
-				drawMenu(engine, playerID, receiver, "SE", GeneralUtil.getONorOFF(enableSE[playerID]));
+				drawMenuCompact(engine, playerID, receiver, "SE", GeneralUtil.getONorOFF(enableSE[playerID]));
 				menuColor = EventReceiver.COLOR_PINK;
 				drawMenu(engine, playerID, receiver, "BIG DISP", GeneralUtil.getONorOFF(bigDisplay));
-
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/4", EventReceiver.COLOR_YELLOW);
-			} else {
-				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 27,
+				menuColor = EventReceiver.COLOR_GREEN;
+				drawMenuCompact(engine, playerID, receiver,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
-
-				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 4/4", EventReceiver.COLOR_YELLOW);
+				
+				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 3/3", EventReceiver.COLOR_YELLOW);
 			}
 		} else {
 			receiver.drawMenuFont(engine, playerID, 3, 10, "WAIT", EventReceiver.COLOR_YELLOW);

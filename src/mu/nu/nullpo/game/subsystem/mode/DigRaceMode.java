@@ -316,7 +316,7 @@ public class DigRaceMode extends NetDummyMode {
 		if(netIsNetRankingDisplayMode) {
 			// NET: Netplay Ranking
 			netOnRenderNetPlayRanking(engine, playerID, receiver);
-		} else if(engine.statc[2] < 9) {
+		} else {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GRAVITY", String.valueOf(engine.speed.gravity),
 					"G-MAX", String.valueOf(engine.speed.denominator),
@@ -327,10 +327,13 @@ public class DigRaceMode extends NetDummyMode {
 					"DAS", String.valueOf(engine.speed.das),
 					"BGM", String.valueOf(bgmno),
 					"GOAL", String.valueOf(GOAL_TABLE[goaltype]));
-		} else {
-			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_GREEN, 9,
+			if (!engine.owner.replayMode)
+			{
+				menuColor = EventReceiver.COLOR_GREEN;
+				drawMenuCompact(engine, playerID, receiver,
 					"LOAD", String.valueOf(presetNumber),
 					"SAVE", String.valueOf(presetNumber));
+			}
 		}
 	}
 

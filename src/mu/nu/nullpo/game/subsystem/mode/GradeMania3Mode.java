@@ -870,9 +870,8 @@ public class GradeMania3Mode extends DummyMode {
 				"LV500LIMIT", (lv500torikan == 0) ? "NONE" : GeneralUtil.getTime(lv500torikan),
 				"STIMECOLOR", scolorStr);
 		drawMenuCompact(engine, playerID, receiver,
-				"BIG:", GeneralUtil.getOorX(big),
-				"EXAM:", GeneralUtil.getOorX(enableexam));
-				
+				"BIG", GeneralUtil.getONorOFF(big),
+				"EXAM", GeneralUtil.getONorOFF(enableexam));
 	}
 
 	/*
