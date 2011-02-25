@@ -517,6 +517,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	private void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("grademania3.startlevel", 0);
+		internalLevel = prop.getProperty("grademania3.internalLevel", startlevel * 100);
 		alwaysghost = prop.getProperty("grademania3.alwaysghost", false);
 		always20g = prop.getProperty("grademania3.always20g", false);
 		lvstopse = prop.getProperty("grademania3.lvstopse", true);
@@ -534,6 +535,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("grademania3.startlevel", startlevel);
+		prop.setProperty("grademania3.internalLevel", internalLevel);
 		prop.setProperty("grademania3.alwaysghost", alwaysghost);
 		prop.setProperty("grademania3.always20g", always20g);
 		prop.setProperty("grademania3.lvstopse", lvstopse);
@@ -717,7 +719,7 @@ public class GradeMania3Mode extends DummyMode {
 		// Menu
 		if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 9);
+			int change = updateCursor(engine, 10);
 
 			if(change != 0) {
 				engine.playSE("change");
@@ -728,21 +730,21 @@ public class GradeMania3Mode extends DummyMode {
 					if(startlevel < 0) startlevel = 11;
 					if(startlevel > 11) startlevel = 0;
 					owner.backgroundStatus.bg = Math.min(9, startlevel);
-					break;
+					if (startlevel >= 10) break;
 				case 1:
-					alwaysghost = !alwaysghost;
+					internalLevel += change * 100;
 					break;
 				case 2:
-					always20g = !always20g;
+					alwaysghost = !alwaysghost;
 					break;
 				case 3:
-					lvstopse = !lvstopse;
+					always20g = !always20g;
 					break;
 				case 4:
-					showsectiontime = !showsectiontime;
+					lvstopse = !lvstopse;
 					break;
 				case 5:
-					big = !big;
+					showsectiontime = !showsectiontime;
 					break;
 				case 6:
 					gradedisp = !gradedisp;
@@ -754,13 +756,30 @@ public class GradeMania3Mode extends DummyMode {
 					if(lv500torikan > 72000) lv500torikan = 0;
 					break;
 				case 8:
-					enableexam = !enableexam;
-					break;
-				case 9:
 					stcolor += change;
 					if(stcolor < 0) stcolor = 2;
 					if(stcolor > 2) stcolor = 0;
 					break;
+				case 9:
+					big = !big;
+					break;
+				case 10:
+					enableexam = !enableexam;
+					break;
+				}
+				if (engine.statc[2] <= 1) {
+					int minSpeed = startlevel * 100;
+					int maxSpeed = Math.min(startlevel * 200, 1200);
+					if (startlevel == 11) {
+						minSpeed = 1200;
+						maxSpeed = 1200;
+					}
+					else if (startlevel == 10) {
+						minSpeed = 900;
+						maxSpeed = 1200;
+					}
+					if(internalLevel < minSpeed) internalLevel = maxSpeed;
+					if(internalLevel > maxSpeed) internalLevel = minSpeed;
 				}
 			}
 
@@ -837,17 +856,23 @@ public class GradeMania3Mode extends DummyMode {
 		if (startlevel == 10) level = "ROLL";
 		else if (startlevel == 11) level = "M-ROLL";
 		else level = String.valueOf(startlevel * 100);
+		String speedlevel;
+		if (internalLevel >= 1200) speedlevel = "MAX";
+		else speedlevel = String.valueOf(internalLevel);
 		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 				"LEVEL", level,
+				"SPEED", speedlevel,
 				"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
 				"20G MODE", GeneralUtil.getONorOFF(always20g),
 				"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
 				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
-				"BIG",  GeneralUtil.getONorOFF(big),
 				"GRADE DISP", GeneralUtil.getONorOFF(gradedisp),
 				"LV500LIMIT", (lv500torikan == 0) ? "NONE" : GeneralUtil.getTime(lv500torikan),
-				"EXAM", GeneralUtil.getONorOFF(enableexam),
 				"STIMECOLOR", scolorStr);
+		drawMenuCompact(engine, playerID, receiver,
+				"BIG:", GeneralUtil.getOorX(big),
+				"EXAM:", GeneralUtil.getOorX(enableexam));
+				
 	}
 
 	/*
@@ -860,8 +885,6 @@ public class GradeMania3Mode extends DummyMode {
 		nextseclv = engine.statistics.level + 100;
 		if(engine.statistics.level < 0) nextseclv = 100;
 		if(engine.statistics.level >= 900) nextseclv = 999;
-
-		internalLevel = engine.statistics.level;
 
 		owner.backgroundStatus.bg = Math.min(startlevel, 9);
 

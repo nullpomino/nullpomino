@@ -283,20 +283,36 @@ public class DummyMode implements GameMode {
 
 	protected void drawMenu (GameEngine engine, int playerID, EventReceiver receiver,
 			int y, int color, int statc, String... str) {
-		for (int i = 0; i < str.length; i++)
+		menuY = y;
+		menuColor = color;
+		statcMenu = statc;
+		drawMenu(engine, playerID, receiver, str);
+	}
+
+	protected void drawMenuCompact (GameEngine engine, int playerID, EventReceiver receiver, String... str) {
+		int len;
+		for (int i = 0; i < str.length-1; i+= 2)
 		{
-			if ((i&1) == 0)
-				receiver.drawMenuFont(engine, playerID, 0, y+i, str[i], color);
-			else if (engine.statc[2] == statc && !engine.owner.replayMode)
+			len = str[i].length();
+			receiver.drawMenuFont(engine, playerID, 1, menuY, str[i], menuColor);
+			if (engine.statc[2] == statcMenu && !engine.owner.replayMode)
 			{
-				receiver.drawMenuFont(engine, playerID, 0, y+i, "b" + str[i], true);
-				statc++;
+				receiver.drawMenuFont(engine, playerID, 0, menuY, "b", true);
+				receiver.drawMenuFont(engine, playerID, str[i].length()+1, menuY, str[i+1], true);
 			}
-			else {
-				receiver.drawMenuFont(engine, playerID, 1, y+i, str[i]);
-				statc++;
-			}
+			else
+				receiver.drawMenuFont(engine, playerID, str[i].length()+1, menuY, str[i+1]);
+			statcMenu++;
+			menuY++;
 		}
+	}
+
+	protected void drawMenuCompact (GameEngine engine, int playerID, EventReceiver receiver,
+			int y, int color, int statc, String... str) {
+		menuY = y;
+		menuColor = color;
+		statcMenu = statc;
+		drawMenuCompact(engine, playerID, receiver, str);
 	}
 
 	protected void drawResult (GameEngine engine, int playerID, EventReceiver receiver, int y, int color, String... str) {
