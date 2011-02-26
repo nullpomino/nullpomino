@@ -2572,31 +2572,9 @@ public class GameEngine {
 			if( ((lockDelayNow >= getLockDelay()) && (getLockDelay() > 0)) || (instantlock == true) ) {
 				if(ruleopt.lockflash > 0) nowPieceObject.setDarkness(-0.8f);
 
-				/*if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
-
-					tspinmini = false;
-
-					// T-Spin Mini判定
-
-					if(!useAllSpinBonus) {
-						if(spinCheckType == SPINTYPE_4POINT) {
-							if(tspinminiType == TSPINMINI_TYPE_ROTATECHECK) {
-								if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection(-1), field) &&
-								   nowPieceObject.checkCollision(nowPieceX, nowPieceY, getRotateDirection( 1), field))
-									tspinmini = true;
-							} else if(tspinminiType == TSPINMINI_TYPE_WALLKICKFLAG) {
-								tspinmini = kickused;
-							}
-						} else if(spinCheckType == SPINTYPE_IMMOBILE) {
-							Field copyField = new Field(field);
-							nowPieceObject.placeToField(nowPieceX, nowPieceY, copyField);
-							if((copyField.checkLineNoFlag() == 1) && (kickused == true)) tspinmini = true;
-						}
-					}
-				}*/
-
 				// T-Spin判定
-				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
+				//if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
+				if(tspinEnable == true) {
 					if(useAllSpinBonus)
 						setAllSpin(nowPieceX, nowPieceY, nowPieceObject, field);
 					else
