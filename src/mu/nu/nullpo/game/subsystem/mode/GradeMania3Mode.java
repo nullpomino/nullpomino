@@ -724,16 +724,35 @@ public class GradeMania3Mode extends DummyMode {
 			if(change != 0) {
 				engine.playSE("change");
 
+				
 				switch(engine.statc[2]) {
 				case 0:
 					startlevel += change;
 					if(startlevel < 0) startlevel = 11;
 					if(startlevel > 11) startlevel = 0;
 					owner.backgroundStatus.bg = Math.min(9, startlevel);
-					if (startlevel >= 10) break;
-				//$FALL-THROUGH$
+					if (startlevel == 11)
+						internalLevel = 1200;
+					else {
+						if (startlevel < 10 && startlevel - change < 10 && internalLevel < 1200)
+							internalLevel += change * 100;
+						int minSpeed = Math.min(startlevel, 9) * 100;
+						int maxSpeed = Math.min(startlevel << 1, 12) * 100;
+						if(internalLevel < minSpeed) internalLevel = minSpeed;
+						if(internalLevel > maxSpeed) internalLevel = maxSpeed;
+					}
+					break;
 				case 1:
-					internalLevel += change * 100;
+					if (startlevel == 11)
+						internalLevel = 1200;
+					else
+					{
+						internalLevel += change * 100;
+						int minSpeed = Math.min(startlevel, 9) * 100;
+						int maxSpeed = Math.min(startlevel << 1, 12) * 100;
+						if(internalLevel < minSpeed) internalLevel = maxSpeed;
+						if(internalLevel > maxSpeed) internalLevel = minSpeed;
+					}
 					break;
 				case 2:
 					alwaysghost = !alwaysghost;
@@ -767,20 +786,6 @@ public class GradeMania3Mode extends DummyMode {
 				case 10:
 					enableexam = !enableexam;
 					break;
-				}
-				if (engine.statc[2] <= 1) {
-					int minSpeed = startlevel * 100;
-					int maxSpeed = Math.min(startlevel * 200, 1200);
-					if (startlevel == 11) {
-						minSpeed = 1200;
-						maxSpeed = 1200;
-					}
-					else if (startlevel == 10) {
-						minSpeed = 900;
-						maxSpeed = 1200;
-					}
-					if(internalLevel < minSpeed) internalLevel = maxSpeed;
-					if(internalLevel > maxSpeed) internalLevel = minSpeed;
 				}
 			}
 
