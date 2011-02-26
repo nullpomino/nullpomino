@@ -2100,7 +2100,7 @@ public class NetServer {
 
 				// Set map
 				if(roomInfo.useMap && (message.length > 4)) {
-					String strDecompressed = NetUtil.decompressString(message[34]);
+					String strDecompressed = NetUtil.decompressString(message[4]);
 					String[] strMaps = strDecompressed.split("\t");
 
 					int maxMap = strMaps.length;

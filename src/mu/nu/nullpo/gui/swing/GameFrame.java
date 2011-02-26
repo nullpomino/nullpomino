@@ -603,8 +603,22 @@ public class GameFrame extends JFrame implements Runnable {
 			}
 		} catch (NullPointerException e) {
 			log.error("update NPE", e);
+
+			try {
+				if(NullpoMinoSwing.gameManager.getQuitFlag()) {
+					shutdown();
+					return;
+				}
+			} catch (Throwable e2) {}
 		} catch (Exception e) {
 			log.error("update fail", e);
+
+			try {
+				if(NullpoMinoSwing.gameManager.getQuitFlag()) {
+					shutdown();
+					return;
+				}
+			} catch (Throwable e2) {}
 		}
 	}
 

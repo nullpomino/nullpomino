@@ -55,6 +55,9 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	/** NET: Number of spectators (Declared in NetDummyMode) */
 	protected int netNumSpectators;
 
+	/** NET: Send all movements even if there are no spectators */
+	protected boolean netForceSendMovements;
+
 	/** NET: Previous piece informations (Declared in NetDummyMode) */
 	protected int netPrevPieceID, netPrevPieceX, netPrevPieceY, netPrevPieceDir;
 
@@ -180,6 +183,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 		netIsNetPlay = false;
 		netIsWatch = false;
 		netNumSpectators = 0;
+		netForceSendMovements = false;
 		netPlayerName = "";
 		netRankingCursor = new int[2];
 		netRankingMyRank = new int[2];
@@ -242,13 +246,14 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	public boolean onMove(GameEngine engine, int playerID) {
 		// NET: Send field, next, and stats
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) &&
-		   (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0))
+		   (netIsNetPlay) && (!netIsWatch) && ((netNumSpectators > 0) || (netForceSendMovements)))
 		{
 			netSendField(engine);
 			netSendStats(engine);
 		}
 		// NET: Send piece movement
-		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (engine.nowPieceObject != null) && (netNumSpectators > 0))
+		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (engine.nowPieceObject != null) &&
+		   ((netNumSpectators > 0) || (netForceSendMovements)))
 		{
 			if(netSendPieceMovement(engine, false)) {
 				netSendNextAndHold(engine);
@@ -268,7 +273,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
 		// NET: Send field and stats
-		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
+		if((engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && ((netNumSpectators > 0) || (netForceSendMovements))) {
 			netSendField(engine);
 			netSendStats(engine);
 		}
@@ -280,7 +285,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	@Override
 	public boolean onLineClear(GameEngine engine, int playerID) {
 		// NET: Send field and stats
-		if((engine.statc[0] == 1) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
+		if((engine.statc[0] == 1) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && ((netNumSpectators > 0) || (netForceSendMovements))) {
 			netSendField(engine);
 			netSendStats(engine);
 		}
@@ -293,7 +298,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
 		// NET: Send field, next, and stats
-		if((engine.statc[0] == 0) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && (netNumSpectators > 0)) {
+		if((engine.statc[0] == 0) && (engine.ending == 0) && (netIsNetPlay) && (!netIsWatch) && ((netNumSpectators > 0) || (netForceSendMovements))) {
 			netSendField(engine);
 			netSendNextAndHold(engine);
 			netSendStats(engine);
@@ -308,7 +313,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	public boolean onEndingStart(GameEngine engine, int playerID) {
 		if(engine.statc[2] == 0) {
 			// NET: Send game completed messages
-			if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) {
+			if(netIsNetPlay && !netIsWatch && ((netNumSpectators > 0) || (netForceSendMovements))) {
 				netSendField(engine);
 				netSendNextAndHold(engine);
 				netSendStats(engine);
@@ -325,7 +330,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	public boolean onExcellent(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			// NET: Send game completed messages
-			if(netIsNetPlay && !netIsWatch && (netNumSpectators > 0)) {
+			if(netIsNetPlay && !netIsWatch && ((netNumSpectators > 0) || (netForceSendMovements))) {
 				netSendField(engine);
 				netSendNextAndHold(engine);
 				netSendStats(engine);
@@ -345,7 +350,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			if(!netIsWatch) {
 				if(engine.statc[0] == 0) {
 					// Send end-of-game messages
-					if(netNumSpectators > 0) {
+					if((netNumSpectators > 0) || (netForceSendMovements)) {
 						netSendField(engine);
 						netSendNextAndHold(engine);
 						netSendStats(engine);
@@ -391,7 +396,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 			// Retry
 			if(engine.ctrl.isPush(Controller.BUTTON_A) && !netIsWatch && (netReplaySendStatus == 2)) {
 				engine.playSE("decide");
-				if(netNumSpectators > 0) {
+				if((netNumSpectators > 0) || (netForceSendMovements)) {
 					netLobby.netPlayerClient.send("game\tretry\n");
 					netSendOptions(engine);
 				}
@@ -424,7 +429,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 
 		// NET: Signal cursor change
 		if((engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) || engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) &&
-			netIsNetPlay && (netNumSpectators > 0))
+			netIsNetPlay && ((netNumSpectators > 0) || (netForceSendMovements)))
 		{
 			netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
 		}
@@ -564,43 +569,7 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 				}
 				// Current Piece
 				if(message[3].equals("piece")) {
-					int id = Integer.parseInt(message[4]);
-
-					if(id >= 0) {
-						int pieceX = Integer.parseInt(message[5]);
-						int pieceY = Integer.parseInt(message[6]);
-						int pieceDir = Integer.parseInt(message[7]);
-						//int pieceBottomY = Integer.parseInt(message[8]);
-						int pieceColor = Integer.parseInt(message[9]);
-						int pieceSkin = Integer.parseInt(message[10]);
-						boolean pieceBig = (message.length > 11) ? Boolean.parseBoolean(message[11]) : false;
-
-						engine.nowPieceObject = new Piece(id);
-						engine.nowPieceObject.direction = pieceDir;
-						engine.nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
-						engine.nowPieceObject.setColor(pieceColor);
-						engine.nowPieceObject.setSkin(pieceSkin);
-						engine.nowPieceX = pieceX;
-						engine.nowPieceY = pieceY;
-						//engine.nowPieceBottomY = pieceBottomY;
-						engine.nowPieceObject.big = pieceBig;
-						engine.nowPieceObject.updateConnectData();
-						engine.nowPieceBottomY =
-							engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
-
-						if((engine.stat != GameEngine.STAT_EXCELLENT) && (engine.stat != GameEngine.STAT_GAMEOVER) &&
-						   (engine.stat != GameEngine.STAT_RESULT))
-						{
-							engine.gameActive = true;
-							engine.timerActive = true;
-							engine.stat = GameEngine.STAT_MOVE;
-							engine.statc[0] = 2;
-						}
-
-						netPlayerSkin = pieceSkin;
-					} else {
-						engine.nowPieceObject = null;
-					}
+					netRecvPieceMovement(engine, message);
 				}
 				// Next and Hold
 				if(message[3].equals("next")) {
@@ -640,6 +609,11 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	 * NET: When the lobby window is closed
 	 */
 	public void netlobbyOnExit(NetLobbyFrame lobby) {
+		try {
+			for(int i = 0; i < owner.engine.length; i++) {
+				owner.engine[i].quitflag = true;
+			}
+		} catch (Exception e) {}
 	}
 
 	/**
@@ -767,6 +741,21 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
+	 * NET: Draw player's name. It may also appear in offline replay.
+	 * @param engine GameEngine
+	 */
+	protected void netDrawPlayerName(GameEngine engine) {
+		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
+			String name = netPlayerName;
+			owner.receiver.drawTTFDirectFont(
+					engine, engine.playerID,
+					owner.receiver.getFieldDisplayPositionX(engine, engine.playerID),
+					owner.receiver.getFieldDisplayPositionY(engine, engine.playerID) - 20,
+					name);
+		}
+	}
+
+	/**
 	 * NET: Send the current piece's movement to all spectators.
 	 * @param engine GameEngine
 	 * @param forceSend <code>true</code> to force send a message
@@ -801,17 +790,47 @@ public class NetDummyMode extends DummyMode implements NetLobbyListener {
 	}
 
 	/**
-	 * NET: Draw player's name. It may also appear in offline replay.
+	 * NET: Receive the current piece's movement. You can override it if you customize "piece" message.
 	 * @param engine GameEngine
+	 * @param message Message array
 	 */
-	protected void netDrawPlayerName(GameEngine engine) {
-		if((netPlayerName != null) && (netPlayerName.length() > 0)) {
-			String name = netPlayerName;
-			owner.receiver.drawTTFDirectFont(
-					engine, engine.playerID,
-					owner.receiver.getFieldDisplayPositionX(engine, engine.playerID),
-					owner.receiver.getFieldDisplayPositionY(engine, engine.playerID) - 20,
-					name);
+	protected void netRecvPieceMovement(GameEngine engine, String[] message) {
+		int id = Integer.parseInt(message[4]);
+
+		if(id >= 0) {
+			int pieceX = Integer.parseInt(message[5]);
+			int pieceY = Integer.parseInt(message[6]);
+			int pieceDir = Integer.parseInt(message[7]);
+			//int pieceBottomY = Integer.parseInt(message[8]);
+			int pieceColor = Integer.parseInt(message[9]);
+			int pieceSkin = Integer.parseInt(message[10]);
+			boolean pieceBig = (message.length > 11) ? Boolean.parseBoolean(message[11]) : false;
+
+			engine.nowPieceObject = new Piece(id);
+			engine.nowPieceObject.direction = pieceDir;
+			engine.nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+			engine.nowPieceObject.setColor(pieceColor);
+			engine.nowPieceObject.setSkin(pieceSkin);
+			engine.nowPieceX = pieceX;
+			engine.nowPieceY = pieceY;
+			//engine.nowPieceBottomY = pieceBottomY;
+			engine.nowPieceObject.big = pieceBig;
+			engine.nowPieceObject.updateConnectData();
+			engine.nowPieceBottomY =
+				engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
+
+			if((engine.stat != GameEngine.STAT_EXCELLENT) && (engine.stat != GameEngine.STAT_GAMEOVER) &&
+			   (engine.stat != GameEngine.STAT_RESULT))
+			{
+				engine.gameActive = true;
+				engine.timerActive = true;
+				engine.stat = GameEngine.STAT_MOVE;
+				engine.statc[0] = 2;
+			}
+
+			netPlayerSkin = pieceSkin;
+		} else {
+			engine.nowPieceObject = null;
 		}
 	}
 

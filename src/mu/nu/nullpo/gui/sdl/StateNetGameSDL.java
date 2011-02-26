@@ -122,6 +122,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			netLobby.shutdown();
 			netLobby = null;
 		}
+		ResourceHolderSDL.bgmStop();
 
 		// FPS restore
 		NullpoMinoSDL.maxFPS = NullpoMinoSDL.propConfig.getProperty("option.maxfps", 60);
@@ -204,7 +205,6 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				gameManager.updateAll();
 
 				if(gameManager.getQuitFlag()) {
-					ResourceHolderSDL.bgmStop();
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 				}
 
@@ -224,8 +224,20 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 			}
 		} catch (NullPointerException e) {
 			log.error("update NPE", e);
+
+			try {
+				if(gameManager.getQuitFlag()) {
+					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+				}
+			} catch (Throwable e2) {}
 		} catch (Exception e) {
 			log.error("update fail", e);
+
+			try {
+				if(gameManager.getQuitFlag()) {
+					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+				}
+			} catch (Throwable e2) {}
 		}
 	}
 

@@ -149,6 +149,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			netLobby.shutdown();
 			netLobby = null;
 		}
+		ResourceHolder.bgmStop();
 		container.setClearEachFrame(false);
 
 		// FPS restore
@@ -240,7 +241,6 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				gameManager.updateAll();
 
 				if(gameManager.getQuitFlag()) {
-					ResourceHolder.bgmStop();
 					game.enterState(StateTitle.ID);
 					return;
 				}
@@ -267,8 +267,22 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 		} catch (NullPointerException e) {
 			log.error("update NPE", e);
+
+			try {
+				if(gameManager.getQuitFlag()) {
+					game.enterState(StateTitle.ID);
+					return;
+				}
+			} catch (Throwable e2) {}
 		} catch (Exception e) {
 			log.error("update fail", e);
+
+			try {
+				if(gameManager.getQuitFlag()) {
+					game.enterState(StateTitle.ID);
+					return;
+				}
+			} catch (Throwable e2) {}
 		}
 	}
 
