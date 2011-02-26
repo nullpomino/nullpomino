@@ -907,7 +907,6 @@ public class GradeMania3Mode extends DummyMode {
 			rollclear = 1;
 			mrollFlag = (startlevel == 11);
 			rollstarted = true;
-			internalLevel = 1200;
 
 			if(mrollFlag) {
 				engine.blockHidden = engine.ruleopt.lockflash;
