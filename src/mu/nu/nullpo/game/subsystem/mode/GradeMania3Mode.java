@@ -731,6 +731,7 @@ public class GradeMania3Mode extends DummyMode {
 					if(startlevel > 11) startlevel = 0;
 					owner.backgroundStatus.bg = Math.min(9, startlevel);
 					if (startlevel >= 10) break;
+				//$FALL-THROUGH$
 				case 1:
 					internalLevel += change * 100;
 					break;
@@ -892,7 +893,7 @@ public class GradeMania3Mode extends DummyMode {
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv;
-		
+
 		if (startlevel >= 10)
 		{
 			// Ending

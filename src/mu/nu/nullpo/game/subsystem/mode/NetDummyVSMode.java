@@ -1,13 +1,13 @@
 package mu.nu.nullpo.game.subsystem.mode;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
-
-import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
+import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.net.NetPlayerClient;
 import mu.nu.nullpo.game.net.NetPlayerInfo;
@@ -17,6 +17,7 @@ import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.util.GeneralUtil;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
 
 /**
  * Special base class for netplay VS modes. Up to 6 players supported.
@@ -63,8 +64,14 @@ public class NetDummyVSMode extends NetDummyMode {
 	/** NET-VS: Local player's seat ID (-1:Spectator) */
 	protected int netvsMySeatID;
 
-	/** NET-VS: Player count */
+	/** NET-VS: Number of players */
 	protected int netvsNumPlayers;
+
+	/** NET-VS: Number of players in current game */
+	protected int netvsNumNowPlayers;
+
+	/** NET-VS: Number of players still alive in current game */
+	protected int netvsNumAlivePlayers;
 
 	/** NET-VS: Player exist flag */
 	protected boolean[] netvsPlayerExist;
@@ -102,6 +109,9 @@ public class NetDummyVSMode extends NetDummyMode {
 	/** NET-VS: Player's skins */
 	protected int[] netvsPlayerSkin;
 
+	/** NET-VS: true if it's ready to show player's result */
+	protected boolean[] netvsPlayerResultReceived;
+
 	/** NET-VS: true if automatic start timer is activated */
 	protected boolean netvsAutoStartTimerActive;
 
@@ -111,8 +121,17 @@ public class NetDummyVSMode extends NetDummyMode {
 	/** NET-VS: true if room game is in progress */
 	protected boolean netvsIsGameActive;
 
+	/** NET-VS: true if room game is finished */
+	protected boolean netvsIsGameFinished;
+
 	/** NET-VS: true if waiting for ready status change */
 	protected boolean netvsIsReadyChangePending;
+
+	/** NET-VS: true if waiting for dead status change */
+	protected boolean netvsIsDeadPending;
+
+	/** NET-VS: true if local player joined game in progress */
+	protected boolean netvsIsNewcomer;
 
 	/** NET-VS: Elapsed timer active flag */
 	protected boolean netvsPlayTimerActive;
@@ -132,14 +151,17 @@ public class NetDummyVSMode extends NetDummyMode {
 	/** NET-VS: Time before forced piece lock */
 	protected int netvsPieceMoveTimerMax;
 
-	/** Map number to use */
+	/** NET-VS: Map number to use */
 	protected int netvsMapNo;
 
-	/** Random for selecting map in Practice mode */
+	/** NET-VS: Random for selecting map in Practice mode */
 	protected Random netvsRandMap;
 
-	/** Practice mode last used map number */
+	/** NET-VS: Practice mode last used map number */
 	protected int netvsMapPreviousPracticeMap;
+
+	/** NET-VS: UID of player who attacked local player last (-1: Suicide or Unknown) */
+	protected int netvsLastAttackerUID;
 
 	/*
 	 * Mode Name
@@ -174,6 +196,8 @@ public class NetDummyVSMode extends NetDummyMode {
 		log.debug("modeInit() on NetDummyVSMode");
 		netvsMySeatID = -1;
 		netvsNumPlayers = 0;
+		netvsNumNowPlayers = 0;
+		netvsNumAlivePlayers = 0;
 		netvsPlayerExist = new boolean[NETVS_MAX_PLAYERS];
 		netvsPlayerReady = new boolean[NETVS_MAX_PLAYERS];
 		netvsPlayerActive = new boolean[NETVS_MAX_PLAYERS];
@@ -188,6 +212,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		netvsAutoStartTimerActive = false;
 		netvsAutoStartTimer = 0;
 		netvsPieceMoveTimerMax = NETVS_PIECE_AUTO_LOCK_TIME;
+		netvsMapPreviousPracticeMap = -1;
 		netvsResetFlags();
 	}
 
@@ -195,10 +220,14 @@ public class NetDummyVSMode extends NetDummyMode {
 	 * NET-VS: Init some variables
 	 */
 	protected void netvsResetFlags() {
+		netvsPlayerResultReceived = new boolean[NETVS_MAX_PLAYERS];
 		netvsPlayerDead = new boolean[NETVS_MAX_PLAYERS];
 		netvsPlayerPlace = new int[NETVS_MAX_PLAYERS];
 		netvsIsGameActive = false;
+		netvsIsGameFinished = false;
 		netvsIsReadyChangePending = false;
+		netvsIsDeadPending = false;
+		netvsIsNewcomer = false;
 		netvsPlayTimerActive = false;
 		netvsPlayTimer = 0;
 		netvsIsPractice = false;
@@ -275,10 +304,28 @@ public class NetDummyVSMode extends NetDummyMode {
 
 		netCurrentRoomInfo = roomInfo;
 		netIsNetPlay = true;
+		netvsIsNewcomer = netCurrentRoomInfo.playing;
 
 		netUpdatePlayerExist();
 		netvsSetLockedRule();
 		netvsSetGameScreenLayout();
+	}
+
+	/**
+	 * NET-VS: Initialize various NetPlay variables. Usually called from playerInit.
+	 */
+	@Override
+	protected void netPlayerInit(GameEngine engine, int playerID) {
+		super.netPlayerInit(engine, playerID);
+
+		// Apply room settings
+		netvsApplyRoomSettings(engine);
+
+		// Misc. variables
+		engine.fieldWidth = 10;
+		engine.fieldHeight = 20;
+		engine.gameoverAll = false;
+		engine.allowTextRenderByReceiver = true;
 	}
 
 	/**
@@ -341,7 +388,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		for(int i = 0; i < getPlayers(); i++) {
 			owner.engine[i].displaysize = -1;
 			owner.engine[i].enableSE = false;
-			if(i >= netCurrentRoomInfo.maxPlayers) {
+			if((netCurrentRoomInfo != null) && (i >= netCurrentRoomInfo.maxPlayers)) {
 				owner.engine[i].isVisible = false;
 			} else {
 				owner.engine[i].isVisible = true;
@@ -355,7 +402,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		}
 
 		// 1vs1 layout
-		if(netCurrentRoomInfo.maxPlayers == 2) {
+		if((netCurrentRoomInfo != null) && (netCurrentRoomInfo.maxPlayers == 2)) {
 			owner.engine[1].displaysize = 0;
 			owner.engine[1].isVisible = true;
 		}
@@ -404,7 +451,7 @@ public class NetDummyVSMode extends NetDummyMode {
 	 * @return Player number
 	 */
 	protected int netvsGetPlayerIDbySeatID(int seat) {
-		return netvsGetPlayerIDbySeatID(seat, netvsMySeatID);
+		return netvsGetPlayerIDbySeatID(seat, netLobby.netPlayerClient.getYourPlayerInfo().seatID);
 	}
 
 	/**
@@ -417,6 +464,52 @@ public class NetDummyVSMode extends NetDummyMode {
 		int myseat2 = myseat;
 		if(myseat2 < 0) myseat2 = 0;
 		return NETVS_GAME_SEAT_NUMBERS[myseat2][seat];
+	}
+
+	/**
+	 * NET-VS: Start a practice game
+	 * @param engine GameEngine
+	 */
+	protected void netvsStartPractice(GameEngine engine) {
+		netvsIsPractice = true;
+		netvsIsPracticeExitAllowed = false;
+
+		engine.init();
+		engine.stat = GameEngine.STAT_READY;
+		engine.resetStatc();
+
+		// Map
+		if(netCurrentRoomInfo.useMap && (netLobby.mapList.size() > 0)) {
+			if(netvsRandMap == null) netvsRandMap = new Random();
+
+			int map = 0;
+			int maxMap = netLobby.mapList.size();
+			do {
+				map = netvsRandMap.nextInt(maxMap);
+			} while ((map == netvsMapPreviousPracticeMap) && (maxMap >= 2));
+			netvsMapPreviousPracticeMap = map;
+
+			engine.createFieldIfNeeded();
+			engine.field.stringToField(netLobby.mapList.get(map));
+			engine.field.setAllSkin(engine.getSkin());
+			engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+			engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_OUTLINE, true);
+			engine.field.setAllAttribute(Block.BLOCK_ATTRIBUTE_SELFPLACED, false);
+		}
+	}
+
+	/**
+	 * NET-VS: Receive end-of-game stats.<br>
+	 * Game modes should implement this. However, there are some sample codes in NetDummyVSMode.
+	 * @param message Message
+	 */
+	protected void netvsRecvEndGameStats(String[] message) {
+		int seatID = Integer.parseInt(message[2]);
+		int playerID = netvsGetPlayerIDbySeatID(seatID);
+
+		if((playerID != 0) || (netIsWatch)) {
+			netvsPlayerResultReceived[playerID] = true;
+		}
 	}
 
 	/**
@@ -469,7 +562,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			// Practice Mode
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
 				engine.playSE("decide");
-				//startpractice
+				netvsStartPractice(engine);
 			}
 		}
 
@@ -601,5 +694,633 @@ public class NetDummyVSMode extends NetDummyMode {
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
 		super.pieceLocked(engine, playerID, lines);
 		netvsPieceMoveTimer = 0;
+	}
+
+	/**
+	 * NET-VS: Executed at the end of each frame
+	 */
+	@Override
+	public void onLast(GameEngine engine, int playerID) {
+		super.onLast(engine, playerID);
+
+		// Automatic start timer
+		if((playerID == 0) && (netCurrentRoomInfo != null) && (netvsAutoStartTimerActive) && (!netvsIsGameActive)) {
+			if(netvsNumPlayers <= 1) {
+				netvsAutoStartTimerActive = false;
+			} else if(netvsAutoStartTimer > 0) {
+				netvsAutoStartTimer--;
+			} else {
+				if(!netIsWatch) {
+					netLobby.netPlayerClient.send("autostart\n");
+				}
+				netvsAutoStartTimer = 0;
+				netvsAutoStartTimerActive = false;
+			}
+		}
+
+		// End practice mode
+		if((playerID == 0) && (netvsIsPractice) && (netvsIsPracticeExitAllowed) && (engine.ctrl.isPush(Controller.BUTTON_F))) {
+			netvsIsPractice = false;
+			netvsIsPracticeExitAllowed = false;
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+			engine.field.reset();
+			engine.gameEnded();
+			engine.stat = GameEngine.STAT_SETTING;
+			engine.resetStatc();
+		}
+
+	}
+
+	/**
+	 * NET-VS: Render something such as HUD
+	 */
+	@Override
+	public void renderLast(GameEngine engine, int playerID) {
+		super.renderLast(engine, playerID);
+
+		// Elapsed time
+		if(playerID == 0) {
+			owner.receiver.drawDirectFont(engine, 0, 256, 16, GeneralUtil.getTime(netvsPlayTimer));
+
+			if(netvsIsPractice) {
+				owner.receiver.drawDirectFont(engine, 0, 256, 32, GeneralUtil.getTime(engine.statistics.time), EventReceiver.COLOR_PURPLE);
+			}
+		}
+
+		// Automatic start timer
+		if((playerID == 0) && (netCurrentRoomInfo != null) && (netvsAutoStartTimerActive) && (!netvsIsGameActive)) {
+			owner.receiver.drawDirectFont(engine, 0, 496, 16, GeneralUtil.getTime(netvsAutoStartTimer), netCurrentRoomInfo.autoStartTNET2,
+					EventReceiver.COLOR_RED, EventReceiver.COLOR_YELLOW);
+		}
+
+		// Name
+		netDrawPlayerName(engine);
+	}
+
+	/**
+	 * NET-VS: Game Over
+	 */
+	@Override
+	public boolean onGameOver(GameEngine engine, int playerID) {
+		if(engine.statc[0] == 0) engine.gameEnded();
+		engine.allowTextRenderByReceiver = false;
+
+		// Practice
+		if((playerID == 0) && (netvsIsPractice)) {
+			if(engine.statc[0] < engine.field.getHeight() + 1) {
+				return false;
+			} else {
+				engine.field.reset();
+				engine.stat = GameEngine.STAT_RESULT;
+				engine.resetStatc();
+				return true;
+			}
+		}
+
+		// 1P died
+		if((playerID == 0) && (!netvsPlayerDead[playerID]) && (!netvsIsDeadPending)) {
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+			engine.resetFieldVisible();
+
+			netSendField(engine);
+			netSendNextAndHold(engine);
+			netLobby.netPlayerClient.send("dead\t" + netvsLastAttackerUID + "\n");
+
+			netvsPlayerResultReceived[playerID] = true;
+			netvsIsDeadPending = true;
+			return true;
+		}
+
+		// Player/Opponent died
+		if(netvsPlayerDead[playerID]) {
+			if(engine.field == null) {
+				engine.stat = GameEngine.STAT_SETTING;
+				engine.resetStatc();
+				return true;
+			}
+			if((engine.statc[0] < engine.field.getHeight() + 1) || (netvsPlayerResultReceived[playerID])) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * NET-VS: Draw Game Over screen
+	 */
+	@Override
+	public void renderGameOver(GameEngine engine, int playerID) {
+		if((playerID == 0) && (netvsIsPractice)) return;
+		if(!engine.isVisible) return;
+
+		int x = owner.receiver.getFieldDisplayPositionX(engine, playerID);
+		int y = owner.receiver.getFieldDisplayPositionY(engine, playerID);
+		int place = netvsPlayerPlace[playerID];
+
+		if(engine.displaysize != -1) {
+			if(netvsPlayerReady[playerID] && !netvsIsGameActive) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 68, y + 204, "OK", EventReceiver.COLOR_YELLOW);
+			} else if((netvsNumNowPlayers == 2) || (netCurrentRoomInfo.maxPlayers == 2)) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 52, y + 204, "LOSE", EventReceiver.COLOR_WHITE);
+			} else if(place == 1) {
+				//owner.receiver.drawDirectFont(engine, playerID, x + 12, y + 204, "GAME OVER", EventReceiver.COLOR_WHITE);
+			} else if(place == 2) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 12, y + 204, "2ND PLACE", EventReceiver.COLOR_WHITE);
+			} else if(place == 3) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 12, y + 204, "3RD PLACE", EventReceiver.COLOR_RED);
+			} else if(place == 4) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 12, y + 204, "4TH PLACE", EventReceiver.COLOR_GREEN);
+			} else if(place == 5) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 12, y + 204, "5TH PLACE", EventReceiver.COLOR_BLUE);
+			} else if(place == 6) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 12, y + 204, "6TH PLACE", EventReceiver.COLOR_PURPLE);
+			}
+		} else {
+			if(netvsPlayerReady[playerID] && !netvsIsGameActive) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 36, y + 80, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
+			} else if((netvsNumNowPlayers == 2) || (netCurrentRoomInfo.maxPlayers == 2)) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 28, y + 80, "LOSE", EventReceiver.COLOR_WHITE, 0.5f);
+			} else if(place == 1) {
+				//owner.receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "GAME OVER", EventReceiver.COLOR_WHITE, 0.5f);
+			} else if(place == 2) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "2ND PLACE", EventReceiver.COLOR_WHITE, 0.5f);
+			} else if(place == 3) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "3RD PLACE", EventReceiver.COLOR_RED, 0.5f);
+			} else if(place == 4) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "4TH PLACE", EventReceiver.COLOR_GREEN, 0.5f);
+			} else if(place == 5) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "5TH PLACE", EventReceiver.COLOR_BLUE, 0.5f);
+			} else if(place == 6) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 8, y + 80, "6TH PLACE", EventReceiver.COLOR_PURPLE, 0.5f);
+			}
+		}
+	}
+
+	/**
+	 * NET-VS: Excellent screen
+	 */
+	@Override
+	public boolean onExcellent(GameEngine engine, int playerID) {
+		engine.allowTextRenderByReceiver = false;
+
+		if(engine.statc[0] == 0) {
+			engine.gameEnded();
+			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+			engine.resetFieldVisible();
+			engine.playSE("excellent");
+		}
+
+		if((engine.statc[0] >= 120) && (engine.ctrl.isPush(Controller.BUTTON_A))) {
+			engine.statc[0] = engine.field.getHeight() + 1 + 180;
+		}
+
+		if(engine.statc[0] >= engine.field.getHeight() + 1 + 180) {
+			if((!netvsIsGameActive) && (netvsPlayerResultReceived[playerID])) {
+				if(engine.field != null) engine.field.reset();
+				engine.resetStatc();
+				engine.stat = GameEngine.STAT_RESULT;
+			}
+		} else {
+			engine.statc[0]++;
+		}
+
+		return true;
+	}
+
+	/**
+	 * NET-VS: Draw Excellent screen
+	 */
+	@Override
+	public void renderExcellent(GameEngine engine, int playerID) {
+		if(!engine.isVisible) return;
+
+		int x = owner.receiver.getFieldDisplayPositionX(engine, playerID);
+		int y = owner.receiver.getFieldDisplayPositionY(engine, playerID);
+
+		if(engine.displaysize != -1) {
+			if(netvsPlayerReady[playerID] && !netvsIsGameActive) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 68, y + 204, "OK", EventReceiver.COLOR_YELLOW);
+			} else if((netvsNumPlayers == 2) || (netCurrentRoomInfo.maxPlayers == 2)) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 52, y + 204, "WIN!", EventReceiver.COLOR_YELLOW);
+			} else {
+				owner.receiver.drawDirectFont(engine, playerID, x + 4, y + 204, "1ST PLACE!", EventReceiver.COLOR_YELLOW);
+			}
+		} else {
+			if(netvsPlayerReady[playerID] && !netvsIsGameActive) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 36, y + 80, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
+			} else if((netvsNumPlayers == 2) || (netCurrentRoomInfo.maxPlayers == 2)) {
+				owner.receiver.drawDirectFont(engine, playerID, x + 28, y + 80, "WIN!", EventReceiver.COLOR_YELLOW, 0.5f);
+			} else {
+				owner.receiver.drawDirectFont(engine, playerID, x + 4, y + 80, "1ST PLACE!", EventReceiver.COLOR_YELLOW, 0.5f);
+			}
+		}
+	}
+
+	/**
+	 * NET-VS: Results screen
+	 */
+	@Override
+	public boolean onResult(GameEngine engine, int playerID) {
+		engine.allowTextRenderByReceiver = false;
+
+		if((playerID == 0) && (!netIsWatch)) {
+			// To the settings screen
+			if(engine.ctrl.isPush(Controller.BUTTON_A)) {
+				engine.playSE("decide");
+				engine.stat = GameEngine.STAT_SETTING;
+				engine.resetStatc();
+				return true;
+			}
+			// Start Practice
+			if(engine.ctrl.isPush(Controller.BUTTON_F)) {
+				engine.playSE("decide");
+				netvsStartPractice(engine);
+				return true;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * NET-VS: Draw results screen
+	 */
+	@Override
+	public void renderResult(GameEngine engine, int playerID) {
+		float scale = 1.0f;
+		if(engine.displaysize == -1) scale = 0.5f;
+
+		// Place
+		if(!netvsIsPractice) {
+			owner.receiver.drawMenuFont(engine, playerID, 0, 0, "RESULT", EventReceiver.COLOR_ORANGE, scale);
+			if(netvsPlayerPlace[playerID] == 1) {
+				if(netvsNumNowPlayers == 2) {
+					owner.receiver.drawMenuFont(engine, playerID, 6, 1, "WIN!", EventReceiver.COLOR_YELLOW, scale);
+				} else if(netvsNumNowPlayers > 2) {
+					owner.receiver.drawMenuFont(engine, playerID, 6, 1, "1ST!", EventReceiver.COLOR_YELLOW, scale);
+				}
+			} else if(netvsPlayerPlace[playerID] == 2) {
+				if(netvsNumNowPlayers == 2) {
+					owner.receiver.drawMenuFont(engine, playerID, 6, 1, "LOSE", EventReceiver.COLOR_WHITE, scale);
+				} else {
+					owner.receiver.drawMenuFont(engine, playerID, 7, 1, "2ND", EventReceiver.COLOR_WHITE, scale);
+				}
+			} else if(netvsPlayerPlace[playerID] == 3) {
+				owner.receiver.drawMenuFont(engine, playerID, 7, 1, "3RD", EventReceiver.COLOR_RED, scale);
+			} else if(netvsPlayerPlace[playerID] == 4) {
+				owner.receiver.drawMenuFont(engine, playerID, 7, 1, "4TH", EventReceiver.COLOR_GREEN, scale);
+			} else if(netvsPlayerPlace[playerID] == 5) {
+				owner.receiver.drawMenuFont(engine, playerID, 7, 1, "5TH", EventReceiver.COLOR_BLUE, scale);
+			} else if(netvsPlayerPlace[playerID] == 6) {
+				owner.receiver.drawMenuFont(engine, playerID, 7, 1, "6TH", EventReceiver.COLOR_DARKBLUE, scale);
+			}
+		} else {
+			owner.receiver.drawMenuFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_PINK, scale);
+		}
+
+		// Restart/Practice
+		if((playerID == 0) && (!netIsWatch)) {
+			String strTemp = "A(" + owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_A) + " KEY):";
+			if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
+			owner.receiver.drawMenuFont(engine, playerID, 0, 18, strTemp, EventReceiver.COLOR_RED);
+			owner.receiver.drawMenuFont(engine, playerID, 1, 19, "RESTART", EventReceiver.COLOR_RED);
+
+			String strTempF = "F(" + owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):";
+			if(strTempF.length() > 10) strTempF = strTempF.substring(0, 10);
+			owner.receiver.drawMenuFont(engine, playerID, 0, 20, strTempF, EventReceiver.COLOR_PURPLE);
+			if(!netvsIsPractice) {
+				owner.receiver.drawMenuFont(engine, playerID, 1, 21, "PRACTICE", EventReceiver.COLOR_PURPLE);
+			} else {
+				owner.receiver.drawMenuFont(engine, playerID, 1, 21, "RETRY", EventReceiver.COLOR_PURPLE);
+			}
+		}
+	}
+
+	/**
+	 * NET-VS: No retry key.
+	 */
+	@Override
+	public void netplayOnRetryKey(GameEngine engine, int playerID) {
+	}
+
+	/**
+	 * NET-VS: Disconnected
+	 */
+	@Override
+	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
+		for(int i = 0; i < getPlayers(); i++) {
+			owner.engine[i].stat = GameEngine.STAT_NOTHING;
+		}
+	}
+
+	/**
+	 * NET-VS: Message received
+	 */
+	@Override
+	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
+		// Player status update
+		if(message[0].equals("playerupdate")) {
+			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
+
+			// Ready status change
+			if((pInfo.roomID == netCurrentRoomInfo.roomID) && (pInfo.seatID != -1)) {
+				int playerID = netvsGetPlayerIDbySeatID(pInfo.seatID);
+
+				if(netvsPlayerReady[playerID] != pInfo.ready) {
+					netvsPlayerReady[playerID] = pInfo.ready;
+
+					if((playerID == 0) && (!netIsWatch)) {
+						netvsIsReadyChangePending = false;
+					} else {
+						if(pInfo.ready) owner.receiver.playSE("decide");
+						else owner.receiver.playSE("change");
+					}
+				}
+			}
+
+			netUpdatePlayerExist();
+		}
+		// When someone logout
+		if(message[0].equals("playerlogout")) {
+			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
+
+			if((pInfo.roomID == netCurrentRoomInfo.roomID) && (pInfo.seatID != -1)) {
+				netUpdatePlayerExist();
+			}
+		}
+		// Player status change (Join/Watch)
+		if(message[0].equals("changestatus")) {
+			int uid = Integer.parseInt(message[2]);
+
+			netUpdatePlayerExist();
+			netvsSetGameScreenLayout();
+
+			if(uid == netLobby.netPlayerClient.getPlayerUID()) {
+				netvsIsPractice = false;
+				owner.engine[0].stat = GameEngine.STAT_SETTING;
+
+				for(int i = 0; i < getPlayers(); i++) {
+					if(owner.engine[i].field != null) {
+						owner.engine[i].field.reset();
+					}
+					owner.engine[i].nowPieceObject = null;
+
+					if((owner.engine[i].stat == GameEngine.STAT_NOTHING) || (!netvsIsGameActive)) {
+						owner.engine[i].stat = GameEngine.STAT_SETTING;
+					}
+					owner.engine[i].resetStatc();
+				}
+			}
+		}
+		// Someone entered here
+		if(message[0].equals("playerenter")) {
+			int seatID = Integer.parseInt(message[3]);
+			if((seatID != -1) && (netvsNumPlayers < 2)) {
+				owner.receiver.playSE("levelstop");
+			}
+		}
+		// Someone leave here
+		if(message[0].equals("playerleave")) {
+			netUpdatePlayerExist();
+
+			if(netvsNumPlayers < 2) {
+				netvsAutoStartTimerActive = false;
+			}
+		}
+		// Automatic timer start
+		if(message[0].equals("autostartbegin")) {
+			if(netvsNumPlayers >= 2) {
+				int seconds = Integer.parseInt(message[1]);
+				netvsAutoStartTimer = seconds * 60;
+				netvsAutoStartTimerActive = true;
+			}
+		}
+		// Automatic timer stop
+		if(message[0].equals("autostartstop")) {
+			netvsAutoStartTimerActive = false;
+		}
+		// Game Started
+		if(message[0].equals("start")) {
+			long randseed = Long.parseLong(message[1], 16);
+			netvsNumNowPlayers = Integer.parseInt(message[2]);
+			netvsNumAlivePlayers = netvsNumNowPlayers;
+			netvsMapNo = Integer.parseInt(message[3]);
+
+			netvsResetFlags();
+			owner.reset();
+			netUpdatePlayerExist();
+			netvsSetGameScreenLayout();
+
+			netvsAutoStartTimerActive = false;
+			netvsIsGameActive = true;
+			netvsIsGameFinished = false;
+			netvsPlayTimer = 0;
+
+			netvsSetLockedRule();	// Set locked rule/Restore rule
+
+			for(int i = 0; i < getPlayers(); i++) {
+				GameEngine engine = owner.engine[i];
+				engine.resetStatc();
+
+				if(netvsPlayerExist[i]) {
+					netvsPlayerActive[i] = true;
+					engine.stat = GameEngine.STAT_READY;
+					engine.randSeed = randseed;
+					engine.random = new Random(randseed);
+
+					if((netCurrentRoomInfo.maxPlayers == 2) && (netvsNumPlayers == 2)) {
+						engine.isVisible = true;
+						engine.displaysize = 0;
+
+						if( (netCurrentRoomInfo.ruleLock) || ((i == 0) && (!netIsWatch)) ) {
+							engine.isNextVisible = true;
+							engine.isHoldVisible = true;
+
+							if(i != 0) {
+								engine.randomizer = owner.engine[0].randomizer;
+							}
+						} else {
+							engine.isNextVisible = false;
+							engine.isHoldVisible = false;
+						}
+					}
+				} else if(i < netCurrentRoomInfo.maxPlayers) {
+					engine.stat = GameEngine.STAT_SETTING;
+					engine.isVisible = true;
+					engine.isNextVisible = false;
+					engine.isHoldVisible = false;
+
+					if((netCurrentRoomInfo.maxPlayers == 2) && (netvsNumPlayers == 2)) {
+						engine.isVisible = false;
+					}
+				} else {
+					engine.stat = GameEngine.STAT_SETTING;
+					engine.isVisible = false;
+				}
+
+				netvsPlayerResultReceived[i] = false;
+				netvsPlayerDead[i] = false;
+				netvsPlayerReady[i] = false;
+			}
+		}
+		// Dead
+		if(message[0].equals("dead")) {
+			int seatID = Integer.parseInt(message[3]);
+			int playerID = netvsGetPlayerIDbySeatID(seatID);
+
+			if(!netvsPlayerDead[playerID]) {
+				netvsPlayerDead[playerID] = true;
+				netvsPlayerPlace[playerID] = Integer.parseInt(message[4]);
+				owner.engine[playerID].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[playerID].resetStatc();
+				netvsNumAlivePlayers--;
+
+				if(seatID == netLobby.netPlayerClient.getYourPlayerInfo().seatID) {
+					netSendEndGameStats(owner.engine[0]);
+				}
+			}
+		}
+		// End-of-game Stats
+		if(message[0].equals("gstat")) {
+			netvsRecvEndGameStats(message);
+		}
+		// Game Finished
+		if(message[0].equals("finish")) {
+			netvsIsGameActive = false;
+			netvsIsGameFinished = true;
+			netvsPlayTimerActive = false;
+
+			// Stop practice game
+			if(netvsIsPractice) {
+				netvsIsPractice = false;
+				netvsIsPracticeExitAllowed = false;
+				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
+				owner.engine[0].gameEnded();
+				owner.engine[0].stat = GameEngine.STAT_SETTING;
+				owner.engine[0].resetStatc();
+			}
+
+			boolean flagTeamWin = Boolean.parseBoolean(message[4]);
+
+			if(flagTeamWin) {
+				// Team won
+				for(int i = 0; i < getPlayers(); i++) {
+					if(netvsPlayerExist[i] && !netvsPlayerDead[i]) {
+						netvsPlayerPlace[i] = 1;
+						owner.engine[i].gameEnded();
+						owner.engine[i].stat = GameEngine.STAT_EXCELLENT;
+						owner.engine[i].resetStatc();
+						owner.engine[i].statistics.time = netvsPlayTimer;
+						netvsNumAlivePlayers--;
+
+						if((i == 0) && (!netIsWatch)) {
+							netSendEndGameStats(owner.engine[0]);
+						}
+					}
+				}
+			} else {
+				// Normal player won
+				int seatID = Integer.parseInt(message[2]);
+				if(seatID != -1) {
+					int playerID = netvsGetPlayerIDbySeatID(seatID);
+					if(netvsPlayerExist[playerID]) {
+						netvsPlayerPlace[playerID] = 1;
+						owner.engine[playerID].gameEnded();
+						owner.engine[playerID].stat = GameEngine.STAT_EXCELLENT;
+						owner.engine[playerID].resetStatc();
+						owner.engine[playerID].statistics.time = netvsPlayTimer;
+						netvsNumAlivePlayers--;
+
+						if((seatID == netLobby.netPlayerClient.getYourPlayerInfo().seatID) && (!netIsWatch)) {
+							netSendEndGameStats(owner.engine[0]);
+						}
+					}
+				}
+			}
+
+			if((netIsWatch) || (netvsPlayerPlace[0] >= 3)) {
+				owner.receiver.playSE("matchend");
+			}
+
+			netUpdatePlayerExist();
+		}
+		// Game messages
+		if(message[0].equals("game")) {
+			//int uid = Integer.parseInt(message[1]);
+			int seatID = Integer.parseInt(message[2]);
+			int playerID = netvsGetPlayerIDbySeatID(seatID);
+
+			GameEngine engine = owner.engine[playerID];
+
+			if(engine.field == null) {
+				engine.createFieldIfNeeded();
+			}
+
+			// Field
+			if(message[3].equals("field") || message[3].equals("fieldattr")) {
+				netRecvField(engine, message);
+			}
+			// Stats
+			if(message[3].equals("stats")) {
+				netRecvStats(engine, message);
+			}
+			// Current Piece
+			if(message[3].equals("piece")) {
+				int id = Integer.parseInt(message[4]);
+
+				if(id >= 0) {
+					int pieceX = Integer.parseInt(message[5]);
+					int pieceY = Integer.parseInt(message[6]);
+					int pieceDir = Integer.parseInt(message[7]);
+					//int pieceBottomY = Integer.parseInt(message[8]);
+					int pieceColor = Integer.parseInt(message[9]);
+					int pieceSkin = Integer.parseInt(message[10]);
+					boolean pieceBig = (message.length > 11) ? Boolean.parseBoolean(message[11]) : false;
+
+					engine.nowPieceObject = new Piece(id);
+					engine.nowPieceObject.direction = pieceDir;
+					engine.nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+					engine.nowPieceObject.setColor(pieceColor);
+					engine.nowPieceObject.setSkin(pieceSkin);
+					engine.nowPieceX = pieceX;
+					engine.nowPieceY = pieceY;
+					//engine.nowPieceBottomY = pieceBottomY;
+					engine.nowPieceObject.big = pieceBig;
+					engine.nowPieceObject.updateConnectData();
+					engine.nowPieceBottomY =
+						engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
+
+					if((engine.stat != GameEngine.STAT_EXCELLENT) && (engine.stat != GameEngine.STAT_GAMEOVER) &&
+					   (engine.stat != GameEngine.STAT_RESULT))
+					{
+						engine.stat = GameEngine.STAT_MOVE;
+						engine.statc[0] = 2;
+					}
+
+					netvsPlayerSkin[playerID] = pieceSkin;
+
+				} else {
+					engine.nowPieceObject = null;
+				}
+
+				// Play timer start
+				if((netIsWatch) && (!netvsPlayTimerActive) && (!netvsIsGameFinished)) {
+					netvsPlayTimerActive = true;
+					netvsPlayTimer = 0;
+				}
+
+				// Force start
+				if((!netIsWatch) && (netvsPlayTimerActive) && (!netvsIsPractice) &&
+				   (owner.engine[0].stat == GameEngine.STAT_READY) && (owner.engine[0].statc[0] < owner.engine[0].goEnd))
+				{
+					owner.engine[0].statc[0] = owner.engine[0].goEnd;
+				}
+			}
+			// Next and Hold
+			if(message[3].equals("next")) {
+				netRecvNextAndHold(engine, message);
+			}
+		}
 	}
 }
