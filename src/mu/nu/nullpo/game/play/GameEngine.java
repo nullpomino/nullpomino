@@ -2573,8 +2573,7 @@ public class GameEngine {
 				if(ruleopt.lockflash > 0) nowPieceObject.setDarkness(-0.8f);
 
 				// T-Spin判定
-				//if(tspinEnable == true) {
-				if((lastmove == LASTMOVE_ROTATE_GROUND) && (tspinEnable == true)) {
+				if(((lastmove == LASTMOVE_ROTATE_GROUND) || (lastmove == LASTMOVE_ROTATE_AIR)) && (tspinEnable == true)) {
 					if(useAllSpinBonus)
 						setAllSpin(nowPieceX, nowPieceY, nowPieceObject, field);
 					else
