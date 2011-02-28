@@ -54,6 +54,7 @@ import org.apache.log4j.Logger;
 
 /**
  * The old version of NET-VS-BATTLE Mode
+ * @deprecated Replaced with the current NetVSBattleMode which uses NetDummyVSMode.
  */
 public class LegacyNetVSBattleMode extends NetDummyMode {
 	/** Log */

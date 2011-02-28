@@ -632,6 +632,30 @@ public class NetDummyVSMode extends NetDummyMode {
 	}
 
 	/**
+	 * Draw room info box (number of players, number of spectators, etc) to somewhere on the screen
+	 * @param engine GameEngine
+	 * @param x X position
+	 * @param y Y position
+	 */
+	protected void netvsDrawRoomInfoBox(GameEngine engine, int x, int y) {
+		if(netCurrentRoomInfo != null) {
+			owner.receiver.drawDirectFont(engine, 0, x, y +  0, "PLAYERS", EventReceiver.COLOR_CYAN, 0.5f);
+			owner.receiver.drawDirectFont(engine, 0, x, y +  8, "" + netvsNumPlayers, EventReceiver.COLOR_WHITE, 0.5f);
+			owner.receiver.drawDirectFont(engine, 0, x, y + 16, "SPECTATORS", EventReceiver.COLOR_CYAN, 0.5f);
+			owner.receiver.drawDirectFont(engine, 0, x, y + 24, "" + netNumSpectators, EventReceiver.COLOR_WHITE, 0.5f);
+
+			if(!netvsIsWatch()) {
+				owner.receiver.drawDirectFont(engine, 0, x, y + 32, "MATCHES", EventReceiver.COLOR_CYAN, 0.5f);
+				owner.receiver.drawDirectFont(engine, 0, x, y + 40, "" + netvsPlayerPlayCount[0], EventReceiver.COLOR_WHITE, 0.5f);
+				owner.receiver.drawDirectFont(engine, 0, x, y + 48, "WINS", EventReceiver.COLOR_CYAN, 0.5f);
+				owner.receiver.drawDirectFont(engine, 0, x, y + 56, "" + netvsPlayerWinCount[0], EventReceiver.COLOR_WHITE, 0.5f);
+			}
+		}
+		owner.receiver.drawDirectFont(engine, 0, x, y + 72, "ALL ROOMS", EventReceiver.COLOR_GREEN, 0.5f);
+		owner.receiver.drawDirectFont(engine, 0, x, y + 80, "" + netLobby.netPlayerClient.getRoomInfoList().size(), EventReceiver.COLOR_WHITE, 0.5f);
+	}
+
+	/**
 	 * NET-VS: Settings screen
 	 */
 	@Override

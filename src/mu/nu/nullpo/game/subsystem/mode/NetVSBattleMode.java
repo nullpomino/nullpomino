@@ -648,6 +648,17 @@ public class NetVSBattleMode extends NetDummyVSMode {
 		int x = owner.receiver.getFieldDisplayPositionX(engine, playerID);
 		int y = owner.receiver.getFieldDisplayPositionY(engine, playerID);
 
+		// Room info box
+		if(playerID == getPlayers() - 1) {
+			int x2 = (owner.receiver.getNextDisplayType() == 2) ? 544 : 503;
+			if((owner.receiver.getNextDisplayType() == 2) && (netCurrentRoomInfo.maxPlayers == 2))
+				x2 = 321;
+			if((owner.receiver.getNextDisplayType() != 2) && (netCurrentRoomInfo.maxPlayers == 2))
+				x2 = 351;
+
+			netvsDrawRoomInfoBox(engine, x2, 286);
+		}
+
 		if(netvsPlayerExist[playerID] && engine.isVisible) {
 			// Garbage Count
 			if((garbage[playerID] > 0) && (netCurrentRoomInfo.useFractionalGarbage) && (engine.stat != GameEngine.STAT_RESULT)) {
@@ -698,152 +709,163 @@ public class NetVSBattleMode extends NetDummyVSMode {
 			}
 		}
 
-		// Line clear event
-		if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
-			String strPieceName = Piece.getPieceName(lastpiece[playerID]);
-
-			if(engine.displaysize != -1) {
-				switch(lastevent[playerID]) {
-				case EVENT_SINGLE:
-					owner.receiver.drawMenuFont(engine, playerID, 2, 21, "SINGLE", EventReceiver.COLOR_DARKBLUE);
-					break;
-				case EVENT_DOUBLE:
-					owner.receiver.drawMenuFont(engine, playerID, 2, 21, "DOUBLE", EventReceiver.COLOR_BLUE);
-					break;
-				case EVENT_TRIPLE:
-					owner.receiver.drawMenuFont(engine, playerID, 2, 21, "TRIPLE", EventReceiver.COLOR_GREEN);
-					break;
-				case EVENT_FOUR:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 3, 21, "FOUR", EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 3, 21, "FOUR", EventReceiver.COLOR_ORANGE);
-					break;
-				case EVENT_TSPIN_SINGLE_MINI:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-S", EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-S", EventReceiver.COLOR_ORANGE);
-					break;
-				case EVENT_TSPIN_SINGLE:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-SINGLE", EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-SINGLE", EventReceiver.COLOR_ORANGE);
-					break;
-				case EVENT_TSPIN_DOUBLE_MINI:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-D", EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-D", EventReceiver.COLOR_ORANGE);
-					break;
-				case EVENT_TSPIN_DOUBLE:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-DOUBLE", EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-DOUBLE", EventReceiver.COLOR_ORANGE);
-					break;
-				case EVENT_TSPIN_TRIPLE:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
-					break;
-				case EVENT_TSPIN_EZ:
-					if(lastb2b[playerID])
-						owner.receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
-					else
-						owner.receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
-					break;
+		// Bottom message
+		if(netvsPlayerExist[playerID] && engine.isVisible) {
+			// K.O.
+			if(playerKObyYou[playerID]) {
+				if(engine.displaysize != -1) {
+					owner.receiver.drawMenuFont(engine, playerID, 3, 21, "K.O.", EventReceiver.COLOR_PINK);
+				} else {
+					owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "K.O.", EventReceiver.COLOR_PINK, 0.5f);
 				}
-
-				if(lastcombo[playerID] >= 2)
-					owner.receiver.drawMenuFont(engine, playerID, 2, 22, (lastcombo[playerID] - 1) + "COMBO", EventReceiver.COLOR_CYAN);
-			} else {
-				int x2 = 8;
-				if(netCurrentRoomInfo.useFractionalGarbage && (garbage[playerID] > 0)) x2 = 0;
-
-				switch(lastevent[playerID]) {
-				case EVENT_SINGLE:
-					owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 168, "SINGLE", EventReceiver.COLOR_DARKBLUE, 0.5f);
-					break;
-				case EVENT_DOUBLE:
-					owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 168, "DOUBLE", EventReceiver.COLOR_BLUE, 0.5f);
-					break;
-				case EVENT_TRIPLE:
-					owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 168, "TRIPLE", EventReceiver.COLOR_GREEN, 0.5f);
-					break;
-				case EVENT_FOUR:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "FOUR", EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "FOUR", EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				case EVENT_TSPIN_SINGLE_MINI:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-MINI-S", EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-MINI-S", EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				case EVENT_TSPIN_SINGLE:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-SINGLE", EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-SINGLE", EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				case EVENT_TSPIN_DOUBLE_MINI:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-MINI-D", EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-MINI-D", EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				case EVENT_TSPIN_DOUBLE:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-DOUBLE", EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-DOUBLE", EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				case EVENT_TSPIN_TRIPLE:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-TRIPLE", EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
-								strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				case EVENT_TSPIN_EZ:
-					if(lastb2b[playerID])
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168,
-								"EZ-" + strPieceName, EventReceiver.COLOR_RED, 0.5f);
-					else
-						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168,
-								"EZ-" + strPieceName, EventReceiver.COLOR_ORANGE, 0.5f);
-					break;
-				}
-
-				if(lastcombo[playerID] >= 2)
-					owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 176,
-						(lastcombo[playerID] - 1) + "COMBO", EventReceiver.COLOR_CYAN, 0.5f);
 			}
-		}
-		// Games count
-		else if(netvsPlayerExist[playerID] && engine.isVisible && !netvsIsPractice) {
-			String strTemp = netvsPlayerWinCount[playerID] + "/" + netvsPlayerPlayCount[playerID];
+			// Line clear event
+			else if((lastevent[playerID] != EVENT_NONE) && (scgettime[playerID] < 120)) {
+				String strPieceName = Piece.getPieceName(lastpiece[playerID]);
 
-			if(engine.displaysize != -1) {
-				int y2 = 21;
-				if(engine.stat == GameEngine.STAT_RESULT) y2 = 22;
-				owner.receiver.drawMenuFont(engine, playerID, 0, y2, strTemp, EventReceiver.COLOR_WHITE);
-			} else {
-				owner.receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);
+				if(engine.displaysize != -1) {
+					switch(lastevent[playerID]) {
+					case EVENT_SINGLE:
+						owner.receiver.drawMenuFont(engine, playerID, 2, 21, "SINGLE", EventReceiver.COLOR_DARKBLUE);
+						break;
+					case EVENT_DOUBLE:
+						owner.receiver.drawMenuFont(engine, playerID, 2, 21, "DOUBLE", EventReceiver.COLOR_BLUE);
+						break;
+					case EVENT_TRIPLE:
+						owner.receiver.drawMenuFont(engine, playerID, 2, 21, "TRIPLE", EventReceiver.COLOR_GREEN);
+						break;
+					case EVENT_FOUR:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 3, 21, "FOUR", EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 3, 21, "FOUR", EventReceiver.COLOR_ORANGE);
+						break;
+					case EVENT_TSPIN_SINGLE_MINI:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-S", EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-S", EventReceiver.COLOR_ORANGE);
+						break;
+					case EVENT_TSPIN_SINGLE:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-SINGLE", EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-SINGLE", EventReceiver.COLOR_ORANGE);
+						break;
+					case EVENT_TSPIN_DOUBLE_MINI:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-D", EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-MINI-D", EventReceiver.COLOR_ORANGE);
+						break;
+					case EVENT_TSPIN_DOUBLE:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-DOUBLE", EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-DOUBLE", EventReceiver.COLOR_ORANGE);
+						break;
+					case EVENT_TSPIN_TRIPLE:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 1, 21, strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE);
+						break;
+					case EVENT_TSPIN_EZ:
+						if(lastb2b[playerID])
+							owner.receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_RED);
+						else
+							owner.receiver.drawMenuFont(engine, playerID, 3, 21, "EZ-" + strPieceName, EventReceiver.COLOR_ORANGE);
+						break;
+					}
+
+					if(lastcombo[playerID] >= 2)
+						owner.receiver.drawMenuFont(engine, playerID, 2, 22, (lastcombo[playerID] - 1) + "COMBO", EventReceiver.COLOR_CYAN);
+				} else {
+					int x2 = 8;
+					if(netCurrentRoomInfo.useFractionalGarbage && (garbage[playerID] > 0)) x2 = 0;
+
+					switch(lastevent[playerID]) {
+					case EVENT_SINGLE:
+						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 168, "SINGLE", EventReceiver.COLOR_DARKBLUE, 0.5f);
+						break;
+					case EVENT_DOUBLE:
+						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 168, "DOUBLE", EventReceiver.COLOR_BLUE, 0.5f);
+						break;
+					case EVENT_TRIPLE:
+						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 168, "TRIPLE", EventReceiver.COLOR_GREEN, 0.5f);
+						break;
+					case EVENT_FOUR:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "FOUR", EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168, "FOUR", EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					case EVENT_TSPIN_SINGLE_MINI:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-MINI-S", EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-MINI-S", EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					case EVENT_TSPIN_SINGLE:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-SINGLE", EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-SINGLE", EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					case EVENT_TSPIN_DOUBLE_MINI:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-MINI-D", EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-MINI-D", EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					case EVENT_TSPIN_DOUBLE:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-DOUBLE", EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-DOUBLE", EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					case EVENT_TSPIN_TRIPLE:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-TRIPLE", EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + x2, y + 168,
+									strPieceName + "-TRIPLE", EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					case EVENT_TSPIN_EZ:
+						if(lastb2b[playerID])
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168,
+									"EZ-" + strPieceName, EventReceiver.COLOR_RED, 0.5f);
+						else
+							owner.receiver.drawDirectFont(engine, playerID, x + 4 + 24, y + 168,
+									"EZ-" + strPieceName, EventReceiver.COLOR_ORANGE, 0.5f);
+						break;
+					}
+
+					if(lastcombo[playerID] >= 2)
+						owner.receiver.drawDirectFont(engine, playerID, x + 4 + 16, y + 176,
+							(lastcombo[playerID] - 1) + "COMBO", EventReceiver.COLOR_CYAN, 0.5f);
+				}
+			}
+			// Games count
+			else if(!netvsIsPractice || (playerID != 0)) {
+				String strTemp = netvsPlayerWinCount[playerID] + "/" + netvsPlayerPlayCount[playerID];
+
+				if(engine.displaysize != -1) {
+					int y2 = 21;
+					if(engine.stat == GameEngine.STAT_RESULT) y2 = 22;
+					owner.receiver.drawMenuFont(engine, playerID, 0, y2, strTemp, EventReceiver.COLOR_WHITE);
+				} else {
+					owner.receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);
+				}
 			}
 		}
 	}
