@@ -186,6 +186,11 @@ public class NetVSBattleMode extends NetDummyVSMode {
 		return "NET-VS-BATTLE";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Mode Initialization
 	 */

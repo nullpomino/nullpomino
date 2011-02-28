@@ -1154,6 +1154,13 @@ public class EventReceiver {
 	public void renderFieldEdit(GameEngine engine, int playerID) {}
 
 	/**
+	 * It will be called if the player's input is being displayed. (For rendering)
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 */
+	public void renderInput(GameEngine engine, int playerID) {}
+
+	/**
 	 * It will be called when a block is cleared.
 	 * @param engine GameEngine
 	 * @param playerID Player ID

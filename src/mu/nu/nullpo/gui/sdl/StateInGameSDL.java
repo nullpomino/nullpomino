@@ -177,7 +177,9 @@ public class StateInGameSDL extends BaseStateSDL {
 				gameManager.engine[i].aiUseThread = NullpoMinoSDL.propGlobal.getProperty(i + ".aiUseThread", true);
 				gameManager.engine[i].aiShowHint = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowHint", false);
 				gameManager.engine[i].aiPrethink = NullpoMinoSDL.propGlobal.getProperty(i + ".aiPrethink", false);
+				gameManager.engine[i].aiShowState = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowState", false);
 			}
+			gameManager.showInput = NullpoMinoSDL.propConfig.getProperty("option.showInput", false);
 
 			// Called at initialization
 			gameManager.engine[i].init();
@@ -242,7 +244,9 @@ public class StateInGameSDL extends BaseStateSDL {
 				gameManager.engine[i].aiUseThread = NullpoMinoSDL.propGlobal.getProperty(i + ".aiUseThread", true);
 				gameManager.engine[i].aiShowHint = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowHint", false);
 				gameManager.engine[i].aiPrethink = NullpoMinoSDL.propGlobal.getProperty(i + ".aiPrethink", false);
+				gameManager.engine[i].aiShowState = NullpoMinoSDL.propGlobal.getProperty(i + ".aiShowState", false);
 			}
+			gameManager.showInput = NullpoMinoSDL.propConfig.getProperty("option.showInput", false);
 
 			// Called at initialization
 			gameManager.engine[i].init();

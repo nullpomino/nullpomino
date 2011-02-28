@@ -78,6 +78,13 @@ public interface AIPlayer {
 	public void onLast(GameEngine engine, int playerID);
 
 	/**
+	 * Called to display internal state
+	 * @param engine The GameEngine that owns this AI
+	 * @param playerID Player ID
+	 */
+	public void renderState(GameEngine engine, int playerID);
+
+	/**
 	 * 新しいピースが出現したときの処理
 	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID

@@ -305,6 +305,11 @@ public class SPFMode extends DummyMode {
 		return "SPF VS-BATTLE (BETA)";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Number of players
 	 */

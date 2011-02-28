@@ -205,6 +205,10 @@ public class DummyMode implements GameMode {
 		return false;
 	}
 
+	public boolean isVSMode() {
+		return false;
+	}
+
 	public void netplayInit(Object obj) {
 	}
 
@@ -416,10 +420,41 @@ public class DummyMode implements GameMode {
 					break;
 				case STAT_LEVEL_ADD_DISP:
 					receiver.drawMenuFont(engine, playerID, 0, y, "LEVEL", color, scale);
-					receiver.drawMenuFont(engine,playerID,0,y+1,String.format("%10d",engine.statistics.level+engine.statistics.levelDispAdd),scale);
+					receiver.drawMenuFont(engine, playerID,0,y+1,String.format("%10d",engine.statistics.level+engine.statistics.levelDispAdd),scale);
 					break;
 			}
 			y += 2;
 		}
+	}
+
+	/**
+	 * Default method to render controller input display
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 */
+	public void renderInput(GameEngine engine, int playerID) {
+		EventReceiver receiver = engine.owner.receiver;
+		int y = 24;
+		if (isVSMode() && !isNetplayMode()) {
+			int color = EventReceiver.COLOR_BLUE;
+			if (playerID == 0) {
+				color = EventReceiver.COLOR_RED;
+				y--;
+			}
+			receiver.drawScoreFont(engine, 0, -9, y, (playerID+1) + "P INPUT:", color);
+		} else {
+			receiver.drawScoreFont(engine, 0, -6, y, "INPUT:", EventReceiver.COLOR_BLUE);
+		}
+		Controller ctrl = engine.ctrl;
+		if (ctrl.isPress(Controller.BUTTON_LEFT)) receiver.drawScoreFont(engine, 0, 0, y, "<");
+		if (ctrl.isPress(Controller.BUTTON_DOWN)) receiver.drawScoreFont(engine, 0, 1, y, "n");
+		if (ctrl.isPress(Controller.BUTTON_UP)) receiver.drawScoreFont(engine, 0, 2, y, "k");
+		if (ctrl.isPress(Controller.BUTTON_RIGHT)) receiver.drawScoreFont(engine, 0, 3, y, ">");
+		if (ctrl.isPress(Controller.BUTTON_A)) receiver.drawScoreFont(engine, 0, 4, y, "A");
+		if (ctrl.isPress(Controller.BUTTON_B)) receiver.drawScoreFont(engine, 0, 5, y, "B");
+		if (ctrl.isPress(Controller.BUTTON_C)) receiver.drawScoreFont(engine, 0, 6, y, "C");
+		if (ctrl.isPress(Controller.BUTTON_D)) receiver.drawScoreFont(engine, 0, 7, y, "D");
+		if (ctrl.isPress(Controller.BUTTON_E)) receiver.drawScoreFont(engine, 0, 8, y, "E");
+		if (ctrl.isPress(Controller.BUTTON_F)) receiver.drawScoreFont(engine, 0, 9, y, "F");
 	}
 }

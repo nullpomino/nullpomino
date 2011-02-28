@@ -62,6 +62,11 @@ public class VSDigRaceMode extends DummyMode {
 		return "VS-DIG RACE";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Number of players
 	 */

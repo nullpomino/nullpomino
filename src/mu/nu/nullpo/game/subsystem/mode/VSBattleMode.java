@@ -214,6 +214,11 @@ public class VSBattleMode extends DummyMode {
 		return "VS-BATTLE";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Number of players
 	 */

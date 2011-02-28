@@ -362,7 +362,9 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				gameManager.engine[0].aiUseThread = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiUseThread", true);
 				gameManager.engine[0].aiShowHint = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiShowHint", false);
 				gameManager.engine[0].aiPrethink = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiPrethink", false);
+				gameManager.engine[0].aiShowState = NullpoMinoSlick.propGlobal.getProperty(0 + ".aiShowState", false);
 			}
+			gameManager.showInput = NullpoMinoSlick.propConfig.getProperty("option.showInput", false);
 
 			// Initialization for each player
 			for(int i = 0; i < gameManager.getPlayers(); i++) {

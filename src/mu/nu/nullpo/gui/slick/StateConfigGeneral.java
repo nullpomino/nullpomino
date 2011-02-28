@@ -61,6 +61,7 @@ public class StateConfigGeneral extends BaseGameState {
 		"ConfigGeneral_OutlineGhost",
 		"ConfigGeneral_FieldBGBright",
 		"ConfigGeneral_ShowFieldBGGrid",
+		"ConfigGeneral_ShowInput",
 		"ConfigGeneral_Fullscreen",
 		"ConfigGeneral_ShowFPS",
 		"ConfigGeneral_MaxFPS",
@@ -167,6 +168,9 @@ public class StateConfigGeneral extends BaseGameState {
 	/** Screen size type */
 	protected int screenSizeType;
 
+	/** Show player input */
+	protected boolean showInput;
+
 	/*
 	 * Fetch this state's ID
 	 */
@@ -214,6 +218,7 @@ public class StateConfigGeneral extends BaseGameState {
 		vsync = prop.getProperty("option.vsync", true);
 		nextshadow = prop.getProperty("option.nextshadow", false);
 		outlineghost = prop.getProperty("option.outlineghost", false);
+		showInput = prop.getProperty("option.showInput", false);
 		nexttype = 0;
 		if((prop.getProperty("option.sidenext", false) == true) && (prop.getProperty("option.bigsidenext", false) == false)) {
 			nexttype = 1;
@@ -262,6 +267,7 @@ public class StateConfigGeneral extends BaseGameState {
 		prop.setProperty("option.vsync", vsync);
 		prop.setProperty("option.nextshadow", nextshadow);
 		prop.setProperty("option.outlineghost", outlineghost);
+		prop.setProperty("option.showInput", showInput);
 		if(nexttype == 0) {
 			prop.setProperty("option.sidenext", false);
 			prop.setProperty("option.bigsidenext", false);
@@ -292,7 +298,7 @@ public class StateConfigGeneral extends BaseGameState {
 		g.drawImage(ResourceHolder.imgMenu, 0, 0);
 
 		// Basic Options
-		if(cursor < 16) {
+		if(cursor < 17) {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFont.COLOR_ORANGE);
 			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
 
@@ -312,30 +318,31 @@ public class StateConfigGeneral extends BaseGameState {
 			NormalFont.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
 			NormalFont.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
 			NormalFont.printFontGrid(2, 18, "SHOW FIELD BG GRID:" + GeneralUtil.getOorX(showfieldbggrid), (cursor == 15));
+			NormalFont.printFontGrid(2, 19, "SHOW CONTROLLER INPUT:" + GeneralUtil.getOorX(showInput), (cursor == 16));
 		}
 		// Advanced Options
-		else if(cursor < 22) {
+		else if(cursor < 23) {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 16), "b", NormalFont.COLOR_RED);
+			NormalFont.printFontGrid(1, 3 + (cursor - 17), "b", NormalFont.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 16));
-			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 17));
-			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 18));
-			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 19));
-			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 20));
-			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 21));
+			NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 17));
+			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 18));
+			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 19));
+			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 20));
+			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 21));
+			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 22));
 		}
 		// Slick Options
 		else {
 			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: SLICK (3/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 22), "b", NormalFont.COLOR_RED);
+			NormalFont.printFontGrid(1, 3 + (cursor - 23), "b", NormalFont.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 22));
-			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 23));
-			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 24));
-			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 25));
+			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 23));
+			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 24));
+			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 25));
+			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 26));
 			NormalFont.printFontGrid(2,  7, "SCREEN SIZE:" + SCREENSIZE_TABLE[screenSizeType][0] + "e" + SCREENSIZE_TABLE[screenSizeType][1],
-									 (cursor == 26));
+									 (cursor == 27));
 		}
 
 		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
@@ -355,12 +362,12 @@ public class StateConfigGeneral extends BaseGameState {
 		// Cursor movement
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
 		    cursor--;
-			if(cursor < 0) cursor = 26;
+			if(cursor < 0) cursor = 27;
 			ResourceHolder.soundManager.play("cursor");
 		}
 		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 26) cursor = 0;
+			if(cursor > 27) cursor = 0;
 			ResourceHolder.soundManager.play("cursor");
 		}
 
@@ -432,38 +439,41 @@ public class StateConfigGeneral extends BaseGameState {
 				showfieldbggrid = !showfieldbggrid;
 				break;
 			case 16:
-				fullscreen = !fullscreen;
+				showInput = !showInput;
 				break;
 			case 17:
-				showfps = !showfps;
+				fullscreen = !fullscreen;
 				break;
 			case 18:
+				showfps = !showfps;
+				break;
+			case 19:
 				maxfps += change;
 				if(maxfps < 0) maxfps = 99;
 				if(maxfps > 99) maxfps = 0;
 				break;
-			case 19:
+			case 20:
 				enableframestep = !enableframestep;
 				break;
-			case 20:
+			case 21:
 				alternateFPSPerfectMode = !alternateFPSPerfectMode;
 				break;
-			case 21:
+			case 22:
 				alternateFPSPerfectYield = !alternateFPSPerfectYield;
 				break;
-			case 22:
+			case 23:
 				bgmstreaming = !bgmstreaming;
 				break;
-			case 23:
+			case 24:
 				vsync = !vsync;
 				break;
-			case 24:
+			case 25:
 				alternateFPSTiming = !alternateFPSTiming;
 				break;
-			case 25:
+			case 26:
 				alternateFPSDynamicAdjust = !alternateFPSDynamicAdjust;
 				break;
-			case 26:
+			case 27:
 				screenSizeType += change;
 				if(screenSizeType < 0) screenSizeType = SCREENSIZE_TABLE.length - 1;
 				if(screenSizeType > SCREENSIZE_TABLE.length - 1) screenSizeType = 0;

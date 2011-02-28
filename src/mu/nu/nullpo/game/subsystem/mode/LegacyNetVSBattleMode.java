@@ -523,6 +523,11 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 		return "NET-VS-BATTLE";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Maximum players count
 	 */

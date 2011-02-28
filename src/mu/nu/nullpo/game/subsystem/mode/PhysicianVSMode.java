@@ -175,6 +175,11 @@ public class PhysicianVSMode extends DummyMode {
 		return "PHYSICIAN VS-BATTLE (RC1)";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Number of players
 	 */

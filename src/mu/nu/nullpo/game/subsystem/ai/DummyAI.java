@@ -72,6 +72,9 @@ public class DummyAI implements AIPlayer {
 	public void onLast(GameEngine engine, int playerID) {
 	}
 
+	public void renderState(GameEngine engine, int playerID) {
+	}
+
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 	}
 

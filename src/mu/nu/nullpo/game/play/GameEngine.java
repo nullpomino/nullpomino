@@ -206,6 +206,9 @@ public class GameEngine {
 	/** Prethink with AI */
 	public boolean aiPrethink;
 
+	/** Show internal state of AI */
+	public boolean aiShowState;
+
 	/** AI Hint X position */
 	public int aiHintX;
 
@@ -1862,6 +1865,14 @@ public class GameEngine {
 		case STAT_INTERRUPTITEM:
 			break;
 		}
+
+		if (owner.showInput)
+		{
+			if(owner.mode != null) owner.mode.renderInput(this, playerID);
+			owner.receiver.renderInput(this, playerID);
+		}
+		if (aiShowState && ai != null)
+			ai.renderState(this, playerID);
 
 		// 最後の処理
 		if(owner.mode != null) owner.mode.renderLast(this, playerID);

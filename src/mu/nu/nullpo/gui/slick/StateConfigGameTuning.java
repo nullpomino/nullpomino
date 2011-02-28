@@ -244,7 +244,9 @@ public class StateConfigGameTuning extends BaseGameState {
 				gameManager.engine[i].aiUseThread = NullpoMinoSlick.propGlobal.getProperty(i + ".aiUseThread", true);
 				gameManager.engine[i].aiShowHint = NullpoMinoSlick.propGlobal.getProperty(i + ".aiShowHint", false);
 				gameManager.engine[i].aiPrethink = NullpoMinoSlick.propGlobal.getProperty(i + ".aiPrethink", false);
+				gameManager.engine[i].aiShowState = NullpoMinoSlick.propGlobal.getProperty(i + ".aiShowState", false);
 			}
+			gameManager.showInput = NullpoMinoSlick.propConfig.getProperty("option.showInput", false);
 
 			// Init
 			gameManager.engine[i].init();

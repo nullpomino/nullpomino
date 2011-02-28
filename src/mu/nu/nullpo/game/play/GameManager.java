@@ -85,6 +85,9 @@ public class GameManager {
 	/** true to show invisible blocks in replay */
 	public boolean replayShowInvisible;
 
+	/** Show input */
+	public boolean showInput;
+
 	/**
 	 * Get major version
 	 * @return Major version

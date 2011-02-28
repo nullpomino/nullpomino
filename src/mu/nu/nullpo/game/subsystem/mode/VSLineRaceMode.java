@@ -61,6 +61,11 @@ public class VSLineRaceMode extends DummyMode {
 		return "VS-LINE RACE";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/*
 	 * Number of players
 	 */

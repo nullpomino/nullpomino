@@ -284,6 +284,13 @@ public interface GameMode {
 	public void renderFieldEdit(GameEngine engine, int playerID);
 
 	/**
+	 * Render player input.
+	 * @param engine GameEngine
+	 * @param playerID Player ID
+	 */
+	public void renderInput(GameEngine engine, int playerID);
+
+	/**
 	 * Executed when a block gets destroyed in line-clear screen.
 	 * @param engine GameEngine
 	 * @param playerID Player ID
@@ -361,6 +368,12 @@ public interface GameMode {
 	 * @return true if this is netplay-only mode.
 	 */
 	public boolean isNetplayMode();
+
+	/**
+	 * Is VS mode?
+	 * @return true if this is multiplayer mode.
+	 */
+	public boolean isVSMode();
 
 	/**
 	 * Initialization for netplay.

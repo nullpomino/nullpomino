@@ -170,6 +170,11 @@ public class NetDummyVSMode extends NetDummyMode {
 		return "NET-VS-DUMMY";
 	}
 
+	@Override
+	public boolean isVSMode() {
+		return true;
+	}
+
 	/**
 	 * NET-VS: Number of players
 	 */
