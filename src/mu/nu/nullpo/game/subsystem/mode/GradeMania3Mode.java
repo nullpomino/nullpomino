@@ -904,6 +904,7 @@ public class GradeMania3Mode extends DummyMode {
 		owner.bgmStatus.bgm = bgmlv;
 		
 		internalLevel = internalStartLevel;
+		setSpeed(engine);
 
 		if (startlevel >= 10)
 		{

@@ -1940,16 +1940,18 @@ public class PoochyBot extends DummyAI implements Runnable {
 			r.drawScoreFont(engine, playerID, 27, 37, String.valueOf(engine.nowPieceY), 0.5f);
 			r.drawScoreFont(engine, playerID, 30, 37, String.valueOf(engine.nowPieceObject.direction), 0.5f);
 		}
-		r.drawScoreFont(engine, playerID, 19, 38, "THINK ACTIVE:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 32, 38, GeneralUtil.getOorX(thinking), 0.5f);
-		r.drawScoreFont(engine, playerID, 19, 39, "THINK REQUEST:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 33, 39, GeneralUtil.getOorX(thinkRequest), 0.5f);
-		r.drawScoreFont(engine, playerID, 19, 40, "THINK SUCCESS:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkSuccess), 0.5f);
-		r.drawScoreFont(engine, playerID, 19, 41, "THINK COMPLETE:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 34, 41, GeneralUtil.getOorX(thinkComplete), 0.5f);
-		r.drawScoreFont(engine, playerID, 19, 42, "IN ARE:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 26, 42, GeneralUtil.getOorX(inARE), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 38, "MOVE SCORE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 31, 38, String.valueOf(bestPts), bestPts <= 0, 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 39, "THINK ACTIVE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 32, 39, GeneralUtil.getOorX(thinking), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 40, "THINK REQUEST:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkRequest), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 41, "THINK SUCCESS:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 33, 41, GeneralUtil.getOorX(thinkSuccess), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 42, "THINK COMPLETE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 34, 42, GeneralUtil.getOorX(thinkComplete), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 43, "IN ARE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 26, 43, GeneralUtil.getOorX(inARE), 0.5f);
 	}
 
 	/*
