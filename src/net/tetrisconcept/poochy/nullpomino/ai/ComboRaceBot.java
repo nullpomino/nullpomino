@@ -898,7 +898,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		int scoreColor = EventReceiver.COLOR_GREEN;
 		if (bestPts < (MAX_THINK_DEPTH-2) * 1000)
 			scoreColor = EventReceiver.COLOR_RED;
-		if (bestPts < (MAX_THINK_DEPTH-1) * 1000)
+		else if (bestPts < (MAX_THINK_DEPTH-1) * 1000)
 			scoreColor = EventReceiver.COLOR_ORANGE;
 		else if (bestPts < MAX_THINK_DEPTH * 1000)
 			scoreColor = EventReceiver.COLOR_YELLOW;
