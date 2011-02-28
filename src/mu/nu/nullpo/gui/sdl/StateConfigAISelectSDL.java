@@ -79,6 +79,8 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 
 	protected boolean aiPrethink = false;
 
+	protected boolean aiShowState = false;
+
 	/** Cursor position */
 	protected int cursor = 0;
 
@@ -107,6 +109,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		aiUseThread = NullpoMinoSDL.propGlobal.getProperty(player + ".aiUseThread", true);
 		aiShowHint = NullpoMinoSDL.propGlobal.getProperty(player + ".aiShowHint", false);
 		aiPrethink = NullpoMinoSDL.propGlobal.getProperty(player + ".aiPrethink", false);
+		aiShowState = NullpoMinoSDL.propGlobal.getProperty(player + ".aiShowState", false);
 
 		aiID = -1;
 		for(int i = 0; i < aiPathList.length; i++) {
@@ -189,6 +192,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		NormalFontSDL.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
 		NormalFontSDL.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
 		NormalFontSDL.printFontGrid(2, 8, "AI PRE-THINK:" + GeneralUtil.getONorOFF(aiPrethink), (cursor == 5));
+		NormalFontSDL.printFontGrid(2, 9, "AI SHOW INFO:" + GeneralUtil.getONorOFF(aiShowState), (cursor == 6));
 
 		NormalFontSDL.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFontSDL.COLOR_GREEN);
 	}
@@ -201,12 +205,12 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 		// Cursor movement
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_UP)) {
 			cursor--;
-			if(cursor < 0) cursor = 5;
+			if(cursor < 0) cursor = 6;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 		if(GameKeySDL.gamekey[0].isMenuRepeatKey(GameKeySDL.BUTTON_DOWN)) {
 			cursor++;
-			if(cursor > 5) cursor = 0;
+			if(cursor > 6) cursor = 0;
 			ResourceHolderSDL.soundManager.play("cursor");
 		}
 
@@ -243,6 +247,9 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			case 5:
 				aiPrethink = !aiPrethink;
 				break;
+			case 6:
+				aiShowState = !aiShowState;
+				break;
 			}
 		}
 
@@ -257,6 +264,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiUseThread", aiUseThread);
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiShowHint",aiShowHint);
 			NullpoMinoSDL.propGlobal.setProperty(player + ".aiPrethink",aiPrethink);
+			NullpoMinoSDL.propGlobal.setProperty(player + ".aiShowState",aiShowState);
 			NullpoMinoSDL.saveConfig();
 
 			NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_CONFIG_MAINMENU);

@@ -93,6 +93,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	protected boolean aiPrethink = false;
 
+	protected boolean aiShowState = false;
+
 	/** AI一覧リストボックス */
 	protected JList listboxAI;
 
@@ -108,6 +110,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	protected JCheckBox chkBoxAIShowHint;
 
 	protected JCheckBox chkBoxAIPrethink;
+
+	protected JCheckBox chkBoxAIShowState;
 
 
 	/**
@@ -149,6 +153,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		aiUseThread = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiUseThread", true);
 		aiShowHint = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiShowHint", false);
 		aiPrethink = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiPrethink", false);
+		aiShowState = NullpoMinoSwing.propGlobal.getProperty(playerID + ".aiShowState", false);
 
 		aiID = -1;
 		listboxAI.clearSelection();
@@ -165,6 +170,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		chkboxAIUseThread.setSelected(aiUseThread);
 		chkBoxAIShowHint.setSelected(aiShowHint);
 		chkBoxAIPrethink.setSelected(aiPrethink);
+		chkBoxAIShowState.setSelected(aiShowState);
 	}
 
 	/**
@@ -289,6 +295,11 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		chkBoxAIPrethink.setMnemonic('P');
 		this.add(chkBoxAIPrethink);
 
+		chkBoxAIShowState = new JCheckBox(NullpoMinoSwing.getUIText("AISelect_CheckboxAIShowState"));
+		chkBoxAIShowState.setAlignmentX(LEFT_ALIGNMENT);
+		chkBoxAIShowState.setMnemonic('S');
+		this.add(chkBoxAIShowState);
+
 		//  button類
 		JPanel panelButtons = new JPanel();
 		panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.X_AXIS));
@@ -337,6 +348,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 			aiUseThread = chkboxAIUseThread.isSelected();
 			aiShowHint = chkBoxAIShowHint.isSelected();
 			aiPrethink = chkBoxAIPrethink.isSelected();
+			aiShowState = chkBoxAIShowState.isSelected();
 
 			if(aiID >= 0) NullpoMinoSwing.propGlobal.setProperty(playerID + ".ai", aiPathList[aiID]);
 			else NullpoMinoSwing.propGlobal.setProperty(playerID + ".ai", "");
@@ -345,6 +357,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiUseThread", aiUseThread);
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiShowHint", aiShowHint);
 			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiPrethink", aiPrethink);
+			NullpoMinoSwing.propGlobal.setProperty(playerID + ".aiShowState", aiShowState);
 			NullpoMinoSwing.saveConfig();
 
 			this.setVisible(false);

@@ -181,6 +181,9 @@ public class GradeMania3Mode extends DummyMode {
 	/** 内部 level */
 	private int internalLevel;
 
+	/** Internal level at start */
+	private int internalStartLevel;
+
 	/** Levelが増えた flag */
 	private boolean lvupflag;
 
@@ -398,6 +401,7 @@ public class GradeMania3Mode extends DummyMode {
 		gravityindex = 0;
 		nextseclv = 0;
 		internalLevel = 0;
+		internalStartLevel = 0;
 		lvupflag = true;
 		grade = 0;
 		gradeBasicReal = 0;
@@ -517,7 +521,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	private void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("grademania3.startlevel", 0);
-		internalLevel = prop.getProperty("grademania3.internalLevel", startlevel * 100);
+		internalStartLevel = prop.getProperty("grademania3.internalLevel", startlevel * 100);
 		alwaysghost = prop.getProperty("grademania3.alwaysghost", false);
 		always20g = prop.getProperty("grademania3.always20g", false);
 		lvstopse = prop.getProperty("grademania3.lvstopse", true);
@@ -535,7 +539,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	private void saveSetting(CustomProperties prop) {
 		prop.setProperty("grademania3.startlevel", startlevel);
-		prop.setProperty("grademania3.internalLevel", internalLevel);
+		prop.setProperty("grademania3.internalLevel", internalStartLevel);
 		prop.setProperty("grademania3.alwaysghost", alwaysghost);
 		prop.setProperty("grademania3.always20g", always20g);
 		prop.setProperty("grademania3.lvstopse", lvstopse);
@@ -732,26 +736,26 @@ public class GradeMania3Mode extends DummyMode {
 					if(startlevel > 11) startlevel = 0;
 					owner.backgroundStatus.bg = Math.min(9, startlevel);
 					if (startlevel == 11)
-						internalLevel = 1200;
+						internalStartLevel = 1200;
 					else {
-						if (startlevel < 10 && startlevel - change < 10 && internalLevel < 1200)
-							internalLevel += change * 100;
+						if (startlevel < 10 && startlevel - change < 10 && internalStartLevel < 1200)
+							internalStartLevel += change * 100;
 						int minSpeed = Math.min(startlevel, 9) * 100;
 						int maxSpeed = Math.min(startlevel << 1, 12) * 100;
-						if(internalLevel < minSpeed) internalLevel = minSpeed;
-						if(internalLevel > maxSpeed) internalLevel = maxSpeed;
+						if(internalStartLevel < minSpeed) internalStartLevel = minSpeed;
+						if(internalStartLevel > maxSpeed) internalStartLevel = maxSpeed;
 					}
 					break;
 				case 1:
 					if (startlevel == 11)
-						internalLevel = 1200;
+						internalStartLevel = 1200;
 					else
 					{
-						internalLevel += change * 100;
+						internalStartLevel += change * 100;
 						int minSpeed = Math.min(startlevel, 9) * 100;
 						int maxSpeed = Math.min(startlevel << 1, 12) * 100;
-						if(internalLevel < minSpeed) internalLevel = maxSpeed;
-						if(internalLevel > maxSpeed) internalLevel = minSpeed;
+						if(internalStartLevel < minSpeed) internalStartLevel = maxSpeed;
+						if(internalStartLevel > maxSpeed) internalStartLevel = minSpeed;
 					}
 					break;
 				case 2:
@@ -863,8 +867,8 @@ public class GradeMania3Mode extends DummyMode {
 		else if (startlevel == 11) level = "M-ROLL";
 		else level = String.valueOf(startlevel * 100);
 		String speedlevel;
-		if (internalLevel >= 1200) speedlevel = "MAX";
-		else speedlevel = String.valueOf(internalLevel);
+		if (internalStartLevel >= 1200) speedlevel = "MAX";
+		else speedlevel = String.valueOf(internalStartLevel);
 		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 				"LEVEL", level,
 				"SPEED", speedlevel,
@@ -898,6 +902,8 @@ public class GradeMania3Mode extends DummyMode {
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv;
+		
+		internalLevel = internalStartLevel;
 
 		if (startlevel >= 10)
 		{

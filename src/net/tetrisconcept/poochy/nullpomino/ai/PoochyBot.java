@@ -5,9 +5,11 @@ import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.SpeedParam;
 import mu.nu.nullpo.game.component.WallkickResult;
+import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
+import mu.nu.nullpo.util.GeneralUtil;
 
 import org.apache.log4j.Logger;
 
@@ -1908,6 +1910,46 @@ public class PoochyBot extends DummyAI implements Runnable {
 				", bestYSub = " + bestYSub +
 				", bestRtSub = " + bestRtSub +
 				", bestPts = " + bestPts);
+	}
+
+	/**
+	 * Called to display internal state
+	 * @param engine The GameEngine that owns this AI
+	 * @param playerID Player ID
+	 */
+	public void renderState(GameEngine engine, int playerID){
+		EventReceiver r = engine.owner.receiver;
+		r.drawScoreFont(engine, playerID, 19, 33, getName().toUpperCase(), EventReceiver.COLOR_GREEN, 0.5f);
+		r.drawScoreFont(engine, playerID, 24, 34, "X", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 27, 34, "Y", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 30, 34, "RT", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 35, "BEST:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 24, 35, String.valueOf(bestX), 0.5f);
+		r.drawScoreFont(engine, playerID, 27, 35, String.valueOf(bestY), 0.5f);
+		r.drawScoreFont(engine, playerID, 30, 35, String.valueOf(bestRt), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 36, "SUB:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 24, 36, String.valueOf(bestXSub), 0.5f);
+		r.drawScoreFont(engine, playerID, 27, 36, String.valueOf(bestYSub), 0.5f);
+		r.drawScoreFont(engine, playerID, 30, 36, String.valueOf(bestRtSub), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 37, "NOW:", EventReceiver.COLOR_BLUE, 0.5f);
+		if (engine.nowPieceObject == null)
+			r.drawScoreFont(engine, playerID, 24, 37, "-- -- --", 0.5f);
+		else
+		{
+			r.drawScoreFont(engine, playerID, 24, 37, String.valueOf(engine.nowPieceX), 0.5f);
+			r.drawScoreFont(engine, playerID, 27, 37, String.valueOf(engine.nowPieceY), 0.5f);
+			r.drawScoreFont(engine, playerID, 30, 37, String.valueOf(engine.nowPieceObject.direction), 0.5f);
+		}
+		r.drawScoreFont(engine, playerID, 19, 38, "THINK ACTIVE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 32, 38, GeneralUtil.getOorX(thinking), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 39, "THINK REQUEST:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 33, 39, GeneralUtil.getOorX(thinkRequest), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 40, "THINK SUCCESS:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkSuccess), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 41, "THINK COMPLETE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 34, 41, GeneralUtil.getOorX(thinkComplete), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 42, "IN ARE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 26, 42, GeneralUtil.getOorX(inARE), 0.5f);
 	}
 
 	/*
