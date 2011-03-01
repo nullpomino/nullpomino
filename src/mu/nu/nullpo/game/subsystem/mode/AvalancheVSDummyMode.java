@@ -32,7 +32,6 @@ import java.util.Random;
 
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Block;
-import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.component.Field;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
@@ -769,8 +768,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.field.setAllSkin(engine.getSkin());
 		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], new Random(rand.nextLong()));
 	}
-	
-	
+
+
 	/*
 	 * Called after every frame
 	 */

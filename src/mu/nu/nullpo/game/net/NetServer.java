@@ -185,6 +185,12 @@ public class NetServer {
 	/** Multiplayer leaderboard list. */
 	private static LinkedList<NetPlayerInfo>[] mpRankingList;
 
+	/** Multiplayer mode list */
+	private static LinkedList<String>[] mpModeList;
+
+	/** Multiplayer race mode flag */
+	private static LinkedList<Boolean>[] mpModeIsRace;
+
 	/** Single player mode list. */
 	private static LinkedList<String>[] spModeList;
 
@@ -356,8 +362,57 @@ public class NetServer {
 	 * Load multiplayer leaderboard
 	 */
 	private static void loadMPRankingList() {
-		log.info("Loading Multiplayer Ranking...");
+		// Load mode list
+		mpModeList = new LinkedList[GameEngine.MAX_GAMESTYLE];
+		mpModeIsRace = new LinkedList[GameEngine.MAX_GAMESTYLE];
+		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+			mpModeList[i] = new LinkedList<String>();
+			mpModeIsRace[i] = new LinkedList<Boolean>();
+		}
 
+		try {
+			BufferedReader in = new BufferedReader(new FileReader("config/list/netlobby_multimode.lst"));
+
+			String str = null;
+			int style = 0;
+
+			while((str = in.readLine()) != null) {
+				if((str.length() <= 0) || str.startsWith("#")) {
+					// Empty line or comment line. Ignore it.
+				} else if(str.startsWith(":")) {
+					// Game style tag
+					String strStyle = str.substring(1);
+
+					style = -1;
+					for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+						if(strStyle.equalsIgnoreCase(GameEngine.GAMESTYLE_NAMES[i])) {
+							style = i;
+							break;
+						}
+					}
+
+					if(style == -1) {
+						style = 0;
+					}
+				} else {
+					// Game mode name
+					String[] strSplit = str.split(",");
+					String strModeName = strSplit[0];
+					boolean isRace = false;
+					if(strSplit.length > 1) isRace = Boolean.parseBoolean(strSplit[1]);
+
+					mpModeList[style].add(strModeName);
+					mpModeIsRace[style].add(isRace);
+				}
+			}
+
+			in.close();
+		} catch (Exception e) {
+			log.warn("Failed to load multiplayer mode list", e);
+		}
+
+		// Load leaderboard
+		log.info("Loading Multiplayer Ranking...");
 		mpRankingList = new LinkedList[GameEngine.MAX_GAMESTYLE];
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
 			mpRankingList[i] = new LinkedList<NetPlayerInfo>();
@@ -2032,7 +2087,7 @@ public class NetServer {
 				roomInfo.strMode = NetUtil.urlDecode(message[2]);
 
 				roomInfo.strName = NetUtil.urlDecode(message[1]);
-				if(roomInfo.strName.length() < 1) roomInfo.strName = "Single:" + roomInfo.strMode;
+				if(roomInfo.strName.length() < 1) roomInfo.strName = "Single (" + pInfo.strName + ")";
 
 				roomInfo.maxPlayers = 1;
 
@@ -2096,7 +2151,9 @@ public class NetServer {
 					roomInfo.ruleOpt = new RuleOptions(pInfo.ruleOpt);
 				}
 
-				roomInfo.strMode = NetUtil.urlDecode(message[3]);
+				if(roomInfo.strMode.length() <= 0) {
+					roomInfo.strMode = NetUtil.urlDecode(message[3]);
+				}
 
 				// Set map
 				if(roomInfo.useMap && (message.length > 4)) {
@@ -2452,6 +2509,27 @@ public class NetServer {
 					playerDead(pInfo, koPlayerInfo);
 				} else {
 					playerDead(pInfo);
+				}
+			}
+		}
+		// Race mode win (TODO: Replace with something cheat-proof)
+		if(message[0].equals("racewin")) {
+			if((pInfo != null) && (pInfo.roomID != -1) && (pInfo.seatID != -1)) {
+				NetRoomInfo roomInfo = getRoomInfo(pInfo.roomID);
+				int modeIndex = mpModeList[roomInfo.style].indexOf(roomInfo.strMode);
+				boolean isRace = (modeIndex == -1) ? false : mpModeIsRace[roomInfo.style].get(modeIndex);
+
+				if(roomInfo.playing && isRace) {
+					for(int i = message.length - 1; i > 1; i--) {
+						int koUID = Integer.parseInt(message[i]);
+						if(koUID != pInfo.uid) {
+							NetPlayerInfo koPlayerInfo = searchPlayerByUID(koUID);
+
+							if((koPlayerInfo != null) && (koPlayerInfo.roomID == roomInfo.roomID)) {
+								playerDead(koPlayerInfo, pInfo);
+							}
+						}
+					}
 				}
 			}
 		}

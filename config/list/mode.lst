@@ -29,6 +29,7 @@ mu.nu.nullpo.game.subsystem.mode.VSDigRaceMode
 mu.nu.nullpo.game.subsystem.mode.VSBattleMode
 mu.nu.nullpo.game.subsystem.mode.ToolVSMapEditMode
 mu.nu.nullpo.game.subsystem.mode.NetVSBattleMode
+mu.nu.nullpo.game.subsystem.mode.NetVSLineRaceMode
 mu.nu.nullpo.game.subsystem.mode.AvalancheMode
 mu.nu.nullpo.game.subsystem.mode.AvalancheFeverMode
 mu.nu.nullpo.game.subsystem.mode.AvalancheVSMode

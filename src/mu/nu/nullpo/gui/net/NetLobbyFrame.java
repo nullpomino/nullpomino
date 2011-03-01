@@ -130,7 +130,8 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** Room-table column names. These strings will be passed to getUIText(String) subroutine. */
 	public static final String[] ROOMTABLE_COLUMNNAMES = {
-		"RoomTable_ID","RoomTable_Name","RoomTable_Rated","RoomTable_RuleName","RoomTable_Status","RoomTable_Players","RoomTable_Spectators"
+		"RoomTable_ID","RoomTable_Name","RoomTable_Rated","RoomTable_RuleName","RoomTable_ModeName",
+		"RoomTable_Status","RoomTable_Players","RoomTable_Spectators"
 	};
 
 	/** End-of-game statistics column names. These strings will be passed to getUIText(String) subroutine. */
@@ -440,6 +441,9 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 	/** ルーム名(Create room screen) */
 	protected JTextField txtfldCreateRoomName;
+
+	/** Game Mode (Create room screen) */
+	protected JComboBox comboboxCreateRoomMode;
 
 	/** 参加人count(Create room screen) */
 	protected JSpinner spinnerCreateRoomMaxPlayers;
@@ -1056,9 +1060,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		tm.getColumn(1).setPreferredWidth(propConfig.getProperty("tableRoomList.width.name", 155));			// Name
 		tm.getColumn(2).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rated", 50));			// Rated
 		tm.getColumn(3).setPreferredWidth(propConfig.getProperty("tableRoomList.width.rulename", 105));		// Rule name
-		tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableRoomList.width.status", 55));		// Status
-		tm.getColumn(5).setPreferredWidth(propConfig.getProperty("tableRoomList.width.players", 65));		// Players
-		tm.getColumn(6).setPreferredWidth(propConfig.getProperty("tableRoomList.width.spectators", 65));	// Spectators
+		tm.getColumn(4).setPreferredWidth(propConfig.getProperty("tableRoomList.width.modename", 105));		// Mode name
+		tm.getColumn(5).setPreferredWidth(propConfig.getProperty("tableRoomList.width.status", 55));		// Status
+		tm.getColumn(6).setPreferredWidth(propConfig.getProperty("tableRoomList.width.players", 65));		// Players
+		tm.getColumn(7).setPreferredWidth(propConfig.getProperty("tableRoomList.width.spectators", 65));	// Spectators
 
 		JScrollPane spTableRoomList = new JScrollPane(tableRoomList);
 		subpanelRoomList.add(spTableRoomList, BorderLayout.CENTER);
@@ -1534,6 +1539,22 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		txtfldCreateRoomName.setComponentPopupMenu(new TextComponentPopupMenu(txtfldCreateRoomName));
 		txtfldCreateRoomName.setToolTipText(getUIText("CreateRoom_Name_Tip"));
 		subpanelName.add(txtfldCreateRoomName, BorderLayout.CENTER);
+
+		// ** Game Mode panel
+		JPanel subpanelMode = new JPanel(new BorderLayout());
+		containerpanelCreateRoomMain.add(subpanelMode);
+
+		// *** Mode label
+		JLabel labelMode = new JLabel(getUIText("CreateRoom_Mode"));
+		subpanelMode.add(labelMode, BorderLayout.WEST);
+
+		// *** Mode Combobox
+		DefaultComboBoxModel modelMode = new DefaultComboBoxModel();
+		loadModeList(modelMode, "config/list/netlobby_multimode.lst");
+		comboboxCreateRoomMode = new JComboBox(modelMode);
+		comboboxCreateRoomMode.setPreferredSize(new Dimension(200, 20));
+		comboboxCreateRoomMode.setToolTipText(getUIText("CreateRoom_Mode_Tip"));
+		subpanelMode.add(comboboxCreateRoomMode, BorderLayout.EAST);
 
 		// ** 参加人countパネル
 		JPanel subpanelMaxPlayers = new JPanel(new BorderLayout());
@@ -2046,7 +2067,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 
 		// ** Game mode listbox
 		listmodelCreateRoom1PModeList = new DefaultListModel();
-		loadSinglePlayerModeList(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
+		loadModeList(listmodelCreateRoom1PModeList, "config/list/netlobby_singlemode.lst");
 
 		listboxCreateRoom1PModeList = new JList(listmodelCreateRoom1PModeList);
 		listboxCreateRoom1PModeList.addListSelectionListener(new ListSelectionListener() {
@@ -2768,15 +2789,48 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	}
 
 	/**
-	 * Load single player mode list to a DefaultListModel
+	 * Load game mode list to a DefaultListModel
 	 * @param listModel DefaultListModel
-	 * @param filename Filename of single player mode list
+	 * @param filename Filename of mode list
 	 * @return <code>true</code> if success
 	 */
-	public boolean loadSinglePlayerModeList(DefaultListModel listModel, String filename) {
+	public boolean loadModeList(DefaultListModel listModel, String filename) {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(filename));
 			listModel.clear();
+
+			String str = null;
+			while((str = in.readLine()) != null) {
+				if((str.length() <= 0) || str.startsWith("#")) {
+					// Empty line or comment line. Ignore it.
+				} else if(str.startsWith(":")) {
+					// Game style tag. Currently unused.
+				} else {
+					// Game mode name
+					int commaIndex = str.indexOf(',');
+					if(commaIndex != -1) {
+						listModel.addElement(str.substring(0, commaIndex));
+					}
+				}
+			}
+		} catch (IOException e) {
+			log.debug("Failed to load list from " + filename, e);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Load game mode list to a DefaultComboBoxModel
+	 * @param listModel DefaultComboBoxModel
+	 * @param filename Filename of mode list
+	 * @return <code>true</code> if success
+	 */
+	public boolean loadModeList(DefaultComboBoxModel listModel, String filename) {
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(filename));
+
+			listModel.removeAllElements();
 
 			String str = null;
 			while((str = in.readLine()) != null) {
@@ -2868,22 +2922,15 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * @return 行 data
 	 */
 	public String[] createRoomListRowData(NetRoomInfo r) {
-		String[] rowData = new String[7];
+		String[] rowData = new String[8];
 		rowData[0] = Integer.toString(r.roomID);
 		rowData[1] = r.strName;
-		if(r.rated && r.customRated && !r.singleplayer) {
-			rowData[2] = getUIText("RoomTable_Rated_True_Custom");
-		} else if(r.rated && !r.customRated && !r.singleplayer) {
-			rowData[2] = getUIText("RoomTable_Rated_True");
-		} else if(r.rated && r.singleplayer) {
-			rowData[2] = getUIText("RoomTable_Rated_True_1P");
-		} else {
-			rowData[2] = getUIText("RoomTable_Rated_False");
-		}
+		rowData[2] = r.rated ? getUIText("RoomTable_Rated_True") : getUIText("RoomTable_Rated_False");
 		rowData[3] = r.ruleLock ? r.ruleName.toUpperCase() : getUIText("RoomTable_RuleName_Any");
-		rowData[4] = r.playing ? getUIText("RoomTable_Status_Playing") : getUIText("RoomTable_Status_Waiting");
-		rowData[5] = r.playerSeatedCount + "/" + r.maxPlayers;
-		rowData[6] = Integer.toString(r.spectatorCount);
+		rowData[4] = r.strMode;
+		rowData[5] = r.playing ? getUIText("RoomTable_Status_Playing") : getUIText("RoomTable_Status_Waiting");
+		rowData[6] = r.playerSeatedCount + "/" + r.maxPlayers;
+		rowData[7] = Integer.toString(r.spectatorCount);
 		return rowData;
 	}
 
@@ -3215,9 +3262,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 		propConfig.setProperty("tableRoomList.width.name", tm.getColumn(1).getWidth());
 		propConfig.setProperty("tableRoomList.width.rated", tm.getColumn(2).getWidth());
 		propConfig.setProperty("tableRoomList.width.rulename", tm.getColumn(3).getWidth());
-		propConfig.setProperty("tableRoomList.width.status", tm.getColumn(4).getWidth());
-		propConfig.setProperty("tableRoomList.width.players", tm.getColumn(5).getWidth());
-		propConfig.setProperty("tableRoomList.width.spectators", tm.getColumn(6).getWidth());
+		propConfig.setProperty("tableRoomList.width.modename", tm.getColumn(4).getWidth());
+		propConfig.setProperty("tableRoomList.width.status", tm.getColumn(5).getWidth());
+		propConfig.setProperty("tableRoomList.width.players", tm.getColumn(6).getWidth());
+		propConfig.setProperty("tableRoomList.width.spectators", tm.getColumn(7).getWidth());
 
 		tm = tableGameStat.getColumnModel();
 		propConfig.setProperty("tableGameStat.width.rank", tm.getColumn(0).getWidth());
@@ -3495,6 +3543,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			NetRoomInfo roomInfo = new NetRoomInfo();
 
 			String roomName = txtfldCreateRoomName.getText();
+			String modeName = (String)comboboxCreateRoomMode.getSelectedItem();
 			Integer integerMaxPlayers = (Integer)spinnerCreateRoomMaxPlayers.getValue();
 			Integer integerAutoStartSeconds = (Integer)spinnerCreateRoomAutoStartSeconds.getValue();
 			Integer integerGravity = (Integer)spinnerCreateRoomGravity.getValue();
@@ -3528,6 +3577,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 			Integer integerTargetTimer = (Integer)spinnerCreateRoomTargetTimer.getValue();
 
 			roomInfo.strName = roomName;
+			roomInfo.strMode = modeName;
 			roomInfo.maxPlayers = integerMaxPlayers;
 			roomInfo.autoStartSeconds = integerAutoStartSeconds;
 			roomInfo.gravity = integerGravity;
@@ -3574,6 +3624,10 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	public void importRoomInfoToCreateRoomScreen(NetRoomInfo r) {
 		if(r != null) {
 			txtfldCreateRoomName.setText(r.strName);
+			comboboxCreateRoomMode.setSelectedIndex(0);
+			if(r.strMode.length() > 0) {
+				comboboxCreateRoomMode.setSelectedItem(r.strMode);
+			}
 			spinnerCreateRoomMaxPlayers.setValue(r.maxPlayers);
 			spinnerCreateRoomAutoStartSeconds.setValue(r.autoStartSeconds);
 			spinnerCreateRoomGravity.setValue(r.gravity);
@@ -3992,7 +4046,7 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 				String msg;
 				msg = "roomcreate\t" + NetUtil.urlEncode(r.strName) + "\t";
 				msg += NetUtil.urlEncode(r.exportString()) + "\t";
-				msg += NetUtil.urlEncode("NET-VS-BATTLE") + "\t";
+				msg += NetUtil.urlEncode(r.strMode) + "\t";
 
 				// Map send
 				if(r.useMap) {

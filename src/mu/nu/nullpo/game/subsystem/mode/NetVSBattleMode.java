@@ -43,7 +43,7 @@ import mu.nu.nullpo.gui.net.NetLobbyFrame;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
- * NET-VS-BATTLE Mode (under constraction!)
+ * NET-VS-BATTLE Mode
  */
 public class NetVSBattleMode extends NetDummyVSMode {
 	/** Most recent scoring event type constants */
@@ -653,17 +653,6 @@ public class NetVSBattleMode extends NetDummyVSMode {
 		int x = owner.receiver.getFieldDisplayPositionX(engine, playerID);
 		int y = owner.receiver.getFieldDisplayPositionY(engine, playerID);
 
-		// Room info box
-		if(playerID == getPlayers() - 1) {
-			int x2 = (owner.receiver.getNextDisplayType() == 2) ? 544 : 503;
-			if((owner.receiver.getNextDisplayType() == 2) && (netCurrentRoomInfo.maxPlayers == 2))
-				x2 = 321;
-			if((owner.receiver.getNextDisplayType() != 2) && (netCurrentRoomInfo.maxPlayers == 2))
-				x2 = 351;
-
-			netvsDrawRoomInfoBox(engine, x2, 286);
-		}
-
 		if(netvsPlayerExist[playerID] && engine.isVisible) {
 			// Garbage Count
 			if((garbage[playerID] > 0) && (netCurrentRoomInfo.useFractionalGarbage) && (engine.stat != GameEngine.STAT_RESULT)) {
@@ -901,7 +890,7 @@ public class NetVSBattleMode extends NetDummyVSMode {
 	 */
 	@Override
 	protected void netSendStats(GameEngine engine) {
-		if((engine.playerID == 0) && !netvsIsWatch()) {
+		if((engine.playerID == 0) && !netvsIsPractice && !netvsIsWatch()) {
 			netLobby.netPlayerClient.send("game\tstats\t" + garbage[engine.playerID] + "\n");
 		}
 	}

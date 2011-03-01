@@ -1,0 +1,12 @@
+#Netplay multiplayer modes list
+#ModeName,isRace
+
+:TETROMINO
+NET-VS-BATTLE,false
+NET-VS-LINE RACE,true
+
+:AVALANCHE
+
+:PHYSICIAN
+
+:SPF
