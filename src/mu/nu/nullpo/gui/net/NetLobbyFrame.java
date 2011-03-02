@@ -2473,59 +2473,60 @@ public class NetLobbyFrame extends JFrame implements ActionListener, NetMessageL
 	 * @param cardNumber 切替先の画面カード number
 	 */
 	public void changeCurrentScreenCard(int cardNumber) {
-		contentPaneCardLayout.show(this.getContentPane(), SCREENCARD_NAMES[cardNumber]);
-		currentScreenCardNumber = cardNumber;
+		try {
+			contentPaneCardLayout.show(this.getContentPane(), SCREENCARD_NAMES[cardNumber]);
+			currentScreenCardNumber = cardNumber;
 
-		// Set menu bar
-		setJMenuBar(menuBar[cardNumber]);
+			// Set menu bar
+			setJMenuBar(menuBar[cardNumber]);
 
-		// Set default button
-		JButton defaultButton = null;
-		switch(currentScreenCardNumber) {
-		case SCREENCARD_SERVERSELECT:
-			defaultButton = btnServerConnect;
-			break;
-		case SCREENCARD_LOBBY:
-			if(tabLobbyAndRoom.getSelectedIndex() == 0)
-				defaultButton = btnLobbyChatSend;
-			else
-				defaultButton = btnRoomChatSend;
-			break;
-		case SCREENCARD_SERVERADD:
-			defaultButton = btnServerAddOK;
-			break;
-		case SCREENCARD_CREATERATED_WAITING:
-			defaultButton = btnCreateRatedWaitingCancel;
-			break;
-		case SCREENCARD_CREATERATED:
-			defaultButton = btnCreateRatedOK;
-			break;
-		case SCREENCARD_CREATEROOM:
-			if (btnCreateRoomOK.isVisible())
-				defaultButton = btnCreateRoomOK;
-			else
-				defaultButton = btnCreateRoomCancel;
-			break;
-		case SCREENCARD_CREATEROOM1P:
-			if(btnCreateRoom1POK.isVisible())
-				defaultButton = btnCreateRoom1POK;
-			else
-				defaultButton = btnCreateRoom1PCancel;
-			break;
-		case SCREENCARD_MPRANKING:
-			defaultButton = btnMPRankingOK;
-			break;
-		case SCREENCARD_RULECHANGE:
-			defaultButton = btnRuleChangeOK;
-			break;
-		}
-
-		if(defaultButton != null) {
-			try {
-				this.getRootPane().setDefaultButton(defaultButton);
-			} catch (Exception e) {
-				// Due to possible threading issue, setDefaultButton may fail
+			// Set default button
+			JButton defaultButton = null;
+			switch(currentScreenCardNumber) {
+			case SCREENCARD_SERVERSELECT:
+				defaultButton = btnServerConnect;
+				break;
+			case SCREENCARD_LOBBY:
+				if(tabLobbyAndRoom.getSelectedIndex() == 0)
+					defaultButton = btnLobbyChatSend;
+				else
+					defaultButton = btnRoomChatSend;
+				break;
+			case SCREENCARD_SERVERADD:
+				defaultButton = btnServerAddOK;
+				break;
+			case SCREENCARD_CREATERATED_WAITING:
+				defaultButton = btnCreateRatedWaitingCancel;
+				break;
+			case SCREENCARD_CREATERATED:
+				defaultButton = btnCreateRatedOK;
+				break;
+			case SCREENCARD_CREATEROOM:
+				if (btnCreateRoomOK.isVisible())
+					defaultButton = btnCreateRoomOK;
+				else
+					defaultButton = btnCreateRoomCancel;
+				break;
+			case SCREENCARD_CREATEROOM1P:
+				if(btnCreateRoom1POK.isVisible())
+					defaultButton = btnCreateRoom1POK;
+				else
+					defaultButton = btnCreateRoom1PCancel;
+				break;
+			case SCREENCARD_MPRANKING:
+				defaultButton = btnMPRankingOK;
+				break;
+			case SCREENCARD_RULECHANGE:
+				defaultButton = btnRuleChangeOK;
+				break;
 			}
+
+			if(defaultButton != null) {
+				this.getRootPane().setDefaultButton(defaultButton);
+			}
+		} catch (Exception e) {
+			// TODO: There are several threading issue here
+			log.debug("changeCurrentScreenCard failed; Possible threading issue", e);
 		}
 	}
 
