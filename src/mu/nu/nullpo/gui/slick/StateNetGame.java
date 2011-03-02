@@ -181,9 +181,17 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 			if(!NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 		} catch (NullPointerException e) {
-			log.error("render NPE", e);
+			try {
+				if((gameManager == null) || !gameManager.getQuitFlag()) {
+					log.error("render NPE", e);
+				}
+			} catch (Throwable e2) {}
 		} catch (Exception e) {
-			log.error("render fail", e);
+			try {
+				if((gameManager == null) || !gameManager.getQuitFlag()) {
+					log.error("render fail", e);
+				}
+			} catch (Throwable e2) {}
 		}
 	}
 
@@ -266,21 +274,21 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 
 			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep(true);
 		} catch (NullPointerException e) {
-			log.error("update NPE", e);
-
 			try {
-				if(gameManager.getQuitFlag()) {
+				if((gameManager != null) && gameManager.getQuitFlag()) {
 					game.enterState(StateTitle.ID);
 					return;
+				} else {
+					log.error("update NPE", e);
 				}
 			} catch (Throwable e2) {}
 		} catch (Exception e) {
-			log.error("update fail", e);
-
 			try {
-				if(gameManager.getQuitFlag()) {
+				if((gameManager != null) && gameManager.getQuitFlag()) {
 					game.enterState(StateTitle.ID);
 					return;
+				} else {
+					log.error("update fail", e);
 				}
 			} catch (Throwable e2) {}
 		}

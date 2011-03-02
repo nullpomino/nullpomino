@@ -144,9 +144,17 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				gameManager.renderAll();
 			}
 		} catch (NullPointerException e) {
-			log.error("render NPE", e);
+			try {
+				if((gameManager == null) || !gameManager.getQuitFlag()) {
+					log.error("render NPE", e);
+				}
+			} catch (Throwable e2) {}
 		} catch (Exception e) {
-			log.error("render fail", e);
+			try {
+				if((gameManager == null) || !gameManager.getQuitFlag()) {
+					log.error("render fail", e);
+				}
+			} catch (Throwable e2) {}
 		}
 	}
 
@@ -206,6 +214,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 
 				if(gameManager.getQuitFlag()) {
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+					return;
 				}
 
 				// Retry button
@@ -223,19 +232,21 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 				strModeToEnter = "";
 			}
 		} catch (NullPointerException e) {
-			log.error("update NPE", e);
-
 			try {
-				if(gameManager.getQuitFlag()) {
+				if((gameManager != null) && gameManager.getQuitFlag()) {
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+					return;
+				} else {
+					log.error("update NPE", e);
 				}
 			} catch (Throwable e2) {}
 		} catch (Exception e) {
-			log.error("update fail", e);
-
 			try {
-				if(gameManager.getQuitFlag()) {
+				if((gameManager != null) && gameManager.getQuitFlag()) {
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
+					return;
+				} else {
+					log.error("update fail", e);
 				}
 			} catch (Throwable e2) {}
 		}
@@ -356,7 +367,7 @@ public class StateNetGameSDL extends BaseStateSDL implements NetLobbyListener {
 	}
 
 	public void netlobbyOnExit(NetLobbyFrame lobby) {
-		if(gameManager != null) {
+		if((gameManager != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
 			gameManager.engine[0].quitflag = true;
 		}
 	}

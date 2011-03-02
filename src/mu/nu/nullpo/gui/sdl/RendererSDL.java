@@ -1401,7 +1401,7 @@ public class RendererSDL extends EventReceiver {
 							ResourceHolderSDL.imgBlankBlack.setAlpha(SDLVideo.SDL_SRCALPHA | SDLVideo.SDL_RLEACCEL, alphalv * 2);
 							ResourceHolderSDL.imgBlankBlack.blitSurface(graphics);
 						}
-					} else {
+					} else if(bg != -2) {
 						graphics.fillRect(SDLVideo.mapRGB(graphics.getFormat(), 0, 0, 0));
 					}
 				}

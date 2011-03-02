@@ -1133,7 +1133,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		if(engine.displaysize == -1) scale = 0.5f;
 
 		// Place
-		if(!netvsIsPractice) {
+		if(!netvsIsPractice || (playerID != 0)) {
 			owner.receiver.drawMenuFont(engine, playerID, 0, 0, "RESULT", EventReceiver.COLOR_ORANGE, scale);
 			if(netvsPlayerPlace[playerID] == 1) {
 				if(netvsNumNowPlayers == 2) {
@@ -1160,8 +1160,8 @@ public class NetDummyVSMode extends NetDummyMode {
 			owner.receiver.drawMenuFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_PINK, scale);
 		}
 
-		// Restart/Practice
 		if((playerID == 0) && (!netvsIsWatch())) {
+			// Restart/Practice
 			String strTemp = "A(" + owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_A) + " KEY):";
 			if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
 			owner.receiver.drawMenuFont(engine, playerID, 0, 18, strTemp, EventReceiver.COLOR_RED);
@@ -1175,6 +1175,15 @@ public class NetDummyVSMode extends NetDummyMode {
 			} else {
 				owner.receiver.drawMenuFont(engine, playerID, 1, 21, "RETRY", EventReceiver.COLOR_PURPLE);
 			}
+		} else if(netvsPlayerReady[playerID] && netvsPlayerExist[playerID]) {
+			// Player Ready
+			int x = owner.receiver.getFieldDisplayPositionX(engine, playerID);
+			int y = owner.receiver.getFieldDisplayPositionY(engine, playerID);
+
+			if(engine.displaysize != -1)
+				owner.receiver.drawDirectFont(engine, playerID, x + 68, y + 356, "OK", EventReceiver.COLOR_YELLOW);
+			else
+				owner.receiver.drawDirectFont(engine, playerID, x + 36, y + 156, "OK", EventReceiver.COLOR_YELLOW, 0.5f);
 		}
 	}
 

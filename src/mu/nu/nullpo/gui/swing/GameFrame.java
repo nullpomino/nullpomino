@@ -602,21 +602,21 @@ public class GameFrame extends JFrame implements Runnable {
 				strModeToEnter = "";
 			}
 		} catch (NullPointerException e) {
-			log.error("update NPE", e);
-
 			try {
-				if(NullpoMinoSwing.gameManager.getQuitFlag()) {
+				if((NullpoMinoSwing.gameManager != null) && NullpoMinoSwing.gameManager.getQuitFlag()) {
 					shutdown();
 					return;
+				} else {
+					log.error("update NPE", e);
 				}
 			} catch (Throwable e2) {}
 		} catch (Exception e) {
-			log.error("update fail", e);
-
 			try {
-				if(NullpoMinoSwing.gameManager.getQuitFlag()) {
+				if((NullpoMinoSwing.gameManager != null) && NullpoMinoSwing.gameManager.getQuitFlag()) {
 					shutdown();
 					return;
+				} else {
+					log.error("update fail", e);
 				}
 			} catch (Throwable e2) {}
 		}
@@ -753,9 +753,17 @@ public class GameFrame extends JFrame implements Runnable {
 			NullpoMinoSwing.gameManager.receiver.setGraphics(g);
 			NullpoMinoSwing.gameManager.renderAll();
 		} catch (NullPointerException e) {
-			log.error("update NPE", e);
+			try {
+				if((NullpoMinoSwing.gameManager == null) || !NullpoMinoSwing.gameManager.getQuitFlag()) {
+					log.error("render NPE", e);
+				}
+			} catch (Throwable e2) {}
 		} catch (Exception e) {
-			log.error("render fail", e);
+			try {
+				if((NullpoMinoSwing.gameManager == null) || !NullpoMinoSwing.gameManager.getQuitFlag()) {
+					log.error("render fail", e);
+				}
+			} catch (Throwable e2) {}
 		}
 
 		// FPS表示
