@@ -146,6 +146,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			thinkBestPosition(engine, playerID);
 		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink
 				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
+			thinkComplete = false;
 			thinkRequest = true;
 			thinkCurrentPieceNo++;
 		}
@@ -181,7 +182,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 				return;
 			nextPiece = checkOffset(nextPiece, engine);
 			input |= calcIRS(nextPiece, engine);
-			if (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))
+			if (threadRunning && !thinking && thinkComplete &&
+					(thinkCurrentPieceNo <= thinkLastPieceNo))
 			{
 				int spawnX = engine.getSpawnPosX(engine.field, nextPiece);
 				if(bestX - spawnX > 1) {
@@ -197,7 +199,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 					setDAS = 0;
 				delay = 0;
 			}
-			if (DEBUG_ALL) log.debug("Currently in ARE. Next piece type = " + nextPiece.id + ", IRS = " + input);
+			if (DEBUG_ALL) log.debug("Currently in ARE. Next piece type = " +
+					Piece.PIECE_NAMES[nextPiece.id] + ", IRS = " + input);
 			//engine.ctrl.setButtonBit(input);
 			inputARE = input;
 		}
@@ -215,7 +218,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
 			(delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
-		    (!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
+		    (!engine.aiUseThread || (threadRunning && !thinking && thinkComplete &&
+		    		(thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{
 			inputARE = 0;
 			int input = 0;	// Button input data
@@ -712,22 +716,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 
 	protected void printPieceAndDirection(int pieceType, int rt)
 	{
-		String result = "Piece ";
-		switch (pieceType)
-		{
-			case Piece.PIECE_I: result = result + "I"; break;
-			case Piece.PIECE_L: result = result + "L"; break;
-			case Piece.PIECE_O: result = result + "O"; break;
-			case Piece.PIECE_Z: result = result + "Z"; break;
-			case Piece.PIECE_T: result = result + "T"; break;
-			case Piece.PIECE_J: result = result + "J"; break;
-			case Piece.PIECE_S: result = result + "S"; break;
-			case Piece.PIECE_I1: result = result + "I1"; break;
-			case Piece.PIECE_I2: result = result + "I2"; break;
-			case Piece.PIECE_I3: result = result + "I3"; break;
-			case Piece.PIECE_L3: result = result + "L3"; break;
-		}
-		result = result + ", direction ";
+		String result = "Piece " + Piece.PIECE_NAMES[pieceType] + ", direction ";
 
 		switch (rt)
 		{
@@ -1394,7 +1383,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		if(!piece.placeToField(x, y, rt, fld)) {
 			if (DEBUG_ALL)
 				log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
-					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Cannot place piece)");
+					", fld, piece " + Piece.PIECE_NAMES[piece.id] + ", " + depth + "). pts = 0 (Cannot place piece)");
 			return Integer.MIN_VALUE;
 		}
 
@@ -1455,7 +1444,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) &&
 				(!tspin) && (xMax == width-1)) {
 			if (DEBUG_ALL) log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
-					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Special Condition 3)");
+					", fld, piece " + Piece.PIECE_NAMES[piece.id] + ", " + depth + "). pts = 0 (Special Condition 3)");
 			return Integer.MIN_VALUE;
 		}
 		//Points for line clears
@@ -1697,7 +1686,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		}
 		if (DEBUG_ALL)
 			log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
-					", fld, piece " + piece.id + ", " + depth + "). pts = " + pts);
+					", fld, piece " + Piece.PIECE_NAMES[piece.id] + ", " + depth + "). pts = " + pts);
 		return pts;
 	}
 	//private static final int[][] HI_PENALTY = {{6, 2}, {7, 6}, {6, 2}, {1, 0}};
@@ -1883,7 +1872,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 			{
 				if (DEBUG_ALL)
 					log.debug("mostMovableX(" + x + ", " + y + ", " + dir +
-							", piece " + piece.id + ", " + rt + ") = " + testX);
+							", piece " + Piece.PIECE_NAMES[piece.id] + ", " + rt + ") = " + testX);
 				if (piece.id == Piece.PIECE_I && testX < 0 && (rt&1) == 1)
 				{
 					int height1 = fld.getHighestBlockY(1);

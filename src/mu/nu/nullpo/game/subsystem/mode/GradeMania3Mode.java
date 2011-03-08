@@ -557,7 +557,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	private void setStartBgmlv(GameEngine engine) {
 		bgmlv = 0;
-		while((tableBGMChange[bgmlv] != -1) && (engine.statistics.level >= tableBGMChange[bgmlv])) bgmlv++;
+		while((tableBGMChange[bgmlv] != -1) && (internalLevel >= tableBGMChange[bgmlv])) bgmlv++;
 	}
 
 	/**
@@ -899,12 +899,10 @@ public class GradeMania3Mode extends DummyMode {
 
 		engine.big = big;
 
+		internalLevel = internalStartLevel;
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv;
-		
-		internalLevel = internalStartLevel;
-		setSpeed(engine);
 
 		if (startlevel >= 10)
 		{

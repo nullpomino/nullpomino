@@ -78,7 +78,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/** Last input if done in ARE */
 	protected int inputARE;
 	/** Number of pieces to think ahead */
-	protected static final int MAX_THINK_DEPTH = 5;
+	protected static final int MAX_THINK_DEPTH = 6;
 	/** Set to true to print debug information */
 	protected static final boolean DEBUG_ALL = false;
 	/** Did the thinking thread finish successfully? */
@@ -93,7 +93,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 */
 	@Override
 	public String getName() {
-		return "Combo Race AI V1.01";
+		return "Combo Race AI V1.02";
 	}
 
 	/*
@@ -503,7 +503,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		pieceHold = checkOffset(pieceHold, engine);
 		boolean holdOK = engine.isHoldOK();
 
-		nextQueueIDs = new int[MAX_THINK_DEPTH-1];
+		nextQueueIDs = new int[MAX_THINK_DEPTH];
 		for (int i = 0; i < nextQueueIDs.length; i++)
 			nextQueueIDs[i] = engine.getNextID(nextIndex+i);
 
@@ -914,6 +914,27 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		r.drawScoreFont(engine, playerID, 34, 42, GeneralUtil.getOorX(thinkComplete), 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 43, "IN ARE:", EventReceiver.COLOR_BLUE, 0.5f);
 		r.drawScoreFont(engine, playerID, 26, 43, GeneralUtil.getOorX(inARE), 0.5f);
+		r.drawScoreFont(engine, playerID, 19, 44, "QUEUE:", EventReceiver.COLOR_BLUE, 0.5f);
+		if (nextQueueIDs == null)
+		{
+			for (int i = 0; i < MAX_THINK_DEPTH; i++)
+				r.drawScoreFont(engine, playerID, 25+i, 44, "-", 0.5f);
+		}
+		else
+		{
+			int color = EventReceiver.COLOR_GREEN;
+			for (int i = 0; i < nextQueueIDs.length; i++)
+			{
+				if (i >= bestPts/1000 && color != EventReceiver.COLOR_RED)
+				{
+					if (i < nextQueueIDs.length-1 && thinkComplete)
+						color = EventReceiver.COLOR_RED;
+					else
+						color = EventReceiver.COLOR_YELLOW;
+				}
+				r.drawScoreFont(engine, playerID, 25+i, 44, Piece.PIECE_NAMES[nextQueueIDs[i]], color, 0.5f);
+			}
+		}
 	}
 
 	
