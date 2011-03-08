@@ -1076,7 +1076,8 @@ public class RendererSDL extends EventReceiver {
 
 			// 右Meter
 			int maxHeight = height * size * 4;
-			if((engine != null) && (engine.meterValue > 0)) maxHeight = (height * size * 4) - engine.meterValue;
+			if((engine != null) && (engine.meterValueSub > 0 || engine.meterValue > 0))
+				maxHeight -= Math.max(engine.meterValue, engine.meterValueSub);
 
 			for(int i = 0; i < maxHeight; i++) {
 				rectSrc = new SDLRect(59, 0, 4, 1);
@@ -1084,14 +1085,26 @@ public class RendererSDL extends EventReceiver {
 				ResourceHolderSDL.imgSprite.blitSurface(rectSrc, graphics, rectDst);
 			}
 
-			if((engine != null) && (engine.meterValue > 0)) {
-				int value = engine.meterValue;
-				if(value > height * size * 4) value = height * size * 4;
+			if(engine != null) {
+				if (engine.meterValueSub > Math.max(engine.meterValue, 0)) {
+					int value = engine.meterValueSub;
+					if(value > height * size * 4) value = height * size * 4;
 
-				for(int i = 0; i < value; i++) {
-					rectSrc = new SDLRect(63 + (engine.meterColor * 4), 0, 4, 1);
-					rectDst = new SDLRect(x + (width * size * 4) + 8, y + (height * size * 4) + 3 - i, 4, 1);
-					ResourceHolderSDL.imgSprite.blitSurface(rectSrc, graphics, rectDst);
+					for(int i = 0; i < value; i++) {
+						rectSrc = new SDLRect(63 + (engine.meterColorSub * 4), 0, 4, 1);
+						rectDst = new SDLRect(x + (width * size * 4) + 8, y + (height * size * 4) + 3 - i, 4, 1);
+						ResourceHolderSDL.imgSprite.blitSurface(rectSrc, graphics, rectDst);
+					}
+				}
+				if (engine.meterValue > 0) {
+					int value = engine.meterValue;
+					if(value > height * size * 4) value = height * size * 4;
+	
+					for(int i = 0; i < value; i++) {
+						rectSrc = new SDLRect(63 + (engine.meterColor * 4), 0, 4, 1);
+						rectDst = new SDLRect(x + (width * size * 4) + 8, y + (height * size * 4) + 3 - i, 4, 1);
+						ResourceHolderSDL.imgSprite.blitSurface(rectSrc, graphics, rectDst);
+					}
 				}
 			}
 		} else {

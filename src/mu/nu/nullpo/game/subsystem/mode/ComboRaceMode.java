@@ -115,6 +115,15 @@ public class ComboRaceMode extends NetDummyMode {
 		Block.BLOCK_COLOR_BLUE,
 		Block.BLOCK_COLOR_PURPLE,
 	};
+	
+	/** Meter colors for really high combos in Endless */
+	private static final int[] METER_COLOUR_TABLE = {
+		GameEngine.METER_COLOR_GREEN,
+		GameEngine.METER_COLOR_YELLOW,
+		GameEngine.METER_COLOR_ORANGE,
+		GameEngine.METER_COLOR_RED,
+	};
+	
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
 	private EventReceiver receiver;
@@ -724,11 +733,12 @@ public class ComboRaceMode extends NetDummyMode {
 			}
 
 			if (GOAL_TABLE[goaltype] == -1) {
-				engine.meterValue = Math.min(engine.statistics.maxCombo - 1, receiver.getMeterMax(engine));
-				if(engine.statistics.maxCombo <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
-				else if(engine.statistics.maxCombo <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
-				else if(engine.statistics.maxCombo <= 40) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
-				else engine.meterColor = GameEngine.METER_COLOR_GREEN;
+				int meterMax = receiver.getMeterMax(engine);
+				int colorIndex = (engine.statistics.maxCombo - 1) / meterMax;
+				engine.meterValue = (engine.statistics.maxCombo - 1) % meterMax;
+				engine.meterColor = METER_COLOUR_TABLE[colorIndex % METER_COLOUR_TABLE.length];
+				engine.meterValueSub = colorIndex > 0 ? meterMax : 0;
+				engine.meterColorSub = METER_COLOUR_TABLE[Math.max(colorIndex-1, 0)];
 			} else {
 				int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
 				engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];

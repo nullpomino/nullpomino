@@ -518,6 +518,12 @@ public class GameEngine {
 	/** Color of meter */
 	public int meterColor;
 
+	/** Amount of meter (layer 2) */
+	public int meterValueSub;
+
+	/** Color of meter (layer 2) */
+	public int meterColorSub;
+
 	/** Lag flag (Infinite length of ARE will happen after placing a piece until this flag is set to false) */
 	public boolean lagARE;
 
@@ -878,6 +884,8 @@ public class GameEngine {
 
 		meterValue = 0;
 		meterColor = METER_COLOR_RED;
+		meterValueSub = 0;
+		meterColorSub = METER_COLOR_RED;
 
 		lagARE = false;
 		lagStop = false;

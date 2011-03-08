@@ -1013,7 +1013,8 @@ public class RendererSwing extends EventReceiver {
 
 			// 右Meter
 			int maxHeight = height * size * 4;
-			if((engine != null) && (engine.meterValue > 0)) maxHeight = (height * size * 4) - engine.meterValue;
+			if((engine != null) && (engine.meterValueSub > 0 || engine.meterValue > 0))
+				maxHeight -= Math.max(engine.meterValue, engine.meterValueSub);
 
 			tmpX = x + (width * size * 4) + 8;
 			tmpY = y + 4;
@@ -1024,32 +1025,62 @@ public class RendererSwing extends EventReceiver {
 				graphics.setColor(Color.white);
 			}
 
-			if((engine != null) && (engine.meterValue > 0)) {
-				int value = engine.meterValue;
-				if(value > height * size * 4) value = height * size * 4;
+			if(engine != null) {
+				if (engine.meterValueSub > Math.max(engine.meterValue, 0)) {
+					int value = engine.meterValueSub;
+					if(value > height * size * 4) value = height * size * 4;
 
-				if(value > 0) {
-					tmpX = x + (width * size * 4) + 8;
-					tmpY = y + (height * size * 4) + 3 - (value - 1);
+					if(value > 0) {
+						tmpX = x + (width * size * 4) + 8;
+						tmpY = y + (height * size * 4) + 3 - (value - 1);
 
-					Color color = Color.white;
-					switch(engine.meterColor) {
-					case GameEngine.METER_COLOR_GREEN:
-						color = Color.green;
-						break;
-					case GameEngine.METER_COLOR_YELLOW:
-						color = Color.yellow;
-						break;
-					case GameEngine.METER_COLOR_ORANGE:
-						color = Color.orange;
-						break;
-					case GameEngine.METER_COLOR_RED:
-						color = Color.red;
-						break;
+						Color color = Color.white;
+						switch(engine.meterColorSub) {
+						case GameEngine.METER_COLOR_GREEN:
+							color = Color.green;
+							break;
+						case GameEngine.METER_COLOR_YELLOW:
+							color = Color.yellow;
+							break;
+						case GameEngine.METER_COLOR_ORANGE:
+							color = Color.orange;
+							break;
+						case GameEngine.METER_COLOR_RED:
+							color = Color.red;
+							break;
+						}
+						graphics.setColor(color);
+						graphics.fillRect(tmpX, tmpY, 4, value);
+						graphics.setColor(Color.white);
 					}
-					graphics.setColor(color);
-					graphics.fillRect(tmpX, tmpY, 4, value);
-					graphics.setColor(Color.white);
+				}
+				if (engine.meterValue > 0) {
+					int value = engine.meterValue;
+					if(value > height * size * 4) value = height * size * 4;
+
+					if(value > 0) {
+						tmpX = x + (width * size * 4) + 8;
+						tmpY = y + (height * size * 4) + 3 - (value - 1);
+
+						Color color = Color.white;
+						switch(engine.meterColor) {
+						case GameEngine.METER_COLOR_GREEN:
+							color = Color.green;
+							break;
+						case GameEngine.METER_COLOR_YELLOW:
+							color = Color.yellow;
+							break;
+						case GameEngine.METER_COLOR_ORANGE:
+							color = Color.orange;
+							break;
+						case GameEngine.METER_COLOR_RED:
+							color = Color.red;
+							break;
+						}
+						graphics.setColor(color);
+						graphics.fillRect(tmpX, tmpY, 4, value);
+						graphics.setColor(Color.white);
+					}
 				}
 			}
 		} else {
