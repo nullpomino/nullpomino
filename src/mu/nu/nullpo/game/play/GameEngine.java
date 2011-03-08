@@ -209,14 +209,8 @@ public class GameEngine {
 	/** Show internal state of AI */
 	public boolean aiShowState;
 
-	/** AI Hint X position */
-	public int aiHintX;
-
-	/** AI Hint Y position */
-	public int aiHintY;
-
-	/** AI Hint piece direction */
-	public int aiHintRt;
+	/** AI Hint piece (copy of current or hold) */
+	public Piece aiHintPiece;
 
 	/** True if AI Hint is ready */
 	public boolean aiHintReady;
@@ -940,6 +934,8 @@ public class GameEngine {
 			ai.shutdown(this, playerID);
 			ai.init(this, playerID);
 		}
+		if (aiShowHint)
+			aiPrethink = false;
 	}
 
 	/**
@@ -1706,13 +1702,24 @@ public class GameEngine {
 					if (aiShowHint == false) {
 						ai.setControl(this, playerID, ctrl);
 					} else {
-						aiHintReady = (ai.thinkCurrentPieceNo == ai.thinkLastPieceNo)
-								&& (ai.thinkCurrentPieceNo > 0)
-								&& !(ai.bestHold || ai.forceHold);
+						aiHintReady = (ai.thinkComplete || ((ai.thinkCurrentPieceNo > 0)
+								&& (ai.thinkCurrentPieceNo <= ai.thinkLastPieceNo)));
 						if (aiHintReady) {
-							aiHintX = ai.bestX;
-							aiHintY = ai.bestY;
-							aiHintRt = ai.bestRt;
+							aiHintPiece = null;
+							if (ai.bestHold)
+							{
+								if (holdPieceObject != null)
+									aiHintPiece = new Piece(holdPieceObject);
+								else
+								{
+									aiHintPiece = getNextObjectCopy(nextPieceCount);
+									if (!aiHintPiece.offsetApplied)
+										aiHintPiece.applyOffsetArray(ruleopt.pieceOffsetX[aiHintPiece.id],
+												ruleopt.pieceOffsetY[aiHintPiece.id]);
+								}
+							}
+							else if (nowPieceObject != null)
+								aiHintPiece = new Piece(nowPieceObject);
 						}
 					}
 				}

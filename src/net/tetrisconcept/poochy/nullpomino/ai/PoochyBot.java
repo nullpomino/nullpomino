@@ -79,8 +79,6 @@ public class PoochyBot extends DummyAI implements Runnable {
 	//protected static final int DROP_DELAY = 2;
 	/** Number of frames waited */
 	//protected int dropDelay;
-	/** Did the thinking thread finish successfully? */
-	protected boolean thinkComplete;
 	/** Did the thinking thread find a possible position? */
 	protected boolean thinkSuccess;
 	/** Was the game in ARE as of the last frame? */
@@ -148,7 +146,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
 			thinkComplete = false;
 			thinkRequest = true;
-			thinkCurrentPieceNo++;
+			//thinkCurrentPieceNo++;
 		}
 	}
 
@@ -162,8 +160,6 @@ public class PoochyBot extends DummyAI implements Runnable {
 				&& ((newInARE && !inARE) || (!thinking && !thinkSuccess)))
 		{
 			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
-			if (engine.field == null)
-				engine.createFieldIfNeeded();
 			thinkComplete = false;
 			thinkRequest = true;
 		}

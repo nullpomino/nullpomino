@@ -654,17 +654,17 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	protected void drawHintPiece(int x, int y, GameEngine engine, float scale) {
-		if (engine.nowPieceObject!=null){
-			Piece piece =  new Piece(engine.nowPieceObject);
-			piece.direction=engine.aiHintRt;
+		Piece piece = engine.aiHintPiece;
+		if (piece != null) {
+			piece.direction=engine.ai.bestRt;
 			piece.updateConnectData();
 			int blksize = (int)(16 * scale);
 
 			if(piece != null) {
 				for(int i = 0; i < piece.getMaxBlock(); i++) {
 					if(!piece.big) {
-						int x2 = engine.aiHintX + piece.dataX[engine.aiHintRt][i];
-						int y2 = engine.aiHintY + piece.dataY[engine.aiHintRt][i];
+						int x2 = engine.ai.bestX + piece.dataX[engine.ai.bestRt][i];
+						int y2 = engine.ai.bestY + piece.dataY[engine.ai.bestRt][i];
 
 						if(y2 >= 0) {
 
@@ -696,8 +696,8 @@ public class RendererSlick extends EventReceiver {
 								graphics.fillRect(x3 + (blksize-2), y3 + (blksize-2), 2, 2);
 						}
 					} else {
-						int x2 = engine.aiHintX + (piece.dataX[engine.aiHintRt][i] * 2);
-						int y2 = engine.aiHintY + (piece.dataY[engine.aiHintRt][i] * 2);
+						int x2 = engine.ai.bestX + (piece.dataX[engine.ai.bestRt][i] * 2);
+						int y2 = engine.ai.bestY + (piece.dataY[engine.ai.bestRt][i] * 2);
 
 						Block blkTemp = piece.block[i];
 						int x3 = x + (x2 * blksize);

@@ -56,6 +56,9 @@ public class DummyAI implements AIPlayer {
 	/** 思考が終わったピースの number */
 	public int thinkLastPieceNo;
 
+	/** Did the thinking thread finish successfully? */
+	public boolean thinkComplete;
+
 	public String getName() {
 		return "DummyAI";
 	}
