@@ -133,7 +133,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink) {
+		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink || engine.aiShowHint) {
 			thinkRequest = true;
 			thinkCurrentPieceNo++;
 		}

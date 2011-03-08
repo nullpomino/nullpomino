@@ -934,8 +934,6 @@ public class GameEngine {
 			ai.shutdown(this, playerID);
 			ai.init(this, playerID);
 		}
-		if (aiShowHint)
-			aiPrethink = false;
 	}
 
 	/**

@@ -143,7 +143,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink
+		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink || engine.aiShowHint
 				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
 			thinkRequest = true;
 			thinkCurrentPieceNo++;
@@ -559,6 +559,27 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		}
 
 		thinkLastPieceNo++;
+
+		if (engine.aiShowHint)
+		{
+			Piece pieceTemp = bestHold ? pieceHold : pieceNow;
+			bestY = pieceTemp.getBottom(bestX, bestY, bestRt, fld);
+			if (bestRtSub != 0)
+			{
+				int newRt = (bestRt + bestRtSub + Piece.DIRECTION_COUNT) % Piece.DIRECTION_COUNT;
+				if(pieceTemp.checkCollision(bestX, bestY, newRt, fld) && (engine.wallkick != null) &&
+						(engine.ruleopt.rotateWallkick)) {
+					WallkickResult kick = engine.wallkick.executeWallkick(bestX, bestY, -1, bestRt, newRt,
+							(engine.ruleopt.rotateMaxUpwardWallkick != 0), pieceTemp, fld, null);
+	
+					if(kick != null) {
+						bestX += kick.offsetX;
+						bestY = pieceTemp.getBottom(bestX, bestY + kick.offsetY, newRt, fld);
+					}
+				}
+				bestRt = newRt;
+			}
+		}
 
 		//System.out.println("X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestPts);
 	}

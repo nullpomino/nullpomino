@@ -142,7 +142,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public void newPiece(GameEngine engine, int playerID) {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
-		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink
+		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink || engine.aiShowHint
 				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
 			thinkComplete = false;
 			thinkRequest = true;
@@ -1282,6 +1282,13 @@ public class PoochyBot extends DummyAI implements Runnable {
 				bestPts = Integer.MIN_VALUE;
 		}
 
+		if (engine.aiShowHint)
+		{
+			bestX = bestXSub;
+			bestY = bestYSub;
+			if (bestRtSub != -1)
+				bestRt = bestRtSub;
+		}
 		//thinkLastPieceNo++;
 
 		//System.out.println("X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestPts);
