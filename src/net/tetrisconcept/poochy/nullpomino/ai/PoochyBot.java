@@ -72,7 +72,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	/** Maximum妥協 level */
 	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
-	protected static final boolean DEBUG_ALL = true;
+	protected static final boolean DEBUG_ALL = false;
 	/** Wait extra frames at low speeds? */
 	//protected static final boolean DELAY_DROP_ON = false;
 	/** # of extra frames to wait */
@@ -157,12 +157,13 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 */
 	public void onFirst(GameEngine engine, int playerID) {
 		inputARE = 0;
-		boolean newInARE = engine.stat == GameEngine.STAT_ARE ||
-			engine.stat == GameEngine.STAT_READY;
+		boolean newInARE = engine.stat == GameEngine.STAT_ARE;
 		if ((engine.aiPrethink && engine.getARE() > 0 && engine.getARELine() > 0)
 				&& ((newInARE && !inARE) || (!thinking && !thinkSuccess)))
 		{
 			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
+			if (engine.field == null)
+				engine.createFieldIfNeeded();
 			thinkComplete = false;
 			thinkRequest = true;
 		}
@@ -182,8 +183,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				return;
 			nextPiece = checkOffset(nextPiece, engine);
 			input |= calcIRS(nextPiece, engine);
-			if (threadRunning && !thinking && thinkComplete &&
-					(thinkCurrentPieceNo <= thinkLastPieceNo))
+			if (threadRunning && !thinking && thinkComplete)
 			{
 				int spawnX = engine.getSpawnPosX(engine.field, nextPiece);
 				if(bestX - spawnX > 1) {
@@ -218,8 +218,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
 			(delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
-		    (!engine.aiUseThread || (threadRunning && !thinking && thinkComplete &&
-		    		(thinkCurrentPieceNo <= thinkLastPieceNo))) )
+		    (!engine.aiUseThread || (threadRunning && !thinking && thinkComplete)))
 		{
 			inputARE = 0;
 			int input = 0;	// Button input data
@@ -1287,7 +1286,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				bestPts = Integer.MIN_VALUE;
 		}
 
-		thinkLastPieceNo++;
+		//thinkLastPieceNo++;
 
 		//System.out.println("X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestPts);
 	}
