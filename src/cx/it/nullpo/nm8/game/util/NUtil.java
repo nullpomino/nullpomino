@@ -356,4 +356,82 @@ public class NUtil {
 
 		return c;
 	}
+
+	// *** The following code requires external library from org.cacas.java.gnu.tools.Crypt
+	/**
+	 * Create Tripcode
+	 * @param tripkey Password
+	 * @param maxlen Tripcode Length (Usually 10)
+	 * @return String of Tripcode
+	 */
+	public static String createTripCode(String tripkey, int maxlen) {
+		byte[] bTripKey = stringToShiftJIS(tripkey);
+		byte[] bSaltTemp = new byte[bTripKey.length + 3];
+		for(int i = 0; i < bTripKey.length; i++) {
+			bSaltTemp[i] = bTripKey[i];
+		}
+		bSaltTemp[bTripKey.length + 0] = (byte)'H';
+		bSaltTemp[bTripKey.length + 1] = (byte)'.';
+		bSaltTemp[bTripKey.length + 2] = (byte)'.';
+		byte[] bSalt = new byte[2];
+		bSalt[0] = bSaltTemp[1];
+		bSalt[1] = bSaltTemp[2];
+
+		for(int i = 0; i < bSalt.length; i++) {
+			if((bSalt[i] < (byte)'.') || (bSalt[i] > (byte)'z')) bSalt[i] = (byte)'.';
+			if(bSalt[i] == (byte)':') bSalt[i] = (byte)'A';
+			if(bSalt[i] == (byte)';') bSalt[i] = (byte)'B';
+			if(bSalt[i] == (byte)'<') bSalt[i] = (byte)'C';
+			if(bSalt[i] == (byte)'=') bSalt[i] = (byte)'D';
+			if(bSalt[i] == (byte)'>') bSalt[i] = (byte)'E';
+			if(bSalt[i] == (byte)'?') bSalt[i] = (byte)'F';
+			if(bSalt[i] == (byte)'@') bSalt[i] = (byte)'G';
+			if(bSalt[i] == (byte)'[') bSalt[i] = (byte)'a';
+			if(bSalt[i] == (byte)'\\') bSalt[i] = (byte)'b';
+			if(bSalt[i] == (byte)']') bSalt[i] = (byte)'c';
+			if(bSalt[i] == (byte)'^') bSalt[i] = (byte)'d';
+			if(bSalt[i] == (byte)'_') bSalt[i] = (byte)'e';
+			if(bSalt[i] == (byte)'`') bSalt[i] = (byte)'f';
+		}
+
+		String strTripCode = org.cacas.java.gnu.tools.Crypt.crypt(bSalt, bTripKey);
+		if(strTripCode.length() > maxlen) {
+			strTripCode = strTripCode.substring(strTripCode.length() - maxlen);
+		}
+
+		return strTripCode;
+	}
+
+	// *** The following codes require external library from biz.source_code.base64Coder
+	/**
+	 * Compress a String then encode with Base64. The compression level is 9.
+	 * @param input String you want to compress
+	 * @return Compressed + Base64 encoded String
+	 */
+	public static String compressString(String input) {
+		return compressString(input, Deflater.BEST_COMPRESSION);
+	}
+
+	/**
+	 * Compress a String then encode with Base64.
+	 * @param input String you want to compress
+	 * @param level Compression level (0-9)
+	 * @return Compressed + Base64 encoded String
+	 */
+	public static String compressString(String input, int level) {
+		byte[] bCompressed = compressByteArray(stringToBytes(input), level);
+		char[] cCompressed = biz.source_code.base64Coder.Base64Coder.encode(bCompressed);
+		return new String(cCompressed);
+	}
+
+	/**
+	 * Decompress a Base64 encoded String
+	 * @param input Compressed + Base64 encoded String
+	 * @return Raw String
+	 */
+	public static String decompressString(String input) {
+		byte[] bCompressed = biz.source_code.base64Coder.Base64Coder.decode(input);
+		byte[] bDecompressed = decompressByteArray(bCompressed);
+		return bytesToString(bDecompressed);
+	}
 }
