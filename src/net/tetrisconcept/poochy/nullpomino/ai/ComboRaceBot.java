@@ -34,7 +34,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		0x111, 0x888
 	};
 
-	protected int[] scores = {6, 7, 7, 6, 8, 3, 2, 9, 3, 4, 3, 1, 8, 4, 1, 3, 1, 1, 4, 3, 9, 2, 3, 8, 4, 8, 3, 3};
+	protected int[] stateScores = {6, 7, 7, 6, 8, 3, 2, 9, 3, 4, 3, 1, 8, 4, 1, 3, 1, 1, 4, 3, 9, 2, 3, 8, 4, 8, 3, 3};
+	
+	protected int[] pieceScores = {28, 18, 18, 9, 9, 10, 18};
 
 	protected Transition[][] moves;
 
@@ -597,13 +599,11 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			return 0;
 		if (depth == nextQueueIDs.length)
 		{
-			int result = scores[state]*10;
+			int result = stateScores[state]*100;
 			if (holdID == Piece.PIECE_I)
 				result += 1000;
-			else if (holdID == Piece.PIECE_T)
-				result += 3;
-			else if (holdID == Piece.PIECE_L || holdID == Piece.PIECE_J)
-				result++;
+			else
+				result += pieceScores[holdID]*100/28;
 			return result;
 		}
 

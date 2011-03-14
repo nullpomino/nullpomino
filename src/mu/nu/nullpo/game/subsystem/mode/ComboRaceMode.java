@@ -738,7 +738,7 @@ public class ComboRaceMode extends NetDummyMode {
 				engine.meterValue = (engine.statistics.maxCombo - 1) % meterMax;
 				engine.meterColor = METER_COLOUR_TABLE[colorIndex % METER_COLOUR_TABLE.length];
 				engine.meterValueSub = colorIndex > 0 ? meterMax : 0;
-				engine.meterColorSub = METER_COLOUR_TABLE[Math.max(colorIndex-1, 0)];
+				engine.meterColorSub = METER_COLOUR_TABLE[Math.max(colorIndex-1, 0)  % METER_COLOUR_TABLE.length];
 			} else {
 				int remainLines = GOAL_TABLE[goaltype] - engine.statistics.lines;
 				engine.meterValue = (remainLines * receiver.getMeterMax(engine)) / GOAL_TABLE[goaltype];
