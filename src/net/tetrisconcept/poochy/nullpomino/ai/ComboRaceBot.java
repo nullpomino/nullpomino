@@ -956,6 +956,13 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				r.drawScoreFont(engine, playerID, 25+i, 44, Piece.PIECE_NAMES[nextQueueIDs[i]], color, 0.5f);
 			}
 		}
+		int code = -1;
+		if (engine.field != null)
+			code = fieldToCode(engine.field);
+		r.drawScoreFont(engine, playerID, 19, 45, "STATE:", EventReceiver.COLOR_BLUE, 0.5f);
+		r.drawScoreFont(engine, playerID, 25, 45,
+				(code == -1) ? "---" : Integer.toHexString(code).toUpperCase(), 0.5f);
+		
 	}
 
 	
