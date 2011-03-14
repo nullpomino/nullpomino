@@ -36,7 +36,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 	protected int[] stateScores = {6, 7, 7, 6, 8, 3, 2, 9, 3, 4, 3, 1, 8, 4, 1, 3, 1, 1, 4, 3, 9, 2, 3, 8, 4, 8, 3, 3};
 	
-	protected int[] pieceScores = {28, 18, 18, 9, 9, 10, 18};
+	protected int[] pieceScores = {28, 18, 10, 9, 18, 18, 9};
 
 	protected Transition[][] moves;
 
