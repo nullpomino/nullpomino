@@ -602,7 +602,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			int result = stateScores[state]*100;
 			if (holdID == Piece.PIECE_I)
 				result += 1000;
-			else
+			else if (holdID >= 0 && holdID < pieceScores.length)
 				result += pieceScores[holdID]*100/28;
 			return result;
 		}
@@ -659,7 +659,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				try {
 					thinkBestPosition(gEngine, gEngine.playerID);
 					thinkComplete = true;
-					log.debug("ComboRaceBot: thinkBestPosition completed successfully");
+					//log.debug("ComboRaceBot: thinkBestPosition completed successfully");
 				} catch (Throwable e) {
 					log.debug("ComboRaceBot: thinkBestPosition Failed", e);
 				}

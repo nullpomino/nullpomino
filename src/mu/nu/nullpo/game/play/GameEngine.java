@@ -715,6 +715,7 @@ public class GameEngine {
 
 			Random tempRand = new Random();
 			randSeed = tempRand.nextLong();
+			log.debug("Player + " + playerID + "Random seed :" + Long.toString(randSeed, 16));
 			random = new Random(randSeed);
 		} else {
 			versionMajor = owner.replayProp.getProperty("version.core.major", 0f);
