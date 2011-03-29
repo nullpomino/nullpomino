@@ -44,7 +44,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	public GameManager gManager;
 
 	/** When true,スレッドにThink routineの実行を指示 */
-	public boolean thinkRequest;
+	public ThinkRequestMutex thinkRequest;
 
 	/** true when thread is executing the think routine. */
 	public boolean thinking;
@@ -98,7 +98,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		delay = 0;
 		gEngine = engine;
 		gManager = engine.owner;
-		thinkRequest = false;
+		thinkRequest = new ThinkRequestMutex();
 		thinking = false;
 		threadRunning = false;
 		setDAS = 0;
@@ -145,8 +145,8 @@ public class PoochyBot extends DummyAI implements Runnable {
 		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink || engine.aiShowHint
 				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
 			thinkComplete = false;
-			thinkRequest = true;
 			//thinkCurrentPieceNo++;
+			thinkRequest.newRequest();
 		}
 	}
 
@@ -161,7 +161,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		{
 			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
 			thinkComplete = false;
-			thinkRequest = true;
+			thinkRequest.newRequest();
 		}
 		inARE = newInARE;
 		if(inARE && delay >= engine.aiMoveDelay) {
@@ -262,16 +262,16 @@ public class PoochyBot extends DummyAI implements Runnable {
 					((nowType == Piece.PIECE_L && bestX > nowX) || (nowType == Piece.PIECE_J && bestX < nowX))
 					&& !fld.getBlockEmpty(pieceNow.getMaximumBlockX()+nowX-1, pieceNow.getMaximumBlockY()+nowY)))
 			{
-				thinkRequest = true;
 				thinkComplete = false;
 				if (DEBUG_ALL) log.debug("Needs rethink - L or J piece is stuck!");
+				thinkRequest.newRequest();
 			}
 			if (nowType == Piece.PIECE_O && ((bestX < nowX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))
 					|| (bestX < nowX && pieceNow.checkCollision(nowX-1, nowY, rt, fld))))
 			{
-				thinkRequest = true;
 				thinkComplete = false;
 				if (DEBUG_ALL) log.debug("Needs rethink - O piece is stuck!");
+				thinkRequest.newRequest();
 			}
 			if (pieceTouchGround && rt == bestRt &&
 					(pieceNow.getMostMovableRight(nowX, nowY, rt, engine.field) < bestX ||
@@ -281,25 +281,25 @@ public class PoochyBot extends DummyAI implements Runnable {
 				stuckDelay = 0;
 			if (stuckDelay > 4)
 			{
-				thinkRequest = true;
 				thinkComplete = false;
 				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck!");
+				thinkRequest.newRequest();
 			}
 			if (nowX == lastX && nowY == lastY && rt == lastRt && lastInput != 0)
 			{
 				sameStatusTime++;
 				if (sameStatusTime > 4)
 				{
-					thinkRequest = true;
 					thinkComplete = false;
 					if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck, last inputs had no effect!");
+					thinkRequest.newRequest();
 				}
 			}
 			if (engine.nowPieceRotateCount >= 8)
 			{
-				thinkRequest = true;
 				thinkComplete = false;
 				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck, too many rotations!");
+				thinkRequest.newRequest();
 			}
 			else
 				sameStatusTime = 0;
@@ -445,11 +445,11 @@ public class PoochyBot extends DummyAI implements Runnable {
 				if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt) ) {
 					// 到達不能なので再度思考する
 					//thinkBestPosition(engine, playerID);
-					thinkRequest = true;
 					thinkComplete = false;
 					//thinkCurrentPieceNo++;
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
 					if (DEBUG_ALL) log.debug("Needs rethink - cannot reach desired position");
+					thinkRequest.newRequest();
 				} else {
 					// 到達できる場合
 					if((nowX == bestX) && (pieceTouchGround)) {
@@ -1936,7 +1936,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		r.drawScoreFont(engine, playerID, 19, 39, "THINK ACTIVE:", EventReceiver.COLOR_BLUE, 0.5f);
 		r.drawScoreFont(engine, playerID, 32, 39, GeneralUtil.getOorX(thinking), 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 40, "THINK REQUEST:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkRequest), 0.5f);
+		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkRequest.active), 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 41, "THINK SUCCESS:", EventReceiver.COLOR_BLUE, 0.5f);
 		r.drawScoreFont(engine, playerID, 33, 41, GeneralUtil.getOorX(thinkSuccess), 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 42, "THINK COMPLETE:", EventReceiver.COLOR_BLUE, 0.5f);
@@ -1953,8 +1953,17 @@ public class PoochyBot extends DummyAI implements Runnable {
 		threadRunning = true;
 
 		while(threadRunning) {
-			if(thinkRequest) {
-				thinkRequest = false;
+			try {
+				synchronized(thinkRequest)
+				{
+					if (!thinkRequest.active)
+						thinkRequest.wait();
+				}
+			} catch (InterruptedException e) {
+				log.debug("PoochyBot: InterruptedException waiting for thinkRequest signal");
+			}
+			if(thinkRequest.active) {
+				thinkRequest.active = false;
 				thinking = true;
 				try {
 					thinkBestPosition(gEngine, gEngine.playerID);
@@ -1970,12 +1979,27 @@ public class PoochyBot extends DummyAI implements Runnable {
 				try {
 					Thread.sleep(thinkDelay);
 				} catch (InterruptedException e) {
-					break;
+					log.debug("PoochyBot: InterruptedException trying to sleep");
 				}
 			}
 		}
 
 		threadRunning = false;
 		log.info("PoochyBot: Thread end");
+	}
+	
+	//Wrapper for think requests
+	private static class ThinkRequestMutex
+	{
+		public boolean active;
+		public ThinkRequestMutex()
+		{
+			active = false;
+		}
+		public synchronized void newRequest()
+		{
+			active = true;
+			notifyAll();
+		}
 	}
 }
