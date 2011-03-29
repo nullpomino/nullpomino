@@ -42,8 +42,6 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 	protected int[] nextQueueIDs;
 
-	protected boolean createTablesRequest;
-
 	/** 接地したあとのDirection(0: None) */
 	public int bestRtSub;
 
@@ -63,7 +61,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	public GameManager gManager;
 
 	/** When true,スレッドにThink routineの実行を指示 */
-	public boolean thinkRequest;
+	public ThinkRequestMutex thinkRequest;
 
 	/** true when thread is executing the think routine. */
 	public boolean thinking;
@@ -106,10 +104,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		delay = 0;
 		gEngine = engine;
 		gManager = engine.owner;
-		thinkRequest = false;
+		thinkRequest = new ThinkRequestMutex();
 		thinking = false;
 		threadRunning = false;
-		createTablesRequest = false;
 
 		inputARE = 0;
 		thinkComplete = false;
@@ -147,8 +144,8 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			thinkBestPosition(engine, playerID);
 		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink || engine.aiShowHint
 				|| engine.getARE() <= 0 || engine.getARELine() <= 0) {
-			thinkRequest = true;
 			thinkCurrentPieceNo++;
+			thinkRequest.newRequest();
 		}
 		movestate = 0;
 	}
@@ -165,7 +162,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		{
 			if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
 			thinkComplete = false;
-			thinkRequest = true;
+			thinkRequest.newRequest();
 		}
 		inARE = newInARE;
 		if(inARE && delay >= engine.aiMoveDelay) {
@@ -207,7 +204,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
 		if (engine.stat == GameEngine.STAT_READY && engine.statc[0] == 0)
-			createTablesRequest = true;
+			thinkRequest.newCreateTablesRequest();
 	}
 
 	/*
@@ -296,11 +293,11 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 						 && ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY))) {
 					// 到達不能なので再度思考する
 					//thinkBestPosition(engine, playerID);
-					thinkRequest = true;
 					thinkComplete = false;
 					//thinkCurrentPieceNo++;
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
 					if (DEBUG_ALL) log.debug("Needs rethink - cannot reach desired position");
+					thinkRequest.newRequest();
 				} else {
 					// 到達できる場合
 					if((nowX == bestX) && (pieceTouchGround)) {
@@ -653,8 +650,17 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		threadRunning = true;
 
 		while(threadRunning) {
-			if(thinkRequest) {
-				thinkRequest = false;
+			try {
+				synchronized(thinkRequest)
+				{
+					if (!thinkRequest.active && !thinkRequest.createTablesRequest)
+						thinkRequest.wait();
+				}
+			} catch (InterruptedException e) {
+				log.debug("ComboRaceBot: InterruptedException waiting for thinkRequest signal");
+			}
+			if(thinkRequest.active) {
+				thinkRequest.active = false;
 				thinking = true;
 				try {
 					thinkBestPosition(gEngine, gEngine.playerID);
@@ -665,7 +671,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				}
 				thinking = false;
 			}
-			else if (createTablesRequest)
+			else if (thinkRequest.createTablesRequest)
 				createTables(gEngine);
 
 			if(thinkDelay > 0) {
@@ -927,7 +933,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		r.drawScoreFont(engine, playerID, 19, 39, "THINK ACTIVE:", EventReceiver.COLOR_BLUE, 0.5f);
 		r.drawScoreFont(engine, playerID, 32, 39, GeneralUtil.getOorX(thinking), 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 40, "THINK REQUEST:", EventReceiver.COLOR_BLUE, 0.5f);
-		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkRequest), 0.5f);
+		r.drawScoreFont(engine, playerID, 33, 40, GeneralUtil.getOorX(thinkRequest.active), 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 41, "THINK SUCCESS:",
 				thinkSuccess ? EventReceiver.COLOR_BLUE :  EventReceiver.COLOR_RED, 0.5f);
 		r.drawScoreFont(engine, playerID, 33, 41, GeneralUtil.getOorX(thinkSuccess), !thinkSuccess, 0.5f);
@@ -999,6 +1005,28 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			rtSub = 0;
 			newField = newFld;
 			next = nxt;
+		}
+	}
+	
+	//Wrapper for think requests
+	private static class ThinkRequestMutex
+	{
+		public boolean active;
+		public boolean createTablesRequest;
+		public ThinkRequestMutex()
+		{
+			active = false;
+			createTablesRequest = false;
+		}
+		public synchronized void newRequest()
+		{
+			active = true;
+			notifyAll();
+		}
+		public synchronized void newCreateTablesRequest()
+		{
+			createTablesRequest = true;
+			notifyAll();
 		}
 	}
 }

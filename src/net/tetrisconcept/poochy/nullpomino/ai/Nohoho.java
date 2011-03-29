@@ -40,7 +40,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	public GameManager gManager;
 
 	/** When true,スレッドにThink routineの実行を指示 */
-	public boolean thinkRequest;
+	public ThinkRequestMutex thinkRequest;
 
 	/** true when thread is executing the think routine. */
 	public boolean thinking;
@@ -90,7 +90,7 @@ public class Nohoho extends DummyAI implements Runnable {
 		delay = 0;
 		gEngine = engine;
 		gManager = engine.owner;
-		thinkRequest = false;
+		thinkRequest = new ThinkRequestMutex();
 		thinking = false;
 		threadRunning = false;
 		setDAS = 0;
@@ -134,7 +134,7 @@ public class Nohoho extends DummyAI implements Runnable {
 		if(!engine.aiUseThread) {
 			thinkBestPosition(engine, playerID);
 		} else if ((!thinking && !thinkComplete) || !engine.aiPrethink || engine.aiShowHint) {
-			thinkRequest = true;
+			thinkRequest.newRequest();
 			thinkCurrentPieceNo++;
 		}
 	}
@@ -152,7 +152,7 @@ public class Nohoho extends DummyAI implements Runnable {
 			{
 				if (DEBUG_ALL) log.debug("Begin pre-think of next piece.");
 				thinkComplete = false;
-				thinkRequest = true;
+				thinkRequest.newRequest();
 			}
 			inARE = newInARE;
 		}
@@ -195,7 +195,7 @@ public class Nohoho extends DummyAI implements Runnable {
 				stuckDelay = 0;
 			if (stuckDelay > 4)
 			{
-				thinkRequest = true;
+				thinkRequest.newRequest();
 				thinkComplete = false;
 				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck!");
 			}
@@ -204,14 +204,14 @@ public class Nohoho extends DummyAI implements Runnable {
 				sameStatusTime++;
 				if (sameStatusTime > 4)
 				{
-					thinkRequest = true;
+					thinkRequest.newRequest();
 					thinkComplete = false;
 					if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck, last inputs had no effect!");
 				}
 			}
 			if (engine.nowPieceRotateCount >= 8)
 			{
-				thinkRequest = true;
+				thinkRequest.newRequest();
 				thinkComplete = false;
 				if (DEBUG_ALL) log.debug("Needs rethink - piece is stuck, too many rotations!");
 			}
@@ -257,7 +257,7 @@ public class Nohoho extends DummyAI implements Runnable {
 				if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt) ) {
 					// 到達不能なので再度思考する
 					//thinkBestPosition(engine, playerID);
-					thinkRequest = true;
+					thinkRequest.newRequest();
 					thinkComplete = false;
 					//thinkCurrentPieceNo++;
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
@@ -665,8 +665,17 @@ public class Nohoho extends DummyAI implements Runnable {
 		threadRunning = true;
 
 		while(threadRunning) {
-			if(thinkRequest) {
-				thinkRequest = false;
+			try {
+				synchronized(thinkRequest)
+				{
+					if (!thinkRequest.active)
+						thinkRequest.wait();
+				}
+			} catch (InterruptedException e) {
+				log.debug("PoochyBot: InterruptedException waiting for thinkRequest signal");
+			}
+			if(thinkRequest.active) {
+				thinkRequest.active = false;
 				thinking = true;
 				try {
 					thinkBestPosition(gEngine, gEngine.playerID);
@@ -689,5 +698,20 @@ public class Nohoho extends DummyAI implements Runnable {
 
 		threadRunning = false;
 		log.info("Nohoho: Thread end");
+	}
+	
+	//Wrapper for think requests
+	private static class ThinkRequestMutex
+	{
+		public boolean active;
+		public ThinkRequestMutex()
+		{
+			active = false;
+		}
+		public synchronized void newRequest()
+		{
+			active = true;
+			notifyAll();
+		}
 	}
 }
