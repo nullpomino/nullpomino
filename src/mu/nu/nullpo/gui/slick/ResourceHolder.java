@@ -33,7 +33,6 @@ import java.io.File;
 import java.util.LinkedList;
 
 import mu.nu.nullpo.game.component.BGMStatus;
-import mu.nu.nullpo.gui.common.AbstractResourceHolder;
 
 import org.apache.log4j.Logger;
 import org.newdawn.slick.BigImage;
@@ -48,15 +47,27 @@ import org.newdawn.slick.openal.SoundStore;
 /**
  * 画像や音声の管理をするクラス
  */
-public class ResourceHolder extends AbstractResourceHolder {
-	
-	static {
-		/** Log */
-		log = Logger.getLogger(ResourceHolder.class);
-	}
+public class ResourceHolder {
+	/** Log */
+	static Logger log = Logger.getLogger(ResourceHolder.class);
+
+	/** Backgroundのcount */
+	public static final int BACKGROUND_MAX = 20;
+
+	/** Number of images for block spatter animation during line clears */
+	public static final int BLOCK_BREAK_MAX = 8;
+
+	/** Number of image splits for block spatter animation during line clears */
+	public static final int BLOCK_BREAK_SEGMENTS = 2;
+
+	/** Number of gem block clear effects */
+	public static final int PERASE_MAX = 7;
 
 	/** Block images */
 	public static LinkedList<Image> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
+
+	/** Block sticky flag */
+	public static LinkedList<Boolean> blockStickyFlagList;
 
 	/** Regular font */
 	public static Image imgFont, imgFontSmall;
@@ -94,6 +105,9 @@ public class ResourceHolder extends AbstractResourceHolder {
 
 	/** BGM */
 	public static Music[] bgm;
+
+	/** Current BGM number */
+	public static int bgmPlaying;
 
 	/**
 	 * 画像や音声を読み込み

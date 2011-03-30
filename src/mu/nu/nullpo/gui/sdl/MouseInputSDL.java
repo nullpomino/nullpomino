@@ -1,6 +1,6 @@
 package mu.nu.nullpo.gui.sdl;
 
-import mu.nu.nullpo.gui.common.MouseInputDummy;
+import mu.nu.nullpo.gui.MouseInputDummy;
 import sdljava.SDLException;
 import sdljava.event.MouseState;
 import sdljava.event.SDLEvent;

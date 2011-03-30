@@ -1,4 +1,4 @@
-package mu.nu.nullpo.gui.common;
+package mu.nu.nullpo.gui;
 
 public abstract class MouseInputDummy {
 	protected int mouseX;

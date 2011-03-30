@@ -1,6 +1,6 @@
 package mu.nu.nullpo.gui.slick;
 
-import mu.nu.nullpo.gui.common.MouseInputDummy;
+import mu.nu.nullpo.gui.MouseInputDummy;
 
 import org.newdawn.slick.Input;
 

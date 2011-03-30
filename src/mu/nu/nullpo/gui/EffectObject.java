@@ -26,7 +26,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-package mu.nu.nullpo.gui.common;
+package mu.nu.nullpo.gui;
 
 /**
  * 各種エフェクト state
