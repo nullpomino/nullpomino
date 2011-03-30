@@ -58,9 +58,6 @@ public class ResourceHolder extends AbstractResourceHolder {
 	/** Block images */
 	public static LinkedList<Image> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
 
-	/** Block sticky flag */
-	public static LinkedList<Boolean> blockStickyFlagList;
-
 	/** Regular font */
 	public static Image imgFont, imgFontSmall;
 
@@ -97,9 +94,6 @@ public class ResourceHolder extends AbstractResourceHolder {
 
 	/** BGM */
 	public static Music[] bgm;
-
-	/** Current BGM number */
-	public static int bgmPlaying;
 
 	/**
 	 * 画像や音声を読み込み

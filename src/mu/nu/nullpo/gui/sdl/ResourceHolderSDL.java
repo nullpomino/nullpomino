@@ -58,8 +58,7 @@ public class ResourceHolderSDL extends AbstractResourceHolder {
 	/** Block images */
 	public static LinkedList<SDLSurface> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
 
-	/** Block sticky flag */
-	public static LinkedList<Boolean> blockStickyFlagList;
+	
 
 	/** Regular font */
 	public static SDLSurface imgFont, imgFontSmall, imgFontBig;
@@ -99,9 +98,6 @@ public class ResourceHolderSDL extends AbstractResourceHolder {
 
 	/** BGM */
 	public static MixMusic[] bgm;
-
-	/** Current BGM number */
-	public static int bgmPlaying;
 
 	/**
 	 * 画像や音声を読み込み

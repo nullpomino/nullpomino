@@ -1,5 +1,7 @@
 package mu.nu.nullpo.gui.common;
 
+import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
 
 public abstract class AbstractResourceHolder {
@@ -18,4 +20,14 @@ public abstract class AbstractResourceHolder {
 
 	/** Number of gem block clear effects */
 	public static final int PERASE_MAX = 7;
+	
+	// ...
+	
+	/** Block sticky flag */
+	public static LinkedList<Boolean> blockStickyFlagList;
+	
+	// ...
+	
+	/** Current BGM number */
+	public static int bgmPlaying;
 }

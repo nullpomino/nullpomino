@@ -54,9 +54,6 @@ public class ResourceHolderSwing extends AbstractResourceHolder {
 	/** Block images */
 	public static LinkedList<Image> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
 
-	/** Block sticky flag */
-	public static LinkedList<Boolean> blockStickyFlagList;
-
 	/** Regular font */
 	public static Image imgFont, imgFontSmall;
 
