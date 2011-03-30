@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.LinkedList;
 
 import mu.nu.nullpo.game.component.BGMStatus;
+import mu.nu.nullpo.gui.common.AbstractResourceHolder;
 
 import org.apache.log4j.Logger;
 
@@ -47,21 +48,12 @@ import sdljava.video.SDLVideo;
 /**
  * 画像や音声の管理をするクラス
  */
-public class ResourceHolderSDL {
-	/** Log */
-	static Logger log = Logger.getLogger(ResourceHolderSDL.class);
-
-	/** Backgroundのcount */
-	public static final int BACKGROUND_MAX = 20;
-
-	/** Number of images for block spatter animation during line clears */
-	public static final int BLOCK_BREAK_MAX = 8;
-
-	/** Number of image splits for block spatter animation during line clears */
-	public static final int BLOCK_BREAK_SEGMENTS = 2;
-
-	/** Number of gem block clear effects */
-	public static final int PERASE_MAX = 7;
+public class ResourceHolderSDL extends AbstractResourceHolder {
+	
+	static {
+		/** Log */
+		log = Logger.getLogger(ResourceHolderSDL.class);
+	}
 
 	/** Block images */
 	public static LinkedList<SDLSurface> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;

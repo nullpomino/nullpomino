@@ -28,7 +28,7 @@
 */
 package mu.nu.nullpo.gui.sdl;
 
-import mu.nu.nullpo.gui.GameKeyDummy;
+import mu.nu.nullpo.gui.common.GameKeyDummy;
 import mu.nu.nullpo.util.CustomProperties;
 import sdljava.event.SDLKey;
 import sdljava.joystick.HatState;

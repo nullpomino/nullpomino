@@ -1,4 +1,4 @@
-package mu.nu.nullpo.gui;
+package mu.nu.nullpo.gui.common;
 
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.util.CustomProperties;

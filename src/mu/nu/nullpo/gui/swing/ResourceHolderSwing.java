@@ -37,26 +37,19 @@ import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
+import mu.nu.nullpo.gui.common.AbstractResourceHolder;
+
 import org.apache.log4j.Logger;
 
 /**
  * 画像や音声の管理をするクラス
  */
-public class ResourceHolderSwing {
-	/** Backgroundのcount */
-	public static final int BACKGROUND_MAX = 20;
-
-	/** Number of images for block spatter animation during line clears */
-	public static final int BLOCK_BREAK_MAX = 8;
-
-	/** Number of image splits for block spatter animation during line clears */
-	public static final int BLOCK_BREAK_SEGMENTS = 2;
-
-	/** Number of gem block clear effects */
-	public static final int PERASE_MAX = 7;
-
-	/** Log */
-	static Logger log = Logger.getLogger(ResourceHolderSwing.class);
+public class ResourceHolderSwing extends AbstractResourceHolder {
+	
+	static {
+		/** Log */
+		log = Logger.getLogger(ResourceHolderSwing.class);
+	}
 
 	/** Block images */
 	public static LinkedList<Image> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;
