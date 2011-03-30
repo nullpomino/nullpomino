@@ -27,7 +27,12 @@ public class GraphicsSlick implements AbstractGraphics {
 			return;
 		}
 		
-		g.drawImage(i, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);
+		if (g != null) {
+			g.drawImage(i, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);
+		} else {
+			i.draw(dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);
+		}
+		
 
 	}
 
@@ -39,7 +44,11 @@ public class GraphicsSlick implements AbstractGraphics {
 			return;
 		}
 		
-		g.drawImage(i, x, y);
+		if (g != null) {
+			g.drawImage(i, x, y);
+		} else {
+			i.draw(x, y);
+		}
 
 	}
 
