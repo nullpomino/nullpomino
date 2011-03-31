@@ -97,6 +97,23 @@ public class RendererSlick extends EventReceiver {
 		return new Color(Color.black);
 	}
 
+	public static Color getMeterColorAsColor(int meterColor) {
+		switch(meterColor) {
+		case GameEngine.METER_COLOR_PINK:		return new Color(255,  0,255);
+		case GameEngine.METER_COLOR_PURPLE:		return new Color(128,  0,255);
+		case GameEngine.METER_COLOR_DARKBLUE:	return new Color(  0,  0,128);
+		case GameEngine.METER_COLOR_BLUE:		return Color.blue;
+		case GameEngine.METER_COLOR_CYAN:		return Color.cyan;
+		case GameEngine.METER_COLOR_DARKGREEN:	return new Color(  0,128,  0);
+		case GameEngine.METER_COLOR_GREEN:		return Color.green;
+		case GameEngine.METER_COLOR_YELLOW:		return Color.yellow;
+		case GameEngine.METER_COLOR_ORANGE:		return Color.orange;
+		case GameEngine.METER_COLOR_RED:		return Color.red;
+		}
+		
+		return Color.white;
+	}
+
 	/**
 	 * Constructor
 	 */
@@ -973,22 +990,7 @@ public class RendererSlick extends EventReceiver {
 						tmpX = x + (width * size * 4) + 8;
 						tmpY = y + (height * size * 4) + 3 - (value - 1);
 
-						Color color = Color.white;
-						switch(engine.meterColorSub) {
-						case GameEngine.METER_COLOR_GREEN:
-							color = Color.green;
-							break;
-						case GameEngine.METER_COLOR_YELLOW:
-							color = Color.yellow;
-							break;
-						case GameEngine.METER_COLOR_ORANGE:
-							color = Color.orange;
-							break;
-						case GameEngine.METER_COLOR_RED:
-							color = Color.red;
-							break;
-						}
-						graphics.setColor(color);
+						graphics.setColor(getMeterColorAsColor(engine.meterColorSub));
 						graphics.fillRect(tmpX, tmpY, 4, value);
 						graphics.setColor(Color.white);
 					}
@@ -1001,22 +1003,7 @@ public class RendererSlick extends EventReceiver {
 						tmpX = x + (width * size * 4) + 8;
 						tmpY = y + (height * size * 4) + 3 - (value - 1);
 
-						Color color = Color.white;
-						switch(engine.meterColor) {
-						case GameEngine.METER_COLOR_GREEN:
-							color = Color.green;
-							break;
-						case GameEngine.METER_COLOR_YELLOW:
-							color = Color.yellow;
-							break;
-						case GameEngine.METER_COLOR_ORANGE:
-							color = Color.orange;
-							break;
-						case GameEngine.METER_COLOR_RED:
-							color = Color.red;
-							break;
-						}
-						graphics.setColor(color);
+						graphics.setColor(getMeterColorAsColor(engine.meterColor));
 						graphics.fillRect(tmpX, tmpY, 4, value);
 						graphics.setColor(Color.white);
 					}

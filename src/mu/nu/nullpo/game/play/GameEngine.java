@@ -107,7 +107,16 @@ public class GameEngine {
 							FRAME_COLOR_CYAN = 5, FRAME_COLOR_PINK = 6, FRAME_COLOR_PURPLE = 7;
 
 	/** Constants of meter colors */
-	public static final int METER_COLOR_RED = 0, METER_COLOR_ORANGE = 1, METER_COLOR_YELLOW = 2, METER_COLOR_GREEN = 3;
+	public static final int METER_COLOR_RED = 0,
+							METER_COLOR_ORANGE = 1,
+							METER_COLOR_YELLOW = 2,
+							METER_COLOR_GREEN = 3,
+							METER_COLOR_DARKGREEN = 4,
+							METER_COLOR_CYAN = 5,
+							METER_COLOR_BLUE = 6,
+							METER_COLOR_DARKBLUE = 7,
+							METER_COLOR_PURPLE = 8,
+							METER_COLOR_PINK = 9;
 
 	/** Constants of T-Spin Mini detection type */
 	public static final int TSPINMINI_TYPE_ROTATECHECK = 0, TSPINMINI_TYPE_WALLKICKFLAG = 1;

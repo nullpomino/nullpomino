@@ -122,6 +122,12 @@ public class ComboRaceMode extends NetDummyMode {
 		GameEngine.METER_COLOR_YELLOW,
 		GameEngine.METER_COLOR_ORANGE,
 		GameEngine.METER_COLOR_RED,
+		GameEngine.METER_COLOR_PINK,
+		GameEngine.METER_COLOR_PURPLE,
+		GameEngine.METER_COLOR_DARKBLUE,
+		GameEngine.METER_COLOR_BLUE,
+		GameEngine.METER_COLOR_CYAN,
+		GameEngine.METER_COLOR_DARKGREEN,
 	};
 	
 
