@@ -161,8 +161,8 @@ public class StateSelectRuleFromList extends DummyMenuScrollState {
 	 */
 	@Override
 	protected void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
-		NormalFont.printFontGrid(1, 1, strCurrentMode + " (" + (cursor + 1) + "/" + list.length + ")",
-				NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, strCurrentMode + " (" + (cursor + 1) + "/" + list.length + ")",
+				NormalFontSlick.COLOR_ORANGE);
 	}
 
 	/*
@@ -170,7 +170,7 @@ public class StateSelectRuleFromList extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 		if(cursor >= 1) {
 			NullpoMinoSlick.propGlobal.setProperty("lastrule." + strCurrentMode, list[cursor]);
 		} else {

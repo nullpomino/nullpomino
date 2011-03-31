@@ -81,23 +81,23 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1, "OPTIONS", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "OPTIONS", NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
-		NormalFont.printFontGrid(2, 3, "[GENERAL OPTIONS]", (cursor == 0));
-		NormalFont.printFontGrid(2, 4, "[RULE SELECT]:" + (player + 1) + "P", (cursor == 1));
-		NormalFont.printFontGrid(2, 5, "[GAME TUNING]:" + (player + 1) + "P", (cursor == 2));
-		NormalFont.printFontGrid(2, 6, "[AI SETTING]:" + (player + 1) + "P", (cursor == 3));
-		NormalFont.printFontGrid(2, 7, "[KEYBOARD SETTING]:" + (player + 1) + "P", (cursor == 4));
-		NormalFont.printFontGrid(2, 8, "[KEYBOARD NAVIGATION SETTING]:" + (player + 1) + "P", (cursor == 5));
-		NormalFont.printFontGrid(2, 9, "[KEYBOARD RESET]:" + (player + 1) + "P", (cursor == 6));
-		NormalFont.printFontGrid(2, 10, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 7));
+		NormalFontSlick.printFontGrid(2, 3, "[GENERAL OPTIONS]", (cursor == 0));
+		NormalFontSlick.printFontGrid(2, 4, "[RULE SELECT]:" + (player + 1) + "P", (cursor == 1));
+		NormalFontSlick.printFontGrid(2, 5, "[GAME TUNING]:" + (player + 1) + "P", (cursor == 2));
+		NormalFontSlick.printFontGrid(2, 6, "[AI SETTING]:" + (player + 1) + "P", (cursor == 3));
+		NormalFontSlick.printFontGrid(2, 7, "[KEYBOARD SETTING]:" + (player + 1) + "P", (cursor == 4));
+		NormalFontSlick.printFontGrid(2, 8, "[KEYBOARD NAVIGATION SETTING]:" + (player + 1) + "P", (cursor == 5));
+		NormalFontSlick.printFontGrid(2, 9, "[KEYBOARD RESET]:" + (player + 1) + "P", (cursor == 6));
+		NormalFontSlick.printFontGrid(2, 10, "[JOYSTICK SETTING]:" + (player + 1) + "P", (cursor == 7));
 
-		NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
+		NormalFontSlick.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 	}
 
 	@Override
@@ -105,12 +105,12 @@ public class StateConfigMainMenu extends DummyMenuChooseState {
 		player += change;
 		if(player < 0) player = 1;
 		if(player > 1) player = 0;
-		ResourceHolder.soundManager.play("change");
+		ResourceHolderSlick.soundManager.play("change");
 	}
 
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 
 		switch (cursor) {
 		case 0:

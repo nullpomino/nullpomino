@@ -216,12 +216,12 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	@Override
 	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
 		String title = "SELECT " + (player + 1) + "P RULE (" + (cursor + 1) + "/" + (list.length) + ")";
-		NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, title, NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 25, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFont.COLOR_BLUE);
-		NormalFont.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFont.COLOR_BLUE);
+		NormalFontSlick.printFontGrid(1, 25, "CURRENT:" + strCurrentRuleName.toUpperCase(), NormalFontSlick.COLOR_BLUE);
+		NormalFontSlick.printFontGrid(9, 26, strCurrentFileName.toUpperCase(), NormalFontSlick.COLOR_BLUE);
 
-		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL D:TOGGLE-VIEW", NormalFont.COLOR_GREEN);
+		NormalFontSlick.printFontGrid(1, 28, "A:OK B:CANCEL D:TOGGLE-VIEW", NormalFontSlick.COLOR_GREEN);
 	}
 
 	/*
@@ -229,7 +229,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 
 		RuleEntry entry = ruleEntries.get(cursor);
 		if(style == 0) {
@@ -262,7 +262,7 @@ public class StateConfigRuleSelect extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onPushButtonD(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("change");
+		ResourceHolderSlick.soundManager.play("change");
 		if(list == strRuleNameList) {
 			list = strRuleFileList;
 		} else {

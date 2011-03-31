@@ -47,9 +47,9 @@ import org.newdawn.slick.openal.SoundStore;
 /**
  * 画像や音声の管理をするクラス
  */
-public class ResourceHolder {
+public class ResourceHolderSlick {
 	/** Log */
-	static Logger log = Logger.getLogger(ResourceHolder.class);
+	static Logger log = Logger.getLogger(ResourceHolderSlick.class);
 
 	/** Backgroundのcount */
 	public static final int BACKGROUND_MAX = 20;

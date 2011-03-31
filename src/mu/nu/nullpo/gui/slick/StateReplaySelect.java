@@ -156,24 +156,24 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	protected void onRenderSuccess (GameContainer container, StateBasedGame game, Graphics graphics)  {
 		String title = "SELECT REPLAY FILE";
 		title += " (" + (cursor + 1) + "/" + (list.length) + ")";
-		NormalFont.printFontGrid(1, 1, title, NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, title, NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFont.COLOR_CYAN);
-		NormalFont.printFontGrid(1, 25,
+		NormalFontSlick.printFontGrid(1, 24, "MODE:" + modenameList[cursor] + " RULE:" + rulenameList[cursor], NormalFontSlick.COLOR_CYAN);
+		NormalFontSlick.printFontGrid(1, 25,
 									"SCORE:" + statsList[cursor].score + " LINE:" + statsList[cursor].lines
-									, NormalFont.COLOR_CYAN);
-		NormalFont.printFontGrid(1, 26,
+									, NormalFontSlick.COLOR_CYAN);
+		NormalFontSlick.printFontGrid(1, 26,
 									"LEVEL:" + (statsList[cursor].level + statsList[cursor].levelDispAdd) +
 									" TIME:" + GeneralUtil.getTime(statsList[cursor].time)
-									, NormalFont.COLOR_CYAN);
-		NormalFont.printFontGrid(1, 27,
+									, NormalFontSlick.COLOR_CYAN);
+		NormalFontSlick.printFontGrid(1, 27,
 									"GAME RATE:" + ( (statsList[cursor].gamerate == 0f) ? "UNKNOWN" : ((100*statsList[cursor].gamerate) + "%") )
-									, NormalFont.COLOR_CYAN);
+									, NormalFontSlick.COLOR_CYAN);
 	}
 
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 
 		CustomProperties prop = new CustomProperties();
 

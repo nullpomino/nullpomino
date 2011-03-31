@@ -61,8 +61,8 @@ public abstract class BaseGameState extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// Lost the focus
 		if(!container.hasFocus()) {
-			GameKey.gamekey[0].clear();
-			GameKey.gamekey[1].clear();
+			GameKeySlick.gamekey[0].clear();
+			GameKeySlick.gamekey[1].clear();
 			if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();
 			return;
 		}
@@ -71,9 +71,9 @@ public abstract class BaseGameState extends BasicGameState {
 		updateImpl(container, game, delta);
 
 		// Screenshot button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT)) screenShotFlag = true;
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_SCREENSHOT)) screenShotFlag = true;
 		// Exit button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_QUIT)) container.exit();
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_QUIT)) container.exit();
 
 		// Framerate Cap
 		if(NullpoMinoSlick.alternateFPSTiming) NullpoMinoSlick.alternateFPSSleep();

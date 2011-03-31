@@ -153,8 +153,8 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 	 */
 	@Override
 	protected void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
-		NormalFont.printFontGrid(1, 1, "SELECT MODE FOLDER (" + (cursor + 1) + "/" + list.length + ")", NormalFont.COLOR_ORANGE);
-		NormalFont.printTTFFont(16, 440, getFolderDesc(list[cursor]));
+		NormalFontSlick.printFontGrid(1, 1, "SELECT MODE FOLDER (" + (cursor + 1) + "/" + list.length + ")", NormalFontSlick.COLOR_ORANGE);
+		NormalFontSlick.printTTFFont(16, 440, getFolderDesc(list[cursor]));
 	}
 
 	/*
@@ -162,7 +162,7 @@ public class StateSelectModeFolder extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 		if(cursor < listFolder.size()) {
 			strCurrentFolder = list[cursor];
 		} else {

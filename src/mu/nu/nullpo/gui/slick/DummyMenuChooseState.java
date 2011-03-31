@@ -59,10 +59,10 @@ public abstract class DummyMenuChooseState extends BaseGameState {
 	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException
 	{
 		// TTF font load
-		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
+		if(ResourceHolderSlick.ttfFont != null) ResourceHolderSlick.ttfFont.loadGlyphs();
 
 		// Update key input states
-		GameKey.gamekey[0].update(container.getInput());
+		GameKeySlick.gamekey[0].update(container.getInput());
 
 		// Mouse
 		boolean mouseConfirm = false;
@@ -71,38 +71,38 @@ public abstract class DummyMenuChooseState extends BaseGameState {
 
 		if (maxCursor >= 0) {
 			// Cursor movement
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_UP)) {
 				cursor--;
 				if(cursor < 0) cursor = maxCursor;
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_DOWN)) {
 			    cursor++;
 				if(cursor > maxCursor) cursor = 0;
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 			}
 
 			int change = 0;
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_LEFT)) change = -1;
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_RIGHT)) change = 1;
 
 			if(change != 0)
 				onChange(container, game, delta, change);
 
 			// Confirm button
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A) || mouseConfirm) {
+			if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_A) || mouseConfirm) {
 				if (onDecide(container, game, delta))
 					return;
 			}
 
 		}
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_D)) {
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_D)) {
 			if (onPushButtonD(container, game, delta));
 				return;
 		}
 
 		// Cancel button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B) || MouseInput.mouseInput.isMouseRightClicked()) {
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_B) || MouseInputSlick.mouseInput.isMouseRightClicked()) {
 			if (onCancel(container, game, delta));
 				return;
 		}
@@ -110,16 +110,16 @@ public abstract class DummyMenuChooseState extends BaseGameState {
 
 	protected boolean updateMouseInput(Input input)
 	{
-		MouseInput.mouseInput.update(input);
-		if (MouseInput.mouseInput.isMouseClicked())
+		MouseInputSlick.mouseInput.update(input);
+		if (MouseInputSlick.mouseInput.isMouseClicked())
 		{
-			int y = MouseInput.mouseInput.getMouseY() >> 4;
+			int y = MouseInputSlick.mouseInput.getMouseY() >> 4;
 			int newCursor = y - minChoiceY;
 			if (newCursor >= 0 && newCursor <= maxCursor)
 			{
 				if (newCursor == cursor)
 					return true;
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 				cursor = newCursor;
 			}
 		}
@@ -133,9 +133,9 @@ public abstract class DummyMenuChooseState extends BaseGameState {
 
 	protected void renderChoices(int x, int y, String[] choices)
 	{
-		NormalFont.printFontGrid(x-1, y+cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(x-1, y+cursor, "b", NormalFontSlick.COLOR_RED);
 		for (int i = 0; i < choices.length; i++)
-			NormalFont.printFontGrid(x, y+i, choices[i], (cursor == i));
+			NormalFontSlick.printFontGrid(x, y+i, choices[i], (cursor == i));
 	}
 
 	/**

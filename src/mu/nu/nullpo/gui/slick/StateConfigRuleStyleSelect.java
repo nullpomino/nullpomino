@@ -44,15 +44,15 @@ public class StateConfigRuleStyleSelect extends DummyMenuChooseState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1, "SELECT " + (player+1) + "P STYLE", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "SELECT " + (player+1) + "P STYLE", NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
 		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			NormalFont.printFontGrid(2, 3 + i, GameEngine.GAMESTYLE_NAMES[i], (cursor == i));
+			NormalFontSlick.printFontGrid(2, 3 + i, GameEngine.GAMESTYLE_NAMES[i], (cursor == i));
 		}
 	}
 
@@ -61,7 +61,7 @@ public class StateConfigRuleStyleSelect extends DummyMenuChooseState {
 	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 		NullpoMinoSlick.stateConfigRuleSelect.player = player;
 		NullpoMinoSlick.stateConfigRuleSelect.style = cursor;
 		game.enterState(StateConfigRuleSelect.ID);

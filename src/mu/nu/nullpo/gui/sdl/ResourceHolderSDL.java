@@ -62,6 +62,7 @@ public class ResourceHolderSDL {
 
 	/** Number of gem block clear effects */
 	public static final int PERASE_MAX = 7;
+	
 
 	/** Block images */
 	public static LinkedList<SDLSurface> imgNormalBlockList, imgSmallBlockList, imgBigBlockList;

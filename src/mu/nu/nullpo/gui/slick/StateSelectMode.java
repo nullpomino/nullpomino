@@ -166,14 +166,14 @@ public class StateSelectMode extends DummyMenuScrollState {
 	@Override
 	public void onRenderSuccess(GameContainer container, StateBasedGame game, Graphics graphics) {
 		if(!isTopLevel && (strCurrentFolder.length() > 0)) {
-			NormalFont.printFontGrid(1, 1, strCurrentFolder + " (" + (cursor + 1) + "/" + list.length + ")",
-					NormalFont.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 1, strCurrentFolder + " (" + (cursor + 1) + "/" + list.length + ")",
+					NormalFontSlick.COLOR_ORANGE);
 		} else {
-			NormalFont.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
-					NormalFont.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 1, "MODE SELECT (" + (cursor + 1) + "/" + list.length + ")",
+					NormalFontSlick.COLOR_ORANGE);
 		}
 
-		NormalFont.printTTFFont(16, 440, getModeDesc(list[cursor]));
+		NormalFontSlick.printTTFFont(16, 440, getModeDesc(list[cursor]));
 	}
 
 	/*
@@ -181,7 +181,7 @@ public class StateSelectMode extends DummyMenuScrollState {
 	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 
 		if(isTopLevel && (cursor == list.length - 1)) {
 			// More...

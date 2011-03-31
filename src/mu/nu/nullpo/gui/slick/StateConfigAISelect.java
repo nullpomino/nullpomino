@@ -191,25 +191,25 @@ public class StateConfigAISelect extends BaseGameState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1, (player + 1) + "P AI SETTING", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, (player + 1) + "P AI SETTING", NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
 		String aiName = "";
 		if(aiID < 0) aiName = "(DISABLE)";
 		else aiName = aiNameList[aiID].toUpperCase();
-		NormalFont.printFontGrid(2, 3, "AI TYPE:" + aiName, (cursor == 0));
-		NormalFont.printFontGrid(2, 4, "AI MOVE DELAY:" + aiMoveDelay, (cursor == 1));
-		NormalFont.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
-		NormalFont.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
-		NormalFont.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
-		NormalFont.printFontGrid(2, 8, "AI PRE-THINK:" + GeneralUtil.getONorOFF(aiPrethink), (cursor == 5));
-		NormalFont.printFontGrid(2, 9, "AI SHOW INFO:" + GeneralUtil.getONorOFF(aiShowState), (cursor == 6));
+		NormalFontSlick.printFontGrid(2, 3, "AI TYPE:" + aiName, (cursor == 0));
+		NormalFontSlick.printFontGrid(2, 4, "AI MOVE DELAY:" + aiMoveDelay, (cursor == 1));
+		NormalFontSlick.printFontGrid(2, 5, "AI THINK DELAY:" + aiThinkDelay, (cursor == 2));
+		NormalFontSlick.printFontGrid(2, 6, "AI USE THREAD:" + GeneralUtil.getONorOFF(aiUseThread), (cursor == 3));
+		NormalFontSlick.printFontGrid(2, 7, "AI SHOW HINT:" + GeneralUtil.getONorOFF(aiShowHint), (cursor == 4));
+		NormalFontSlick.printFontGrid(2, 8, "AI PRE-THINK:" + GeneralUtil.getONorOFF(aiPrethink), (cursor == 5));
+		NormalFontSlick.printFontGrid(2, 9, "AI SHOW INFO:" + GeneralUtil.getONorOFF(aiShowState), (cursor == 6));
 
-		NormalFont.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFont.COLOR_GREEN);
+		NormalFontSlick.printFontGrid(1, 28, "A:OK B:CANCEL", NormalFontSlick.COLOR_GREEN);
 	}
 
 	/*
@@ -218,27 +218,27 @@ public class StateConfigAISelect extends BaseGameState {
 	@Override
 	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// Update key input states
-		GameKey.gamekey[0].update(container.getInput());
+		GameKeySlick.gamekey[0].update(container.getInput());
 
 		// Cursor movement
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 6;
-			ResourceHolder.soundManager.play("cursor");
+			ResourceHolderSlick.soundManager.play("cursor");
 		}
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_DOWN)) {
 			cursor++;
 			if(cursor > 6) cursor = 0;
-			ResourceHolder.soundManager.play("cursor");
+			ResourceHolderSlick.soundManager.play("cursor");
 		}
 
 		// Configuration changes
 		int change = 0;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_LEFT)) change = -1;
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_RIGHT)) change = 1;
 
 		if(change != 0) {
-			ResourceHolder.soundManager.play("change");
+			ResourceHolderSlick.soundManager.play("change");
 
 			switch(cursor) {
 			case 0:
@@ -272,8 +272,8 @@ public class StateConfigAISelect extends BaseGameState {
 		}
 
 		// Confirm button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-		    ResourceHolder.soundManager.play("decide");
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_A)) {
+		    ResourceHolderSlick.soundManager.play("decide");
 
 			if(aiID >= 0) NullpoMinoSlick.propGlobal.setProperty(player + ".ai", aiPathList[aiID]);
 			else NullpoMinoSlick.propGlobal.setProperty(player + ".ai", "");
@@ -290,7 +290,7 @@ public class StateConfigAISelect extends BaseGameState {
 		}
 
 		// Cancel button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_B)) {
 		    game.enterState(StateConfigMainMenu.ID);
 			return;
 		}

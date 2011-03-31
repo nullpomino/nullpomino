@@ -155,7 +155,7 @@ public class RendererSlick extends EventReceiver {
 				y2 += getFieldDisplayPositionY(engine, playerID) + 52;
 			}
 		}
-		NormalFont.printFont(x2, y2, str, color, scale);
+		NormalFontSlick.printFont(x2, y2, str, color, scale);
 	}
 
 	/*
@@ -173,7 +173,7 @@ public class RendererSlick extends EventReceiver {
 				y2 += getFieldDisplayPositionY(engine, playerID) + 52;
 			}
 		}
-		NormalFont.printTTFFont(x2, y2, str, color);
+		NormalFontSlick.printTTFFont(x2, y2, str, color);
 	}
 
 	/*
@@ -183,7 +183,7 @@ public class RendererSlick extends EventReceiver {
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
 		if(engine.owner.menuOnly) return;
 		int size = (scale == 0.5f) ? 8 : 16;
-		NormalFont.printFont(getScoreDisplayPositionX(engine, playerID) + (x * size),
+		NormalFontSlick.printFont(getScoreDisplayPositionX(engine, playerID) + (x * size),
 							 getScoreDisplayPositionY(engine, playerID) + (y * size),
 							 str, color, scale);
 	}
@@ -194,7 +194,7 @@ public class RendererSlick extends EventReceiver {
 	@Override
 	public void drawTTFScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
 		if(engine.owner.menuOnly) return;
-		NormalFont.printTTFFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
+		NormalFontSlick.printTTFFont(getScoreDisplayPositionX(engine, playerID) + (x * 16),
 								getScoreDisplayPositionY(engine, playerID) + (y * 16),
 								str, color);
 	}
@@ -204,7 +204,7 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public void drawDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
-		NormalFont.printFont(x, y, str, color, scale);
+		NormalFontSlick.printFont(x, y, str, color, scale);
 	}
 
 	/*
@@ -212,7 +212,7 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public void drawTTFDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
-		NormalFont.printTTFFont(x, y, str, color);
+		NormalFontSlick.printTTFFont(x, y, str, color);
 	}
 
 	/*
@@ -247,7 +247,7 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public boolean isTTFSupport() {
-		return (ResourceHolder.ttfFont != null);
+		return (ResourceHolderSlick.ttfFont != null);
 	}
 
 	/*
@@ -255,7 +255,7 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public String getKeyNameByButtonID(GameEngine engine, int btnID) {
-		int[] keymap = engine.isInGame ? GameKey.gamekey[engine.playerID].keymap : GameKey.gamekey[engine.playerID].keymapNav;
+		int[] keymap = engine.isInGame ? GameKeySlick.gamekey[engine.playerID].keymap : GameKeySlick.gamekey[engine.playerID].keymapNav;
 
 		if((btnID >= 0) && (btnID < keymap.length)) {
 			int keycode = keymap[btnID];
@@ -272,7 +272,7 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public boolean isStickySkin(int skin) {
-		if((skin >= 0) && (skin < ResourceHolder.blockStickyFlagList.size()) && (ResourceHolder.blockStickyFlagList.get(skin) == true)) {
+		if((skin >= 0) && (skin < ResourceHolderSlick.blockStickyFlagList.size()) && (ResourceHolderSlick.blockStickyFlagList.get(skin) == true)) {
 			return true;
 		}
 		return false;
@@ -283,7 +283,7 @@ public class RendererSlick extends EventReceiver {
 	 */
 	@Override
 	public void playSE(String name) {
-		ResourceHolder.soundManager.play(name);
+		ResourceHolderSlick.soundManager.play(name);
 	}
 
 	/*
@@ -330,19 +330,19 @@ public class RendererSlick extends EventReceiver {
 		if(graphics == null) return;
 
 		if((color <= Block.BLOCK_COLOR_INVALID)) return;
-		if(skin >= ResourceHolder.imgNormalBlockList.size()) skin = 0;
+		if(skin >= ResourceHolderSlick.imgNormalBlockList.size()) skin = 0;
 
 		boolean isSpecialBlocks = (color >= Block.BLOCK_COLOR_COUNT);
-		boolean isSticky = ResourceHolder.blockStickyFlagList.get(skin);
+		boolean isSticky = ResourceHolderSlick.blockStickyFlagList.get(skin);
 
 		int size = (int)(16 * scale);
 		Image img = null;
 		if(scale == 0.5f)
-			img = ResourceHolder.imgSmallBlockList.get(skin);
+			img = ResourceHolderSlick.imgSmallBlockList.get(skin);
 		else if(scale == 2.0f)
-			img = ResourceHolder.imgBigBlockList.get(skin);
+			img = ResourceHolderSlick.imgBigBlockList.get(skin);
 		else
-			img = ResourceHolder.imgNormalBlockList.get(skin);
+			img = ResourceHolderSlick.imgNormalBlockList.get(skin);
 
 		int sx = color * size;
 		if(bone) sx += 9 * size;
@@ -894,9 +894,9 @@ public class RendererSlick extends EventReceiver {
 				Color filter = new Color(Color.white);
 				filter.a = fieldbgbright;
 
-				Image img = ResourceHolder.imgFieldbg2;
-				if(displaysize == -1) img = ResourceHolder.imgFieldbg2Small;
-				if(displaysize == 1) img = ResourceHolder.imgFieldbg2Big;
+				Image img = ResourceHolderSlick.imgFieldbg2;
+				if(displaysize == -1) img = ResourceHolderSlick.imgFieldbg2Small;
+				if(displaysize == 1) img = ResourceHolderSlick.imgFieldbg2Big;
 
 				graphics.drawImage(img, x + 4, y + 4, (x + 4)+(width*size*4), (y + 4)+(height*size*4), 0, 0, width*size*4, height*size*4, filter);
 			} else if(showbg) {
@@ -917,55 +917,55 @@ public class RendererSlick extends EventReceiver {
 
 		tmpX = x + 4;
 		tmpY = y;
-		graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + maxWidth, tmpY + 4, offsetX + 4, 0, (offsetX + 4) + 4, 4);
+		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + maxWidth, tmpY + 4, offsetX + 4, 0, (offsetX + 4) + 4, 4);
 		tmpY = y + (height * size * 4) + 4;
-		graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + maxWidth, tmpY + 4, offsetX + 4, 8, (offsetX + 4) + 4, 8 + 4);
+		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + maxWidth, tmpY + 4, offsetX + 4, 8, (offsetX + 4) + 4, 8 + 4);
 
 		// 左と右
 		tmpX = x;
 		tmpY = y + 4;
-		graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size*4), offsetX, 4, offsetX + 4, 4 + 4);
+		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size*4), offsetX, 4, offsetX + 4, 4 + 4);
 
 		if(showmeter) {
 			tmpX = x + (width * size * 4) + 12;
 		} else {
 			tmpX = x + (width * size * 4) + 4;
 		}
-		graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size*4), offsetX + 8, 4, offsetX + 8 + 4, 4 + 4);
+		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size*4), offsetX + 8, 4, offsetX + 8 + 4, 4 + 4);
 
 		// 左上
 		tmpX = x;
 		tmpY = y;
-		graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX, 0, offsetX + 4, 4);
+		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX, 0, offsetX + 4, 4);
 
 		// 左下
 		tmpX = x;
 		tmpY = y + (height * size * 4) + 4;
-		graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX, 8, offsetX + 4, 8 + 4);
+		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX, 8, offsetX + 4, 8 + 4);
 
 		if(showmeter) {
 			// MeterONのときの右上
 			tmpX = x + (width * size * 4) + 12;
 			tmpY = y;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 0, (offsetX + 8) + 4, 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 0, (offsetX + 8) + 4, 4);
 
 			// MeterONのときの右下
 			tmpX = x + (width * size * 4) + 12;
 			tmpY = y + (height * size * 4) + 4;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 8, (offsetX + 8) + 4, 8 + 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 8, (offsetX + 8) + 4, 8 + 4);
 
 			// 右Meterの枠
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y + 4;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size * 4), offsetX + 12, 4, (offsetX + 12) + 4, 4 + 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size * 4), offsetX + 12, 4, (offsetX + 12) + 4, 4 + 4);
 
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 12, 0, (offsetX + 12) + 4, 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 12, 0, (offsetX + 12) + 4, 4);
 
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y + (height * size * 4) + 4;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 12, 8, (offsetX + 12) + 4, 8 + 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 12, 8, (offsetX + 12) + 4, 8 + 4);
 
 			// 右Meter
 			int maxHeight = height * size * 4;
@@ -1013,12 +1013,12 @@ public class RendererSlick extends EventReceiver {
 			// MeterOFFのときの右上
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 0, (offsetX + 8) + 4, 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 0, (offsetX + 8) + 4, 4);
 
 			// MeterOFFのときの右下
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y + (height * size * 4) + 4;
-			graphics.drawImage(ResourceHolder.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 8, (offsetX + 8) + 4, 8 + 4);
+			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 8, (offsetX + 8) + 4, 8 + 4);
 		}
 	}
 
@@ -1144,7 +1144,7 @@ public class RendererSlick extends EventReceiver {
 			if(getNextDisplayType() == 2) {
 				if(engine.ruleopt.nextDisplay >= 1) {
 					int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
-					NormalFont.printFont(x2 + 16, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+					NormalFontSlick.printFont(x2 + 16, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
 					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
 						Piece piece = engine.getNextObject(engine.nextPieceCount + i);
@@ -1159,7 +1159,7 @@ public class RendererSlick extends EventReceiver {
 			} else if(getNextDisplayType() == 1) {
 				if(engine.ruleopt.nextDisplay >= 1) {
 					int x2 = x + 8 + (fldWidth * fldBlkSize) + meterWidth;
-					NormalFont.printFont(x2, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+					NormalFontSlick.printFont(x2, y + 40, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
 					for(int i = 0; i < engine.ruleopt.nextDisplay; i++) {
 						Piece piece = engine.getNextObject(engine.nextPieceCount + i);
@@ -1174,7 +1174,7 @@ public class RendererSlick extends EventReceiver {
 			} else {
 				// NEXT1
 				if(engine.ruleopt.nextDisplay >= 1) {
-					NormalFont.printFont(x + 60, y, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
+					NormalFontSlick.printFont(x + 60, y, NullpoMinoSlick.getUIText("InGame_Next"), COLOR_ORANGE, 0.5f);
 
 					Piece piece = engine.getNextObject(engine.nextPieceCount);
 					if(piece != null) {
@@ -1222,14 +1222,14 @@ public class RendererSlick extends EventReceiver {
 				if(engine.holdDisable == true) tempColor = COLOR_WHITE;
 
 				if(engine.ruleopt.holdLimit < 0) {
-					NormalFont.printFont(x2, y2, NullpoMinoSlick.getUIText("InGame_Hold"), tempColor, 0.5f);
+					NormalFontSlick.printFont(x2, y2, NullpoMinoSlick.getUIText("InGame_Hold"), tempColor, 0.5f);
 				} else {
 					if(!engine.holdDisable) {
 						if((holdRemain > 0) && (holdRemain <= 10)) tempColor = COLOR_YELLOW;
 						if((holdRemain > 0) && (holdRemain <= 5)) tempColor = COLOR_RED;
 					}
 
-					NormalFont.printFont(x2, y2, NullpoMinoSlick.getUIText("InGame_Hold") + "\ne " + holdRemain, tempColor, 0.5f);
+					NormalFontSlick.printFont(x2, y2, NullpoMinoSlick.getUIText("InGame_Hold") + "\ne " + holdRemain, tempColor, 0.5f);
 				}
 
 				if(engine.holdPieceObject != null) {
@@ -1305,16 +1305,16 @@ public class RendererSlick extends EventReceiver {
 			// Background
 			if(engine.owner.menuOnly) {
 				graphics.setColor(Color.white);
-				graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
+				graphics.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 			} else {
 				int bg = engine.owner.backgroundStatus.bg;
 				if(engine.owner.backgroundStatus.fadesw && !heavyeffect) {
 					bg = engine.owner.backgroundStatus.fadebg;
 				}
 
-				if((ResourceHolder.imgPlayBG != null) && (bg >= 0) && (bg < ResourceHolder.imgPlayBG.length) && (showbg == true)) {
+				if((ResourceHolderSlick.imgPlayBG != null) && (bg >= 0) && (bg < ResourceHolderSlick.imgPlayBG.length) && (showbg == true)) {
 					graphics.setColor(Color.white);
-					graphics.drawImage(ResourceHolder.imgPlayBG[bg], 0, 0);
+					graphics.drawImage(ResourceHolderSlick.imgPlayBG[bg], 0, 0);
 
 					if(engine.owner.backgroundStatus.fadesw && heavyeffect) {
 						Color filter = new Color(Color.black);
@@ -1365,14 +1365,14 @@ public class RendererSlick extends EventReceiver {
 			if(engine.statc[0] > 0) {
 				if(engine.displaysize != -1) {
 					if((engine.statc[0] >= engine.readyStart) && (engine.statc[0] < engine.readyEnd))
-						NormalFont.printFont(offsetX + 44, offsetY + 204, "READY", COLOR_WHITE, 1.0f);
+						NormalFontSlick.printFont(offsetX + 44, offsetY + 204, "READY", COLOR_WHITE, 1.0f);
 					else if((engine.statc[0] >= engine.goStart) && (engine.statc[0] < engine.goEnd))
-						NormalFont.printFont(offsetX + 62, offsetY + 204, "GO!", COLOR_WHITE, 1.0f);
+						NormalFontSlick.printFont(offsetX + 62, offsetY + 204, "GO!", COLOR_WHITE, 1.0f);
 				} else {
 					if((engine.statc[0] >= engine.readyStart) && (engine.statc[0] < engine.readyEnd))
-						NormalFont.printFont(offsetX + 24, offsetY + 80, "READY", COLOR_WHITE, 0.5f);
+						NormalFontSlick.printFont(offsetX + 24, offsetY + 80, "READY", COLOR_WHITE, 0.5f);
 					else if((engine.statc[0] >= engine.goStart) && (engine.statc[0] < engine.goEnd))
-						NormalFont.printFont(offsetX + 32, offsetY + 80, "GO!", COLOR_WHITE, 0.5f);
+						NormalFontSlick.printFont(offsetX + 32, offsetY + 80, "GO!", COLOR_WHITE, 0.5f);
 				}
 			}
 		}
@@ -1447,18 +1447,18 @@ public class RendererSlick extends EventReceiver {
 
 		if(engine.displaysize != -1) {
 			if(engine.statc[1] == 0)
-				NormalFont.printFont(offsetX + 4, offsetY + 204, "EXCELLENT!", COLOR_ORANGE, 1.0f);
+				NormalFontSlick.printFont(offsetX + 4, offsetY + 204, "EXCELLENT!", COLOR_ORANGE, 1.0f);
 			else if(engine.owner.getPlayers() < 3)
-				NormalFont.printFont(offsetX + 52, offsetY + 204, "WIN!", COLOR_ORANGE, 1.0f);
+				NormalFontSlick.printFont(offsetX + 52, offsetY + 204, "WIN!", COLOR_ORANGE, 1.0f);
 			else
-				NormalFont.printFont(offsetX + 4, offsetY + 204, "1ST PLACE!", COLOR_ORANGE, 1.0f);
+				NormalFontSlick.printFont(offsetX + 4, offsetY + 204, "1ST PLACE!", COLOR_ORANGE, 1.0f);
 		} else {
 			if(engine.statc[1] == 0)
-				NormalFont.printFont(offsetX + 4, offsetY + 80, "EXCELLENT!", COLOR_ORANGE, 0.5f);
+				NormalFontSlick.printFont(offsetX + 4, offsetY + 80, "EXCELLENT!", COLOR_ORANGE, 0.5f);
 			else if(engine.owner.getPlayers() < 3)
-				NormalFont.printFont(offsetX + 33, offsetY + 80, "WIN!", COLOR_ORANGE, 0.5f);
+				NormalFontSlick.printFont(offsetX + 33, offsetY + 80, "WIN!", COLOR_ORANGE, 0.5f);
 			else
-				NormalFont.printFont(offsetX + 4, offsetY + 80, "1ST PLACE!", COLOR_ORANGE, 0.5f);
+				NormalFontSlick.printFont(offsetX + 4, offsetY + 80, "1ST PLACE!", COLOR_ORANGE, 0.5f);
 		}
 	}
 
@@ -1477,18 +1477,18 @@ public class RendererSlick extends EventReceiver {
 
 			if(engine.displaysize != -1) {
 				if(engine.owner.getPlayers() < 2)
-					NormalFont.printFont(offsetX + 12, offsetY + 204, "GAME OVER", COLOR_WHITE, 1.0f);
+					NormalFontSlick.printFont(offsetX + 12, offsetY + 204, "GAME OVER", COLOR_WHITE, 1.0f);
 				else if(engine.owner.getWinner() == -2)
-					NormalFont.printFont(offsetX + 52, offsetY + 204, "DRAW", COLOR_GREEN, 1.0f);
+					NormalFontSlick.printFont(offsetX + 52, offsetY + 204, "DRAW", COLOR_GREEN, 1.0f);
 				else if(engine.owner.getPlayers() < 3)
-					NormalFont.printFont(offsetX + 52, offsetY + 204, "LOSE", COLOR_WHITE, 1.0f);
+					NormalFontSlick.printFont(offsetX + 52, offsetY + 204, "LOSE", COLOR_WHITE, 1.0f);
 			} else {
 				if(engine.owner.getPlayers() < 2)
-					NormalFont.printFont(offsetX + 4, offsetY + 80, "GAME OVER", COLOR_WHITE, 0.5f);
+					NormalFontSlick.printFont(offsetX + 4, offsetY + 80, "GAME OVER", COLOR_WHITE, 0.5f);
 				else if(engine.owner.getWinner() == -2)
-					NormalFont.printFont(offsetX + 28, offsetY + 80, "DRAW", COLOR_GREEN, 0.5f);
+					NormalFontSlick.printFont(offsetX + 28, offsetY + 80, "DRAW", COLOR_GREEN, 0.5f);
 				else if(engine.owner.getPlayers() < 3)
-					NormalFont.printFont(offsetX + 28, offsetY + 80, "LOSE", COLOR_WHITE, 0.5f);
+					NormalFontSlick.printFont(offsetX + 28, offsetY + 80, "LOSE", COLOR_WHITE, 0.5f);
 			}
 		}
 	}
@@ -1508,13 +1508,13 @@ public class RendererSlick extends EventReceiver {
 			tempColor = COLOR_RED;
 		else
 			tempColor = COLOR_WHITE;
-		NormalFont.printFont(getFieldDisplayPositionX(engine, playerID) + 12, getFieldDisplayPositionY(engine, playerID) + 340, "RETRY", tempColor, 1.0f);
+		NormalFontSlick.printFont(getFieldDisplayPositionX(engine, playerID) + 12, getFieldDisplayPositionY(engine, playerID) + 340, "RETRY", tempColor, 1.0f);
 
 		if(engine.statc[0] == 1)
 			tempColor = COLOR_RED;
 		else
 			tempColor = COLOR_WHITE;
-		NormalFont.printFont(getFieldDisplayPositionX(engine, playerID) + 108, getFieldDisplayPositionY(engine, playerID) + 340, "END", tempColor, 1.0f);
+		NormalFontSlick.printFont(getFieldDisplayPositionX(engine, playerID) + 108, getFieldDisplayPositionY(engine, playerID) + 340, "END", tempColor, 1.0f);
 	}
 
 	/*
@@ -1588,13 +1588,13 @@ public class RendererSlick extends EventReceiver {
 					int srcx = ((obj.anim-1) % 6) * 96;
 					int srcy = ((obj.anim-1) / 6) * 96;
 					try {
-						graphics.drawImage(ResourceHolder.imgBreak[color][0], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96);
+						graphics.drawImage(ResourceHolderSlick.imgBreak[color][0], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96);
 					} catch (Exception e) {}
 				} else {
 					int srcx = ((obj.anim-30) % 6) * 96;
 					int srcy = ((obj.anim-30) / 6) * 96;
 					try {
-						graphics.drawImage(ResourceHolder.imgBreak[color][1], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96);
+						graphics.drawImage(ResourceHolderSlick.imgBreak[color][1], x, y, x + 96, y + 96, srcx, srcy, srcx + 96, srcy + 96);
 					} catch (Exception e) {}
 				}
 			}
@@ -1607,7 +1607,7 @@ public class RendererSlick extends EventReceiver {
 				int color = obj.param - Block.BLOCK_COLOR_GEM_RED;
 
 				try {
-					graphics.drawImage(ResourceHolder.imgPErase[color], x, y, x + 32, y + 32, srcx, srcy, srcx + 32, srcy + 32);
+					graphics.drawImage(ResourceHolderSlick.imgPErase[color], x, y, x + 32, y + 32, srcx, srcy, srcx + 32, srcy + 32);
 				} catch (Exception e) {}
 			}
 		}

@@ -295,57 +295,57 @@ public class StateConfigGeneral extends BaseGameState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		// Basic Options
 		if(cursor < 17) {
-			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 1, "GENERAL OPTIONS: BASIC (1/3)", NormalFontSlick.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "SE:" + GeneralUtil.getOorX(se), (cursor == 0));
-			NormalFont.printFontGrid(2,  4, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 1));
-			NormalFont.printFontGrid(2,  5, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 2));
-			NormalFont.printFontGrid(2,  6, "SE VOLUME:" + sevolume + "("+ (sevolume * 100 / 128) + "%)", (cursor == 3));
-			NormalFont.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume + "(" + (bgmvolume * 100 / 128) + "%)", (cursor == 4));
-			NormalFont.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
-			NormalFont.printFontGrid(2,  9, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 6));
-			NormalFont.printFontGrid(2, 10, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 7));
-			NormalFont.printFontGrid(2, 11, "LINE EFFECT SPEED:" + "X " + (lineeffectspeed+1), (cursor == 8));
-			NormalFont.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
-			NormalFont.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
-			NormalFont.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
-			NormalFont.printFontGrid(2, 15, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 12));
-			NormalFont.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
-			NormalFont.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
-			NormalFont.printFontGrid(2, 18, "SHOW FIELD BG GRID:" + GeneralUtil.getOorX(showfieldbggrid), (cursor == 15));
-			NormalFont.printFontGrid(2, 19, "SHOW CONTROLLER INPUT:" + GeneralUtil.getOorX(showInput), (cursor == 16));
+			NormalFontSlick.printFontGrid(2,  3, "SE:" + GeneralUtil.getOorX(se), (cursor == 0));
+			NormalFontSlick.printFontGrid(2,  4, "BGM:" + GeneralUtil.getOorX(bgm), (cursor == 1));
+			NormalFontSlick.printFontGrid(2,  5, "BGM PRELOAD:" + GeneralUtil.getOorX(bgmpreload), (cursor == 2));
+			NormalFontSlick.printFontGrid(2,  6, "SE VOLUME:" + sevolume + "("+ (sevolume * 100 / 128) + "%)", (cursor == 3));
+			NormalFontSlick.printFontGrid(2,  7, "BGM VOLUME:" + bgmvolume + "(" + (bgmvolume * 100 / 128) + "%)", (cursor == 4));
+			NormalFontSlick.printFontGrid(2,  8, "SHOW BACKGROUND:" + GeneralUtil.getOorX(showbg), (cursor == 5));
+			NormalFontSlick.printFontGrid(2,  9, "USE BACKGROUND FADE:" + GeneralUtil.getOorX(heavyeffect), (cursor == 6));
+			NormalFontSlick.printFontGrid(2, 10, "SHOW LINE EFFECT:" + GeneralUtil.getOorX(showlineeffect), (cursor == 7));
+			NormalFontSlick.printFontGrid(2, 11, "LINE EFFECT SPEED:" + "X " + (lineeffectspeed+1), (cursor == 8));
+			NormalFontSlick.printFontGrid(2, 12, "SHOW METER:" + GeneralUtil.getOorX(showmeter), (cursor == 9));
+			NormalFontSlick.printFontGrid(2, 13, "DARK NEXT AREA:" + GeneralUtil.getOorX(darknextarea), (cursor == 10));
+			NormalFontSlick.printFontGrid(2, 14, "SHOW NEXT ABOVE SHADOW:" + GeneralUtil.getOorX(nextshadow), (cursor == 11));
+			NormalFontSlick.printFontGrid(2, 15, "NEXT DISPLAY TYPE:" + NEXTTYPE_OPTIONS[nexttype], (cursor == 12));
+			NormalFontSlick.printFontGrid(2, 16, "OUTLINE GHOST PIECE:" + GeneralUtil.getOorX(outlineghost), (cursor == 13));
+			NormalFontSlick.printFontGrid(2, 17, "FIELD BG BRIGHT:" + fieldbgbright + "(" + (fieldbgbright * 100 / 255) + "%)", (cursor == 14));
+			NormalFontSlick.printFontGrid(2, 18, "SHOW FIELD BG GRID:" + GeneralUtil.getOorX(showfieldbggrid), (cursor == 15));
+			NormalFontSlick.printFontGrid(2, 19, "SHOW CONTROLLER INPUT:" + GeneralUtil.getOorX(showInput), (cursor == 16));
 		}
 		// Advanced Options
 		else if(cursor < 23) {
-			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 17), "b", NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 1, "GENERAL OPTIONS: ADVANCED (2/3)", NormalFontSlick.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 3 + (cursor - 17), "b", NormalFontSlick.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 17));
-			NormalFont.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 18));
-			NormalFont.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 19));
-			NormalFont.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 20));
-			NormalFont.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 21));
-			NormalFont.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 22));
+			NormalFontSlick.printFontGrid(2,  3, "FULLSCREEN:" + GeneralUtil.getOorX(fullscreen), (cursor == 17));
+			NormalFontSlick.printFontGrid(2,  4, "SHOW FPS:" + GeneralUtil.getOorX(showfps), (cursor == 18));
+			NormalFontSlick.printFontGrid(2,  5, "MAX FPS:" + maxfps, (cursor == 19));
+			NormalFontSlick.printFontGrid(2,  6, "FRAME STEP:" + GeneralUtil.getOorX(enableframestep), (cursor == 20));
+			NormalFontSlick.printFontGrid(2,  7, "FPS PERFECT MODE:" + GeneralUtil.getOorX(alternateFPSPerfectMode), (cursor == 21));
+			NormalFontSlick.printFontGrid(2,  8, "FPS PERFECT YIELD:" + GeneralUtil.getOorX(alternateFPSPerfectYield), (cursor == 22));
 		}
 		// Slick Options
 		else {
-			NormalFont.printFontGrid(1, 1, "GENERAL OPTIONS: SLICK (3/3)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + (cursor - 23), "b", NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 1, "GENERAL OPTIONS: SLICK (3/3)", NormalFontSlick.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 3 + (cursor - 23), "b", NormalFontSlick.COLOR_RED);
 
-			NormalFont.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 23));
-			NormalFont.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 24));
-			NormalFont.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 25));
-			NormalFont.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 26));
-			NormalFont.printFontGrid(2,  7, "SCREEN SIZE:" + SCREENSIZE_TABLE[screenSizeType][0] + "e" + SCREENSIZE_TABLE[screenSizeType][1],
+			NormalFontSlick.printFontGrid(2,  3, "BGM STREAMING:" + GeneralUtil.getOorX(bgmstreaming), (cursor == 23));
+			NormalFontSlick.printFontGrid(2,  4, "VSYNC:" + GeneralUtil.getOorX(vsync), (cursor == 24));
+			NormalFontSlick.printFontGrid(2,  5, "FPS SLEEP TIMING:" + (alternateFPSTiming ? "UPDATE" : "RENDER"), (cursor == 25));
+			NormalFontSlick.printFontGrid(2,  6, "FPS DYNAMIC ADJUST:" + GeneralUtil.getOorX(alternateFPSDynamicAdjust), (cursor == 26));
+			NormalFontSlick.printFontGrid(2,  7, "SCREEN SIZE:" + SCREENSIZE_TABLE[screenSizeType][0] + "e" + SCREENSIZE_TABLE[screenSizeType][1],
 									 (cursor == 27));
 		}
 
-		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
+		if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFontSlick.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 	}
 
 	/*
@@ -354,30 +354,30 @@ public class StateConfigGeneral extends BaseGameState {
 	@Override
 	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// TTF font
-		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
+		if(ResourceHolderSlick.ttfFont != null) ResourceHolderSlick.ttfFont.loadGlyphs();
 
 		// Update key input states
-		GameKey.gamekey[0].update(container.getInput());
+		GameKeySlick.gamekey[0].update(container.getInput());
 
 		// Cursor movement
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_UP)) {
 		    cursor--;
 			if(cursor < 0) cursor = 27;
-			ResourceHolder.soundManager.play("cursor");
+			ResourceHolderSlick.soundManager.play("cursor");
 		}
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_DOWN)) {
 			cursor++;
 			if(cursor > 27) cursor = 0;
-			ResourceHolder.soundManager.play("cursor");
+			ResourceHolderSlick.soundManager.play("cursor");
 		}
 
 		// Configuration changes
 		int change = 0;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_LEFT)) change = -1;
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_RIGHT)) change = 1;
 
 		if(change != 0) {
-			ResourceHolder.soundManager.play("change");
+			ResourceHolderSlick.soundManager.play("change");
 
 			switch(cursor) {
 			case 0:
@@ -482,18 +482,18 @@ public class StateConfigGeneral extends BaseGameState {
 		}
 
 		// Confirm button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			ResourceHolder.soundManager.play("decide");
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_A)) {
+			ResourceHolderSlick.soundManager.play("decide");
 			saveConfig(NullpoMinoSlick.propConfig);
 			NullpoMinoSlick.saveConfig();
 			NullpoMinoSlick.setGeneralConfig();
-			if(showlineeffect) ResourceHolder.loadLineClearEffectImages();
-			if(showbg) ResourceHolder.loadBackgroundImages();
+			if(showlineeffect) ResourceHolderSlick.loadLineClearEffectImages();
+			if(showbg) ResourceHolderSlick.loadBackgroundImages();
 			game.enterState(StateConfigMainMenu.ID);
 		}
 
 		// Cancel button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_B)) {
 		    loadConfig(NullpoMinoSlick.propConfig);
 			game.enterState(StateConfigMainMenu.ID);
 		}

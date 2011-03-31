@@ -75,17 +75,17 @@ public class StateLoading extends BasicGameState {
 		preloadSet = 0;
 
 		//  input 関連をInitialization
-		GameKey.initGlobalGameKey();
-		GameKey.gamekey[0].loadConfig(NullpoMinoSlick.propConfig);
-		GameKey.gamekey[1].loadConfig(NullpoMinoSlick.propConfig);
-		MouseInput.initializeMouseInput();
+		GameKeySlick.initGlobalGameKey();
+		GameKeySlick.gamekey[0].loadConfig(NullpoMinoSlick.propConfig);
+		GameKeySlick.gamekey[1].loadConfig(NullpoMinoSlick.propConfig);
+		MouseInputSlick.initializeMouseInput();
 
 		// 設定を反映させる
 		NullpoMinoSlick.setGeneralConfig();
 
 		// 画像などを読み込み
 		try {
-			ResourceHolder.load();
+			ResourceHolderSlick.load();
 		} catch(Throwable e) {
 			log.error("Resource load failed", e);
 		}
@@ -97,9 +97,9 @@ public class StateLoading extends BasicGameState {
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// 巨大な画像をあらかじめ画面に描画することでメモリにキャッシュさせる
 		if(preloadSet == 0) {
-			if(preloadCount < ResourceHolder.BLOCK_BREAK_MAX) {
+			if(preloadCount < ResourceHolderSlick.BLOCK_BREAK_MAX) {
 				try {
-					ResourceHolder.imgBreak[preloadCount][0].draw(0, 0);
+					ResourceHolderSlick.imgBreak[preloadCount][0].draw(0, 0);
 				} catch (Exception e) {}
 				preloadCount++;
 			} else {
@@ -108,9 +108,9 @@ public class StateLoading extends BasicGameState {
 			}
 		}
 		if(preloadSet == 1) {
-			if(preloadCount < ResourceHolder.BLOCK_BREAK_MAX) {
+			if(preloadCount < ResourceHolderSlick.BLOCK_BREAK_MAX) {
 				try {
-					ResourceHolder.imgBreak[preloadCount][1].draw(0, 0);
+					ResourceHolderSlick.imgBreak[preloadCount][1].draw(0, 0);
 				} catch (Exception e) {}
 				preloadCount++;
 			} else {
@@ -119,9 +119,9 @@ public class StateLoading extends BasicGameState {
 			}
 		}
 		if(preloadSet == 2) {
-			if(preloadCount < ResourceHolder.PERASE_MAX) {
+			if(preloadCount < ResourceHolderSlick.PERASE_MAX) {
 				try {
-					ResourceHolder.imgPErase[preloadCount].draw(0, 0);
+					ResourceHolderSlick.imgPErase[preloadCount].draw(0, 0);
 				} catch (Exception e) {}
 				preloadCount++;
 			} else {
@@ -130,7 +130,7 @@ public class StateLoading extends BasicGameState {
 			}
 		}
 		if(preloadSet == 3) {
-			ResourceHolder.imgFont.draw(0, 0);
+			ResourceHolderSlick.imgFont.draw(0, 0);
 			preloadSet++;
 		}
 
@@ -152,8 +152,8 @@ public class StateLoading extends BasicGameState {
 			// First run
 			if(NullpoMinoSlick.propConfig.getProperty("option.firstSetupMode", true) == true) {
 				// Set various default settings here
-				GameKey.gamekey[0].loadDefaultKeymap();
-				GameKey.gamekey[0].saveConfig(NullpoMinoSlick.propConfig);
+				GameKeySlick.gamekey[0].loadDefaultKeymap();
+				GameKeySlick.gamekey[0].saveConfig(NullpoMinoSlick.propConfig);
 				NullpoMinoSlick.propConfig.setProperty("option.firstSetupMode", false);
 
 				// Set default rotation button setting (only for first run)

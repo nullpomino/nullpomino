@@ -123,26 +123,26 @@ public class StateTitle extends DummyMenuChooseState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
-		g.drawImage(ResourceHolder.imgTitle, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgTitle, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1, "NULLPOMINO", NormalFont.COLOR_ORANGE);
-		NormalFont.printFontGrid(1, 2, "VERSION " + GameManager.getVersionString(), NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "NULLPOMINO", NormalFontSlick.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 2, "VERSION " + GameManager.getVersionString(), NormalFontSlick.COLOR_ORANGE);
 
 		renderChoices(2, 4, CHOICES);
 
-		NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
+		NormalFontSlick.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 
 		if(UpdateChecker.isNewVersionAvailable(GameManager.getVersionMajor(), GameManager.getVersionMinor())) {
 			String strTemp = String.format(NullpoMinoSlick.getUIText("Title_NewVersion"),
 					UpdateChecker.getLatestVersionFullString(), UpdateChecker.getStrReleaseDate());
-			NormalFont.printTTFFont(16, 416, strTemp);
+			NormalFontSlick.printTTFFont(16, 416, strTemp);
 		}
 	}
 
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 
 		switch(cursor) {
 		case 0:

@@ -82,21 +82,21 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	 */
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
-		NormalFont.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
-		NormalFont.printFontGrid(2, 3, "COPY FROM GAME KEYS", (cursor == 0));
-		NormalFont.printFontGrid(2, 4, "CUSTOMIZE", (cursor == 1));
+		NormalFontSlick.printFontGrid(2, 3, "COPY FROM GAME KEYS", (cursor == 0));
+		NormalFontSlick.printFontGrid(2, 4, "CUSTOMIZE", (cursor == 1));
 	}
 
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
 		if (cursor == 0) {
-			for(int i = 0; i < GameKey.MAX_BUTTON; i++) {
-				GameKey.gamekey[player].keymapNav[i] = GameKey.gamekey[player].keymap[i];
+			for(int i = 0; i < GameKeySlick.MAX_BUTTON; i++) {
+				GameKeySlick.gamekey[player].keymapNav[i] = GameKeySlick.gamekey[player].keymap[i];
 			}
 		} else if (cursor == 1) {
 			NullpoMinoSlick.stateConfigKeyboard.player = player;
@@ -105,10 +105,10 @@ public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 			return true;
 		}
 
-		GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
+		GameKeySlick.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
 		NullpoMinoSlick.saveConfig();
 
-		ResourceHolder.soundManager.play("decide");
+		ResourceHolderSlick.soundManager.play("decide");
 		gameObj.enterState(StateConfigMainMenu.ID);
 		return true;
 	}

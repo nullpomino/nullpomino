@@ -78,12 +78,12 @@ public class StateConfigJoystickButton extends BasicGameState {
 		keynum = 4;
 		frame = 0;
 
-		buttonmap = new int[GameKey.MAX_BUTTON];
+		buttonmap = new int[GameKeySlick.MAX_BUTTON];
 
 		joyNumber = ControllerManager.controllerID[player];
 
-		for(int i = 0; i < GameKey.MAX_BUTTON; i++) {
-			buttonmap[i] = GameKey.gamekey[player].buttonmap[i];
+		for(int i = 0; i < GameKeySlick.MAX_BUTTON; i++) {
+			buttonmap[i] = GameKeySlick.gamekey[player].buttonmap[i];
 		}
 	}
 
@@ -103,38 +103,38 @@ public class StateConfigJoystickButton extends BasicGameState {
 			return;
 		}
 
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
-		NormalFont.printFontGrid(1, 1, "JOYSTICK SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "JOYSTICK SETTING (" + (player + 1) + "P)", NormalFontSlick.COLOR_ORANGE);
 
 		if(joyNumber < 0)
-			NormalFont.printFontGrid(1, 3, "NO JOYSTICK", NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 3, "NO JOYSTICK", NormalFontSlick.COLOR_RED);
 		else
-			NormalFont.printFontGrid(1, 3, "JOYSTICK NUMBER:" + joyNumber, NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 3, "JOYSTICK NUMBER:" + joyNumber, NormalFontSlick.COLOR_RED);
 
 		//NormalFont.printFontGrid(2, 3, "UP             : " + String.valueOf(buttonmap[GameKey.BUTTON_UP]), (keynum == 0));
 		//NormalFont.printFontGrid(2, 4, "DOWN           : " + String.valueOf(buttonmap[GameKey.BUTTON_DOWN]), (keynum == 1));
 		//NormalFont.printFontGrid(2, 5, "LEFT           : " + String.valueOf(buttonmap[GameKey.BUTTON_LEFT]), (keynum == 2));
 		//NormalFont.printFontGrid(2, 6, "RIGHT          : " + String.valueOf(buttonmap[GameKey.BUTTON_RIGHT]), (keynum == 3));
-		NormalFont.printFontGrid(2, 5, "A (L/R-ROT)    : " + String.valueOf(buttonmap[GameKey.BUTTON_A]), (keynum == 4));
-		NormalFont.printFontGrid(2, 6, "B (R/L-ROT)    : " + String.valueOf(buttonmap[GameKey.BUTTON_B]), (keynum == 5));
-		NormalFont.printFontGrid(2, 7, "C (L/R-ROT)    : " + String.valueOf(buttonmap[GameKey.BUTTON_C]), (keynum == 6));
-		NormalFont.printFontGrid(2, 8, "D (HOLD)       : " + String.valueOf(buttonmap[GameKey.BUTTON_D]), (keynum == 7));
-		NormalFont.printFontGrid(2, 9, "E (180-ROT)    : " + String.valueOf(buttonmap[GameKey.BUTTON_E]), (keynum == 8));
-		NormalFont.printFontGrid(2, 10, "F              : " + String.valueOf(buttonmap[GameKey.BUTTON_F]), (keynum == 9));
-		NormalFont.printFontGrid(2, 11, "QUIT           : " + String.valueOf(buttonmap[GameKey.BUTTON_QUIT]), (keynum == 10));
-		NormalFont.printFontGrid(2, 12, "PAUSE          : " + String.valueOf(buttonmap[GameKey.BUTTON_PAUSE]), (keynum == 11));
-		NormalFont.printFontGrid(2, 13, "GIVEUP         : " + String.valueOf(buttonmap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
-		NormalFont.printFontGrid(2, 14, "RETRY          : " + String.valueOf(buttonmap[GameKey.BUTTON_RETRY]), (keynum == 13));
-		NormalFont.printFontGrid(2, 15, "FRAME STEP     : " + String.valueOf(buttonmap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
-		NormalFont.printFontGrid(2, 16, "SCREEN SHOT    : " + String.valueOf(buttonmap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFontSlick.printFontGrid(2, 5, "A (L/R-ROT)    : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_A]), (keynum == 4));
+		NormalFontSlick.printFontGrid(2, 6, "B (R/L-ROT)    : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_B]), (keynum == 5));
+		NormalFontSlick.printFontGrid(2, 7, "C (L/R-ROT)    : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_C]), (keynum == 6));
+		NormalFontSlick.printFontGrid(2, 8, "D (HOLD)       : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_D]), (keynum == 7));
+		NormalFontSlick.printFontGrid(2, 9, "E (180-ROT)    : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_E]), (keynum == 8));
+		NormalFontSlick.printFontGrid(2, 10, "F              : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_F]), (keynum == 9));
+		NormalFontSlick.printFontGrid(2, 11, "QUIT           : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_QUIT]), (keynum == 10));
+		NormalFontSlick.printFontGrid(2, 12, "PAUSE          : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_PAUSE]), (keynum == 11));
+		NormalFontSlick.printFontGrid(2, 13, "GIVEUP         : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_GIVEUP]), (keynum == 12));
+		NormalFontSlick.printFontGrid(2, 14, "RETRY          : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_RETRY]), (keynum == 13));
+		NormalFontSlick.printFontGrid(2, 15, "FRAME STEP     : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_FRAMESTEP]), (keynum == 14));
+		NormalFontSlick.printFontGrid(2, 16, "SCREEN SHOT    : " + String.valueOf(buttonmap[GameKeySlick.BUTTON_SCREENSHOT]), (keynum == 15));
 
-		NormalFont.printFontGrid(1, 5 + keynum - 4, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 5 + keynum - 4, "b", NormalFontSlick.COLOR_RED);
 		if(frame >= KEYACCEPTFRAME) {
-			NormalFont.printFontGrid(1, 20, "UP/DOWN:   MOVE CURSOR", NormalFont.COLOR_GREEN);
-			NormalFont.printFontGrid(1, 21, "ENTER:     OK",     NormalFont.COLOR_GREEN);
-			NormalFont.printFontGrid(1, 22, "DELETE:    NO SET", NormalFont.COLOR_GREEN);
-			NormalFont.printFontGrid(1, 23, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+			NormalFontSlick.printFontGrid(1, 20, "UP/DOWN:   MOVE CURSOR", NormalFontSlick.COLOR_GREEN);
+			NormalFontSlick.printFontGrid(1, 21, "ENTER:     OK",     NormalFontSlick.COLOR_GREEN);
+			NormalFontSlick.printFontGrid(1, 22, "DELETE:    NO SET", NormalFontSlick.COLOR_GREEN);
+			NormalFontSlick.printFontGrid(1, 23, "BACKSPACE: CANCEL", NormalFontSlick.COLOR_GREEN);
 		}
 
 		// FPS
@@ -160,7 +160,7 @@ public class StateConfigJoystickButton extends BasicGameState {
 			for(int i = 0; i < ControllerManager.MAX_BUTTONS; i++) {
 				try {
 					if(ControllerManager.isControllerButton(player, container.getInput(), i)) {
-						ResourceHolder.soundManager.play("change");
+						ResourceHolderSlick.soundManager.play("change");
 						buttonmap[keynum] = i;
 						frame = 0;
 					}
@@ -204,19 +204,19 @@ public class StateConfigJoystickButton extends BasicGameState {
 		if(frame >= KEYACCEPTFRAME) {
 			// Up
 			if(key == Input.KEY_UP) {
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 				keynum--;
 				if(keynum < 4) keynum = 15;
 			}
 			// Down
 			else if(key == Input.KEY_DOWN) {
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 				keynum++;
 				if(keynum > 15) keynum = 4;
 			}
 			// Delete
 			else if(key == Input.KEY_DELETE) {
-				ResourceHolder.soundManager.play("change");
+				ResourceHolderSlick.soundManager.play("change");
 				buttonmap[keynum] = -1;
 			}
 			// Backspace
@@ -226,12 +226,12 @@ public class StateConfigJoystickButton extends BasicGameState {
 			}
 			// Enter/Return
 			else if(key == Input.KEY_ENTER) {
-				ResourceHolder.soundManager.play("decide");
+				ResourceHolderSlick.soundManager.play("decide");
 
-				for(int i = 0; i < GameKey.MAX_BUTTON; i++) {
-					GameKey.gamekey[player].buttonmap[i] = buttonmap[i];
+				for(int i = 0; i < GameKeySlick.MAX_BUTTON; i++) {
+					GameKeySlick.gamekey[player].buttonmap[i] = buttonmap[i];
 				}
-				GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
+				GameKeySlick.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
 				NullpoMinoSlick.saveConfig();
 
 				gameObj.enterState(StateConfigJoystickMain.ID);

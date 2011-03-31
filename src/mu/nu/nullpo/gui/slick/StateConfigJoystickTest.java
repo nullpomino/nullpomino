@@ -105,28 +105,28 @@ public class StateConfigJoystickTest extends BasicGameState {
 			return;
 		}
 
-		ResourceHolder.imgMenu.draw(0, 0);
+		ResourceHolderSlick.imgMenu.draw(0, 0);
 
-		NormalFont.printFontGrid(1, 1, "JOYSTICK INPUT TEST (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "JOYSTICK INPUT TEST (" + (player + 1) + "P)", NormalFontSlick.COLOR_ORANGE);
 
 		if(joyNumber < 0) {
-			NormalFont.printFontGrid(1, 3, "NO JOYSTICK", NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 3, "NO JOYSTICK", NormalFontSlick.COLOR_RED);
 		} else if(frame >= KEYACCEPTFRAME) {
-			NormalFont.printFontGrid(1, 3, "JOYSTICK NUMBER:" + joyNumber, NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 3, "JOYSTICK NUMBER:" + joyNumber, NormalFontSlick.COLOR_RED);
 
-			NormalFont.printFontGrid(1, 5, "LAST PRESSED BUTTON:" + ((lastPressButton == -1) ? "NONE" : String.valueOf(lastPressButton)));
+			NormalFontSlick.printFontGrid(1, 5, "LAST PRESSED BUTTON:" + ((lastPressButton == -1) ? "NONE" : String.valueOf(lastPressButton)));
 
 			Controller controller = ControllerManager.controllers.get(joyNumber);
 
-			NormalFont.printFontGrid(1, 7, "AXIS X:" + controller.getXAxisValue());
-			NormalFont.printFontGrid(1, 8, "AXIS Y:" + controller.getYAxisValue());
+			NormalFontSlick.printFontGrid(1, 7, "AXIS X:" + controller.getXAxisValue());
+			NormalFontSlick.printFontGrid(1, 8, "AXIS Y:" + controller.getYAxisValue());
 
-			NormalFont.printFontGrid(1, 10, "POV X:" + controller.getPovX());
-			NormalFont.printFontGrid(1, 11, "POV Y:" + controller.getPovY());
+			NormalFontSlick.printFontGrid(1, 10, "POV X:" + controller.getPovX());
+			NormalFontSlick.printFontGrid(1, 11, "POV Y:" + controller.getPovY());
 		}
 
 		if(frame >= KEYACCEPTFRAME) {
-			NormalFont.printFontGrid(1, 23, "ENTER/BACKSPACE: EXIT", NormalFont.COLOR_GREEN);
+			NormalFontSlick.printFontGrid(1, 23, "ENTER/BACKSPACE: EXIT", NormalFontSlick.COLOR_GREEN);
 		}
 
 		// FPS
@@ -152,7 +152,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 			for(int i = 0; i < buttonCount; i++) {
 				try {
 					if(ControllerManager.isControllerButton(player, container.getInput(), i)) {
-						ResourceHolder.soundManager.play("change");
+						ResourceHolderSlick.soundManager.play("change");
 						lastPressButton = i;
 					}
 				} catch (Throwable e) {}

@@ -96,9 +96,9 @@ public class StateConfigKeyboard extends BasicGameState {
 
 		for(int i = 0; i < NUM_KEYS; i++) {
 			if(!isNavSetting)
-				keymap[i] = GameKey.gamekey[player].keymap[i];
+				keymap[i] = GameKeySlick.gamekey[player].keymap[i];
 			else
-				keymap[i] = GameKey.gamekey[player].keymapNav[i];
+				keymap[i] = GameKeySlick.gamekey[player].keymapNav[i];
 		}
 	}
 
@@ -128,59 +128,59 @@ public class StateConfigKeyboard extends BasicGameState {
 			return;
 		}
 
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		if(!isNavSetting) {
-			NormalFont.printFontGrid(1, 1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 1, "KEYBOARD SETTING (" + (player + 1) + "P)", NormalFontSlick.COLOR_ORANGE);
 		} else {
-			NormalFont.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFont.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 1, "KEYBOARD NAVIGATION SETTING (" + (player + 1) + "P)", NormalFontSlick.COLOR_ORANGE);
 		}
 		if(!NullpoMinoSlick.useJInputKeyboard) {
-			NormalFont.printFontGrid(1, 2, "SLICK NATIVE MODE", NormalFont.COLOR_CYAN);
+			NormalFontSlick.printFontGrid(1, 2, "SLICK NATIVE MODE", NormalFontSlick.COLOR_CYAN);
 		} else {
-			NormalFont.printFontGrid(1, 2, "JINPUT MODE", NormalFont.COLOR_PINK);
+			NormalFontSlick.printFontGrid(1, 2, "JINPUT MODE", NormalFontSlick.COLOR_PINK);
 		}
 
-		NormalFont.printFontGrid(2,  4, "UP          : " + getKeyName(keymap[GameKey.BUTTON_UP]), (keynum == 0));
-		NormalFont.printFontGrid(2,  5, "DOWN        : " + getKeyName(keymap[GameKey.BUTTON_DOWN]), (keynum == 1));
-		NormalFont.printFontGrid(2,  6, "LEFT        : " + getKeyName(keymap[GameKey.BUTTON_LEFT]), (keynum == 2));
-		NormalFont.printFontGrid(2,  7, "RIGHT       : " + getKeyName(keymap[GameKey.BUTTON_RIGHT]), (keynum == 3));
+		NormalFontSlick.printFontGrid(2,  4, "UP          : " + getKeyName(keymap[GameKeySlick.BUTTON_UP]), (keynum == 0));
+		NormalFontSlick.printFontGrid(2,  5, "DOWN        : " + getKeyName(keymap[GameKeySlick.BUTTON_DOWN]), (keynum == 1));
+		NormalFontSlick.printFontGrid(2,  6, "LEFT        : " + getKeyName(keymap[GameKeySlick.BUTTON_LEFT]), (keynum == 2));
+		NormalFontSlick.printFontGrid(2,  7, "RIGHT       : " + getKeyName(keymap[GameKeySlick.BUTTON_RIGHT]), (keynum == 3));
 		if(!isNavSetting) {
-			NormalFont.printFontGrid(2,  8, "A (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
-			NormalFont.printFontGrid(2,  9, "B (R/L-ROT) : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
-			NormalFont.printFontGrid(2, 10, "C (L/R-ROT) : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
-			NormalFont.printFontGrid(2, 11, "D (HOLD)    : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
-			NormalFont.printFontGrid(2, 12, "E (180-ROT) : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
+			NormalFontSlick.printFontGrid(2,  8, "A (L/R-ROT) : " + getKeyName(keymap[GameKeySlick.BUTTON_A]), (keynum == 4));
+			NormalFontSlick.printFontGrid(2,  9, "B (R/L-ROT) : " + getKeyName(keymap[GameKeySlick.BUTTON_B]), (keynum == 5));
+			NormalFontSlick.printFontGrid(2, 10, "C (L/R-ROT) : " + getKeyName(keymap[GameKeySlick.BUTTON_C]), (keynum == 6));
+			NormalFontSlick.printFontGrid(2, 11, "D (HOLD)    : " + getKeyName(keymap[GameKeySlick.BUTTON_D]), (keynum == 7));
+			NormalFontSlick.printFontGrid(2, 12, "E (180-ROT) : " + getKeyName(keymap[GameKeySlick.BUTTON_E]), (keynum == 8));
 		} else {
-			NormalFont.printFontGrid(2,  8, "A (SELECT)  : " + getKeyName(keymap[GameKey.BUTTON_A]), (keynum == 4));
-			NormalFont.printFontGrid(2,  9, "B (CANCEL)  : " + getKeyName(keymap[GameKey.BUTTON_B]), (keynum == 5));
-			NormalFont.printFontGrid(2, 10, "C           : " + getKeyName(keymap[GameKey.BUTTON_C]), (keynum == 6));
-			NormalFont.printFontGrid(2, 11, "D           : " + getKeyName(keymap[GameKey.BUTTON_D]), (keynum == 7));
-			NormalFont.printFontGrid(2, 12, "E           : " + getKeyName(keymap[GameKey.BUTTON_E]), (keynum == 8));
+			NormalFontSlick.printFontGrid(2,  8, "A (SELECT)  : " + getKeyName(keymap[GameKeySlick.BUTTON_A]), (keynum == 4));
+			NormalFontSlick.printFontGrid(2,  9, "B (CANCEL)  : " + getKeyName(keymap[GameKeySlick.BUTTON_B]), (keynum == 5));
+			NormalFontSlick.printFontGrid(2, 10, "C           : " + getKeyName(keymap[GameKeySlick.BUTTON_C]), (keynum == 6));
+			NormalFontSlick.printFontGrid(2, 11, "D           : " + getKeyName(keymap[GameKeySlick.BUTTON_D]), (keynum == 7));
+			NormalFontSlick.printFontGrid(2, 12, "E           : " + getKeyName(keymap[GameKeySlick.BUTTON_E]), (keynum == 8));
 		}
-		NormalFont.printFontGrid(2, 13, "F           : " + getKeyName(keymap[GameKey.BUTTON_F]), (keynum == 9));
-		NormalFont.printFontGrid(2, 14, "QUIT        : " + getKeyName(keymap[GameKey.BUTTON_QUIT]), (keynum == 10));
-		NormalFont.printFontGrid(2, 15, "PAUSE       : " + getKeyName(keymap[GameKey.BUTTON_PAUSE]), (keynum == 11));
-		NormalFont.printFontGrid(2, 16, "GIVEUP      : " + getKeyName(keymap[GameKey.BUTTON_GIVEUP]), (keynum == 12));
-		NormalFont.printFontGrid(2, 17, "RETRY       : " + getKeyName(keymap[GameKey.BUTTON_RETRY]), (keynum == 13));
-		NormalFont.printFontGrid(2, 18, "FRAME STEP  : " + getKeyName(keymap[GameKey.BUTTON_FRAMESTEP]), (keynum == 14));
-		NormalFont.printFontGrid(2, 19, "SCREEN SHOT : " + getKeyName(keymap[GameKey.BUTTON_SCREENSHOT]), (keynum == 15));
-		NormalFont.printFontGrid(2, 20, "[SAVE & EXIT]", (keynum == 16));
+		NormalFontSlick.printFontGrid(2, 13, "F           : " + getKeyName(keymap[GameKeySlick.BUTTON_F]), (keynum == 9));
+		NormalFontSlick.printFontGrid(2, 14, "QUIT        : " + getKeyName(keymap[GameKeySlick.BUTTON_QUIT]), (keynum == 10));
+		NormalFontSlick.printFontGrid(2, 15, "PAUSE       : " + getKeyName(keymap[GameKeySlick.BUTTON_PAUSE]), (keynum == 11));
+		NormalFontSlick.printFontGrid(2, 16, "GIVEUP      : " + getKeyName(keymap[GameKeySlick.BUTTON_GIVEUP]), (keynum == 12));
+		NormalFontSlick.printFontGrid(2, 17, "RETRY       : " + getKeyName(keymap[GameKeySlick.BUTTON_RETRY]), (keynum == 13));
+		NormalFontSlick.printFontGrid(2, 18, "FRAME STEP  : " + getKeyName(keymap[GameKeySlick.BUTTON_FRAMESTEP]), (keynum == 14));
+		NormalFontSlick.printFontGrid(2, 19, "SCREEN SHOT : " + getKeyName(keymap[GameKeySlick.BUTTON_SCREENSHOT]), (keynum == 15));
+		NormalFontSlick.printFontGrid(2, 20, "[SAVE & EXIT]", (keynum == 16));
 
-		NormalFont.printFontGrid(1, 4 + keynum, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 4 + keynum, "b", NormalFontSlick.COLOR_RED);
 
 		if(frame >= KEYACCEPTFRAME) {
 			if(keyConfigRestFrame > 0) {
-				NormalFont.printFontGrid(1, 22, "PUSH KEY... " + GeneralUtil.getTime(keyConfigRestFrame), NormalFont.COLOR_PINK);
+				NormalFontSlick.printFontGrid(1, 22, "PUSH KEY... " + GeneralUtil.getTime(keyConfigRestFrame), NormalFontSlick.COLOR_PINK);
 			} else if(keynum < NUM_KEYS) {
-				NormalFont.printFontGrid(1, 22, "UP/DOWN:   MOVE CURSOR", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 23, "ENTER:     SET KEY", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 24, "DELETE:    SET TO NONE", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 25, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 22, "UP/DOWN:   MOVE CURSOR", NormalFontSlick.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 23, "ENTER:     SET KEY", NormalFontSlick.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 24, "DELETE:    SET TO NONE", NormalFontSlick.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 25, "BACKSPACE: CANCEL", NormalFontSlick.COLOR_GREEN);
 			} else {
-				NormalFont.printFontGrid(1, 22, "UP/DOWN:   MOVE CURSOR", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 23, "ENTER:     SAVE & EXIT", NormalFont.COLOR_GREEN);
-				NormalFont.printFontGrid(1, 24, "BACKSPACE: CANCEL", NormalFont.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 22, "UP/DOWN:   MOVE CURSOR", NormalFontSlick.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 23, "ENTER:     SAVE & EXIT", NormalFontSlick.COLOR_GREEN);
+				NormalFontSlick.printFontGrid(1, 24, "BACKSPACE: CANCEL", NormalFontSlick.COLOR_GREEN);
 			}
 		}
 
@@ -239,35 +239,35 @@ public class StateConfigKeyboard extends BasicGameState {
 		if(frame >= KEYACCEPTFRAME) {
 			if(keyConfigRestFrame > 0) {
 				// Key-set mode
-				ResourceHolder.soundManager.play("move");
+				ResourceHolderSlick.soundManager.play("move");
 				keymap[keynum] = key;
 				keyConfigRestFrame = 0;
 			} else {
 				// Menu mode
 				if(key == Input.KEY_UP) {
-					ResourceHolder.soundManager.play("cursor");
+					ResourceHolderSlick.soundManager.play("cursor");
 					keynum--;
 					if(keynum < 0) keynum = NUM_KEYS;
 				}
 				if(key == Input.KEY_DOWN) {
-					ResourceHolder.soundManager.play("cursor");
+					ResourceHolderSlick.soundManager.play("cursor");
 					keynum++;
 					if(keynum > NUM_KEYS) keynum = 0;
 				}
 
 				// Enter
 				if(key == Input.KEY_ENTER) {
-					ResourceHolder.soundManager.play("decide");
+					ResourceHolderSlick.soundManager.play("decide");
 
 					if(keynum >= NUM_KEYS) {
 						// Save & Exit
 						for(int i = 0; i < NUM_KEYS; i++) {
 							if(!isNavSetting)
-								GameKey.gamekey[player].keymap[i] = keymap[i];
+								GameKeySlick.gamekey[player].keymap[i] = keymap[i];
 							else
-								GameKey.gamekey[player].keymapNav[i] = keymap[i];
+								GameKeySlick.gamekey[player].keymapNav[i] = keymap[i];
 						}
-						GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
+						GameKeySlick.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
 						NullpoMinoSlick.saveConfig();
 						gameObj.enterState(StateConfigMainMenu.ID);
 					} else {
@@ -280,7 +280,7 @@ public class StateConfigKeyboard extends BasicGameState {
 				// Delete
 				if(key == Input.KEY_DELETE) {
 					if((keynum < NUM_KEYS) && (keymap[keynum] != 0)) {
-						ResourceHolder.soundManager.play("change");
+						ResourceHolderSlick.soundManager.play("change");
 						keymap[keynum] = 0;
 					}
 				}

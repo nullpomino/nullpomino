@@ -4,15 +4,15 @@ import mu.nu.nullpo.gui.MouseInputDummy;
 
 import org.newdawn.slick.Input;
 
-public class MouseInput extends MouseInputDummy {
-	public static MouseInput mouseInput;
+public class MouseInputSlick extends MouseInputDummy {
+	public static MouseInputSlick mouseInput;
 
-	private MouseInput() {
+	private MouseInputSlick() {
 		super();
 	}
 
 	public static void initializeMouseInput() {
-		mouseInput = new MouseInput();
+		mouseInput = new MouseInputSlick();
 	}
 
 	public void update(Input input) {

@@ -134,21 +134,21 @@ public class StateConfigJoystickMain extends BaseGameState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Menu
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
-		NormalFont.printFontGrid(1, 1, "JOYSTICK SETTING (" + (player+1) + "P)", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "JOYSTICK SETTING (" + (player+1) + "P)", NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
-		NormalFont.printFontGrid(2, 3, "[BUTTON SETTING]", (cursor == 0));
-		NormalFont.printFontGrid(2, 4, "[INPUT TEST]", (cursor == 1));
-		NormalFont.printFontGrid(2, 5, "JOYSTICK NUMBER:" + ((joyUseNumber == -1) ? "NOTHING" : String.valueOf(joyUseNumber)), (cursor == 2));
-		NormalFont.printFontGrid(2, 6, "JOYSTICK BORDER:" + joyBorder, (cursor == 3));
-		NormalFont.printFontGrid(2, 7, "IGNORE AXIS:" + GeneralUtil.getONorOFF(joyIgnoreAxis), (cursor == 4));
-		NormalFont.printFontGrid(2, 8, "IGNORE POV:" + GeneralUtil.getONorOFF(joyIgnorePOV), (cursor == 5));
-		NormalFont.printFontGrid(2, 9, "JOYSTICK METHOD:" + JOYSTICK_METHOD_STRINGS[joyMethod], (cursor == 6));
+		NormalFontSlick.printFontGrid(2, 3, "[BUTTON SETTING]", (cursor == 0));
+		NormalFontSlick.printFontGrid(2, 4, "[INPUT TEST]", (cursor == 1));
+		NormalFontSlick.printFontGrid(2, 5, "JOYSTICK NUMBER:" + ((joyUseNumber == -1) ? "NOTHING" : String.valueOf(joyUseNumber)), (cursor == 2));
+		NormalFontSlick.printFontGrid(2, 6, "JOYSTICK BORDER:" + joyBorder, (cursor == 3));
+		NormalFontSlick.printFontGrid(2, 7, "IGNORE AXIS:" + GeneralUtil.getONorOFF(joyIgnoreAxis), (cursor == 4));
+		NormalFontSlick.printFontGrid(2, 8, "IGNORE POV:" + GeneralUtil.getONorOFF(joyIgnorePOV), (cursor == 5));
+		NormalFontSlick.printFontGrid(2, 9, "JOYSTICK METHOD:" + JOYSTICK_METHOD_STRINGS[joyMethod], (cursor == 6));
 
-		if(cursor < UI_TEXT.length) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
+		if(cursor < UI_TEXT.length) NormalFontSlick.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 	}
 
 	/*
@@ -157,30 +157,30 @@ public class StateConfigJoystickMain extends BaseGameState {
 	@Override
 	protected void updateImpl(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		// TTF font load
-		if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
+		if(ResourceHolderSlick.ttfFont != null) ResourceHolderSlick.ttfFont.loadGlyphs();
 
 		// Update key input states
-		GameKey.gamekey[0].update(container.getInput());
+		GameKeySlick.gamekey[0].update(container.getInput());
 
 		// Cursor movement
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_UP)) {
 			cursor--;
 			if(cursor < 0) cursor = 6;
-			ResourceHolder.soundManager.play("cursor");
+			ResourceHolderSlick.soundManager.play("cursor");
 		}
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_DOWN)) {
 			cursor++;
 			if(cursor > 6) cursor = 0;
-			ResourceHolder.soundManager.play("cursor");
+			ResourceHolderSlick.soundManager.play("cursor");
 		}
 
 		// Configuration changes
 		int change = 0;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-		if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_LEFT)) change = -1;
+		if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_RIGHT)) change = 1;
 
 		if(change != 0) {
-			ResourceHolder.soundManager.play("change");
+			ResourceHolderSlick.soundManager.play("change");
 
 			switch(cursor) {
 			case 2:
@@ -208,8 +208,8 @@ public class StateConfigJoystickMain extends BaseGameState {
 		}
 
 		// Confirm button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-			ResourceHolder.soundManager.play("decide");
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_A)) {
+			ResourceHolderSlick.soundManager.play("decide");
 
 			saveConfig(NullpoMinoSlick.propConfig);
 			NullpoMinoSlick.saveConfig();
@@ -229,7 +229,7 @@ public class StateConfigJoystickMain extends BaseGameState {
 		}
 
 		// Cancel button
-		if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
+		if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_B)) {
 			loadConfig(NullpoMinoSlick.propConfig);
 			game.enterState(StateConfigMainMenu.ID);
 		}

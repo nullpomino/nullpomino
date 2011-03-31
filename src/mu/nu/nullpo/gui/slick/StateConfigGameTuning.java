@@ -273,14 +273,14 @@ public class StateConfigGameTuning extends BaseGameState {
 	 */
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		if(isPreview) {
 			// Preview
 			try {
 				String strButtonF = gameManager.receiver.getKeyNameByButtonID(gameManager.engine[0], Controller.BUTTON_F);
 				int fontY = (gameManager.receiver.getNextDisplayType() == 2) ? 1 : 27;
-				NormalFont.printFontGrid(1, fontY, "PUSH F BUTTON (" + strButtonF.toUpperCase() + " KEY) TO EXIT", NormalFont.COLOR_YELLOW);
+				NormalFontSlick.printFontGrid(1, fontY, "PUSH F BUTTON (" + strButtonF.toUpperCase() + " KEY) TO EXIT", NormalFontSlick.COLOR_YELLOW);
 
 				gameManager.renderAll();
 			} catch (Exception e) {
@@ -290,20 +290,20 @@ public class StateConfigGameTuning extends BaseGameState {
 			// Menu
 			String strTemp = "";
 
-			NormalFont.printFontGrid(1, 1, "GAME TUNING (" + (player+1) + "P)", NormalFont.COLOR_ORANGE);
-			NormalFont.printFontGrid(1, 3 + cursor, "b", NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 1, "GAME TUNING (" + (player+1) + "P)", NormalFontSlick.COLOR_ORANGE);
+			NormalFontSlick.printFontGrid(1, 3 + cursor, "b", NormalFontSlick.COLOR_RED);
 
 			if(owRotateButtonDefaultRight == -1) strTemp = "AUTO";
 			if(owRotateButtonDefaultRight == 0) strTemp = "LEFT";
 			if(owRotateButtonDefaultRight == 1) strTemp = "RIGHT";
-			NormalFont.printFontGrid(2, 3, "A BUTTON ROTATE:" + strTemp, (cursor == 0));
+			NormalFontSlick.printFontGrid(2, 3, "A BUTTON ROTATE:" + strTemp, (cursor == 0));
 
-			NormalFont.printFontGrid(2, 4, "BLOCK SKIN:" + ((owSkin == -1) ? "AUTO": String.valueOf(owSkin)), (cursor == 1));
-			if((owSkin >= 0) && (owSkin < ResourceHolder.imgNormalBlockList.size())) {
+			NormalFontSlick.printFontGrid(2, 4, "BLOCK SKIN:" + ((owSkin == -1) ? "AUTO": String.valueOf(owSkin)), (cursor == 1));
+			if((owSkin >= 0) && (owSkin < ResourceHolderSlick.imgNormalBlockList.size())) {
 				//ResourceHolder.imgBlock.draw(256, 64, 256 + 144, 64 + 16, 0, owSkin * 16, 144, (owSkin * 16) + 16);
-				Image imgBlock = ResourceHolder.imgNormalBlockList.get(owSkin);
+				Image imgBlock = ResourceHolderSlick.imgNormalBlockList.get(owSkin);
 
-				if(ResourceHolder.blockStickyFlagList.get(owSkin) == true) {
+				if(ResourceHolderSlick.blockStickyFlagList.get(owSkin) == true) {
 					for(int j = 0; j < 9; j++) {
 						imgBlock.draw(256 + (j * 16), 64, 256 + (j * 16) + 16, 64 + 16, 0, (j * 16), 16, (j * 16) + 16);
 					}
@@ -312,26 +312,26 @@ public class StateConfigGameTuning extends BaseGameState {
 				}
 			}
 
-			NormalFont.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
-			NormalFont.printFontGrid(2, 6, "MAX DAS:" + ((owMaxDAS == -1) ? "AUTO" : String.valueOf(owMaxDAS)), (cursor == 3));
-			NormalFont.printFontGrid(2, 7, "DAS DELAY:" + ((owDasDelay == -1) ? "AUTO" : String.valueOf(owDasDelay)), (cursor == 4));
-			NormalFont.printFontGrid(2, 8, "REVERSE UP/DOWN:" + GeneralUtil.getOorX(owReverseUpDown), (cursor == 5));
+			NormalFontSlick.printFontGrid(2, 5, "MIN DAS:" + ((owMinDAS == -1) ? "AUTO" : String.valueOf(owMinDAS)), (cursor == 2));
+			NormalFontSlick.printFontGrid(2, 6, "MAX DAS:" + ((owMaxDAS == -1) ? "AUTO" : String.valueOf(owMaxDAS)), (cursor == 3));
+			NormalFontSlick.printFontGrid(2, 7, "DAS DELAY:" + ((owDasDelay == -1) ? "AUTO" : String.valueOf(owDasDelay)), (cursor == 4));
+			NormalFontSlick.printFontGrid(2, 8, "REVERSE UP/DOWN:" + GeneralUtil.getOorX(owReverseUpDown), (cursor == 5));
 
 			if(owMoveDiagonal == -1) strTemp = "AUTO";
 			if(owMoveDiagonal == 0) strTemp = "e";
 			if(owMoveDiagonal == 1) strTemp = "c";
-			NormalFont.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
+			NormalFontSlick.printFontGrid(2, 9, "DIAGONAL MOVE:" + strTemp, (cursor == 6));
 
-			NormalFont.printFontGrid(2, 10, "OUTLINE TYPE:" + OUTLINE_TYPE_NAMES[owBlockOutlineType + 1], (cursor == 7));
+			NormalFontSlick.printFontGrid(2, 10, "OUTLINE TYPE:" + OUTLINE_TYPE_NAMES[owBlockOutlineType + 1], (cursor == 7));
 
 			if(owBlockShowOutlineOnly == -1) strTemp = "AUTO";
 			if(owBlockShowOutlineOnly == 0) strTemp = "e";
 			if(owBlockShowOutlineOnly == 1) strTemp = "c";
-			NormalFont.printFontGrid(2, 11, "SHOW OUTLINE ONLY:" + strTemp, (cursor == 8));
+			NormalFontSlick.printFontGrid(2, 11, "SHOW OUTLINE ONLY:" + strTemp, (cursor == 8));
 
-			NormalFont.printFontGrid(2, 12, "[PREVIEW]", (cursor == 9));
+			NormalFontSlick.printFontGrid(2, 12, "[PREVIEW]", (cursor == 9));
 
-			if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFont.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
+			if((cursor >= 0) && (cursor < UI_TEXT.length)) NormalFontSlick.printTTFFont(16, 432, NullpoMinoSlick.getUIText(UI_TEXT[cursor]));
 		}
 	}
 
@@ -343,20 +343,20 @@ public class StateConfigGameTuning extends BaseGameState {
 		if(isPreview) {
 			// Preview
 			try {
-				GameKey.gamekey[0].update(container.getInput(), true);
+				GameKeySlick.gamekey[0].update(container.getInput(), true);
 
 				// Execute game loops
-				GameKey.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
+				GameKeySlick.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
 				gameManager.updateAll();
 
 				// Retry button
-				if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RETRY)) {
+				if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_RETRY)) {
 					gameManager.reset();
 					gameManager.backgroundStatus.bg = -1;	// Force no BG
 				}
 
 				// Exit
-				if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_F) || GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_GIVEUP) ||
+				if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_F) || GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_GIVEUP) ||
 				   gameManager.getQuitFlag())
 				{
 					stopPreviewGame();
@@ -366,30 +366,30 @@ public class StateConfigGameTuning extends BaseGameState {
 			}
 		} else {
 			// Menu screen
-			GameKey.gamekey[0].update(container.getInput(), false);
+			GameKeySlick.gamekey[0].update(container.getInput(), false);
 
 			// TTF font
-			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
+			if(ResourceHolderSlick.ttfFont != null) ResourceHolderSlick.ttfFont.loadGlyphs();
 
 			// Cursor movement
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_UP)) {
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_UP)) {
 				cursor--;
 				if(cursor < 0) cursor = 9;
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 			}
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_DOWN)) {
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_DOWN)) {
 				cursor++;
 				if(cursor > 9) cursor = 0;
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 			}
 
 			// Configuration changes
 			int change = 0;
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_LEFT)) change = -1;
-			if(GameKey.gamekey[0].isMenuRepeatKey(GameKey.BUTTON_RIGHT)) change = 1;
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_LEFT)) change = -1;
+			if(GameKeySlick.gamekey[0].isMenuRepeatKey(GameKeySlick.BUTTON_RIGHT)) change = 1;
 
 			if(change != 0) {
-				ResourceHolder.soundManager.play("change");
+				ResourceHolderSlick.soundManager.play("change");
 
 				switch(cursor) {
 				case 0:
@@ -399,8 +399,8 @@ public class StateConfigGameTuning extends BaseGameState {
 					break;
 				case 1:
 					owSkin += change;
-					if(owSkin < -1) owSkin = ResourceHolder.imgNormalBlockList.size() - 1;
-					if(owSkin > ResourceHolder.imgNormalBlockList.size() - 1) owSkin = -1;
+					if(owSkin < -1) owSkin = ResourceHolderSlick.imgNormalBlockList.size() - 1;
+					if(owSkin > ResourceHolderSlick.imgNormalBlockList.size() - 1) owSkin = -1;
 					break;
 				case 2:
 					owMinDAS += change;
@@ -441,15 +441,15 @@ public class StateConfigGameTuning extends BaseGameState {
 			}
 
 			// Preview by D button
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_D)) {
-				ResourceHolder.soundManager.play("decide");
+			if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_D)) {
+				ResourceHolderSlick.soundManager.play("decide");
 				startPreviewGame();
 				return;
 			}
 
 			// Confirm button
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_A)) {
-				ResourceHolder.soundManager.play("decide");
+			if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_A)) {
+				ResourceHolderSlick.soundManager.play("decide");
 
 				if(cursor == 9) {
 					// Preview
@@ -464,7 +464,7 @@ public class StateConfigGameTuning extends BaseGameState {
 			}
 
 			// Cancel button
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_B)) {
+			if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_B)) {
 			    loadConfig(NullpoMinoSlick.propGlobal);
 				game.enterState(StateConfigMainMenu.ID);
 			}

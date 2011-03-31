@@ -34,7 +34,7 @@ import org.newdawn.slick.SlickException;
 /**
  * 普通の文字列の表示クラス
  */
-public class NormalFont {
+public class NormalFontSlick {
 	/** 文字色の定count */
 	public static final int COLOR_WHITE = 0, COLOR_BLUE = 1, COLOR_RED = 2, COLOR_PINK = 3, COLOR_GREEN = 4, COLOR_YELLOW = 5, COLOR_CYAN = 6,
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
@@ -68,8 +68,8 @@ public class NormalFont {
 	 * @param fontColor 文字色
 	 */
 	public static void printTTFFont(int fontX, int fontY, String fontStr, int fontColor) {
-		if(ResourceHolder.ttfFont == null) return;
-		ResourceHolder.ttfFont.drawString(fontX, fontY, fontStr, getFontColorAsColor(fontColor));
+		if(ResourceHolderSlick.ttfFont == null) return;
+		ResourceHolderSlick.ttfFont.drawString(fontX, fontY, fontStr, getFontColorAsColor(fontColor));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class NormalFont {
 				if(scale == 0.5f) {
 					int sx = ((stringChar - 32) % 32) * 8;
 					int sy = ((stringChar - 32) / 32) * 8 + fontColor * 24;
-					ResourceHolder.imgFontSmall.draw(dx, dy, dx + 8, dy + 8, sx, sy, sx + 8, sy + 8);
+					ResourceHolderSlick.imgFontSmall.draw(dx, dy, dx + 8, dy + 8, sx, sy, sx + 8, sy + 8);
 					dx = dx + 8;
 				} else {
 					int sx = ((stringChar - 32) % 32) * 16;
@@ -120,7 +120,7 @@ public class NormalFont {
 					//SDLRect rectSrc = new SDLRect(sx, sy, 16, 16);
 					//SDLRect rectDst = new SDLRect(dx, dy, 16, 16);
 					//ResourceHolderSDL.imgFont.blitSurface(rectSrc, dest, rectDst);
-					ResourceHolder.imgFont.draw(dx, dy, dx + (16 * scale), dy + (16 * scale), sx, sy, sx + 16, sy + 16);
+					ResourceHolderSlick.imgFont.draw(dx, dy, dx + (16 * scale), dy + (16 * scale), sx, sy, sx + 16, sy + 16);
 					dx = (int)(dx + 16 * scale);
 				}
 			}

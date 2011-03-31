@@ -45,18 +45,18 @@ public class StateConfigKeyboardReset extends DummyMenuChooseState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		// Background
-		g.drawImage(ResourceHolder.imgMenu, 0, 0);
+		g.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		// Menu
-		NormalFont.printFontGrid(1, 1, "KEYBOARD RESET (" + (player+1) + "P)", NormalFont.COLOR_ORANGE);
+		NormalFontSlick.printFontGrid(1, 1, "KEYBOARD RESET (" + (player+1) + "P)", NormalFontSlick.COLOR_ORANGE);
 
-		NormalFont.printFontGrid(1, 3, "RESET SETTINGS TO...", NormalFont.COLOR_GREEN);
+		NormalFontSlick.printFontGrid(1, 3, "RESET SETTINGS TO...", NormalFontSlick.COLOR_GREEN);
 
-		NormalFont.printFontGrid(1, 4 + cursor, "b", NormalFont.COLOR_RED);
+		NormalFontSlick.printFontGrid(1, 4 + cursor, "b", NormalFontSlick.COLOR_RED);
 
-		NormalFont.printFontGrid(2, 4, "BLOCKBOX STYLE (DEFAULT)", (cursor == 0));
-		NormalFont.printFontGrid(2, 5, "GUIDELINE STYLE", (cursor == 1));
-		NormalFont.printFontGrid(2, 6, "NULLPOMINO CLASSIC STYLE", (cursor == 2));
+		NormalFontSlick.printFontGrid(2, 4, "BLOCKBOX STYLE (DEFAULT)", (cursor == 0));
+		NormalFontSlick.printFontGrid(2, 5, "GUIDELINE STYLE", (cursor == 1));
+		NormalFontSlick.printFontGrid(2, 6, "NULLPOMINO CLASSIC STYLE", (cursor == 2));
 	}
 
 	/*
@@ -64,9 +64,9 @@ public class StateConfigKeyboardReset extends DummyMenuChooseState {
 	 */
 	@Override
 	protected boolean onDecide(GameContainer container, StateBasedGame game, int delta) {
-		ResourceHolder.soundManager.play("decide");
-		GameKey.gamekey[player].loadDefaultKeymap(cursor);
-		GameKey.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
+		ResourceHolderSlick.soundManager.play("decide");
+		GameKeySlick.gamekey[player].loadDefaultKeymap(cursor);
+		GameKeySlick.gamekey[player].saveConfig(NullpoMinoSlick.propConfig);
 		NullpoMinoSlick.saveConfig();
 		game.enterState(StateConfigMainMenu.ID);
 		return false;

@@ -36,9 +36,9 @@ import org.newdawn.slick.Input;
 /**
  * Key input state manager (Only use with Slick. Don't use inside game modes!)
  */
-public class GameKey extends GameKeyDummy {
+public class GameKeySlick extends GameKeyDummy {
 	/** Key input state (Used by all game states) */
-	public static GameKey[] gamekey;
+	public static GameKeySlick[] gamekey;
 
 	/** Default key mappings */
 	public static int[][][] DEFAULTKEYS =
@@ -94,15 +94,15 @@ public class GameKey extends GameKeyDummy {
 		ControllerManager.initControllers();
 		JInputManager.initKeymap();
 		JInputManager.initKeyboard();
-		gamekey = new GameKey[2];
-		gamekey[0] = new GameKey(0);
-		gamekey[1] = new GameKey(1);
+		gamekey = new GameKeySlick[2];
+		gamekey[0] = new GameKeySlick(0);
+		gamekey[1] = new GameKeySlick(1);
 	}
 
 	/**
 	 * Default constructor
 	 */
-	public GameKey() {
+	public GameKeySlick() {
 		super();
 	}
 
@@ -110,7 +110,7 @@ public class GameKey extends GameKeyDummy {
 	 * Constructor with player number param
 	 * @param pl Player number
 	 */
-	public GameKey(int pl) {
+	public GameKeySlick(int pl) {
 		super(pl);
 	}
 

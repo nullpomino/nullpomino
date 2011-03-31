@@ -762,9 +762,9 @@ public class NullpoMinoSlick extends StateBasedGame {
 	public static void drawFPS(GameContainer container, boolean ingame) {
 		if(propConfig.getProperty("option.showfps", true) == true) {
 			if(!alternateFPSDynamicAdjust || alternateFPSPerfectMode || !ingame)
-				NormalFont.printFont(0, 480 - 16, df.format(actualFPS), NormalFont.COLOR_BLUE);
+				NormalFontSlick.printFont(0, 480 - 16, df.format(actualFPS), NormalFontSlick.COLOR_BLUE);
 			else
-				NormalFont.printFont(0, 480 - 16, df.format(actualFPS) + "/" + altMaxFPSCurrent, NormalFont.COLOR_BLUE);
+				NormalFontSlick.printFont(0, 480 - 16, df.format(actualFPS) + "/" + altMaxFPSCurrent, NormalFontSlick.COLOR_BLUE);
 		}
 	}
 
@@ -815,12 +815,12 @@ public class NullpoMinoSlick extends StateBasedGame {
 	 */
 	public static void drawObserverClient() {
 		if((netObserverClient != null) && netObserverClient.isConnected()) {
-			int fontcolor = NormalFont.COLOR_BLUE;
-			if(netObserverClient.getObserverCount() > 1) fontcolor = NormalFont.COLOR_GREEN;
-			if(netObserverClient.getObserverCount() > 0 && netObserverClient.getPlayerCount() > 0) fontcolor = NormalFont.COLOR_RED;
+			int fontcolor = NormalFontSlick.COLOR_BLUE;
+			if(netObserverClient.getObserverCount() > 1) fontcolor = NormalFontSlick.COLOR_GREEN;
+			if(netObserverClient.getObserverCount() > 0 && netObserverClient.getPlayerCount() > 0) fontcolor = NormalFontSlick.COLOR_RED;
 			String strObserverInfo = String.format("%d/%d", netObserverClient.getObserverCount(), netObserverClient.getPlayerCount());
 			String strObserverString = String.format("%40s", strObserverInfo);
-			NormalFont.printFont(0, 480 - 16, strObserverString, fontcolor);
+			NormalFontSlick.printFont(0, 480 - 16, strObserverString, fontcolor);
 		}
 	}
 }

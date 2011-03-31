@@ -13,7 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	/** Scroll bar attributes */
 	protected static final int SB_TEXT_X = 38,
-		SB_TEXT_COLOR = NormalFont.COLOR_BLUE,
+		SB_TEXT_COLOR = NormalFontSlick.COLOR_BLUE,
 		SB_MIN_X = SB_TEXT_X << 4,
 		SB_MIN_Y = 65,
 		LINE_WIDTH = 2,
@@ -56,13 +56,13 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	@Override
 	protected void renderImpl(GameContainer container, StateBasedGame game, Graphics graphics) throws SlickException {
 		// Background
-		graphics.drawImage(ResourceHolder.imgMenu, 0, 0);
+		graphics.drawImage(ResourceHolderSlick.imgMenu, 0, 0);
 
 		// Menu
 		if(list == null) {
-			NormalFont.printFontGrid(1, 1, nullError, NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 1, nullError, NormalFontSlick.COLOR_RED);
 		} else if(list.length == 0) {
-			NormalFont.printFontGrid(1, 1, emptyError, NormalFont.COLOR_RED);
+			NormalFontSlick.printFontGrid(1, 1, emptyError, NormalFontSlick.COLOR_RED);
 		} else {
 			if (cursor >= list.length)
 				cursor = 0;
@@ -85,16 +85,16 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	@Override
 	public boolean updateMouseInput (Input input) {
 		// Mouse
-		MouseInput.mouseInput.update(input);
-		boolean clicked = MouseInput.mouseInput.isMouseClicked();
-		int x = MouseInput.mouseInput.getMouseX() >> 4;
-		int y = MouseInput.mouseInput.getMouseY() >> 4;
-		if (x == SB_TEXT_X && (clicked || MouseInput.mouseInput.isMenuRepeatLeft()) && y >= 3 && y <= 2 + pageHeight)
+		MouseInputSlick.mouseInput.update(input);
+		boolean clicked = MouseInputSlick.mouseInput.isMouseClicked();
+		int x = MouseInputSlick.mouseInput.getMouseX() >> 4;
+		int y = MouseInputSlick.mouseInput.getMouseY() >> 4;
+		if (x == SB_TEXT_X && (clicked || MouseInputSlick.mouseInput.isMenuRepeatLeft()) && y >= 3 && y <= 2 + pageHeight)
 		{
 			int maxentry = minentry + pageHeight - 1;
 			if (y == 3 && minentry > 0)
 			{
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 				//Scroll up
 				minentry--;
 				maxentry--;
@@ -103,7 +103,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 			}
 			else if (y == 2 + pageHeight && maxentry < list.length-1)
 			{
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 				//Down arrow
 				minentry++;
 				if (cursor < minentry)
@@ -111,7 +111,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 			}
 			else if (y > 3 && y < 2 + pageHeight)
 			{
-				int pixelY = MouseInput.mouseInput.getMouseY();
+				int pixelY = MouseInputSlick.mouseInput.getMouseY();
 				if (pixelY >= pUpMinY && pixelY < pUpMaxY)
 					pageUp();
 				else if (pixelY >= pDownMinY && pixelY < pDownMaxY)
@@ -127,7 +127,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 				return false;
 			else
 			{
-				ResourceHolder.soundManager.play("cursor");
+				ResourceHolderSlick.soundManager.play("cursor");
 				cursor = newCursor;
 			}
 		}
@@ -142,15 +142,15 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 
 		for(int i = minentry, y = 0; i <= maxentry; i++, y++) {
 			if(i < list.length) {
-				NormalFont.printFontGrid(2, 3 + y, list[i].toUpperCase(), (cursor == i));
-				if(cursor == i) NormalFont.printFontGrid(1, 3 + y, "b", NormalFont.COLOR_RED);
+				NormalFontSlick.printFontGrid(2, 3 + y, list[i].toUpperCase(), (cursor == i));
+				if(cursor == i) NormalFontSlick.printFontGrid(1, 3 + y, "b", NormalFontSlick.COLOR_RED);
 			}
 		}
 
 		int sbHeight = 16*(pageHeight - 2) - (LINE_WIDTH << 1);
 		//Draw scroll bar
-		NormalFont.printFontGrid(SB_TEXT_X, 3, "k", SB_TEXT_COLOR);
-		NormalFont.printFontGrid(SB_TEXT_X, 2 + pageHeight, "n", SB_TEXT_COLOR);
+		NormalFontSlick.printFontGrid(SB_TEXT_X, 3, "k", SB_TEXT_COLOR);
+		NormalFontSlick.printFontGrid(SB_TEXT_X, 2 + pageHeight, "n", SB_TEXT_COLOR);
 		//Draw shadow
 		graphics.setColor(SB_SHADOW_COLOR);
 		graphics.fillRect(SB_MIN_X+SB_WIDTH, SB_MIN_Y+LINE_WIDTH, LINE_WIDTH, sbHeight);
@@ -188,7 +188,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	}
 
 	protected void pageDown() {
-		ResourceHolder.soundManager.play("cursor");
+		ResourceHolderSlick.soundManager.play("cursor");
 		int max = maxCursor - pageHeight + 1;
 		if (minentry >= max)
 			cursor = maxCursor;
@@ -205,7 +205,7 @@ public abstract class DummyMenuScrollState extends DummyMenuChooseState {
 	}
 
 	protected void pageUp() {
-		ResourceHolder.soundManager.play("cursor");
+		ResourceHolderSlick.soundManager.play("cursor");
 		if (minentry == 0)
 			cursor = 0;
 		else

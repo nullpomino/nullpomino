@@ -149,7 +149,7 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			netLobby.shutdown();
 			netLobby = null;
 		}
-		ResourceHolder.bgmStop();
+		ResourceHolderSlick.bgmStop();
 		container.setClearEachFrame(false);
 
 		// FPS restore
@@ -202,11 +202,11 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 		try {
 			// Clear input states if game window does not have focus
 			if(!container.hasFocus() || netLobby.isFocused()) {
-				GameKey.gamekey[0].clear();
+				GameKeySlick.gamekey[0].clear();
 			}
 
 			// TTF font
-			if(ResourceHolder.ttfFont != null) ResourceHolder.ttfFont.loadGlyphs();
+			if(ResourceHolderSlick.ttfFont != null) ResourceHolderSlick.ttfFont.loadGlyphs();
 
 			// Title bar update
 			if((gameManager != null) && (gameManager.engine != null) && (gameManager.engine.length > 0) && (gameManager.engine[0] != null)) {
@@ -221,31 +221,31 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 			if(container.hasFocus() && !netLobby.isFocused()) {
 				if((gameManager != null) && (gameManager.engine.length > 0) &&
 				   (gameManager.engine[0] != null) && (gameManager.engine[0].isInGame)) {
-					GameKey.gamekey[0].update(container.getInput(), true);
+					GameKeySlick.gamekey[0].update(container.getInput(), true);
 				} else {
-					GameKey.gamekey[0].update(container.getInput(), false);
+					GameKeySlick.gamekey[0].update(container.getInput(), false);
 				}
 			}
 
 			if((gameManager != null) && (gameManager.mode != null)) {
 				// BGM
-				if(ResourceHolder.bgmPlaying != gameManager.bgmStatus.bgm) {
-					ResourceHolder.bgmStart(gameManager.bgmStatus.bgm);
+				if(ResourceHolderSlick.bgmPlaying != gameManager.bgmStatus.bgm) {
+					ResourceHolderSlick.bgmStart(gameManager.bgmStatus.bgm);
 				}
-				if(ResourceHolder.bgmIsPlaying()) {
+				if(ResourceHolderSlick.bgmIsPlaying()) {
 					int basevolume = NullpoMinoSlick.propConfig.getProperty("option.bgmvolume", 128);
 					float basevolume2 = basevolume / (float)128;
 					float newvolume = gameManager.bgmStatus.volume * basevolume2;
 					if(newvolume < 0f) newvolume = 0f;
 					if(newvolume > 1f) newvolume = 1f;
 					container.setMusicVolume(newvolume);
-					if(newvolume <= 0f) ResourceHolder.bgmStop();
+					if(newvolume <= 0f) ResourceHolderSlick.bgmStop();
 				}
 			}
 
 			// Execute game loops
 			if((gameManager != null) && (gameManager.mode != null)) {
-				GameKey.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
+				GameKeySlick.gamekey[0].inputStatusUpdate(gameManager.engine[0].ctrl);
 				gameManager.updateAll();
 
 				if(gameManager.getQuitFlag()) {
@@ -254,13 +254,13 @@ public class StateNetGame extends BasicGameState implements NetLobbyListener {
 				}
 
 				// Retry button
-				if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_RETRY)) {
+				if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_RETRY)) {
 					gameManager.mode.netplayOnRetryKey(gameManager.engine[0], 0);
 				}
 			}
 
 			// Screenshot button
-			if(GameKey.gamekey[0].isPushKey(GameKey.BUTTON_SCREENSHOT) || GameKey.gamekey[1].isPushKey(GameKey.BUTTON_SCREENSHOT))
+			if(GameKeySlick.gamekey[0].isPushKey(GameKeySlick.BUTTON_SCREENSHOT) || GameKeySlick.gamekey[1].isPushKey(GameKeySlick.BUTTON_SCREENSHOT))
 				ssflag = true;
 
 			// Enter to new mode
