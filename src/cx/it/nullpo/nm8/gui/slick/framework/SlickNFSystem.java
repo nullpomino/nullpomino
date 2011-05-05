@@ -94,6 +94,8 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public void exit() {
+		getNFGame().onExit(this);
+
 		if(container != null) {
 			container.exit();
 		}

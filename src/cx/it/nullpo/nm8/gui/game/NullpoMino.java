@@ -18,13 +18,15 @@ import cx.it.nullpo.nm8.gui.framework.NFSystem;
 public class NullpoMino implements NFGame, NFKeyListener {
 	private static final long serialVersionUID = 4545597070306756443L;
 
+	NFSystem sys;
 	NFGraphics g;
 	NFFont font;
 	GameManager manager;
+	long lastdelta;
 
 	public void init(NFSystem sys) {
+		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
-		System.out.println("Init");
 		sys.getKeyboard().addKeyListener(this);
 
 		try {
@@ -43,43 +45,58 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	}
 
 	public void render(NFSystem sys, NFGraphics g) {
-		try {
-			if(font != null) {
-				g.setFont(font);
-			}
-			g.drawString("FPS:" + sys.getFPS(), 5, 10);
-			g.drawString("Time:" + NUtil.getTime(manager.getGamePlay(0,0).statistics.time), 5, 30);
+		if(sys.hasFocus()) {
+			try {
+				this.g = g;
 
-			for(int y = 0; y < 20; y++) {
-				for(int x = 0; x < 10; x++) {
-					if(!manager.getGameEngine(0).field.getBlockEmpty(x, y)) {
-						Block blk = manager.getGameEngine(0).field.getBlock(x, y);
-						if(blk != null) drawBlock(blk, 100 + (x * 16), 60 + (y * 16));
+				g.setColor(NFColor.black);
+				g.fillRect(0, 0, sys.getOriginalWidth(), sys.getOriginalHeight());
+
+				g.setColor(NFColor.white);
+				if(font != null) {
+					g.setFont(font);
+				}
+				g.drawString("FPS:" + sys.getFPS(), 5, 10);
+				g.drawString("Time:" + NUtil.getTime(manager.getGamePlay(0,0).statistics.time), 5, 30);
+				g.drawString("Delta:" + lastdelta, 5, 50);
+
+				for(int y = 0; y < 20; y++) {
+					for(int x = 0; x < 10; x++) {
+						if(!manager.getGameEngine(0).field.getBlockEmpty(x, y)) {
+							Block blk = manager.getGameEngine(0).field.getBlock(x, y);
+							if(blk != null) drawBlock(blk, 100 + (x * 16), 60 + (y * 16));
+						}
 					}
 				}
-			}
 
-			if(manager.engine[0].gamePlay[0].nowPieceObject != null) {
-				drawPiece(manager.getGamePlay(0,0).nowPieceObject,
-						100 + (manager.getGamePlay(0,0).nowPieceX * 16),
-						60 + (manager.getGamePlay(0,0).nowPieceY * 16));
-			}
+				if(manager.engine[0].gamePlay[0].nowPieceObject != null) {
+					drawPiece(manager.getGamePlay(0,0).nowPieceObject,
+							100 + (manager.getGamePlay(0,0).nowPieceX * 16),
+							60 + (manager.getGamePlay(0,0).nowPieceY * 16));
+				}
 
-			g.setColor(NFColor.white);
-			g.drawRect(100, 60, 10*16, 20*16);
-		} catch (Exception e) {
-			e.printStackTrace();
+				g.setColor(NFColor.white);
+				g.drawRect(100, 60, 10*16, 20*16);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public void update(NFSystem sys, long delta) {
-		try {
-			if(font != null) font.loadGlyphs();
-			manager.update(delta);
-		} catch (Exception e) {
-			System.out.println("Game update fail");
-			e.printStackTrace();
+		if(sys.hasFocus()) {
+			try {
+				if(font != null) font.loadGlyphs();
+				lastdelta = delta;
+				manager.update(delta);
+			} catch (Exception e) {
+				System.out.println("Game update fail");
+				e.printStackTrace();
+			}
 		}
+	}
+
+	public void onExit(NFSystem sys) {
 	}
 
 	public void onKey(NFKeyboard keyboard, int key, char c, boolean pressed) {
@@ -111,6 +128,9 @@ public class NullpoMino implements NFGame, NFKeyListener {
 			case KeyEvent.VK_D:
 				ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
 				break;
+			case KeyEvent.VK_ESCAPE:
+				sys.exit();
+				break;
 			}
 		}
 	}
@@ -124,6 +144,15 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	}
 
 	public void drawBlock(Block blk, int x, int y) {
+		if(g == null) {
+			System.err.println("g == null!");
+			return;
+		}
+		if(NFColor.yellow == null) {
+			System.err.println("NFColor.yellow == null!");
+			return;
+		}
+
 		switch(blk.color) {
 		case Block.BLOCK_COLOR_GRAY:
 			g.setColor(NFColor.gray);

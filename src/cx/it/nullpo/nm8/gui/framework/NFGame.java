@@ -26,4 +26,10 @@ public interface NFGame extends Serializable {
 	 * @param g NFGraphics to draw things on screen
 	 */
 	public void render(NFSystem sys, NFGraphics g);
+
+	/**
+	 * Called when the game is closed
+	 * @param sys NFSystem
+	 */
+	public void onExit(NFSystem sys);
 }

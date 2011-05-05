@@ -346,7 +346,7 @@ public abstract class NFSystem implements Serializable {
 
 	/**
 	 * Get the target fps we're hoping to get
-	 * @return The target fps we're hoping to get (0 for no FPS-cap)
+	 * @return The target fps we're hoping to get (-1 for no FPS-cap)
 	 */
 	public int getTargetFPS() {
 		return targetFPS;

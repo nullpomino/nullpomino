@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 /**
  * NullpoMino Framework (NF) - NFGraphics<br>
- * A graphics context that can be used to render primatives and images.
+ * A graphics context that can be used to render primatives and images.<br>
+ * If you save an instance of this to a variable, don't forget to update to the new one every frame.
+ * Because it might become null in near future.
  */
 public interface NFGraphics extends Serializable {
 	/**

@@ -25,8 +25,13 @@ public class SlickNFGameWrapper implements Game, KeyListener {
 		this.sys = sys;
 	}
 
+	/**
+	 * This is called when the user tries to close the main window.
+	 * If we returns false, the window won't close.
+	 */
 	public boolean closeRequested() {
-		return true;
+		sys.exit();
+		return false;
 	}
 
 	public String getTitle() {
