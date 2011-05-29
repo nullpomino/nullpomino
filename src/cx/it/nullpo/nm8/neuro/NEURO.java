@@ -3,6 +3,7 @@ package cx.it.nullpo.nm8.neuro;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.event.EndGameListener;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
+import cx.it.nullpo.nm8.neuro.event.TCPSendListener;
 
 /**
  * NEURO (NullpoMino End-User Relational Overlayer) is the layer that controls everything, so to speak. It
@@ -14,10 +15,22 @@ import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 public interface NEURO {
 
 	/**
+	 * Registers the given plugin so it will be handled by NEURO.
+	 * @param p the Plugin to register
+	 */
+	void addPlugin(NEUROPlugin p);
+	
+	/**
 	 * Registers the given listener so it will receive EndGameEvents from this NEURO instance.
 	 * @param l the EndGameListener to register
 	 */
 	void addEndGameListener(EndGameListener l);
+	
+	/**
+	 * Registers the given listener so it will receive TCPSendEvents from this NEURO instance.
+	 * @param l
+	 */
+	void addTCPSendListener(TCPSendListener l);
 	
 	/**
 	 * Dispatches the given event to all plugins that are subscribed to it.

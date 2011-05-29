@@ -8,9 +8,19 @@ import cx.it.nullpo.nm8.gui.framework.NFGraphics;
  *
  */
 public interface NEUROPlugin {
+	
+	/**
+	 * Gets the name of this plugin.
+	 */
+	String getName();
+	
+	/**
+	 * Gets the version of this plugin.
+	 */
+	float getVersion();
 
 	/**
-	 * Draws this NEUROPlugin at the specified screen offset. Used for the overlay.
+	 * Draws this NEUROPlugin at the specified screen offset.
 	 * @param g the NFGraphics with which to draw this NEUROPlugin 
 	 * @param x the x offset
 	 * @param y the y offset
