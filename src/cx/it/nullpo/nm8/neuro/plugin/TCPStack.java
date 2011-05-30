@@ -11,8 +11,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.neuro.NEURO;
-import cx.it.nullpo.nm8.neuro.NEUROPlugin;
+import cx.it.nullpo.nm8.neuro.core.NEURO;
+import cx.it.nullpo.nm8.neuro.core.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.TCPSendEvent;
 import cx.it.nullpo.nm8.neuro.event.TCPSendListener;
@@ -22,7 +22,7 @@ import cx.it.nullpo.nm8.neuro.event.TCPSendListener;
  * @author Zircean
  *
  */
-public class TCPStack extends AbstractPlugin implements TCPSendListener {
+public class TCPStack extends AbstractPlugin {
 	
 	private Socket sock;
 	private Writer out;
@@ -66,12 +66,7 @@ public class TCPStack extends AbstractPlugin implements TCPSendListener {
 	}
 
 	@Override
-	public void draw(NFGraphics g, int x, int y) { }
-
-	@Override
-	public void sendData(TCPSendEvent e) throws IOException {
-		out.write(e.getData());
-	}
+	public void draw(NFGraphics g) { }
 	
 	/**
 	 * Writes the given string to the socket.

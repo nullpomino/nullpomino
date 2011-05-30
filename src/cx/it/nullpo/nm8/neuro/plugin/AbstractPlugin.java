@@ -1,8 +1,7 @@
 package cx.it.nullpo.nm8.neuro.plugin;
 
-import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.neuro.NEURO;
-import cx.it.nullpo.nm8.neuro.NEUROPlugin;
+import cx.it.nullpo.nm8.neuro.core.NEURO;
+import cx.it.nullpo.nm8.neuro.core.NEUROPlugin;
 
 public abstract class AbstractPlugin implements NEUROPlugin {
 

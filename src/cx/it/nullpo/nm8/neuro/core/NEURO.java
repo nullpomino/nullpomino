@@ -1,4 +1,4 @@
-package cx.it.nullpo.nm8.neuro;
+package cx.it.nullpo.nm8.neuro.core;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.event.EndGameListener;
@@ -13,6 +13,16 @@ import cx.it.nullpo.nm8.neuro.event.TCPSendListener;
  *
  */
 public interface NEURO {
+	
+	/**
+	 * Gets the name of this NEURO instance.
+	 */
+	String getName();
+	
+	/**
+	 * Gets the version of this NEURO instance.
+	 */
+	float getVersion();
 
 	/**
 	 * Registers the given plugin so it will be handled by NEURO.
@@ -21,16 +31,11 @@ public interface NEURO {
 	void addPlugin(NEUROPlugin p);
 	
 	/**
-	 * Registers the given listener so it will receive EndGameEvents from this NEURO instance.
-	 * @param l the EndGameListener to register
+	 * Registers the given plugin to receive events of the given type.
+	 * @param p the Plugin to register
+	 * @param type the class representing the event type to listen for
 	 */
-	void addEndGameListener(EndGameListener l);
-	
-	/**
-	 * Registers the given listener so it will receive TCPSendEvents from this NEURO instance.
-	 * @param l
-	 */
-	void addTCPSendListener(TCPSendListener l);
+	void addListener(NEUROPlugin p, Class<? extends NEUROEvent> type);
 	
 	/**
 	 * Dispatches the given event to all plugins that are subscribed to it.
