@@ -45,6 +45,13 @@ public class PluginListener {
 	}
 	
 	/**
+	 * Returns true if the given plugin is the one this listener is listening for.
+	 */
+	public boolean isListeningForPlugin(NEUROPlugin p) {
+		return plugin == p;
+	}
+	
+	/**
 	 * Invokes this Listener on the given event.
 	 */
 	public void invoke(NEUROEvent e) {
