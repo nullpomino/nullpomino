@@ -13,19 +13,19 @@ public class Statistics implements Serializable {
 	private static final long serialVersionUID = -499640168205398295L;
 
 	/** Total score */
-	public int score;
+	public long score;
 
 	/** Line clear score */
-	public int scoreFromLineClear;
+	public long scoreFromLineClear;
 
 	/** Soft drop score */
-	public int scoreFromSoftDrop;
+	public long scoreFromSoftDrop;
 
 	/** Hard drop score */
-	public int scoreFromHardDrop;
+	public long scoreFromHardDrop;
 
 	/** Points from other bonuses */
-	public int scoreFromOtherBonus;
+	public long scoreFromOtherBonus;
 
 	/** Total line count */
 	public int lines;

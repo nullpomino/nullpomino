@@ -15,7 +15,7 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
  * @author Zircean
  *
  */
-public abstract class AbstractNEURO implements NEURO {
+public abstract class NEUROCore implements NEURO {
 	
 	/** The set of plugins registered with NEURO. */
 	protected Set<NEUROPlugin> plugins;
@@ -25,7 +25,7 @@ public abstract class AbstractNEURO implements NEURO {
 	/**
 	 * Constructor for AbstractNEURO.
 	 */
-	public AbstractNEURO() {
+	public NEUROCore() {
 		plugins = new HashSet<NEUROPlugin>();
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
 	}

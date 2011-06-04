@@ -1,6 +1,9 @@
 package cx.it.nullpo.nm8.neuro.core;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
+import cx.it.nullpo.nm8.network.NMMPMessage;
+import cx.it.nullpo.nm8.network.NMTPRequest;
+import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.event.EndGameListener;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 import cx.it.nullpo.nm8.neuro.event.TCPSendListener;
@@ -48,4 +51,14 @@ public interface NEURO {
 	 * @param g the NFGraphics with which to draw this NEURO instance
 	 */
 	void draw(NFGraphics g);
+	
+	/**
+	 * Sends the given NMTPRequest and returns its corresponding NMTPResponse.
+	 */
+	NMTPResponse send(NMTPRequest req);
+	
+	/**
+	 * Sends the given NMMPMessage.
+	 */
+	void send(NMMPMessage message);
 }
