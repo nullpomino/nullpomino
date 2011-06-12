@@ -36,6 +36,9 @@ public class GameManager implements Serializable {
 	/** Game loop time */
 	public long gameLoopTime;
 
+	/** Max game loop time for frame-based timer */
+	public long frameBasedLoopTime = 17;
+
 	/** GameEngine: This is where the most action takes place. */
 	public GameEngine[] engine;
 
@@ -118,15 +121,29 @@ public class GameManager implements Serializable {
 	 * @param runMsec Milliseconds elapsed from the last execution
 	 */
 	public void update(long runMsec) {
-		gameLoopTime += runMsec;
+		if(!isFrameBasedTimer()) {
+			// Miliseconds timer
+			gameLoopTime += runMsec;
 
-		while(gameLoopTime > 0) {
-			long msec = gameLoopTime;
-			if(maxLoopTime > 0) msec = Math.min(gameLoopTime, maxLoopTime);
-			gameLoopTime -= msec;
+			while(gameLoopTime > 0) {
+				long msec = gameLoopTime;
+				if(maxLoopTime > 0) msec = Math.min(gameLoopTime, maxLoopTime);
+				gameLoopTime -= msec;
 
-			for(int i = 0; i < engine.length; i++) {
-				engine[i].update(msec);
+				for(int i = 0; i < engine.length; i++) {
+					engine[i].update(msec);
+				}
+			}
+		} else {
+			// Frame timer
+			gameLoopTime += runMsec;
+
+			while(gameLoopTime >= frameBasedLoopTime) {
+				gameLoopTime -= frameBasedLoopTime;
+
+				for(int i = 0; i < engine.length; i++) {
+					engine[i].update(1);
+				}
 			}
 		}
 	}
@@ -136,7 +153,7 @@ public class GameManager implements Serializable {
 	 * @return Game style ID
 	 */
 	public int getGameStyle() {
-		return GAMESTYLE_TETROMINO;
+		return GAMESTYLE_TETROMINO;	// TODO: Get it from game mode
 	}
 
 	/**
@@ -144,7 +161,7 @@ public class GameManager implements Serializable {
 	 * @return Number of GameEngine
 	 */
 	public int getNumberOfEngines() {
-		return 1;
+		return 1;	// TODO: Get it from game mode
 	}
 
 	/**
@@ -152,7 +169,15 @@ public class GameManager implements Serializable {
 	 * @return Number of players (GamePlay) for each GameEngine
 	 */
 	public int getNumberOfPlayersForEachEngine() {
-		return 1;
+		return 1;	// TODO: Get it from game mode
+	}
+
+	/**
+	 * Returns true if the current game mode is using frame-based timer
+	 * @return true if the current game mode is using frame-based timer (false if using miliseconds timer)
+	 */
+	public boolean isFrameBasedTimer() {
+		return true;	// TODO: Get it from game mode
 	}
 
 	/**

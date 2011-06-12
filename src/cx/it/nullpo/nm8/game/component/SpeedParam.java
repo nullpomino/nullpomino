@@ -47,6 +47,14 @@ public class SpeedParam implements Serializable {
 	}
 
 	/**
+	 * Constructor
+	 * @param frameBased true if using frame based timer
+	 */
+	public SpeedParam(boolean frameBased) {
+		reset(frameBased);
+	}
+
+	/**
 	 * Copy Constructor
 	 * @param s Copy source
 	 */
@@ -55,17 +63,36 @@ public class SpeedParam implements Serializable {
 	}
 
 	/**
-	 * Reset to defaults
+	 * Reset to miliseconds defaults
 	 */
 	public void reset() {
-		gravity = 1000;
-		are = 0;
-		areLine = 0;
-		lockFlash = 0;
-		lineDelay = 200;
-		lockDelay = 500;
-		das = 133;
-		arr = 17;
+		reset(false);
+	}
+
+	/**
+	 * Reset to defaults
+	 * @param frameBased true if using frame based timer
+	 */
+	public void reset(boolean frameBased) {
+		if(!frameBased) {
+			gravity = 1000;
+			are = 0;
+			areLine = 0;
+			lockFlash = 0;
+			lineDelay = 200;
+			lockDelay = 500;
+			das = 133;
+			arr = 17;
+		} else {
+			gravity = 60;
+			are = 0;
+			areLine = 0;
+			lockFlash = 0;
+			lineDelay = 12;
+			lockDelay = 30;
+			das = 12;
+			arr = 1;
+		}
 		lockDAS = false;
 		lockARR = false;
 	}

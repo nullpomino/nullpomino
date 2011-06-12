@@ -36,27 +36,41 @@ public class NUtil {
 	}
 
 	/**
-	 * Converts play time into a String
+	 * Converts miliseconds play time into a String
 	 * @param t Play time (ms)
 	 * @return String for play time
 	 */
 	public static String getTime(long t) {
+		return getTime(t, false);
+	}
+
+	/**
+	 * Converts play time into a String
+	 * @param t Play time (ms or frames)
+	 * @param frameBased true if you are using frame based timer
+	 * @return String for play time
+	 */
+	public static String getTime(long t, boolean frameBased) {
 		if(t < 0) return "--:--.---";
 
-		int minute = 0;
-		int second = 0;
+		if(!frameBased) {
+			int minute = 0;
+			int second = 0;
 
-		long time = t;
-		while(time >= 1000 * 60) {
-			minute++;
-			time -= 1000 * 60;
-		}
-		while(time >= 1000) {
-			second++;
-			time -= 1000;
-		}
+			long time = t;
+			while(time >= 1000 * 60) {
+				minute++;
+				time -= 1000 * 60;
+			}
+			while(time >= 1000) {
+				second++;
+				time -= 1000;
+			}
 
-		return String.format("%02d:%02d.%03d", minute, second, time);
+			return String.format("%02d:%02d.%03d", minute, second, time);
+		} else {
+			return String.format("%02d:%02d.%02d", t / 3600, (t / 60) % 60, (t % 60) * 5 / 3);
+		}
 	}
 
 	/**

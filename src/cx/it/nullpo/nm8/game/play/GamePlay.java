@@ -129,7 +129,7 @@ public class GamePlay implements Serializable {
 	public void init() {
 		ctrl = new Controller();
 		statistics = new Statistics();
-		speed = new SpeedParam();
+		speed = new SpeedParam(engine.owner.isFrameBasedTimer());
 		Random tempRand = new Random();
 		randSeed = tempRand.nextLong();
 		random = new Random(randSeed);
@@ -160,10 +160,10 @@ public class GamePlay implements Serializable {
 
 	/**
 	 * Update game
-	 * @param runMsec Milliseconds elapsed from the last execution
+	 * @param runMsec Milliseconds elapsed from the last execution, or 1 if using frame-based timer
 	 */
 	public void update(long runMsec) {
-		long rMsec = runMsec;
+		long rMsec = engine.owner.isFrameBasedTimer() ? 1 : runMsec;
 
 		while(rMsec > 0) {
 			long msec = rMsec;
@@ -194,12 +194,15 @@ public class GamePlay implements Serializable {
 				rMsec = onARE(msec);
 				break;
 			}
+
+			// Do not execute more than once in frame based timer
+			if(engine.owner.isFrameBasedTimer()) rMsec = 0;
 		}
 	}
 
 	/**
 	 * Update controller status
-	 * @param runMsec Milliseconds elapsed from the last execution
+	 * @param runMsec Milliseconds elapsed from the last execution, or 1 if using frame-based timer
 	 */
 	public void updateController(long runMsec) {
 		// Set DAS & ARR

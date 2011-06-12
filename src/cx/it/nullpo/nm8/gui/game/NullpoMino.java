@@ -57,7 +57,8 @@ public class NullpoMino implements NFGame, NFKeyListener {
 					g.setFont(font);
 				}
 				g.drawString("FPS:" + sys.getFPS(), 5, 10);
-				g.drawString("Time:" + NUtil.getTime(manager.getGamePlay(0,0).statistics.time), 5, 30);
+				String strTimer = NUtil.getTime(manager.getGamePlay(0,0).statistics.time, manager.isFrameBasedTimer());
+				g.drawString("Time:" + strTimer, 5, 30);
 				g.drawString("Delta:" + lastdelta, 5, 50);
 
 				for(int y = 0; y < 20; y++) {
