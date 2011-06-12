@@ -16,12 +16,12 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
  *
  */
 public abstract class NEUROCore implements NEURO {
-	
+
 	/** The set of plugins registered with NEURO. */
 	protected Set<NEUROPlugin> plugins;
 	/** The map containing mappings of event types to the plugin listeners registered for that event type. */
 	protected Map<Class<? extends NEUROEvent>,Set<PluginListener>> listeners;
-	
+
 	/**
 	 * Constructor for AbstractNEURO.
 	 */
@@ -30,23 +30,20 @@ public abstract class NEUROCore implements NEURO {
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
 	}
 
-	@Override
 	public void addPlugin(NEUROPlugin p) {
 		plugins.add(p);
 	}
-	
-	@Override
+
 	public void addListener(NEUROPlugin p, Class<? extends NEUROEvent> type) {
 		PluginListener pl = PluginListener.create(p,type);
 		if (pl != null) {
 			if (listeners.get(type) == null) {
 				listeners.put(type, new HashSet<PluginListener>());
 			}
-			listeners.get(type).add(PluginListener.create(p,type)); 
+			listeners.get(type).add(PluginListener.create(p,type));
 		}
 	}
-	
-	@Override
+
 	public void dispatchEvent(NEUROEvent e) {
 		for (Class<? extends NEUROEvent> type : listeners.keySet()) {
 			if (e.getClass().equals(type)) {
@@ -67,7 +64,7 @@ public abstract class NEUROCore implements NEURO {
 			// TODO handle this error
 		}
 	}
-	
+
 	/**
 	 * Stops the given plugin.
 	 */
@@ -83,14 +80,14 @@ public abstract class NEUROCore implements NEURO {
 		PluginListener pl = null;
 		for (Set<PluginListener> ls : listeners.values()) {
 			for (Iterator<PluginListener> it = ls.iterator(); it.hasNext(); pl = it.next()) {
-				if (pl.isListeningForPlugin(plugin)) {
+				if ((pl != null) && pl.isListeningForPlugin(plugin)) {
 					it.remove();
 				}
 			}
 		}
 		plugin.stop();
 	}
-	
+
 	/**
 	 * Stops all plugins.
 	 */

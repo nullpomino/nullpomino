@@ -13,18 +13,17 @@ public abstract class AbstractPlugin implements NEUROPlugin {
 
 	/** The parent NEURO. */
 	protected NEURO neuro;
-	
-	/** 
+
+	/**
 	 * Constructor for AbstractPlugin.
 	 */
 	public AbstractPlugin() {}
-	
-	@Override
+
 	public void init(NEURO parent) throws PluginInitializationException {
 		neuro = parent;
 		parent.addPlugin(this);
 	}
-	
-	
+
+
 
 }

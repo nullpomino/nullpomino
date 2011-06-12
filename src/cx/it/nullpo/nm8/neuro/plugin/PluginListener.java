@@ -2,14 +2,13 @@ package cx.it.nullpo.nm8.neuro.plugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
 
 import cx.it.nullpo.nm8.neuro.core.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 
 /**
  * PluginListener is a class which contains a plugin and a listener method, which is invoked by NEURO
- * whenever the given event type is handed to the system. 
+ * whenever the given event type is handed to the system.
  * @author Zircean
  *
  */
@@ -19,7 +18,7 @@ public class PluginListener {
 	private NEUROPlugin plugin;
 	/** The method this listener will invoke.*/
 	private Method method;
-	
+
 	/**
 	 * Private constructor for PluginListener. Use the factory method to create a PluginListener.
 	 */
@@ -27,7 +26,7 @@ public class PluginListener {
 		plugin = p;
 		method = m;
 	}
-	
+
 	/**
 	 * Creates a new PluginListener with the given plugin and event type.
 	 * @param p the plugin to create a listener for
@@ -43,14 +42,14 @@ public class PluginListener {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Returns true if the given plugin is the one this listener is listening for.
 	 */
 	public boolean isListeningForPlugin(NEUROPlugin p) {
 		return plugin == p;
 	}
-	
+
 	/**
 	 * Invokes this Listener on the given event.
 	 */
@@ -68,5 +67,5 @@ public class PluginListener {
 			e1.printStackTrace();
 		}
 	}
-	
+
 }
