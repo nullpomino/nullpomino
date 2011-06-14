@@ -6,8 +6,14 @@ import java.util.Random;
 import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Piece;
+import cx.it.nullpo.nm8.game.component.RuleOptions;
 import cx.it.nullpo.nm8.game.component.SpeedParam;
 import cx.it.nullpo.nm8.game.component.Statistics;
+import cx.it.nullpo.nm8.game.component.WallkickResult;
+import cx.it.nullpo.nm8.game.subsystem.randomizer.Randomizer;
+import cx.it.nullpo.nm8.game.subsystem.randomizer.RandomizerFactory;
+import cx.it.nullpo.nm8.game.subsystem.wallkick.Wallkick;
+import cx.it.nullpo.nm8.game.subsystem.wallkick.WallkickFactory;
 
 /**
  * GamePlay: Base game play class
@@ -44,6 +50,9 @@ public class GamePlay implements Serializable {
 	/** Player ID */
 	public int playerID;
 
+	/** RuleOptions: Most game settings are here */
+	public RuleOptions ruleopt;
+
 	/** Controller: The player's input */
 	public Controller ctrl;
 
@@ -58,6 +67,15 @@ public class GamePlay implements Serializable {
 
 	/** Random: Used for creating various randomness */
 	public Random random;
+
+	/** Wallkick: Wallkick system */
+	public Wallkick wallkick;
+
+	/** Randomizer: Create next piece sequences */
+	public Randomizer randomizer;
+
+	/** Array of next piece objects */
+	public Piece[] nextPieceArray;
 
 	/** Current game status */
 	public int stat;
@@ -149,12 +167,39 @@ public class GamePlay implements Serializable {
 		lineDelayNow = 0;
 		areNow = 0;
 		areMax = 0;
+
+		engine.owner.gameMode.playerInit(this);
+	}
+
+	/**
+	 * Set a new RuleOptions
+	 * @param r RuleOptions
+	 */
+	public void setRuleOptions(RuleOptions r) {
+		this.ruleopt = r;
+
+		// Load an wallkick
+		wallkick = WallkickFactory.createWallkick(ruleopt.wallkickID);
+
+		// Load a randomizer
+		randomizer = RandomizerFactory.createRandomizer(ruleopt.randomizerID, null, randSeed);
+		randomizer.init();
+
+		// Fill the next piece queue
+		nextPieceArray = new Piece[ruleopt.nextDisplay];
+		for(int i = 0; i < nextPieceArray.length; i++) {
+			int id = randomizer.next();
+			nextPieceArray[i] = createPieceObject(id);
+		}
 	}
 
 	/**
 	 * Start the game
 	 */
 	public void start() {
+		if(ruleopt == null) {
+			setRuleOptions(new RuleOptions());
+		}
 		stat = STAT_READY;
 	}
 
@@ -220,13 +265,36 @@ public class GamePlay implements Serializable {
 	}
 
 	/**
+	 * Create a completely new Piece object
+	 * @param id Piece ID
+	 * @return A new Piece object
+	 */
+	public Piece createPieceObject(int id) {
+		Piece piece = new Piece(id);
+		piece.setColor(ruleopt.pieceColor[id]);
+		piece.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+		return piece;
+	}
+
+	/**
 	 * Make an new piece appear
 	 */
 	public void newPiece() {
 		if(nowPieceObject == null) {
-			nowPieceObject = new Piece(random.nextInt(7));
-			nowPieceObject.setColor(Block.BLOCK_COLOR_GREEN);
-			nowPieceObject.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+			// Pop from next piece queue
+			if((nextPieceArray != null) && (nextPieceArray.length > 0)) {
+				nowPieceObject = nextPieceArray[0];
+				for(int i = 0; i < nextPieceArray.length - 1; i++) {
+					nextPieceArray[i] = nextPieceArray[i + 1];
+				}
+				int id = randomizer.next();
+				nextPieceArray[nextPieceArray.length - 1] = createPieceObject(id);
+			}
+			// If piece preview is disabled, create a new Piece directly
+			else {
+				int id = randomizer.next();
+				nowPieceObject = createPieceObject(id);
+			}
 		}
 		nowPieceX = 3;
 		nowPieceY = 0;
@@ -303,9 +371,26 @@ public class GamePlay implements Serializable {
 		if(nowPieceObject != null) {
 			boolean isGround = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field);
 			int rtNew = nowPieceObject.getRotateDirection(d);
+			boolean success = false;
 
 			if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY, rtNew, engine.field)) {
+				// Rotation successful without an wallkick
 				nowPieceObject.direction = rtNew;
+				success = true;
+			} else {
+				// Try a wallkick
+				WallkickResult r =
+					wallkick.executeWallkick(nowPieceX, nowPieceY, d, nowPieceObject.direction, rtNew, true, nowPieceObject, engine.field, ctrl);
+
+				if(r != null) {
+					nowPieceObject.direction = r.direction;
+					nowPieceX += r.offsetX;
+					nowPieceY += r.offsetY;
+					success = true;
+				}
+			}
+
+			if(success) {
 				lockDelayNow = 0;
 
 				if(isGround) {
@@ -323,7 +408,7 @@ public class GamePlay implements Serializable {
 	 * Hold
 	 */
 	public void holdPiece() {
-		if((nowPieceObject != null) && (!holdUsed)) {
+		if((nowPieceObject != null) && (!holdUsed) && (ruleopt.holdEnable)) {
 			if(holdPieceObject == null) {
 				holdPieceObject = nowPieceObject;
 				nowPieceObject = null;
@@ -333,7 +418,7 @@ public class GamePlay implements Serializable {
 				holdPieceObject = pieceTemp;
 			}
 
-			holdPieceObject.direction = 0;
+			if(ruleopt.holdResetDirection) holdPieceObject.direction = 0;
 
 			statistics.totalHoldUsed++;
 			holdUsed = true;
@@ -409,6 +494,7 @@ public class GamePlay implements Serializable {
 							lastmove = LASTMOVE_FALL_SELF;
 						} else {
 							//gMsec = 0;
+							hoverSoftDrop = 0;
 							break;
 						}
 					}

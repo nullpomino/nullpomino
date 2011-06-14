@@ -84,6 +84,8 @@ public class GameEngine implements Serializable {
 			goEnd = F_DEFAULT_GO_END;
 		}
 
+		owner.gameMode.engineInit(this);
+
 		gamePlay = new GamePlay[owner.getNumberOfPlayersForEachEngine()];
 		for(int i = 0; i < gamePlay.length; i++) gamePlay[i] = new GamePlay(this, i);
 		for(int i = 0; i < gamePlay.length; i++) gamePlay[i].init();

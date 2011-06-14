@@ -2,6 +2,10 @@ package cx.it.nullpo.nm8.game.component;
 
 import java.io.Serializable;
 
+import cx.it.nullpo.nm8.game.play.GameManager;
+import cx.it.nullpo.nm8.game.subsystem.randomizer.RandomizerFactory;
+import cx.it.nullpo.nm8.game.subsystem.wallkick.WallkickFactory;
+
 /**
  * Game rule options
  */
@@ -83,4 +87,75 @@ public class RuleOptions implements Serializable {
 
 	/** Number of holds (-1:Unlimited) */
 	public int holdLimit;
+
+	/**
+	 * Constructor
+	 */
+	public RuleOptions() {
+		reset();
+	}
+
+	/**
+	 * Copy constructor
+	 * @param r Copy source
+	 */
+	public RuleOptions(RuleOptions r) {
+		copy(r);
+	}
+
+	/**
+	 * Initialization
+	 */
+	public void reset() {
+		style = GameManager.GAMESTYLE_TETROMINO;
+		wallkickID = WallkickFactory.WALLKICK_STANDARD;
+		randomizerID = RandomizerFactory.RANDOMIZER_BAG;
+
+		pieceOffsetX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceOffsetY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnXBig = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnYBig = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+
+		pieceColor = new int[Piece.PIECE_COUNT];
+		pieceColor[Piece.PIECE_I] = Block.BLOCK_COLOR_CYAN;
+		pieceColor[Piece.PIECE_L] = Block.BLOCK_COLOR_ORANGE;
+		pieceColor[Piece.PIECE_O] = Block.BLOCK_COLOR_YELLOW;
+		pieceColor[Piece.PIECE_Z] = Block.BLOCK_COLOR_RED;
+		pieceColor[Piece.PIECE_T] = Block.BLOCK_COLOR_PURPLE;
+		pieceColor[Piece.PIECE_J] = Block.BLOCK_COLOR_BLUE;
+		pieceColor[Piece.PIECE_S] = Block.BLOCK_COLOR_GREEN;
+		pieceColor[Piece.PIECE_I1] = Block.BLOCK_COLOR_PURPLE;
+		pieceColor[Piece.PIECE_I2] = Block.BLOCK_COLOR_BLUE;
+		pieceColor[Piece.PIECE_I3] = Block.BLOCK_COLOR_GREEN;
+		pieceColor[Piece.PIECE_L3] = Block.BLOCK_COLOR_ORANGE;
+
+		pieceDefaultDirection = new int[Piece.PIECE_COUNT];
+		pieceEnterAboveField = true;
+		pieceEnterMaxDistanceY = 0;
+
+		fieldWidth = Field.DEFAULT_WIDTH;
+		fieldHeight = Field.DEFAULT_HEIGHT;
+		fieldHiddenHeight = Field.DEFAULT_HIDDEN_HEIGHT;
+		fieldCeiling = false;
+		fieldLockoutDeath = true;
+		fieldPartialLockoutDeath = false;
+
+		nextDisplay = 6;
+
+		holdEnable = true;
+		holdInitial = true;
+		holdInitialLimit = false;
+		holdResetDirection = true;
+		holdLimit = -1;
+	}
+
+	/**
+	 * Copy from another RuleOptions
+	 * @param r Copy source
+	 */
+	public void copy(RuleOptions r) {
+
+	}
 }

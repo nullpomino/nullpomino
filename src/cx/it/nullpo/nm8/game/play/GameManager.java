@@ -2,6 +2,8 @@ package cx.it.nullpo.nm8.game.play;
 
 import java.io.Serializable;
 
+import cx.it.nullpo.nm8.game.subsystem.mode.GameMode;
+
 /**
  * GameManager: The container of the game
  */
@@ -29,6 +31,9 @@ public class GameManager implements Serializable {
 
 	/** Game style names */
 	public static final String[] GAMESTYLE_NAMES = {"TETROMINO", "AVALANCHE", "PHYSICIAN", "SPF"};
+
+	/** The game mode */
+	public GameMode gameMode;
 
 	/** Max game loop time (0:No Limit) */
 	public long maxLoopTime = 17;
@@ -92,15 +97,25 @@ public class GameManager implements Serializable {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor (Use a dummy game mode)
 	 */
 	public GameManager() {
+		gameMode = new GameMode();
+	}
+
+	/**
+	 * Constructor
+	 * @param mode Game mode
+	 */
+	public GameManager(GameMode mode) {
+		gameMode = mode;
 	}
 
 	/**
 	 * Init
 	 */
 	public void init() {
+		gameMode.modeInit(this);
 		gameLoopTime = 0;
 		engine = new GameEngine[getNumberOfEngines()];
 		for(int i = 0; i < engine.length; i++) engine[i] = new GameEngine(this, i);
@@ -122,7 +137,7 @@ public class GameManager implements Serializable {
 	 */
 	public void update(long runMsec) {
 		if(!isFrameBasedTimer()) {
-			// Miliseconds timer
+			// Milliseconds timer
 			gameLoopTime += runMsec;
 
 			while(gameLoopTime > 0) {
@@ -153,7 +168,7 @@ public class GameManager implements Serializable {
 	 * @return Game style ID
 	 */
 	public int getGameStyle() {
-		return GAMESTYLE_TETROMINO;	// TODO: Get it from game mode
+		return gameMode.getGameStyle();
 	}
 
 	/**
@@ -161,7 +176,7 @@ public class GameManager implements Serializable {
 	 * @return Number of GameEngine
 	 */
 	public int getNumberOfEngines() {
-		return 1;	// TODO: Get it from game mode
+		return gameMode.getNumberOfEngines();
 	}
 
 	/**
@@ -169,7 +184,7 @@ public class GameManager implements Serializable {
 	 * @return Number of players (GamePlay) for each GameEngine
 	 */
 	public int getNumberOfPlayersForEachEngine() {
-		return 1;	// TODO: Get it from game mode
+		return gameMode.getNumberOfPlayersForEachEngine();
 	}
 
 	/**
@@ -177,7 +192,7 @@ public class GameManager implements Serializable {
 	 * @return true if the current game mode is using frame-based timer (false if using miliseconds timer)
 	 */
 	public boolean isFrameBasedTimer() {
-		return true;	// TODO: Get it from game mode
+		return gameMode.isFrameBasedTimer();
 	}
 
 	/**

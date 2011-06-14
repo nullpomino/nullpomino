@@ -61,23 +61,58 @@ public class NullpoMino implements NFGame, NFKeyListener {
 				g.drawString("Time:" + strTimer, 5, 30);
 				g.drawString("Delta:" + lastdelta, 5, 50);
 
+				int fldX = 200;
+				int fldY = 80;
+
+				// Field
 				for(int y = 0; y < 20; y++) {
 					for(int x = 0; x < 10; x++) {
 						if(!manager.getGameEngine(0).field.getBlockEmpty(x, y)) {
 							Block blk = manager.getGameEngine(0).field.getBlock(x, y);
-							if(blk != null) drawBlock(blk, 100 + (x * 16), 60 + (y * 16));
+							if(blk != null) drawBlock(blk, fldX + (x * 16), fldY + (y * 16));
 						}
 					}
 				}
 
-				if(manager.engine[0].gamePlay[0].nowPieceObject != null) {
+				// Ghost piece
+				if(manager.getGamePlay(0,0).nowPieceObject != null) {
+					int ghostY = manager.getGamePlay(0,0).nowPieceObject.getBottom(
+							manager.getGamePlay(0,0).nowPieceX,
+							manager.getGamePlay(0,0).nowPieceY,
+							manager.getGameEngine(0).field);
+
 					drawPiece(manager.getGamePlay(0,0).nowPieceObject,
-							100 + (manager.getGamePlay(0,0).nowPieceX * 16),
-							60 + (manager.getGamePlay(0,0).nowPieceY * 16));
+							fldX + (manager.getGamePlay(0,0).nowPieceX * 16),
+							fldY + (ghostY * 16),
+							true);
 				}
 
+				// Current piece
+				if(manager.getGamePlay(0,0).nowPieceObject != null) {
+					drawPiece(manager.getGamePlay(0,0).nowPieceObject,
+							fldX + (manager.getGamePlay(0,0).nowPieceX * 16),
+							fldY + (manager.getGamePlay(0,0).nowPieceY * 16));
+				}
+
+				// Hold piece
+				if(manager.getGamePlay(0,0).holdPieceObject != null) {
+					drawPiece(manager.getGamePlay(0,0).holdPieceObject,
+							fldX - (5 * 16),
+							fldY);
+				}
+
+				// Next pieces
+				if(manager.getGamePlay(0,0).nextPieceArray != null) {
+					for(int i = 0; i < manager.getGamePlay(0,0).nextPieceArray.length; i++) {
+						drawPiece(manager.getGamePlay(0,0).nextPieceArray[i],
+								fldX + 11*16,
+								fldY + (i * 48));
+					}
+				}
+
+				// Field box
 				g.setColor(NFColor.white);
-				g.drawRect(100, 60, 10*16, 20*16);
+				g.drawRect(fldX, fldY, 10*16, 20*16);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -145,15 +180,10 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	}
 
 	public void drawBlock(Block blk, int x, int y) {
-		if(g == null) {
-			System.err.println("g == null!");
-			return;
-		}
-		if(NFColor.yellow == null) {
-			System.err.println("NFColor.yellow == null!");
-			return;
-		}
+		drawBlock(blk, x, y, false);
+	}
 
+	public void drawBlock(Block blk, int x, int y, boolean isGhost) {
 		switch(blk.color) {
 		case Block.BLOCK_COLOR_GRAY:
 			g.setColor(NFColor.gray);
@@ -173,25 +203,32 @@ public class NullpoMino implements NFGame, NFKeyListener {
 		case Block.BLOCK_COLOR_CYAN:
 			g.setColor(NFColor.cyan);
 			break;
+		case Block.BLOCK_COLOR_BLUE:
+			g.setColor(NFColor.blue);
+			break;
 		case Block.BLOCK_COLOR_PURPLE:
-			g.setColor(NFColor.pink);
+			g.setColor(NFColor.magenta);
 			break;
 		default:
 			g.setColor(NFColor.white);
 		}
-		g.fillRect(x, y, 16, 16);
+
+		if(isGhost) g.drawRect(x, y, 16-1, 16-1);
+		else g.fillRect(x, y, 16, 16);
+
 		g.setColor(NFColor.white);
 	}
 
 	public void drawPiece(Piece piece, int x, int y) {
+		drawPiece(piece, x, y, false);
+	}
+
+	public void drawPiece(Piece piece, int x, int y, boolean isGhost) {
 		for(int i = 0; i < piece.getMaxBlock(); i++) {
 			Block blk = piece.block[i];
-			int colorBackup = blk.color;
-			blk.color = Block.BLOCK_COLOR_YELLOW;
 			int x2 = piece.getDataX(i);
 			int y2 = piece.getDataY(i);
-			drawBlock(blk, x + (x2 * 16), y + (y2 * 16));
-			blk.color = colorBackup;
+			drawBlock(blk, x + (x2 * 16), y + (y2 * 16), isGhost);
 		}
 	}
 }
