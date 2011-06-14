@@ -9,7 +9,7 @@ import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
 public class NullpoMinoSlick {
 	public static void main(String[] args) {
 		try {
-			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), false, 640, 480);
+			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), false, 640, 480, 640, 480, true, args);
 			sys.setTargetFPS(60);
 			sys.init();
 			sys.start();

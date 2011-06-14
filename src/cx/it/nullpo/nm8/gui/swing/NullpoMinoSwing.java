@@ -9,7 +9,7 @@ import cx.it.nullpo.nm8.gui.swing.framework.SwingNFSystem;
 public class NullpoMinoSwing {
 	public static void main(String[] args) {
 		try {
-			SwingNFSystem sys = new SwingNFSystem(new NullpoMino(), false, 640, 480);
+			SwingNFSystem sys = new SwingNFSystem(new NullpoMino(), false, 640, 480, 640, 480, true, args);
 			sys.setTargetFPS(60);
 			sys.init();
 			sys.start();

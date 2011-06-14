@@ -52,6 +52,14 @@ public class SlickNFSystem extends NFSystem {
 	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height) {
 		super(game, fullscreen, width, height);
 	}
+	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
+						boolean keepaspectratio) {
+		super(game, fullscreen, width, height, oWidth, oHeight, keepaspectratio);
+	}
+	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
+						boolean keepaspectratio, String[] cmdArgs) {
+		super(game, fullscreen, width, height, oWidth, oHeight, keepaspectratio, cmdArgs);
+	}
 
 	/**
 	 * Get AppGameContainer to run our game
@@ -71,7 +79,7 @@ public class SlickNFSystem extends NFSystem {
 		gameWrapper = new SlickNFGameWrapper(this);
 
 		if(isGameWindowScalingUsed()) {
-			ScalableGame s = new ScalableGame(gameWrapper, originalScreenWidth, originalScreenHeight, false);
+			ScalableGame s = new ScalableGame(gameWrapper, originalScreenWidth, originalScreenHeight, keepAspectRatio);
 			container = new AppGameContainer(s, screenWidth, screenHeight, fullscreen);
 		} else {
 			container = new AppGameContainer(gameWrapper, screenWidth, screenHeight, fullscreen);

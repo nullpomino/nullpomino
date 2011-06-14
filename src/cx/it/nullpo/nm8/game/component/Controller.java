@@ -50,6 +50,9 @@ public class Controller implements Serializable {
 	/** Last pushed time */
 	public long[] buttonLastPushedTime;
 
+	/** Last activated time */
+	public long[] buttonLastActivatedTime;
+
 	/** DAS for each button */
 	public long[] buttonDAS;
 
@@ -83,6 +86,7 @@ public class Controller implements Serializable {
 		buttonTime = new long[MAX_BUTTON];
 		buttonRepeatTimer = new long[MAX_BUTTON];
 		buttonLastPushedTime = new long[MAX_BUTTON];
+		buttonLastActivatedTime = new long[MAX_BUTTON];
 		buttonDAS = new long[MAX_BUTTON];
 		buttonARR = new long[MAX_BUTTON];
 	}
@@ -100,6 +104,7 @@ public class Controller implements Serializable {
 			buttonTime[i] = c.buttonTime[i];
 			buttonRepeatTimer[i] = c.buttonRepeatTimer[i];
 			buttonLastPushedTime[i] = c.buttonLastPushedTime[i];
+			buttonLastActivatedTime[i] = c.buttonLastActivatedTime[i];
 			buttonDAS[i] = c.buttonDAS[i];
 			buttonARR[i] = c.buttonARR[i];
 		}
@@ -171,6 +176,7 @@ public class Controller implements Serializable {
 					buttonActive[i] = true;
 					buttonTime[i] += runMsec;
 					buttonLastPushedTime[i] = currentTime;
+					buttonLastActivatedTime[i] = currentTime;
 				} else {
 					buttonActive[i] = false;
 					buttonTime[i] += runMsec;
@@ -182,6 +188,7 @@ public class Controller implements Serializable {
 							buttonRepeatTimer[i] -= delay;
 							buttonActive[i] = true;
 							buttonRepeated[i] = true;
+							buttonLastActivatedTime[i] = currentTime;
 						}
 					}
 				}

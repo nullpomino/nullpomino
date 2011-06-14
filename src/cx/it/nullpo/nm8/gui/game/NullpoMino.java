@@ -6,6 +6,7 @@ import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Piece;
 import cx.it.nullpo.nm8.game.play.GameManager;
+import cx.it.nullpo.nm8.game.subsystem.mode.GameMode;
 import cx.it.nullpo.nm8.game.util.NUtil;
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -24,6 +25,23 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	GameManager manager;
 	long lastdelta;
 
+	protected class TestGameMode extends GameMode {
+		private static final long serialVersionUID = 1L;
+
+		public boolean isFrameBased = false;
+
+		public TestGameMode() {
+		}
+		public TestGameMode(boolean isFrameBased) {
+			this.isFrameBased = isFrameBased;
+		}
+
+		@Override
+		public boolean isFrameBasedTimer() {
+			return isFrameBased;
+		}
+	}
+
 	public void init(NFSystem sys) {
 		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
@@ -35,7 +53,15 @@ public class NullpoMino implements NFGame, NFKeyListener {
 			}
 			g = sys.getGraphics();
 
-			manager = new GameManager();
+			boolean framebased = false;
+			String[] cmdArgs = sys.getCommandLineArgs();
+			if((cmdArgs.length > 0) && (cmdArgs[0].equals("-f") || cmdArgs[0].equals("/f"))) {
+				System.out.println("Use frame-based timer");
+				framebased = true;
+			}
+			GameMode mode = new TestGameMode(framebased);
+
+			manager = new GameManager(mode);
 			manager.init();
 			manager.start();
 		} catch (Exception e) {

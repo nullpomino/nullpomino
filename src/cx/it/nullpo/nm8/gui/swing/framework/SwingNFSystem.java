@@ -47,6 +47,14 @@ public class SwingNFSystem extends NFSystem {
 	public SwingNFSystem(NFGame game, boolean fullscreen, int width, int height) {
 		super(game, fullscreen, width, height);
 	}
+	public SwingNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
+						boolean keepaspectratio) {
+		super(game, fullscreen, width, height, oWidth, oHeight, keepaspectratio);
+	}
+	public SwingNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
+						boolean keepaspectratio, String[] cmdArgs) {
+		super(game, fullscreen, width, height, oWidth, oHeight, keepaspectratio, cmdArgs);
+	}
 
 	@Override
 	public String getSystemName() {

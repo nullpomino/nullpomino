@@ -5,6 +5,7 @@ import java.util.Random;
 
 import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
+import cx.it.nullpo.nm8.game.component.Field;
 import cx.it.nullpo.nm8.game.component.Piece;
 import cx.it.nullpo.nm8.game.component.RuleOptions;
 import cx.it.nullpo.nm8.game.component.SpeedParam;
@@ -277,6 +278,61 @@ public class GamePlay implements Serializable {
 	}
 
 	/**
+	 * Get piece spawn X-coordinate
+	 * @param piece Piece
+	 * @return Piece spawn X-coordinate
+	 */
+	public int getSpawnPosX(Piece piece) {
+		return getSpawnPosX(piece, engine.field);
+	}
+
+	/**
+	 * Get piece spawn X-coordinate
+	 * @param piece Piece
+	 * @param fld Field
+	 * @return Piece spawn X-coordinate
+	 */
+	public int getSpawnPosX(Piece piece, Field fld) {
+		int x = -1 + (fld.getWidth() - piece.getWidth() + 1) / 2;
+
+		//if((big == true) && (bigmove == true) && (x % 2 != 0))
+		//	x++;
+
+		//if(big == true) {
+		//	x += ruleopt.pieceSpawnXBig[piece.id][piece.direction];
+		//} else {
+			x += ruleopt.pieceSpawnX[piece.id][piece.direction];
+		//}
+
+		return x;
+	}
+
+	/**
+	 * Get piece spawn Y-coordinate
+	 * @param fld Field
+	 * @param piece Piece
+	 * @return Piece spawn Y-coordinate
+	 */
+	public int getSpawnPosY(Piece piece) {
+		int y = 0;
+
+		if((ruleopt.pieceEnterAboveField == true) && (ruleopt.fieldCeiling == false)) {
+			y = -1 - piece.getMaximumBlockY();
+			//if(big == true) y--;
+		} else {
+			y = -piece.getMinimumBlockY();
+		}
+
+		//if(big == true) {
+		//	y += ruleopt.pieceSpawnYBig[piece.id][piece.direction];
+		//} else {
+			y += ruleopt.pieceSpawnY[piece.id][piece.direction];
+		//}
+
+		return y;
+	}
+
+	/**
 	 * Make an new piece appear
 	 */
 	public void newPiece() {
@@ -296,8 +352,8 @@ public class GamePlay implements Serializable {
 				nowPieceObject = createPieceObject(id);
 			}
 		}
-		nowPieceX = 3;
-		nowPieceY = 0;
+		nowPieceX = getSpawnPosX(nowPieceObject);
+		nowPieceY = getSpawnPosY(nowPieceObject);
 		hoverTime = 0;
 		hoverSoftDrop = 0;
 		lockDelayNow = 0;
@@ -464,8 +520,23 @@ public class GamePlay implements Serializable {
 			if(rt != 0) rotatePiece(rt);
 
 			// Left/Right movement
-			if(ctrl.isButtonActivated(Controller.BUTTON_LEFT))  movePiece(-1);
-			if(ctrl.isButtonActivated(Controller.BUTTON_RIGHT)) movePiece(1);
+			int move = 0;
+			if(ctrl.isButtonPressed(Controller.BUTTON_LEFT) && ctrl.isButtonPressed(Controller.BUTTON_RIGHT)) {
+				if(ctrl.buttonLastPushedTime[Controller.BUTTON_LEFT] > ctrl.buttonLastPushedTime[Controller.BUTTON_RIGHT]) {
+					if(ctrl.isButtonActivated(Controller.BUTTON_LEFT)) {
+						move = -1;
+					}
+				} else if(ctrl.buttonLastPushedTime[Controller.BUTTON_LEFT] < ctrl.buttonLastPushedTime[Controller.BUTTON_RIGHT]) {
+					if(ctrl.isButtonActivated(Controller.BUTTON_RIGHT)) {
+						move = 1;
+					}
+				}
+			} else if(ctrl.isButtonActivated(Controller.BUTTON_LEFT)) {
+				move = -1;
+			} else if(ctrl.isButtonActivated(Controller.BUTTON_RIGHT)) {
+				move = 1;
+			}
+			if(move != 0) movePiece(move);
 
 			// Soft drop
 			if(ctrl.isButtonActivated(Controller.BUTTON_SOFT)) softdropPiece();

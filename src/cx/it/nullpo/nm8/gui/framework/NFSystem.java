@@ -24,6 +24,12 @@ public abstract class NFSystem implements Serializable {
 	/** Original screen width and height; Used for scaling the screen */
 	protected int originalScreenWidth, originalScreenHeight;
 
+	/** Try to keep screen's aspect ratio */
+	protected boolean keepAspectRatio;
+
+	/** Command line arguments */
+	protected String[] cmdlineArgs;
+
 	/** Current target FPS */
 	protected int targetFPS = -1;
 
@@ -71,6 +77,50 @@ public abstract class NFSystem implements Serializable {
 		this.screenHeight = height;
 		this.originalScreenWidth = oWidth;
 		this.originalScreenHeight = oHeight;
+	}
+
+	/**
+	 * Constructor
+	 * @param game NFGame with actual game programs
+	 * @param fullscreen true if you want fullscreen. But not all system supports it.
+	 * @param width Screen width
+	 * @param height Screen height
+	 * @param oWidth Original (normal) screen width
+	 * @param oHeight Original (normal) screen height
+	 * @param keepaspectratio Try to keep screen's aspect ratio
+	 */
+	public NFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
+					boolean keepaspectratio) {
+		this.game = game;
+		this.fullscreen = fullscreen;
+		this.screenWidth = width;
+		this.screenHeight = height;
+		this.originalScreenWidth = oWidth;
+		this.originalScreenHeight = oHeight;
+		this.keepAspectRatio = keepaspectratio;
+	}
+
+	/**
+	 * Constructor
+	 * @param game NFGame with actual game programs
+	 * @param fullscreen true if you want fullscreen. But not all system supports it.
+	 * @param width Screen width
+	 * @param height Screen height
+	 * @param oWidth Original (normal) screen width
+	 * @param oHeight Original (normal) screen height
+	 * @param keepaspectratio Try to keep screen's aspect ratio
+	 * @param cmdArgs Command line arguments
+	 */
+	public NFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
+					boolean keepaspectratio, String[] cmdArgs) {
+		this.game = game;
+		this.fullscreen = fullscreen;
+		this.screenWidth = width;
+		this.screenHeight = height;
+		this.originalScreenWidth = oWidth;
+		this.originalScreenHeight = oHeight;
+		this.keepAspectRatio = keepaspectratio;
+		this.cmdlineArgs = cmdArgs;
 	}
 
 	/**
@@ -410,6 +460,22 @@ public abstract class NFSystem implements Serializable {
 			return true;
 
 		return false;
+	}
+
+	/**
+	 * Check if maintaining the aspect ratio
+	 * @return True if we are trying to keep the aspect ratio
+	 */
+	public boolean isKeepAspectRatio() {
+		return keepAspectRatio;
+	}
+
+	/**
+	 * Get command line arguments
+	 * @return Command line arguments
+	 */
+	public String[] getCommandLineArgs() {
+		return cmdlineArgs;
 	}
 
 	/**
