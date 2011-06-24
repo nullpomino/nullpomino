@@ -2,6 +2,7 @@ package cx.it.nullpo.nm8.gui.swing.framework;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -25,6 +26,12 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 
 	/** BufferStrategy which is important to gain enough speed */
 	protected BufferStrategy bufferStrategy;
+
+	/** true to use BufferStrategy (must be false when scaling/screenshoting/etc) */
+	protected boolean useBufferStrategy;
+
+	/** On-screen image buffer (Used instead of BufferStrategy in some cases) */
+	protected Image screenImage;
 
 	/** Game thread */
 	protected Thread thread;
@@ -59,6 +66,8 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 
 		addWindowListener(new WindowEventHandler());
 		addKeyListener(new KeyEventHandler());
+
+		useBufferStrategy = !sys.isGameWindowScalingUsed();
 	}
 
 	/**
@@ -189,21 +198,34 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 	 * Render the game
 	 */
 	public void render() {
-		if((bufferStrategy == null) || bufferStrategy.contentsLost()) {
-			try {
-				createBufferStrategy(2);
-				bufferStrategy = getBufferStrategy();
-			} catch (Exception e) {
-				return;
+		boolean canUseBufferStrategy = false;	// Can we use BufferStrategy this time?
+
+		if(screenImage == null) {
+			screenImage = createImage(sys.getOriginalWidth(), sys.getOriginalHeight());
+		}
+		if(useBufferStrategy) {
+			canUseBufferStrategy = true;
+
+			if((bufferStrategy == null) || bufferStrategy.contentsLost()) {
+				try {
+					createBufferStrategy(2);
+					bufferStrategy = getBufferStrategy();
+				} catch (Exception e) {
+					// Fall back to non-BufferStrategy when something bad happens
+					canUseBufferStrategy = false;
+				}
 			}
 		}
 
 		Graphics g = null;
-		g = bufferStrategy.getDrawGraphics();
+		if(canUseBufferStrategy) {
+			g = bufferStrategy.getDrawGraphics();
+			if(insets != null) g.translate(insets.left, insets.top);
+		} else {
+			g = screenImage.getGraphics();
+		}
 
 		if(g != null) {
-			if(insets != null) g.translate(insets.left, insets.top);
-
 			if(sys.g == null) {
 				sys.g = new SwingNFGraphics(g);
 			} else {
@@ -211,7 +233,17 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 			}
 			sys.getNFGame().render(sys, sys.getGraphics());
 
-			if((bufferStrategy != null) && !bufferStrategy.contentsLost()) {
+			if(!canUseBufferStrategy) {
+				if(insets != null) {
+					Graphics g2 = getGraphics();
+					if(sys.isGameWindowScalingUsed()) {
+						g2.drawImage(screenImage, insets.left, insets.top, sys.getWidth(), sys.getHeight(), null);
+					} else {
+						g2.drawImage(screenImage, insets.left, insets.top, null);
+					}
+					g2.dispose();
+				}
+			} else if((bufferStrategy != null) && !bufferStrategy.contentsLost()) {
 				bufferStrategy.show();
 			}
 

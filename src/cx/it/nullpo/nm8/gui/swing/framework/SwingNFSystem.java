@@ -1,6 +1,3 @@
-/**
- *
- */
 package cx.it.nullpo.nm8.gui.swing.framework;
 
 import java.awt.Font;
@@ -8,16 +5,18 @@ import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import cx.it.nullpo.nm8.game.util.NUtil;
+import cx.it.nullpo.nm8.gui.common.JSSoundLoader;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFImage;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 
 /**
@@ -106,7 +105,7 @@ public class SwingNFSystem extends NFSystem {
 
 	@Override
 	public NFImage loadImage(String filename) throws IOException {
-		return loadImage(getURL(filename));
+		return loadImage(NUtil.getURL(filename));
 	}
 
 	@Override
@@ -164,6 +163,19 @@ public class SwingNFSystem extends NFSystem {
 	}
 
 	@Override
+	public NFSound loadSound(String filename) throws IOException {
+		return JSSoundLoader.load(filename);
+	}
+	@Override
+	public NFSound loadSound(URL url) throws IOException {
+		return JSSoundLoader.load(url);
+	}
+	@Override
+	public boolean isSoundSupported() {
+		return true;
+	}
+
+	@Override
 	public float getFPS() {
 		if(gameWrapper == null) return 0;
 		return (float)gameWrapper.actualFPS;
@@ -178,34 +190,5 @@ public class SwingNFSystem extends NFSystem {
 	@Override
 	public String getWindowTitle() {
 		return windowTitle;
-	}
-
-	/**
-	 * Get URL from a String
-	 * @param str Filename
-	 * @return URL
-	 */
-	public static URL getURL(String str) {
-		URL url = null;
-
-		try {
-			char sep = File.separator.charAt(0);
-			String file = str.replace(sep, '/');
-
-			// Source (already dead):http://www.asahi-net.or.jp/~DP8T-ASM/java/tips/HowToMakeURL.html
-			if(file.charAt(0) != '/') {
-				String dir = System.getProperty("user.dir");
-				dir = dir.replace(sep, '/') + '/';
-				if(dir.charAt(0) != '/') {
-					dir = "/" + dir;
-				}
-				file = dir + file;
-			}
-			url = new URL("file", "", file);
-		} catch(MalformedURLException e) {
-			return null;
-		}
-
-		return url;
 	}
 }

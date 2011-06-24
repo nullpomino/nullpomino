@@ -1,7 +1,10 @@
 package cx.it.nullpo.nm8.game.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -17,6 +20,35 @@ import java.util.zip.Inflater;
  * NullpoMino utility class (it was available as GeneralUtil and NetUtil in older versions)
  */
 public class NUtil {
+	/**
+	 * Get URL from a String
+	 * @param str Filename
+	 * @return URL
+	 */
+	public static URL getURL(String str) {
+		URL url = null;
+
+		try {
+			char sep = File.separator.charAt(0);
+			String file = str.replace(sep, '/');
+
+			// Source (already dead):http://www.asahi-net.or.jp/~DP8T-ASM/java/tips/HowToMakeURL.html
+			if(file.charAt(0) != '/') {
+				String dir = System.getProperty("user.dir");
+				dir = dir.replace(sep, '/') + '/';
+				if(dir.charAt(0) != '/') {
+					dir = "/" + dir;
+				}
+				file = dir + file;
+			}
+			url = new URL("file", "", file);
+		} catch(MalformedURLException e) {
+			return null;
+		}
+
+		return url;
+	}
+
 	/**
 	 * Convert frames (1 frame = 1/60 seconds) to Milliseconds (ms)
 	 * @param f Frames

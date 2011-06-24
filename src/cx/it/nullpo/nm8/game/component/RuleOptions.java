@@ -13,6 +13,9 @@ public class RuleOptions implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -935704342253648268L;
 
+	/** Control Scheme IDs */
+	public static final int CTRL_SCHEME_STANDARD = 0, CTRL_SCHEME_CLASSIC = 1;
+
 	/** Game style */
 	public int style;
 
@@ -21,6 +24,14 @@ public class RuleOptions implements Serializable {
 
 	/** Randomizer to use */
 	public int randomizerID;
+
+	/**
+	 * Control Scheme ID to use<br>
+	 * Some players may want to swap rotation buttons
+	 * or maybe use completely different keymap in classic rules
+	 * so this comes into handy
+	 */
+	public int ctrlSchemeID;
 
 	/** Piece pattern offect X */
 	public int[][] pieceOffsetX;
@@ -51,15 +62,6 @@ public class RuleOptions implements Serializable {
 
 	/** Number of tries to push up when the new piece overraps to existing blocks */
 	public int pieceEnterMaxDistanceY;
-
-	/** Preferred field width */
-	public int fieldWidth;
-
-	/** Preferred field height */
-	public int fieldHeight;
-
-	/** Preferred field hidden height */
-	public int fieldHiddenHeight;
 
 	/** Field ceiling flag */
 	public boolean fieldCeiling;
@@ -110,6 +112,7 @@ public class RuleOptions implements Serializable {
 		style = GameManager.GAMESTYLE_TETROMINO;
 		wallkickID = WallkickFactory.WALLKICK_STANDARD;
 		randomizerID = RandomizerFactory.RANDOMIZER_BAG;
+		ctrlSchemeID = CTRL_SCHEME_STANDARD;
 
 		pieceOffsetX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
 		pieceOffsetY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
@@ -135,9 +138,6 @@ public class RuleOptions implements Serializable {
 		pieceEnterAboveField = true;
 		pieceEnterMaxDistanceY = 0;
 
-		fieldWidth = Field.DEFAULT_WIDTH;
-		fieldHeight = Field.DEFAULT_HEIGHT;
-		fieldHiddenHeight = Field.DEFAULT_HIDDEN_HEIGHT;
 		fieldCeiling = false;
 		fieldLockoutDeath = true;
 		fieldPartialLockoutDeath = false;
@@ -156,6 +156,38 @@ public class RuleOptions implements Serializable {
 	 * @param r Copy source
 	 */
 	public void copy(RuleOptions r) {
+		style = r.style;
+		wallkickID = r.wallkickID;
+		randomizerID = r.randomizerID;
+		ctrlSchemeID = r.ctrlSchemeID;
 
+		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
+			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {
+				pieceOffsetX[i][j] = r.pieceOffsetX[i][j];
+				pieceOffsetY[i][j] = r.pieceOffsetY[i][j];
+				pieceSpawnX[i][j] = r.pieceSpawnX[i][j];
+				pieceSpawnXBig[i][j] = r.pieceSpawnXBig[i][j];
+				pieceSpawnY[i][j] = r.pieceSpawnY[i][j];
+				pieceSpawnYBig[i][j] = r.pieceSpawnYBig[i][j];
+			}
+
+			pieceColor[i] = r.pieceColor[i];
+			pieceDefaultDirection[i] = r.pieceDefaultDirection[i];
+		}
+
+		pieceEnterAboveField = r.pieceEnterAboveField;
+		pieceEnterMaxDistanceY = r.pieceEnterMaxDistanceY;
+
+		fieldCeiling = r.fieldCeiling;
+		fieldLockoutDeath = r.fieldLockoutDeath;
+		fieldPartialLockoutDeath = r.fieldPartialLockoutDeath;
+
+		nextDisplay = r.nextDisplay;
+
+		holdEnable = r.holdEnable;
+		holdInitial = r.holdInitial;
+		holdInitialLimit = r.holdInitialLimit;
+		holdResetDirection = r.holdResetDirection;
+		holdLimit = r.holdLimit;
 	}
 }

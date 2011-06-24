@@ -13,6 +13,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.openal.SoundStore;
 
+import cx.it.nullpo.nm8.gui.common.JSSoundLoader;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
@@ -42,6 +43,9 @@ public class SlickNFSystem extends NFSystem {
 
 	/** Window title */
 	protected String windowTitle = "";
+
+	/** Use Java Sound API instead of OpenAL */
+	protected boolean useJavaSound;
 
 	public SlickNFSystem() {
 		super();
@@ -190,6 +194,10 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public NFSound loadSound(String filename) throws IOException {
+		if(useJavaSound) {
+			return JSSoundLoader.load(filename);
+		}
+
 		try {
 			Sound nativeSound = new Sound(filename);
 			SlickNFSound nfSound = new SlickNFSound(nativeSound);
@@ -257,5 +265,25 @@ public class SlickNFSystem extends NFSystem {
 	@Override
 	public String getWindowTitle() {
 		return windowTitle;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * Returns true if we use Java Sound API instead of OpenAL
+	 * @return true if we use Java Sound API instead of OpenAL
+	 */
+	public boolean isUseJavaSound() {
+		return useJavaSound;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * If set to true, we use Java Sound API instead of OpenAL.<br>
+	 * OpenAL does not work with some sound cards (especially laptops), but Java Sound might still work.<br>
+	 * Linux only notes: Java Sound API is awful in Linux. Not recommended.
+	 * @param b true if we use Java Sound API instead of OpenAL
+	 */
+	public void setUseJavaSound(boolean b) {
+		useJavaSound = b;
 	}
 }
