@@ -479,6 +479,17 @@ public class Piece implements Serializable {
 	 * Check if the piece is partially topout
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
+	 * @param fld field
+	 * @return true if at least 1 block is outside of the field
+	 */
+	public boolean isPartialLockOut(int x, int y, Field fld) {
+		return isPartialLockOut(x, y, direction, fld);
+	}
+
+	/**
+	 * Check if the piece is partially topout
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
 	 * @return true if at least 1 block is outside of the field

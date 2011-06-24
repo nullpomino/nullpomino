@@ -39,6 +39,24 @@ public class SpeedParam implements Serializable {
 	/** Lock ARR to this SpeedParam's setting (If false, ARR will be defined by player) */
 	public boolean lockARR;
 
+	/** Soft drop DAS */
+	public long softdropDAS;
+
+	/** Soft drop ARR */
+	public long softdropARR;
+
+	/** Lock Soft drop DAS to this SpeedParam's setting (If false, Soft drop DAS will be defined by player) */
+	public boolean lockSoftdropDAS;
+
+	/** Lock Soft drop ARR to this SpeedParam's setting (If false, Soft drop ARR will be defined by player) */
+	public boolean lockSoftdropARR;
+
+	/** Soft drop speed magnification (1f for x1.0) */
+	public float softdropSpeedMagnification;
+
+	/** Lock Soft drop speed magnification to this SpeedParam's setting (If false, it will be defined by player) */
+	public boolean lockSoftdropSpeedMagnification;
+
 	/**
 	 * Constructor
 	 */
@@ -83,6 +101,8 @@ public class SpeedParam implements Serializable {
 			lockDelay = 500;
 			das = 133;
 			arr = 17;
+			softdropDAS = 1;
+			softdropARR = 1;
 		} else {
 			gravity = 60;
 			are = 0;
@@ -92,9 +112,15 @@ public class SpeedParam implements Serializable {
 			lockDelay = 30;
 			das = 12;
 			arr = 1;
+			softdropDAS = 1;
+			softdropARR = 1;
 		}
 		lockDAS = false;
 		lockARR = false;
+		lockSoftdropDAS = false;
+		lockSoftdropARR = false;
+		softdropSpeedMagnification = 1f;
+		lockSoftdropSpeedMagnification = false;
 	}
 
 	/**
@@ -112,5 +138,11 @@ public class SpeedParam implements Serializable {
 		arr = s.arr;
 		lockDAS = s.lockDAS;
 		lockARR = s.lockARR;
+		softdropDAS = s.softdropDAS;
+		softdropARR = s.softdropARR;
+		lockSoftdropDAS = s.lockSoftdropDAS;
+		lockSoftdropARR = s.lockSoftdropARR;
+		softdropSpeedMagnification = s.softdropSpeedMagnification;
+		lockSoftdropSpeedMagnification = s.lockSoftdropSpeedMagnification;
 	}
 }

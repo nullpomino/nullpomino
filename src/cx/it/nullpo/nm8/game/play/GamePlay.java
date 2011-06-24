@@ -10,6 +10,7 @@ import cx.it.nullpo.nm8.game.component.Piece;
 import cx.it.nullpo.nm8.game.component.RuleOptions;
 import cx.it.nullpo.nm8.game.component.SpeedParam;
 import cx.it.nullpo.nm8.game.component.Statistics;
+import cx.it.nullpo.nm8.game.component.TuningOptions;
 import cx.it.nullpo.nm8.game.component.WallkickResult;
 import cx.it.nullpo.nm8.game.subsystem.randomizer.Randomizer;
 import cx.it.nullpo.nm8.game.subsystem.randomizer.RandomizerFactory;
@@ -53,6 +54,9 @@ public class GamePlay implements Serializable {
 
 	/** RuleOptions: Most game settings are here */
 	public RuleOptions ruleopt;
+
+	/** TuningOptions: Player's preferences */
+	public TuningOptions tuning;
 
 	/** Controller: The player's input */
 	public Controller ctrl;
@@ -114,6 +118,12 @@ public class GamePlay implements Serializable {
 	/** Hold used flag */
 	public boolean holdUsed;
 
+	/** IHS use flag */
+	public boolean holdIHS;
+
+	/** IRS direction (0=No IRS) */
+	public int irsDirection;
+
 	/** Current lock flash time */
 	public long lockFlashNow;
 
@@ -164,6 +174,8 @@ public class GamePlay implements Serializable {
 		lastmove = LASTMOVE_NONE;
 		holdPieceObject = null;
 		holdUsed = false;
+		holdIHS = false;
+		irsDirection = 0;
 		lockFlashNow = 0;
 		lineDelayNow = 0;
 		areNow = 0;
@@ -195,11 +207,22 @@ public class GamePlay implements Serializable {
 	}
 
 	/**
+	 * Set a new TuningOptions
+	 * @param r TuningOptions
+	 */
+	public void setTuningOptions(TuningOptions t) {
+		this.tuning = t;
+	}
+
+	/**
 	 * Start the game
 	 */
 	public void start() {
 		if(ruleopt == null) {
 			setRuleOptions(new RuleOptions());
+		}
+		if(tuning == null) {
+			setTuningOptions(new TuningOptions());
 		}
 		stat = STAT_READY;
 	}
@@ -247,21 +270,25 @@ public class GamePlay implements Serializable {
 	}
 
 	/**
+	 * Update DAS/ARR values
+	 */
+	public void updateDASARRValues() {
+		// Set DAS & ARR
+		ctrl.setDAS(Controller.BUTTON_LEFT, getDAS());
+		ctrl.setDAS(Controller.BUTTON_RIGHT, getDAS());
+		ctrl.setARR(Controller.BUTTON_LEFT, getARR());
+		ctrl.setARR(Controller.BUTTON_RIGHT, getARR());
+
+		// Set softdrop speed
+		ctrl.setDAS(Controller.BUTTON_SOFT, getSoftdropDAS());
+		ctrl.setARR(Controller.BUTTON_SOFT, getSoftdropARR());
+	}
+
+	/**
 	 * Update controller status
 	 * @param runMsec Milliseconds elapsed from the last execution, or 1 if using frame-based timer
 	 */
 	public void updateController(long runMsec) {
-		// Set DAS & ARR
-		ctrl.setDAS(Controller.BUTTON_LEFT, speed.das);
-		ctrl.setDAS(Controller.BUTTON_RIGHT, speed.das);
-		ctrl.setARR(Controller.BUTTON_LEFT, speed.arr);
-		ctrl.setARR(Controller.BUTTON_RIGHT, speed.arr);
-
-		// Set softdrop speed
-		ctrl.setDAS(Controller.BUTTON_SOFT, 1);
-		ctrl.setARR(Controller.BUTTON_SOFT, 1);
-
-		// Update controller status
 		ctrl.update(runMsec, engine.replayTimer);
 	}
 
@@ -275,6 +302,76 @@ public class GamePlay implements Serializable {
 		piece.setColor(ruleopt.pieceColor[id]);
 		piece.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 		return piece;
+	}
+
+	/**
+	 * Get current DAS (It will take care of both mode's and user's settings)
+	 * @return DAS
+	 */
+	public long getDAS() {
+		long modeSetting = speed.das;
+		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.dasF : tuning.das;
+
+		if(speed.lockDAS || (userSetting == -1)) {
+			return modeSetting;
+		}
+		return userSetting;
+	}
+
+	/**
+	 * Get current ARR (It will take care of both mode's and user's settings)
+	 * @return ARR
+	 */
+	public long getARR() {
+		long modeSetting = speed.arr;
+		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.arrF : tuning.arr;
+
+		if(speed.lockARR || (userSetting == -1)) {
+			return modeSetting;
+		}
+		return userSetting;
+	}
+
+	/**
+	 * Get current Soft drop DAS (It will take care of both mode's and user's settings)
+	 * @return Soft drop DAS
+	 */
+	public long getSoftdropDAS() {
+		long modeSetting = speed.softdropDAS;
+		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.softdropDASF : tuning.softdropDAS;
+
+		if(speed.lockSoftdropDAS || (userSetting == -1)) {
+			return modeSetting;
+		}
+		return userSetting;
+	}
+
+	/**
+	 * Get current Soft drop ARR (It will take care of both mode's and user's settings)
+	 * @return Soft drop ARR
+	 */
+	public long getSoftdropARR() {
+		long modeSetting = speed.softdropARR;
+		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.softdropARRF : tuning.softdropARR;
+
+		if(speed.lockSoftdropARR || (userSetting == -1)) {
+			return modeSetting;
+		}
+		return userSetting;
+	}
+
+	/**
+	 * Get current Soft drop speed magnification (It will take care of both mode's and user's settings)
+	 * @return Soft drop speed magnification
+	 */
+	public float getSoftdropSpeedMagnification() {
+		float modeSetting = speed.softdropSpeedMagnification;
+		float userSetting = tuning.softdropSpeedMagnification;
+
+		if(speed.lockSoftdropSpeedMagnification || (userSetting == -1)) {
+			return modeSetting;
+		}
+		return userSetting;
 	}
 
 	/**
@@ -298,11 +395,11 @@ public class GamePlay implements Serializable {
 		//if((big == true) && (bigmove == true) && (x % 2 != 0))
 		//	x++;
 
-		//if(big == true) {
-		//	x += ruleopt.pieceSpawnXBig[piece.id][piece.direction];
-		//} else {
+		if(piece.big == true) {
+			x += ruleopt.pieceSpawnXBig[piece.id][piece.direction];
+		} else {
 			x += ruleopt.pieceSpawnX[piece.id][piece.direction];
-		//}
+		}
 
 		return x;
 	}
@@ -318,18 +415,65 @@ public class GamePlay implements Serializable {
 
 		if((ruleopt.pieceEnterAboveField == true) && (ruleopt.fieldCeiling == false)) {
 			y = -1 - piece.getMaximumBlockY();
-			//if(big == true) y--;
+			if(piece.big == true) y--;
 		} else {
 			y = -piece.getMinimumBlockY();
 		}
 
-		//if(big == true) {
-		//	y += ruleopt.pieceSpawnYBig[piece.id][piece.direction];
-		//} else {
+		if(piece.big == true) {
+			y += ruleopt.pieceSpawnYBig[piece.id][piece.direction];
+		} else {
 			y += ruleopt.pieceSpawnY[piece.id][piece.direction];
-		//}
+		}
 
 		return y;
+	}
+
+	/**
+	 * Set IRS flags
+	 */
+	public void activateIRS() {
+		if(tuning.rotateInitial) {
+			int rt = 0;
+			if(ctrl.isButtonPressed(Controller.BUTTON_LROTATE)) rt = -1;
+			else if(ctrl.isButtonPressed(Controller.BUTTON_RROTATE)) rt = 1;
+			else if(ctrl.isButtonPressed(Controller.BUTTON_DROTATE)) rt = 2;
+			if(rt != 0) irsDirection = rt;
+		}
+	}
+
+	/**
+	 * Set IHS flags
+	 */
+	public void activateIHS() {
+		if(ruleopt.holdEnable && ruleopt.holdInitial && tuning.holdInitial && ctrl.isButtonPressed(Controller.BUTTON_HOLD)) {
+			holdIHS = true;
+		}
+	}
+
+	/**
+	 * Pop a Piece from next piece queue
+	 * @return Piece
+	 */
+	public Piece popNextPiece() {
+		Piece resultPiece = null;
+
+		// Pop from next piece queue
+		if((nextPieceArray != null) && (nextPieceArray.length > 0)) {
+			resultPiece = nextPieceArray[0];
+			for(int i = 0; i < nextPieceArray.length - 1; i++) {
+				nextPieceArray[i] = nextPieceArray[i + 1];
+			}
+			int id = randomizer.next();
+			nextPieceArray[nextPieceArray.length - 1] = createPieceObject(id);
+		}
+		// If piece preview is disabled, create a new Piece directly
+		else {
+			int id = randomizer.next();
+			resultPiece = createPieceObject(id);
+		}
+
+		return resultPiece;
 	}
 
 	/**
@@ -337,19 +481,13 @@ public class GamePlay implements Serializable {
 	 */
 	public void newPiece() {
 		if(nowPieceObject == null) {
-			// Pop from next piece queue
-			if((nextPieceArray != null) && (nextPieceArray.length > 0)) {
-				nowPieceObject = nextPieceArray[0];
-				for(int i = 0; i < nextPieceArray.length - 1; i++) {
-					nextPieceArray[i] = nextPieceArray[i + 1];
-				}
-				int id = randomizer.next();
-				nextPieceArray[nextPieceArray.length - 1] = createPieceObject(id);
-			}
-			// If piece preview is disabled, create a new Piece directly
-			else {
-				int id = randomizer.next();
-				nowPieceObject = createPieceObject(id);
+			if(holdIHS) {
+				// IHS
+				holdPiece(true);
+				holdIHS = false;
+			} else {
+				// Pop from next piece queue
+				nowPieceObject = popNextPiece();
 			}
 		}
 		nowPieceX = getSpawnPosX(nowPieceObject);
@@ -363,7 +501,24 @@ public class GamePlay implements Serializable {
 		lineDelayNow = 0;
 		areNow = 0;
 
+		// IRS
+		if(irsDirection != 0) {
+			rotatePiece(irsDirection);
+			irsDirection = 0;
+		}
+
+		// Game Over check
 		if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, engine.field)) {
+			// Try push up
+			for(int i = 0; i < ruleopt.pieceEnterMaxDistanceY; i++) {
+				if(nowPieceObject.big) nowPieceY -= 2;
+				else nowPieceY--;
+
+				if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY, engine.field)) {
+					break;	// Success
+				}
+			}
+
 			// Signal GameOver
 			engine.field.reset();
 		}
@@ -397,8 +552,7 @@ public class GamePlay implements Serializable {
 	 */
 	public void softdropPiece() {
 		if(nowPieceObject != null) {
-			//hoverTime += speed.denominator / 2;
-			hoverSoftDrop += speed.gravity * 2;
+			hoverSoftDrop += (long)(speed.gravity * getSoftdropSpeedMagnification());
 		}
 	}
 
@@ -464,30 +618,53 @@ public class GamePlay implements Serializable {
 	 * Hold
 	 */
 	public void holdPiece() {
-		if((nowPieceObject != null) && (!holdUsed) && (ruleopt.holdEnable)) {
-			if(holdPieceObject == null) {
-				holdPieceObject = nowPieceObject;
-				nowPieceObject = null;
+		holdPiece(false);
+	}
+
+	/**
+	 * Hold
+	 * @param isIHS true if IHS
+	 */
+	public void holdPiece(boolean isIHS) {
+		if(!holdUsed && ruleopt.holdEnable) {
+			statistics.totalHoldUsed++;
+			holdUsed = true;
+
+			if(isIHS) {
+				// IHS
+				if(holdPieceObject == null) {
+					holdPieceObject = popNextPiece();
+					nowPieceObject = popNextPiece();
+				} else {
+					nowPieceObject = holdPieceObject;
+					holdPieceObject = popNextPiece();
+				}
 			} else {
-				Piece pieceTemp = nowPieceObject;
-				nowPieceObject = holdPieceObject;
-				holdPieceObject = pieceTemp;
+				// Normal Hold
+				if(holdPieceObject == null) {
+					holdPieceObject = nowPieceObject;
+					nowPieceObject = null;
+				} else {
+					Piece pieceTemp = nowPieceObject;
+					nowPieceObject = holdPieceObject;
+					holdPieceObject = pieceTemp;
+				}
 			}
 
 			if(ruleopt.holdResetDirection) holdPieceObject.direction = 0;
-
-			statistics.totalHoldUsed++;
-			holdUsed = true;
-			newPiece();
+			if(!isIHS) newPiece();
 		}
 	}
 
 	public long onReady(long runMsec) {
+		updateDASARRValues();
 		updateController(runMsec);
 
 		readyTimer += runMsec;
 
 		if(readyTimer >= engine.goEnd) {
+			activateIRS();
+			activateIHS();
 			engine.timerActive = true;
 			engine.gameStarted = true;
 			stat = STAT_MOVE;
@@ -498,6 +675,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public long onMove(long runMsec) {
+		updateDASARRValues();
 		updateController(runMsec);
 
 		long gMsec = runMsec;	// Miliseconds remaining after gravity
@@ -555,7 +733,7 @@ public class GamePlay implements Serializable {
 						lastmove = LASTMOVE_FALL_AUTO;
 					}
 				} else {
-					// Gravity
+					// Softdrop
 					while(hoverSoftDrop >= speed.gravity) {
 						hoverSoftDrop -= speed.gravity;
 
@@ -565,11 +743,11 @@ public class GamePlay implements Serializable {
 							lastmove = LASTMOVE_FALL_SELF;
 						} else {
 							//gMsec = 0;
-							hoverSoftDrop = 0;
 							break;
 						}
 					}
 
+					// Gravity
 					hoverTime += runMsec;
 
 					while(hoverTime >= speed.gravity) {
@@ -590,27 +768,35 @@ public class GamePlay implements Serializable {
 			// Lock delay
 			if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 				lockDelayNow += gMsec;
+				hoverSoftDrop = 0;
 
 				if((lockDelayNow >= speed.lockDelay) || (instantLock)) {
+					// The current piece has been locked
 					if(!instantLock) extraMsec = lockDelayNow - speed.lockDelay;
 
+					boolean isPartialLockout = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, engine.field);
 					boolean placed = nowPieceObject.placeToField(nowPieceX, nowPieceY, engine.field);
 					nowPieceObject = null;
 					holdUsed = false;
 
-					if(!placed) {
+					if((!placed && ruleopt.fieldLockoutDeath) || (isPartialLockout && ruleopt.fieldPartialLockoutDeath)) {
 						// Signal GameOver
 						engine.field.reset();
 					} else if(speed.lockFlash > 0) {
+						// Lock flash
 						stat = STAT_LOCKFLASH;
 					} else {
 						int lineClears = engine.field.checkLine();
 
 						if(lineClears > 0) {
+							// Line clear
 							stat = STAT_LINECLEAR;
 						} else if(speed.are > 0) {
+							// ARE
 							areMax = speed.are;
 							stat = STAT_ARE;
+						} else {
+							// No status change
 						}
 					}
 				}
@@ -621,6 +807,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public long onLockFlash(long runMsec) {
+		updateDASARRValues();
 		updateController(runMsec);
 
 		lockFlashNow += runMsec;
@@ -634,6 +821,8 @@ public class GamePlay implements Serializable {
 				areMax = speed.are;
 				stat = STAT_ARE;
 			} else {
+				activateIRS();
+				activateIHS();
 				stat = STAT_MOVE;
 			}
 
@@ -644,6 +833,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public long onLineClear(long runMsec) {
+		updateDASARRValues();
 		updateController(runMsec);
 
 		long prevDelay = lineDelayNow;
@@ -657,6 +847,8 @@ public class GamePlay implements Serializable {
 				areMax = speed.areLine;
 				stat = STAT_ARE;
 			} else {
+				activateIRS();
+				activateIHS();
 				stat = STAT_MOVE;
 			}
 			return lineDelayNow - speed.lineDelay;
@@ -666,11 +858,14 @@ public class GamePlay implements Serializable {
 	}
 
 	public long onARE(long runMsec) {
+		updateDASARRValues();
 		updateController(runMsec);
 
 		areNow += runMsec;
 
 		if(areNow >= areMax) {
+			activateIRS();
+			activateIHS();
 			stat = STAT_MOVE;
 			return areNow - areMax;
 		}

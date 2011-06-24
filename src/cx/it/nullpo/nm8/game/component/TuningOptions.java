@@ -21,6 +21,21 @@ public class TuningOptions implements Serializable {
 	/** Preferred ARR in frame-based modes (-1:Use mode's setting) */
 	public long arrF;
 
+	/** Preferred Soft drop DAS in millisecond-based modes (-1:Use mode's setting) */
+	public long softdropDAS;
+
+	/** Preferred Soft drop DAS in frame-based modes (-1:Use mode's setting) */
+	public long softdropDASF;
+
+	/** Preferred Soft drop ARR in millisecond-based modes (-1:Use mode's setting) */
+	public long softdropARR;
+
+	/** Preferred Soft drop ARR in frame-based modes (-1:Use mode's setting) */
+	public long softdropARRF;
+
+	/** Preferred Soft drop speed magnification (-1:Use mode's setting) */
+	public float softdropSpeedMagnification;
+
 	/** Enable IRS if possible (only if enabled in the rule too) */
 	public boolean rotateInitial;
 
@@ -56,6 +71,11 @@ public class TuningOptions implements Serializable {
 		dasF = -1;
 		arr = -1;
 		arrF = -1;
+		softdropDAS = -1;
+		softdropDASF = -1;
+		softdropARR = -1;
+		softdropARRF = -1;
+		softdropSpeedMagnification = -1;
 		rotateInitial = true;
 		holdInitial = true;
 		ghost = true;
@@ -71,6 +91,11 @@ public class TuningOptions implements Serializable {
 		dasF = t.dasF;
 		arr = t.arr;
 		arrF = t.arrF;
+		softdropDAS = t.softdropDAS;
+		softdropDASF = t.softdropDASF;
+		softdropARR = t.softdropARR;
+		softdropARRF = t.softdropARRF;
+		softdropSpeedMagnification = t.softdropSpeedMagnification;
 		rotateInitial = t.rotateInitial;
 		holdInitial = t.holdInitial;
 		ghost = t.ghost;
