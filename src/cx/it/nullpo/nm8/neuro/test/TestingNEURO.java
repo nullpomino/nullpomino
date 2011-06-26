@@ -19,6 +19,7 @@ public class TestingNEURO extends NEUROCore {
 		super();
 		try {
 			new Nullterm().init(this);
+			new EventDispatcherPlugin().init(this);
 		} catch (PluginInitializationException e) {
 			System.err.println("Shit is all wrong, cap'n...");
 		}

@@ -50,12 +50,15 @@ public abstract class NEUROCore implements NEURO {
 				listeners.put(type, new HashSet<PluginListener>());
 			}
 			listeners.get(type).add(pl);
+			dispatchEvent(new DebugEvent(this, "Successfully created plugin listener. Plugin: "+p.getName()+
+					", type: "+type));
+		} else {
+			dispatchEvent(new DebugEvent(this, "Failed to created plugin listener. Plugin: "+p.getName()+
+					", type: "+type));
 		}
-		dispatchEvent(new DebugEvent(this, "Successfully created plugin listener for plugin: "+p.getName()+
-				" for type: "+type));
 	}
 
-	public void dispatchEvent(NEUROEvent e) {
+	public synchronized void dispatchEvent(NEUROEvent e) {
 		for (Class<? extends NEUROEvent> type : listeners.keySet()) {
 			if (e.getClass().equals(type)) {
 				for (PluginListener p : listeners.get(type)) {
