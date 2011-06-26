@@ -31,6 +31,9 @@ public class Nullterm extends AbstractPlugin {
 		// TODO Auto-generated method stub
 	}
 	
+	/**
+	 * Event listener for DebugEvents. Prints out the content message to the terminal.
+	 */
 	public void receiveEvent(DebugEvent e) {
 		System.out.println(e.getSource()+" dispatched (systime="+System.currentTimeMillis()+"): "+e.getMessage());
 	}

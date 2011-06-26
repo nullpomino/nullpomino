@@ -3,6 +3,11 @@ package cx.it.nullpo.nm8.neuro.core;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 
+/**
+ * The PluginLoader class will dynamically load plugins for the NEURO instance passed in.
+ * @author Zircean
+ *
+ */
 public class PluginLoader {
 
 	/**

@@ -5,8 +5,16 @@ import cx.it.nullpo.nm8.neuro.core.NEUROCore;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.plugin.Nullterm;
 
+/**
+ * A type of NEURO which is used to verify that events are being passed around correctly.
+ * @author Zircean
+ *
+ */
 public class TestingNEURO extends NEUROCore {
 	
+	/**
+	 * Constructs a TestingNEURO.
+	 */
 	public TestingNEURO() {
 		super();
 		try {
@@ -17,15 +25,13 @@ public class TestingNEURO extends NEUROCore {
 	}
 
 	public String getName() {
-		return "NEURO Light";
+		return "Test NEURO";
 	}
 
 	public float getVersion() {
-		return 0.1F;
+		return 0.0F;
 	}
 
-	public void draw(NFGraphics g) {
-		// TODO Draw this NEURO (will probably not draw anything except the game itself)
-	}
+	public void draw(NFGraphics g) { }
 
 }
