@@ -6,8 +6,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import cx.it.nullpo.nm8.network.NMMPMessage;
+import cx.it.nullpo.nm8.network.NMTPRequest;
+import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
+import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
+import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
+import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
 
 /**
@@ -21,6 +27,9 @@ public abstract class NEUROCore implements NEURO {
 	protected Set<NEUROPlugin> plugins;
 	/** The map containing mappings of event types to the plugin listeners registered for that event type. */
 	protected Map<Class<? extends NEUROEvent>,Set<PluginListener>> listeners;
+	
+	/** The network communicator. */
+	protected NetworkCommunicator network;
 
 	/**
 	 * Constructor for AbstractNEURO.
@@ -40,8 +49,10 @@ public abstract class NEUROCore implements NEURO {
 			if (listeners.get(type) == null) {
 				listeners.put(type, new HashSet<PluginListener>());
 			}
-			listeners.get(type).add(PluginListener.create(p,type));
+			listeners.get(type).add(pl);
 		}
+		dispatchEvent(new DebugEvent(this, "Successfully created plugin listener for plugin: "+p.getName()+
+				" for type: "+type));
 	}
 
 	public void dispatchEvent(NEUROEvent e) {
@@ -52,6 +63,14 @@ public abstract class NEUROCore implements NEURO {
 				}
 			}
 		}
+	}
+	
+	public NMTPResponse send(NMTPRequest req) {
+		return network.send(req);
+	}
+	
+	public void send(NMMPMessage message) {
+		network.send(message);
 	}
 
 	/**

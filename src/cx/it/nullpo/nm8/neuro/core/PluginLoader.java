@@ -1,6 +1,7 @@
 package cx.it.nullpo.nm8.neuro.core;
 
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
+import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 
 public class PluginLoader {
 

@@ -1,6 +1,7 @@
-package cx.it.nullpo.nm8.neuro.core;
+package cx.it.nullpo.nm8.neuro.plugin;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
+import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 
 /**

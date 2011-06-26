@@ -3,7 +3,6 @@ package cx.it.nullpo.nm8.neuro.plugin;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import cx.it.nullpo.nm8.neuro.core.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 
 /**
