@@ -42,6 +42,9 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 	/** Last update time */
 	protected long lastExecTime;
 
+	/** Last nano delta */
+	protected long lastNanoDelta;
+
 	// FPS cap variables
 	protected long calcInterval;
 	protected long prevCalcTime;
@@ -109,42 +112,47 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 
 			// FPS cap
 			maxfps = sys.getTargetFPS();
-			periodCurrent = (long) (1.0 / maxfps * 1000000000);
-			sleepFlag = false;
 
-			afterTime = System.nanoTime();
-			timeDiff = afterTime - beforeTime;
+			if(maxfps > 0) {
+				periodCurrent = (long) (1.0 / maxfps * 1000000000);
+				sleepFlag = false;
 
-			sleepTime = (periodCurrent - timeDiff) - overSleepTime;
-			sleepTimeInMillis = sleepTime / 1000000L;
+				afterTime = System.nanoTime();
+				timeDiff = afterTime - beforeTime;
 
-			if(sleepTimeInMillis >= 4) {
-				// If it is possible to use sleep
-				if(maxfps > 0) {
-					try {
-						Thread.sleep(sleepTimeInMillis);
-					} catch(InterruptedException e) {}
+				sleepTime = (periodCurrent - timeDiff) - overSleepTime;
+				sleepTimeInMillis = sleepTime / 1000000L;
+
+				if(sleepTimeInMillis >= 4) {
+					// If it is possible to use sleep
+					if(maxfps > 0) {
+						try {
+							Thread.sleep(sleepTimeInMillis);
+						} catch(InterruptedException e) {}
+					}
+					// sleep() oversleep
+					overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+					perfectFPSDelay = System.nanoTime();
+					sleepFlag = true;
+				} else if(sleepTime > 0) {
+					// Perfect FPS
+					overSleepTime = 0L;
+					while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
+					perfectFPSDelay += 1000000000 / maxfps;
+					sleepFlag = true;
 				}
-				// sleep() oversleep
-				overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
-				perfectFPSDelay = System.nanoTime();
-				sleepFlag = true;
-			} else if(sleepTime > 0) {
-				// Perfect FPS
-				overSleepTime = 0L;
-				while(System.nanoTime() < perfectFPSDelay + 1000000000 / maxfps) {}
-				perfectFPSDelay += 1000000000 / maxfps;
-				sleepFlag = true;
-			}
 
-			if(!sleepFlag) {
-				// Impossible to sleep!
-				overSleepTime = 0L;
-				if(++noDelays >= 16) {
-					Thread.yield();
-					noDelays = 0;
+				if(!sleepFlag) {
+					// Impossible to sleep!
+					overSleepTime = 0L;
+					if(++noDelays >= 16) {
+						Thread.yield();
+						noDelays = 0;
+					}
+					perfectFPSDelay = System.nanoTime();
 				}
-				perfectFPSDelay = System.nanoTime();
+			} else {
+				periodCurrent = (long) (1.0 / 60 * 1000000000);
 			}
 
 			beforeTime = System.nanoTime();
@@ -187,8 +195,11 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		long nowTime = System.nanoTime();
 		if(lastExecTime == 0) {
 			ndelta = 0;
+			lastNanoDelta = 0;
 		} else {
-			ndelta = (nowTime - lastExecTime) / 1000000L;
+			long tempDelta = lastNanoDelta + (nowTime - lastExecTime);
+			ndelta = tempDelta / 1000000L;
+			lastNanoDelta = tempDelta % 1000000L;
 		}
 		lastExecTime = nowTime;
 		sys.getNFGame().update(sys, ndelta);

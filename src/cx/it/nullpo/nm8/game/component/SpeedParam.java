@@ -12,6 +12,9 @@ public class SpeedParam implements Serializable {
 	/** Gravity */
 	public long gravity;
 
+	/** Gravity denominator */
+	public long denominator;
+
 	/** ARE (AppeaRancE delay) */
 	public long are;
 
@@ -93,18 +96,22 @@ public class SpeedParam implements Serializable {
 	 */
 	public void reset(boolean frameBased) {
 		if(!frameBased) {
-			gravity = 1000;
+			gravity = 1;
+			denominator = 1000;
 			are = 0;
 			areLine = 0;
 			lockFlash = 0;
 			lineDelay = 200;
 			lockDelay = 500;
+			//das = 133;
+			//arr = 17;
 			das = 133;
-			arr = 17;
+			arr = 1;
 			softdropDAS = 1;
 			softdropARR = 1;
 		} else {
-			gravity = 60;
+			gravity = 1;
+			denominator = 60;
 			are = 0;
 			areLine = 0;
 			lockFlash = 0;
@@ -129,6 +136,7 @@ public class SpeedParam implements Serializable {
 	 */
 	public void copy(SpeedParam s) {
 		gravity = s.gravity;
+		denominator = s.denominator;
 		are = s.are;
 		areLine = s.areLine;
 		lockFlash = s.lockFlash;

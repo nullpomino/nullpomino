@@ -103,6 +103,12 @@ public class GamePlay implements Serializable {
 	/** Hover time added by softdrop */
 	public long hoverSoftDrop;
 
+	/** Soft drop button time */
+	public long softdropTime;
+
+	/** Denominator of soft drop button time */
+	public long softdropTimeDenominator;
+
 	/** Current lock delay time */
 	public long lockDelayNow;
 
@@ -169,6 +175,8 @@ public class GamePlay implements Serializable {
 		nowPieceY = 0;
 		hoverTime = 0;
 		hoverSoftDrop = 0;
+		softdropTime = 0;
+		softdropTimeDenominator = engine.owner.isFrameBasedTimer() ? 1 : 17;
 		lockDelayNow = 0;
 		instantLock = false;
 		lastmove = LASTMOVE_NONE;
@@ -234,14 +242,14 @@ public class GamePlay implements Serializable {
 	public void update(long runMsec) {
 		long rMsec = engine.owner.isFrameBasedTimer() ? 1 : runMsec;
 
+		// Update timer
+		if(engine.timerActive) {
+			statistics.time += rMsec;
+		}
+
 		while(rMsec > 0) {
 			long msec = rMsec;
 			rMsec = 0;
-
-			// Update timer
-			if(engine.timerActive) {
-				statistics.time += msec;
-			}
 
 			// Execute main logics
 			switch(stat) {
@@ -494,6 +502,7 @@ public class GamePlay implements Serializable {
 		nowPieceY = getSpawnPosY(nowPieceObject);
 		hoverTime = 0;
 		hoverSoftDrop = 0;
+		softdropTime = 0;
 		lockDelayNow = 0;
 		instantLock = false;
 		lastmove = LASTMOVE_NONE;
@@ -527,8 +536,9 @@ public class GamePlay implements Serializable {
 	/**
 	 * Move the current piece to left or right
 	 * @param m Move direction (-1:Left, 1:Right)
+	 * @return true is successful
 	 */
-	public void movePiece(int m) {
+	public boolean movePiece(int m) {
 		if(nowPieceObject != null) {
 			boolean isGround = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field);
 
@@ -543,8 +553,11 @@ public class GamePlay implements Serializable {
 				}
 
 				statistics.totalPieceMove++;
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	/**
@@ -552,7 +565,8 @@ public class GamePlay implements Serializable {
 	 */
 	public void softdropPiece() {
 		if(nowPieceObject != null) {
-			hoverSoftDrop += (long)(speed.gravity * getSoftdropSpeedMagnification());
+			if(speed.denominator > 0)
+				hoverSoftDrop += (long)(speed.denominator * getSoftdropSpeedMagnification());
 		}
 	}
 
@@ -699,6 +713,7 @@ public class GamePlay implements Serializable {
 
 			// Left/Right movement
 			int move = 0;
+			int repeat = 0;
 			if(ctrl.isButtonPressed(Controller.BUTTON_LEFT) && ctrl.isButtonPressed(Controller.BUTTON_RIGHT)) {
 				if(ctrl.buttonLastPushedTime[Controller.BUTTON_LEFT] > ctrl.buttonLastPushedTime[Controller.BUTTON_RIGHT]) {
 					if(ctrl.isButtonActivated(Controller.BUTTON_LEFT)) {
@@ -714,18 +729,38 @@ public class GamePlay implements Serializable {
 			} else if(ctrl.isButtonActivated(Controller.BUTTON_RIGHT)) {
 				move = 1;
 			}
-			if(move != 0) movePiece(move);
+
+			// Check move repeats
+			if(move < 0) {
+				repeat = (int)ctrl.getButtonRepeatCount(Controller.BUTTON_LEFT);
+			} else if(move > 0) {
+				repeat = (int)ctrl.getButtonRepeatCount(Controller.BUTTON_RIGHT);
+			}
+
+			// Move the piece
+			if(move != 0) {
+				for(int i = 0; i <= repeat; i++) {
+					if(!movePiece(move)) break;
+				}
+			}
 
 			// Soft drop
-			if(ctrl.isButtonActivated(Controller.BUTTON_SOFT)) softdropPiece();
+			if(ctrl.isButtonActivated(Controller.BUTTON_SOFT)) {
+				softdropTime += runMsec;
+
+				while(softdropTime >= softdropTimeDenominator) {
+					softdropTime -= softdropTimeDenominator;
+					softdropPiece();
+				}
+			}
 
 			// Hard drop
 			if(ctrl.isButtonActivated(Controller.BUTTON_HARD)) harddropPiece();
 
 			if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
-				if(speed.gravity == 0) {
+				if((speed.gravity == 0) || (speed.denominator == 0)) {
 					// 0G
-				} else if(speed.gravity < 0) {
+				} else if((speed.gravity < 0) || (speed.denominator < 0)) {
 					// 20G
 					while(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 						nowPieceY++;
@@ -734,8 +769,8 @@ public class GamePlay implements Serializable {
 					}
 				} else {
 					// Softdrop
-					while(hoverSoftDrop >= speed.gravity) {
-						hoverSoftDrop -= speed.gravity;
+					while(hoverSoftDrop >= speed.denominator) {
+						hoverSoftDrop -= speed.denominator;
 
 						if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 							nowPieceY++;
@@ -748,10 +783,10 @@ public class GamePlay implements Serializable {
 					}
 
 					// Gravity
-					hoverTime += runMsec;
+					hoverTime += speed.gravity * runMsec;
 
-					while(hoverTime >= speed.gravity) {
-						hoverTime -= speed.gravity;
+					while(hoverTime >= speed.denominator) {
+						hoverTime -= speed.denominator;
 
 						if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 							nowPieceY++;
@@ -797,6 +832,11 @@ public class GamePlay implements Serializable {
 							stat = STAT_ARE;
 						} else {
 							// No status change
+
+							// Spawn a new piece now if using milliseconds timer
+							if(instantLock && !engine.owner.isFrameBasedTimer()) {
+								newPiece();
+							}
 						}
 					}
 				}

@@ -36,7 +36,7 @@ public class GameManager implements Serializable {
 	public GameMode gameMode;
 
 	/** Max game loop time (0:No Limit) */
-	public long maxLoopTime = 17;
+	public long maxLoopTime = 0;
 
 	/** Game loop time */
 	public long gameLoopTime;

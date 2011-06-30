@@ -47,6 +47,9 @@ public class Controller implements Serializable {
 	/** Button auto-repeat timer */
 	public long[] buttonRepeatTimer;
 
+	/** Number of button repeats should the game process in a update */
+	public long[] buttonRepeatCount;
+
 	/** Last pushed time */
 	public long[] buttonLastPushedTime;
 
@@ -85,6 +88,7 @@ public class Controller implements Serializable {
 		buttonRepeated = new boolean[MAX_BUTTON];
 		buttonTime = new long[MAX_BUTTON];
 		buttonRepeatTimer = new long[MAX_BUTTON];
+		buttonRepeatCount = new long[MAX_BUTTON];
 		buttonLastPushedTime = new long[MAX_BUTTON];
 		buttonLastActivatedTime = new long[MAX_BUTTON];
 		buttonDAS = new long[MAX_BUTTON];
@@ -103,6 +107,7 @@ public class Controller implements Serializable {
 			buttonRepeated[i] = c.buttonRepeated[i];
 			buttonTime[i] = c.buttonTime[i];
 			buttonRepeatTimer[i] = c.buttonRepeatTimer[i];
+			buttonRepeatCount[i] = c.buttonRepeatCount[i];
 			buttonLastPushedTime[i] = c.buttonLastPushedTime[i];
 			buttonLastActivatedTime[i] = c.buttonLastActivatedTime[i];
 			buttonDAS[i] = c.buttonDAS[i];
@@ -144,6 +149,14 @@ public class Controller implements Serializable {
 		return buttonActive[b];
 	}
 
+	public long getButtonRepeatCount(int b) {
+		return buttonRepeatCount[b];
+	}
+
+	public void setButtonRepeatCount(int b, long r) {
+		buttonRepeatCount[b] = r;
+	}
+
 	/**
 	 * Set DAS
 	 * @param b Button ID
@@ -177,18 +190,27 @@ public class Controller implements Serializable {
 					buttonTime[i] += runMsec;
 					buttonLastPushedTime[i] = currentTime;
 					buttonLastActivatedTime[i] = currentTime;
+					buttonRepeatCount[i] = 0;
 				} else {
 					buttonActive[i] = false;
 					buttonTime[i] += runMsec;
+					buttonRepeatCount[i] = 0;
 
 					long delay = buttonRepeated[i] ? buttonARR[i] : buttonDAS[i];
 					if(delay > 0) {
 						buttonRepeatTimer[i] += runMsec;
+
 						if(buttonRepeatTimer[i] >= delay) {
 							buttonRepeatTimer[i] -= delay;
 							buttonActive[i] = true;
 							buttonRepeated[i] = true;
 							buttonLastActivatedTime[i] = currentTime;
+
+							// ARR repeat
+							while(buttonRepeatTimer[i] >= buttonARR[i]) {
+								buttonRepeatTimer[i] -= buttonARR[i];
+								buttonRepeatCount[i]++;
+							}
 						}
 					}
 				}
@@ -198,6 +220,7 @@ public class Controller implements Serializable {
 				buttonRepeated[i] = false;
 				buttonTime[i] = 0;
 				buttonRepeatTimer[i] = 0;
+				buttonRepeatCount[i] = 0;
 			}
 		}
 	}
