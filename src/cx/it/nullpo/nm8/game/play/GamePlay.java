@@ -164,7 +164,7 @@ public class GamePlay implements Serializable {
 	public void init() {
 		ctrl = new Controller();
 		statistics = new Statistics();
-		speed = new SpeedParam(engine.owner.isFrameBasedTimer());
+		speed = new SpeedParam();
 		Random tempRand = new Random();
 		randSeed = tempRand.nextLong();
 		random = new Random(randSeed);
@@ -176,7 +176,7 @@ public class GamePlay implements Serializable {
 		hoverTime = 0;
 		hoverSoftDrop = 0;
 		softdropTime = 0;
-		softdropTimeDenominator = engine.owner.isFrameBasedTimer() ? 1 : 17;
+		softdropTimeDenominator = 1;
 		lockDelayNow = 0;
 		instantLock = false;
 		lastmove = LASTMOVE_NONE;
@@ -237,43 +237,32 @@ public class GamePlay implements Serializable {
 
 	/**
 	 * Update game
-	 * @param runMsec Milliseconds elapsed from the last execution, or 1 if using frame-based timer
 	 */
-	public void update(long runMsec) {
-		long rMsec = engine.owner.isFrameBasedTimer() ? 1 : runMsec;
-
+	public void update() {
 		// Update timer
 		if(engine.timerActive) {
-			statistics.time += rMsec;
+			statistics.time += 1;
 		}
 
-		while(rMsec > 0) {
-			long msec = rMsec;
-			rMsec = 0;
-
-			// Execute main logics
-			switch(stat) {
-			case STAT_SETTING:
-				break;
-			case STAT_READY:
-				rMsec = onReady(msec);
-				break;
-			case STAT_MOVE:
-				rMsec = onMove(msec);
-				break;
-			case STAT_LOCKFLASH:
-				rMsec = onLockFlash(msec);
-				break;
-			case STAT_LINECLEAR:
-				rMsec = onLineClear(msec);
-				break;
-			case STAT_ARE:
-				rMsec = onARE(msec);
-				break;
-			}
-
-			// Do not execute more than once in frame based timer
-			if(engine.owner.isFrameBasedTimer()) rMsec = 0;
+		// Execute main logics
+		switch(stat) {
+		case STAT_SETTING:
+			break;
+		case STAT_READY:
+			onReady();
+			break;
+		case STAT_MOVE:
+			onMove();
+			break;
+		case STAT_LOCKFLASH:
+			onLockFlash();
+			break;
+		case STAT_LINECLEAR:
+			onLineClear();
+			break;
+		case STAT_ARE:
+			onARE();
+			break;
 		}
 	}
 
@@ -294,10 +283,9 @@ public class GamePlay implements Serializable {
 
 	/**
 	 * Update controller status
-	 * @param runMsec Milliseconds elapsed from the last execution, or 1 if using frame-based timer
 	 */
-	public void updateController(long runMsec) {
-		ctrl.update(runMsec, engine.replayTimer);
+	public void updateController() {
+		ctrl.update(engine.replayTimer);
 	}
 
 	/**
@@ -318,7 +306,7 @@ public class GamePlay implements Serializable {
 	 */
 	public long getDAS() {
 		long modeSetting = speed.das;
-		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.dasF : tuning.das;
+		long userSetting = tuning.das;
 
 		if(speed.lockDAS || (userSetting == -1)) {
 			return modeSetting;
@@ -332,7 +320,7 @@ public class GamePlay implements Serializable {
 	 */
 	public long getARR() {
 		long modeSetting = speed.arr;
-		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.arrF : tuning.arr;
+		long userSetting = tuning.arr;
 
 		if(speed.lockARR || (userSetting == -1)) {
 			return modeSetting;
@@ -346,7 +334,7 @@ public class GamePlay implements Serializable {
 	 */
 	public long getSoftdropDAS() {
 		long modeSetting = speed.softdropDAS;
-		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.softdropDASF : tuning.softdropDAS;
+		long userSetting = tuning.softdropDAS;
 
 		if(speed.lockSoftdropDAS || (userSetting == -1)) {
 			return modeSetting;
@@ -360,7 +348,7 @@ public class GamePlay implements Serializable {
 	 */
 	public long getSoftdropARR() {
 		long modeSetting = speed.softdropARR;
-		long userSetting = engine.owner.isFrameBasedTimer() ? tuning.softdropARRF : tuning.softdropARR;
+		long userSetting = tuning.softdropARR;
 
 		if(speed.lockSoftdropARR || (userSetting == -1)) {
 			return modeSetting;
@@ -670,11 +658,11 @@ public class GamePlay implements Serializable {
 		}
 	}
 
-	public long onReady(long runMsec) {
+	public void onReady() {
 		updateDASARRValues();
-		updateController(runMsec);
+		updateController();
 
-		readyTimer += runMsec;
+		readyTimer += 1;
 
 		if(readyTimer >= engine.goEnd) {
 			activateIRS();
@@ -682,24 +670,18 @@ public class GamePlay implements Serializable {
 			engine.timerActive = true;
 			engine.gameStarted = true;
 			stat = STAT_MOVE;
-			return readyTimer - engine.goEnd;
 		}
-
-		return 0;
 	}
 
-	public long onMove(long runMsec) {
+	public void onMove() {
 		updateDASARRValues();
-		updateController(runMsec);
-
-		long gMsec = runMsec;	// Miliseconds remaining after gravity
-		long extraMsec = 0;	// Extra miliseconds that was not used here
+		updateController();
 
 		if(nowPieceObject == null) {
 			newPiece();
 		}
 		if(nowPieceObject != null) {
-			statistics.totalPieceActiveTime += runMsec;
+			statistics.totalPieceActiveTime++;
 
 			// Hold
 			if(ctrl.isButtonActivated(Controller.BUTTON_HOLD)) holdPiece();
@@ -713,7 +695,6 @@ public class GamePlay implements Serializable {
 
 			// Left/Right movement
 			int move = 0;
-			int repeat = 0;
 			if(ctrl.isButtonPressed(Controller.BUTTON_LEFT) && ctrl.isButtonPressed(Controller.BUTTON_RIGHT)) {
 				if(ctrl.buttonLastPushedTime[Controller.BUTTON_LEFT] > ctrl.buttonLastPushedTime[Controller.BUTTON_RIGHT]) {
 					if(ctrl.isButtonActivated(Controller.BUTTON_LEFT)) {
@@ -730,23 +711,14 @@ public class GamePlay implements Serializable {
 				move = 1;
 			}
 
-			// Check move repeats
-			if(move < 0) {
-				repeat = (int)ctrl.getButtonRepeatCount(Controller.BUTTON_LEFT);
-			} else if(move > 0) {
-				repeat = (int)ctrl.getButtonRepeatCount(Controller.BUTTON_RIGHT);
-			}
-
 			// Move the piece
 			if(move != 0) {
-				for(int i = 0; i <= repeat; i++) {
-					if(!movePiece(move)) break;
-				}
+				movePiece(move);
 			}
 
 			// Soft drop
 			if(ctrl.isButtonActivated(Controller.BUTTON_SOFT)) {
-				softdropTime += runMsec;
+				softdropTime++;
 
 				while(softdropTime >= softdropTimeDenominator) {
 					softdropTime -= softdropTimeDenominator;
@@ -783,7 +755,7 @@ public class GamePlay implements Serializable {
 					}
 
 					// Gravity
-					hoverTime += speed.gravity * runMsec;
+					hoverTime += speed.gravity;
 
 					while(hoverTime >= speed.denominator) {
 						hoverTime -= speed.denominator;
@@ -793,7 +765,6 @@ public class GamePlay implements Serializable {
 							lockDelayNow = 0;
 							lastmove = LASTMOVE_FALL_AUTO;
 						} else {
-							gMsec = hoverTime;
 							break;
 						}
 					}
@@ -802,13 +773,11 @@ public class GamePlay implements Serializable {
 
 			// Lock delay
 			if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
-				lockDelayNow += gMsec;
+				lockDelayNow++;
 				hoverSoftDrop = 0;
 
 				if((lockDelayNow >= speed.lockDelay) || (instantLock)) {
 					// The current piece has been locked
-					if(!instantLock) extraMsec = lockDelayNow - speed.lockDelay;
-
 					boolean isPartialLockout = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, engine.field);
 					boolean placed = nowPieceObject.placeToField(nowPieceX, nowPieceY, engine.field);
 					nowPieceObject = null;
@@ -832,25 +801,18 @@ public class GamePlay implements Serializable {
 							stat = STAT_ARE;
 						} else {
 							// No status change
-
-							// Spawn a new piece now if using milliseconds timer
-							if(instantLock && !engine.owner.isFrameBasedTimer()) {
-								newPiece();
-							}
 						}
 					}
 				}
 			}
 		}
-
-		return extraMsec;
 	}
 
-	public long onLockFlash(long runMsec) {
+	public void onLockFlash() {
 		updateDASARRValues();
-		updateController(runMsec);
+		updateController();
 
-		lockFlashNow += runMsec;
+		lockFlashNow++;
 
 		if(lockFlashNow >= speed.lockFlash) {
 			int lineClears = engine.field.checkLine();
@@ -865,19 +827,15 @@ public class GamePlay implements Serializable {
 				activateIHS();
 				stat = STAT_MOVE;
 			}
-
-			return lockFlashNow - speed.lockFlash;
 		}
-
-		return 0;
 	}
 
-	public long onLineClear(long runMsec) {
+	public void onLineClear() {
 		updateDASARRValues();
-		updateController(runMsec);
+		updateController();
 
 		long prevDelay = lineDelayNow;
-		lineDelayNow += runMsec;
+		lineDelayNow++;
 
 		if(prevDelay == 0) engine.field.clearLine();
 
@@ -891,25 +849,19 @@ public class GamePlay implements Serializable {
 				activateIHS();
 				stat = STAT_MOVE;
 			}
-			return lineDelayNow - speed.lineDelay;
 		}
-
-		return 0;
 	}
 
-	public long onARE(long runMsec) {
+	public void onARE() {
 		updateDASARRValues();
-		updateController(runMsec);
+		updateController();
 
-		areNow += runMsec;
+		areNow++;
 
 		if(areNow >= areMax) {
 			activateIRS();
 			activateIHS();
 			stat = STAT_MOVE;
-			return areNow - areMax;
 		}
-
-		return 0;
 	}
 }

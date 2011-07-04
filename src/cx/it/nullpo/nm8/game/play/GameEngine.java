@@ -11,13 +11,9 @@ public class GameEngine implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -1983896978679274559L;
 
-	/** Default duration of Ready->Go (Miliseconds) */
-	public static final long DEFAULT_READY_START = 0, DEFAULT_READY_END = 499,
-							 DEFAULT_GO_START = 500, DEFAULT_GO_END = 1000;
-
-	/** Default duration of Ready->Go (Frames) */
-	public static final long F_DEFAULT_READY_START = 0, F_DEFAULT_READY_END = 29,
-							 F_DEFAULT_GO_START = 30, F_DEFAULT_GO_END = 60;
+	/** Default duration of Ready->Go */
+	public static final long DEFAULT_READY_START = 0, DEFAULT_READY_END = 29,
+							 DEFAULT_GO_START = 30, DEFAULT_GO_END = 60;
 
 	/** GameManager: Owner of this GameEngine */
 	public GameManager owner;
@@ -72,17 +68,10 @@ public class GameEngine implements Serializable {
 		gameStarted = false;
 		replayTimer = 0;
 
-		if(!owner.isFrameBasedTimer()) {
-			readyStart = DEFAULT_READY_START;
-			readyEnd = DEFAULT_READY_END;
-			goStart = DEFAULT_GO_START;
-			goEnd = DEFAULT_GO_END;
-		} else {
-			readyStart = F_DEFAULT_READY_START;
-			readyEnd = F_DEFAULT_READY_END;
-			goStart = F_DEFAULT_GO_START;
-			goEnd = F_DEFAULT_GO_END;
-		}
+		readyStart = DEFAULT_READY_START;
+		readyEnd = DEFAULT_READY_END;
+		goStart = DEFAULT_GO_START;
+		goEnd = DEFAULT_GO_END;
 
 		owner.gameMode.engineInit(this);
 
@@ -104,13 +93,12 @@ public class GameEngine implements Serializable {
 
 	/**
 	 * Update game
-	 * @param runMsec Milliseconds elapsed from the last execution, or 1 if using frame-based timer
 	 */
-	public void update(long runMsec) {
-		if(gameActive) replayTimer += runMsec;
+	public void update() {
+		if(gameActive) replayTimer++;
 
 		for(int i = 0; i < gamePlay.length; i++) {
-			gamePlay[i].update(runMsec);
+			gamePlay[i].update();
 		}
 	}
 

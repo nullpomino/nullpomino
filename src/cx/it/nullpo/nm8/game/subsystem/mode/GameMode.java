@@ -45,14 +45,6 @@ public class GameMode implements Serializable {
 	}
 
 	/**
-	 * Get the type of game timer
-	 * @return true if this game mode uses frame-based timer (false if using milliseconds timer)
-	 */
-	public boolean isFrameBasedTimer() {
-		return false;
-	}
-
-	/**
 	 * Initialization of game mode. Executed before the game screen appears.
 	 * @param manager GameManager that owns this mode
 	 */

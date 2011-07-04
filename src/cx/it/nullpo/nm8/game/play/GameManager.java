@@ -35,9 +35,6 @@ public class GameManager implements Serializable {
 	/** The game mode */
 	public GameMode gameMode;
 
-	/** Max game loop time (0:No Limit) */
-	public long maxLoopTime = 0;
-
 	/** Game loop time */
 	public long gameLoopTime;
 
@@ -136,29 +133,13 @@ public class GameManager implements Serializable {
 	 * @param runMsec Milliseconds elapsed from the last execution
 	 */
 	public void update(long runMsec) {
-		if(!isFrameBasedTimer()) {
-			// Milliseconds timer
-			gameLoopTime += runMsec;
+		gameLoopTime += runMsec;
 
-			while(gameLoopTime > 0) {
-				long msec = gameLoopTime;
-				if(maxLoopTime > 0) msec = Math.min(gameLoopTime, maxLoopTime);
-				gameLoopTime -= msec;
+		while(gameLoopTime >= frameBasedLoopTime) {
+			gameLoopTime -= frameBasedLoopTime;
 
-				for(int i = 0; i < engine.length; i++) {
-					engine[i].update(msec);
-				}
-			}
-		} else {
-			// Frame timer
-			gameLoopTime += runMsec;
-
-			while(gameLoopTime >= frameBasedLoopTime) {
-				gameLoopTime -= frameBasedLoopTime;
-
-				for(int i = 0; i < engine.length; i++) {
-					engine[i].update(1);
-				}
+			for(int i = 0; i < engine.length; i++) {
+				engine[i].update();
 			}
 		}
 	}
@@ -185,14 +166,6 @@ public class GameManager implements Serializable {
 	 */
 	public int getNumberOfPlayersForEachEngine() {
 		return gameMode.getNumberOfPlayersForEachEngine();
-	}
-
-	/**
-	 * Returns true if the current game mode is using frame-based timer
-	 * @return true if the current game mode is using frame-based timer (false if using miliseconds timer)
-	 */
-	public boolean isFrameBasedTimer() {
-		return gameMode.isFrameBasedTimer();
 	}
 
 	/**
