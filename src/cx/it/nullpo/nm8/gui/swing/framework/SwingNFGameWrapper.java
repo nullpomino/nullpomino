@@ -4,13 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 
 /**
  * A JFrame that runs our game
@@ -83,6 +92,11 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		int width = sys.getWidth() + insets.left + insets.right;
 		int height = sys.getHeight() + insets.top + insets.bottom;
 		setSize(width, height);
+
+		MouseEventHandler mouseHandler = new MouseEventHandler((SwingNFMouse)sys.getMouse());
+		addMouseListener(mouseHandler);
+		addMouseMotionListener(mouseHandler);
+		addMouseWheelListener(mouseHandler);
 
 		thread = new Thread(this, "Game Thread");
 		thread.start();
@@ -287,6 +301,132 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 			SwingNFKeyboard k = (SwingNFKeyboard)sys.getKeyboard();
 			k.setKeyDown(e.getKeyCode(), false);
 			k.dispatchKeyReleased(e.getKeyCode(), e.getKeyChar());
+		}
+	}
+
+	/**
+	 * Called when a mouse event happens
+	 */
+	protected class MouseEventHandler implements MouseListener, MouseMotionListener, MouseWheelListener {
+		/** SwingNFMouse for mouse events */
+		protected SwingNFMouse mouse;
+
+		/** Old mouse position */
+		protected Point oldPoint;
+
+		public MouseEventHandler(SwingNFMouse mouse) {
+			this.mouse = mouse;
+			oldPoint = new Point();
+		}
+
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			int wheel = e.getWheelRotation();
+
+			synchronized (mouse.mouseListeners) {
+				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+				while(it.hasNext()) {
+					it.next().mouseWheelMoved(wheel);
+				}
+			}
+		}
+
+		public void mouseDragged(MouseEvent e) {
+			Point newPoint = mouse.fixPoint(e.getPoint());
+
+			if(!newPoint.equals(oldPoint)) {
+				synchronized (mouse.mouseListeners) {
+					Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+					while(it.hasNext()) {
+						if(!newPoint.equals(oldPoint)) {
+							it.next().mouseDragged(oldPoint, newPoint);
+						}
+					}
+				}
+			}
+
+			oldPoint = newPoint;
+		}
+
+		public void mouseMoved(MouseEvent e) {
+			Point newPoint = mouse.fixPoint(e.getPoint());
+
+			if(!newPoint.equals(oldPoint)) {
+				synchronized (mouse.mouseListeners) {
+					Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+					while(it.hasNext()) {
+						if(!newPoint.equals(oldPoint)) {
+							it.next().mouseMoved(oldPoint, newPoint);
+						}
+					}
+				}
+			}
+
+			oldPoint = newPoint;
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			Point newPoint = mouse.fixPoint(e.getPoint());
+			int buttonID = mouse.getNFMouseButtonID(e);
+			int clickCount = e.getClickCount();
+
+			synchronized (mouse.mouseListeners) {
+				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+				while(it.hasNext()) {
+					it.next().mouseClicked(buttonID, newPoint, clickCount);
+				}
+			}
+
+			oldPoint = newPoint;
+		}
+
+		public void mousePressed(MouseEvent e) {
+			Point newPoint = mouse.fixPoint(e.getPoint());
+			int buttonID = mouse.getNFMouseButtonID(e);
+
+			synchronized (mouse.mouseListeners) {
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					mouse.lastLeft = true;
+				} else if(SwingUtilities.isRightMouseButton(e)) {
+					mouse.lastRight = true;
+				} else if(SwingUtilities.isMiddleMouseButton(e)) {
+					mouse.lastMiddle = true;
+				}
+
+				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+				while(it.hasNext()) {
+					it.next().mousePressed(buttonID, newPoint);
+				}
+			}
+
+			oldPoint = newPoint;
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			Point newPoint = mouse.fixPoint(e.getPoint());
+			int buttonID = mouse.getNFMouseButtonID(e);
+
+			synchronized (mouse.mouseListeners) {
+				if(SwingUtilities.isLeftMouseButton(e)) {
+					mouse.lastLeft = false;
+				} else if(SwingUtilities.isRightMouseButton(e)) {
+					mouse.lastRight = false;
+				} else if(SwingUtilities.isMiddleMouseButton(e)) {
+					mouse.lastMiddle = false;
+				}
+
+				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+				while(it.hasNext()) {
+					it.next().mouseReleased(buttonID, newPoint);
+				}
+			}
+
+			oldPoint = newPoint;
+		}
+
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		public void mouseExited(MouseEvent e) {
 		}
 	}
 }

@@ -1,21 +1,30 @@
 package cx.it.nullpo.nm8.gui.slick.framework;
 
+import java.awt.Point;
+import java.util.Iterator;
+
 import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
+import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
+
+import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 
 /**
  * Implementation of Slick's Game interface
  */
-public class SlickNFGameWrapper implements Game, KeyListener {
+public class SlickNFGameWrapper implements Game, KeyListener, MouseListener {
 	/** SlickNFSystem */
 	protected SlickNFSystem sys;
 
 	/** Last update time */
 	protected long lastExecTime;
+
+	/** Mouse */
+	protected SlickNFMouse mouse;
 
 	/**
 	 * Constructor
@@ -43,6 +52,11 @@ public class SlickNFGameWrapper implements Game, KeyListener {
 			// Add key listener
 			SlickNFKeyboard keyboard = (SlickNFKeyboard)sys.getKeyboard();
 			keyboard.getNativeInput().addKeyListener(this);
+		}
+		if(sys.getMouse() instanceof SlickNFMouse) {
+			// Add mouse listener
+			mouse = (SlickNFMouse)sys.getMouse();
+			mouse.getNativeInput().addMouseListener(this);
 		}
 		sys.getNFGame().init(sys);
 	}
@@ -84,5 +98,68 @@ public class SlickNFGameWrapper implements Game, KeyListener {
 	}
 
 	public void setInput(Input input) {
+	}
+
+	public void mouseWheelMoved(int change) {
+		synchronized (mouse.mouseListeners) {
+			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+			while(it.hasNext()) {
+				it.next().mouseWheelMoved(-change);	// change is reversed in Slick, so...
+			}
+		}
+	}
+
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		Point p = new Point(x, y);
+		synchronized (mouse.mouseListeners) {
+			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+			while(it.hasNext()) {
+				it.next().mouseClicked(button, p, clickCount);
+			}
+		}
+	}
+
+	public void mousePressed(int button, int x, int y) {
+		Point p = new Point(x, y);
+		synchronized (mouse.mouseListeners) {
+			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+			while(it.hasNext()) {
+				it.next().mousePressed(button, p);
+			}
+		}
+	}
+
+	public void mouseReleased(int button, int x, int y) {
+		Point p = new Point(x, y);
+		synchronized (mouse.mouseListeners) {
+			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+			while(it.hasNext()) {
+				it.next().mouseReleased(button, p);
+			}
+		}
+	}
+
+	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+		Point op = new Point(oldx, oldy);
+		Point np = new Point(newx, newy);
+
+		synchronized (mouse.mouseListeners) {
+			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+			while(it.hasNext()) {
+				it.next().mouseMoved(op, np);
+			}
+		}
+	}
+
+	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
+		Point op = new Point(oldx, oldy);
+		Point np = new Point(newx, newy);
+
+		synchronized (mouse.mouseListeners) {
+			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
+			while(it.hasNext()) {
+				it.next().mouseDragged(op, np);
+			}
+		}
 	}
 }

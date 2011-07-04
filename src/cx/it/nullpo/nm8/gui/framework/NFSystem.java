@@ -167,6 +167,12 @@ public abstract class NFSystem implements Serializable {
 	abstract public NFKeyboard getKeyboard();
 
 	/**
+	 * Get NFMouse for mouse access
+	 * @return NFMouse
+	 */
+	abstract public NFMouse getMouse();
+
+	/**
 	 * Get the graphics context used by this container
 	 * @return The graphics context used by this container
 	 */

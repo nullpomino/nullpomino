@@ -16,6 +16,7 @@ import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFImage;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 
@@ -33,6 +34,9 @@ public class SwingNFSystem extends NFSystem {
 
 	/** Keyboard Input */
 	protected SwingNFKeyboard keyboard;
+
+	/** Mouse Input */
+	protected SwingNFMouse mouse;
 
 	/** Window title */
 	protected String windowTitle = "";
@@ -90,6 +94,14 @@ public class SwingNFSystem extends NFSystem {
 			keyboard = new SwingNFKeyboard();
 		}
 		return keyboard;
+	}
+
+	@Override
+	public NFMouse getMouse() {
+		if((mouse == null) && (gameWrapper != null)) {
+			mouse = new SwingNFMouse(this, gameWrapper);
+		}
+		return mouse;
 	}
 
 	@Override

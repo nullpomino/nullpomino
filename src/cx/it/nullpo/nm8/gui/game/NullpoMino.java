@@ -1,5 +1,6 @@
 package cx.it.nullpo.nm8.gui.game;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 
 import cx.it.nullpo.nm8.game.component.Block;
@@ -13,6 +14,7 @@ import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 
 public class NullpoMino implements NFGame, NFKeyListener {
@@ -24,11 +26,14 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	GameManager manager;
 	long lastdelta;
 
-
 	public void init(NFSystem sys) {
 		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
 		sys.getKeyboard().addKeyListener(this);
+
+		if(sys.getMouse() != null) {
+			sys.getMouse().addMouseListener(new TestMouseListener());
+		}
 
 		try {
 			if(sys.isFontSupported()) {
@@ -61,6 +66,22 @@ public class NullpoMino implements NFGame, NFKeyListener {
 				String strTimer = NUtil.getTime(manager.getGamePlay(0,0).statistics.time);
 				g.drawString("Time:" + strTimer, 5, 30);
 				g.drawString("Delta:" + lastdelta, 5, 50);
+
+				if(sys.getMouse() != null) {
+					if(sys.getMouse().isLeftButtonDown()) {
+						g.drawString("LeftMouseButton", 5, 70);
+					}
+					if(sys.getMouse().isRightButtonDown()) {
+						g.drawString("RightMouseButton", 5, 90);
+					}
+					if(sys.getMouse().isMiddleButtonDown()) {
+						g.drawString("MiddleMouseButton", 5, 110);
+					}
+					Point p = sys.getMouse().getMousePosition();
+					if(p != null) g.drawString("X:" + p.x + " Y:" + p.y, 5, 130);
+					p = sys.getMouse().getAbsoluteMousePosition();
+					if(p != null) g.drawString("AX:" + p.x + " AY:" + p.y, 5, 150);
+				}
 
 				int fldX = 200;
 				int fldY = 80;
@@ -230,6 +251,38 @@ public class NullpoMino implements NFGame, NFKeyListener {
 			int x2 = piece.getDataX(i);
 			int y2 = piece.getDataY(i);
 			drawBlock(blk, x + (x2 * 16), y + (y2 * 16), isGhost);
+		}
+	}
+
+	private class TestMouseListener implements NFMouseListener {
+		private static final long serialVersionUID = 1L;
+
+		public void mouseMoved(Point oldPoint, Point newPoint) {
+			//System.out.println("mouseMoved " + oldPoint + " -> " + newPoint);
+		}
+
+		public void mouseDragged(Point oldPoint, Point newPoint) {
+			System.out.println("mouseDragged " + oldPoint + " -> " + newPoint);
+		}
+
+		public void mousePressed(int button, Point point) {
+			System.out.println("mousePressed " + button + " " + point);
+			//System.out.println("Thread:" + Thread.currentThread().getName());
+		}
+
+		public void mouseReleased(int button, Point point) {
+			System.out.println("mouseReleased " + button + " " + point);
+			//System.out.println("Thread:" + Thread.currentThread().getName());
+		}
+
+		public void mouseClicked(int button, Point point, int clickCount) {
+			System.out.println("mouseClicked " + button + " " + point + " " + clickCount);
+			//System.out.println("Thread:" + Thread.currentThread().getName());
+		}
+
+		public void mouseWheelMoved(int change) {
+			System.out.println("mouseWheelMoved " + change);
+			//System.out.println("Thread:" + Thread.currentThread().getName());
 		}
 	}
 }

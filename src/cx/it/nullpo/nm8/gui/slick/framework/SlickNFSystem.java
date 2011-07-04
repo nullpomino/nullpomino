@@ -19,6 +19,7 @@ import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFImage;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFMusic;
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
@@ -40,6 +41,9 @@ public class SlickNFSystem extends NFSystem {
 
 	/** Keyboard Input */
 	protected SlickNFKeyboard keyboard;
+
+	/** Mouse Input */
+	protected SlickNFMouse mouse;
 
 	/** Window title */
 	protected String windowTitle = "";
@@ -124,6 +128,14 @@ public class SlickNFSystem extends NFSystem {
 			keyboard = new SlickNFKeyboard(container.getInput());
 		}
 		return keyboard;
+	}
+
+	@Override
+	public NFMouse getMouse() {
+		if((mouse == null) && (container != null)) {
+			mouse = new SlickNFMouse(container.getInput());
+		}
+		return mouse;
 	}
 
 	@Override
