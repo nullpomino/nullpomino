@@ -24,7 +24,7 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
  *
  */
 public abstract class NEUROCore implements NEURO {
-	
+
 	/** The top-level NullpoMino container this NEURO can control. */
 	protected NFSystem sys;
 
@@ -32,7 +32,7 @@ public abstract class NEUROCore implements NEURO {
 	protected Set<NEUROPlugin> plugins;
 	/** The map containing mappings of event types to the plugin listeners registered for that event type. */
 	protected Map<Class<? extends NEUROEvent>,Set<PluginListener>> listeners;
-	
+
 	/** The network communicator. */
 	protected NetworkCommunicator network;
 
@@ -76,11 +76,11 @@ public abstract class NEUROCore implements NEURO {
 			}
 		}
 	}
-	
+
 	public NMTPResponse send(NMTPRequest req) {
 		return network.send(req);
 	}
-	
+
 	public void send(NMMPMessage message) {
 		network.send(message);
 	}
@@ -112,10 +112,11 @@ public abstract class NEUROCore implements NEURO {
 		for (Set<PluginListener> ls : listeners.values()) {
 			for (Iterator<PluginListener> it = ls.iterator(); it.hasNext(); pl = it.next()) {
 				if ((pl != null) && pl.isListeningForPlugin(plugin)) {
-					it.remove();
+					it.remove();	// FIXME: It causes IllegalStateException
 				}
 			}
 		}
+		//dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "listeners remain:" + listeners.size()));
 		plugin.stop();
 	}
 
@@ -123,16 +124,30 @@ public abstract class NEUROCore implements NEURO {
 	 * Stops all plugins
 	 */
 	protected void stopAll() {
-		for (NEUROPlugin p : plugins) {
-			stop(p);
+		Set<NEUROPlugin> bPlugins = new HashSet<NEUROPlugin>(plugins);
+
+		for (NEUROPlugin p : bPlugins) {
+			try {
+				stop(p);
+			} catch (Throwable e) {
+				dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG,
+						"plugin" + p.getName() + " thrown an exception during stop: " + e.toString() + " (" + e.getMessage() + ")"));
+			}
 		}
 	}
-	
+
 	/**
 	 * Stops all plugins and quits.
 	 */
 	protected void quit() {
-		stopAll();
+		try {
+			stopAll();
+		} catch (Throwable e) {
+			try {
+				dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG,
+						"stopAll thrown an exception: " + e.toString() + " (" + e.getMessage() + ")"));
+			} catch (Throwable e2) {}
+		}
 		sys.exit();
 	}
 }
