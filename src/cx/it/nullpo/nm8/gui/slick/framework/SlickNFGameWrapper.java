@@ -1,6 +1,5 @@
 package cx.it.nullpo.nm8.gui.slick.framework;
 
-import java.awt.Point;
 import java.util.Iterator;
 
 import org.newdawn.slick.Game;
@@ -104,61 +103,52 @@ public class SlickNFGameWrapper implements Game, KeyListener, MouseListener {
 		synchronized (mouse.mouseListeners) {
 			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 			while(it.hasNext()) {
-				it.next().mouseWheelMoved(-change);	// change is reversed in Slick, so...
+				it.next().mouseWheelMoved(mouse, -change);	// change is reversed in Slick, so...
 			}
 		}
 	}
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		Point p = new Point(x, y);
 		synchronized (mouse.mouseListeners) {
 			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 			while(it.hasNext()) {
-				it.next().mouseClicked(button, p, clickCount);
+				it.next().mouseClicked(mouse, button, x, y, clickCount);
 			}
 		}
 	}
 
 	public void mousePressed(int button, int x, int y) {
-		Point p = new Point(x, y);
 		synchronized (mouse.mouseListeners) {
 			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 			while(it.hasNext()) {
-				it.next().mousePressed(button, p);
+				it.next().mousePressed(mouse, button, x, y);
 			}
 		}
 	}
 
 	public void mouseReleased(int button, int x, int y) {
-		Point p = new Point(x, y);
 		synchronized (mouse.mouseListeners) {
 			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 			while(it.hasNext()) {
-				it.next().mouseReleased(button, p);
+				it.next().mouseReleased(mouse, button, x, y);
 			}
 		}
 	}
 
 	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-		Point op = new Point(oldx, oldy);
-		Point np = new Point(newx, newy);
-
 		synchronized (mouse.mouseListeners) {
 			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 			while(it.hasNext()) {
-				it.next().mouseMoved(op, np);
+				it.next().mouseMoved(mouse, oldx, oldy, newx, newy);
 			}
 		}
 	}
 
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
-		Point op = new Point(oldx, oldy);
-		Point np = new Point(newx, newy);
-
 		synchronized (mouse.mouseListeners) {
 			Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 			while(it.hasNext()) {
-				it.next().mouseDragged(op, np);
+				it.next().mouseDragged(mouse, oldx, oldy, newx, newy);
 			}
 		}
 	}

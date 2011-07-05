@@ -43,8 +43,24 @@ public class SlickNFMouse implements NFMouse {
 		return new Point(nativeInput.getMouseX(), nativeInput.getMouseY());
 	}
 
+	public int getMouseX() {
+		return nativeInput.getMouseX();
+	}
+
+	public int getMouseY() {
+		return nativeInput.getMouseY();
+	}
+
 	public Point getAbsoluteMousePosition() {
 		return MouseInfo.getPointerInfo().getLocation();
+	}
+
+	public int getAbsoluteMouseX() {
+		return MouseInfo.getPointerInfo().getLocation().x;
+	}
+
+	public int getAbsoluteMouseY() {
+		return MouseInfo.getPointerInfo().getLocation().y;
 	}
 
 	public boolean isLeftButtonDown() {

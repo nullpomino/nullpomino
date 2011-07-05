@@ -326,7 +326,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 			synchronized (mouse.mouseListeners) {
 				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 				while(it.hasNext()) {
-					it.next().mouseWheelMoved(wheel);
+					it.next().mouseWheelMoved(mouse, wheel);
 				}
 			}
 		}
@@ -339,7 +339,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 					Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 					while(it.hasNext()) {
 						if(!newPoint.equals(oldPoint)) {
-							it.next().mouseDragged(oldPoint, newPoint);
+							it.next().mouseDragged(mouse, oldPoint.x, oldPoint.y, newPoint.x, newPoint.y);
 						}
 					}
 				}
@@ -356,7 +356,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 					Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 					while(it.hasNext()) {
 						if(!newPoint.equals(oldPoint)) {
-							it.next().mouseMoved(oldPoint, newPoint);
+							it.next().mouseMoved(mouse, oldPoint.x, oldPoint.y, newPoint.x, newPoint.y);
 						}
 					}
 				}
@@ -373,7 +373,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 			synchronized (mouse.mouseListeners) {
 				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 				while(it.hasNext()) {
-					it.next().mouseClicked(buttonID, newPoint, clickCount);
+					it.next().mouseClicked(mouse, buttonID, newPoint.x, newPoint.y, clickCount);
 				}
 			}
 
@@ -395,7 +395,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 
 				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 				while(it.hasNext()) {
-					it.next().mousePressed(buttonID, newPoint);
+					it.next().mousePressed(mouse, buttonID, newPoint.x, newPoint.y);
 				}
 			}
 
@@ -417,7 +417,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 
 				Iterator<NFMouseListener> it = mouse.mouseListeners.iterator();
 				while(it.hasNext()) {
-					it.next().mouseReleased(buttonID, newPoint);
+					it.next().mouseReleased(mouse, buttonID, newPoint.x, newPoint.y);
 				}
 			}
 

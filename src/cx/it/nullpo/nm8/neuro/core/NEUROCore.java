@@ -1,6 +1,5 @@
 package cx.it.nullpo.nm8.neuro.core;
 
-import java.awt.Point;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,6 +10,7 @@ import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.network.NMMPMessage;
@@ -19,6 +19,10 @@ import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
+import cx.it.nullpo.nm8.neuro.event.MouseButtonEvent;
+import cx.it.nullpo.nm8.neuro.event.MouseClickEvent;
+import cx.it.nullpo.nm8.neuro.event.MouseMoveEvent;
+import cx.it.nullpo.nm8.neuro.event.MouseWheelEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
@@ -44,10 +48,10 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 
 	/** The NFGame which this NEURO gives rendering privileges to. */
 	protected NFGame game;
-	
+
 	/** The network communicator. */
 	protected NetworkCommunicator network;
-	
+
 	/** true if the overlay is currently up. */
 	protected boolean overlay;
 
@@ -61,7 +65,7 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		if(sys.getMouse() != null) {
 			sys.getMouse().addMouseListener(this);
 		}
-		
+
 		// Set up NEURO functions
 		plugins = new HashSet<NEUROPlugin>();
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
@@ -98,9 +102,9 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		}
 		// Check if this event should trigger the overlay
 		overlay = isOverlayEvent(e);
-		
+
 		// TODO NEURO should accept/block input events here if the overlay is on
-		
+
 		// Dispatch the event
 		for (Class<? extends NEUROEvent> type : listeners.keySet()) {
 			if (e.getClass().equals(type)) {
@@ -119,7 +123,7 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 			drawOverlay(g);
 		}
 	}
-	
+
 	public NMTPResponse send(NMTPRequest req) {
 		return network.send(req);
 	}
@@ -143,6 +147,8 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 	 * Stops the given plugin.
 	 */
 	protected void stop(NEUROPlugin plugin) {
+		dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "Try to stop plugin:" + plugin.getName() + " v" + plugin.getVersion()));
+
 		// Remove the plugin from the list.
 		NEUROPlugin np = null;
 		for (Iterator<NEUROPlugin> it = plugins.iterator(); it.hasNext(); np = it.next()) {
@@ -152,14 +158,19 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		}
 		// Remove the listeners attached to this plugin.
 		PluginListener pl = null;
+
 		for (Set<PluginListener> ls : listeners.values()) {
-			for (Iterator<PluginListener> it = ls.iterator(); it.hasNext(); pl = it.next()) {
+			Iterator<PluginListener> it = ls.iterator();
+			while(it.hasNext()) {
+				pl = it.next();
+
 				if ((pl != null) && pl.isListeningForPlugin(plugin)) {
-					it.remove();	// FIXME: It causes IllegalStateException
+					dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "Try to remove listener:" + pl.toString()));
+					it.remove();
 				}
 			}
 		}
-		//dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "listeners remain:" + listeners.size()));
+
 		plugin.stop();
 	}
 
@@ -175,6 +186,7 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 			} catch (Throwable e) {
 				dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG,
 						"plugin" + p.getName() + " thrown an exception during stop: " + e.toString() + " (" + e.getMessage() + ")"));
+				e.printStackTrace();
 			}
 		}
 	}
@@ -189,19 +201,19 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 			try {
 				dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG,
 						"stopAll thrown an exception: " + e.toString() + " (" + e.getMessage() + ")"));
+				e.printStackTrace();
 			} catch (Throwable e2) {}
 		}
 		sys.exit();
 	}
-	
+
 	protected boolean isOverlayEvent(NEUROEvent e) {
 		return false;
 	}
-	
-	protected void drawOverlay(NFGraphics g) {}
-	
-	// Key listener methods
 
+	protected void drawOverlay(NFGraphics g) {}
+
+	// Key listener methods
 	public void keyPressed(NFKeyboard keyboard, int key, char c) {
 		onKey(keyboard, key, c, true);
 	}
@@ -209,34 +221,33 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 	public void keyReleased(NFKeyboard keyboard, int key, char c) {
 		onKey(keyboard, key, c, false);
 	}
-	
+
 	private void onKey(NFKeyboard keyboard, int key, char c, boolean pressed) {
 		dispatchEvent(new KeyInputEvent(this,keyboard,key,c,pressed));
 	}
-	
+
 	// Mouse listener methods
-	
-	public void mouseMoved(Point oldPoint, Point newPoint) {
-		// TODO
+	public void mouseMoved(NFMouse mouse, int oldx, int oldy, int newx, int newy) {
+		dispatchEvent(new MouseMoveEvent(this, mouse, false, oldx, oldy, newx, newy));
 	}
 
-	public void mouseDragged(Point oldPoint, Point newPoint) {
-		// TODO
+	public void mouseDragged(NFMouse mouse, int oldx, int oldy, int newx, int newy) {
+		dispatchEvent(new MouseMoveEvent(this, mouse, true, oldx, oldy, newx, newy));
 	}
 
-	public void mousePressed(int button, Point point) {
-		// TODO
+	public void mousePressed(NFMouse mouse, int button, int x, int y) {
+		dispatchEvent(new MouseButtonEvent(this, mouse, button, x, y, true));
 	}
 
-	public void mouseReleased(int button, Point point) {
-		// TODO
+	public void mouseReleased(NFMouse mouse, int button, int x, int y) {
+		dispatchEvent(new MouseButtonEvent(this, mouse, button, x, y, false));
 	}
 
-	public void mouseClicked(int button, Point point, int clickCount) {
-		// TODO
+	public void mouseClicked(NFMouse mouse, int button, int x, int y, int clickCount) {
+		dispatchEvent(new MouseClickEvent(this, mouse, button, x, y, clickCount));
 	}
 
-	public void mouseWheelMoved(int change) {
-		// TODO
+	public void mouseWheelMoved(NFMouse mouse, int change) {
+		dispatchEvent(new MouseWheelEvent(this, mouse, change));
 	}
 }

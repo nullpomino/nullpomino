@@ -11,9 +11,9 @@ import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.plugin.Nullterm;
 
 public class NEUROLight extends NEUROCore {
-	
+	private static final long serialVersionUID = -2062491488225964116L;
 	NFFont font;
-	
+
 	/**
 	 * Constructs a NEUROLight.
 	 */
@@ -22,7 +22,7 @@ public class NEUROLight extends NEUROCore {
 		try {
 			new Nullterm().init(this);
 		} catch (PluginInitializationException e) {}
-		
+
 		try {
 			font = sys.loadFont("data/res/font/font_neuro.ttf",12,false,false);
 		} catch (IOException e) {
@@ -38,7 +38,8 @@ public class NEUROLight extends NEUROCore {
 	public float getVersion() {
 		return 0.1F;
 	}
-	
+
+	@Override
 	public void draw(NFGraphics g) {
 		super.draw(g);
 		if (font != null) {

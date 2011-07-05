@@ -16,10 +16,36 @@ public interface NFMouse extends Serializable {
 	public Point getMousePosition();
 
 	/**
+	 * Get the current mouse X position.<br>
+	 * It might return Integer.MAX_VALUE if the mouse cursor is out of the window.
+	 * @return Current mouse X position
+	 */
+	public int getMouseX();
+
+	/**
+	 * Get the current mouse Y position.<br>
+	 * It might return Integer.MAX_VALUE if the mouse cursor is out of the window.
+	 * @return Current mouse Y position
+	 */
+	public int getMouseY();
+
+	/**
 	 * Get the current mouse position (entire screen)
 	 * @return Current mouse position (entire screen)
 	 */
 	public Point getAbsoluteMousePosition();
+
+	/**
+	 * Get the current mouse X position (entire screen)
+	 * @return Current mouse X position (entire screen)
+	 */
+	public int getAbsoluteMouseX();
+
+	/**
+	 * Get the current mouse Y position (entire screen)
+	 * @return Current mouse Y position (entire screen)
+	 */
+	public int getAbsoluteMouseY();
 
 	/**
 	 * Returns true if the left mouse button is currently down

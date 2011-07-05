@@ -93,8 +93,32 @@ public class SwingNFMouse implements NFMouse {
 		return p;
 	}
 
+	public int getMouseX() {
+		Point p = getMousePosition();
+		if(p != null) {
+			return p.x;
+		}
+		return Integer.MAX_VALUE;
+	}
+
+	public int getMouseY() {
+		Point p = getMousePosition();
+		if(p != null) {
+			return p.y;
+		}
+		return Integer.MAX_VALUE;
+	}
+
 	public Point getAbsoluteMousePosition() {
 		return MouseInfo.getPointerInfo().getLocation();
+	}
+
+	public int getAbsoluteMouseX() {
+		return MouseInfo.getPointerInfo().getLocation().x;
+	}
+
+	public int getAbsoluteMouseY() {
+		return MouseInfo.getPointerInfo().getLocation().y;
 	}
 
 	public boolean isLeftButtonDown() {

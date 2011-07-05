@@ -12,7 +12,6 @@ import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
@@ -33,7 +32,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 		// Game initialization
 		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
-		
+
 
 		try {
 			if(sys.isFontSupported()) {
@@ -210,41 +209,8 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 		}
 	}
 
-	private class TestMouseListener implements NFMouseListener {
-		private static final long serialVersionUID = 1L;
-
-		public void mouseMoved(Point oldPoint, Point newPoint) {
-			//System.out.println("mouseMoved " + oldPoint + " -> " + newPoint);
-		}
-
-		public void mouseDragged(Point oldPoint, Point newPoint) {
-			System.out.println("mouseDragged " + oldPoint + " -> " + newPoint);
-		}
-
-		public void mousePressed(int button, Point point) {
-			System.out.println("mousePressed " + button + " " + point);
-			//System.out.println("Thread:" + Thread.currentThread().getName());
-		}
-
-		public void mouseReleased(int button, Point point) {
-			System.out.println("mouseReleased " + button + " " + point);
-			//System.out.println("Thread:" + Thread.currentThread().getName());
-		}
-
-		public void mouseClicked(int button, Point point, int clickCount) {
-			System.out.println("mouseClicked " + button + " " + point + " " + clickCount);
-			//System.out.println("Thread:" + Thread.currentThread().getName());
-		}
-
-		public void mouseWheelMoved(int change) {
-			System.out.println("mouseWheelMoved " + change);
-			//System.out.println("Thread:" + Thread.currentThread().getName());
-		}
-	}
-
 	// NEURO PLUGIN FUNCTIONALITY
-	
-	@Override
+
 	public String getName() {
 		return "NullpoMino";
 	}
@@ -252,20 +218,22 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	public float getVersion() {
 		return GameManager.getVersionMajor();
 	}
-	
+
+	@Override
 	public void init(NEURO neuro) throws PluginInitializationException {
 		super.init(neuro);
 		neuro.addListener(this,KeyInputEvent.class);
 	}
-	
+
+	@Override
 	public void draw(NFGraphics g) {
 		render(sys, g);
 	}
 
 	public void stop() {
-		
+
 	}
-	
+
 	public void receiveEvent(KeyInputEvent e) {
 		if (manager != null) {
 			Controller ctrl = manager.getGamePlay(0,0).ctrl;

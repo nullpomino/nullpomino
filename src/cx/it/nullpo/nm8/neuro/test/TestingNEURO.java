@@ -11,7 +11,8 @@ import cx.it.nullpo.nm8.neuro.plugin.Nullterm;
  *
  */
 public class TestingNEURO extends NEUROCore {
-	
+	private static final long serialVersionUID = -6550770298827744267L;
+
 	/**
 	 * Constructs a TestingNEURO.
 	 */
@@ -33,6 +34,7 @@ public class TestingNEURO extends NEUROCore {
 		return 0.0F;
 	}
 
+	@Override
 	public void draw(NFGraphics g) { }
 
 }

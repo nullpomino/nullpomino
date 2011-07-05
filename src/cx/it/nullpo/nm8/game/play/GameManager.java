@@ -3,7 +3,6 @@ package cx.it.nullpo.nm8.game.play;
 import java.io.Serializable;
 
 import cx.it.nullpo.nm8.game.subsystem.mode.GameMode;
-import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 
 /**
  * GameManager: The container of the game
@@ -112,7 +111,7 @@ public class GameManager implements Serializable {
 	/**
 	 * Init
 	 */
-	public void init() throws PluginInitializationException {
+	public void init() {
 		// Game manager init
 		gameMode.modeInit(this);
 		gameLoopTime = 0;
@@ -129,7 +128,7 @@ public class GameManager implements Serializable {
 			engine[i].start();
 		}
 	}
-	
+
 	public void stop() {
 		for (int i = 0; i < engine.length; i++) {
 			// TODO stop engines
