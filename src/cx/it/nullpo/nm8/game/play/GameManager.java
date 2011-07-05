@@ -1,21 +1,14 @@
 package cx.it.nullpo.nm8.game.play;
 
-import java.awt.event.KeyEvent;
 import java.io.Serializable;
 
-import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.subsystem.mode.GameMode;
-import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
-import cx.it.nullpo.nm8.neuro.event.DebugEvent;
-import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
-import cx.it.nullpo.nm8.neuro.event.QuitEvent;
-import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
 
 /**
  * GameManager: The container of the game
  */
-public class GameManager extends AbstractPlugin implements Serializable {
+public class GameManager implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 4457370420853602694L;
 
@@ -119,10 +112,7 @@ public class GameManager extends AbstractPlugin implements Serializable {
 	/**
 	 * Init
 	 */
-	public void init(NEURO parent) throws PluginInitializationException {
-		// NEURO plugin init
-		super.init(parent);
-		parent.addListener(this,KeyInputEvent.class);
+	public void init() throws PluginInitializationException {
 		// Game manager init
 		gameMode.modeInit(this);
 		gameLoopTime = 0;
@@ -203,52 +193,5 @@ public class GameManager extends AbstractPlugin implements Serializable {
 	 */
 	public GamePlay getGamePlay(int engineID, int playerID) {
 		return engine[engineID].gamePlay[playerID];
-	}
-	
-	// OTHER NEURO FUNCTIONS GO HERE
-
-	public String getName() {
-		return "Game Manager";
-	}
-
-	public float getVersion() {
-		return VERSION_MAJOR;
-	}
-	
-	public void receiveEvent(KeyInputEvent e) {
-		neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Key event: "+e.getChar()+
-				" (pressed="+e.getPressed()+")"));
-		Controller ctrl = getGamePlay(0,0).ctrl;
-
-		boolean pressed = e.getPressed();
-		switch(e.getKey()) {
-			case KeyEvent.VK_UP:
-				ctrl.setButtonState(Controller.BUTTON_HARD, pressed);
-				break;
-			case KeyEvent.VK_DOWN:
-				ctrl.setButtonState(Controller.BUTTON_SOFT, pressed);
-				break;
-			case KeyEvent.VK_LEFT:
-				ctrl.setButtonState(Controller.BUTTON_LEFT, pressed);
-				break;
-			case KeyEvent.VK_RIGHT:
-				ctrl.setButtonState(Controller.BUTTON_RIGHT, pressed);
-				break;
-			case KeyEvent.VK_Z:
-				ctrl.setButtonState(Controller.BUTTON_LROTATE, pressed);
-				break;
-			case KeyEvent.VK_X:
-				ctrl.setButtonState(Controller.BUTTON_RROTATE, pressed);
-				break;
-			case KeyEvent.VK_SPACE:
-				ctrl.setButtonState(Controller.BUTTON_HOLD, pressed);
-				break;
-			case KeyEvent.VK_D:
-				ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
-				break;
-			case KeyEvent.VK_ESCAPE:
-				neuro.dispatchEvent(new QuitEvent(this));
-				break;
-		}
 	}
 }

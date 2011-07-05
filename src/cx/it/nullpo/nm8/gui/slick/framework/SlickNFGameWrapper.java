@@ -62,7 +62,7 @@ public class SlickNFGameWrapper implements Game, KeyListener, MouseListener {
 	}
 
 	public void render(GameContainer container, Graphics g) throws SlickException {
-		sys.getNFGame().render(sys, sys.getGraphics());
+		sys.render();
 	}
 
 	public void update(GameContainer container, int delta) throws SlickException {

@@ -1,5 +1,6 @@
 package cx.it.nullpo.nm8.neuro.plugin;
 
+import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 
@@ -26,6 +27,12 @@ public interface NEUROPlugin {
 	 * @throws PluginInitializationException if something goes wrong during the initialization process
 	 */
 	void init(NEURO parent) throws PluginInitializationException;
+	
+	/**
+	 * Draws the plugin.
+	 * @param g the NFGraphics to draw this plugin with.
+	 */
+	void draw(NFGraphics g);
 	
 	/**
 	 * Stops the plugin. Used if the plugin has any resources that should be freed before shutdown.

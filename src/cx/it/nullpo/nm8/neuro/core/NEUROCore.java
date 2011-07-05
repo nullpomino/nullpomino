@@ -1,17 +1,24 @@
 package cx.it.nullpo.nm8.neuro.core;
 
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import cx.it.nullpo.nm8.gui.framework.NFGame;
+import cx.it.nullpo.nm8.gui.framework.NFGraphics;
+import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
+import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.network.NMMPMessage;
 import cx.it.nullpo.nm8.network.NMTPRequest;
 import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
+import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
@@ -23,7 +30,9 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
  * @author Zircean
  *
  */
-public abstract class NEUROCore implements NEURO {
+public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener {
+
+	private static final long serialVersionUID = -2229525130691250578L;
 
 	/** The top-level NullpoMino container this NEURO can control. */
 	protected NFSystem sys;
@@ -33,20 +42,37 @@ public abstract class NEUROCore implements NEURO {
 	/** The map containing mappings of event types to the plugin listeners registered for that event type. */
 	protected Map<Class<? extends NEUROEvent>,Set<PluginListener>> listeners;
 
+	/** The NFGame which this NEURO gives rendering privileges to. */
+	protected NFGame game;
+	
 	/** The network communicator. */
 	protected NetworkCommunicator network;
+	
+	/** true if the overlay is currently up. */
+	protected boolean overlay;
 
 	/**
 	 * Constructor for AbstractNEURO.
 	 */
 	public NEUROCore(NFSystem sys) {
+		// Set up system and input handling
 		this.sys = sys;
+		sys.getKeyboard().addKeyListener(this);
+		if(sys.getMouse() != null) {
+			sys.getMouse().addMouseListener(this);
+		}
+		
+		// Set up NEURO functions
 		plugins = new HashSet<NEUROPlugin>();
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
+		overlay = false;
 	}
 
 	public void addPlugin(NEUROPlugin p) {
 		plugins.add(p);
+		if (p instanceof NFGame) {
+			game = (NFGame)p;
+		}
 	}
 
 	public void addListener(NEUROPlugin p, Class<? extends NEUROEvent> type) {
@@ -59,15 +85,23 @@ public abstract class NEUROCore implements NEURO {
 			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG,
 					"Successfully created plugin listener. Plugin: "+p.getName()+", type: "+type));
 		} else {
-			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_ERROR,
+			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_WARNING,
 					"Failed to created plugin listener. Plugin: "+p.getName()+", type: "+type));
 		}
 	}
 
 	public synchronized void dispatchEvent(NEUROEvent e) {
+		// Check if this event should trigger a quit
+		// TODO factor out into a helper method like overlay
 		if (e instanceof QuitEvent) {
 			quit();
 		}
+		// Check if this event should trigger the overlay
+		overlay = isOverlayEvent(e);
+		
+		// TODO NEURO should accept/block input events here if the overlay is on
+		
+		// Dispatch the event
 		for (Class<? extends NEUROEvent> type : listeners.keySet()) {
 			if (e.getClass().equals(type)) {
 				for (PluginListener p : listeners.get(type)) {
@@ -77,6 +111,15 @@ public abstract class NEUROCore implements NEURO {
 		}
 	}
 
+	public void draw(NFGraphics g) {
+		// Draw the game
+		game.render(sys,g);
+		// Draw the overlay if applicable
+		if (overlay) {
+			drawOverlay(g);
+		}
+	}
+	
 	public NMTPResponse send(NMTPRequest req) {
 		return network.send(req);
 	}
@@ -92,7 +135,7 @@ public abstract class NEUROCore implements NEURO {
 		try {
 			PluginLoader.load(this, classpath);
 		} catch (PluginInitializationException e) {
-			// TODO handle this error
+			dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Failed to load plugin: "+classpath));
 		}
 	}
 
@@ -149,5 +192,51 @@ public abstract class NEUROCore implements NEURO {
 			} catch (Throwable e2) {}
 		}
 		sys.exit();
+	}
+	
+	protected boolean isOverlayEvent(NEUROEvent e) {
+		return false;
+	}
+	
+	protected void drawOverlay(NFGraphics g) {}
+	
+	// Key listener methods
+
+	public void keyPressed(NFKeyboard keyboard, int key, char c) {
+		onKey(keyboard, key, c, true);
+	}
+
+	public void keyReleased(NFKeyboard keyboard, int key, char c) {
+		onKey(keyboard, key, c, false);
+	}
+	
+	private void onKey(NFKeyboard keyboard, int key, char c, boolean pressed) {
+		dispatchEvent(new KeyInputEvent(this,keyboard,key,c,pressed));
+	}
+	
+	// Mouse listener methods
+	
+	public void mouseMoved(Point oldPoint, Point newPoint) {
+		// TODO
+	}
+
+	public void mouseDragged(Point oldPoint, Point newPoint) {
+		// TODO
+	}
+
+	public void mousePressed(int button, Point point) {
+		// TODO
+	}
+
+	public void mouseReleased(int button, Point point) {
+		// TODO
+	}
+
+	public void mouseClicked(int button, Point point, int clickCount) {
+		// TODO
+	}
+
+	public void mouseWheelMoved(int change) {
+		// TODO
 	}
 }

@@ -26,6 +26,4 @@ public class NEUROLight extends NEUROCore {
 		return 0.1F;
 	}
 
-	public void draw(NFGraphics g) { }
-
 }

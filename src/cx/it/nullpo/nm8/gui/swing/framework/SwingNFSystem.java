@@ -66,6 +66,7 @@ public class SwingNFSystem extends NFSystem {
 
 	@Override
 	public void init() throws Exception {
+		super.init();
 		gameWrapper = new SwingNFGameWrapper(this);
 	}
 

@@ -12,18 +12,17 @@ import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
-import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
+import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
-import cx.it.nullpo.nm8.neuro.light.NEUROLight;
+import cx.it.nullpo.nm8.neuro.event.QuitEvent;
+import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
 
-public class NullpoMino implements NFGame, NFKeyListener {
+public class NullpoMino extends AbstractPlugin implements NFGame {
 	private static final long serialVersionUID = 4545597070306756443L;
 
-	NEURO neuro;
 	NFSystem sys;
 	NFGraphics g;
 	NFFont font;
@@ -31,16 +30,10 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	long lastdelta;
 
 	public void init(NFSystem sys) {
-		// NEURO initialization
-		neuro = new NEUROLight(sys);
-		
 		// Game initialization
 		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
-		sys.getKeyboard().addKeyListener(this);
-		if(sys.getMouse() != null) {
-			sys.getMouse().addMouseListener(new TestMouseListener());
-		}
+		
 
 		try {
 			if(sys.isFontSupported()) {
@@ -49,7 +42,7 @@ public class NullpoMino implements NFGame, NFKeyListener {
 			g = sys.getGraphics();
 
 			manager = new GameManager();
-			manager.init(neuro);
+			manager.init();
 			manager.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,18 +157,6 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	public void onExit(NFSystem sys) {
 	}
 
-	public void onKey(NFKeyboard keyboard, int key, char c, boolean pressed) {
-		neuro.dispatchEvent(new KeyInputEvent(this,keyboard,key,c,pressed));
-	}
-
-	public void keyPressed(NFKeyboard keyboard, int key, char c) {
-		onKey(keyboard, key, c, true);
-	}
-
-	public void keyReleased(NFKeyboard keyboard, int key, char c) {
-		onKey(keyboard, key, c, false);
-	}
-
 	public void drawBlock(Block blk, int x, int y) {
 		drawBlock(blk, x, y, false);
 	}
@@ -258,6 +239,68 @@ public class NullpoMino implements NFGame, NFKeyListener {
 		public void mouseWheelMoved(int change) {
 			System.out.println("mouseWheelMoved " + change);
 			//System.out.println("Thread:" + Thread.currentThread().getName());
+		}
+	}
+
+	// NEURO PLUGIN FUNCTIONALITY
+	
+	@Override
+	public String getName() {
+		return "NullpoMino";
+	}
+
+	public float getVersion() {
+		return GameManager.getVersionMajor();
+	}
+	
+	public void init(NEURO neuro) throws PluginInitializationException {
+		super.init(neuro);
+		neuro.addListener(this,KeyInputEvent.class);
+	}
+	
+	public void draw(NFGraphics g) {
+		render(sys, g);
+	}
+
+	public void stop() {
+		
+	}
+	
+	public void receiveEvent(KeyInputEvent e) {
+		if (manager != null) {
+			Controller ctrl = manager.getGamePlay(0,0).ctrl;
+			int key = e.getKey();
+			boolean pressed = e.getPressed();
+
+			switch(key) {
+				case KeyEvent.VK_UP:
+					ctrl.setButtonState(Controller.BUTTON_HARD, pressed);
+					break;
+				case KeyEvent.VK_DOWN:
+					ctrl.setButtonState(Controller.BUTTON_SOFT, pressed);
+					break;
+				case KeyEvent.VK_LEFT:
+					ctrl.setButtonState(Controller.BUTTON_LEFT, pressed);
+					break;
+				case KeyEvent.VK_RIGHT:
+					ctrl.setButtonState(Controller.BUTTON_RIGHT, pressed);
+					break;
+				case KeyEvent.VK_Z:
+					ctrl.setButtonState(Controller.BUTTON_LROTATE, pressed);
+					break;
+				case KeyEvent.VK_X:
+					ctrl.setButtonState(Controller.BUTTON_RROTATE, pressed);
+					break;
+				case KeyEvent.VK_SPACE:
+					ctrl.setButtonState(Controller.BUTTON_HOLD, pressed);
+					break;
+				case KeyEvent.VK_D:
+					ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
+					break;
+				case KeyEvent.VK_ESCAPE:
+					neuro.dispatchEvent(new QuitEvent(this));
+					break;
+			}
 		}
 	}
 }

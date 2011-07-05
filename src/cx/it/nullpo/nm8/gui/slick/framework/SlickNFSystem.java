@@ -54,11 +54,12 @@ public class SlickNFSystem extends NFSystem {
 	public SlickNFSystem() {
 		super();
 	}
-	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight) {
-		super(game, fullscreen, width, height, oWidth, oHeight);
-	}
+	
 	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height) {
 		super(game, fullscreen, width, height);
+	}
+	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight) {
+		super(game, fullscreen, width, height, oWidth, oHeight);
 	}
 	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height, int oWidth, int oHeight,
 						boolean keepaspectratio) {
@@ -84,6 +85,8 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public void init() throws Exception {
+		super.init();
+		
 		gameWrapper = new SlickNFGameWrapper(this);
 
 		if(isGameWindowScalingUsed()) {

@@ -5,12 +5,18 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
+import cx.it.nullpo.nm8.neuro.core.NEURO;
+import cx.it.nullpo.nm8.neuro.light.NEUROLight;
+
 /**
  * NullpoMino Framework (NF) - NFSystem<br>
  * Abstract class for main system
  */
 public abstract class NFSystem implements Serializable {
 	private static final long serialVersionUID = -896391818527202711L;
+	
+	/** NEURO: The event framework */
+	protected NEURO neuro;
 
 	/** NFGame: The actual game programs */
 	protected NFGame game;
@@ -122,10 +128,16 @@ public abstract class NFSystem implements Serializable {
 		this.keepAspectRatio = keepaspectratio;
 		this.cmdlineArgs = cmdArgs;
 	}
+	
+	/**
+	 * Get NEURO framework
+	 */
+	public NEURO getNEURO() {
+		return neuro;
+	}
 
 	/**
 	 * Get NFGame with actual game programs
-	 * @return NFGame
 	 */
 	public NFGame getNFGame() {
 		return game;
@@ -133,7 +145,6 @@ public abstract class NFSystem implements Serializable {
 
 	/**
 	 * Get rendering system name (i.e. "Swing")
-	 * @return Rendering system name
 	 */
 	abstract public String getSystemName();
 
@@ -141,13 +152,23 @@ public abstract class NFSystem implements Serializable {
 	 * Initialise the system
 	 * @throws Exception Indicates a failure to initialise the system
 	 */
-	abstract public void init() throws Exception;
+	public void init() throws Exception {
+		neuro = new NEUROLight(this);
+		game.init(neuro);
+	}
 
 	/**
 	 * Start running the game
 	 * @throws Exception Indicates a failure to initialise the system
 	 */
 	abstract public void start() throws Exception;
+	
+	/**
+	 * Render the current game
+	 */
+	public void render() {
+		neuro.draw(getGraphics());
+	}
 
 	/**
 	 * Cause the game to exit and shutdown cleanly
@@ -162,19 +183,16 @@ public abstract class NFSystem implements Serializable {
 
 	/**
 	 * Get NFKeyboard for keyboard access
-	 * @return NFKeyboard
 	 */
 	abstract public NFKeyboard getKeyboard();
 
 	/**
 	 * Get NFMouse for mouse access
-	 * @return NFMouse
 	 */
 	abstract public NFMouse getMouse();
 
 	/**
 	 * Get the graphics context used by this container
-	 * @return The graphics context used by this container
 	 */
 	abstract public NFGraphics getGraphics();
 
