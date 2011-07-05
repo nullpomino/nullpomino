@@ -52,8 +52,11 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 	/** The network communicator. */
 	protected NetworkCommunicator network;
 
-	/** true if the overlay is currently up. */
-	protected boolean overlay;
+	/** true if the overlay is currently up and want updating. */
+	protected boolean overlayUpdateFlag;
+
+	/** true if the overlay is currently up and want rendering. */
+	protected boolean overlayDrawFlag;
 
 	/**
 	 * Constructor for AbstractNEURO.
@@ -69,7 +72,8 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		// Set up NEURO functions
 		plugins = new HashSet<NEUROPlugin>();
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
-		overlay = false;
+		overlayUpdateFlag = false;
+		overlayDrawFlag = false;
 	}
 
 	public void addPlugin(NEUROPlugin p) {
@@ -101,7 +105,8 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 			quit();
 		}
 		// Check if this event should trigger the overlay
-		overlay = isOverlayEvent(e);
+		overlayUpdateFlag = isOverlayUpdateEvent(e);
+		overlayDrawFlag = isOverlayDrawEvent(e);
 
 		// TODO NEURO should accept/block input events here if the overlay is on
 
@@ -115,11 +120,20 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		}
 	}
 
+	public void update(long delta) {
+		// Update the game
+		game.update(sys, delta);
+		// Update the overlay if applicable
+		if (overlayUpdateFlag) {
+			updateOverlay(delta);
+		}
+	}
+
 	public void draw(NFGraphics g) {
 		// Draw the game
 		game.render(sys,g);
 		// Draw the overlay if applicable
-		if (overlay) {
+		if (overlayDrawFlag) {
 			drawOverlay(g);
 		}
 	}
@@ -207,10 +221,14 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		sys.exit();
 	}
 
-	protected boolean isOverlayEvent(NEUROEvent e) {
+	protected boolean isOverlayUpdateEvent(NEUROEvent e) {
+		return false;
+	}
+	protected boolean isOverlayDrawEvent(NEUROEvent e) {
 		return false;
 	}
 
+	protected void updateOverlay(long delta) {}
 	protected void drawOverlay(NFGraphics g) {}
 
 	// Key listener methods

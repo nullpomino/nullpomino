@@ -40,6 +40,14 @@ public class NEUROLight extends NEUROCore {
 	}
 
 	@Override
+	public void update(long delta) {
+		super.update(delta);
+		if (font != null) {
+			if(font.isGlyphLoadingRequired()) font.loadGlyphs();
+		}
+	}
+
+	@Override
 	public void draw(NFGraphics g) {
 		super.draw(g);
 		if (font != null) {

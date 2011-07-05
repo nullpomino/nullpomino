@@ -14,7 +14,7 @@ import cx.it.nullpo.nm8.neuro.light.NEUROLight;
  */
 public abstract class NFSystem implements Serializable {
 	private static final long serialVersionUID = -896391818527202711L;
-	
+
 	/** NEURO: The event framework */
 	protected NEURO neuro;
 
@@ -128,7 +128,7 @@ public abstract class NFSystem implements Serializable {
 		this.keepAspectRatio = keepaspectratio;
 		this.cmdlineArgs = cmdArgs;
 	}
-	
+
 	/**
 	 * Get NEURO framework
 	 */
@@ -162,7 +162,15 @@ public abstract class NFSystem implements Serializable {
 	 * @throws Exception Indicates a failure to initialise the system
 	 */
 	abstract public void start() throws Exception;
-	
+
+	/**
+	 * Update the current game
+	 * @param delta Time elapsed from the last execution
+	 */
+	public void update(long delta) {
+		neuro.update(delta);
+	}
+
 	/**
 	 * Render the current game
 	 */

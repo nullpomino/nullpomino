@@ -54,7 +54,7 @@ public class SlickNFSystem extends NFSystem {
 	public SlickNFSystem() {
 		super();
 	}
-	
+
 	public SlickNFSystem(NFGame game, boolean fullscreen, int width, int height) {
 		super(game, fullscreen, width, height);
 	}
@@ -84,7 +84,7 @@ public class SlickNFSystem extends NFSystem {
 	}
 
 	@Override
-	public void init() throws Exception {		
+	public void init() throws Exception {
 		gameWrapper = new SlickNFGameWrapper(this);
 
 		if(isGameWindowScalingUsed()) {
@@ -101,7 +101,7 @@ public class SlickNFSystem extends NFSystem {
 		container.setTargetFrameRate(targetFPS);
 		container.setSoundVolume(soundVolume);
 		container.setMusicVolume(musicVolume);
-		
+
 		super.init();
 	}
 
@@ -137,8 +137,10 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public NFMouse getMouse() {
-		if((mouse == null || mouse.getNativeInput() == null) && (container != null)) {
+		if((mouse == null) && (container != null)) {
 			mouse = new SlickNFMouse(container.getInput());
+		} else if (mouse.getNativeInput() == null && container != null) {
+			mouse.setNativeInput(container.getInput());
 		}
 		return mouse;
 	}

@@ -216,7 +216,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 			lastNanoDelta = tempDelta % 1000000L;
 		}
 		lastExecTime = nowTime;
-		sys.getNFGame().update(sys, ndelta);
+		sys.update(ndelta);
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 			} else {
 				sys.g.setNativeGraphics(g);
 			}
-			
+
 			sys.render();
 
 			if(!canUseBufferStrategy) {

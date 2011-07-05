@@ -33,10 +33,16 @@ public class SlickNFMouse implements NFMouse {
 
 	/**
 	 * Get Slick native Input
-	 * @return Slick native Input
 	 */
 	public Input getNativeInput() {
 		return nativeInput;
+	}
+
+	/**
+	 * Set Slick native input
+	 */
+	public void setNativeInput(Input nativeInput) {
+		this.nativeInput = nativeInput;
 	}
 
 	public Point getMousePosition() {

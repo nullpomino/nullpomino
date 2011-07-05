@@ -75,7 +75,7 @@ public class SlickNFGameWrapper implements Game, KeyListener, MouseListener {
 			ndelta = (nowTime - lastExecTime) / 1000000L;
 		}
 		lastExecTime = nowTime;
-		sys.getNFGame().update(sys, ndelta);
+		sys.update(ndelta);
 	}
 
 	public void keyPressed(int key, char c) {

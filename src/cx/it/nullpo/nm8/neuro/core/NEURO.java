@@ -46,6 +46,12 @@ public interface NEURO {
 	void dispatchEvent(NEUROEvent e);
 
 	/**
+	 * Update the internal state of the game and this NEURO instance.
+	 * @param delta Time elapsed from the last execution
+	 */
+	void update(long delta);
+
+	/**
 	 * Draws this NEURO instance to the screen. NEURO should be drawn on top of everything else.
 	 * @param g the NFGraphics with which to draw this NEURO instance
 	 */
