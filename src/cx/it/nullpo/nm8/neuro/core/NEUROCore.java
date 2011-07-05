@@ -6,12 +6,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.network.NMMPMessage;
 import cx.it.nullpo.nm8.network.NMTPRequest;
 import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
+import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
@@ -22,6 +24,9 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
  *
  */
 public abstract class NEUROCore implements NEURO {
+	
+	/** The top-level NullpoMino container this NEURO can control. */
+	protected NFSystem sys;
 
 	/** The set of plugins registered with NEURO. */
 	protected Set<NEUROPlugin> plugins;
@@ -34,7 +39,8 @@ public abstract class NEUROCore implements NEURO {
 	/**
 	 * Constructor for AbstractNEURO.
 	 */
-	public NEUROCore() {
+	public NEUROCore(NFSystem sys) {
+		this.sys = sys;
 		plugins = new HashSet<NEUROPlugin>();
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
 	}
@@ -50,15 +56,18 @@ public abstract class NEUROCore implements NEURO {
 				listeners.put(type, new HashSet<PluginListener>());
 			}
 			listeners.get(type).add(pl);
-			dispatchEvent(new DebugEvent(this, "Successfully created plugin listener. Plugin: "+p.getName()+
-					", type: "+type));
+			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG,
+					"Successfully created plugin listener. Plugin: "+p.getName()+", type: "+type));
 		} else {
-			dispatchEvent(new DebugEvent(this, "Failed to created plugin listener. Plugin: "+p.getName()+
-					", type: "+type));
+			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_ERROR,
+					"Failed to created plugin listener. Plugin: "+p.getName()+", type: "+type));
 		}
 	}
 
 	public synchronized void dispatchEvent(NEUROEvent e) {
+		if (e instanceof QuitEvent) {
+			quit();
+		}
 		for (Class<? extends NEUROEvent> type : listeners.keySet()) {
 			if (e.getClass().equals(type)) {
 				for (PluginListener p : listeners.get(type)) {
@@ -111,11 +120,19 @@ public abstract class NEUROCore implements NEURO {
 	}
 
 	/**
-	 * Stops all plugins.
+	 * Stops all plugins
 	 */
 	protected void stopAll() {
 		for (NEUROPlugin p : plugins) {
 			stop(p);
 		}
+	}
+	
+	/**
+	 * Stops all plugins and quits.
+	 */
+	protected void quit() {
+		stopAll();
+		sys.exit();
 	}
 }

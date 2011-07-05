@@ -1,6 +1,5 @@
 package cx.it.nullpo.nm8.neuro.plugin;
 
-import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 
@@ -32,11 +31,5 @@ public interface NEUROPlugin {
 	 * Stops the plugin. Used if the plugin has any resources that should be freed before shutdown.
 	 */
 	void stop();
-
-	/**
-	 * Draws this NEUROPlugin at the specified screen offset.
-	 * @param g the NFGraphics with which to draw this NEUROPlugin
-	 */
-	void draw(NFGraphics g);
 	
 }

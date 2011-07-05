@@ -16,7 +16,7 @@ public class TestingNEURO extends NEUROCore {
 	 * Constructs a TestingNEURO.
 	 */
 	public TestingNEURO() {
-		super();
+		super(null);
 		try {
 			new Nullterm().init(this);
 			new EventDispatcherPlugin().init(this);

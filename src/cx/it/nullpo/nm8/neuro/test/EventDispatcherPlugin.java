@@ -30,7 +30,7 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 	public void draw(NFGraphics g) { }
 	
 	protected synchronized void sendDebugMessage(String str) {
-		neuro.dispatchEvent(new DebugEvent(this,str));
+		neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,str));
 	}
 	
 	class EventThread extends Thread {

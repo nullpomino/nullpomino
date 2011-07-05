@@ -16,10 +16,14 @@ import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
+import cx.it.nullpo.nm8.neuro.core.NEURO;
+import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
+import cx.it.nullpo.nm8.neuro.light.NEUROLight;
 
 public class NullpoMino implements NFGame, NFKeyListener {
 	private static final long serialVersionUID = 4545597070306756443L;
 
+	NEURO neuro;
 	NFSystem sys;
 	NFGraphics g;
 	NFFont font;
@@ -27,10 +31,13 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	long lastdelta;
 
 	public void init(NFSystem sys) {
+		// NEURO initialization
+		neuro = new NEUROLight(sys);
+		
+		// Game initialization
 		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
 		sys.getKeyboard().addKeyListener(this);
-
 		if(sys.getMouse() != null) {
 			sys.getMouse().addMouseListener(new TestMouseListener());
 		}
@@ -42,7 +49,7 @@ public class NullpoMino implements NFGame, NFKeyListener {
 			g = sys.getGraphics();
 
 			manager = new GameManager();
-			manager.init();
+			manager.init(neuro);
 			manager.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,39 +165,7 @@ public class NullpoMino implements NFGame, NFKeyListener {
 	}
 
 	public void onKey(NFKeyboard keyboard, int key, char c, boolean pressed) {
-		if(manager != null) {
-			Controller ctrl = manager.getGamePlay(0,0).ctrl;
-
-			switch(key) {
-			case KeyEvent.VK_UP:
-				ctrl.setButtonState(Controller.BUTTON_HARD, pressed);
-				break;
-			case KeyEvent.VK_DOWN:
-				ctrl.setButtonState(Controller.BUTTON_SOFT, pressed);
-				break;
-			case KeyEvent.VK_LEFT:
-				ctrl.setButtonState(Controller.BUTTON_LEFT, pressed);
-				break;
-			case KeyEvent.VK_RIGHT:
-				ctrl.setButtonState(Controller.BUTTON_RIGHT, pressed);
-				break;
-			case KeyEvent.VK_Z:
-				ctrl.setButtonState(Controller.BUTTON_LROTATE, pressed);
-				break;
-			case KeyEvent.VK_X:
-				ctrl.setButtonState(Controller.BUTTON_RROTATE, pressed);
-				break;
-			case KeyEvent.VK_SPACE:
-				ctrl.setButtonState(Controller.BUTTON_HOLD, pressed);
-				break;
-			case KeyEvent.VK_D:
-				ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
-				break;
-			case KeyEvent.VK_ESCAPE:
-				sys.exit();
-				break;
-			}
-		}
+		neuro.dispatchEvent(new KeyInputEvent(this,keyboard,key,c,pressed));
 	}
 
 	public void keyPressed(NFKeyboard keyboard, int key, char c) {

@@ -1,6 +1,5 @@
 package cx.it.nullpo.nm8.neuro.plugin;
 
-import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
@@ -26,10 +25,6 @@ public class Nullterm extends AbstractPlugin {
 	}
 
 	public void stop() { }
-
-	public void draw(NFGraphics g) {
-		// TODO Auto-generated method stub
-	}
 	
 	/**
 	 * Event listener for DebugEvents. Prints out the content message to the terminal.
