@@ -18,6 +18,7 @@ import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFImage;
+import cx.it.nullpo.nm8.gui.framework.NFJoystickManager;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFMusic;
@@ -44,6 +45,9 @@ public class SlickNFSystem extends NFSystem {
 
 	/** Mouse Input */
 	protected SlickNFMouse mouse;
+
+	/** Joystick Manager */
+	protected SlickNFJoystckManager joyManager;
 
 	/** Window title */
 	protected String windowTitle = "";
@@ -208,6 +212,19 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public boolean isFontSupported() {
+		return true;
+	}
+
+	@Override
+	public NFJoystickManager getJoystickManager() {
+		if(joyManager == null) {
+			joyManager = new SlickNFJoystckManager();
+		}
+		return joyManager;
+	}
+
+	@Override
+	public boolean isJoystickSupported() {
 		return true;
 	}
 

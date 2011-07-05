@@ -306,6 +306,22 @@ public abstract class NFSystem implements Serializable {
 	}
 
 	/**
+	 * Get NFJoystickManager for joystick access. Don't forget to call initJoystick after you obtain it!
+	 * @return NFJoystickManager, or null if the system doesn't have the joystick suppot
+	 */
+	public NFJoystickManager getJoystickManager() {
+		return null;
+	}
+
+	/**
+	 * Check if this system has joystick support
+	 * @return True if this system can use joysticks
+	 */
+	public boolean isJoystickSupported() {
+		return false;
+	}
+
+	/**
 	 * Load a sound effect
 	 * @param filename Filename
 	 * @return NFSound (or null if this system doesn't have an sound effect support)
