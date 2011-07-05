@@ -52,7 +52,10 @@ public class NEUROLight extends NEUROCore {
 		super.draw(g);
 		if (font != null) {
 			g.setFont(font);
-			g.drawString("POWERED BY "+getName().toUpperCase()+" "+getVersion(),5,450);
+			String str = "POWERED BY "+getName().toUpperCase()+" "+getVersion();
+			int width = g.getStringWidth(str);
+			int x = (sys.getOriginalWidth() - width) / 2;
+			g.drawString("POWERED BY "+getName().toUpperCase()+" "+getVersion(),x,450);
 		}
 	}
 

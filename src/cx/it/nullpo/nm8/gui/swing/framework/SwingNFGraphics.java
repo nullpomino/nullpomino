@@ -3,6 +3,7 @@ package cx.it.nullpo.nm8.gui.swing.framework;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.geom.Rectangle2D;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -90,6 +91,16 @@ public class SwingNFGraphics implements NFGraphics {
 	public void drawString(String str, int x, int y) {
 		int yoffset = g.getFontMetrics().getAscent();
 		g.drawString(str, x, y + yoffset);
+	}
+
+	public int getStringWidth(String str) {
+		Rectangle2D r = g.getFontMetrics().getStringBounds(str, g);
+		return (int)r.getWidth();
+	}
+
+	public int getStringHeight(String str) {
+		Rectangle2D r = g.getFontMetrics().getStringBounds(str, g);
+		return (int)r.getHeight();
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {

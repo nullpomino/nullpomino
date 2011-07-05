@@ -101,6 +101,14 @@ public class SlickNFGraphics implements NFGraphics {
 		g.drawString(str, x, y);
 	}
 
+	public int getStringWidth(String str) {
+		return g.getFont().getWidth(str);
+	}
+
+	public int getStringHeight(String str) {
+		return g.getFont().getHeight(str);
+	}
+
 	public void fillRect(int x, int y, int width, int height) {
 		g.fillRect(x, y, width, height);
 	}

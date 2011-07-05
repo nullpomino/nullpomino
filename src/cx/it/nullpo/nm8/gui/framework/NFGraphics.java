@@ -70,6 +70,20 @@ public interface NFGraphics extends Serializable {
 	public void drawString(String str, int x, int y);
 
 	/**
+	 * Get a string width of current font
+	 * @param str String
+	 * @return Width
+	 */
+	public int getStringWidth(String str);
+
+	/**
+	 * Get a string height of current font
+	 * @param str String
+	 * @return Height
+	 */
+	public int getStringHeight(String str);
+
+	/**
 	 * Draw a line on the canvas in the current colour
 	 * @param x1 The x coordinate of the start point
 	 * @param y1 The y coordinate of the start point
