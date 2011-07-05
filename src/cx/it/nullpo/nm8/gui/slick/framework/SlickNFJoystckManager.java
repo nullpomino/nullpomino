@@ -2,11 +2,13 @@ package cx.it.nullpo.nm8.gui.slick.framework;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.input.Controllers;
 
 import cx.it.nullpo.nm8.gui.framework.NFJoystick;
+import cx.it.nullpo.nm8.gui.framework.NFJoystickListener;
 import cx.it.nullpo.nm8.gui.framework.NFJoystickManager;
 
 /**
@@ -22,6 +24,9 @@ public class SlickNFJoystckManager implements NFJoystickManager {
 	/** Joystick list */
 	protected List<NFJoystick> joystickList = Collections.synchronizedList(new ArrayList<NFJoystick>());
 
+	/** Listeners list */
+	public List<NFJoystickListener> listeners = Collections.synchronizedList(new ArrayList<NFJoystickListener>());
+
 	public boolean isInited() {
 		return inited;
 	}
@@ -29,7 +34,7 @@ public class SlickNFJoystckManager implements NFJoystickManager {
 	public int initJoystick() {
 		int ctrlCount = Controllers.getControllerCount();
 		for(int i = 0; i < ctrlCount; i++) {
-			joystickList.add(new SlickNFJoystick(Controllers.getController(i)));
+			joystickList.add(new SlickNFJoystick(this, i, Controllers.getController(i)));
 		}
 		inited = true;
 		return joystickList.size();
@@ -53,5 +58,23 @@ public class SlickNFJoystckManager implements NFJoystickManager {
 
 	public void poll() {
 		Controllers.poll();
+	}
+
+	public void addListener(NFJoystickListener l) {
+		listeners.add(l);
+	}
+
+	public boolean removeListener(NFJoystickListener l) {
+		return listeners.remove(l);
+	}
+
+	public void updateAndDispatchEvents() {
+		synchronized (joystickList) {
+			Iterator<NFJoystick> it = joystickList.iterator();
+
+			while(it.hasNext()) {
+				it.next().updateAndDispatchEvents();
+			}
+		}
 	}
 }

@@ -8,6 +8,18 @@ import java.io.Serializable;
  */
 public interface NFJoystick extends Serializable {
 	/**
+	 * Get the manager of this joystick
+	 * @return NFJoystickManager
+	 */
+	public NFJoystickManager getJoystickManager();
+
+	/**
+	 * Get this joystick's ID
+	 * @return This joystick's ID
+	 */
+	public int getID();
+
+	/**
 	 * Get a human-readable description of this joystick
 	 * @return Human-readable description of this joystick (Might be null)
 	 */
@@ -81,4 +93,9 @@ public interface NFJoystick extends Serializable {
 	 * Poll the joystick updates
 	 */
 	public void poll();
+
+	/**
+	 * Look for any changes for all joysticks, and dispatch events to all listeners
+	 */
+	public void updateAndDispatchEvents();
 }

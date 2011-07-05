@@ -42,4 +42,22 @@ public interface NFJoystickManager extends Serializable {
 	 * Poll the joystick updates
 	 */
 	public void poll();
+
+	/**
+	 * Add a joystick event listener
+	 * @param l Joystick event listener
+	 */
+	public void addListener(NFJoystickListener l);
+
+	/**
+	 * Remove a joystick event listener
+	 * @param l Joystick event listener
+	 * @return True if a joystick event listener is removed
+	 */
+	public boolean removeListener(NFJoystickListener l);
+
+	/**
+	 * Look for any changes for all joysticks, and dispatch events to all listeners
+	 */
+	public void updateAndDispatchEvents();
 }
