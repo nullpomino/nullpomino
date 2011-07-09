@@ -8,6 +8,8 @@ import java.util.Set;
 
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
+import cx.it.nullpo.nm8.gui.framework.NFJoystick;
+import cx.it.nullpo.nm8.gui.framework.NFJoystickListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
@@ -18,6 +20,10 @@ import cx.it.nullpo.nm8.network.NMTPRequest;
 import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyAxisEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyButtonEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyPOVEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyXYAxisEvent;
 import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
 import cx.it.nullpo.nm8.neuro.event.MouseButtonEvent;
 import cx.it.nullpo.nm8.neuro.event.MouseClickEvent;
@@ -34,8 +40,7 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
  * @author Zircean
  *
  */
-public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener {
-
+public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener, NFJoystickListener {
 	private static final long serialVersionUID = -2229525130691250578L;
 
 	/** The top-level NullpoMino container this NEURO can control. */
@@ -67,6 +72,9 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		sys.getKeyboard().addKeyListener(this);
 		if(sys.getMouse() != null) {
 			sys.getMouse().addMouseListener(this);
+		}
+		if(sys.getJoystickManager() != null && sys.getJoystickManager().isInited()) {
+			sys.getJoystickManager().addListener(this);
 		}
 
 		// Set up NEURO functions
@@ -267,5 +275,34 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 
 	public void mouseWheelMoved(NFMouse mouse, int change) {
 		dispatchEvent(new MouseWheelEvent(this, mouse, change));
+	}
+
+	// Joystick listener methods
+	public void joyAxisMoved(NFJoystick joy, int axis, float oldValue, float newValue) {
+		dispatchEvent(new JoyAxisEvent(this, joy, axis, oldValue, newValue));
+	}
+
+	public void joyXAxisMoved(NFJoystick joy, float oldValue, float newValue) {
+		dispatchEvent(new JoyXYAxisEvent(this, joy, false, oldValue, newValue));
+	}
+
+	public void joyYAxisMoved(NFJoystick joy, float oldValue, float newValue) {
+		dispatchEvent(new JoyXYAxisEvent(this, joy, true, oldValue, newValue));
+	}
+
+	public void joyPovXMoved(NFJoystick joy, float oldValue, float newValue) {
+		dispatchEvent(new JoyPOVEvent(this, joy, false, oldValue, newValue));
+	}
+
+	public void joyPovYMoved(NFJoystick joy, float oldValue, float newValue) {
+		dispatchEvent(new JoyPOVEvent(this, joy, true, oldValue, newValue));
+	}
+
+	public void joyButtonPressed(NFJoystick joy, int button) {
+		dispatchEvent(new JoyButtonEvent(this, joy, button, true));
+	}
+
+	public void joyButtonReleased(NFJoystick joy, int button) {
+		dispatchEvent(new JoyButtonEvent(this, joy, button, false));
 	}
 }

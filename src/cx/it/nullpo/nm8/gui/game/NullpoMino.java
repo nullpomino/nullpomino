@@ -12,9 +12,14 @@ import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
+import cx.it.nullpo.nm8.gui.framework.NFJoystick;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
+import cx.it.nullpo.nm8.neuro.event.DebugEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyButtonEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyPOVEvent;
+import cx.it.nullpo.nm8.neuro.event.JoyXYAxisEvent;
 import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
@@ -33,6 +38,21 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 		this.sys = sys;
 		sys.setWindowTitle("NullpoMino8 Alpha Test - Loading");
 
+		try {
+			if(sys.getJoystickManager() != null) {
+				int numJoysticks = sys.getJoystickManager().initJoystick();
+				System.out.println(numJoysticks + " joysticks found");
+
+				if(numJoysticks > 0) {
+					neuro.addListener(this,JoyXYAxisEvent.class);
+					neuro.addListener(this,JoyPOVEvent.class);
+					neuro.addListener(this,JoyButtonEvent.class);
+				}
+			}
+		} catch (Throwable e) {
+			System.err.println("Failed to init joystick");
+			e.printStackTrace();
+		}
 
 		try {
 			if(sys.isFontSupported()) {
@@ -268,6 +288,71 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				case KeyEvent.VK_ESCAPE:
 					neuro.dispatchEvent(new QuitEvent(this));
 					break;
+			}
+		}
+	}
+
+	public void onJoystickMove(NFJoystick joy, boolean isY, float oldValue, float newValue) {
+		if (manager != null) {
+			Controller ctrl = manager.getGamePlay(0,0).ctrl;
+
+			if(isY) {
+				if(newValue < 0f) {
+					ctrl.setButtonState(Controller.BUTTON_HARD, true);
+					ctrl.setButtonState(Controller.BUTTON_SOFT, false);
+				} else if(newValue > 0f) {
+					ctrl.setButtonState(Controller.BUTTON_HARD, false);
+					ctrl.setButtonState(Controller.BUTTON_SOFT, true);
+				} else {
+					ctrl.setButtonState(Controller.BUTTON_HARD, false);
+					ctrl.setButtonState(Controller.BUTTON_SOFT, false);
+				}
+			} else {
+				if(newValue < 0f) {
+					ctrl.setButtonState(Controller.BUTTON_LEFT, true);
+					ctrl.setButtonState(Controller.BUTTON_RIGHT, false);
+				} else if(newValue > 0f) {
+					ctrl.setButtonState(Controller.BUTTON_LEFT, false);
+					ctrl.setButtonState(Controller.BUTTON_RIGHT, true);
+				} else {
+					ctrl.setButtonState(Controller.BUTTON_LEFT, false);
+					ctrl.setButtonState(Controller.BUTTON_RIGHT, false);
+				}
+			}
+		}
+	}
+
+	public void receiveEvent(JoyXYAxisEvent e) {
+		neuro.dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyXYAxisEvent isY:" + e.isYAxis() + " value:" + e.getNewValue()));
+		onJoystickMove(e.getJoystick(), e.isYAxis(), e.getOldValue(), e.getNewValue());
+	}
+
+	public void receiveEvent(JoyPOVEvent e) {
+		neuro.dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyPOVEvent isY:" + e.isYPov() + " value:" + e.getNewValue()));
+		onJoystickMove(e.getJoystick(), e.isYPov(), e.getOldValue(), e.getNewValue());
+	}
+
+	public void receiveEvent(JoyButtonEvent e) {
+		neuro.dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyButtonEvent button:" + e.getButton() + " isPressed:" + e.isPressed()));
+
+		if (manager != null) {
+			Controller ctrl = manager.getGamePlay(0,0).ctrl;
+			int button = e.getButton();
+			boolean pressed = e.isPressed();
+
+			switch(button) {
+			case 0:
+				ctrl.setButtonState(Controller.BUTTON_LROTATE, pressed);
+				break;
+			case 1:
+				ctrl.setButtonState(Controller.BUTTON_RROTATE, pressed);
+				break;
+			case 2:
+				ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
+				break;
+			case 3:
+				ctrl.setButtonState(Controller.BUTTON_HOLD, pressed);
+				break;
 			}
 		}
 	}
