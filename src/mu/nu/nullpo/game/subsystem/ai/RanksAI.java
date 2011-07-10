@@ -125,38 +125,50 @@ public class RanksAI extends DummyAI implements Runnable {
 			this.distanceToSet=0;
 			int [] surface= new int[ranks.getStackWidth()-1];
 			int maxJump=ranks.getMaxJump();
-			
+			int nbstep=0;
+			int correctedSteepStep=0;
+			int indexSteepStep=0;
+			boolean isCliff=true;
+
 			for (int i=0;i<ranks.getStackWidth()-1;i++){
 				int diff=heights[i+1]-heights[i];
-				if (diff>maxJump){
+			
+				if (diff>maxJump){	
+					
+					nbstep++;	
 					
 						this.distanceToSet+=(diff-maxJump);
-						diff=maxJump;
+					diff=maxJump;
 					
-					
+
+
 				}
 				if (diff<-maxJump){
 					
-					this.distanceToSet-=(diff+maxJump);
+						nbstep++;
+						distanceToSet-=(diff+maxJump);
 
 					diff=-maxJump;
-					
-				
+
+
 				}
 				surface[i]=diff;
 			}
 			log.debug("new surface ="+Arrays.toString(surface));
-			
+
 			int	surfaceNb=ranks.encode(surface);
 			
-			
-			this.rankStacking=ranks.getRankValue(surfaceNb);
+				this.rankStacking=ranks.getRankValue(surfaceNb);
+			if ((MAX_PREVIEWS>0) && (this.distanceToSet>0)){
+				this.rankStacking=0;
+				
+			}
 
 		}
 		public int compareTo(Object o) {
 			Score otherScore=(Score) o;
 
-			
+
 			/*if (this.distanceToSet!= otherScore.distanceToSet){
 				return this.distanceToSet<otherScore.distanceToSet?1:-1;
 			}
@@ -164,12 +176,12 @@ public class RanksAI extends DummyAI implements Runnable {
 				if (this.rankStacking != otherScore.rankStacking){
 					return this.rankStacking>otherScore.rankStacking?1:-1;
 				}
-			//}
-		
+				//}
 
-			return 0;
+
+				return 0;
+			}
 		}
-	}
 
 	@Override
 	public String getName() {
@@ -726,7 +738,7 @@ public class RanksAI extends DummyAI implements Runnable {
 
 				 int numPreviews2=numPreviews-1;
 				 // If current piece is I Piece,  and minimum height is greater 4 and maximum height is greater than threshold, force the 4-Line
-				 if (pieceNow==Piece.PIECE_I && heightMax>=THRESHOLD_FORCE_4LINES && heightMin>=4 &&!plannedToUseIPiece){
+				 if (pieceNow==Piece.PIECE_I && heightMin>=THRESHOLD_FORCE_4LINES && heightMin>=4 /*&&!plannedToUseIPiece*/){
 					 int rt2=1;
 					 int maxX2=ranks.getStackWidth()-1;
 					// Recursive call to thinkMain to examine that move

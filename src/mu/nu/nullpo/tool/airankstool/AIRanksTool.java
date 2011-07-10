@@ -35,7 +35,7 @@ import mu.nu.nullpo.util.CustomProperties;
 public class AIRanksTool extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	/** Log */
-	static final Logger log = Logger.getLogger(AIRanksTool.class);
+	static final Logger log = Logger.getLogger(AIRanksConstants.class);
 
 	/** Default language file */
 	public static CustomProperties propLangDefault;

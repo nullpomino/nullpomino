@@ -4,8 +4,8 @@ import java.util.Random;
 
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.subsystem.ai.RanksAI;
-import net.omegaboshi.nullpomino.game.subsystem.randomizer.History4RollsRandomizer;
-import net.omegaboshi.nullpomino.game.subsystem.randomizer.Randomizer;
+import net.omegaboshi.nullpomino.game.subsystem.randomizer.*;
+
 
 public class AIRanksTester {
 	private Randomizer randomizer;
@@ -21,7 +21,7 @@ public class AIRanksTester {
 	}
 	public static void main(String[] args) {
 
-		AIRanksTester tester=new AIRanksTester(100 );
+		AIRanksTester tester=new AIRanksTester(25 );
 		tester.test();
 	}
 	private void init(){
