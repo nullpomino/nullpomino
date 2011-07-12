@@ -1,6 +1,9 @@
 package cx.it.nullpo.nm8.game.play;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import cx.it.nullpo.nm8.game.component.Block;
@@ -82,6 +85,9 @@ public class GamePlay implements Serializable {
 
 	/** Array of next piece objects */
 	public Piece[] nextPieceArray;
+
+	/** Sound effects queue */
+	public List<String> seQueue;
 
 	/** Current game status */
 	public int stat;
@@ -190,6 +196,7 @@ public class GamePlay implements Serializable {
 		Random tempRand = new Random();
 		randSeed = tempRand.nextLong();
 		random = new NRandom(randSeed);
+		seQueue = Collections.synchronizedList(new ArrayList<String>());
 		stat = STAT_SETTING;
 		readyTimer = 0;
 		nowPieceObject = null;
@@ -368,6 +375,16 @@ public class GamePlay implements Serializable {
 		piece.setColor(ruleopt.pieceColor[id]);
 		piece.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
 		return piece;
+	}
+
+	/**
+	 * Play a sound effect
+	 * @param name Sound effect name
+	 */
+	public void playSE(String name) {
+		if(!seQueue.contains(name)) {
+			seQueue.add(name);
+		}
 	}
 
 	/**
@@ -555,6 +572,11 @@ public class GamePlay implements Serializable {
 				// Pop from next piece queue
 				nowPieceObject = popNextPiece();
 			}
+
+			if(nextPieceArray.length > 1) {
+				int pieceID = nextPieceArray[0].id;
+				playSE("piece" + pieceID);
+			}
 		}
 		nowPieceX = getSpawnPosX(nowPieceObject);
 		nowPieceY = getSpawnPosY(nowPieceObject);
@@ -570,7 +592,7 @@ public class GamePlay implements Serializable {
 
 		// IRS
 		if(irsDirection != 0) {
-			rotatePiece(irsDirection);
+			rotatePiece(irsDirection, true);
 			irsDirection = 0;
 		}
 
@@ -611,6 +633,7 @@ public class GamePlay implements Serializable {
 				}
 
 				statistics.totalPieceMove++;
+				playSE("move");
 				return true;
 			}
 		}
@@ -639,6 +662,8 @@ public class GamePlay implements Serializable {
 				// Do stuff here
 				nowPieceY = bottomY;
 				lastmove = LASTMOVE_FALL_SELF;
+				playSE("harddrop");
+				playSE("step");
 			}
 
 			instantLock = true;
@@ -648,8 +673,9 @@ public class GamePlay implements Serializable {
 	/**
 	 * Rotate the current piece
 	 * @param d Rotation direction (-1:Left, 1:Right, 2:180)
+	 * @param irs true if IRS
 	 */
-	public void rotatePiece(int d) {
+	public void rotatePiece(int d, boolean irs) {
 		if(nowPieceObject != null) {
 			boolean isGround = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field);
 			int rtNew = nowPieceObject.getRotateDirection(d);
@@ -682,6 +708,9 @@ public class GamePlay implements Serializable {
 				}
 
 				statistics.totalPieceRotate++;
+				playSE(irs ? "initialrotate" : "rotate");
+			} else {
+				playSE("rotfail");
 			}
 		}
 	}
@@ -711,6 +740,7 @@ public class GamePlay implements Serializable {
 					nowPieceObject = holdPieceObject;
 					holdPieceObject = popNextPiece();
 				}
+				playSE("initialhold");
 			} else {
 				// Normal Hold
 				if(holdPieceObject == null) {
@@ -721,10 +751,13 @@ public class GamePlay implements Serializable {
 					nowPieceObject = holdPieceObject;
 					holdPieceObject = pieceTemp;
 				}
+				playSE("hold");
 			}
 
 			if(ruleopt.holdResetDirection) holdPieceObject.direction = 0;
 			if(!isIHS) newPiece();
+		} else {
+			playSE("holdfail");
 		}
 	}
 
@@ -761,7 +794,7 @@ public class GamePlay implements Serializable {
 			if(ctrl.isButtonActivated(Controller.BUTTON_LROTATE)) rt = -1;
 			else if(ctrl.isButtonActivated(Controller.BUTTON_RROTATE)) rt = 1;
 			else if(ctrl.isButtonActivated(Controller.BUTTON_DROTATE)) rt = 2;
-			if(rt != 0) rotatePiece(rt);
+			if(rt != 0) rotatePiece(rt, false);
 
 			// Left/Right movement
 			int move = getMoveDirection();
@@ -844,6 +877,11 @@ public class GamePlay implements Serializable {
 							nowPieceY++;
 							lockDelayNow = 0;
 							lastmove = LASTMOVE_FALL_SELF;
+							playSE("softdrop");
+
+							if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
+								playSE("step");
+							}
 						} else {
 							//gMsec = 0;
 							break;
@@ -860,6 +898,10 @@ public class GamePlay implements Serializable {
 							nowPieceY++;
 							lockDelayNow = 0;
 							lastmove = LASTMOVE_FALL_AUTO;
+
+							if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
+								playSE("step");
+							}
 						} else {
 							break;
 						}
@@ -878,6 +920,7 @@ public class GamePlay implements Serializable {
 					boolean placed = nowPieceObject.placeToField(nowPieceX, nowPieceY, engine.field);
 					nowPieceObject = null;
 					holdUsed = false;
+					playSE("lock");
 
 					if((!placed && ruleopt.fieldLockoutDeath) || (isPartialLockout && ruleopt.fieldPartialLockoutDeath)) {
 						// Signal GameOver
@@ -933,10 +976,15 @@ public class GamePlay implements Serializable {
 		long prevDelay = lineDelayNow;
 		lineDelayNow++;
 
-		if(prevDelay == 0) engine.field.clearLine();
+		if(prevDelay == 0) {
+			int li = engine.field.clearLine();
+			playSE("erase" + li);
+		}
 
 		if(lineDelayNow >= speed.lineDelay) {
 			engine.field.downFloatingBlocks();
+			playSE("linefall");
+
 			if(speed.areLine > 0) {
 				areMax = speed.areLine;
 				stat = STAT_ARE;

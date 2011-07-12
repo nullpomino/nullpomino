@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
 
 import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
@@ -62,6 +63,10 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 		try {
 			if(sys.isFontSupported()) {
 				font = sys.loadFont("data/res/font/font.ttf");
+			}
+			if(sys.isSoundSupported()) {
+				System.out.println("Loading sound effects");
+				ResourceHolder.loadSoundEffects(sys, "default");
 			}
 			g = sys.getGraphics();
 
@@ -171,6 +176,17 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				if(font != null) font.loadGlyphs();
 				lastdelta = delta;
 				manager.update(delta);
+
+				// Play sound effects
+				if(manager.getGamePlay(0,0) != null) {
+					synchronized (manager.getGamePlay(0,0).seQueue) {
+						Iterator<String> it = manager.getGamePlay(0,0).seQueue.iterator();
+						while(it.hasNext()) {
+							ResourceHolder.playSE(it.next());
+						}
+						manager.getGamePlay(0,0).seQueue.clear();
+					}
+				}
 			} catch (Exception e) {
 				System.out.println("Game update fail");
 				e.printStackTrace();

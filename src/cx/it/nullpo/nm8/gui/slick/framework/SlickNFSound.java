@@ -66,4 +66,8 @@ public class SlickNFSound implements NFSound {
 	public float getPitch() {
 		return currentPitch;
 	}
+
+	public void dispose() {
+		// Slick can't dispose sound effects
+	}
 }

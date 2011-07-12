@@ -61,4 +61,8 @@ public class JSNFSound implements NFSound {
 	public float getPitch() {
 		return 1f;
 	}
+
+	public void dispose() {
+		clip.close();
+	}
 }

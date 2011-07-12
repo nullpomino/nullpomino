@@ -54,4 +54,9 @@ public interface NFSound extends Serializable {
 	 * @return Pitch of this sound
 	 */
 	public float getPitch();
+
+	/**
+	 * Dispose this sound.
+	 */
+	public void dispose();
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Sound effects index.
+	maxcombo: Max combo sound effects
+	maxerase: Max line clear sound effects
+-->
+<seindex maxcombo="20" maxerase="4">
+	<!--
+		List of sound effects.
+
+		Usage: <se name="Sound Effect Name" file="Filename" />
+
+		If you don't specify the "name", the filename minus ".wav" suffix will be used as a name.
+		If you don't specify the "file", the name plus ".wav" will be used as a filename.
+		If you don't specify both, it's ignored.
+	-->
+
+	<se name="erase1" />
+	<se name="erase2" />
+	<se name="erase3" />
+	<se name="erase4" />
+
+	<se name="tspin0" />
+	<se name="tspin1" />
+	<se name="tspin2" />
+	<se name="tspin3" />
+
+	<se name="b2b_start" />
+	<se name="b2b_continue" />
+	<se name="b2b_end" />
+
+	<se name="combo1" />
+	<se name="combo2" />
+	<se name="combo3" />
+	<se name="combo4" />
+	<se name="combo5" />
+	<se name="combo6" />
+	<se name="combo7" />
+	<se name="combo8" />
+	<se name="combo9" />
+	<se name="combo10" />
+	<se name="combo11" />
+	<se name="combo12" />
+	<se name="combo13" />
+	<se name="combo14" />
+	<se name="combo15" />
+	<se name="combo16" />
+	<se name="combo17" />
+	<se name="combo18" />
+	<se name="combo19" />
+	<se name="combo20" />
+
+	<se name="piece0" />
+	<se name="piece1" />
+	<se name="piece2" />
+	<se name="piece3" />
+	<se name="piece4" />
+	<se name="piece5" />
+	<se name="piece6" />
+	<se name="piece7" />
+	<se name="piece8" />
+	<se name="piece9" />
+	<se name="piece10" />
+
+	<se name="move" />
+	<se name="movefail" />
+	<se name="softdrop" />
+	<se name="harddrop" />
+
+	<se name="rotate" />
+	<se name="rotfail" />
+	<se name="initialrotate" />
+
+	<se name="hold" />
+	<se name="holdfail" />
+	<se name="initialhold" />
+
+	<se name="step" />
+	<se name="lock" />
+
+	<se name="linefall" />
+
+	<se name="ready" />
+	<se name="go" />
+</seindex>
