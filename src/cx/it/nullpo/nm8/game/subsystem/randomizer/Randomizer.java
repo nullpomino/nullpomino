@@ -1,8 +1,8 @@
 package cx.it.nullpo.nm8.game.subsystem.randomizer;
 
 import java.io.Serializable;
-import java.util.Random;
 
+import cx.it.nullpo.nm8.game.component.NRandom;
 import cx.it.nullpo.nm8.game.component.Piece;
 
 /**
@@ -12,8 +12,8 @@ public abstract class Randomizer implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -1392962792115922732L;
 
-	/** Random to make randomness */
-	protected Random r;
+	/** NRandom to make randomness */
+	protected NRandom r;
 
 	/** Piece IDs that can appear */
 	public int[] pieces;
@@ -78,7 +78,7 @@ public abstract class Randomizer implements Serializable {
 	 * @param seed Random Seed
 	 */
 	public void reseed(long seed) {
-		r = new Random(seed);
+		r = new NRandom(seed);
 	}
 
 	/**

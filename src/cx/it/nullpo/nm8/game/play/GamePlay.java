@@ -6,6 +6,7 @@ import java.util.Random;
 import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Field;
+import cx.it.nullpo.nm8.game.component.NRandom;
 import cx.it.nullpo.nm8.game.component.Piece;
 import cx.it.nullpo.nm8.game.component.RuleOptions;
 import cx.it.nullpo.nm8.game.component.SpeedParam;
@@ -71,7 +72,7 @@ public class GamePlay implements Serializable {
 	public long randSeed;
 
 	/** Random: Used for creating various randomness */
-	public Random random;
+	public NRandom random;
 
 	/** Wallkick: Wallkick system */
 	public Wallkick wallkick;
@@ -142,6 +143,27 @@ public class GamePlay implements Serializable {
 	/** Duration of ARE */
 	public long areMax;
 
+	/** Current DAS direction (-1:Left 0=None 1=Right) */
+	public int dasDirection;
+
+	/** Current Left DAS value */
+	public long dasNowLeft;
+
+	/** Current Right DAS value */
+	public long dasNowRight;
+
+	/** Current Soft Drop DAS value */
+	public long dasNowDown;
+
+	/** Current Left ARR value */
+	public long arrNowLeft;
+
+	/** Current Right ARR value */
+	public long arrNowRight;
+
+	/** Current Soft Drop ARR value */
+	public long arrNowDown;
+
 	/**
 	 * Constructor
 	 */
@@ -167,7 +189,7 @@ public class GamePlay implements Serializable {
 		speed = new SpeedParam();
 		Random tempRand = new Random();
 		randSeed = tempRand.nextLong();
-		random = new Random(randSeed);
+		random = new NRandom(randSeed);
 		stat = STAT_SETTING;
 		readyTimer = 0;
 		nowPieceObject = null;
@@ -188,6 +210,13 @@ public class GamePlay implements Serializable {
 		lineDelayNow = 0;
 		areNow = 0;
 		areMax = 0;
+		dasDirection = 0;
+		dasNowLeft = 0;
+		dasNowRight = 0;
+		dasNowDown = 0;
+		arrNowLeft = 0;
+		arrNowRight = 0;
+		arrNowDown = 0;
 
 		engine.owner.gameMode.playerInit(this);
 	}
@@ -216,7 +245,7 @@ public class GamePlay implements Serializable {
 
 	/**
 	 * Set a new TuningOptions
-	 * @param r TuningOptions
+	 * @param t TuningOptions
 	 */
 	public void setTuningOptions(TuningOptions t) {
 		this.tuning = t;
@@ -267,25 +296,66 @@ public class GamePlay implements Serializable {
 	}
 
 	/**
-	 * Update DAS/ARR values
-	 */
-	public void updateDASARRValues() {
-		// Set DAS & ARR
-		ctrl.setDAS(Controller.BUTTON_LEFT, getDAS());
-		ctrl.setDAS(Controller.BUTTON_RIGHT, getDAS());
-		ctrl.setARR(Controller.BUTTON_LEFT, getARR());
-		ctrl.setARR(Controller.BUTTON_RIGHT, getARR());
-
-		// Set softdrop speed
-		ctrl.setDAS(Controller.BUTTON_SOFT, getSoftdropDAS());
-		ctrl.setARR(Controller.BUTTON_SOFT, getSoftdropARR());
-	}
-
-	/**
 	 * Update controller status
 	 */
 	public void updateController() {
 		ctrl.update(engine.replayTimer);
+	}
+
+	/**
+	 * Returns true if both Left and Right buttons are pressed
+	 */
+	public boolean isBothLeftRightPressed() {
+		return (ctrl.isButtonPressed(Controller.BUTTON_LEFT) && ctrl.isButtonPressed(Controller.BUTTON_RIGHT));
+	}
+
+	/**
+	 * Get current movement direction
+	 * @return -1:Left 0=None 1=Right
+	 */
+	public int getMoveDirection() {
+		int move = 0;
+		if(isBothLeftRightPressed()) {
+			// Both
+			if(ctrl.buttonLastActivatedTime[Controller.BUTTON_LEFT] > ctrl.buttonLastActivatedTime[Controller.BUTTON_RIGHT]) {
+				move = -1;
+			} else if(ctrl.buttonLastActivatedTime[Controller.BUTTON_LEFT] < ctrl.buttonLastActivatedTime[Controller.BUTTON_RIGHT]) {
+				move = 1;
+			}
+		} else if(ctrl.isButtonPressed(Controller.BUTTON_LEFT)) {
+			// Left
+			move = -1;
+		} else if(ctrl.isButtonPressed(Controller.BUTTON_RIGHT)) {
+			// Right
+			move = 1;
+		}
+		return move;
+	}
+
+	/**
+	 * Update DAS values
+	 */
+	public void updateDAS() {
+		// Left/Right movement
+		int moveDirection = getMoveDirection();
+		if(moveDirection == -1) {
+			dasNowLeft++;
+			if(!isBothLeftRightPressed()) dasNowRight = 0;
+		} else if(moveDirection == 1) {
+			if(!isBothLeftRightPressed()) dasNowLeft = 0;
+			dasNowRight++;
+		} else {
+			dasNowLeft = 0;
+			dasNowRight = 0;
+		}
+		dasDirection = moveDirection;
+
+		// Soft Drop
+		if(ctrl.isButtonPressed(Controller.BUTTON_SOFT)) {
+			dasNowDown++;
+		} else {
+			dasNowDown = 0;
+		}
 	}
 
 	/**
@@ -659,7 +729,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public void onReady() {
-		updateDASARRValues();
+		updateDAS();
 		updateController();
 
 		readyTimer += 1;
@@ -674,7 +744,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public void onMove() {
-		updateDASARRValues();
+		updateDAS();
 		updateController();
 
 		if(nowPieceObject == null) {
@@ -694,35 +764,61 @@ public class GamePlay implements Serializable {
 			if(rt != 0) rotatePiece(rt);
 
 			// Left/Right movement
-			int move = 0;
-			if(ctrl.isButtonPressed(Controller.BUTTON_LEFT) && ctrl.isButtonPressed(Controller.BUTTON_RIGHT)) {
-				if(ctrl.buttonLastPushedTime[Controller.BUTTON_LEFT] > ctrl.buttonLastPushedTime[Controller.BUTTON_RIGHT]) {
-					if(ctrl.isButtonActivated(Controller.BUTTON_LEFT)) {
-						move = -1;
+			int move = getMoveDirection();
+
+			if(move != 0) {
+				boolean moveflag = false;
+
+				if(move == -1) {
+					if(dasNowLeft == 1) {
+						arrNowLeft = 0;
+						moveflag = true;
+					} else if(dasNowLeft >= getDAS()) {
+						arrNowLeft++;
+						if(arrNowLeft >= getARR()) {
+							arrNowLeft = 0;
+							moveflag = true;
+						}
 					}
-				} else if(ctrl.buttonLastPushedTime[Controller.BUTTON_LEFT] < ctrl.buttonLastPushedTime[Controller.BUTTON_RIGHT]) {
-					if(ctrl.isButtonActivated(Controller.BUTTON_RIGHT)) {
-						move = 1;
+				} else if(move == 1) {
+					if(dasNowRight == 1) {
+						arrNowRight = 0;
+						moveflag = true;
+					} else if(dasNowRight >= getDAS()) {
+						arrNowRight++;
+						if(arrNowRight >= getARR()) {
+							arrNowRight = 0;
+							moveflag = true;
+						}
 					}
 				}
-			} else if(ctrl.isButtonActivated(Controller.BUTTON_LEFT)) {
-				move = -1;
-			} else if(ctrl.isButtonActivated(Controller.BUTTON_RIGHT)) {
-				move = 1;
-			}
 
-			// Move the piece
-			if(move != 0) {
-				movePiece(move);
+				// Move the piece
+				if(moveflag) movePiece(move);
 			}
 
 			// Soft drop
-			if(ctrl.isButtonActivated(Controller.BUTTON_SOFT)) {
-				softdropTime++;
+			if(ctrl.isButtonPressed(Controller.BUTTON_SOFT)) {
+				boolean moveflag = false;
 
-				while(softdropTime >= softdropTimeDenominator) {
-					softdropTime -= softdropTimeDenominator;
-					softdropPiece();
+				if(dasNowDown == 1) {
+					moveflag = true;
+					arrNowDown = 0;
+				} else if(dasNowDown >= getSoftdropDAS()) {
+					arrNowDown++;
+					if(arrNowDown >= getSoftdropARR()) {
+						arrNowDown = 0;
+						moveflag = true;
+					}
+				}
+
+				if(moveflag) {
+					softdropTime++;
+
+					while(softdropTime >= softdropTimeDenominator) {
+						softdropTime -= softdropTimeDenominator;
+						softdropPiece();
+					}
 				}
 			}
 
@@ -809,7 +905,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public void onLockFlash() {
-		updateDASARRValues();
+		updateDAS();
 		updateController();
 
 		lockFlashNow++;
@@ -831,7 +927,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public void onLineClear() {
-		updateDASARRValues();
+		updateDAS();
 		updateController();
 
 		long prevDelay = lineDelayNow;
@@ -853,7 +949,7 @@ public class GamePlay implements Serializable {
 	}
 
 	public void onARE() {
-		updateDASARRValues();
+		updateDAS();
 		updateController();
 
 		areNow++;

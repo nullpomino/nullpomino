@@ -2,6 +2,11 @@ package cx.it.nullpo.nm8.gui.game;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
@@ -287,6 +292,34 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 					break;
 				case KeyEvent.VK_ESCAPE:
 					neuro.dispatchEvent(new QuitEvent(this));
+					break;
+				case KeyEvent.VK_0:
+					if(pressed) {
+						try {
+							FileOutputStream fos = new FileOutputStream("statesave.bin");
+							ObjectOutputStream oos = new ObjectOutputStream(fos);
+							oos.writeObject(manager);
+							fos.close();
+							System.out.println("State saved!");
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
+					}
+					break;
+				case KeyEvent.VK_1:
+					if(pressed) {
+						try {
+							FileInputStream fis = new FileInputStream("statesave.bin");
+							ObjectInputStream ois = new ObjectInputStream(fis);
+							manager = (GameManager)ois.readObject();
+							fis.close();
+							System.out.println("State loaded!");
+						} catch (FileNotFoundException e2) {
+							System.out.println("State file doesn't exist");
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
+					}
 					break;
 			}
 		}

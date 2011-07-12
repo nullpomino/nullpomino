@@ -1,5 +1,7 @@
 package cx.it.nullpo.nm8.game.subsystem.wallkick;
 
+import java.io.Serializable;
+
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Field;
 import cx.it.nullpo.nm8.game.component.Piece;
@@ -8,7 +10,7 @@ import cx.it.nullpo.nm8.game.component.WallkickResult;
 /**
  * Wallkick system interface
  */
-public interface Wallkick {
+public interface Wallkick extends Serializable {
 	/**
 	 * Execute a wallkick
 	 * @param x X-coordinate

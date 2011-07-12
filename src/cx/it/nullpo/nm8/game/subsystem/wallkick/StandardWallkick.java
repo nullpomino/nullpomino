@@ -8,6 +8,8 @@ import cx.it.nullpo.nm8.game.component.Piece;
  * The standard SRS
  */
 public class StandardWallkick extends BaseStandardWallkick {
+	private static final long serialVersionUID = 54448249056445018L;
+
 	// Wallkick data
 	private static final int WALLKICK_NORMAL_L[][][] =
 	{

@@ -42,26 +42,14 @@ public class Controller implements Serializable {
 	/** Button pushed flag */
 	public boolean[] buttonPushed;
 
-	/** Button auto-repeated flag */
-	public boolean[] buttonRepeated;
-
 	/** Button pressing time */
 	public long[] buttonTime;
 
-	/** Button auto-repeat timer */
-	public long[] buttonRepeatTimer;
-
-	/** Last pushed time */
-	public long[] buttonLastPushedTime;
+	/** Last pressed time */
+	public long[] buttonLastPressedTime;
 
 	/** Last activated time */
 	public long[] buttonLastActivatedTime;
-
-	/** DAS for each button */
-	public long[] buttonDAS;
-
-	/** ARR for each button */
-	public long[] buttonARR;
 
 	/**
 	 * Constructor
@@ -86,13 +74,9 @@ public class Controller implements Serializable {
 		buttonPress = new boolean[MAX_BUTTON];
 		buttonActive = new boolean[MAX_BUTTON];
 		buttonPushed = new boolean[MAX_BUTTON];
-		buttonRepeated = new boolean[MAX_BUTTON];
 		buttonTime = new long[MAX_BUTTON];
-		buttonRepeatTimer = new long[MAX_BUTTON];
-		buttonLastPushedTime = new long[MAX_BUTTON];
+		buttonLastPressedTime = new long[MAX_BUTTON];
 		buttonLastActivatedTime = new long[MAX_BUTTON];
-		buttonDAS = new long[MAX_BUTTON];
-		buttonARR = new long[MAX_BUTTON];
 	}
 
 	/**
@@ -104,13 +88,9 @@ public class Controller implements Serializable {
 			buttonPress[i] = c.buttonPress[i];
 			buttonActive[i] = c.buttonActive[i];
 			buttonPushed[i] = c.buttonPushed[i];
-			buttonRepeated[i] = c.buttonRepeated[i];
 			buttonTime[i] = c.buttonTime[i];
-			buttonRepeatTimer[i] = c.buttonRepeatTimer[i];
-			buttonLastPushedTime[i] = c.buttonLastPushedTime[i];
+			buttonLastPressedTime[i] = c.buttonLastPressedTime[i];
 			buttonLastActivatedTime[i] = c.buttonLastActivatedTime[i];
-			buttonDAS[i] = c.buttonDAS[i];
-			buttonARR[i] = c.buttonARR[i];
 		}
 	}
 
@@ -140,30 +120,12 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 * Check button activated
+	 * Check button activated (pushed)
 	 * @param b Button ID
 	 * @return true if the button is activated
 	 */
 	public boolean isButtonActivated(int b) {
 		return buttonActive[b];
-	}
-
-	/**
-	 * Set DAS
-	 * @param b Button ID
-	 * @param das DAS
-	 */
-	public void setDAS(int b, long das) {
-		buttonDAS[b] = das;
-	}
-
-	/**
-	 * Set ARR
-	 * @param b Button ID
-	 * @param arr ARR
-	 */
-	public void setARR(int b, long arr) {
-		buttonARR[b] = arr;
 	}
 
 	/**
@@ -175,33 +137,19 @@ public class Controller implements Serializable {
 			if(buttonPress[i]) {
 				if(!buttonPushed[i]) {
 					buttonPushed[i] = true;
-					buttonRepeated[i] = false;
 					buttonActive[i] = true;
 					buttonTime[i]++;
-					buttonLastPushedTime[i] = currentTime;
 					buttonLastActivatedTime[i] = currentTime;
+					buttonLastPressedTime[i] = currentTime;
 				} else {
 					buttonActive[i] = false;
 					buttonTime[i]++;
-
-					long delay = buttonRepeated[i] ? buttonARR[i] : buttonDAS[i];
-					if(delay > 0) {
-						buttonRepeatTimer[i]++;
-
-						if(buttonRepeatTimer[i] >= delay) {
-							buttonRepeatTimer[i] -= delay;
-							buttonActive[i] = true;
-							buttonRepeated[i] = true;
-							buttonLastActivatedTime[i] = currentTime;
-						}
-					}
+					buttonLastPressedTime[i] = currentTime;
 				}
 			} else {
 				buttonActive[i] = false;
 				buttonPushed[i] = false;
-				buttonRepeated[i] = false;
 				buttonTime[i] = 0;
-				buttonRepeatTimer[i] = 0;
 			}
 		}
 	}

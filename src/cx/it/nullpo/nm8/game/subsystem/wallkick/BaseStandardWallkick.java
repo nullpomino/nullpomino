@@ -9,6 +9,8 @@ import cx.it.nullpo.nm8.game.component.WallkickResult;
  * Base class for all Standard (SRS) wallkicks
  */
 public class BaseStandardWallkick implements Wallkick {
+	private static final long serialVersionUID = -3920312251137876775L;
+
 	/**
 	 * Get wallkick table. Used from executeWallkick.
 	 * @param x X-coordinate

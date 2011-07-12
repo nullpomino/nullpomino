@@ -17,6 +17,6 @@ public class MemorylessRandomizer extends Randomizer {
 
 	@Override
 	public int next() {
-		return pieces[r.nextInt(pieces.length)];
+		return pieces[r.getRandom().nextInt(pieces.length)];
 	}
 }
