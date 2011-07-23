@@ -234,11 +234,33 @@ public class SlickNFSystem extends NFSystem {
 			return JSSoundLoader.load(filename);
 		}
 
+		// In Linux, sometimes it fails to load the file randomly because of the JDK bug
+		// So we must try again at least 5 times
+		int maxRetry = 0;
+		if(System.getProperty("os.name").contains("Linux")) {
+			maxRetry = 5;
+		}
+
 		try {
-			Sound nativeSound = new Sound(filename);
+			Sound nativeSound = null;
+			
+			for(int i = 0; i <= maxRetry; i++) {
+				try {
+					nativeSound = new Sound(filename);
+					break;
+				} catch (SlickException e) {
+					if(i >= maxRetry) {
+						if(maxRetry != 0) System.err.println("Give up...");
+						throw e;
+					} else {
+						System.err.println("Retrying (" + (i+1) + "/" + maxRetry + ")");
+					}
+				}
+			}
+			
 			SlickNFSound nfSound = new SlickNFSound(nativeSound);
 			return nfSound;
-		} catch (SlickException e) {
+		} catch (Exception e) {
 			throw new IOException("Couldn't load sound from " + filename + " (" + e.getMessage() + ")");
 		}
 	}
