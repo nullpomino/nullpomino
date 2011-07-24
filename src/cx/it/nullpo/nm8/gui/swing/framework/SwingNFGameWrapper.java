@@ -51,9 +51,6 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 	/** Last update time */
 	protected long lastExecTime;
 
-	/** Last nano delta */
-	protected long lastNanoDelta;
-
 	// FPS cap variables
 	protected long calcInterval;
 	protected long prevCalcTime;
@@ -209,11 +206,8 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		long nowTime = System.nanoTime();
 		if(lastExecTime == 0) {
 			ndelta = 0;
-			lastNanoDelta = 0;
 		} else {
-			long tempDelta = lastNanoDelta + (nowTime - lastExecTime);
-			ndelta = tempDelta / 1000000L;
-			lastNanoDelta = tempDelta % 1000000L;
+			ndelta = (nowTime - lastExecTime);
 		}
 		lastExecTime = nowTime;
 		sys.update(ndelta);

@@ -39,7 +39,7 @@ public class GameManager implements Serializable {
 	public long gameLoopTime;
 
 	/** Max game loop time for frame-based timer */
-	public long frameBasedLoopTime = 17;
+	public long frameBasedLoopTime = 16666666;
 
 	/** GameEngine: This is where the most action takes place. */
 	public GameEngine[] engine;
@@ -137,7 +137,7 @@ public class GameManager implements Serializable {
 
 	/**
 	 * Update game
-	 * @param runMsec Milliseconds elapsed from the last execution
+	 * @param runMsec Nanoseconds elapsed from the last execution
 	 */
 	public void update(long runMsec) {
 		gameLoopTime += runMsec;
