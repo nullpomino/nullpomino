@@ -35,6 +35,6 @@ public class TestingNEURO extends NEUROCore {
 	}
 
 	@Override
-	public void draw(NFGraphics g) { }
+	public void drawComponent(NFGraphics g) { }
 
 }

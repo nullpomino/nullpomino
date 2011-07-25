@@ -137,13 +137,15 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 		}
 	}
 
-	public void draw(NFGraphics g) {
+	public final void draw(NFGraphics g) {
 		// Draw the game
 		game.render(sys,g);
 		// Draw the overlay if applicable
 		if (overlayDrawFlag) {
 			drawOverlay(g);
 		}
+		// Draw whatever else is necessary
+		drawComponent(g);
 	}
 
 	public NMTPResponse send(NMTPRequest req) {
@@ -238,6 +240,8 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 
 	protected void updateOverlay(long delta) {}
 	protected void drawOverlay(NFGraphics g) {}
+	
+	protected abstract void drawComponent(NFGraphics g);
 
 	// Key listener methods
 	public void keyPressed(NFKeyboard keyboard, int key, char c) {

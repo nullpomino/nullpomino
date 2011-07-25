@@ -48,8 +48,7 @@ public class NEUROLight extends NEUROCore {
 	}
 
 	@Override
-	public void draw(NFGraphics g) {
-		super.draw(g);
+	public void drawComponent(NFGraphics g) {
 		if (font != null) {
 			g.setFont(font);
 			String str = "POWERED BY "+getName().toUpperCase()+" "+getVersion();
