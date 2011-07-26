@@ -22,6 +22,11 @@ public interface NEUROPlugin {
 	float getVersion();
 	
 	/**
+	 * Gets the author of this plugin.
+	 */
+	String getAuthor();
+	
+	/**
 	 * Initializes the plugin.
 	 * @param parent the NEURO to register this plugin with
 	 * @throws PluginInitializationException if something goes wrong during the initialization process

@@ -6,6 +6,11 @@ import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
 
+/**
+ * Simple test plugin which dispatches events every second.
+ * @author Zircean
+ *
+ */
 public class EventDispatcherPlugin extends AbstractPlugin {
 	
 	boolean stopping;
@@ -15,7 +20,11 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 	}
 
 	public float getVersion() {
-		return 1.0F;
+		return 0.0F;
+	}
+	
+	public String getAuthor() {
+		return "Sollux Captor";
 	}
 	
 	public void init(NEURO parent) throws PluginInitializationException {

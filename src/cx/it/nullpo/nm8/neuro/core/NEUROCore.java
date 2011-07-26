@@ -64,17 +64,19 @@ public abstract class NEUROCore implements NEURO, NFKeyListener, NFMouseListener
 	protected boolean overlayDrawFlag;
 
 	/**
-	 * Constructor for AbstractNEURO.
+	 * Constructor for NEUROCore.
 	 */
 	public NEUROCore(NFSystem sys) {
 		// Set up system and input handling
 		this.sys = sys;
-		sys.getKeyboard().addKeyListener(this);
-		if(sys.getMouse() != null) {
-			sys.getMouse().addMouseListener(this);
-		}
-		if(sys.getJoystickManager() != null && sys.getJoystickManager().isInited()) {
-			sys.getJoystickManager().addListener(this);
+		if (sys != null) {
+			sys.getKeyboard().addKeyListener(this);
+			if(sys.getMouse() != null) {
+				sys.getMouse().addMouseListener(this);
+			}
+			if(sys.getJoystickManager() != null && sys.getJoystickManager().isInited()) {
+				sys.getJoystickManager().addListener(this);
+			}
 		}
 
 		// Set up NEURO functions

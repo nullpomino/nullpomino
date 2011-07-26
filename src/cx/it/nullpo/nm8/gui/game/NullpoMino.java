@@ -259,6 +259,10 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	public float getVersion() {
 		return GameManager.getVersionMajor();
 	}
+	
+	public String getAuthor() {
+		return "The NullpoMino Dev Team";
+	}
 
 	@Override
 	public void init(NEURO neuro) throws PluginInitializationException {

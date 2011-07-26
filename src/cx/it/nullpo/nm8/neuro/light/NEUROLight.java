@@ -8,7 +8,7 @@ import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.neuro.core.NEUROCore;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
-import cx.it.nullpo.nm8.neuro.plugin.Nullterm;
+import cx.it.nullpo.nm8.neuro.plugin.nullterm.Nullterm;
 
 public class NEUROLight extends NEUROCore {
 	private static final long serialVersionUID = -2062491488225964116L;
