@@ -16,7 +16,7 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 	boolean stopping;
 
 	public String getName() {
-		return "Test Event Dispatcher";
+		return "TEST EVENT DISPATCHER (THIS IS STUPID)";
 	}
 
 	public float getVersion() {
@@ -24,7 +24,7 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 	}
 	
 	public String getAuthor() {
-		return "Sollux Captor";
+		return "KARKAT VANTAS";
 	}
 	
 	public void init(NEURO parent) throws PluginInitializationException {

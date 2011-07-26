@@ -7,8 +7,6 @@ import cx.it.nullpo.nm8.neuro.plugin.nullterm.Nullterm;
 
 /**
  * A type of NEURO which is used to verify that events are being passed around correctly.
- * Deprecated unless I feel like moving the event system to its own abstract class
- * which exists above NEUROCore.
  * @author Zircean
  *
  */
