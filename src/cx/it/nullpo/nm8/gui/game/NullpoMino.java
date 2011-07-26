@@ -320,9 +320,10 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 							ObjectOutputStream oos = new ObjectOutputStream(fos);
 							oos.writeObject(manager);
 							fos.close();
-							System.out.println("State saved!");
+							// System.out.println("State saved!");
+							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Game state saved."));
 						} catch (Exception e2) {
-							e2.printStackTrace();
+							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Failed to save game state."));
 						}
 					}
 					break;
@@ -333,11 +334,14 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 							ObjectInputStream ois = new ObjectInputStream(fis);
 							manager = (GameManager)ois.readObject();
 							fis.close();
-							System.out.println("State loaded!");
+							// System.out.println("State loaded!");
+							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Game state loaded."));
 						} catch (FileNotFoundException e2) {
-							System.out.println("State file doesn't exist");
+							// System.out.println("State file doesn't exist");
+							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_WARNING,"Game state not found."));
 						} catch (Exception e2) {
-							e2.printStackTrace();
+							// e2.printStackTrace();
+							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Game state failed to load."));
 						}
 					}
 					break;
