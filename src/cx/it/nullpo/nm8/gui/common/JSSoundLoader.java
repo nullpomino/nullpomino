@@ -11,7 +11,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import cx.it.nullpo.nm8.game.util.NUtil;
+import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * Load a RIFF wave file and create JSNFSound

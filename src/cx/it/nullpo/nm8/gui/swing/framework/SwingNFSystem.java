@@ -9,7 +9,6 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import cx.it.nullpo.nm8.game.util.NUtil;
 import cx.it.nullpo.nm8.gui.common.JSSoundLoader;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
@@ -19,6 +18,7 @@ import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
+import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * Swing implementation of NFSystem

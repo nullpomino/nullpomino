@@ -3,11 +3,11 @@ package cx.it.nullpo.nm8.neuro.plugin.nullterm;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import cx.it.nullpo.nm8.game.util.CustomProperties;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
+import cx.it.nullpo.nm8.util.CustomProperties;
 
 /**
  * Nullterm is a basic plugin which currently listens for DebugEvents and prints their detail message out to the terminal.
@@ -34,7 +34,7 @@ public class Nullterm extends AbstractPlugin {
 	}
 
 	public float getVersion() {
-		return 0.21F;
+		return 0.22F;
 	}
 	
 	public String getAuthor() {
@@ -45,8 +45,8 @@ public class Nullterm extends AbstractPlugin {
 		super.init(parent);
 		parent.addListener(this,DebugEvent.class);
 		// Read properties file
-		CustomProperties props = new CustomProperties();
-		// TODO load file here...
+		CustomProperties props = CustomProperties.load(NulltermConstants.PROPS_LOCATION);
+		// Set configuration
 		outputToTerminal = props.getProperty("output.terminal",NulltermConstants.OUTPUT_TO_TERMINAL);
 		outputToFile = props.getProperty("output.log",NulltermConstants.OUTPUT_TO_FILE);
 		appendFile = props.getProperty("output.append",NulltermConstants.APPEND_FILE);

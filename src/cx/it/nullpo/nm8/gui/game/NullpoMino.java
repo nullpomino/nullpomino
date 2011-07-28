@@ -13,7 +13,6 @@ import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Piece;
 import cx.it.nullpo.nm8.game.play.GameManager;
-import cx.it.nullpo.nm8.game.util.NUtil;
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
@@ -29,6 +28,7 @@ import cx.it.nullpo.nm8.neuro.event.JoyXYAxisEvent;
 import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
+import cx.it.nullpo.nm8.util.NUtil;
 
 public class NullpoMino extends AbstractPlugin implements NFGame {
 	private static final long serialVersionUID = 4545597070306756443L;

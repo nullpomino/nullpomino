@@ -1,4 +1,4 @@
-package cx.it.nullpo.nm8.game.util;
+package cx.it.nullpo.nm8.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

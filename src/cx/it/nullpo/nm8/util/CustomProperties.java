@@ -1,7 +1,10 @@
-package cx.it.nullpo.nm8.game.util;
+package cx.it.nullpo.nm8.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -277,5 +280,41 @@ public class CustomProperties extends Properties {
 		}
 
 		return true;
+	}
+	
+	/**
+	 * Creates a CustomProperties object from the specified pathname.
+	 * @param pathname the location of the properties file to load
+	 * @return a CustomProperties with the configuration defined in the file,
+	 * or null if it could not load or read the file.
+	 */
+	public static CustomProperties load(String pathname) {
+		try {
+			FileInputStream in = new FileInputStream(pathname);
+			// Create props file and load in
+			CustomProperties prop = new CustomProperties();
+			prop.load(in);
+			// Close and return
+			in.close();
+			return prop;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Saves this CustomProperties to a file.
+	 * @param pathname the path of the file to save to.
+	 * @param comments comments to store in the file.
+	 */
+	public void save(String pathname, String comments) {
+		try {
+			FileOutputStream out = new FileOutputStream(pathname);
+			store(out, comments);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

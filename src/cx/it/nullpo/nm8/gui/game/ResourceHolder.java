@@ -13,9 +13,9 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import cx.it.nullpo.nm8.game.util.NUtil;
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
+import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * ResourceHolder: Contains Graphics, Sounds, etc

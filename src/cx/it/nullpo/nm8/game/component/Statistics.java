@@ -2,8 +2,8 @@ package cx.it.nullpo.nm8.game.component;
 
 import java.io.Serializable;
 
-import cx.it.nullpo.nm8.game.util.CustomProperties;
-import cx.it.nullpo.nm8.game.util.NUtil;
+import cx.it.nullpo.nm8.util.CustomProperties;
+import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * Game statistics

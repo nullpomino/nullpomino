@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import cx.it.nullpo.nm8.game.util.CustomProperties;
+import cx.it.nullpo.nm8.util.CustomProperties;
 
 /**
  * Game field
