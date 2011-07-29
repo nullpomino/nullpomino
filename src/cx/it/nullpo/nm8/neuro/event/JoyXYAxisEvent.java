@@ -5,7 +5,7 @@ import cx.it.nullpo.nm8.gui.framework.NFJoystick;
 /**
  * A class representing a joystick X or Y only axis event.
  */
-public class JoyXYAxisEvent extends NEUROEvent {
+public class JoyXYAxisEvent extends InputEvent {
 	private static final long serialVersionUID = -2667021911875886328L;
 
 	/** The joystick this event refers to */

@@ -5,7 +5,7 @@ import cx.it.nullpo.nm8.gui.framework.NFMouse;
 /**
  * A class representing a mouse button press/release event.
  */
-public class MouseButtonEvent extends NEUROEvent {
+public class MouseButtonEvent extends InputEvent {
 	private static final long serialVersionUID = 6017350767075947562L;
 
 	/** The mouse this event refers to */

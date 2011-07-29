@@ -7,6 +7,6 @@ package cx.it.nullpo.nm8.neuro.test;
  */
 public class NEUROTest {
 	public static void main(String[] args) {
-		new TestingNEURO();
+		TestingNEURO.create();
 	}
 }

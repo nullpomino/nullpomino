@@ -7,7 +7,7 @@ import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
  * @author Zircean
  *
  */
-public class KeyInputEvent extends NEUROEvent {
+public class KeyInputEvent extends InputEvent {
 	
 	private static final long serialVersionUID = -555528077026852959L;
 	

@@ -50,9 +50,9 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				System.out.println(numJoysticks + " joysticks found");
 
 				if(numJoysticks > 0) {
-					neuro.addListener(this,JoyXYAxisEvent.class);
-					neuro.addListener(this,JoyPOVEvent.class);
-					neuro.addListener(this,JoyButtonEvent.class);
+					addListener(JoyXYAxisEvent.class);
+					addListener(JoyPOVEvent.class);
+					addListener(JoyButtonEvent.class);
 				}
 			}
 		} catch (Throwable e) {
@@ -265,9 +265,8 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	}
 
 	@Override
-	public void init(NEURO neuro) throws PluginInitializationException {
-		super.init(neuro);
-		neuro.addListener(this,KeyInputEvent.class);
+	public void init() throws PluginInitializationException {
+		addListener(KeyInputEvent.class);
 	}
 
 	@Override
@@ -311,7 +310,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 					ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
 					break;
 				case KeyEvent.VK_ESCAPE:
-					neuro.dispatchEvent(new QuitEvent(this));
+					dispatchEvent(new QuitEvent(this));
 					break;
 				case KeyEvent.VK_0:
 					if(pressed) {
@@ -321,9 +320,9 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 							oos.writeObject(manager);
 							fos.close();
 							// System.out.println("State saved!");
-							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Game state saved."));
+							dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Game state saved."));
 						} catch (Exception e2) {
-							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Failed to save game state."));
+							dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Failed to save game state."));
 						}
 					}
 					break;
@@ -335,13 +334,13 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 							manager = (GameManager)ois.readObject();
 							fis.close();
 							// System.out.println("State loaded!");
-							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Game state loaded."));
+							dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Game state loaded."));
 						} catch (FileNotFoundException e2) {
 							// System.out.println("State file doesn't exist");
-							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_WARNING,"Game state not found."));
+							dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_WARNING,"Game state not found."));
 						} catch (Exception e2) {
 							// e2.printStackTrace();
-							neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Game state failed to load."));
+							dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Game state failed to load."));
 						}
 					}
 					break;
@@ -380,17 +379,17 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	}
 
 	public void receiveEvent(JoyXYAxisEvent e) {
-		neuro.dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyXYAxisEvent isY:" + e.isYAxis() + " value:" + e.getNewValue()));
+		dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyXYAxisEvent isY:" + e.isYAxis() + " value:" + e.getNewValue()));
 		onJoystickMove(e.getJoystick(), e.isYAxis(), e.getOldValue(), e.getNewValue());
 	}
 
 	public void receiveEvent(JoyPOVEvent e) {
-		neuro.dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyPOVEvent isY:" + e.isYPov() + " value:" + e.getNewValue()));
+		dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyPOVEvent isY:" + e.isYPov() + " value:" + e.getNewValue()));
 		onJoystickMove(e.getJoystick(), e.isYPov(), e.getOldValue(), e.getNewValue());
 	}
 
 	public void receiveEvent(JoyButtonEvent e) {
-		neuro.dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyButtonEvent button:" + e.getButton() + " isPressed:" + e.isPressed()));
+		dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "JoyButtonEvent button:" + e.getButton() + " isPressed:" + e.isPressed()));
 
 		if (manager != null) {
 			Controller ctrl = manager.getGamePlay(0,0).ctrl;

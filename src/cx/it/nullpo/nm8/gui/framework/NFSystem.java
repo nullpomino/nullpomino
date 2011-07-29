@@ -153,7 +153,7 @@ public abstract class NFSystem implements Serializable {
 	 * @throws Exception Indicates a failure to initialise the system
 	 */
 	public void init() throws Exception {
-		neuro = new NEUROLight(this);
+		neuro = NEUROLight.create(this);
 		game.init(neuro);
 	}
 

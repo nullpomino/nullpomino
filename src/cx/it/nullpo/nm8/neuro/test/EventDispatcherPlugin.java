@@ -1,7 +1,6 @@
 package cx.it.nullpo.nm8.neuro.test;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
@@ -27,8 +26,7 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 		return "KARKAT VANTAS";
 	}
 	
-	public void init(NEURO parent) throws PluginInitializationException {
-		super.init(parent);
+	public void init() throws PluginInitializationException {
 		new EventThread().start();
 	}
 	
@@ -39,7 +37,6 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 	public void draw(NFGraphics g) { }
 	
 	protected synchronized void sendDebugMessage(String str) {
-		neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,str));
 	}
 	
 	class EventThread extends Thread {
@@ -48,9 +45,9 @@ public class EventDispatcherPlugin extends AbstractPlugin {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					sendDebugMessage("ERROR: Sleep interrupted");
+					dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_ERROR,"Sleep interrupted"));
 				}
-				sendDebugMessage("Debug event");
+				dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_DEBUG,"Debug event"));
 			}
 		}
 	}

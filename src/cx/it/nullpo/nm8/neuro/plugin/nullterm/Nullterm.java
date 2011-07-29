@@ -3,7 +3,6 @@ package cx.it.nullpo.nm8.neuro.plugin.nullterm;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
@@ -41,9 +40,8 @@ public class Nullterm extends AbstractPlugin {
 		return "Zircean";
 	}
 	
-	public void init(NEURO parent) throws PluginInitializationException {
-		super.init(parent);
-		parent.addListener(this,DebugEvent.class);
+	protected void init() throws PluginInitializationException {
+		addListener(DebugEvent.class);
 		// Read properties file
 		CustomProperties props = CustomProperties.load(NulltermConstants.PROPS_LOCATION);
 		// Set configuration
@@ -56,7 +54,7 @@ public class Nullterm extends AbstractPlugin {
 			try {
 				writer = new FileWriter(logLocation,appendFile);
 			} catch (IOException e) {
-				neuro.dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_WARNING,"Could not open log file for writing"));
+				dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_WARNING,"Could not open log file for writing"));
 			}
 		}
 	}

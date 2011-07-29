@@ -5,7 +5,7 @@ import cx.it.nullpo.nm8.gui.framework.NFJoystick;
 /**
  * A class representing a joystick button event.
  */
-public class JoyButtonEvent extends NEUROEvent {
+public class JoyButtonEvent extends InputEvent {
 	private static final long serialVersionUID = 3329376390695100470L;
 
 	/** The joystick this event refers to */

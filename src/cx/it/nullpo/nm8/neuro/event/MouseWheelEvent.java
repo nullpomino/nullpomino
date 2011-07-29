@@ -5,7 +5,7 @@ import cx.it.nullpo.nm8.gui.framework.NFMouse;
 /**
  * A class representing a mouse wheel event.
  */
-public class MouseWheelEvent extends NEUROEvent {
+public class MouseWheelEvent extends InputEvent {
 	private static final long serialVersionUID = 5048178996840172874L;
 
 	/** The mouse this event refers to */

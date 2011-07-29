@@ -5,7 +5,7 @@ import cx.it.nullpo.nm8.gui.framework.NFJoystick;
 /**
  * A class representing a joystick POV event.
  */
-public class JoyPOVEvent extends NEUROEvent {
+public class JoyPOVEvent extends InputEvent {
 	private static final long serialVersionUID = 350225673331758026L;
 
 	/** The joystick this event refers to */
