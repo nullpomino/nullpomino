@@ -137,4 +137,8 @@ public class SlickNFGraphics implements NFGraphics {
 			throw new IllegalArgumentException("This NFFont is not an instance of SlickNFFont");
 		}
 	}
+	
+	public void translate(int x, int y) {
+		g.translate(x,y);
+	}
 }

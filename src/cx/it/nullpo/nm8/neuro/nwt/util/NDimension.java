@@ -1,4 +1,4 @@
-package cx.it.nullpo.nm8.neuro.nlt.util;
+package cx.it.nullpo.nm8.neuro.nwt.util;
 
 /**
  * A class representing dimensions, or the size of something on the screen.

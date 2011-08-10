@@ -134,4 +134,8 @@ public class SwingNFGraphics implements NFGraphics {
 	public void resetFont() {
 		g.setFont(defaultNativeFont);
 	}
+	
+	public void translate(int x, int y) {
+		g.translate(x,y);
+	}
 }

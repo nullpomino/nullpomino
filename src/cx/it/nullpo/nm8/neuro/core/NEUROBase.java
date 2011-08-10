@@ -7,12 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.network.NMMPMessage;
-import cx.it.nullpo.nm8.network.NMTPRequest;
-import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
+import cx.it.nullpo.nm8.neuro.nwt.NScreen;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
 
@@ -71,17 +69,11 @@ public abstract class NEUROBase implements NEURO {
 		}
 	}
 	
-	@Override
 	public void update(long delta) { }
 
-	@Override
 	public void draw(NFGraphics g) { }
-
-	@Override
-	public NMTPResponse send(NMTPRequest req) { return null; }
-
-	@Override
-	public void send(NMMPMessage message) { }
+	
+	public void pushScreen(NScreen sc) { }
 	
 	/**
 	 * Loads the plugin at the given classpath.

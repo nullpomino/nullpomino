@@ -1,10 +1,8 @@
 package cx.it.nullpo.nm8.neuro.core;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.network.NMMPMessage;
-import cx.it.nullpo.nm8.network.NMTPRequest;
-import cx.it.nullpo.nm8.network.NMTPResponse;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
+import cx.it.nullpo.nm8.neuro.nwt.NScreen;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 
 /**
@@ -52,18 +50,14 @@ public interface NEURO {
 	void update(long delta);
 
 	/**
-	 * Draws this NEURO instance to the screen. NEURO should be drawn on top of everything else.
+	 * Draws this NEURO instance to the screen. All drawing should be done through NEURO (such as the actual game).
 	 * @param g the NFGraphics with which to draw this NEURO instance
 	 */
 	void draw(NFGraphics g);
-
+	
 	/**
-	 * Sends the given NMTPRequest and returns its corresponding NMTPResponse.
+	 * Pushes the given screen onto the screen stack. This screen will be drawn.
+	 * @param sc the NScreen to be pushed to the top of the stack
 	 */
-	NMTPResponse send(NMTPRequest req);
-
-	/**
-	 * Sends the given NMMPMessage.
-	 */
-	void send(NMMPMessage message);
+	void pushScreen(NScreen sc);
 }

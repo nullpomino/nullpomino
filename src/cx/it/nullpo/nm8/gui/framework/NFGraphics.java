@@ -138,4 +138,10 @@ public interface NFGraphics extends Serializable {
 	 * Reset to using the default font for this context
 	 */
 	public void resetFont();
+	
+	/**
+	 * Translate this graphics context by the given x and y values with respect to the origin of
+	 * the original context
+	 */
+	public void translate(int x, int y);
 }

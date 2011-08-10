@@ -1,4 +1,4 @@
-package cx.it.nullpo.nm8.neuro.nlt.util;
+package cx.it.nullpo.nm8.neuro.nwt.util;
 
 /**
  * NPoint is a class which represents a point in space.
