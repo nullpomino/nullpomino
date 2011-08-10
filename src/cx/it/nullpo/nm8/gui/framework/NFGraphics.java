@@ -141,7 +141,13 @@ public interface NFGraphics extends Serializable {
 	
 	/**
 	 * Translate this graphics context by the given x and y values with respect to the origin of
-	 * the original context
+	 * the current context
 	 */
 	public void translate(int x, int y);
+	
+	/**
+	 * Sets the clipping bounds of this graphics context to be a width by height rectangle
+	 * with its top-left corner at point x,y.
+	 */
+	public void setClippingArea(int x, int y, int width, int height);
 }

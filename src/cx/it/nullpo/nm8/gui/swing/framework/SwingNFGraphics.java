@@ -138,4 +138,8 @@ public class SwingNFGraphics implements NFGraphics {
 	public void translate(int x, int y) {
 		g.translate(x,y);
 	}
+	
+	public void setClippingArea(int x, int y, int width, int height) {
+		g.setClip(x,y,width,height);
+	}
 }
