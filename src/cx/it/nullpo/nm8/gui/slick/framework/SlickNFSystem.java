@@ -55,6 +55,12 @@ public class SlickNFSystem extends NFSystem {
 	/** Use Java Sound API instead of OpenAL */
 	protected boolean useJavaSound;
 
+	/** Use AWT key receiver instead of LWJGL's native one */
+	protected boolean useAWTKeyReceiver;
+
+	/** SlickKeyReceiverJFrame for AWT key receiver */
+	protected SlickKeyReceiverJFrame slickKeyReceiverJFrame;
+
 	public SlickNFSystem() {
 		super();
 	}
@@ -106,6 +112,9 @@ public class SlickNFSystem extends NFSystem {
 		container.setSoundVolume(soundVolume);
 		container.setMusicVolume(musicVolume);
 
+		container.setAlwaysRender(useAWTKeyReceiver);
+		container.setUpdateOnlyWhenVisible(!useAWTKeyReceiver);
+
 		super.init();
 	}
 
@@ -119,6 +128,9 @@ public class SlickNFSystem extends NFSystem {
 	public void exit() {
 		getNFGame().onExit(this);
 
+		if(slickKeyReceiverJFrame != null) {
+			slickKeyReceiverJFrame.dispose();
+		}
 		if(container != null) {
 			container.exit();
 		}
@@ -126,13 +138,21 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public boolean hasFocus() {
+		if((slickKeyReceiverJFrame != null) && slickKeyReceiverJFrame.isFocused()) {
+			return true;
+		}
 		return (container == null) ? false : container.hasFocus();
 	}
 
 	@Override
 	public NFKeyboard getKeyboard() {
 		if((keyboard == null) && (container != null)) {
-			keyboard = new SlickNFKeyboard(container.getInput());
+			if(useAWTKeyReceiver) {
+				slickKeyReceiverJFrame = new SlickKeyReceiverJFrame(this);
+				keyboard = new SlickNFKeyboard(container.getInput(), slickKeyReceiverJFrame);
+			} else {
+				keyboard = new SlickNFKeyboard(container.getInput());
+			}
 		} else if (keyboard.getNativeInput() == null && container != null) {
 			keyboard.setNativeInput(container.getInput());
 		}
@@ -243,7 +263,7 @@ public class SlickNFSystem extends NFSystem {
 
 		try {
 			Sound nativeSound = null;
-			
+
 			for(int i = 0; i <= maxRetry; i++) {
 				try {
 					nativeSound = new Sound(filename);
@@ -257,7 +277,7 @@ public class SlickNFSystem extends NFSystem {
 					}
 				}
 			}
-			
+
 			SlickNFSound nfSound = new SlickNFSound(nativeSound);
 			return nfSound;
 		} catch (Exception e) {
@@ -343,5 +363,24 @@ public class SlickNFSystem extends NFSystem {
 	 */
 	public void setUseJavaSound(boolean b) {
 		useJavaSound = b;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * Returns true if we use AWT's key receiver instead of LWJGL's
+	 * @return true if we use AWT's key receiver instead of LWJGL's
+	 */
+	public boolean isUseAWTKeyReceiver() {
+		return useAWTKeyReceiver;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * If set to true, we'll spawn a JFrame to receive key inputs from AWT.<br>
+	 * If your Keyboard do not respond, try using this.<br>
+	 * @param useAWTKeyReceiver true if we use AWT's key receiver instead of LWJGL's
+	 */
+	public void setUseAWTKeyReceiver(boolean useAWTKeyReceiver) {
+		this.useAWTKeyReceiver = useAWTKeyReceiver;
 	}
 }

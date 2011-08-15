@@ -248,6 +248,12 @@ public class SlickNFKeyboard implements NFKeyboard {
 	/** Slick native Input */
 	protected Input nativeInput;
 
+	/** true if using AWT key receiver */
+	protected boolean useAWTKeyReceiver;
+
+	/** SlickKeyReceiverJFrame for AWT key receiver */
+	protected SlickKeyReceiverJFrame slickKeyReceiverJFrame;
+
 	/** Keyboard Listeners */
 	protected List<NFKeyListener> keyListeners = Collections.synchronizedList(new ArrayList<NFKeyListener>());
 
@@ -257,6 +263,18 @@ public class SlickNFKeyboard implements NFKeyboard {
 	 */
 	public SlickNFKeyboard(Input nativeInput) {
 		this.nativeInput = nativeInput;
+		this.useAWTKeyReceiver = false;
+	}
+
+	/**
+	 * Constructor
+	 * @param nativeInput Slick native Input
+	 * @param slickKeyReceiverJFrame AWT key receiver
+	 */
+	public SlickNFKeyboard(Input nativeInput, SlickKeyReceiverJFrame slickKeyReceiverJFrame) {
+		this.nativeInput = nativeInput;
+		this.useAWTKeyReceiver = true;
+		this.slickKeyReceiverJFrame = slickKeyReceiverJFrame;
 	}
 
 	/**
@@ -306,11 +324,16 @@ public class SlickNFKeyboard implements NFKeyboard {
 	}
 
 	public boolean isKeyDown(int key) {
+		if(useAWTKeyReceiver) {
+			return slickKeyReceiverJFrame.isKeyDown(key);
+		}
 		int slickkey = awt2SlickKey(key);
 		return nativeInput.isKeyDown(slickkey);
 	}
 
 	public boolean isKeySupported(int key) {
+		if(useAWTKeyReceiver) return true;
+
 		if(key != KeyEvent.VK_UNDEFINED) {
 			for(int i = 0; i < KEYTABLE.length; i++) {
 				if(KEYTABLE[i] == key) {
@@ -330,7 +353,7 @@ public class SlickNFKeyboard implements NFKeyboard {
 	}
 
 	public void dispatchKeyPressed(int key, char c) {
-		int awtkey = slick2AWTKey(key);
+		int awtkey = useAWTKeyReceiver ? key : slick2AWTKey(key);
 		synchronized (keyListeners) {
 			Iterator<NFKeyListener> it = keyListeners.iterator();
 			while(it.hasNext()) {
@@ -341,7 +364,7 @@ public class SlickNFKeyboard implements NFKeyboard {
 	}
 
 	public void dispatchKeyReleased(int key, char c) {
-		int awtkey = slick2AWTKey(key);
+		int awtkey = useAWTKeyReceiver ? key : slick2AWTKey(key);
 		synchronized (keyListeners) {
 			Iterator<NFKeyListener> it = keyListeners.iterator();
 			while(it.hasNext()) {

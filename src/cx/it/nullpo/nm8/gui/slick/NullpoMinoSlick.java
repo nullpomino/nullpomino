@@ -9,8 +9,16 @@ import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
 public class NullpoMinoSlick {
 	public static void main(String[] args) {
 		try {
+			boolean useAWTKeyReceiver = false;
+			System.out.println("args.length: " + args.length);
+			if((args.length > 0) && (args[0].equals("-a") || args[0].equals("/a"))) {
+				useAWTKeyReceiver = true;
+				System.out.println("useAWTKeyReceiver");
+			}
+
 			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), false, 640, 480, 640, 480, true, args);
 			sys.setTargetFPS(60);
+			sys.setUseAWTKeyReceiver(useAWTKeyReceiver);
 			sys.init();
 			sys.start();
 		} catch (Exception e) {
