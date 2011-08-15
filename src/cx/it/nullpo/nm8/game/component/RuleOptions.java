@@ -84,11 +84,47 @@ public class RuleOptions implements Serializable {
 	/** Can't use IHS twice in a row */
 	public boolean holdInitialLimit;
 
+	/** Disallow the use of IHS in zero delay */
+	public boolean holdInitialDisallowZeroDelay;
+
 	/** Reset the piece's direction when using hold */
 	public boolean holdResetDirection;
 
 	/** Number of holds (-1:Unlimited) */
 	public int holdLimit;
+
+	/** Enable Hard Drop */
+	public boolean harddropEnable;
+
+	/** Instant lock by Hard Drop */
+	public boolean harddropLock;
+
+	/** Disallow continuous use of Hard Drop */
+	public boolean harddropLimit;
+
+	/** Enable Soft Drop */
+	public boolean softdropEnable;
+
+	/** Instant lock by Soft Drop */
+	public boolean softdropLock;
+
+	/** Disallow continuous use of Soft Drop */
+	public boolean softdropLimit;
+
+	/** Multiply the native speed when using Soft Drop */
+	public boolean softdropMultiplyNativeSpeed;
+
+	/** Use new soft drop codes */
+	public boolean softdropGravitySpeedLimit;
+
+	/** Enable Initial Rotation */
+	public boolean rotateInitial;
+
+	/** Disallow continuous use of Initial Rotation */
+	public boolean rotateInitialLimit;
+
+	/** Disallow the use of Initial Rotation in zero delay */
+	public boolean rotateInitialDisallowZeroDelay;
 
 	/**
 	 * Constructor
@@ -147,8 +183,23 @@ public class RuleOptions implements Serializable {
 		holdEnable = true;
 		holdInitial = true;
 		holdInitialLimit = false;
+		holdInitialDisallowZeroDelay = true;
 		holdResetDirection = true;
 		holdLimit = -1;
+
+		harddropEnable = true;
+		harddropLock = true;
+		harddropLimit = true;
+
+		softdropEnable = true;
+		softdropLock = false;
+		softdropLimit = false;
+		softdropMultiplyNativeSpeed = false;
+		softdropGravitySpeedLimit = true;
+
+		rotateInitial = true;
+		rotateInitialLimit = false;
+		rotateInitialDisallowZeroDelay = true;
 	}
 
 	/**
@@ -187,7 +238,22 @@ public class RuleOptions implements Serializable {
 		holdEnable = r.holdEnable;
 		holdInitial = r.holdInitial;
 		holdInitialLimit = r.holdInitialLimit;
+		holdInitialDisallowZeroDelay = r.holdInitialDisallowZeroDelay;
 		holdResetDirection = r.holdResetDirection;
 		holdLimit = r.holdLimit;
+
+		harddropEnable = r.harddropEnable;
+		harddropLock = r.harddropLock;
+		harddropLimit = r.harddropLimit;
+
+		softdropEnable = r.softdropEnable;
+		softdropLock = r.softdropLock;
+		softdropLimit = r.softdropLimit;
+		softdropMultiplyNativeSpeed = r.softdropMultiplyNativeSpeed;
+		softdropGravitySpeedLimit = r.softdropGravitySpeedLimit;
+
+		rotateInitial = r.rotateInitial;
+		rotateInitialLimit = r.rotateInitialLimit;
+		rotateInitialDisallowZeroDelay = r.rotateInitialDisallowZeroDelay;
 	}
 }

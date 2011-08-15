@@ -265,7 +265,7 @@ public class SlickNFKeyboard implements NFKeyboard {
 	public Input getNativeInput() {
 		return nativeInput;
 	}
-	
+
 	/**
 	 * Set Slick native input
 	 */
@@ -334,7 +334,7 @@ public class SlickNFKeyboard implements NFKeyboard {
 		synchronized (keyListeners) {
 			Iterator<NFKeyListener> it = keyListeners.iterator();
 			while(it.hasNext()) {
-				System.out.println("Pressed key "+c);
+				//System.out.println("Pressed key "+c);
 				it.next().keyPressed(this, awtkey, c);
 			}
 		}

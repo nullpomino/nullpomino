@@ -104,6 +104,9 @@ public class GamePlay implements Serializable {
 	/** Current piece Y position */
 	public int nowPieceY;
 
+	/** Move time */
+	public long moveTime;
+
 	/** Hover time */
 	public long hoverTime;
 
@@ -115,6 +118,12 @@ public class GamePlay implements Serializable {
 
 	/** Denominator of soft drop button time */
 	public long softdropTimeDenominator;
+
+	/** Soft Drop continuous use flag */
+	public boolean softdropContinuousUse;
+
+	/** Hard Drop continuous use flag */
+	public boolean harddropContinuousUse;
 
 	/** Current lock delay time */
 	public long lockDelayNow;
@@ -136,6 +145,9 @@ public class GamePlay implements Serializable {
 
 	/** IRS direction (0=No IRS) */
 	public int irsDirection;
+
+	/** true if entered move state with zero delay */
+	public boolean fromZeroDelay;
 
 	/** Current lock flash time */
 	public long lockFlashNow;
@@ -202,10 +214,13 @@ public class GamePlay implements Serializable {
 		nowPieceObject = null;
 		nowPieceX = 0;
 		nowPieceY = 0;
+		moveTime = 0;
 		hoverTime = 0;
 		hoverSoftDrop = 0;
 		softdropTime = 0;
 		softdropTimeDenominator = 1;
+		softdropContinuousUse = false;
+		harddropContinuousUse = false;
 		lockDelayNow = 0;
 		instantLock = false;
 		lastmove = LASTMOVE_NONE;
@@ -213,6 +228,7 @@ public class GamePlay implements Serializable {
 		holdUsed = false;
 		holdIHS = false;
 		irsDirection = 0;
+		fromZeroDelay = false;
 		lockFlashNow = 0;
 		lineDelayNow = 0;
 		areNow = 0;
@@ -363,6 +379,12 @@ public class GamePlay implements Serializable {
 		} else {
 			dasNowDown = 0;
 		}
+
+		// Reset Soft/Hard Drop continuous use flag
+		if(!ctrl.isButtonPressed(Controller.BUTTON_SOFT))
+			softdropContinuousUse = false;
+		if(!ctrl.isButtonPressed(Controller.BUTTON_HARD))
+			harddropContinuousUse = false;
 	}
 
 	/**
@@ -516,12 +538,13 @@ public class GamePlay implements Serializable {
 	 * Set IRS flags
 	 */
 	public void activateIRS() {
-		if(tuning.rotateInitial) {
+		irsDirection = 0;
+		if(ruleopt.rotateInitial && tuning.rotateInitial) {
 			int rt = 0;
 			if(ctrl.isButtonPressed(Controller.BUTTON_LROTATE)) rt = -1;
 			else if(ctrl.isButtonPressed(Controller.BUTTON_RROTATE)) rt = 1;
 			else if(ctrl.isButtonPressed(Controller.BUTTON_DROTATE)) rt = 2;
-			if(rt != 0) irsDirection = rt;
+			irsDirection = rt;
 		}
 	}
 
@@ -529,6 +552,7 @@ public class GamePlay implements Serializable {
 	 * Set IHS flags
 	 */
 	public void activateIHS() {
+		holdIHS = false;
 		if(ruleopt.holdEnable && ruleopt.holdInitial && tuning.holdInitial && ctrl.isButtonPressed(Controller.BUTTON_HOLD)) {
 			holdIHS = true;
 		}
@@ -567,7 +591,6 @@ public class GamePlay implements Serializable {
 			if(holdIHS) {
 				// IHS
 				holdPiece(true);
-				holdIHS = false;
 			} else {
 				// Pop from next piece queue
 				nowPieceObject = popNextPiece();
@@ -580,6 +603,7 @@ public class GamePlay implements Serializable {
 		}
 		nowPieceX = getSpawnPosX(nowPieceObject);
 		nowPieceY = getSpawnPosY(nowPieceObject);
+		moveTime = 0;
 		hoverTime = 0;
 		hoverSoftDrop = 0;
 		softdropTime = 0;
@@ -593,7 +617,6 @@ public class GamePlay implements Serializable {
 		// IRS
 		if(irsDirection != 0) {
 			rotatePiece(irsDirection, true);
-			irsDirection = 0;
 		}
 
 		// Game Over check
@@ -616,7 +639,7 @@ public class GamePlay implements Serializable {
 	/**
 	 * Move the current piece to left or right
 	 * @param m Move direction (-1:Left, 1:Right)
-	 * @return true is successful
+	 * @return true if successful
 	 */
 	public boolean movePiece(int m) {
 		if(nowPieceObject != null) {
@@ -674,8 +697,9 @@ public class GamePlay implements Serializable {
 	 * Rotate the current piece
 	 * @param d Rotation direction (-1:Left, 1:Right, 2:180)
 	 * @param irs true if IRS
+	 * @return true if successful
 	 */
-	public void rotatePiece(int d, boolean irs) {
+	public boolean rotatePiece(int d, boolean irs) {
 		if(nowPieceObject != null) {
 			boolean isGround = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field);
 			int rtNew = nowPieceObject.getRotateDirection(d);
@@ -709,24 +733,29 @@ public class GamePlay implements Serializable {
 
 				statistics.totalPieceRotate++;
 				playSE(irs ? "initialrotate" : "rotate");
+				return true;
 			} else {
 				playSE("rotfail");
 			}
 		}
+
+		return false;
 	}
 
 	/**
 	 * Hold
+	 * @return true if successful
 	 */
-	public void holdPiece() {
-		holdPiece(false);
+	public boolean holdPiece() {
+		return holdPiece(false);
 	}
 
 	/**
 	 * Hold
 	 * @param isIHS true if IHS
+	 * @return true if successful
 	 */
-	public void holdPiece(boolean isIHS) {
+	public boolean holdPiece(boolean isIHS) {
 		if(!holdUsed && ruleopt.holdEnable) {
 			statistics.totalHoldUsed++;
 			holdUsed = true;
@@ -755,10 +784,17 @@ public class GamePlay implements Serializable {
 			}
 
 			if(ruleopt.holdResetDirection) holdPieceObject.direction = 0;
-			if(!isIHS) newPiece();
+			if(!isIHS) {
+				activateIRS();
+				newPiece();
+			}
+
+			return true;
 		} else {
 			playSE("holdfail");
 		}
+
+		return false;
 	}
 
 	public void onReady() {
@@ -768,8 +804,6 @@ public class GamePlay implements Serializable {
 		readyTimer += 1;
 
 		if(readyTimer >= engine.goEnd) {
-			activateIRS();
-			activateIHS();
 			engine.timerActive = true;
 			engine.gameStarted = true;
 			stat = STAT_MOVE;
@@ -781,20 +815,34 @@ public class GamePlay implements Serializable {
 		updateController();
 
 		if(nowPieceObject == null) {
+			if(!fromZeroDelay || !ruleopt.holdInitialDisallowZeroDelay)
+				activateIHS();
+			if(!fromZeroDelay || !ruleopt.rotateInitialDisallowZeroDelay)
+				activateIRS();
+
 			newPiece();
 		}
+
 		if(nowPieceObject != null) {
 			statistics.totalPieceActiveTime++;
 
 			// Hold
-			if(ctrl.isButtonActivated(Controller.BUTTON_HOLD)) holdPiece();
+			if(!holdIHS) {
+				if(ctrl.isButtonActivated(Controller.BUTTON_HOLD)) holdPiece();
+			} else {
+				holdIHS = false;
+			}
 
 			// Rotation Button
-			int rt = 0;
-			if(ctrl.isButtonActivated(Controller.BUTTON_LROTATE)) rt = -1;
-			else if(ctrl.isButtonActivated(Controller.BUTTON_RROTATE)) rt = 1;
-			else if(ctrl.isButtonActivated(Controller.BUTTON_DROTATE)) rt = 2;
-			if(rt != 0) rotatePiece(rt, false);
+			if(irsDirection == 0) {
+				int rt = 0;
+				if(ctrl.isButtonActivated(Controller.BUTTON_LROTATE)) rt = -1;
+				else if(ctrl.isButtonActivated(Controller.BUTTON_RROTATE)) rt = 1;
+				else if(ctrl.isButtonActivated(Controller.BUTTON_DROTATE)) rt = 2;
+				if(rt != 0) rotatePiece(rt, false);
+			} else {
+				irsDirection = 0;
+			}
 
 			// Left/Right movement
 			int move = getMoveDirection();
@@ -831,7 +879,8 @@ public class GamePlay implements Serializable {
 			}
 
 			// Soft drop
-			if(ctrl.isButtonPressed(Controller.BUTTON_SOFT)) {
+			boolean softdropFlag = false;
+			if( ctrl.isButtonPressed(Controller.BUTTON_SOFT) && (!softdropContinuousUse || !ruleopt.softdropLimit) ) {
 				boolean moveflag = false;
 
 				if(dasNowDown == 1) {
@@ -851,12 +900,17 @@ public class GamePlay implements Serializable {
 					while(softdropTime >= softdropTimeDenominator) {
 						softdropTime -= softdropTimeDenominator;
 						softdropPiece();
+						softdropFlag = true;
 					}
 				}
 			}
 
 			// Hard drop
-			if(ctrl.isButtonActivated(Controller.BUTTON_HARD)) harddropPiece();
+			boolean harddropFlag = false;
+			if( ctrl.isButtonPressed(Controller.BUTTON_HARD) && (!harddropContinuousUse || !ruleopt.harddropLimit) ) {
+				harddropPiece();
+				harddropFlag = true;
+			}
 
 			if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 				if((speed.gravity == 0) || (speed.denominator == 0)) {
@@ -922,6 +976,9 @@ public class GamePlay implements Serializable {
 					holdUsed = false;
 					playSE("lock");
 
+					if(softdropFlag) softdropContinuousUse = true;
+					if(harddropFlag) harddropContinuousUse = true;
+
 					if((!placed && ruleopt.fieldLockoutDeath) || (isPartialLockout && ruleopt.fieldPartialLockoutDeath)) {
 						// Signal GameOver
 						engine.field.reset();
@@ -940,11 +997,16 @@ public class GamePlay implements Serializable {
 							stat = STAT_ARE;
 						} else {
 							// No status change
+							fromZeroDelay = true;
 						}
+
+						return;
 					}
 				}
 			}
 		}
+
+		moveTime++;
 	}
 
 	public void onLockFlash() {
@@ -962,8 +1024,7 @@ public class GamePlay implements Serializable {
 				areMax = speed.are;
 				stat = STAT_ARE;
 			} else {
-				activateIRS();
-				activateIHS();
+				fromZeroDelay = false;
 				stat = STAT_MOVE;
 			}
 		}
@@ -989,8 +1050,7 @@ public class GamePlay implements Serializable {
 				areMax = speed.areLine;
 				stat = STAT_ARE;
 			} else {
-				activateIRS();
-				activateIHS();
+				fromZeroDelay = false;
 				stat = STAT_MOVE;
 			}
 		}
@@ -1003,8 +1063,7 @@ public class GamePlay implements Serializable {
 		areNow++;
 
 		if(areNow >= areMax) {
-			activateIRS();
-			activateIHS();
+			fromZeroDelay = false;
 			stat = STAT_MOVE;
 		}
 	}
