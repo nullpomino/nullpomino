@@ -19,7 +19,6 @@ import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFJoystick;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
-import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.JoyButtonEvent;
@@ -259,7 +258,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	public float getVersion() {
 		return GameManager.getVersionMajor();
 	}
-	
+
 	public String getAuthor() {
 		return "The NullpoMino Dev Team";
 	}
