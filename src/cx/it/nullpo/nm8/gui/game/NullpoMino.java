@@ -182,8 +182,8 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 						Iterator<String> it = manager.getGamePlay(0,0).seQueue.iterator();
 						while(it.hasNext()) {
 							ResourceHolder.playSE(it.next());
+							it.remove();
 						}
-						manager.getGamePlay(0,0).seQueue.clear();
 					}
 				}
 			} catch (Exception e) {

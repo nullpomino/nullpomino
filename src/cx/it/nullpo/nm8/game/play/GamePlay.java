@@ -11,6 +11,7 @@ import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Field;
 import cx.it.nullpo.nm8.game.component.NRandom;
 import cx.it.nullpo.nm8.game.component.Piece;
+import cx.it.nullpo.nm8.game.component.PieceManager;
 import cx.it.nullpo.nm8.game.component.RuleOptions;
 import cx.it.nullpo.nm8.game.component.SpeedParam;
 import cx.it.nullpo.nm8.game.component.Statistics;
@@ -70,6 +71,9 @@ public class GamePlay implements Serializable {
 
 	/** SpeedParam: Parameters of game speed (Gravity, ARE, Line clear delay, etc) */
 	public SpeedParam speed;
+
+	/** PieceManager: Piece factory */
+	public PieceManager pieceManager;
 
 	/** The first random-seed */
 	public long randSeed;
@@ -205,6 +209,7 @@ public class GamePlay implements Serializable {
 		ctrl = new Controller();
 		statistics = new Statistics();
 		speed = new SpeedParam();
+		pieceManager = new PieceManager();
 		Random tempRand = new Random();
 		randSeed = tempRand.nextLong();
 		random = new NRandom(randSeed);
@@ -393,9 +398,12 @@ public class GamePlay implements Serializable {
 	 * @return A new Piece object
 	 */
 	public Piece createPieceObject(int id) {
-		Piece piece = new Piece(id);
-		piece.setColor(ruleopt.pieceColor[id]);
+		Piece piece = pieceManager.newPiece(id);
 		piece.setAttribute(Block.BLOCK_ATTRIBUTE_VISIBLE, true);
+
+		if((id >= 0) && (id < ruleopt.pieceColor.length))
+			piece.setColor(ruleopt.pieceColor[id]);
+
 		return piece;
 	}
 

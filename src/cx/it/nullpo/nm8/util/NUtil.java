@@ -20,6 +20,12 @@ import java.util.zip.Inflater;
  * NullpoMino utility class (it was available as GeneralUtil and NetUtil in older versions)
  */
 public class NUtil {
+	/** OS name */
+	private static String osName = System.getProperty("os.name").toLowerCase();
+	private static boolean osWindows = osName.startsWith("win");
+	private static boolean osMac = osName.startsWith("mac");
+	private static boolean osLinux = osName.startsWith("linux");
+
 	/**
 	 * Get URL from a String
 	 * @param str Filename
@@ -373,6 +379,34 @@ public class NUtil {
 		}
 
 		return c;
+	}
+
+	/**
+	 * @return true if the OS is Windows
+	 */
+	public static boolean isWindows() {
+		return osWindows;
+	}
+
+	/**
+	 * @return true if the OS is Mac OS
+	 */
+	public static boolean isMac() {
+		return osMac;
+	}
+
+	/**
+	 * @return true if the OS is Linux
+	 */
+	public static boolean isLinux() {
+		return osLinux;
+	}
+
+	/**
+	 * @return true if the OS is UN*X-like (non Windows, non Mac)
+	 */
+	public static boolean isUNIX() {
+		return !osWindows && !osMac;
 	}
 
 	// *** The following code requires external library from org.cacas.java.gnu.tools.Crypt

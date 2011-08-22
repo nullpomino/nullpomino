@@ -3,6 +3,7 @@ package cx.it.nullpo.nm8.game.subsystem.wallkick;
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Field;
 import cx.it.nullpo.nm8.game.component.Piece;
+import cx.it.nullpo.nm8.game.component.PieceManager;
 
 /**
  * The standard SRS
@@ -108,7 +109,7 @@ public class StandardWallkick extends BaseStandardWallkick {
 		if(rtDir == 2) {
 			// 180-degree rotation
 			switch(piece.id) {
-			case Piece.PIECE_I:
+			case PieceManager.PIECE_I:
 				kicktable = WALLKICK_I_180;
 				break;
 			default:
@@ -118,16 +119,16 @@ public class StandardWallkick extends BaseStandardWallkick {
 		} else if(rtDir == -1) {
 			// Left rotation
 			switch(piece.id) {
-			case Piece.PIECE_I:
+			case PieceManager.PIECE_I:
 				kicktable = WALLKICK_I_L;
 				break;
-			case Piece.PIECE_I2:
+			case PieceManager.PIECE_I2:
 				kicktable = WALLKICK_I2_L;
 				break;
-			case Piece.PIECE_I3:
+			case PieceManager.PIECE_I3:
 				kicktable = WALLKICK_I3_L;
 				break;
-			case Piece.PIECE_L3:
+			case PieceManager.PIECE_L3:
 				kicktable = WALLKICK_L3_L;
 				break;
 			default:
@@ -137,16 +138,16 @@ public class StandardWallkick extends BaseStandardWallkick {
 		} else if(rtDir == 1) {
 			// Right rotation
 			switch(piece.id) {
-			case Piece.PIECE_I:
+			case PieceManager.PIECE_I:
 				kicktable = WALLKICK_I_R;
 				break;
-			case Piece.PIECE_I2:
+			case PieceManager.PIECE_I2:
 				kicktable = WALLKICK_I2_R;
 				break;
-			case Piece.PIECE_I3:
+			case PieceManager.PIECE_I3:
 				kicktable = WALLKICK_I3_R;
 				break;
-			case Piece.PIECE_L3:
+			case PieceManager.PIECE_L3:
 				kicktable = WALLKICK_L3_R;
 				break;
 			default:

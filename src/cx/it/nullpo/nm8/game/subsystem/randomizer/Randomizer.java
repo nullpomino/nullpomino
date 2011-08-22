@@ -3,7 +3,7 @@ package cx.it.nullpo.nm8.game.subsystem.randomizer;
 import java.io.Serializable;
 
 import cx.it.nullpo.nm8.game.component.NRandom;
-import cx.it.nullpo.nm8.game.component.Piece;
+import cx.it.nullpo.nm8.game.component.PieceManager;
 
 /**
  * Randomizer: Creates the sequence of pieces
@@ -60,12 +60,12 @@ public abstract class Randomizer implements Serializable {
 	 */
 	public void setPieceEnable(boolean[] pieceEnable) {
 		int piece = 0;
-		for (int i = 0; i < Piece.PIECE_COUNT; i++) {
+		for (int i = 0; i < PieceManager.PIECE_COUNT; i++) {
 			if  (pieceEnable[i]) piece++;
 		}
 		pieces = new int[piece];
 		piece = 0;
-		for (int i = 0; i < Piece.PIECE_COUNT; i++) {
+		for (int i = 0; i < PieceManager.PIECE_COUNT; i++) {
 			if (pieceEnable[i]) {
 				pieces[piece] = i;
 				piece++;
@@ -86,7 +86,7 @@ public abstract class Randomizer implements Serializable {
 	 */
 	protected boolean isPieceSZOOnly() {
 		for (int i=0; i<pieces.length; i++) {
-			if (pieces[i] != Piece.PIECE_O && pieces[i] != Piece.PIECE_Z && pieces[i] != Piece.PIECE_S)
+			if (pieces[i] != PieceManager.PIECE_O && pieces[i] != PieceManager.PIECE_Z && pieces[i] != PieceManager.PIECE_S)
 				return false;
 		}
 

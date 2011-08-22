@@ -150,27 +150,27 @@ public class RuleOptions implements Serializable {
 		randomizerID = RandomizerFactory.RANDOMIZER_BAG;
 		ctrlSchemeID = CTRL_SCHEME_STANDARD;
 
-		pieceOffsetX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
-		pieceOffsetY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
-		pieceSpawnX = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
-		pieceSpawnXBig = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
-		pieceSpawnY = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
-		pieceSpawnYBig = new int[Piece.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceOffsetX = new int[PieceManager.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceOffsetY = new int[PieceManager.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnX = new int[PieceManager.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnXBig = new int[PieceManager.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnY = new int[PieceManager.PIECE_COUNT][Piece.DIRECTION_COUNT];
+		pieceSpawnYBig = new int[PieceManager.PIECE_COUNT][Piece.DIRECTION_COUNT];
 
-		pieceColor = new int[Piece.PIECE_COUNT];
-		pieceColor[Piece.PIECE_I] = Block.BLOCK_COLOR_CYAN;
-		pieceColor[Piece.PIECE_L] = Block.BLOCK_COLOR_ORANGE;
-		pieceColor[Piece.PIECE_O] = Block.BLOCK_COLOR_YELLOW;
-		pieceColor[Piece.PIECE_Z] = Block.BLOCK_COLOR_RED;
-		pieceColor[Piece.PIECE_T] = Block.BLOCK_COLOR_PURPLE;
-		pieceColor[Piece.PIECE_J] = Block.BLOCK_COLOR_BLUE;
-		pieceColor[Piece.PIECE_S] = Block.BLOCK_COLOR_GREEN;
-		pieceColor[Piece.PIECE_I1] = Block.BLOCK_COLOR_PURPLE;
-		pieceColor[Piece.PIECE_I2] = Block.BLOCK_COLOR_BLUE;
-		pieceColor[Piece.PIECE_I3] = Block.BLOCK_COLOR_GREEN;
-		pieceColor[Piece.PIECE_L3] = Block.BLOCK_COLOR_ORANGE;
+		pieceColor = new int[PieceManager.PIECE_COUNT];
+		pieceColor[PieceManager.PIECE_I] = Block.BLOCK_COLOR_CYAN;
+		pieceColor[PieceManager.PIECE_L] = Block.BLOCK_COLOR_ORANGE;
+		pieceColor[PieceManager.PIECE_O] = Block.BLOCK_COLOR_YELLOW;
+		pieceColor[PieceManager.PIECE_Z] = Block.BLOCK_COLOR_RED;
+		pieceColor[PieceManager.PIECE_T] = Block.BLOCK_COLOR_PURPLE;
+		pieceColor[PieceManager.PIECE_J] = Block.BLOCK_COLOR_BLUE;
+		pieceColor[PieceManager.PIECE_S] = Block.BLOCK_COLOR_GREEN;
+		pieceColor[PieceManager.PIECE_I1] = Block.BLOCK_COLOR_PURPLE;
+		pieceColor[PieceManager.PIECE_I2] = Block.BLOCK_COLOR_BLUE;
+		pieceColor[PieceManager.PIECE_I3] = Block.BLOCK_COLOR_GREEN;
+		pieceColor[PieceManager.PIECE_L3] = Block.BLOCK_COLOR_ORANGE;
 
-		pieceDefaultDirection = new int[Piece.PIECE_COUNT];
+		pieceDefaultDirection = new int[PieceManager.PIECE_COUNT];
 		pieceEnterAboveField = true;
 		pieceEnterMaxDistanceY = 0;
 
@@ -212,7 +212,7 @@ public class RuleOptions implements Serializable {
 		randomizerID = r.randomizerID;
 		ctrlSchemeID = r.ctrlSchemeID;
 
-		for(int i = 0; i < Piece.PIECE_COUNT; i++) {
+		for(int i = 0; i < PieceManager.PIECE_COUNT; i++) {
 			for(int j = 0; j < Piece.DIRECTION_COUNT; j++) {
 				pieceOffsetX[i][j] = r.pieceOffsetX[i][j];
 				pieceOffsetY[i][j] = r.pieceOffsetY[i][j];

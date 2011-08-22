@@ -11,42 +11,34 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import cx.it.nullpo.nm8.gui.framework.NFSound;
+import cx.it.nullpo.nm8.gui.framework.NFSoundProvider;
+import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * Load a RIFF wave file and create JSNFSound
  */
-public class JSSoundLoader {
-	/** Number of wave files loaded */
-	static protected int numWavesLoaded = 0;
+public class JSSoundProvider extends NFSoundProvider {
+	private static final long serialVersionUID = 843506484369573907L;
 
-	/**
-	 * Get number of wave files loaded
-	 * @return Number of wave files loaded
-	 */
-	static public int getNumberOfWaveFilesLoaded() {
-		return numWavesLoaded;
+	@Override
+	public String getName() {
+		return "Java Sound";
 	}
 
-	/**
-	 * Load a sound effect by using Java Sound API.
-	 * @param filename Filename
-	 * @return JSNFSound
-	 * @throws IOException When load fails
-	 * @throws IllegalStateException If no more sound effects can be loaded
-	 */
-	static public JSNFSound load(String filename) throws IOException {
-		return load(NUtil.getURL(filename));
+	@Override
+	public int getSoundProviderType() {
+		return NFSystem.SOUND_PROVIDER_JAVASOUND;
 	}
 
-	/**
-	 * Load a sound effect by using Java Sound API.
-	 * @param url URL to load from
-	 * @return JSNFSound
-	 * @throws IOException When load fails
-	 * @throws IllegalStateException If no more sound effects can be loaded
-	 */
-	static public JSNFSound load(URL url) throws IOException {
+	@Override
+	public NFSound loadSound(String filename) throws IOException {
+		return loadSound(NUtil.getURL(filename));
+	}
+
+	@Override
+	public NFSound loadSound(URL url) throws IOException {
 		JSNFSound s = null;
 
 		try {
@@ -67,17 +59,17 @@ public class JSSoundLoader {
 			clip.open(stream);
 			s = new JSNFSound(clip);
 			stream.close();
-			numWavesLoaded++;
 		} catch (LineUnavailableException e) {
 			throw new IllegalStateException(
-					"LineUnavailableException is thrown. No more sound effects can be loaded. (" + numWavesLoaded + " files loaded until now)",
+					"LineUnavailableException is thrown. No more sound effects can be loaded. (" + numSoundLoaded + " files loaded until now)",
 					e);
 		} catch (UnsupportedAudioFileException e) {
-			throw new IOException(url.getPath() + " is not a valid wav file (" + e.getMessage() + ")");
+			throw new UnsupportedOperationException(url.getPath() + " is not a valid wav file (" + e.getMessage() + ")", e);
 		} catch (IOException e) {
 			throw e;
 		}
 
+		numSoundLoaded++;
 		return s;
 	}
 }

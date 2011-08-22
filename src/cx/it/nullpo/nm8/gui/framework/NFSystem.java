@@ -15,6 +15,11 @@ import cx.it.nullpo.nm8.neuro.light.NEUROLight;
 public abstract class NFSystem implements Serializable {
 	private static final long serialVersionUID = -896391818527202711L;
 
+	/** Sound Provider Type: Java Sound */
+	public static final int SOUND_PROVIDER_JAVASOUND = 0;
+	/** Sound Provider Type: OpenAL */
+	public static final int SOUND_PROVIDER_OPENAL = 1;
+
 	/** NEURO: The event framework */
 	protected NEURO neuro;
 
@@ -349,6 +354,32 @@ public abstract class NFSystem implements Serializable {
 	 */
 	public boolean isSoundSupported() {
 		return false;
+	}
+
+	/**
+	 * Check if specific sound provider is supported in this system
+	 * @param type Sound provider type
+	 * @return true if specific sound provider is supported in this system
+	 */
+	public boolean isSoundProviderTypeSupported(int type) {
+		return false;
+	}
+
+	/**
+	 * Set sound provider type
+	 * @param type Sound provider type
+	 * @return true if successful
+	 */
+	public boolean setSoundProviderType(int type) {
+		return false;
+	}
+
+	/**
+	 * Get currently using sound provider
+	 * @return Currently using sound provider (default is Java Sound)
+	 */
+	public NFSoundProvider getCurrentSoundProvider() {
+		return null;
 	}
 
 	/**

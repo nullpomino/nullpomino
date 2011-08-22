@@ -1,6 +1,6 @@
 package cx.it.nullpo.nm8.game.subsystem.randomizer;
 
-import cx.it.nullpo.nm8.game.component.Piece;
+import cx.it.nullpo.nm8.game.component.PieceManager;
 
 /**
  * Factory class of Randomizer
@@ -28,8 +28,8 @@ public class RandomizerFactory {
 	public static Randomizer createRandomizer(int id, boolean[] pieceEnable, long seed) {
 		// If pieceEnable array is null, create a new one
 		if(pieceEnable == null) {
-			pieceEnable = new boolean[Piece.PIECE_COUNT];
-			for(int i = 0; i < Piece.PIECE_STANDARD_COUNT; i++) pieceEnable[i] = true;
+			pieceEnable = new boolean[PieceManager.PIECE_COUNT];
+			for(int i = 0; i < PieceManager.PIECE_STANDARD_COUNT; i++) pieceEnable[i] = true;
 		}
 
 		// If no piece can appear, modify it
@@ -41,8 +41,8 @@ public class RandomizerFactory {
 			}
 		}
 		if(allDisable) {
-			pieceEnable = new boolean[Piece.PIECE_COUNT];
-			for(int i = 0; i < Piece.PIECE_STANDARD_COUNT; i++) pieceEnable[i] = true;
+			pieceEnable = new boolean[PieceManager.PIECE_COUNT];
+			for(int i = 0; i < PieceManager.PIECE_STANDARD_COUNT; i++) pieceEnable[i] = true;
 		}
 
 		// Create a new randomizer

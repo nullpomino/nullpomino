@@ -9,119 +9,6 @@ public class Piece implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 6097454064096497685L;
 
-	/** Piece ID constants */
-	public static final int PIECE_NONE = -1,
-							PIECE_I = 0,
-							PIECE_L = 1,
-							PIECE_O = 2,
-							PIECE_Z = 3,
-							PIECE_T = 4,
-							PIECE_J = 5,
-							PIECE_S = 6,
-							PIECE_I1 = 7,
-							PIECE_I2 = 8,
-							PIECE_I3 = 9,
-							PIECE_L3 = 10;
-
-	/** Piece name constants */
-	public static final String[] PIECE_NAMES = {"I","L","O","Z","T","J","S","I1","I2","I3","L3"};
-
-	/** Number of standard pieces */
-	public static final int PIECE_STANDARD_COUNT = 7;
-
-	/** Number of all pieces */
-	public static final int PIECE_COUNT = 11;
-
-	/** Piece data (X-coordinate) */
-	public static final int[][][] DEFAULT_PIECE_DATA_X = {
-		{{0,1,2,3},{2,2,2,2},{3,2,1,0},{1,1,1,1}},	// I
-		{{2,2,1,0},{2,1,1,1},{0,0,1,2},{0,1,1,1}},	// L
-		{{0,1,1,0},{1,1,0,0},{1,0,0,1},{0,0,1,1}},	// O
-		{{0,1,1,2},{2,2,1,1},{2,1,1,0},{0,0,1,1}},	// Z
-		{{1,0,1,2},{2,1,1,1},{1,2,1,0},{0,1,1,1}},	// T
-		{{0,0,1,2},{2,1,1,1},{2,2,1,0},{0,1,1,1}},	// J
-		{{2,1,1,0},{2,2,1,1},{0,1,1,2},{0,0,1,1}},	// S
-		{{0      },{0      },{0      },{0      }},	// I1
-		{{0,1    },{1,1    },{1,0    },{0,0    }},	// I2
-		{{0,1,2  },{1,1,1  },{2,1,0  },{1,1,1  }},	// I3
-		{{1,0,0  },{0,0,1  },{0,1,1  },{1,1,0  }},	// L3
-	};
-
-	/** Piece data (Y-coordinate) */
-	public static final int[][][] DEFAULT_PIECE_DATA_Y = {
-		{{1,1,1,1},{0,1,2,3},{2,2,2,2},{3,2,1,0}},	// I
-		{{0,1,1,1},{2,2,1,0},{2,1,1,1},{0,0,1,2}},	// L
-		{{0,0,1,1},{0,1,1,0},{1,1,0,0},{1,0,0,1}},	// O
-		{{0,0,1,1},{0,1,1,2},{2,2,1,1},{2,1,1,0}},	// Z
-		{{0,1,1,1},{1,0,1,2},{2,1,1,1},{1,2,1,0}},	// T
-		{{0,1,1,1},{0,0,1,2},{2,1,1,1},{2,2,1,0}},	// J
-		{{0,0,1,1},{2,1,1,0},{2,2,1,1},{0,1,1,2}},	// S
-		{{0      },{0      },{0      },{0      }},	// I1
-		{{0,0    },{0,1    },{1,1    },{1,0    }},	// I2
-		{{1,1,1  },{0,1,2  },{1,1,1  },{2,1,0  }},	// I3
-		{{1,1,0  },{1,0,0  },{0,0,1  },{0,1,1  }},	// L3
-	};
-
-	/** All-spins data A (X-coordinate) */
-	public static final int[][][] SPINBONUSDATA_HIGH_X = {
-		{{1,2,2,1},{1,3,1,3},{1,2,2,1},{0,2,0,2}},	// I
-		{{1,0    },{2,2    },{1,2    },{0,0    }},	// L
-		{{       },{       },{       },{       }},	// O
-		{{2,0    },{2,1    },{0,2    },{0,1    }},	// Z
-		{{0,2    },{2,2    },{0,2    },{0,0    }},	// T
-		{{1,2    },{2,2    },{1,0    },{0,0    }},	// J
-		{{0,2    },{1,2    },{2,0    },{1,0    }},	// S
-		{{       },{       },{       },{       }},	// I1
-		{{       },{       },{       },{       }},	// I2
-		{{       },{       },{       },{       }},	// I3
-		{{       },{       },{       },{       }},	// L3
-	};
-
-	/** All-spins data A (Y-coordinate) */
-	public static final int[][][] SPINBONUSDATA_HIGH_Y = {
-		{{0,2,0,2},{1,2,2,1},{1,3,1,3},{1,2,2,1}},	// I
-		{{0,0    },{1,0    },{2,2    },{1,2    }},	// L
-		{{       },{       },{       },{       }},	// O
-		{{0,1    },{2,0    },{2,1    },{0,2    }},	// Z
-		{{0,0    },{0,2    },{2,2    },{0,2    }},	// T
-		{{0,0    },{1,2    },{2,2    },{1,0    }},	// J
-		{{0,1    },{2,0    },{2,1    },{0,2    }},	// S
-		{{       },{       },{       },{       }},	// I1
-		{{       },{       },{       },{       }},	// I2
-		{{       },{       },{       },{       }},	// I3
-		{{       },{       },{       },{       }},	// L3
-	};
-
-	/** All-spins data B (X-coordinate) */
-	public static final int[][][] SPINBONUSDATA_LOW_X = {
-		{{-1,4,-1,4},{2,2,2,2},{-1,4,-1,4},{1,1,1,1}},	// I
-		{{2,0    },{0,0    },{0,2    },{2,2    }},	// L
-		{{       },{       },{       },{       }},	// O
-		{{-1,3   },{2,1    },{3,-1   },{0,1    }},	// Z
-		{{0,2    },{0,0    },{0,2    },{2,2    }},	// T
-		{{0,2    },{0,0    },{2,0    },{2,2    }},	// J
-		{{3,-1   },{1,2    },{-1,3   },{1,0    }},	// S
-		{{       },{       },{       },{       }},	// I1
-		{{       },{       },{       },{       }},	// I2
-		{{       },{       },{       },{       }},	// I3
-		{{       },{       },{       },{       }},	// L3
-	};
-
-	/** All-spins data B (Y-coordinate) */
-	public static final int[][][] SPINBONUSDATA_LOW_Y = {
-		{{1,1,1,1},{-1,4,-1,4},{2,2,2,2},{-1,4,-1,4}},	// I
-		{{2,2    },{2,0    },{0,0    },{0,3    }},	// L
-		{{       },{       },{       },{       }},	// O
-		{{0,1    },{-1,3   },{2,1    },{3,-1   }},	// Z
-		{{2,2    },{0,2    },{0,0    },{0,2    }},	// T
-		{{2,2    },{0,2    },{0,0    },{2,0    }},	// J
-		{{0,1    },{-1,3   },{2,1    },{3,-1   }},	// S
-		{{       },{       },{       },{       }},	// I1
-		{{       },{       },{       },{       }},	// I2
-		{{       },{       },{       },{       }},	// I3
-		{{       },{       },{       },{       }},	// L3
-	};
-
 	/** Direction constants */
 	public static final int DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3, DIRECTION_RANDOM = 4;
 
@@ -134,11 +21,23 @@ public class Piece implements Serializable {
 	/** Y data (4Direction×nBlock) */
 	public int[][] dataY;
 
+	/** All-spins data A (X-coordinate) */
+	public int[][] spinBonusHighX;
+	/** All-spins data A (Y-coordinate) */
+	public int[][] spinBonusHighY;
+	/** All-spins data B (X-coordinate) */
+	public int[][] spinBonusLowX;
+	/** All-spins data B (Y-coordinate) */
+	public int[][] spinBonusLowY;
+
 	/** Blocks in this piece (nBlock) */
 	public Block[] block;
 
 	/** ID */
 	public int id;
+
+	/** Piece name (I,L,O,Z,T,J,S,etc) */
+	public String name;
 
 	/** Direction */
 	public int direction;
@@ -159,22 +58,9 @@ public class Piece implements Serializable {
 	public boolean connectBlocks;
 
 	/**
-	 * Get piece name
-	 * @param id Piece ID
-	 * @return Piece name (Returns '?' if ID is invalid)
-	 */
-	public static String getPieceName(int id) {
-		if((id >= 0) && (id < PIECE_NAMES.length)) {
-			return PIECE_NAMES[id];
-		}
-		return "?";
-	}
-
-	/**
-	 * Constructor
+	 * Empty Constructor
 	 */
 	public Piece() {
-		initPiece(0);
 	}
 
 	/**
@@ -186,25 +72,66 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * Constructor with piece ID
-	 * @param id Piece ID
+	 * Constructor
+	 * @param pieceID Piece ID
+	 * @param name Piece Name
+	 * @param pieceDataX Piece Data (X)
+	 * @param pieceDataY Piece Data (Y)
 	 */
-	public Piece(int id) {
-		initPiece(id);
+	public Piece(final int pieceID, final String name, final int[][] pieceDataX, final int[][] pieceDataY) {
+		initPiece(pieceID, name, pieceDataX, pieceDataY);
+	}
+
+	/**
+	 * Constructor
+	 * @param pieceID Piece ID
+	 * @param name Piece Name
+	 * @param pieceDataX Piece Data (X)
+	 * @param pieceDataY Piece Data (Y)
+	 * @param spinHighX All-spins data A (X)
+	 * @param spinHighY All-spins data A (Y)
+	 * @param spinLowX All-spins data B (X)
+	 * @param spinLowY All-spins data B (Y)
+	 */
+	public Piece(final int pieceID, final String name, final int[][] pieceDataX, final int[][] pieceDataY,
+				 final int[][] spinHighX, final int[][] spinHighY, final int[][] spinLowX, final int[][] spinLowY)
+	{
+		initPiece(pieceID, name, pieceDataX, pieceDataY, spinHighX, spinHighY, spinLowX, spinLowY);
 	}
 
 	/**
 	 * Init this piece
 	 * @param pieceID Piece ID
+	 * @param name Piece Name
+	 * @param pieceDataX Piece Data (X)
+	 * @param pieceDataY Piece Data (Y)
 	 */
-	public void initPiece(int pieceID) {
+	public void initPiece(final int pieceID, final String name, final int[][] pieceDataX, final int[][] pieceDataY) {
+		int[][] spinDummy = new int[DIRECTION_COUNT][0];
+		initPiece(pieceID, name, pieceDataX, pieceDataY, spinDummy, spinDummy, spinDummy, spinDummy);
+	}
+
+	/**
+	 * Init this piece
+	 * @param pieceID Piece ID
+	 * @param name Piece Name
+	 * @param pieceDataX Piece Data (X)
+	 * @param pieceDataY Piece Data (Y)
+	 * @param spinHighX All-spins data A (X)
+	 * @param spinHighY All-spins data A (Y)
+	 * @param spinLowX All-spins data B (X)
+	 * @param spinLowY All-spins data B (Y)
+	 */
+	public void initPiece(final int pieceID, final String name, final int[][] pieceDataX, final int[][] pieceDataY,
+						  final int[][] spinHighX, final int[][] spinHighY, final int[][] spinLowX, final int[][] spinLowY)
+	{
 		this.id = pieceID;
-		this.direction = DIRECTION_UP;
+		this.name = new String(name);
 		this.big = false;
 		this.offsetApplied = false;
 		this.connectBlocks = true;
 
-		int maxBlock = getMaxBlock();
+		int maxBlock = pieceDataX[0].length;
 		dataX = new int[DIRECTION_COUNT][maxBlock];
 		dataY = new int[DIRECTION_COUNT][maxBlock];
 		block = new Block[maxBlock];
@@ -212,7 +139,26 @@ public class Piece implements Serializable {
 		dataOffsetX = new int[DIRECTION_COUNT];
 		dataOffsetY = new int[DIRECTION_COUNT];
 
+		int spinBonusMaxEntry = spinHighX[0].length;
+		spinBonusHighX = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+		spinBonusHighY = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+		spinBonusLowX = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+		spinBonusLowY = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+
 		resetOffsetArray();
+
+		for(int i = 0; i < DIRECTION_COUNT; i++) {
+			for(int j = 0; j < maxBlock; j++) {
+				dataX[i][j] = pieceDataX[i][j];
+				dataY[i][j] = pieceDataY[i][j];
+			}
+			for(int j = 0; j < spinBonusMaxEntry; j++) {
+				spinBonusHighX[i][j] = spinHighX[i][j];
+				spinBonusHighY[i][j] = spinHighY[i][j];
+				spinBonusLowX[i][j] = spinLowX[i][j];
+				spinBonusLowY[i][j] = spinLowY[i][j];
+			}
+		}
 	}
 
 	/**
@@ -221,6 +167,7 @@ public class Piece implements Serializable {
 	 */
 	public void copy(Piece p) {
 		id = p.id;
+		name = p.name;
 		direction = p.direction;
 		big = p.big;
 		offsetApplied = p.offsetApplied;
@@ -234,6 +181,12 @@ public class Piece implements Serializable {
 		dataOffsetX = new int[DIRECTION_COUNT];
 		dataOffsetY = new int[DIRECTION_COUNT];
 
+		int spinBonusMaxEntry = p.spinBonusHighX[0].length;
+		spinBonusHighX = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+		spinBonusHighY = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+		spinBonusLowX = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+		spinBonusLowY = new int[DIRECTION_COUNT][spinBonusMaxEntry];
+
 		for(int i = 0; i < DIRECTION_COUNT; i++) {
 			for(int j = 0; j < maxBlock; j++) {
 				dataX[i][j] = p.dataX[i][j];
@@ -241,6 +194,13 @@ public class Piece implements Serializable {
 			}
 			dataOffsetX[i] = p.dataOffsetX[i];
 			dataOffsetY[i] = p.dataOffsetY[i];
+
+			for(int j = 0; j < spinBonusMaxEntry; j++) {
+				spinBonusHighX[i][j] = p.spinBonusHighX[i][j];
+				spinBonusHighY[i][j] = p.spinBonusHighY[i][j];
+				spinBonusLowX[i][j] = p.spinBonusLowX[i][j];
+				spinBonusLowY[i][j] = p.spinBonusLowY[i][j];
+			}
 		}
 	}
 
@@ -249,7 +209,7 @@ public class Piece implements Serializable {
 	 * @return Number of blocks in this piece
 	 */
 	public int getMaxBlock() {
-		return DEFAULT_PIECE_DATA_X[id][direction].length;
+		return dataX[0].length;
 	}
 
 	/**
@@ -432,8 +392,8 @@ public class Piece implements Serializable {
 	public void resetOffsetArray() {
 		for(int i = 0; i < DIRECTION_COUNT; i++) {
 			for(int j = 0; j < getMaxBlock(); j++) {
-				dataX[i][j] = DEFAULT_PIECE_DATA_X[id][i][j];
-				dataY[i][j] = DEFAULT_PIECE_DATA_Y[id][i][j];
+				dataX[i][j] -= dataOffsetX[i];
+				dataY[i][j] -= dataOffsetY[i];
 			}
 			dataOffsetX[i] = 0;
 			dataOffsetY[i] = 0;

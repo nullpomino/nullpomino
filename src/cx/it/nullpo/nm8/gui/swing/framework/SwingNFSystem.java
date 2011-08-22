@@ -9,7 +9,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import cx.it.nullpo.nm8.gui.common.JSSoundLoader;
+import cx.it.nullpo.nm8.gui.common.JSSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
@@ -17,6 +17,7 @@ import cx.it.nullpo.nm8.gui.framework.NFImage;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFSound;
+import cx.it.nullpo.nm8.gui.framework.NFSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.util.NUtil;
 
@@ -40,6 +41,9 @@ public class SwingNFSystem extends NFSystem {
 
 	/** Window title */
 	protected String windowTitle = "";
+
+	/** Sound Provider */
+	protected NFSoundProvider nfSoundProvider;
 
 	public SwingNFSystem() {
 		super();
@@ -177,15 +181,41 @@ public class SwingNFSystem extends NFSystem {
 
 	@Override
 	public NFSound loadSound(String filename) throws IOException {
-		return JSSoundLoader.load(filename);
+		if(nfSoundProvider == null) {
+			nfSoundProvider = new JSSoundProvider();
+		}
+		return nfSoundProvider.loadSound(filename);
 	}
 	@Override
 	public NFSound loadSound(URL url) throws IOException {
-		return JSSoundLoader.load(url);
+		if(nfSoundProvider == null) {
+			nfSoundProvider = new JSSoundProvider();
+		}
+		return nfSoundProvider.loadSound(url);
 	}
 	@Override
 	public boolean isSoundSupported() {
 		return true;
+	}
+	@Override
+	public boolean isSoundProviderTypeSupported(int type) {
+		if(type == NFSystem.SOUND_PROVIDER_JAVASOUND) return true;
+		return false;
+	}
+	@Override
+	public boolean setSoundProviderType(int type) {
+		if(type == NFSystem.SOUND_PROVIDER_JAVASOUND) {
+			nfSoundProvider = new JSSoundProvider();
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public NFSoundProvider getCurrentSoundProvider() {
+		if(nfSoundProvider == null) {
+			nfSoundProvider = new JSSoundProvider();
+		}
+		return nfSoundProvider;
 	}
 
 	@Override
