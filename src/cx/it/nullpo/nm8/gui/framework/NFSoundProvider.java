@@ -61,4 +61,10 @@ public abstract class NFSoundProvider implements Serializable {
 	public NFSound loadSound(URL url) throws IOException {
 		return null;
 	}
+
+	/**
+	 * Dispose the sound system
+	 */
+	public void dispose() {
+	}
 }

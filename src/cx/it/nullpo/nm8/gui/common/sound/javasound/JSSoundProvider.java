@@ -1,7 +1,11 @@
-package cx.it.nullpo.nm8.gui.common;
+package cx.it.nullpo.nm8.gui.common.sound.javasound;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -21,6 +25,9 @@ import cx.it.nullpo.nm8.util.NUtil;
  */
 public class JSSoundProvider extends NFSoundProvider {
 	private static final long serialVersionUID = 843506484369573907L;
+
+	/** List of JSNFSound that are created from this class */
+	protected List<JSNFSound> soundList = Collections.synchronizedList(new ArrayList<JSNFSound>());
 
 	@Override
 	public String getName() {
@@ -69,7 +76,19 @@ public class JSSoundProvider extends NFSoundProvider {
 			throw e;
 		}
 
+		soundList.add(s);
 		numSoundLoaded++;
 		return s;
+	}
+
+	@Override
+	public void dispose() {
+		synchronized (soundList) {
+			Iterator<JSNFSound> it = soundList.iterator();
+			while(it.hasNext()) {
+				it.next().dispose();
+				it.remove();
+			}
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package cx.it.nullpo.nm8.gui.common;
+package cx.it.nullpo.nm8.gui.common.sound.javasound;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;

@@ -1,5 +1,6 @@
 package cx.it.nullpo.nm8.gui.slick;
 
+import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.gui.game.NullpoMino;
 import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
 
@@ -18,6 +19,7 @@ public class NullpoMinoSlick {
 
 			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), false, 640, 480, 640, 480, true, args);
 			sys.setTargetFPS(60);
+			sys.setSoundProviderType(NFSystem.SOUND_PROVIDER_OPENAL);
 			sys.setUseAWTKeyReceiver(useAWTKeyReceiver);
 			sys.init();
 			sys.start();

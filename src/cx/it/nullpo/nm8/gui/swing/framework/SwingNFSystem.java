@@ -9,7 +9,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import cx.it.nullpo.nm8.gui.common.JSSoundProvider;
+import cx.it.nullpo.nm8.gui.common.sound.javasound.JSSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
@@ -83,6 +83,9 @@ public class SwingNFSystem extends NFSystem {
 	public void exit() {
 		getNFGame().onExit(this);
 
+		if(nfSoundProvider != null) {
+			nfSoundProvider.dispose();
+		}
 		if(gameWrapper != null) {
 			gameWrapper.shutdownRequested = true;
 		}
@@ -199,14 +202,28 @@ public class SwingNFSystem extends NFSystem {
 	}
 	@Override
 	public boolean isSoundProviderTypeSupported(int type) {
-		if(type == NFSystem.SOUND_PROVIDER_JAVASOUND) return true;
-		return false;
+		return true;
 	}
 	@Override
 	public boolean setSoundProviderType(int type) {
 		if(type == NFSystem.SOUND_PROVIDER_JAVASOUND) {
 			nfSoundProvider = new JSSoundProvider();
 			return true;
+		} else if(type == NFSystem.SOUND_PROVIDER_OPENAL) {
+			try {
+				Class<?> c = null;
+				NFSoundProvider obj = null;
+
+				c = Class.forName("cx.it.nullpo.nm8.gui.common.sound.lwjglal.LWJGLALSoundProvider");
+				obj = (NFSoundProvider) c.newInstance();
+
+				nfSoundProvider = obj;
+				return true;
+			} catch (Throwable e) {
+				System.err.println("Cannot initialize OpenAL");
+				e.printStackTrace();
+				return false;
+			}
 		}
 		return false;
 	}

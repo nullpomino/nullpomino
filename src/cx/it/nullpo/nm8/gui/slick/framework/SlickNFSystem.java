@@ -12,7 +12,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.openal.SoundStore;
 
-import cx.it.nullpo.nm8.gui.common.JSSoundProvider;
+import cx.it.nullpo.nm8.gui.common.sound.javasound.JSSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
@@ -128,6 +128,9 @@ public class SlickNFSystem extends NFSystem {
 	public void exit() {
 		getNFGame().onExit(this);
 
+		if(nfSoundProvider != null) {
+			nfSoundProvider.dispose();
+		}
 		if(slickKeyReceiverJFrame != null) {
 			slickKeyReceiverJFrame.dispose();
 		}
