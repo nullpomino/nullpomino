@@ -470,7 +470,7 @@ public abstract class NFSystem implements Serializable {
 	 */
 	public void setTargetFPS(int fps) {
 		targetFPS = fps;
-		if(fps == 0) fps = -1;
+		if(targetFPS == 0) targetFPS = -1;
 	}
 
 	/**

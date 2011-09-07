@@ -326,7 +326,7 @@ public class SlickNFSystem extends NFSystem {
 	@Override
 	public void setTargetFPS(int fps) {
 		super.setTargetFPS(fps);
-		if(container != null) container.setTargetFrameRate(fps);
+		if(container != null) container.setTargetFrameRate(targetFPS);
 	}
 
 	@Override

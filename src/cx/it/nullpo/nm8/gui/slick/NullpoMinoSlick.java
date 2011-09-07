@@ -1,8 +1,9 @@
 package cx.it.nullpo.nm8.gui.slick;
 
-import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.gui.game.NullpoMino;
 import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
+import cx.it.nullpo.nm8.util.CustomProperties;
+import cx.it.nullpo.nm8.util.NGlobalConfig;
 
 /**
  * Start NullpoMino with Slick framework
@@ -10,17 +11,17 @@ import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
 public class NullpoMinoSlick {
 	public static void main(String[] args) {
 		try {
-			boolean useAWTKeyReceiver = false;
-			System.out.println("args.length: " + args.length);
-			if((args.length > 0) && (args[0].equals("-a") || args[0].equals("/a"))) {
-				useAWTKeyReceiver = true;
-				System.out.println("useAWTKeyReceiver");
-			}
+			NGlobalConfig.load();
 
-			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), false, 640, 480, 640, 480, true, args);
-			sys.setTargetFPS(60);
-			sys.setSoundProviderType(NFSystem.SOUND_PROVIDER_OPENAL);
-			sys.setUseAWTKeyReceiver(useAWTKeyReceiver);
+			CustomProperties propGlobal = NGlobalConfig.getConfig();
+			int screenWidth = propGlobal.getProperty("sys.resolution.width", 640);
+			int screenHeight = propGlobal.getProperty("sys.resolution.height", 480);
+			boolean fullscreen = propGlobal.getProperty("sys.fullscreen", false);
+
+			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), fullscreen, screenWidth, screenHeight, 640, 480, true, args);
+			NGlobalConfig.applyNFSystem(sys);
+			if(!fullscreen) sys.setUseAWTKeyReceiver(propGlobal.getProperty("slick.awtkey", false));
+
 			sys.init();
 			sys.start();
 		} catch (Exception e) {

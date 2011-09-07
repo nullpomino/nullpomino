@@ -15,6 +15,7 @@ import org.jdom.input.SAXBuilder;
 
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
+import cx.it.nullpo.nm8.util.NGlobalConfig;
 import cx.it.nullpo.nm8.util.NUtil;
 
 /**
@@ -83,6 +84,7 @@ public class ResourceHolder {
 					// Load a sound effect
 					try {
 						NFSound sound = sys.loadSound(strFilePath);
+						sound.setVolume(NGlobalConfig.getConfig().getProperty("sys.soundvolume", 1f));
 						seMap.put(strName, sound);
 						seFilename2SoundMap.put(strFile, sound);
 						seList.add(sound);

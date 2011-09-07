@@ -1,0 +1,663 @@
+<!-- NullpoMino Config Tool -->
+<frame resourcebundle="cx.it.nullpo.nm8.tool.configtool.lang.configtool" title="@title" defaultcloseoperation="EXIT_ON_CLOSE">
+	<borderlayout>
+		<constraint location="Center">
+			<tabbedpane>
+				<!-- System Settings -->
+				<tab title="@tab_system">
+					<panel>
+						<borderlayout>
+							<constraint location="North">
+								<panel>
+									<gridlayout rows="0" columns="1">
+										<!-- Screen Resolution -->
+										<panel>
+											<borderlayout>
+												<constraint location="West">
+													<label text="@sys_combobox_resolution_label" />
+												</constraint>
+												<constraint location="Center">
+													<combobox id="sys_combobox_resolution" tooltiptext="@sys_combobox_resolution_tooltip">
+														<defaultcomboboxmodel setas="model">
+															<string text="320x240"/>
+															<string text="400x300"/>
+															<string text="480x360"/>
+															<string text="512x384"/>
+															<string text="640x480"/>
+															<string text="800x600"/>
+															<string text="1024x768"/>
+															<string text="1152x864"/>
+															<string text="1280x960"/>
+														</defaultcomboboxmodel>
+													</combobox>
+												</constraint>
+											</borderlayout>
+										</panel>
+										
+										<!-- Sound Provider -->
+										<panel>
+											<borderlayout>
+												<constraint location="West">
+													<label text="@sys_combobox_soundprovider_label" />
+												</constraint>
+												<constraint location="Center">
+													<combobox id="sys_combobox_soundprovider" tooltiptext="@sys_combobox_soundprovider_tooltip">
+														<defaultcomboboxmodel setas="model">
+															<string text="Java Sound"/>
+															<string text="OpenAL"/>
+														</defaultcomboboxmodel>
+													</combobox>
+												</constraint>
+											</borderlayout>
+										</panel>
+										
+										<!-- Sound volume -->
+										<panel>
+											<borderlayout>
+												<constraint location="West">
+													<label text="@sys_txtfld_volume_label" />
+												</constraint>
+												<constraint location="Center">
+													<textfield id="sys_txtfld_volume" tooltiptext="@sys_txtfld_volume_tooltip" />
+												</constraint>
+											</borderlayout>
+										</panel>
+										
+										<!-- FPS -->
+										<panel>
+											<borderlayout>
+												<constraint location="West">
+													<!-- JSpinner doesn't seem to support tooltip, so... -->
+													<label text="@sys_spinner_fps_label" tooltiptext="@sys_spinner_fps_tooltip" />
+												</constraint>
+												<constraint location="Center">
+													<spinner id="sys_spinner_fps">
+														<spinnernumbermodel setas="model">
+															<int value="0" setas="minimum" />
+															<int value="300" setas="maximum" />
+															<int value="1" setas="stepsize" />
+															<int value="60" setas="value" />
+														</spinnernumbermodel>
+													</spinner>
+												</constraint>
+											</borderlayout>
+										</panel>
+										
+										<!-- Checkboxes -->
+										<checkbox text="@sys_chkbox_fullscreen_label"
+										          id="sys_chkbox_fullscreen"
+										          tooltiptext="@sys_chkbox_fullscreen_tooltip" />
+										<checkbox text="@sys_chkbox_enablesound_label"
+										          id="sys_chkbox_enablesound"
+										          tooltiptext="@sys_chkbox_enablesound_tooltip" />
+										<checkbox text="@sys_chkbox_nativelookfeel_label"
+										          id="sys_chkbox_nativelookfeel"
+										          tooltiptext="@sys_chkbox_nativelookfeel_tooltip" />
+									</gridlayout>
+								</panel>
+							</constraint>
+						</borderlayout>
+					</panel>
+				</tab>
+
+				<!-- Slick Settings -->
+				<tab title="@tab_slick">
+					<panel>
+						<borderlayout>
+							<constraint location="North">
+								<panel>
+									<gridlayout rows="0" columns="1">
+										<panel>
+											<titledborder title="@slick_chkbox_awtkey_title"/>
+											<gridlayout rows="0" columns="1">
+												<checkbox id="slick_chkbox_awtkey" text="@slick_chkbox_awtkey_label" />
+												<label text="@slick_chkbox_awtkey_desc1" />
+												<label text="@slick_chkbox_awtkey_desc2" />
+												<label text="@slick_chkbox_awtkey_desc3" />
+												<label text="@slick_chkbox_awtkey_desc4" />
+											</gridlayout>
+										</panel>
+									</gridlayout>
+								</panel>
+							</constraint>
+						</borderlayout>
+					</panel>
+				</tab>
+
+				<!-- Key Config -->
+				<tab title="@tab_keyconfig">
+					<panel>
+						<borderlayout>
+							<constraint location="North">
+								<panel>
+									<gridlayout rows="0" columns="1">
+										<label text="@keyconfig_desc1" />
+										<label text="@keyconfig_desc2" />
+										<label text="@keyconfig_desc3" />
+									</gridlayout>
+								</panel>
+							</constraint>
+							<constraint location="Center">
+								<tabbedpane>
+									<!-- 1P key config -->
+									<tab title="1P">
+										<panel>
+											<borderlayout>
+												<constraint location="Center">
+													<tabbedpane>
+														<!-- Standard Rules -->
+														<tab title="@keyconfig_tab_standard">
+															<panel>
+															<borderlayout>
+																<constraint location="North">
+																	<panel>
+																		<gridlayout rows="0" columns="1">
+																			<!-- Tools -->
+																			<panel>
+																				<titledborder title="@keyconfig_tools"/>
+																				<gridlayout rows="1" columns="0">
+																					<button text="@keyconfig_tools_copyfromclassic" actionlistener="actCopyFrom0_0" />
+																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll0_0" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hard drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_0"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Soft drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_1"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																			</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_2"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_3"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_4"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_5"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate 180 -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_6"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hold -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_7"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Special -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_8"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_0_0_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_1_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_2_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_0_3_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																		</gridlayout>
+																	</panel>
+																</constraint>
+															</borderlayout>
+															</panel>
+														</tab>
+														<!-- Classic Rules -->
+														<tab title="@keyconfig_tab_classic">
+															<panel>
+															<borderlayout>
+																<constraint location="North">
+																	<panel>
+																		<gridlayout rows="0" columns="1">
+																			<!-- Tools -->
+																			<panel>
+																				<titledborder title="@keyconfig_tools"/>
+																				<gridlayout rows="1" columns="0">
+																					<button text="@keyconfig_tools_copyfromstandard" actionlistener="actCopyFrom0_1"  />
+																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll0_1" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hard drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_0"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Soft drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_1"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																			</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_2"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_3"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_4"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_5"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate 180 -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_6"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hold -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_7"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Special -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_8"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_0_1_0_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_1_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_2_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_0_1_3_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																		</gridlayout>
+																	</panel>
+																</constraint>
+															</borderlayout>
+															</panel>
+														</tab>
+													</tabbedpane>
+												</constraint>
+											</borderlayout>
+										</panel>
+									</tab>
+									<!-- End of 1P key config -->
+									
+									<!-- 2P key config -->
+									<tab title="2P">
+										<panel>
+											<borderlayout>
+												<constraint location="Center">
+													<tabbedpane>
+														<!-- Standard Rules -->
+														<tab title="@keyconfig_tab_standard">
+															<panel>
+															<borderlayout>
+																<constraint location="North">
+																	<panel>
+																		<gridlayout rows="0" columns="1">
+																			<!-- Tools -->
+																			<panel>
+																				<titledborder title="@keyconfig_tools"/>
+																				<gridlayout rows="1" columns="0">
+																					<button text="@keyconfig_tools_copyfromclassic"  actionlistener="actCopyFrom1_0" />
+																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll1_0" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hard drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_0"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Soft drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_1"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																			</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_2"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_3"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_4"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_5"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate 180 -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_6"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hold -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_7"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Special -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_8"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_0_0_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_1_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_2_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_0_3_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																		</gridlayout>
+																	</panel>
+																</constraint>
+															</borderlayout>
+															</panel>
+														</tab>
+														<!-- Classic Rules -->
+														<tab title="@keyconfig_tab_classic">
+															<panel>
+															<borderlayout>
+																<constraint location="North">
+																	<panel>
+																		<gridlayout rows="0" columns="1">
+																			<!-- Tools -->
+																			<panel>
+																				<titledborder title="@keyconfig_tools"/>
+																				<gridlayout rows="1" columns="0">
+																					<button text="@keyconfig_tools_copyfromstandard" actionlistener="actCopyFrom1_1"  />
+																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll1_1" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hard drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_0"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Soft drop -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_1"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																			</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_2"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Move Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_3"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Left -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_4"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate Right -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_5"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Rotate 180 -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_6"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Hold -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_7"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																			
+																			<!-- Special -->
+																			<panel>
+																				<titledborder title="@keyconfig_key_8"/>
+																				<gridlayout rows="1" columns="0">
+																					<textfield id="key_1_1_0_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_1_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_2_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																					<textfield id="key_1_1_3_8" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
+																				</gridlayout>
+																			</panel>
+																		</gridlayout>
+																	</panel>
+																</constraint>
+															</borderlayout>
+															</panel>
+														</tab>
+													</tabbedpane>
+												</constraint>
+											</borderlayout>
+										</panel>
+									</tab>
+									<!-- End of 2P key config -->
+								</tabbedpane>
+							</constraint>
+						</borderlayout>
+					</panel>
+				</tab>
+			</tabbedpane>
+		</constraint>
+		<constraint location="South">
+			<panel>
+				<gridlayout rows="1" columns="0">
+					<button text="@common_ok" actionlistener="actOK" />
+					<button text="@common_cancel" actionlistener="actCancel" />
+				</gridlayout>
+			</panel>
+		</constraint>
+	</borderlayout>
+</frame>

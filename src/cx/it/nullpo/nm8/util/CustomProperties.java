@@ -281,7 +281,7 @@ public class CustomProperties extends Properties {
 
 		return true;
 	}
-	
+
 	/**
 	 * Creates a CustomProperties object from the specified pathname.
 	 * @param pathname the location of the properties file to load
@@ -302,19 +302,22 @@ public class CustomProperties extends Properties {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Saves this CustomProperties to a file.
 	 * @param pathname the path of the file to save to.
 	 * @param comments comments to store in the file.
+	 * @return true if successful
 	 */
-	public void save(String pathname, String comments) {
+	public boolean save(String pathname, String comments) {
 		try {
 			FileOutputStream out = new FileOutputStream(pathname);
 			store(out, comments);
 			out.close();
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 }

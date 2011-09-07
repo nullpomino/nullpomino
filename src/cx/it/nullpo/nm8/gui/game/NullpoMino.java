@@ -27,10 +27,17 @@ import cx.it.nullpo.nm8.neuro.event.JoyXYAxisEvent;
 import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
+import cx.it.nullpo.nm8.util.NGlobalConfig;
 import cx.it.nullpo.nm8.util.NUtil;
 
 public class NullpoMino extends AbstractPlugin implements NFGame {
 	private static final long serialVersionUID = 4545597070306756443L;
+
+	// Constants for key config
+	protected static final int MAX_PLAYERS = 2;
+	protected static final int MAX_RULE_KIND = 2;
+	protected static final int MAX_KEY_SLOTS = 4;
+	protected static final int MAX_KEY_KINDS = 9;
 
 	NFSystem sys;
 	NFGraphics g;
@@ -63,7 +70,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 			if(sys.isFontSupported()) {
 				font = sys.loadFont("data/res/font/font.ttf");
 			}
-			if(sys.isSoundSupported()) {
+			if(sys.isSoundSupported() && NGlobalConfig.getConfig().getProperty("sys.enablesound", true)) {
 				System.out.println("Loading sound effects");
 				ResourceHolder.loadSoundEffects(sys, "default");
 			}
@@ -279,35 +286,25 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 
 	public void receiveEvent(KeyInputEvent e) {
 		if (manager != null) {
+			int player = 0;
+			int rule = 0;
+
 			Controller ctrl = manager.getGamePlay(0,0).ctrl;
 			int key = e.getKey();
 			boolean pressed = e.getPressed();
 
+			for(int slot = 0; slot < MAX_KEY_SLOTS; slot++) {
+				for(int keyKind = 0; keyKind < MAX_KEY_KINDS; keyKind++) {
+					String strID = "key_" + player + "_" + rule + "_" + slot + "_" + keyKind;
+					int tempKeyCode = NGlobalConfig.getConfig().getProperty(strID, KeyEvent.VK_UNDEFINED);
+
+					if(key == tempKeyCode) {
+						ctrl.setButtonState(keyKind, pressed);
+					}
+				}
+			}
+
 			switch(key) {
-				case KeyEvent.VK_UP:
-					ctrl.setButtonState(Controller.BUTTON_HARD, pressed);
-					break;
-				case KeyEvent.VK_DOWN:
-					ctrl.setButtonState(Controller.BUTTON_SOFT, pressed);
-					break;
-				case KeyEvent.VK_LEFT:
-					ctrl.setButtonState(Controller.BUTTON_LEFT, pressed);
-					break;
-				case KeyEvent.VK_RIGHT:
-					ctrl.setButtonState(Controller.BUTTON_RIGHT, pressed);
-					break;
-				case KeyEvent.VK_Z:
-					ctrl.setButtonState(Controller.BUTTON_LROTATE, pressed);
-					break;
-				case KeyEvent.VK_X:
-					ctrl.setButtonState(Controller.BUTTON_RROTATE, pressed);
-					break;
-				case KeyEvent.VK_SPACE:
-					ctrl.setButtonState(Controller.BUTTON_HOLD, pressed);
-					break;
-				case KeyEvent.VK_D:
-					ctrl.setButtonState(Controller.BUTTON_DROTATE, pressed);
-					break;
 				case KeyEvent.VK_ESCAPE:
 					dispatchEvent(new QuitEvent(this));
 					break;
