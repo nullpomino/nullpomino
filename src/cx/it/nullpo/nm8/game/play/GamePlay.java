@@ -108,6 +108,9 @@ public class GamePlay implements Serializable {
 	/** Current piece Y position */
 	public int nowPieceY;
 
+	/** Deepest Y position the current piece reached */
+	public int nowPieceDeepestY;
+
 	/** Move time */
 	public long moveTime;
 
@@ -134,6 +137,12 @@ public class GamePlay implements Serializable {
 
 	/** Instant lock flag */
 	public boolean instantLock;
+
+	/** Lock reset move count */
+	public int lockresetMoveCount;
+
+	/** Lock reset rotate count */
+	public int lockresetRotateCount;
 
 	/** Last successful movement */
 	public int lastmove;
@@ -219,6 +228,7 @@ public class GamePlay implements Serializable {
 		nowPieceObject = null;
 		nowPieceX = 0;
 		nowPieceY = 0;
+		nowPieceDeepestY = 0;
 		moveTime = 0;
 		hoverTime = 0;
 		hoverSoftDrop = 0;
@@ -228,6 +238,8 @@ public class GamePlay implements Serializable {
 		harddropContinuousUse = false;
 		lockDelayNow = 0;
 		instantLock = false;
+		lockresetMoveCount = 0;
+		lockresetRotateCount = 0;
 		lastmove = LASTMOVE_NONE;
 		holdPieceObject = null;
 		holdUsed = false;
@@ -296,10 +308,7 @@ public class GamePlay implements Serializable {
 	 * Update game
 	 */
 	public void update() {
-		// Update timer
-		if(engine.timerActive) {
-			statistics.time += 1;
-		}
+		if(engine.owner.gameMode.updateBefore(this)) return;
 
 		// Execute main logics
 		switch(stat) {
@@ -321,6 +330,13 @@ public class GamePlay implements Serializable {
 			onARE();
 			break;
 		}
+
+		// Update timer
+		if(engine.timerActive) {
+			statistics.time += 1;
+		}
+
+		engine.owner.gameMode.updateAfter(this);
 	}
 
 	/**
@@ -543,6 +559,19 @@ public class GamePlay implements Serializable {
 	}
 
 	/**
+	 * @return true if lock delay reset limit has been exceeded
+	 */
+	public boolean isLockResetLimitExceeded() {
+		if((ruleopt.lockresetLimitMove != -1) && (lockresetMoveCount >= ruleopt.lockresetLimitMove))
+			return true;
+		if((!ruleopt.lockresetLimitShareCount) &&
+		   (ruleopt.lockresetLimitRotate != -1) && (lockresetRotateCount >= ruleopt.lockresetLimitRotate))
+			return true;
+
+		return false;
+	}
+
+	/**
 	 * Set IRS flags
 	 */
 	public void activateIRS() {
@@ -611,12 +640,15 @@ public class GamePlay implements Serializable {
 		}
 		nowPieceX = getSpawnPosX(nowPieceObject);
 		nowPieceY = getSpawnPosY(nowPieceObject);
+		nowPieceDeepestY = nowPieceY;
 		moveTime = 0;
 		hoverTime = 0;
 		hoverSoftDrop = 0;
 		softdropTime = 0;
 		lockDelayNow = 0;
 		instantLock = false;
+		lockresetMoveCount = 0;
+		lockresetRotateCount = 0;
 		lastmove = LASTMOVE_NONE;
 		lockFlashNow = 0;
 		lineDelayNow = 0;
@@ -640,7 +672,9 @@ public class GamePlay implements Serializable {
 			}
 
 			// Signal GameOver
-			engine.field.reset();
+			if(!engine.owner.gameMode.playerDeath(this, GameEngine.DEATH_BLOCKOUT)) {
+				engine.signalGameOver(GameEngine.GAMEOVER_LOSE, GameEngine.DEATH_BLOCKOUT);
+			}
 		}
 	}
 
@@ -655,13 +689,18 @@ public class GamePlay implements Serializable {
 
 			if(!nowPieceObject.checkCollision(nowPieceX + m, nowPieceY, engine.field)) {
 				nowPieceX += m;
-				lockDelayNow = 0;
+
+				if(ruleopt.lockresetMove && !isLockResetLimitExceeded())
+					lockDelayNow = 0;
 
 				if(isGround) {
 					lastmove = LASTMOVE_SLIDE_GROUND;
 				} else {
 					lastmove = LASTMOVE_SLIDE_AIR;
 				}
+
+				if(isGround || ruleopt.lockresetLimitCountAir)
+					lockresetMoveCount++;
 
 				statistics.totalPieceMove++;
 				playSE("move");
@@ -708,6 +747,9 @@ public class GamePlay implements Serializable {
 	 * @return true if successful
 	 */
 	public boolean rotatePiece(int d, boolean irs) {
+		if(isLockResetLimitExceeded() && (ruleopt.lockresetLimitOver == RuleOptions.LOCKRESET_LIMIT_OVER_NOROTATE))
+			return false;
+
 		if(nowPieceObject != null) {
 			boolean isGround = nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field);
 			int rtNew = nowPieceObject.getRotateDirection(d);
@@ -717,7 +759,7 @@ public class GamePlay implements Serializable {
 				// Rotation successful without an wallkick
 				nowPieceObject.direction = rtNew;
 				success = true;
-			} else {
+			} else if(!isLockResetLimitExceeded() || (ruleopt.lockresetLimitOver != RuleOptions.LOCKRESET_LIMIT_OVER_NOWALLKICK)) {
 				// Try a wallkick
 				WallkickResult r =
 					wallkick.executeWallkick(nowPieceX, nowPieceY, d, nowPieceObject.direction, rtNew, true, nowPieceObject, engine.field, ctrl);
@@ -731,12 +773,20 @@ public class GamePlay implements Serializable {
 			}
 
 			if(success) {
-				lockDelayNow = 0;
+				if(ruleopt.lockresetRotate && !isLockResetLimitExceeded())
+					lockDelayNow = 0;
 
 				if(isGround) {
 					lastmove = LASTMOVE_ROTATE_GROUND;
 				} else {
 					lastmove = LASTMOVE_ROTATE_AIR;
+				}
+
+				if(isGround || ruleopt.lockresetLimitCountAir) {
+					if(ruleopt.lockresetLimitShareCount)
+						lockresetMoveCount++;
+					else
+						lockresetRotateCount++;
 				}
 
 				statistics.totalPieceRotate++;
@@ -805,7 +855,12 @@ public class GamePlay implements Serializable {
 		return false;
 	}
 
+	/**
+	 * Ready->Go state
+	 */
 	public void onReady() {
+		if(engine.owner.gameMode.onReady(this)) return;
+
 		updateDAS();
 		updateController();
 
@@ -818,7 +873,12 @@ public class GamePlay implements Serializable {
 		}
 	}
 
+	/**
+	 * Piece move state
+	 */
 	public void onMove() {
+		if(engine.owner.gameMode.onMove(this)) return;
+
 		updateDAS();
 		updateController();
 
@@ -927,7 +987,19 @@ public class GamePlay implements Serializable {
 					// 20G
 					while(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 						nowPieceY++;
-						lockDelayNow = 0;
+
+						if(nowPieceY > nowPieceDeepestY) {
+							nowPieceDeepestY = nowPieceY;
+							if(ruleopt.lockresetLimitUseDeepestY) {
+								lockresetMoveCount = 0;
+								lockresetRotateCount = 0;
+							}
+							if(ruleopt.lockresetFall) lockDelayNow = 0;
+						}
+						if(ruleopt.lockresetFall && !ruleopt.lockresetLimitUseDeepestY) {
+							lockDelayNow = 0;
+						}
+
 						lastmove = LASTMOVE_FALL_AUTO;
 					}
 				} else {
@@ -937,7 +1009,19 @@ public class GamePlay implements Serializable {
 
 						if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 							nowPieceY++;
-							lockDelayNow = 0;
+
+							if(nowPieceY > nowPieceDeepestY) {
+								nowPieceDeepestY = nowPieceY;
+								if(ruleopt.lockresetLimitUseDeepestY) {
+									lockresetMoveCount = 0;
+									lockresetRotateCount = 0;
+								}
+								if(ruleopt.lockresetFall) lockDelayNow = 0;
+							}
+							if(ruleopt.lockresetFall && !ruleopt.lockresetLimitUseDeepestY) {
+								lockDelayNow = 0;
+							}
+
 							lastmove = LASTMOVE_FALL_SELF;
 							playSE("softdrop");
 
@@ -958,7 +1042,19 @@ public class GamePlay implements Serializable {
 
 						if(!nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
 							nowPieceY++;
-							lockDelayNow = 0;
+
+							if(nowPieceY > nowPieceDeepestY) {
+								nowPieceDeepestY = nowPieceY;
+								if(ruleopt.lockresetLimitUseDeepestY) {
+									lockresetMoveCount = 0;
+									lockresetRotateCount = 0;
+								}
+								if(ruleopt.lockresetFall) lockDelayNow = 0;
+							}
+							if(ruleopt.lockresetFall && !ruleopt.lockresetLimitUseDeepestY) {
+								lockDelayNow = 0;
+							}
+
 							lastmove = LASTMOVE_FALL_AUTO;
 
 							if(nowPieceObject.checkCollision(nowPieceX, nowPieceY + 1, engine.field)) {
@@ -976,6 +1072,9 @@ public class GamePlay implements Serializable {
 				lockDelayNow++;
 				hoverSoftDrop = 0;
 
+				if(isLockResetLimitExceeded() && (ruleopt.lockresetLimitOver == RuleOptions.LOCKRESET_LIMIT_OVER_INSTANT))
+					instantLock = true;
+
 				if((lockDelayNow >= speed.lockDelay) || (instantLock)) {
 					// The current piece has been locked
 					boolean isPartialLockout = nowPieceObject.isPartialLockOut(nowPieceX, nowPieceY, engine.field);
@@ -989,7 +1088,9 @@ public class GamePlay implements Serializable {
 
 					if((!placed && ruleopt.fieldLockoutDeath) || (isPartialLockout && ruleopt.fieldPartialLockoutDeath)) {
 						// Signal GameOver
-						engine.field.reset();
+						if(!engine.owner.gameMode.playerDeath(this, GameEngine.DEATH_LOCKOUT)) {
+							engine.signalGameOver(GameEngine.GAMEOVER_LOSE, GameEngine.DEATH_LOCKOUT);
+						}
 					} else if(speed.lockFlash > 0) {
 						// Lock flash
 						stat = STAT_LOCKFLASH;
@@ -1017,7 +1118,12 @@ public class GamePlay implements Serializable {
 		moveTime++;
 	}
 
+	/**
+	 * Lock Flash state
+	 */
 	public void onLockFlash() {
+		if(engine.owner.gameMode.onLockFlash(this)) return;
+
 		updateDAS();
 		updateController();
 
@@ -1038,7 +1144,12 @@ public class GamePlay implements Serializable {
 		}
 	}
 
+	/**
+	 * Line Clear state
+	 */
 	public void onLineClear() {
+		if(engine.owner.gameMode.onLineClear(this)) return;
+
 		updateDAS();
 		updateController();
 
@@ -1064,7 +1175,12 @@ public class GamePlay implements Serializable {
 		}
 	}
 
+	/**
+	 * ARE state
+	 */
 	public void onARE() {
+		if(engine.owner.gameMode.onARE(this)) return;
+
 		updateDAS();
 		updateController();
 

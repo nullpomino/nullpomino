@@ -15,6 +15,12 @@ public class GameEngine implements Serializable {
 	public static final long DEFAULT_READY_START = 0, DEFAULT_READY_END = 29,
 							 DEFAULT_GO_START = 30, DEFAULT_GO_END = 60;
 
+	/** GameOver type constants */
+	public static int GAMEOVER_NONE = 0, GAMEOVER_LOSE = 1, GAMEOVER_DRAW = 2, GAMEOVER_WIN = 3;
+
+	/** Death type constants */
+	public static int DEATH_NONE = 0, DEATH_BLOCKOUT = 1, DEATH_LOCKOUT = 2, DEATH_TIMEOUT = 3;
+
 	/** GameManager: Owner of this GameEngine */
 	public GameManager owner;
 
@@ -35,6 +41,15 @@ public class GameEngine implements Serializable {
 
 	/** true if the game is started (It will not change back to false until the game is reset) */
 	public boolean gameStarted;
+
+	/** true if game is over */
+	public boolean flagGameOver;
+
+	/** GameOver type */
+	public int gameoverType;
+
+	/** Death type */
+	public int deathType;
 
 	/** Global timer for replay */
 	public long replayTimer;
@@ -66,6 +81,10 @@ public class GameEngine implements Serializable {
 		gameActive = false;
 		timerActive = false;
 		gameStarted = false;
+		flagGameOver = false;
+		gameoverType = GAMEOVER_NONE;
+		deathType = DEATH_NONE;
+
 		replayTimer = 0;
 
 		readyStart = DEFAULT_READY_START;
@@ -95,10 +114,12 @@ public class GameEngine implements Serializable {
 	 * Update game
 	 */
 	public void update() {
-		if(gameActive) replayTimer++;
+		if(gameActive) {
+			replayTimer++;
 
-		for(int i = 0; i < gamePlay.length; i++) {
-			gamePlay[i].update();
+			for(int i = 0; i < gamePlay.length; i++) {
+				gamePlay[i].update();
+			}
 		}
 	}
 
@@ -109,5 +130,29 @@ public class GameEngine implements Serializable {
 	 */
 	public GamePlay getGamePlay(int playerID) {
 		return gamePlay[playerID];
+	}
+
+	/**
+	 * Signals Game Over
+	 * @param type GameOver type
+	 */
+	public void signalGameOver(int type) {
+		signalGameOver(type, DEATH_NONE);
+	}
+
+	/**
+	 * Signals Game Over
+	 * @param type GameOver type
+	 * @param death Death type
+	 */
+	public void signalGameOver(int type, int death) {
+		if(!flagGameOver) {
+			flagGameOver = true;
+			gameActive = false;
+			timerActive = false;
+			gameoverType = type;
+			deathType = death;
+			owner.gameMode.signalGameOver(this, type, death);
+		}
 	}
 }

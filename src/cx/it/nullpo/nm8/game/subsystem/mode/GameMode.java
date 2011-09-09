@@ -64,4 +64,84 @@ public class GameMode implements Serializable {
 	 */
 	public void playerInit(GamePlay play) {
 	}
+
+	/**
+	 * Called before every game state updates
+	 * @param play GamePlay
+	 * @return true to skip all updates
+	 */
+	public boolean updateBefore(GamePlay play) {
+		return false;
+	}
+
+	/**
+	 * Called after every game state updates
+	 * @param play GamePlay
+	 */
+	public void updateAfter(GamePlay play) {
+	}
+
+	/**
+	 * Called at Ready->Go state
+	 * @param play GamePlay
+	 * @return true to skip default behaviors
+	 */
+	public boolean onReady(GamePlay play) {
+		return false;
+	}
+
+	/**
+	 * Called at Piece move state
+	 * @param play GamePlay
+	 * @return true to skip default behaviors
+	 */
+	public boolean onMove(GamePlay play) {
+		return false;
+	}
+
+	/**
+	 * Called at Lock Flash state
+	 * @param play GamePlay
+	 * @return true to skip default behaviors
+	 */
+	public boolean onLockFlash(GamePlay play) {
+		return false;
+	}
+
+	/**
+	 * Called at Line Clear state
+	 * @param play GamePlay
+	 * @return true to skip default behaviors
+	 */
+	public boolean onLineClear(GamePlay play) {
+		return false;
+	}
+
+	/**
+	 * Called at ARE state
+	 * @param play GamePlay
+	 * @return true to skip default behaviors
+	 */
+	public boolean onARE(GamePlay play) {
+		return false;
+	}
+
+	/**
+	 * Called when player dies
+	 * @param play GamePlay
+	 * @param death Death type
+	 * @return true to skip default behaviors
+	 */
+	public boolean playerDeath(GamePlay play, int death) {
+		return false;
+	}
+
+	/**
+	 * Called when game is over
+	 * @param engine GameEngine that went GameOver
+	 * @param type GameOver type
+	 * @param death Death type
+	 */
+	public void signalGameOver(GameEngine engine, int type, int death) {
+	}
 }

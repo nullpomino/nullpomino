@@ -16,6 +16,15 @@ public class RuleOptions implements Serializable {
 	/** Control Scheme IDs */
 	public static final int CTRL_SCHEME_STANDARD = 0, CTRL_SCHEME_CLASSIC = 1;
 
+	/** Do not reset lock delay after exceeding lock reset limit */
+	public static final int LOCKRESET_LIMIT_OVER_NORESET = 0;
+	/** Lock instantly after exceeding lock reset limit */
+	public static final int LOCKRESET_LIMIT_OVER_INSTANT = 1;
+	/** Disable wallkick after exceeding lock reset limit */
+	public static final int LOCKRESET_LIMIT_OVER_NOWALLKICK = 2;
+	/** Disallow all rotations after exceeding lock reset limit */
+	public static final int LOCKRESET_LIMIT_OVER_NOROTATE = 3;
+
 	/** Game style */
 	public int style;
 
@@ -126,6 +135,36 @@ public class RuleOptions implements Serializable {
 	/** Disallow the use of Initial Rotation in zero delay */
 	public boolean rotateInitialDisallowZeroDelay;
 
+	/** Lock delay reset by falling */
+	public boolean lockresetFall;
+
+	/** Lock delay reset by left/right movement */
+	public boolean lockresetMove;
+
+	/** Lock delay reset by rotation */
+	public boolean lockresetRotate;
+
+	/** Lock delay reset on wallkick */
+	public boolean lockresetWallkick;
+
+	/** Lock delay reset limit for left/right movement (-1:Unlimited) */
+	public int lockresetLimitMove;
+
+	/** Lock delay reset limit for rotation (-1:Unlimited) */
+	public int lockresetLimitRotate;
+
+	/** Share lock reset counter (only use movement counter if true) */
+	public boolean lockresetLimitShareCount;
+
+	/** What should happen when movement/rotation counter exceeds */
+	public int lockresetLimitOver;
+
+	/** Count the movement/rotation even in mid-air */
+	public boolean lockresetLimitCountAir;
+
+	/** Reset the movement/rotation counter by using the deepest Y position the current piece has reached */
+	public boolean lockresetLimitUseDeepestY;
+
 	/**
 	 * Constructor
 	 */
@@ -200,6 +239,17 @@ public class RuleOptions implements Serializable {
 		rotateInitial = true;
 		rotateInitialLimit = false;
 		rotateInitialDisallowZeroDelay = true;
+
+		lockresetFall = true;
+		lockresetMove = true;
+		lockresetRotate = true;
+		lockresetWallkick = true;
+		lockresetLimitMove = 15;
+		lockresetLimitRotate = -1;
+		lockresetLimitShareCount = true;
+		lockresetLimitOver = LOCKRESET_LIMIT_OVER_INSTANT;
+		lockresetLimitCountAir = true;
+		lockresetLimitUseDeepestY = true;
 	}
 
 	/**
@@ -255,5 +305,16 @@ public class RuleOptions implements Serializable {
 		rotateInitial = r.rotateInitial;
 		rotateInitialLimit = r.rotateInitialLimit;
 		rotateInitialDisallowZeroDelay = r.rotateInitialDisallowZeroDelay;
+
+		lockresetFall = r.lockresetFall;
+		lockresetMove = r.lockresetMove;
+		lockresetRotate = r.lockresetRotate;
+		lockresetWallkick = r.lockresetWallkick;
+		lockresetLimitMove = r.lockresetLimitMove;
+		lockresetLimitRotate = r.lockresetLimitRotate;
+		lockresetLimitShareCount = r.lockresetLimitShareCount;
+		lockresetLimitOver = r.lockresetLimitOver;
+		lockresetLimitCountAir = r.lockresetLimitCountAir;
+		lockresetLimitUseDeepestY = r.lockresetLimitUseDeepestY;
 	}
 }
