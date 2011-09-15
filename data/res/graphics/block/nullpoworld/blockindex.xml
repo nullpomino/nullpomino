@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Block skin config -->
+
+<blockskin hasSpecials="true" isSticky="false" hasLockAnim="false">
+	<state type="normal">
+		<image size="8" filename="8.png" />
+		<image size="16" filename="16.png" />
+		<image size="32" filename="32.png" />
+	</state>
+
+	<state type="locked">
+	</state>
+</blockskin>
+

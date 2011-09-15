@@ -22,6 +22,9 @@ import cx.it.nullpo.nm8.util.NUtil;
  * ResourceHolder: Contains Graphics, Sounds, etc
  */
 public class ResourceHolder {
+	/** Block skin (TODO) */
+	public static BlockSkin blockSkin;
+
 	/** Sound effects map (name->sound) */
 	public static Map<String, NFSound> seMap = Collections.synchronizedMap(new HashMap<String, NFSound>());
 	/** Sound effects map (file->sound) */

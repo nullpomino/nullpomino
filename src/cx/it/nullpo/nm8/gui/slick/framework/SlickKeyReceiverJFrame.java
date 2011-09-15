@@ -8,6 +8,11 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import cx.it.nullpo.nm8.util.NUtil;
+
+/**
+ * AWT key receiver for Slick
+ */
 public class SlickKeyReceiverJFrame extends JFrame {
 	private static final long serialVersionUID = 6291339833357420261L;
 
@@ -68,6 +73,7 @@ public class SlickKeyReceiverJFrame extends JFrame {
 		addKeyListener(new KeyEventHandler());
 		addWindowListener(new WindowEventHandler());
 
+		if(!NUtil.isWindows()) setSize(200, 30);
 		setVisible(true);
 	}
 }

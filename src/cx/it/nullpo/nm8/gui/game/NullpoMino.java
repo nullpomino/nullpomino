@@ -9,6 +9,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+
 import cx.it.nullpo.nm8.game.component.Block;
 import cx.it.nullpo.nm8.game.component.Controller;
 import cx.it.nullpo.nm8.game.component.Piece;
@@ -17,6 +20,7 @@ import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
+import cx.it.nullpo.nm8.gui.framework.NFImage;
 import cx.it.nullpo.nm8.gui.framework.NFJoystick;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
@@ -75,6 +79,12 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				ResourceHolder.loadSoundEffects(sys, "default");
 			}
 			g = sys.getGraphics();
+
+			String strBlockSkinPathName = "nullpoworld";
+			SAXBuilder builder = new SAXBuilder();
+			Document doc = null;
+			doc = builder.build(NUtil.getURL("data/res/graphics/block/" + strBlockSkinPathName + "/blockindex.xml"));
+			ResourceHolder.blockSkin = BlockSkin.loadByXML(sys, strBlockSkinPathName, doc); // TODO: Load multiple block skin
 
 			manager = new GameManager();
 			manager.init();
@@ -201,6 +211,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	}
 
 	public void onExit(NFSystem sys) {
+		ResourceHolder.unloadSoundEffects();
 	}
 
 	public void drawBlock(Block blk, int x, int y) {
@@ -208,6 +219,15 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	}
 
 	public void drawBlock(Block blk, int x, int y, boolean isGhost) {
+		if(ResourceHolder.blockSkin != null && !isGhost) {
+			NFImage img = ResourceHolder.blockSkin.mapImageNormal.get(Integer.valueOf(16));
+
+			if(img != null) {
+				g.drawImage(img, x, y, x + 16, y + 16, blk.color * 16, 0, (blk.color * 16) + 16, 16);
+				return;
+			}
+		}
+
 		switch(blk.color) {
 		case Block.BLOCK_COLOR_GRAY:
 			g.setColor(NFColor.gray);
