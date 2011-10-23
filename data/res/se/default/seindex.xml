@@ -2,10 +2,11 @@
 
 <!--
 	Sound effects index.
+	name: Name of this SFX set
 	maxcombo: Max combo sound effects
 	maxerase: Max line clear sound effects
 -->
-<seindex maxcombo="20" maxerase="4">
+<seindex name="Default SFX" maxcombo="20" maxerase="4">
 	<!--
 		List of sound effects.
 

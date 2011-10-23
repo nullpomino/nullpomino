@@ -49,6 +49,10 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 	GameManager manager;
 	long lastdelta;
 
+	public boolean isEnableNEURO() {
+		return true;
+	}
+
 	public void init(NFSystem sys) {
 		// Game initialization
 		this.sys = sys;

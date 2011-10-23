@@ -2,7 +2,7 @@
 
 <!-- Block skin list -->
 
-<blockskinlist>
+<blockskinlist default="nullpoworld">
 	<skin name="Nullpo World">nullpoworld</skin>
 	<skin name="TOJ">toj</skin>
 </blockskinlist>

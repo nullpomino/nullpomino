@@ -65,4 +65,8 @@ public class SlickNFMusic implements NFMusic {
 	public void stop() {
 		nativeMusic.stop();
 	}
+
+	public void dispose() {
+		// Slick can't dispose music
+	}
 }

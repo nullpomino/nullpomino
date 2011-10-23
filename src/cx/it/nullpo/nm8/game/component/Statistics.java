@@ -3,7 +3,6 @@ package cx.it.nullpo.nm8.game.component;
 import java.io.Serializable;
 
 import cx.it.nullpo.nm8.util.CustomProperties;
-import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * Game statistics
@@ -309,7 +308,7 @@ public class Statistics implements Serializable {
 			p.setProperty("result.score", score);
 			p.setProperty("result.totallines", lines);
 			p.setProperty("result.level", level);
-			p.setProperty("result.time", NUtil.msToFrames(time));
+			p.setProperty("result.time", time);
 		}
 	}
 

@@ -158,8 +158,12 @@ public abstract class NFSystem implements Serializable {
 	 * @throws Exception Indicates a failure to initialise the system
 	 */
 	public void init() throws Exception {
-		neuro = NEUROLight.create(this);
-		game.init(neuro);
+		if(game.isEnableNEURO()) {
+			neuro = NEUROLight.create(this);
+			game.init(neuro);
+		} else {
+			game.init(this);
+		}
 	}
 
 	/**
@@ -173,14 +177,22 @@ public abstract class NFSystem implements Serializable {
 	 * @param delta Time elapsed from the last execution
 	 */
 	public void update(long delta) {
-		neuro.update(delta);
+		if(neuro != null) {
+			neuro.update(delta);
+		} else {
+			game.update(this, delta);
+		}
 	}
 
 	/**
 	 * Render the current game
 	 */
 	public void render() {
-		neuro.draw(getGraphics());
+		if(neuro != null) {
+			neuro.draw(getGraphics());
+		} else {
+			game.render(this, getGraphics());
+		}
 	}
 
 	/**

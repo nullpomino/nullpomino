@@ -1,7 +1,11 @@
 package cx.it.nullpo.nm8.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,8 +13,10 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -379,6 +385,124 @@ public class NUtil {
 		}
 
 		return c;
+	}
+
+	/**
+	 * Get a List of String from an InputStream.
+	 * @param in InputStream to read from
+	 * @param charsetName Charset to use
+	 * @return A List of String
+	 * @throws IOException If something bad happens
+	 */
+	public static List<String> getStringListFromInputStreamE(InputStream in, String charsetName) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in, charsetName));
+		List<String> listString = new ArrayList<String>();
+		String s;
+
+		while((s = reader.readLine()) != null) {
+			listString.add(s);
+		}
+
+		return listString;
+	}
+
+	/**
+	 * Get a List of String from an InputStream. Returns null on failure.
+	 * @param in InputStream to read from
+	 * @param charsetName Charset to use
+	 * @return A List of String, or null if fails
+	 */
+	public static List<String> getStringListFromInputStream(InputStream in, String charsetName) {
+		try {
+			return getStringListFromInputStreamE(in, charsetName);
+		} catch (IOException e) {}
+		return null;
+	}
+
+	/**
+	 * Get a List of String from an InputStream. It uses UTF-8 charset.
+	 * @param in InputStream to read from
+	 * @return A List of String
+	 * @throws IOException If something bad happens
+	 */
+	public static List<String> getStringListFromInputStreamE(InputStream in) throws IOException {
+		return getStringListFromInputStreamE(in, "UTF-8");
+	}
+
+	/**
+	 * Get a List of String from an InputStream. It uses UTF-8 charset. Returns null on failure.
+	 * @param in InputStream to read from
+	 * @return A List of String, or null if fails
+	 */
+	public static List<String> getStringListFromInputStream(InputStream in) {
+		try {
+			return getStringListFromInputStreamE(in);
+		} catch (IOException e) {}
+		return null;
+	}
+
+	/**
+	 * Get a List of String from specified URL.
+	 * @param url URL to read from
+	 * @param charsetName Charset to use
+	 * @return A List of String
+	 * @throws IOException If something bad happens
+	 */
+	public static List<String> getStringListFromURLE(URL url, String charsetName) throws IOException {
+		InputStream in = url.openStream();
+		List<String> listString = null;
+
+		try {
+			listString = getStringListFromInputStreamE(in, charsetName);
+		} finally {
+			in.close();
+		}
+
+		return listString;
+	}
+
+	/**
+	 * Get a List of String from specified URL. Returns null on failure.
+	 * @param url URL to read from
+	 * @param charsetName Charset to use
+	 * @return A List of String, or null if fails
+	 */
+	public static List<String> getStringListFromURL(URL url, String charsetName) {
+		try {
+			return getStringListFromURLE(url, charsetName);
+		} catch (IOException e) {}
+		return null;
+	}
+
+	/**
+	 * Get a List of String from specified URL. It uses UTF-8 charset.
+	 * @param url URL to read from
+	 * @return A List of String
+	 * @throws IOException If something bad happens
+	 */
+	public static List<String> getStringListFromURLE(URL url) throws IOException {
+		InputStream in = url.openStream();
+		List<String> listString = null;
+
+		try {
+			listString = getStringListFromInputStreamE(in);
+		} finally {
+			in.close();
+		}
+
+		return listString;
+	}
+
+	/**
+	 * Get a List of String from specified URL. It uses UTF-8 charset. Returns null on failure.
+	 * @param url URL to read from
+	 * @return A List of String, or null if fails
+	 */
+	public static List<String> getStringListFromURL(URL url) {
+		try {
+			return getStringListFromURLE(url);
+		} catch (IOException e) {}
+		return null;
 	}
 
 	/**

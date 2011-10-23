@@ -1,6 +1,8 @@
 package cx.it.nullpo.nm8.gui.slick;
 
+import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.game.NullpoMino;
+import cx.it.nullpo.nm8.gui.niftygui.NiftyGUITest;
 import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
 import cx.it.nullpo.nm8.util.CustomProperties;
 import cx.it.nullpo.nm8.util.NGlobalConfig;
@@ -18,7 +20,14 @@ public class NullpoMinoSlick {
 			int screenHeight = propGlobal.getProperty("sys.resolution.height", 480);
 			boolean fullscreen = propGlobal.getProperty("sys.fullscreen", false);
 
-			SlickNFSystem sys = new SlickNFSystem(new NullpoMino(), fullscreen, screenWidth, screenHeight, 640, 480, true, args);
+			NFGame game = null;
+			if(args.length > 0 && args[0].equals("--guitest")) {
+				game = new NiftyGUITest();
+			} else {
+				game = new NullpoMino();
+			}
+
+			SlickNFSystem sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
 			NGlobalConfig.applyNFSystem(sys);
 			if(!fullscreen) sys.setUseAWTKeyReceiver(propGlobal.getProperty("slick.awtkey", false));
 

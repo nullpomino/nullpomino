@@ -62,4 +62,9 @@ public interface NFMusic extends Serializable {
 	 * @return Position
 	 */
 	public float getPosition();
+
+	/**
+	 * Dispose the music.
+	 */
+	public void dispose();
 }

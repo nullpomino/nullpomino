@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty>
+	<screen id="start">
+		<layer id="layer" backgroundColor="#003f" childLayout="center">
+			<panel height="25%" width="35%" align="center" valign="center" backgroundColor="#004080" childLayout="center" visibleToMouse="true">
+				<effect>
+					<onStartScreen name="move" mode="in" direction="top" length="3000" startDelay="0" inherit="true"/>
+				</effect>
+				<text id="text_hello" font="data/res/font/font.ttf" text="Hello World!" align="center" valign="center" />
+			</panel>
+		</layer>
+	</screen>
+</nifty>

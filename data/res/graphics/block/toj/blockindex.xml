@@ -2,9 +2,14 @@
 
 <!-- Block skin config -->
 
-<blockskin>
-	<image  size="8"  filename="8.png" hasSpecials="true" isSticky="false" />
-	<image size="16" filename="16.png" hasSpecials="true" isSticky="false" />
-	<image size="32" filename="32.png" hasSpecials="true" isSticky="false" />
+<blockskin name="TOJ" hasSpecials="true" isSticky="false" hasLockAnim="false">
+	<state type="normal">
+		<image size="8" filename="8.png" />
+		<image size="16" filename="16.png" />
+		<image size="32" filename="32.png" />
+	</state>
+
+	<state type="locked">
+	</state>
 </blockskin>
 

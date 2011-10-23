@@ -111,6 +111,36 @@ public interface NFGraphics extends Serializable {
 	public void fillRect(int x, int y, int width, int height);
 
 	/**
+	 * Draw an outline gradient rectangle on the canvas
+	 * @param x The x coordinate of the top left corner
+	 * @param y The y coordinate of the top left corner
+	 * @param width The width of the rectangle to draw
+	 * @param height The height of the rectangle to draw
+	 * @param sx Gradient color #1's X position
+	 * @param sy Gradient color #1's Y position
+	 * @param sc Gradient color #1
+	 * @param ex Gradient color #2's X position
+	 * @param ey Gradient color #2's Y position
+	 * @param ec Gradient color #2
+	 */
+	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec);
+
+	/**
+	 * Fill a gradient rectangle on the canvas
+	 * @param x The x coordinate of the top left corner
+	 * @param y The y coordinate of the top left corner
+	 * @param width The width of the rectangle to draw
+	 * @param height The height of the rectangle to draw
+	 * @param sx Gradient color #1's X position
+	 * @param sy Gradient color #1's Y position
+	 * @param sc Gradient color #1
+	 * @param ex Gradient color #2's X position
+	 * @param ey Gradient color #2's Y position
+	 * @param ec Gradient color #2
+	 */
+	public void gradientFillRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec);
+
+	/**
 	 * Set the color to use when rendering to this context
 	 * @param col The color to use when rendering to this context
 	 */
@@ -138,16 +168,21 @@ public interface NFGraphics extends Serializable {
 	 * Reset to using the default font for this context
 	 */
 	public void resetFont();
-	
+
 	/**
 	 * Translate this graphics context by the given x and y values with respect to the origin of
 	 * the current context
 	 */
 	public void translate(int x, int y);
-	
+
 	/**
 	 * Sets the clipping bounds of this graphics context to be a width by height rectangle
 	 * with its top-left corner at point x,y.
 	 */
-	public void setClippingArea(int x, int y, int width, int height);
+	public void setClip(int x, int y, int width, int height);
+
+	/**
+	 * Clear the clipping being applied. This will allow graphics to be drawn anywhere on the screen
+	 */
+	public void clearClip();
 }

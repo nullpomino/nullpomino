@@ -10,6 +10,11 @@ import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
  */
 public interface NFGame extends Serializable, NEUROPlugin {
 	/**
+	 * @return true if NEURO should be enabled
+	 */
+	public boolean isEnableNEURO();
+
+	/**
 	 * Init the game
 	 * @param sys NFSystem
 	 */

@@ -2,7 +2,7 @@
 
 <!-- Block skin config -->
 
-<blockskin hasSpecials="true" isSticky="false" hasLockAnim="false">
+<blockskin name="Nullpo World" hasSpecials="true" isSticky="false" hasLockAnim="false">
 	<state type="normal">
 		<image size="8" filename="8.png" />
 		<image size="16" filename="16.png" />
@@ -12,4 +12,3 @@
 	<state type="locked">
 	</state>
 </blockskin>
-

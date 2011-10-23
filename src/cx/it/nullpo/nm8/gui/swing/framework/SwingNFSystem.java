@@ -5,6 +5,7 @@ import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -136,7 +137,7 @@ public class SwingNFSystem extends NFSystem {
 
 	@Override
 	public NFFont loadFont(Font font) {
-		return new SwingNFFont(font);
+		return new SwingNFFont(font, getGraphics());
 	}
 
 	@Override
@@ -145,7 +146,7 @@ public class SwingNFSystem extends NFSystem {
 		if(bold) style |= Font.BOLD;
 		if(italic) style |= Font.ITALIC;
 		Font newfont = font.deriveFont(style, (float)size);
-		return new SwingNFFont(newfont);
+		return new SwingNFFont(newfont, getGraphics(), this);
 	}
 
 	@Override
@@ -154,9 +155,9 @@ public class SwingNFSystem extends NFSystem {
 			File file = new File(filename);
 			Font basefont = Font.createFont(Font.TRUETYPE_FONT, file);
 			Font newfont = basefont.deriveFont((float)16);
-			return new SwingNFFont(newfont);
+			return new SwingNFFont(newfont, getGraphics(), this);
 		} catch (FontFormatException e) {
-			throw new IOException(filename + " is not a valid font (" + e.getMessage() + ")");
+			throw new UnsupportedOperationException(filename + " is not a valid font (" + e.getMessage() + ")", e);
 		}
 	}
 
@@ -171,9 +172,38 @@ public class SwingNFSystem extends NFSystem {
 			if(italic) style |= Font.ITALIC;
 
 			Font newfont = basefont.deriveFont(style, (float)size);
-			return new SwingNFFont(newfont);
+			return new SwingNFFont(newfont, getGraphics(), this);
 		} catch (FontFormatException e) {
-			throw new IOException(filename + " is not a valid font (" + e.getMessage() + ")");
+			throw new UnsupportedOperationException(filename + " is not a valid font (" + e.getMessage() + ")", e);
+		}
+	}
+
+	@Override
+	public NFFont loadFont(URL url) throws IOException {
+		try {
+			InputStream in = url.openStream();
+			Font basefont = Font.createFont(Font.TRUETYPE_FONT, in);
+			Font newfont = basefont.deriveFont((float)16);
+			return new SwingNFFont(newfont, getGraphics(), this);
+		} catch (FontFormatException e) {
+			throw new UnsupportedOperationException(url + " is not a valid font (" + e.getMessage() + ")", e);
+		}
+	}
+
+	@Override
+	public NFFont loadFont(URL url, int size, boolean bold, boolean italic) throws IOException {
+		try {
+			InputStream in = url.openStream();
+			Font basefont = Font.createFont(Font.TRUETYPE_FONT, in);
+
+			int style = Font.PLAIN;
+			if(bold) style |= Font.BOLD;
+			if(italic) style |= Font.ITALIC;
+
+			Font newfont = basefont.deriveFont(style, (float)size);
+			return new SwingNFFont(newfont, getGraphics(), this);
+		} catch (FontFormatException e) {
+			throw new UnsupportedOperationException(url + " is not a valid font (" + e.getMessage() + ")", e);
 		}
 	}
 

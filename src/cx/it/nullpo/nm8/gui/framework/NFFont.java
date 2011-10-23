@@ -49,4 +49,24 @@ public interface NFFont extends Serializable {
 	 * @return True if the glyphs were loaded entirely
 	 */
 	public boolean loadGlyphs();
+
+	/**
+	 * Get a string width of current font
+	 * @param str String
+	 * @return Width (-1 if unknown)
+	 */
+	public int getStringWidth(String str);
+
+	/**
+	 * Get a string height of current font
+	 * @param str String
+	 * @return Height (-1 if unknown)
+	 */
+	public int getStringHeight(String str);
+
+	/**
+	 * Get the maximum height of any line drawn by this font
+	 * @return The maxium height of any line drawn by this font
+	 */
+	public int getLineHeight();
 }

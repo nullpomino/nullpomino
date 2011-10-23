@@ -1,8 +1,13 @@
 package cx.it.nullpo.nm8.gui.swing.framework;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
@@ -17,7 +22,7 @@ public class SwingNFGraphics implements NFGraphics {
 	private static final long serialVersionUID = 1L;
 
 	/** Swing native graphics */
-	protected Graphics g;
+	protected Graphics2D g;
 
 	/** Default native font; Used by resetFont */
 	protected Font defaultNativeFont;
@@ -27,7 +32,7 @@ public class SwingNFGraphics implements NFGraphics {
 	 * @param g Swing native graphics
 	 */
 	public SwingNFGraphics(Graphics g) {
-		this.g = g;
+		this.g = (Graphics2D)g;
 		defaultNativeFont = g.getFont();
 	}
 
@@ -44,7 +49,7 @@ public class SwingNFGraphics implements NFGraphics {
 	 * @param g Swing native graphics
 	 */
 	public void setNativeGraphics(Graphics g) {
-		this.g = g;
+		this.g = (Graphics2D)g;
 	}
 
 	/**
@@ -75,7 +80,16 @@ public class SwingNFGraphics implements NFGraphics {
 
 	public void drawImage(NFImage img, int x, int y, NFColor col) {
 		Image nimg = getNativeImage(img);
-		g.drawImage(nimg, x, y, null);
+
+		if(col.getAlpha() >= 255) {
+			g.drawImage(nimg, x, y, null);
+		} else {
+			Composite curComposite = g.getComposite();
+			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(col.getAlpha() / 255));
+			g.setComposite(newComposite);
+			g.drawImage(nimg, x, y, null);
+			g.setComposite(curComposite);
+		}
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
@@ -85,7 +99,16 @@ public class SwingNFGraphics implements NFGraphics {
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, NFColor col) {
 		Image nimg = getNativeImage(img);
-		g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+
+		if(col.getAlpha() >= 255) {
+			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+		} else {
+			Composite curComposite = g.getComposite();
+			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(col.getAlpha() / 255));
+			g.setComposite(newComposite);
+			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+			g.setComposite(curComposite);
+		}
 	}
 
 	public void drawString(String str, int x, int y) {
@@ -115,6 +138,22 @@ public class SwingNFGraphics implements NFGraphics {
 		g.fillRect(x, y, width, height);
 	}
 
+	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
+		Paint curPaint = g.getPaint();
+		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
+		g.setPaint(gradient);
+		g.drawRect(x, y, width, height);
+		g.setPaint(curPaint);
+	}
+
+	public void gradientFillRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
+		Paint curPaint = g.getPaint();
+		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
+		g.setPaint(gradient);
+		g.fillRect(x, y, width, height);
+		g.setPaint(curPaint);
+	}
+
 	public void setColor(NFColor col) {
 		g.setColor(col.toAWTColor());
 	}
@@ -124,6 +163,10 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void setFont(NFFont font) {
+		if(font instanceof SwingNFFont) {
+			SwingNFFont f = (SwingNFFont)font;
+			f.setGraphics(this);
+		}
 		g.setFont(font.getFont());
 	}
 
@@ -134,12 +177,16 @@ public class SwingNFGraphics implements NFGraphics {
 	public void resetFont() {
 		g.setFont(defaultNativeFont);
 	}
-	
+
 	public void translate(int x, int y) {
 		g.translate(x,y);
 	}
-	
-	public void setClippingArea(int x, int y, int width, int height) {
+
+	public void setClip(int x, int y, int width, int height) {
 		g.setClip(x,y,width,height);
+	}
+
+	public void clearClip() {
+		g.setClip(null);
 	}
 }

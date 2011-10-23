@@ -3,6 +3,8 @@ package cx.it.nullpo.nm8.gui.slick.framework;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.fills.GradientFill;
+import org.newdawn.slick.geom.Rectangle;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -113,6 +115,18 @@ public class SlickNFGraphics implements NFGraphics {
 		g.fillRect(x, y, width, height);
 	}
 
+	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
+		GradientFill gf = new GradientFill(sx, sy, nfColor2Native(sc), ex, ey, nfColor2Native(ec));
+		Rectangle rect = new Rectangle(x, y, width, height);
+		g.draw(rect, gf);
+	}
+
+	public void gradientFillRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
+		GradientFill gf = new GradientFill(sx, sy, nfColor2Native(sc), ex, ey, nfColor2Native(ec));
+		Rectangle rect = new Rectangle(x, y, width, height);
+		g.fill(rect, gf);
+	}
+
 	public NFColor getColor() {
 		return nativeColor2NF(g.getColor());
 	}
@@ -137,12 +151,16 @@ public class SlickNFGraphics implements NFGraphics {
 			throw new IllegalArgumentException("This NFFont is not an instance of SlickNFFont");
 		}
 	}
-	
+
 	public void translate(int x, int y) {
 		g.translate(x,y);
 	}
-	
-	public void setClippingArea(int x, int y, int width, int height) {
+
+	public void setClip(int x, int y, int width, int height) {
 		g.setClip(x,y,width,height);
+	}
+
+	public void clearClip() {
+		g.clearClip();
 	}
 }

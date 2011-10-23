@@ -96,4 +96,16 @@ public class SlickNFFont implements NFFont {
 			return false;
 		}
 	}
+
+	public int getStringWidth(String str) {
+		return font.getWidth(str);
+	}
+
+	public int getStringHeight(String str) {
+		return font.getHeight(str);
+	}
+
+	public int getLineHeight() {
+		return font.getLineHeight();
+	}
 }
