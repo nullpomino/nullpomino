@@ -3,6 +3,8 @@ package cx.it.nullpo.nm8.gui.slick.framework;
 import java.awt.Font;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
@@ -30,6 +32,9 @@ import cx.it.nullpo.nm8.gui.framework.NFSystem;
  */
 public class SlickNFSystem extends NFSystem {
 	private static final long serialVersionUID = -8136236560162750019L;
+
+	/** Log */
+	private Log log = LogFactory.getLog(SlickNFSystem.class);
 
 	/** AppGameContainer to run our game */
 	protected AppGameContainer container;
@@ -281,8 +286,7 @@ public class SlickNFSystem extends NFSystem {
 			}
 			return true;
 		} catch (Exception e) {
-			System.err.println("Cannot set sound provider type to " + type);
-			e.printStackTrace();
+			log.error("Cannot set sound provider type to " + type, e);
 		}
 		return false;
 	}

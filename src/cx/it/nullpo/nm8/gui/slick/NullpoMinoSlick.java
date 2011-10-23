@@ -1,5 +1,8 @@
 package cx.it.nullpo.nm8.gui.slick;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.game.NullpoMino;
 import cx.it.nullpo.nm8.gui.niftygui.NiftyGUITest;
@@ -11,8 +14,13 @@ import cx.it.nullpo.nm8.util.NGlobalConfig;
  * Start NullpoMino with Slick framework
  */
 public class NullpoMinoSlick {
+	/** Log */
+	private static Log log = LogFactory.getLog(NullpoMinoSlick.class);
+
 	public static void main(String[] args) {
 		try {
+			org.newdawn.slick.util.Log.setLogSystem(new SlickCustomLogSystem());
+
 			NGlobalConfig.load();
 
 			CustomProperties propGlobal = NGlobalConfig.getConfig();
@@ -34,7 +42,7 @@ public class NullpoMinoSlick {
 			sys.init();
 			sys.start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.fatal("Something went wrong", e);
 		}
 	}
 }

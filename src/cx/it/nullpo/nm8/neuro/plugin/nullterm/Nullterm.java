@@ -3,6 +3,9 @@ package cx.it.nullpo.nm8.neuro.plugin.nullterm;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
@@ -14,10 +17,12 @@ import cx.it.nullpo.nm8.util.CustomProperties;
  *
  */
 public class Nullterm extends AbstractPlugin {
-	
+	/** Log */
+	private Log log = LogFactory.getLog(Nullterm.class);
+
 	/** Writer to write to the log file */
 	private FileWriter writer = null;
-	
+
 	/** Whether or not nullterm will output to the terminal. */
 	private boolean outputToTerminal;
 	/** Whether or not nullterm will output to a log file. */
@@ -26,7 +31,7 @@ public class Nullterm extends AbstractPlugin {
 	private boolean appendFile;
 	/** Log file location. */
 	private String logLocation;
-	
+
 
 	public String getName() {
 		return "nullterm";
@@ -35,11 +40,12 @@ public class Nullterm extends AbstractPlugin {
 	public float getVersion() {
 		return 0.22F;
 	}
-	
+
 	public String getAuthor() {
 		return "Zircean";
 	}
-	
+
+	@Override
 	protected void init() throws PluginInitializationException {
 		addListener(DebugEvent.class);
 		// Read properties file
@@ -65,7 +71,7 @@ public class Nullterm extends AbstractPlugin {
 			writer.close();
 		} catch (IOException e) { }
 	}
-	
+
 	/**
 	 * Event listener for DebugEvents. Prints out the content message to the terminal if that option
 	 * is set, and writes it to the log file.
@@ -74,7 +80,14 @@ public class Nullterm extends AbstractPlugin {
 		String message = e.getSource()+" dispatched (systime="+e.getTime()+"): "+e.getMessage();
 		// write to the terminal
 		if (outputToTerminal) {
-			System.out.println(message);
+			if(e.getType() == DebugEvent.TYPE_DEBUG)
+				log.debug(message);
+			else if(e.getType() == DebugEvent.TYPE_WARNING)
+				log.warn(message);
+			else if(e.getType() == DebugEvent.TYPE_ERROR)
+				log.error(message);
+			else if(e.getType() == DebugEvent.TYPE_FATAL)
+				log.fatal(message);
 		}
 		// write to the log file
 		if (outputToFile && writer != null) {
@@ -82,7 +95,7 @@ public class Nullterm extends AbstractPlugin {
 				writer.write(message+NulltermConstants.LINE_SEPARATOR);
 				writer.flush();
 			} catch (IOException e1) {
-				System.err.println("nullterm failed to write to the log file!");
+				log.error("nullterm failed to write to the log file!", e1);
 			}
 		}
 	}

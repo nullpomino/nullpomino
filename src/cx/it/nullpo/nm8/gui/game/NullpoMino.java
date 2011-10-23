@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 
@@ -37,6 +39,9 @@ import cx.it.nullpo.nm8.util.NUtil;
 public class NullpoMino extends AbstractPlugin implements NFGame {
 	private static final long serialVersionUID = 4545597070306756443L;
 
+	/** Log */
+	private Log log = LogFactory.getLog(NullpoMino.class);
+
 	// Constants for key config
 	protected static final int MAX_PLAYERS = 2;
 	protected static final int MAX_RULE_KIND = 2;
@@ -61,7 +66,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 		try {
 			if(sys.getJoystickManager() != null) {
 				int numJoysticks = sys.getJoystickManager().initJoystick();
-				System.out.println(numJoysticks + " joysticks found");
+				log.info(numJoysticks + " joysticks found");
 
 				if(numJoysticks > 0) {
 					addListener(JoyXYAxisEvent.class);
@@ -70,8 +75,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				}
 			}
 		} catch (Throwable e) {
-			System.err.println("Failed to init joystick");
-			e.printStackTrace();
+			log.warn("Failed to init joystick", e);
 		}
 
 		try {
@@ -79,7 +83,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				font = sys.loadFont("data/res/font/font.ttf");
 			}
 			if(sys.isSoundSupported() && NGlobalConfig.getConfig().getProperty("sys.enablesound", true)) {
-				System.out.println("Loading sound effects");
+				log.debug("Loading sound effects");
 				ResourceHolder.loadSoundEffects(sys, "default");
 			}
 			g = sys.getGraphics();
@@ -94,7 +98,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 			manager.init();
 			manager.start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Game init failed", e);
 		}
 		sys.setWindowTitle("NullpoMino8 Alpha Test");
 	}
@@ -185,7 +189,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 				g.setColor(NFColor.white);
 				g.drawRect(fldX, fldY, 10*16, 20*16);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Render fail", e);
 			}
 		}
 	}
@@ -208,8 +212,7 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 					}
 				}
 			} catch (Exception e) {
-				System.out.println("Game update fail");
-				e.printStackTrace();
+				log.error("Game update fail", e);
 			}
 		}
 	}

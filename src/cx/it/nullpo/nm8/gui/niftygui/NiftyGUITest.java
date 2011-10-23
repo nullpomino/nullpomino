@@ -1,5 +1,8 @@
 package cx.it.nullpo.nm8.gui.niftygui;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
@@ -10,6 +13,8 @@ import de.lessvoid.nifty.tools.TimeProvider;
 
 public class NiftyGUITest implements NFGame {
 	private static final long serialVersionUID = 1L;
+	private Log log = LogFactory.getLog(NiftyGUITest.class);
+
 	private Nifty nifty;
 	private boolean niftyInited;
 
@@ -56,11 +61,11 @@ public class NiftyGUITest implements NFGame {
 									  new NFSoundDevice(sys),
 									  new NFInputSystem(sys.getKeyboard(), sys.getMouse()),
 									  new TimeProvider());
-					System.out.println("NiftyGUI created");
+					log.debug("NiftyGUI created");
 
 					nifty.fromXml("data/xml/niftyguitest.xml", "start");
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("NiftyGUI init fail", e);
 				}
 				niftyInited = true;
 			}
@@ -69,7 +74,7 @@ public class NiftyGUITest implements NFGame {
 				nifty.render(true);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("NiftyGUI render fail", e);
 		}
 	}
 

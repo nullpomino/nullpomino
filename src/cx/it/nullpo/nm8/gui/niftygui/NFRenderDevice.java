@@ -17,6 +17,7 @@ import de.lessvoid.nifty.tools.Color;
  * NullpoMino Framework implementation of NiftyGUI's RenderDevice
  */
 public class NFRenderDevice implements RenderDevice {
+	/** NFSystem */
 	protected NFSystem sys;
 
 	public NFRenderDevice(NFSystem sys) {
@@ -37,14 +38,12 @@ public class NFRenderDevice implements RenderDevice {
 		try {
 			return new NFRenderFont(sys.loadFont(filename));
 		} catch (IOException e) {
-			System.err.println("Font " + filename + " not found");
-			e.printStackTrace();
 			throw new RuntimeException("Font " + filename + " not found", e);
 		} catch (UnsupportedOperationException e) {
 			if(filename.endsWith(".fnt")) {
 				throw new RuntimeException("This system doesn't have the support of .fnt files (" + filename + ")", e);
 			} else {
-				throw new RuntimeException("Font " + filename + " not found", e);
+				throw new RuntimeException("Font " + filename + " is not supported in this system", e);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Font " + filename + " Unknown loading failure", e);

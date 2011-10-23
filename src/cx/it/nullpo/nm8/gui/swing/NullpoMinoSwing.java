@@ -1,5 +1,8 @@
 package cx.it.nullpo.nm8.gui.swing;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.game.NullpoMino;
 import cx.it.nullpo.nm8.gui.niftygui.NiftyGUITest;
@@ -11,6 +14,9 @@ import cx.it.nullpo.nm8.util.NGlobalConfig;
  * Start NullpoMino with Swing framework
  */
 public class NullpoMinoSwing {
+	/** Log */
+	private static Log log = LogFactory.getLog(NullpoMinoSwing.class);
+
 	public static void main(String[] args) {
 		try {
 			NGlobalConfig.load();
@@ -33,7 +39,7 @@ public class NullpoMinoSwing {
 			sys.init();
 			sys.start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.fatal("Something went wrong", e);
 		}
 	}
 }

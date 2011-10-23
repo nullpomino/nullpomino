@@ -10,6 +10,9 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.common.sound.javasound.JSSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
@@ -27,6 +30,9 @@ import cx.it.nullpo.nm8.util.NUtil;
  */
 public class SwingNFSystem extends NFSystem {
 	private static final long serialVersionUID = 1L;
+
+	/** Log */
+	private Log log = LogFactory.getLog(SwingNFSystem.class);
 
 	/** A JFrame that runs our game */
 	protected SwingNFGameWrapper gameWrapper;
@@ -250,8 +256,7 @@ public class SwingNFSystem extends NFSystem {
 				nfSoundProvider = obj;
 				return true;
 			} catch (Throwable e) {
-				System.err.println("Cannot initialize OpenAL");
-				e.printStackTrace();
+				log.error("Cannot initialize OpenAL", e);
 				return false;
 			}
 		}

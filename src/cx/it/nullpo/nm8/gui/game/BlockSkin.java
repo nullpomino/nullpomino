@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -16,6 +18,9 @@ import cx.it.nullpo.nm8.gui.framework.NFSystem;
  * This class represents each entry of block skin
  */
 public class BlockSkin {
+	/** Log */
+	private static Log log = LogFactory.getLog(BlockSkin.class);
+
 	/** Map of "normal" block skin images (size->image) */
 	public Map<Integer, NFImage> mapImageNormal = Collections.synchronizedMap(new HashMap<Integer, NFImage>());
 
@@ -62,7 +67,6 @@ public class BlockSkin {
 
 					int size = Integer.valueOf(eImage.getAttributeValue("size"));
 					String strFilename = eImage.getAttributeValue("filename");
-					//System.out.println("size:" + size + ", filename:" + strFilename);
 
 					try {
 						NFImage nfImage = sys.loadImage("data/res/graphics/block/" + skinDirName + "/" + strFilename);
@@ -73,15 +77,11 @@ public class BlockSkin {
 							b.mapImageNormal.put(size, nfImage);
 						}
 					} catch (Exception e) {
-						System.err.println("Failed to load block image " + strFilename);
-						e.printStackTrace();
+						log.error("Failed to load block image from " + strFilename, e);
 					}
 				}
 			}
 		}
-
-		System.out.println("b.mapImageNormal.size():" + b.mapImageNormal.size());
-		System.out.println("b.mapImageLocked.size():" + b.mapImageLocked.size());
 
 		return b;
 	}

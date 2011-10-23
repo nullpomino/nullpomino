@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -22,6 +24,9 @@ import cx.it.nullpo.nm8.util.NUtil;
  * ResourceHolder: Contains Graphics, Sounds, etc
  */
 public class ResourceHolder {
+	/** Log */
+	private static Log log = LogFactory.getLog(ResourceHolder.class);
+
 	/** Block skin (TODO) */
 	public static BlockSkin blockSkin;
 
@@ -45,12 +50,10 @@ public class ResourceHolder {
 		try {
 			doc = builder.build(NUtil.getURL(strXMLFilePath));
 		} catch (JDOMException e) {
-			System.err.println("XML parse error in sound effects index file (File:" + strXMLFilePath + ")");
-			e.printStackTrace();
+			log.error("XML parse error in sound effects index file (File:" + strXMLFilePath + ")", e);
 			return;
 		} catch (IOException e) {
-			System.err.println("Sound effects index file not found (File:" + strXMLFilePath + ")");
-			e.printStackTrace();
+			log.error("Sound effects index file not found (File:" + strXMLFilePath + ")", e);
 			return;
 		}
 
@@ -80,7 +83,7 @@ public class ResourceHolder {
 
 				if(seFilename2SoundMap.containsKey(strFile)) {
 					// The same file is already loaded, so let's reuse it
-					System.out.println("Reuse " + strFile + " for " + strName);
+					log.debug("Reuse " + strFile + " for " + strName);
 					NFSound sound = seFilename2SoundMap.get(strFile);
 					seMap.put(strName, sound);
 				} else if(!noMoreSoundEffects) {
@@ -92,15 +95,13 @@ public class ResourceHolder {
 						seFilename2SoundMap.put(strFile, sound);
 						seList.add(sound);
 					} catch (IllegalStateException e) {
-						System.err.println("No more sound effects can be loaded. File:" + strFilePath + " (Name:" + strName + ")");
-						e.printStackTrace();
+						log.error("No more sound effects can be loaded. File:" + strFilePath + " (Name:" + strName + ")", e);
 						noMoreSoundEffects = true;
 					} catch (Exception e) {
-						System.err.println("Can't load sound effect file:" + strFilePath + " (Name:" + strName + ")");
-						e.printStackTrace();
+						log.error("Can't load sound effect file:" + strFilePath + " (Name:" + strName + ")", e);
 					}
 				} else {
-					System.err.println("No more sound effects can be loaded. File:" + strFilePath + " (Name:" + strName + ")");
+					log.debug("No more sound effects can be loaded. File:" + strFilePath + " (Name:" + strName + ")");
 				}
 			}
 		}

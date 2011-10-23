@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
@@ -28,6 +30,9 @@ import cx.it.nullpo.nm8.util.NUtil;
  */
 public class LWJGLALSoundProvider extends NFSoundProvider {
 	private static final long serialVersionUID = -7131810609916337503L;
+
+	/** Log */
+	private Log log = LogFactory.getLog(LWJGLALSoundProvider.class);
 
 	/** Number of sources to create */
 	protected static final int MAX_SOURCE = 64;
@@ -146,7 +151,7 @@ public class LWJGLALSoundProvider extends NFSoundProvider {
 				}
 			} catch (Throwable e) {}
 
-			System.out.println(sourceList.size() + " OpenAL sources created");
+			log.info(sourceList.size() + " OpenAL sources created");
 		}
 
 		AL10.alListener(AL10.AL_POSITION, listenerPos);

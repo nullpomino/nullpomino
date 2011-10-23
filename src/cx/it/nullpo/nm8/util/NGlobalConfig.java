@@ -4,12 +4,18 @@ import java.io.File;
 
 import javax.swing.UIManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 
 /**
  * This class handles the global config file
  */
 public class NGlobalConfig {
+	/** Log */
+	private static Log log = LogFactory.getLog(NGlobalConfig.class);
+
 	/** Global config */
 	protected static CustomProperties propGlobal = null;
 
@@ -36,9 +42,9 @@ public class NGlobalConfig {
 			File dir = new File("user/setting/");
 			if(!dir.exists()) {
 				if(!dir.mkdirs()) {
-					System.err.println("Warning: Can't create user/setting/ directory!");
+					log.error("Can't create user/setting/ directory!");
 				} else {
-					System.out.println("user/setting/ directory created.");
+					log.info("user/setting/ directory created.");
 				}
 			}
 
@@ -56,7 +62,7 @@ public class NGlobalConfig {
 
 		boolean result = propGlobal.save("user/setting/global.cfg", "NullpoMino Global Config");
 		if(!result) {
-			System.err.println("Warning: Can't write global config file to user/setting/global.cfg");
+			log.error("Can't write global config file to user/setting/global.cfg");
 		}
 
 		return result;
@@ -71,8 +77,7 @@ public class NGlobalConfig {
 				UIManager.getInstalledLookAndFeels();
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch(Throwable e) {
-				System.err.println("Failed to set native look&feel");
-				e.printStackTrace();
+				log.warn("Failed to set native look&feel", e);
 			}
 		}
 	}

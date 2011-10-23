@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 
@@ -17,6 +19,8 @@ import cx.it.nullpo.nm8.util.NUtil;
  */
 public class SlickNFSoundProvider extends NFSoundProvider {
 	private static final long serialVersionUID = 4943978436256548528L;
+
+	private Log log = LogFactory.getLog(SlickNFSoundProvider.class);
 
 	@Override
 	public String getName() {
@@ -47,15 +51,15 @@ public class SlickNFSoundProvider extends NFSoundProvider {
 					nativeSound = new Sound(filename);
 					nfSound = new SlickNFSound(nativeSound);
 					if(i >= 1) {
-						System.out.println("Load successful (Retry count:" + (i+1) + "/" + maxRetry + ")");
+						log.debug(filename + " Load successful (Retry count:" + (i+1) + "/" + maxRetry + ")");
 					}
 					break;
 				} catch (SlickException e) {
 					if(i >= maxRetry) {
-						if(maxRetry != 0) System.err.println("Give up...");
+						if(maxRetry != 0) log.error("Give up...");
 						throw e;
 					} else {
-						System.err.println("Retrying (" + (i+1) + "/" + maxRetry + ")");
+						log.debug(filename + " Retrying (Retry count:" + (i+1) + "/" + maxRetry + ")");
 					}
 				}
 			}
