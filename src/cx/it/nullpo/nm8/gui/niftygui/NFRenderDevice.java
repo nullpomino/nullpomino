@@ -1,6 +1,11 @@
 package cx.it.nullpo.nm8.gui.niftygui;
 
+import java.awt.Font;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -17,8 +22,12 @@ import de.lessvoid.nifty.tools.Color;
  * NullpoMino Framework implementation of NiftyGUI's RenderDevice
  */
 public class NFRenderDevice implements RenderDevice {
+	/** Log */
+	//private Log log = LogFactory.getLog(NFRenderDevice.class);
 	/** NFSystem */
 	protected NFSystem sys;
+	/** Font cache */
+	protected List<NFRenderFont> listFontCache = Collections.synchronizedList(new ArrayList<NFRenderFont>());
 
 	public NFRenderDevice(NFSystem sys) {
 		this.sys = sys;
@@ -36,7 +45,9 @@ public class NFRenderDevice implements RenderDevice {
 
 	public RenderFont createFont(String filename) {
 		try {
-			return new NFRenderFont(sys.loadFont(filename));
+			NFRenderFont f = new NFRenderFont(sys.loadFont(filename, 16, false, false), filename);
+			listFontCache.add(f);
+			return f;
 		} catch (IOException e) {
 			throw new RuntimeException("Font " + filename + " not found", e);
 		} catch (UnsupportedOperationException e) {
@@ -107,9 +118,31 @@ public class NFRenderDevice implements RenderDevice {
 	}
 
 	public void renderFont(RenderFont font, String text, int x, int y, Color fontColor, float size) {
-		NFRenderFont nfRenderFont = (NFRenderFont)font;
-		NFFont nfFont = nfRenderFont.getNFFont();
+		NFRenderFont nfRenderFontOriginal = (NFRenderFont)font;
+		int originalSize = nfRenderFontOriginal.getNFFont().getSize();
+		int newSize = (int)(size * originalSize);
+		NFRenderFont nfRenderFontNew = getCachedFont(nfRenderFontOriginal, newSize);	// Try to get the cached font
+		if(nfRenderFontNew == null) {
+			// Not cached? Then create a new font with desired size
+			Font awtOriginalFont = nfRenderFontOriginal.getNFFont().getFont();
+			if(awtOriginalFont != null) {
+				NFFont nfFontNew = sys.loadFont(awtOriginalFont, newSize, false, false);
+				if(nfFontNew != null) {
+					//log.debug("FontFilename:" + nfRenderFontOriginal.getFilename() + ", OriginalSize:" + nfRenderFontOriginal.getNFFont().getSize() +
+					//		  ", NewSize:" + newSize);
+					nfRenderFontNew = new NFRenderFont(nfFontNew, nfRenderFontOriginal.getFilename());
+					listFontCache.add(nfRenderFontNew);
+				}
+			}
+		}
+		if(nfRenderFontNew == null) {
+			// If can't create a new desired sized font, fallback to the original
+			nfRenderFontNew = nfRenderFontOriginal;
+		}
+
+		NFFont nfFont = nfRenderFontNew.getNFFont();
 		if(nfFont.isGlyphLoadingRequired()) {
+			nfFont.addGlyphs(text);
 			nfFont.loadGlyphs();
 		}
 		sys.getGraphics().setFont(nfFont);
@@ -135,6 +168,24 @@ public class NFRenderDevice implements RenderDevice {
 
 	public void disableMouseCursor() {
 
+	}
+
+	protected NFRenderFont getCachedFont(NFRenderFont f1, int size) {
+		String filename1 = f1.getFilename();
+
+		synchronized (listFontCache) {
+			Iterator<NFRenderFont> it = listFontCache.iterator();
+			while(it.hasNext()) {
+				NFRenderFont f2 = it.next();
+				String filename2 = f2.getFilename();
+
+				if(filename1.equals(filename2) && f2.getNFFont().getSize() == size) {
+					return f2;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public static NFColor nifty2NFColor(Color c) {

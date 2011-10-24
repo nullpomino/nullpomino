@@ -5,9 +5,11 @@ import de.lessvoid.nifty.spi.render.RenderFont;
 
 public class NFRenderFont implements RenderFont {
 	protected NFFont nfFont;
+	protected String filename;
 
-	public NFRenderFont(NFFont nfFont) {
+	public NFRenderFont(NFFont nfFont, String filename) {
 		this.nfFont = nfFont;
+		this.filename = filename;
 	}
 
 	public int getWidth(String text) {
@@ -28,5 +30,9 @@ public class NFRenderFont implements RenderFont {
 
 	public NFFont getNFFont() {
 		return nfFont;
+	}
+
+	public String getFilename() {
+		return filename;
 	}
 }

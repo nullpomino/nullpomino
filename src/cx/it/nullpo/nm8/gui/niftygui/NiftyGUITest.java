@@ -51,6 +51,7 @@ public class NiftyGUITest implements NFGame {
 		if(nifty != null) {
 			nifty.update();
 		}
+		sys.setWindowTitle("NullpoMino GUI Test (FPS:" + sys.getFPS() + "/" + sys.getTargetFPS() + ")");
 	}
 
 	public void render(NFSystem sys, NFGraphics g) {
@@ -79,5 +80,11 @@ public class NiftyGUITest implements NFGame {
 	}
 
 	public void onExit(NFSystem sys) {
+		if(nifty != null) {
+			nifty.exit();
+		}
+
+		// Sometimes nifty's thread is keep running. I don't know why
+		System.exit(0);
 	}
 }

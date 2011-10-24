@@ -1,6 +1,7 @@
 package cx.it.nullpo.nm8.gui.swing.framework;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -8,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
@@ -27,13 +29,21 @@ public class SwingNFGraphics implements NFGraphics {
 	/** Default native font; Used by resetFont */
 	protected Font defaultNativeFont;
 
+	/** Default Composite */
+	protected Composite defaultComposite;
+
+	/** Current color */
+	protected NFColor currentColor;
+
 	/**
 	 * Constructor
 	 * @param g Swing native graphics
 	 */
 	public SwingNFGraphics(Graphics g) {
 		this.g = (Graphics2D)g;
-		defaultNativeFont = g.getFont();
+		defaultNativeFont = this.g.getFont();
+		defaultComposite = this.g.getComposite();
+		currentColor = new NFColor(this.g.getColor());
 	}
 
 	/**
@@ -66,7 +76,35 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	/**
+	 * Set the AlphaComposite for transparency.
+	 * @param nfColor NFColor with alpha setting
+	 */
+	protected void setAlphaComposite(NFColor nfColor) {
+		if(nfColor.getAlpha() >= 255) return;
+		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(nfColor.getAlpha() / 255f));
+		g.setComposite(newComposite);
+	}
+
+	/**
+	 * Set the AlphaComposite for transparency.
+	 * @param awtColor AWT Color with alpha setting
+	 */
+	protected void setAlphaComposite(Color awtColor) {
+		if(awtColor.getAlpha() >= 255) return;
+		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(awtColor.getAlpha() / 255f));
+		g.setComposite(newComposite);
+	}
+
+	/**
+	 * Reset the Composite (disable any transparency)
+	 */
+	protected void clearAlphaComposite() {
+		g.setComposite(defaultComposite);
+	}
+
+	/**
 	 * Sorry, there is no support of color filter :(
+	 * Transparency is supported though.
 	 * @return Always false
 	 */
 	public boolean isSupportColorFilter() {
@@ -75,45 +113,43 @@ public class SwingNFGraphics implements NFGraphics {
 
 	public void drawImage(NFImage img, int x, int y) {
 		Image nimg = getNativeImage(img);
+
+		setAlphaComposite(getColor());
 		g.drawImage(nimg, x, y, null);
+		clearAlphaComposite();
 	}
 
 	public void drawImage(NFImage img, int x, int y, NFColor col) {
 		Image nimg = getNativeImage(img);
 
-		if(col.getAlpha() >= 255) {
-			g.drawImage(nimg, x, y, null);
-		} else {
-			Composite curComposite = g.getComposite();
-			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(col.getAlpha() / 255));
-			g.setComposite(newComposite);
-			g.drawImage(nimg, x, y, null);
-			g.setComposite(curComposite);
-		}
+		setAlphaComposite(col);
+		g.drawImage(nimg, x, y, null);
+		clearAlphaComposite();
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
 		Image nimg = getNativeImage(img);
+
+		setAlphaComposite(getColor());
 		g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+		clearAlphaComposite();
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, NFColor col) {
 		Image nimg = getNativeImage(img);
 
-		if(col.getAlpha() >= 255) {
-			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
-		} else {
-			Composite curComposite = g.getComposite();
-			AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(col.getAlpha() / 255));
-			g.setComposite(newComposite);
-			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
-			g.setComposite(curComposite);
-		}
+		setAlphaComposite(col);
+		g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+		clearAlphaComposite();
 	}
 
 	public void drawString(String str, int x, int y) {
+		setAlphaComposite(getColor());
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		int yoffset = g.getFontMetrics().getAscent();
 		g.drawString(str, x, y + yoffset);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+		clearAlphaComposite();
 	}
 
 	public int getStringWidth(String str) {
@@ -127,22 +163,30 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {
+		setAlphaComposite(getColor());
 		g.drawLine(x1, y1, x2, y2);
+		clearAlphaComposite();
 	}
 
 	public void drawRect(int x, int y, int width, int height) {
+		setAlphaComposite(getColor());
 		g.drawRect(x, y, width, height);
+		clearAlphaComposite();
 	}
 
 	public void fillRect(int x, int y, int width, int height) {
+		setAlphaComposite(getColor());
 		g.fillRect(x, y, width, height);
+		clearAlphaComposite();
 	}
 
 	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
 		Paint curPaint = g.getPaint();
 		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
 		g.setPaint(gradient);
+		setAlphaComposite(getColor());
 		g.drawRect(x, y, width, height);
+		clearAlphaComposite();
 		g.setPaint(curPaint);
 	}
 
@@ -150,16 +194,20 @@ public class SwingNFGraphics implements NFGraphics {
 		Paint curPaint = g.getPaint();
 		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
 		g.setPaint(gradient);
+		setAlphaComposite(getColor());
 		g.fillRect(x, y, width, height);
+		clearAlphaComposite();
 		g.setPaint(curPaint);
 	}
 
 	public void setColor(NFColor col) {
+		currentColor = col;
 		g.setColor(col.toAWTColor());
 	}
 
 	public NFColor getColor() {
-		return new NFColor(g.getColor());
+		//return new NFColor(g.getColor());
+		return currentColor;
 	}
 
 	public void setFont(NFFont font) {
