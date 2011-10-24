@@ -2,7 +2,6 @@ package cx.it.nullpo.nm8.neuro.core;
 
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
-import cx.it.nullpo.nm8.neuro.nwt.NScreen;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 
 /**
@@ -54,10 +53,4 @@ public interface NEURO {
 	 * @param g the NFGraphics with which to draw this NEURO instance
 	 */
 	void draw(NFGraphics g);
-	
-	/**
-	 * Pushes the given screen onto the screen stack. This screen will be drawn.
-	 * @param sc the NScreen to be pushed to the top of the stack
-	 */
-	void pushScreen(NScreen sc);
 }

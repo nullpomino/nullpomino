@@ -10,7 +10,6 @@ import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
-import cx.it.nullpo.nm8.neuro.nwt.NScreen;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
 
@@ -72,8 +71,6 @@ public abstract class NEUROBase implements NEURO {
 	public void update(long delta) { }
 
 	public void draw(NFGraphics g) { }
-	
-	public void pushScreen(NScreen sc) { }
 	
 	/**
 	 * Loads the plugin at the given classpath.

@@ -1,7 +1,5 @@
 package cx.it.nullpo.nm8.neuro.core;
 
-import java.util.Stack;
-
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFJoystick;
@@ -24,8 +22,6 @@ import cx.it.nullpo.nm8.neuro.event.MouseWheelEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
 import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
-import cx.it.nullpo.nm8.neuro.nwt.NScreen;
-import cx.it.nullpo.nm8.neuro.nwt.toolkit.NToolkit;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
 
 /**
@@ -44,12 +40,6 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 
 	/** The network communicator. */
 	protected NetworkCommunicator network;
-	
-	/** The overlay graphics toolkit. */
-	protected NToolkit toolkit;
-	
-	/** The screen stack. The top screen on the stack is the one that is drawn. */
-	protected Stack<NScreen> screenStack;
 
 	/** true if the overlay is currently up and want updating. */
 	protected boolean overlayUpdateFlag;
@@ -73,9 +63,6 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 				sys.getJoystickManager().addListener(this);
 			}
 		}
-		
-		toolkit = null;
-		screenStack = new Stack<NScreen>();
 		 
 		overlayUpdateFlag = false;
 		overlayDrawFlag = false;
@@ -126,12 +113,6 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		// Draw whatever else is necessary
 		drawLast(g);
 	}
-	
-	@Override
-	public void pushScreen(NScreen sc) {
-		// TODO limit on screen stack size?
-		screenStack.push(sc);
-	}
 
 	/**
 	 * Stops all plugins and quits.
@@ -159,10 +140,6 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 	protected void updateOverlay(long delta) { }
 	
 	protected void drawOverlay(NFGraphics g) {
-		// draw the screen at the top of the stack if the toolkit is present
-		if (toolkit != null) {
-			toolkit.draw(screenStack.peek(), g);
-		}
 	}
 	
 	protected abstract void drawLast(NFGraphics g);
