@@ -125,11 +125,11 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	/**
-	 * We have experimental color filter support, but not enabled yet because it's too slow. (TODO:Does image caching help?)
-	 * @return Always false
+	 * We have experimental color filter support, but it's slow so be careful.
+	 * @return Always true
 	 */
 	public boolean isSupportColorFilter() {
-		return false;
+		return true;
 	}
 
 	public void drawImage(NFImage img, int x, int y) {
@@ -139,7 +139,7 @@ public class SwingNFGraphics implements NFGraphics {
 	public void drawImage(NFImage img, int x, int y, NFColor col) {
 		Image nimg = getNativeImage(img);
 
-		if(col.isColorFilter() && false) {	// Not enabled yet because of bad perfomance
+		if(col.isColorFilter()) {
 			SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
 			FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
 			SwingNFSystem swSys = (SwingNFSystem)sys;
@@ -161,7 +161,7 @@ public class SwingNFGraphics implements NFGraphics {
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, NFColor col) {
 		Image nimg = getNativeImage(img);
 
-		if(col.isColorFilter() && false) {	// Not enabled yet because of bad perfomance
+		if(col.isColorFilter()) {
 			SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
 			FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
 			SwingNFSystem swSys = (SwingNFSystem)sys;

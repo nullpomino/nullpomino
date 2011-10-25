@@ -3,6 +3,7 @@ package cx.it.nullpo.nm8.gui.common.font.angelcode;
 import java.awt.Font;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,9 @@ public class NFAngelCodeFont implements NFFont {
 
 	/** Font Images (Currently only the first one will be used) */
 	protected NFImage[] images;
+
+	/** Character image cache */
+	protected Map<Integer, NFImage> mapImageCharCache = new HashMap<Integer, NFImage>();
 
 	/**
 	 * Constructor
@@ -173,14 +177,22 @@ public class NFAngelCodeFont implements NFFont {
 			int c = (int)str.charAt(i);
 			AngelCodeCharInfo ci = map.get(c);
 			if(ci != null) {
-				int dx = x2 + ci.getXoffset();
-				int dy = y + ci.getYoffset();
+				if(ci.getWidth() > 0 && ci.getHeight() > 0) {
+					int dx = x2 + ci.getXoffset();
+					int dy = y + ci.getYoffset();
 
-				g.drawImage(
-					images[0],
-					dx, dy, dx+ci.getWidth(), dy+ci.getHeight(),
-					ci.getX(), ci.getY(), ci.getX()+ci.getWidth(), ci.getY()+ci.getHeight()
-				);
+					NFImage subImage = mapImageCharCache.get(ci.getId());
+					if(subImage == null) {
+						subImage = images[0].getSubImage(ci.getX(), ci.getY(), ci.getWidth(), ci.getHeight());
+						mapImageCharCache.put(ci.getId(), subImage);
+					}
+
+					g.drawImage(
+						subImage,
+						dx, dy, dx+ci.getWidth(), dy+ci.getHeight(),
+						0, 0, ci.getWidth(), ci.getHeight()
+					);
+				}
 
 				x2 += ci.getXadvance();
 			}
