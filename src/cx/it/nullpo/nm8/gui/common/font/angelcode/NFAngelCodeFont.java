@@ -136,18 +136,16 @@ public class NFAngelCodeFont implements NFFont {
 	}
 
 	public int getStringWidth(String str) {
-		int width = 0;
 		int advance = 0;
 		Map<Integer, AngelCodeCharInfo> map = info.getPageInfoList().get(0).getCharInfoMap();
 		for(int i = 0; i < str.length(); i++) {
 			int c = (int)str.charAt(i);
 			AngelCodeCharInfo ci = map.get(c);
 			if(ci != null) {
-				width += ci.getWidth();
 				advance += ci.getXadvance();
 			}
 		}
-		return Math.max(width, advance);
+		return advance;
 	}
 
 	public int getStringHeight(String str) {

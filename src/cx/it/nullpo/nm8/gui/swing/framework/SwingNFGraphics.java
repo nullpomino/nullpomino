@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.image.FilteredImageSource;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -124,8 +125,7 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	/**
-	 * Sorry, there is no support of color filter :(
-	 * Transparency is supported though.
+	 * We have experimental color filter support, but not enabled yet because it's too slow. (TODO:Does image caching help?)
 	 * @return Always false
 	 */
 	public boolean isSupportColorFilter() {
@@ -133,35 +133,47 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawImage(NFImage img, int x, int y) {
-		Image nimg = getNativeImage(img);
-
-		setAlphaComposite(getColor());
-		g.drawImage(nimg, x, y, null);
-		clearAlphaComposite();
+		drawImage(img, x, y, getColor());
 	}
 
 	public void drawImage(NFImage img, int x, int y, NFColor col) {
 		Image nimg = getNativeImage(img);
 
-		setAlphaComposite(col);
-		g.drawImage(nimg, x, y, null);
-		clearAlphaComposite();
+		if(col.isColorFilter() && false) {	// Not enabled yet because of bad perfomance
+			SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
+			FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
+			SwingNFSystem swSys = (SwingNFSystem)sys;
+			Image nimgF = swSys.gameWrapper.createImage(fis);
+			setAlphaComposite(col);
+			g.drawImage(nimgF, x, y, null);
+			clearAlphaComposite();
+		} else {
+			setAlphaComposite(col);
+			g.drawImage(nimg, x, y, null);
+			clearAlphaComposite();
+		}
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
-		Image nimg = getNativeImage(img);
-
-		setAlphaComposite(getColor());
-		g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
-		clearAlphaComposite();
+		drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, getColor());
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, NFColor col) {
 		Image nimg = getNativeImage(img);
 
-		setAlphaComposite(col);
-		g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
-		clearAlphaComposite();
+		if(col.isColorFilter() && false) {	// Not enabled yet because of bad perfomance
+			SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
+			FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
+			SwingNFSystem swSys = (SwingNFSystem)sys;
+			Image nimgF = swSys.gameWrapper.createImage(fis);
+			setAlphaComposite(col);
+			g.drawImage(nimgF, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+			clearAlphaComposite();
+		} else {
+			setAlphaComposite(col);
+			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+			clearAlphaComposite();
+		}
 	}
 
 	public void drawString(String str, int x, int y) {

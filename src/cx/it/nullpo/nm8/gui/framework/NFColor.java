@@ -185,4 +185,18 @@ public class NFColor implements Serializable {
 	public java.awt.Color toAWTColor() {
 		return new java.awt.Color(r,g,b,a);
 	}
+
+	/**
+	 * @return true if this NFColor can be used as a color filter
+	 */
+	public boolean isColorFilter() {
+		return ((r != 255) || (g != 255) || (b != 255));
+	}
+
+	/**
+	 * @return true if this NFColor has alpha value
+	 */
+	public boolean isAlpha() {
+		return (a != 255);
+	}
 }
