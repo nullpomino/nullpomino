@@ -2,6 +2,7 @@ package cx.it.nullpo.nm8.gui.swing.framework;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -124,5 +125,16 @@ public class SwingNFFont implements NFFont {
 
 	public NFGraphics getGraphics() {
 		return g;
+	}
+
+	public void drawString(NFGraphics g, String str, int x, int y) {
+		SwingNFGraphics g2 = (SwingNFGraphics)g;
+		g2.g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		Font curNativeFont = g2.g.getFont();
+		g2.g.setFont(font);
+		int yoffset = g2.g.getFontMetrics(font).getAscent();
+		g2.g.drawString(str, x, y+yoffset);
+		g2.g.setFont(curNativeFont);
+		g2.g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
 	}
 }

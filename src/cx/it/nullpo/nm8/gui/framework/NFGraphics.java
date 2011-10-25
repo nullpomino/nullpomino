@@ -185,4 +185,10 @@ public interface NFGraphics extends Serializable {
 	 * Clear the clipping being applied. This will allow graphics to be drawn anywhere on the screen
 	 */
 	public void clearClip();
+
+	/**
+	 * Get the NFSystem.
+	 * @return NFSystem
+	 */
+	public NFSystem getNFSystem();
 }

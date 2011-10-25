@@ -38,7 +38,10 @@ public class NUtil {
 	 * @return URL
 	 */
 	public static URL getURL(String str) {
-		URL url = null;
+		URL url = NUtil.class.getResource(str);
+		if(url != null) return url;
+		url = ClassLoader.getSystemResource(str);
+		if(url != null) return url;
 
 		try {
 			char sep = File.separator.charAt(0);

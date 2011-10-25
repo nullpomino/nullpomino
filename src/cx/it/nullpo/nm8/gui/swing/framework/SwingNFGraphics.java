@@ -3,19 +3,17 @@ package cx.it.nullpo.nm8.gui.swing.framework;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
-import java.awt.RenderingHints;
-import java.awt.geom.Rectangle2D;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFImage;
+import cx.it.nullpo.nm8.gui.framework.NFSystem;
 
 /**
  * Swing implementation of NFGraphics
@@ -26,8 +24,14 @@ public class SwingNFGraphics implements NFGraphics {
 	/** Swing native graphics */
 	protected Graphics2D g;
 
-	/** Default native font; Used by resetFont */
-	protected Font defaultNativeFont;
+	/** NFSystem */
+	protected NFSystem sys;
+
+	/** Default NFFont */
+	protected NFFont defaultFont;
+
+	/** Current NFFont */
+	protected NFFont curFont;
 
 	/** Default Composite */
 	protected Composite defaultComposite;
@@ -38,10 +42,27 @@ public class SwingNFGraphics implements NFGraphics {
 	/**
 	 * Constructor
 	 * @param g Swing native graphics
+	 * @deprecated Use SwingNFGraphics(Graphics g, NFSystem sys) instead
 	 */
+	@Deprecated
 	public SwingNFGraphics(Graphics g) {
 		this.g = (Graphics2D)g;
-		defaultNativeFont = this.g.getFont();
+		defaultFont = new SwingNFFont(this.g.getFont(), this, sys);
+		curFont = defaultFont;
+		defaultComposite = this.g.getComposite();
+		currentColor = new NFColor(this.g.getColor());
+	}
+
+	/**
+	 * Constructor
+	 * @param g Swing native graphics
+	 * @param sys NFSystem
+	 */
+	public SwingNFGraphics(Graphics g, NFSystem sys) {
+		this.g = (Graphics2D)g;
+		this.sys = sys;
+		defaultFont = new SwingNFFont(this.g.getFont(), this, sys);
+		curFont = defaultFont;
 		defaultComposite = this.g.getComposite();
 		currentColor = new NFColor(this.g.getColor());
 	}
@@ -144,22 +165,29 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawString(String str, int x, int y) {
+		/*
 		setAlphaComposite(getColor());
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		int yoffset = g.getFontMetrics().getAscent();
 		g.drawString(str, x, y + yoffset);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
 		clearAlphaComposite();
+		*/
+		setAlphaComposite(getColor());
+		curFont.drawString(this, str, x, y);
+		clearAlphaComposite();
 	}
 
 	public int getStringWidth(String str) {
-		Rectangle2D r = g.getFontMetrics().getStringBounds(str, g);
-		return (int)r.getWidth();
+		//Rectangle2D r = g.getFontMetrics().getStringBounds(str, g);
+		//return (int)r.getWidth();
+		return curFont.getStringWidth(str);
 	}
 
 	public int getStringHeight(String str) {
-		Rectangle2D r = g.getFontMetrics().getStringBounds(str, g);
-		return (int)r.getHeight();
+		//Rectangle2D r = g.getFontMetrics().getStringBounds(str, g);
+		//return (int)r.getHeight();
+		return curFont.getStringHeight(str);
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {
@@ -214,16 +242,20 @@ public class SwingNFGraphics implements NFGraphics {
 		if(font instanceof SwingNFFont) {
 			SwingNFFont f = (SwingNFFont)font;
 			f.setGraphics(this);
+			g.setFont(font.getFont());
+			curFont = f;
+		} else {
+			curFont = font;
 		}
-		g.setFont(font.getFont());
 	}
 
 	public NFFont getFont() {
-		return new SwingNFFont(g.getFont());
+		return curFont;
 	}
 
 	public void resetFont() {
-		g.setFont(defaultNativeFont);
+		g.setFont(defaultFont.getFont());
+		curFont = defaultFont;
 	}
 
 	public void translate(int x, int y) {
@@ -236,5 +268,9 @@ public class SwingNFGraphics implements NFGraphics {
 
 	public void clearClip() {
 		g.setClip(null);
+	}
+
+	public NFSystem getNFSystem() {
+		return sys;
 	}
 }

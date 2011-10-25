@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nifty>
-	<screen id="start">
-		<layer id="layer" backgroundColor="#003f" childLayout="center">
-			<panel height="25%" width="35%" align="center" valign="center" backgroundColor="#004080" childLayout="center" visibleToMouse="true">
-				<effect>
-					<onStartScreen name="move" mode="in" direction="top" length="3000" startDelay="0" inherit="true"/>
-				</effect>
-				<text id="text_hello" font="data/res/font/font.ttf" text="Hello World!" align="center" valign="center" />
-			</panel>
-		</layer>
-	</screen>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
+  <useStyles filename="nifty-default-styles.xml" />
+  <useControls filename="nifty-default-controls.xml" />  
+
+  <screen id="start">
+    <layer childLayout="center" backgroundColor="#000000">
+      <panel height="50%" width="50%" align="center" valign="center" childLayout="horizontal">
+        <control id="appendButton" name="button" label="Test Button" width="100%" height="100%" />
+      </panel>
+    </layer>
+  </screen>
 </nifty>

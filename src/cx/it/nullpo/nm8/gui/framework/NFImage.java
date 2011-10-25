@@ -24,4 +24,14 @@ public interface NFImage extends Serializable {
 	 * @return The height of this image
 	 */
 	public int getHeight();
+
+	/**
+	 * Create a sub-part of this image.
+	 * @param x The x coordinate of the sub-image
+	 * @param y The y coordinate of the sub-image
+	 * @param width The width of the sub-image
+	 * @param height The height of the sub-image
+	 * @return The image represent the sub-part of this image
+	 */
+	public NFImage getSubImage(int x, int y, int width, int height);
 }

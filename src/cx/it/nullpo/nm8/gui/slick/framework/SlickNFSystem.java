@@ -2,9 +2,13 @@ package cx.it.nullpo.nm8.gui.slick.framework;
 
 import java.awt.Font;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
@@ -14,6 +18,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.openal.SoundStore;
 
+import cx.it.nullpo.nm8.gui.common.font.angelcode.AngelCodeMainInfo;
 import cx.it.nullpo.nm8.gui.common.sound.javasound.JSSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
@@ -26,6 +31,7 @@ import cx.it.nullpo.nm8.gui.framework.NFMusic;
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 import cx.it.nullpo.nm8.gui.framework.NFSoundProvider;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
+import cx.it.nullpo.nm8.util.NUtil;
 
 /**
  * Slick implementation of NFSystem
@@ -180,7 +186,7 @@ public class SlickNFSystem extends NFSystem {
 	@Override
 	public NFGraphics getGraphics() {
 		if(g == null) {
-			g = new SlickNFGraphics(container.getGraphics());
+			g = new SlickNFGraphics(container.getGraphics(), this);
 		}
 		return g;
 	}
@@ -189,7 +195,7 @@ public class SlickNFSystem extends NFSystem {
 	public NFImage createImage(int width, int height) {
 		try {
 			Image img = new Image(width, height);
-			return new SlickNFImage(img);
+			return new SlickNFImage(img, this);
 		} catch (SlickException e) {
 			throw new RuntimeException("Couldn't create an empty image", e);
 		}
@@ -199,7 +205,7 @@ public class SlickNFSystem extends NFSystem {
 	public NFImage loadImage(String filename) throws IOException {
 		try {
 			Image img = new Image(filename);
-			return new SlickNFImage(img);
+			return new SlickNFImage(img, this);
 		} catch (SlickException e) {
 			throw new IOException("Couldn't load image from " + filename + " (" + e.getMessage() + ")");
 		}
@@ -207,6 +213,9 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public NFFont loadFont(Font font) {
+		if(font == null) {
+			throw new NullPointerException("font parameter is null. You might have passed a font that not created from AWT.");
+		}
 		UnicodeFont uFont = new UnicodeFont(font);
 		uFont.getEffects().add(new ColorEffect(java.awt.Color.white));	// TODO: Add support more effects
 		SlickNFFont nfFont = new SlickNFFont(uFont);
@@ -215,6 +224,9 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public NFFont loadFont(Font font, int size, boolean bold, boolean italic) {
+		if(font == null) {
+			throw new NullPointerException("font parameter is null. You might have passed a font that not created from AWT.");
+		}
 		UnicodeFont uFont = new UnicodeFont(font, size, bold, italic);
 		uFont.getEffects().add(new ColorEffect(java.awt.Color.white));	// TODO: Add support more effects
 		SlickNFFont nfFont = new SlickNFFont(uFont, size, bold, italic);
@@ -228,7 +240,48 @@ public class SlickNFSystem extends NFSystem {
 
 	@Override
 	public NFFont loadFont(String filename, int size, boolean bold, boolean italic) throws IOException {
+		URL url = NUtil.getURL(filename);
+
+		if(filename.endsWith(".fnt")) {
+			// It's an AngelCodeFont. We need to find out where the image is stored.
+			log.debug("Loading an AngelCodeFont from " + filename + " ...");
+
+			InputStream in = url.openStream();
+			List<String> fntfile = NUtil.getStringListFromInputStreamE(in);
+			in.close();
+
+			AngelCodeMainInfo info = new AngelCodeMainInfo(fntfile);
+			int pages = info.getPages();
+			if(pages == 0) {
+				throw new IllegalArgumentException("This fnt file does not contain any pages.");
+			} else if(pages >= 2) {
+				log.warn("This fnt file contains " + info.getPages() + " pages, but we can only use the first page for now.");
+			}
+
+			String imgfile = info.getPageInfoList().get(0).getFileName();
+
+			URL urlImage = NUtil.getURL(imgfile);
+			InputStream inFnt = url.openStream();
+			InputStream inImg = urlImage.openStream();
+
+			try {
+				AngelCodeFont aFont = new AngelCodeFont(filename, inFnt, inImg);
+				SlickNFAngelCodeFont nfFont = new SlickNFAngelCodeFont(aFont, info);
+				log.debug("Successfully loaded an AngelCodeFont from " + filename + " with the image file " + imgfile);
+				return nfFont;
+			} catch (SlickException e) {
+				log.error("Failed to load AngelCodeFont from " + filename + " and " + imgfile + " (" + e.getMessage() + ")", e);
+				throw new IOException("Failed to load AngelCodeFont from " + filename + " and " + imgfile + " (" + e.getMessage() + ")", e);
+			} finally {
+				try {
+					inFnt.close();
+					inImg.close();
+				} catch (IOException e2) {}
+			}
+		}
+
 		try {
+			// Otherwise it's a UnicodeFont
 			UnicodeFont uFont = new UnicodeFont(filename, size, bold, italic);
 			uFont.getEffects().add(new ColorEffect(java.awt.Color.white));	// TODO: Add support more effects
 			SlickNFFont nfFont = new SlickNFFont(uFont, size, bold, italic);

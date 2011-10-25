@@ -80,8 +80,12 @@ public class NiftyGUITest implements NFGame {
 	}
 
 	public void onExit(NFSystem sys) {
-		if(nifty != null) {
-			nifty.exit();
+		try {
+			if(nifty != null) {
+				nifty.exit();
+			}
+		} catch (Exception e) {
+			log.debug("Nifty exception on exit()", e);
 		}
 
 		// Sometimes nifty's thread is keep running. I don't know why

@@ -5,6 +5,7 @@ import java.awt.Font;
 import org.newdawn.slick.UnicodeFont;
 
 import cx.it.nullpo.nm8.gui.framework.NFFont;
+import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 
 /**
  * Slick implementation of NFFont
@@ -23,6 +24,12 @@ public class SlickNFFont implements NFFont {
 
 	/** Italic */
 	protected boolean italic;
+
+	/**
+	 * Constructor
+	 */
+	public SlickNFFont() {
+	}
 
 	/**
 	 * Constructor
@@ -107,5 +114,13 @@ public class SlickNFFont implements NFFont {
 
 	public int getLineHeight() {
 		return font.getLineHeight();
+	}
+
+	public void drawString(NFGraphics g, String str, int x, int y) {
+		SlickNFGraphics g2 = (SlickNFGraphics)g;
+		org.newdawn.slick.Font curNativeFont = g2.g.getFont();
+		g2.g.setFont(font);
+		g2.g.drawString(str, x, y);
+		g2.g.setFont(curNativeFont);
 	}
 }

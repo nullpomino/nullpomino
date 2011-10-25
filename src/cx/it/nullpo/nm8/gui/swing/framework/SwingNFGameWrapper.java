@@ -246,7 +246,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 
 		if(g != null) {
 			if(sys.g == null) {
-				sys.g = new SwingNFGraphics(g);
+				sys.g = new SwingNFGraphics(g, sys);
 			} else {
 				sys.g.setNativeGraphics(g);
 			}

@@ -10,6 +10,7 @@ import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFImage;
+import cx.it.nullpo.nm8.gui.framework.NFSystem;
 
 /**
  * Slick implementation of NFGraphics
@@ -20,12 +21,38 @@ public class SlickNFGraphics implements NFGraphics {
 	/** Slick native graphics */
 	protected Graphics g;
 
+	/** NFSystem */
+	protected NFSystem sys;
+
+	/** Default SlickNFFont */
+	protected SlickNFFont defaultFont;
+
+	/** Current SlickNFFont */
+	protected SlickNFFont curFont;
+
 	/**
 	 * Constructor
 	 * @param g Slick native graphics
+	 * @deprecated Use SlickNFGraphics(Graphics g, NFSystem sys) instead
 	 */
 	public SlickNFGraphics(Graphics g) {
 		this.g = g;
+
+		curFont = new SlickNFFont(g.getFont());
+		defaultFont = curFont;
+	}
+
+	/**
+	 * Constructor
+	 * @param g Slick native graphics
+	 * @param sys NFSystem
+	 */
+	public SlickNFGraphics(Graphics g, NFSystem sys) {
+		this.g = g;
+		this.sys = sys;
+
+		curFont = new SlickNFFont(g.getFont());
+		defaultFont = curFont;
 	}
 
 	/**
@@ -100,15 +127,16 @@ public class SlickNFGraphics implements NFGraphics {
 	}
 
 	public void drawString(String str, int x, int y) {
-		g.drawString(str, x, y);
+		//g.drawString(str, x, y);
+		curFont.drawString(this, str, x, y);
 	}
 
 	public int getStringWidth(String str) {
-		return g.getFont().getWidth(str);
+		return curFont.getStringWidth(str);
 	}
 
 	public int getStringHeight(String str) {
-		return g.getFont().getHeight(str);
+		return curFont.getStringHeight(str);
 	}
 
 	public void fillRect(int x, int y, int width, int height) {
@@ -137,6 +165,8 @@ public class SlickNFGraphics implements NFGraphics {
 
 	public void resetFont() {
 		g.resetFont();
+		curFont = new SlickNFFont(g.getFont());
+		defaultFont = curFont;
 	}
 
 	public void setColor(NFColor col) {
@@ -146,6 +176,7 @@ public class SlickNFGraphics implements NFGraphics {
 	public void setFont(NFFont font) {
 		if(font instanceof SlickNFFont) {
 			SlickNFFont f = (SlickNFFont)font;
+			curFont = f;
 			g.setFont(f.getNativeFont());
 		} else {
 			throw new IllegalArgumentException("This NFFont is not an instance of SlickNFFont");
@@ -162,5 +193,9 @@ public class SlickNFGraphics implements NFGraphics {
 
 	public void clearClip() {
 		g.clearClip();
+	}
+
+	public NFSystem getNFSystem() {
+		return sys;
 	}
 }

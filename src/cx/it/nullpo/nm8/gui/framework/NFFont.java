@@ -69,4 +69,13 @@ public interface NFFont extends Serializable {
 	 * @return The maxium height of any line drawn by this font
 	 */
 	public int getLineHeight();
+
+	/**
+	 * Draw a String to any NFGraphics context with this font
+	 * @param g NFGraphics
+	 * @param str String to draw
+	 * @param x X position
+	 * @param y Y position
+	 */
+	public void drawString(NFGraphics g, String str, int x, int y);
 }
