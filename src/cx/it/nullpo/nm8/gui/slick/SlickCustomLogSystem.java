@@ -8,7 +8,7 @@ import org.newdawn.slick.util.LogSystem;
  * Log system bridge for Slick
  */
 public class SlickCustomLogSystem implements LogSystem {
-	private Log log = LogFactory.getLog("Slick");
+	private Log log = LogFactory.getLog("org.newdawn.slick.Slick");
 
 	public void error(String message, Throwable e) {
 		log.error(message, e);

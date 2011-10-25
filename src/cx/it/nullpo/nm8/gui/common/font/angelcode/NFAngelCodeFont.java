@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -135,11 +136,31 @@ public class NFAngelCodeFont implements NFFont {
 	}
 
 	public int getStringWidth(String str) {
-		return 0;
+		int width = 0;
+		int advance = 0;
+		Map<Integer, AngelCodeCharInfo> map = info.getPageInfoList().get(0).getCharInfoMap();
+		for(int i = 0; i < str.length(); i++) {
+			int c = (int)str.charAt(i);
+			AngelCodeCharInfo ci = map.get(c);
+			if(ci != null) {
+				width += ci.getWidth();
+				advance += ci.getXadvance();
+			}
+		}
+		return Math.max(width, advance);
 	}
 
 	public int getStringHeight(String str) {
-		return 0;
+		int height = 0;
+		Map<Integer, AngelCodeCharInfo> map = info.getPageInfoList().get(0).getCharInfoMap();
+		for(int i = 0; i < str.length(); i++) {
+			int c = (int)str.charAt(i);
+			AngelCodeCharInfo ci = map.get(c);
+			if(ci != null) {
+				if(ci.getHeight() > height) height = ci.getHeight();
+			}
+		}
+		return height;
 	}
 
 	public int getLineHeight() {
@@ -147,5 +168,24 @@ public class NFAngelCodeFont implements NFFont {
 	}
 
 	public void drawString(NFGraphics g, String str, int x, int y) {
+		int x2 = x;
+
+		Map<Integer, AngelCodeCharInfo> map = info.getPageInfoList().get(0).getCharInfoMap();
+		for(int i = 0; i < str.length(); i++) {
+			int c = (int)str.charAt(i);
+			AngelCodeCharInfo ci = map.get(c);
+			if(ci != null) {
+				int dx = x2 + ci.getXoffset();
+				int dy = y + ci.getYoffset();
+
+				g.drawImage(
+					images[0],
+					dx, dy, dx+ci.getWidth(), dy+ci.getHeight(),
+					ci.getX(), ci.getY(), ci.getX()+ci.getWidth(), ci.getY()+ci.getHeight()
+				);
+
+				x2 += ci.getXadvance();
+			}
+		}
 	}
 }
