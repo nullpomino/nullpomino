@@ -1,12 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
   <useStyles filename="nifty-default-styles.xml" />
-  <useControls filename="nifty-default-controls.xml" />  
+  <useControls filename="nifty-default-controls.xml" />
+
+  <registerSound id="select" filename="data/res/se/default/decide.wav" />
 
   <screen id="start">
-    <layer childLayout="center" backgroundColor="#000000">
-      <panel height="50%" width="50%" align="center" valign="center" childLayout="horizontal">
-        <control id="appendButton" name="button" label="Test Button" width="100%" height="100%" />
+    <layer childLayout="vertical" backgroundColor="#00ff">
+      <panel height="50%" width="100%" align="center" valign="center" childLayout="horizontal">
+        <panel height="100%" width="50%" align="center" valign="center" backgroundColor="#800f" childLayout="center">
+          <!--
+          <image filename="nifty.png" align="center" valign="center">
+            <effect>
+              <onActive name="imageSizePulsate" startSize="50%" endSize="150%" cycle="true" period="4000" />
+            </effect>
+          </image>
+          -->
+        </panel>
+        <panel height="100%" width="50%" align="center" valign="center" backgroundColor="#080f" childLayout="center">
+          <!--
+          <image filename="nifty.png" align="center" valign="center" imageMode="subImage:0,0,20,20"/>
+          -->
+        </panel>
+      </panel>
+      <panel height="50%" width="100%" align="center" valign="center" childLayout="horizontal">
+        <panel height="100%" width="50%" align="center" valign="center" childLayout="center">
+          <effect>
+            <onActive name="gradient" direction="vertical">
+              <value offset="0%" color="#ffff" />
+              <value offset="100%" color="#000f" />
+            </onActive>
+          </effect>
+          <text font="aurulent-sans-16.fnt" text="Text \#F00#Rende\#FF0#ring" align="center" valign="center" />
+        </panel>
+        <panel height="100%" width="50%" align="center" valign="center" childLayout="center">
+          <effect>
+            <onActive name="gradient" direction="horizontal">
+              <value offset="0%" color="#f72f" />
+              <value offset="100%" color="#00cf" />
+            </onActive>
+          </effect>
+          <text font="aurulent-sans-16.fnt" text="Nifty Text Scale" align="center" valign="center" color="#cccf">
+            <effect>
+              <onActive name="textSizePulsate" period="2000" startSize="50%" endSize="125%"/>
+            </effect>
+          </text>
+        </panel>
+      </panel>
+    </layer>
+    <layer childLayout="center">
+      <effect>
+        <onActive name="playSound" sound="music" post="true" repeat="true" />
+      </effect>
+      <panel backgroundColor="#2008" childLayout="vertical" align="center" valign="center" height="20%" width="90%">
+        <text font="aurulent-sans-16.fnt" text="Click Here for an additional Sound." width="100%" height="50%" backgroundColor="#f008" visibleToMouse="true">
+          <effect>
+            <onClick name="playSound" sound="select" />
+          </effect>
+        </text>
+        <!--
+        <text font="aurulent-sans-16.fnt" text="And you should be able to hear background music too." width="100%" height="50%" />
+        -->
       </panel>
     </layer>
   </screen>

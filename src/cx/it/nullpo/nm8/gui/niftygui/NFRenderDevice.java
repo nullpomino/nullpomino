@@ -147,7 +147,37 @@ public class NFRenderDevice implements RenderDevice {
 		}
 		sys.getGraphics().setFont(nfFont);
 		sys.getGraphics().setColor(nifty2NFColor(fontColor));
-		sys.getGraphics().drawString(text, x, y);
+
+		// Does the text has \#something# ?
+		if(text.contains("\\#")) {
+			// Yes. We must deal with the color change command
+			int x2 = x;
+			int i = 0;
+			while(i < text.length()) {
+				// Is next 2 characters are \\# ?
+				if((i < text.length() - 2) && text.substring(i, i+2).equals("\\#")) {
+					// If so, we must change the font color
+					int nextSharp = text.indexOf('#', i+2);
+
+					if(nextSharp != -1) {
+						String colorCode = text.substring(i+2, nextSharp);
+						Color niftyColor = new Color("#"+colorCode);
+						sys.getGraphics().setColor(nifty2NFColor(niftyColor));
+						i += colorCode.length() + 3;
+					} else {
+						i += 2;
+					}
+				} else {
+					String subText = text.substring(i, i+1);
+					sys.getGraphics().drawString(subText, x2, y);
+					x2 += sys.getGraphics().getStringWidth(subText);
+					i++;
+				}
+			}
+		} else {
+			// No. Just draw it.
+			sys.getGraphics().drawString(text, x, y);
+		}
 	}
 
 	public void enableClip(int x0, int y0, int x1, int y1) {
