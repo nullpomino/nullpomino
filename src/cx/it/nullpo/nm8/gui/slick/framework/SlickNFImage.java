@@ -38,8 +38,7 @@ public class SlickNFImage implements NFImage {
 	public SlickNFImage(Image nativeImage, NFSystem sys) {
 		this.nativeImage = nativeImage;
 		this.sys = sys;
-		this.hash = NUtil.getHashAsString(getBytes());
-		this.needNewHash = false;
+		this.needNewHash = true;
 	}
 
 	/**

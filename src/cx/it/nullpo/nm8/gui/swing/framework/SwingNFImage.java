@@ -38,8 +38,7 @@ public class SwingNFImage implements NFImage {
 	public SwingNFImage(Image nativeImage, NFSystem sys) {
 		this.nativeImage = nativeImage;
 		this.sys = sys;
-		this.hash = NUtil.getHashAsString(getBytes());
-		this.needNewHash = false;
+		this.needNewHash = true;
 	}
 
 	/**
