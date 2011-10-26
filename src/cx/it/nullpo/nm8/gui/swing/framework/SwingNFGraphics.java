@@ -9,6 +9,14 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.image.FilteredImageSource;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import cx.it.nullpo.nm8.gui.framework.NFColor;
 import cx.it.nullpo.nm8.gui.framework.NFFont;
@@ -21,6 +29,9 @@ import cx.it.nullpo.nm8.gui.framework.NFSystem;
  */
 public class SwingNFGraphics implements NFGraphics {
 	private static final long serialVersionUID = 1L;
+
+	/** Log */
+	private Log log = LogFactory.getLog(SwingNFGraphics.class);
 
 	/** Swing native graphics */
 	protected Graphics2D g;
@@ -40,19 +51,8 @@ public class SwingNFGraphics implements NFGraphics {
 	/** Current color */
 	protected NFColor currentColor;
 
-	/**
-	 * Constructor
-	 * @param g Swing native graphics
-	 * @deprecated Use SwingNFGraphics(Graphics g, NFSystem sys) instead
-	 */
-	@Deprecated
-	public SwingNFGraphics(Graphics g) {
-		this.g = (Graphics2D)g;
-		defaultFont = new SwingNFFont(this.g.getFont(), this, sys);
-		curFont = defaultFont;
-		defaultComposite = this.g.getComposite();
-		currentColor = new NFColor(this.g.getColor());
-	}
+	/** Color filter cache entry list */
+	protected List<CFCacheEntry> listCFCacheEntry = Collections.synchronizedList(new ArrayList<CFCacheEntry>());
 
 	/**
 	 * Constructor
@@ -140,13 +140,31 @@ public class SwingNFGraphics implements NFGraphics {
 		Image nimg = getNativeImage(img);
 
 		if(col.isColorFilter()) {
-			SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
-			FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
-			SwingNFSystem swSys = (SwingNFSystem)sys;
-			Image nimgF = swSys.gameWrapper.createImage(fis);
-			setAlphaComposite(col);
-			g.drawImage(nimgF, x, y, null);
-			clearAlphaComposite();
+			String hash = img.getHash();
+			CFCacheEntry cache = getCFCache(hash, col);
+
+			if(cache != null) {
+				SwingNFImage nfCachedImage = (SwingNFImage)cache.getImage();
+				Image nimgC = nfCachedImage.getNativeImage();
+
+				setAlphaComposite(col);
+				g.drawImage(nimgC, x, y, null);
+				clearAlphaComposite();
+			} else {
+				SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
+				FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
+				SwingNFSystem swSys = (SwingNFSystem)sys;
+				Image nimgF = swSys.getGameWrapper().createImage(fis);
+
+				setAlphaComposite(col);
+				g.drawImage(nimgF, x, y, null);
+				clearAlphaComposite();
+
+				CFCacheEntry newCache = new CFCacheEntry(new SwingNFImage(nimgF, sys), col, hash);
+				listCFCacheEntry.add(newCache);
+
+				log.trace("New CFCacheEntry added: " + hash + " " + col);
+			}
 		} else {
 			setAlphaComposite(col);
 			g.drawImage(nimg, x, y, null);
@@ -162,13 +180,31 @@ public class SwingNFGraphics implements NFGraphics {
 		Image nimg = getNativeImage(img);
 
 		if(col.isColorFilter()) {
-			SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
-			FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
-			SwingNFSystem swSys = (SwingNFSystem)sys;
-			Image nimgF = swSys.gameWrapper.createImage(fis);
-			setAlphaComposite(col);
-			g.drawImage(nimgF, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
-			clearAlphaComposite();
+			String hash = img.getHash();
+			CFCacheEntry cache = getCFCache(hash, col);
+
+			if(cache != null) {
+				SwingNFImage nfCachedImage = (SwingNFImage)cache.getImage();
+				Image nimgC = nfCachedImage.getNativeImage();
+
+				setAlphaComposite(col);
+				g.drawImage(nimgC, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+				clearAlphaComposite();
+			} else {
+				SwingNFRGBImageFilter filter = new SwingNFRGBImageFilter(col);
+				FilteredImageSource fis = new FilteredImageSource(nimg.getSource(), filter);
+				SwingNFSystem swSys = (SwingNFSystem)sys;
+				Image nimgF = swSys.gameWrapper.createImage(fis);
+
+				setAlphaComposite(col);
+				g.drawImage(nimgF, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+				clearAlphaComposite();
+
+				CFCacheEntry newCache = new CFCacheEntry(new SwingNFImage(nimgF, sys), col, hash);
+				listCFCacheEntry.add(newCache);
+
+				log.trace("New CFCacheEntry added: " + hash + " " + col);
+			}
 		} else {
 			setAlphaComposite(col);
 			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
@@ -284,5 +320,88 @@ public class SwingNFGraphics implements NFGraphics {
 
 	public NFSystem getNFSystem() {
 		return sys;
+	}
+
+	/**
+	 * Search the color filter cache
+	 * @param strHash Hash of the image
+	 * @param col NFColor
+	 * @return The cache, or null if not found
+	 */
+	public CFCacheEntry getCFCache(String strHash, NFColor col) {
+		synchronized (listCFCacheEntry) {
+			Iterator<CFCacheEntry> it = listCFCacheEntry.iterator();
+
+			while(it.hasNext()) {
+				CFCacheEntry c = it.next();
+
+				if(strHash.equals(c.getImageHash()) && col.equals(c.getColor())) {
+					//log.debug("Cache found " + strHash + " " + col);
+					return c;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Color filter cache entry
+	 */
+	static protected class CFCacheEntry implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		private NFImage img;
+		private NFColor col;
+		private String imgHash;
+
+		public CFCacheEntry(NFImage img, NFColor col, String imgHash) {
+			this.img = img;
+			this.col = col;
+			this.imgHash = imgHash;
+		}
+
+		public NFImage getImage() {
+			return img;
+		}
+
+		public NFColor getColor() {
+			return col;
+		}
+
+		public String getImageHash() {
+			return imgHash;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((col == null) ? 0 : col.hashCode());
+			result = prime * result
+					+ ((imgHash == null) ? 0 : imgHash.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CFCacheEntry other = (CFCacheEntry) obj;
+			if (col == null) {
+				if (other.col != null)
+					return false;
+			} else if (!col.equals(other.col))
+				return false;
+			if (imgHash == null) {
+				if (other.imgHash != null)
+					return false;
+			} else if (!imgHash.equals(other.imgHash))
+				return false;
+			return true;
+		}
 	}
 }

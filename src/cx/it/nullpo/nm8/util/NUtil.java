@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -534,6 +536,102 @@ public class NUtil {
 	 */
 	public static boolean isUNIX() {
 		return !osWindows && !osMac;
+	}
+
+	/**
+	 * Get hash of the specified byte array
+	 * @param b Array of byte
+	 * @param strAlgorithm The algorithm to use (null to use MD5)
+	 * @return A byte array of the hash
+	 */
+	public static byte[] getHash(byte[] b, String strAlgorithm) {
+		if(b == null) throw new NullPointerException("b is null");
+		String algorithm = strAlgorithm;
+		if(algorithm == null || algorithm.length() == 0) algorithm = "MD5";
+
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance(algorithm);
+		} catch (NoSuchAlgorithmException e) {
+			throw new UnsupportedOperationException("Algorithm '" + algorithm + "' does not exist", e);
+		}
+
+		md.reset();
+		md.update(b);
+		return md.digest();
+	}
+
+	/**
+	 * Get MD5 hash of the specified byte array
+	 * @param b Array of byte
+	 * @return A byte array of the hash
+	 */
+	public static byte[] getHash(byte[] b) {
+		return getHash(b, "MD5");
+	}
+
+	/**
+	 * Get hash of the specified String
+	 * @param s String
+	 * @param strAlgorithm The algorithm to use (null to use MD5)
+	 * @return A byte array of the hash
+	 */
+	public static byte[] getHash(String s, String strAlgorithm) {
+		return getHash(stringToBytes(s), strAlgorithm);
+	}
+
+	/**
+	 * Get MD5 hash of the specified String
+	 * @param s String
+	 * @return A byte array of the hash
+	 */
+	public static byte[] getHash(String s) {
+		return getHash(s, "MD5");
+	}
+
+	/**
+	 * Get hash of the specified byte array as a String
+	 * @author <a href="http://ciablo.blog70.fc2.com/blog-entry-48.html">Mahny</a>
+	 * @param b Array of byte
+	 * @param strAlgorithm The algorithm to use (null to use MD5)
+	 * @return Hash as a String
+	 */
+	public static String getHashAsString(byte[] b, String strAlgorithm) {
+		byte[] hash = getHash(b, strAlgorithm);
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < hash.length; i++) {
+			sb.append(Integer.toHexString((hash[i] >> 4) & 0x0F));
+			sb.append(Integer.toHexString(hash[i] & 0x0F));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Get MD5 hash of the specified byte array as a String
+	 * @param b Array of byte
+	 * @return Hash as a String
+	 */
+	public static String getHashAsString(byte[] b) {
+		return getHashAsString(b, "MD5");
+	}
+
+	/**
+	 * Get hash of the specified String as a String
+	 * @param s String
+	 * @param strAlgorithm Array of byte
+	 * @return Hash as a String
+	 */
+	public static String getHashAsString(String s, String strAlgorithm) {
+		return getHashAsString(stringToBytes(s), strAlgorithm);
+	}
+
+	/**
+	 * Get MD5 hash of the specified String as a String
+	 * @param s String
+	 * @return Hash as a String
+	 */
+	public static String getHashAsString(String s) {
+		return getHashAsString(s, "MD5");
 	}
 
 	// *** The following code requires external library from org.cacas.java.gnu.tools.Crypt

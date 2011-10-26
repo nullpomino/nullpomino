@@ -281,4 +281,12 @@ public class SwingNFSystem extends NFSystem {
 	public String getWindowTitle() {
 		return windowTitle;
 	}
+
+	/**
+	 * Get SwingNFGameWrapper that runs our game
+	 * @return SwingNFGameWrapper
+	 */
+	public SwingNFGameWrapper getGameWrapper() {
+		return gameWrapper;
+	}
 }

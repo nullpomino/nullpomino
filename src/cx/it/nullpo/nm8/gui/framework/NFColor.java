@@ -40,16 +40,16 @@ public class NFColor implements Serializable {
 	public static final NFColor magenta = new NFColor(255, 0, 255, 255);
 
 	/** The red component of the colour */
-	protected int r;
+	private int r;
 
 	/** The green component of the colour */
-	protected int g;
+	private int g;
 
 	/** The blue component of the colour */
-	protected int b;
+	private int b;
 
 	/** The alpha component of the colour */
-	protected int a;
+	private int a;
 
 	/**
 	 * Create a transpalent colour (0,0,0,0)
@@ -84,6 +84,33 @@ public class NFColor implements Serializable {
 	}
 
 	/**
+	 * Create NFColor from an int value (Alpha value will be set to 255)
+	 * @param i int value
+	 */
+	public NFColor(int i) {
+		this.r = ((i >> 16) & 0xFF);
+		this.g = ((i >> 8) & 0xFF);
+		this.b = ((i) & 0xFF);
+		this.a = 255;
+	}
+
+	/**
+	 * Create NFColor from an int value
+	 * @param i int value
+	 * @param alpha true to include alpha value
+	 */
+	public NFColor(int i, boolean alpha) {
+		if(!alpha) {
+			this.a = 255;
+		} else {
+			this.a = ((i >> 24) & 0xFF);
+		}
+		this.r = ((i >> 16) & 0xFF);
+		this.g = ((i >> 8) & 0xFF);
+		this.b = ((i) & 0xFF);
+	}
+
+	/**
 	 * Create a 3 component colour
 	 * @param r Red
 	 * @param g Green
@@ -111,9 +138,24 @@ public class NFColor implements Serializable {
 	}
 
 	/**
+	 * Create a NFColor by using hex string such as "#FF8844".
+	 * The string is decoded by Integer.decode(String).
+	 * @param nm String to decode
+	 * @throws NumberFormatException When the String can't be decoded
+	 */
+	public NFColor(String nm) {
+		Integer intVal = Integer.decode(nm);
+		int i = intVal.intValue();
+		setRed((i >> 16) & 0xFF);
+		setGreen((i >> 8) & 0xFF);
+		setBlue(i & 0xFF);
+		setAlpha(255);
+	}
+
+	/**
 	 * Set the red component of this colour
 	 */
-	public void setRed(int r) {
+	private void setRed(int r) {
 		this.r = r;
 		if(this.r < 0) this.r = 0;
 		if(this.r > 255) this.r = 255;
@@ -122,7 +164,7 @@ public class NFColor implements Serializable {
 	/**
 	 * Set the Green component of this colour
 	 */
-	public void setGreen(int g) {
+	private void setGreen(int g) {
 		this.g = g;
 		if(this.g < 0) this.g = 0;
 		if(this.g > 255) this.g = 255;
@@ -131,7 +173,7 @@ public class NFColor implements Serializable {
 	/**
 	 * Set the Blue component of this colour
 	 */
-	public void setBlue(int b) {
+	private void setBlue(int b) {
 		this.b = b;
 		if(this.b < 0) this.b = 0;
 		if(this.b > 255) this.b = 255;
@@ -140,7 +182,7 @@ public class NFColor implements Serializable {
 	/**
 	 * Set the alpha component of this colour
 	 */
-	public void setAlpha(int a) {
+	private void setAlpha(int a) {
 		this.a = a;
 		if(this.a < 0) this.a = 0;
 		if(this.a > 255) this.a = 255;
@@ -198,5 +240,68 @@ public class NFColor implements Serializable {
 	 */
 	public boolean isAlpha() {
 		return (a != 255);
+	}
+
+	/**
+	 * Convert this NFColor to an int value. Alpha value will NOT be included.
+	 * @return int value
+	 */
+	public int getIntValue() {
+		return getIntValue(false);
+	}
+
+	/**
+	 * Convert this NFColor to an int value.
+	 * @param alpha true to include the alpha value
+	 * @return int value
+	 */
+	public int getIntValue(boolean alpha) {
+		int i = ((r << 16) | (g << 8) | (b));
+		if(alpha) i |= (a << 24);
+		return i;
+	}
+
+	/**
+	 * Get HTML color code of this NFColor
+	 * @return String of HTML color code (#RRGGBB)
+	 */
+	public String toHTMLColorCode() {
+		return String.format("#%06X", getIntValue());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + a;
+		result = prime * result + b;
+		result = prime * result + g;
+		result = prime * result + r;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NFColor other = (NFColor) obj;
+		if (a != other.a)
+			return false;
+		if (b != other.b)
+			return false;
+		if (g != other.g)
+			return false;
+		if (r != other.r)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "NFColor [r=" + r + ", g=" + g + ", b=" + b + ", a=" + a + "]";
 	}
 }

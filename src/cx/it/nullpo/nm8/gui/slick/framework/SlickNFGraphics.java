@@ -31,15 +31,21 @@ public class SlickNFGraphics implements NFGraphics {
 	protected SlickNFFont curFont;
 
 	/**
-	 * Constructor
-	 * @param g Slick native graphics
-	 * @deprecated Use SlickNFGraphics(Graphics g, NFSystem sys) instead
+	 * Convert NFColor to Slick native Color
+	 * @param col NFColor
+	 * @return Slick native Color
 	 */
-	public SlickNFGraphics(Graphics g) {
-		this.g = g;
+	public static Color nfColor2Native(NFColor col) {
+		return new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
+	}
 
-		curFont = new SlickNFFont(g.getFont());
-		defaultFont = curFont;
+	/**
+	 * Convert Slick native Color to NFColor
+	 * @param col Slick native Color
+	 * @return NFColor
+	 */
+	public static NFColor nativeColor2NF(Color col) {
+		return new NFColor(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
 	}
 
 	/**
@@ -74,24 +80,6 @@ public class SlickNFGraphics implements NFGraphics {
 			return img2.getNativeImage();
 		}
 		throw new IllegalArgumentException("The img is not a SlickNFImage");
-	}
-
-	/**
-	 * Convert NFColor to Slick native Color
-	 * @param col NFColor
-	 * @return Slick native Color
-	 */
-	public Color nfColor2Native(NFColor col) {
-		return new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
-	}
-
-	/**
-	 * Convert Slick native Color to NFColor
-	 * @param col Slick native Color
-	 * @return NFColor
-	 */
-	public NFColor nativeColor2NF(Color col) {
-		return new NFColor(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
 	}
 
 	public boolean isSupportColorFilter() {

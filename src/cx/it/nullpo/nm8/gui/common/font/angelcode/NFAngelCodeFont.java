@@ -192,6 +192,14 @@ public class NFAngelCodeFont implements NFFont {
 						dx, dy, dx+ci.getWidth(), dy+ci.getHeight(),
 						0, 0, ci.getWidth(), ci.getHeight()
 					);
+
+					/*
+					g.drawImage(
+						images[0],
+						dx, dy, dx+ci.getWidth(), dy+ci.getHeight(),
+						ci.getX(), ci.getY(), ci.getX()+ci.getWidth(), ci.getY()+ci.getHeight()
+					);
+					*/
 				}
 
 				x2 += ci.getXadvance();

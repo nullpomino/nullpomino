@@ -34,4 +34,31 @@ public interface NFImage extends Serializable {
 	 * @return The image represent the sub-part of this image
 	 */
 	public NFImage getSubImage(int x, int y, int width, int height);
+
+	/**
+	 * Get NFColor of specified pixel
+	 * @param x X position
+	 * @param y Y position
+	 * @return NFColor of specified pixel (null on failure)
+	 */
+	public NFColor getColor(int x, int y);
+
+	/**
+	 * Get the ARGB byte array of this image
+	 * @return ARGB byte array of this image
+	 */
+	public byte[] getBytes();
+
+	/**
+	 * Check if this image is equal to other NFImage
+	 * @param other An another NFImage
+	 * @return true if this and other images are equal
+	 */
+	public boolean isSameImage(NFImage other);
+
+	/**
+	 * Get the hash string of this image
+	 * @return Hash String
+	 */
+	public String getHash();
 }
