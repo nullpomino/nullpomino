@@ -13,6 +13,45 @@ public class NFRenderFont implements RenderFont {
 	}
 
 	public int getWidth(String text) {
+		// Does the text has \#something# ?
+		if(text.contains("\\#")) {
+			// Yes. We must deal with the color change command
+			StringBuilder strbuf = new StringBuilder();
+			int i = 0;
+			int w = 0;
+			while(i < text.length()) {
+				// Is next 2 characters are \\# ?
+				if((i < text.length() - 2) && text.substring(i, i+2).equals("\\#")) {
+					// If so, we must erase the color change codes
+					int nextSharp = text.indexOf('#', i+2);
+
+					if(nextSharp != -1) {
+						// Add the width of current text
+						if(strbuf.length() > 0) {
+							w += nfFont.getStringWidth(strbuf.toString());
+							strbuf = new StringBuilder();
+						}
+
+						String colorCode = text.substring(i+2, nextSharp);
+						i += colorCode.length() + 3;
+					} else {
+						i += 2;
+					}
+				} else {
+					strbuf.append(text.charAt(i));
+					i++;
+				}
+			}
+
+			// Add the width of last text
+			if(strbuf.length() > 0) {
+				w += nfFont.getStringWidth(strbuf.toString());
+			}
+
+			return w;
+		}
+
+		// No. Just get the width normally
 		return nfFont.getStringWidth(text);
 	}
 

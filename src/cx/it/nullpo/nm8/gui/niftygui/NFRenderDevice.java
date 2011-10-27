@@ -151,6 +151,7 @@ public class NFRenderDevice implements RenderDevice {
 		// Does the text has \#something# ?
 		if(text.contains("\\#")) {
 			// Yes. We must deal with the color change command
+			StringBuilder strbuf = new StringBuilder();
 			int x2 = x;
 			int i = 0;
 			while(i < text.length()) {
@@ -160,6 +161,14 @@ public class NFRenderDevice implements RenderDevice {
 					int nextSharp = text.indexOf('#', i+2);
 
 					if(nextSharp != -1) {
+						// Output the current text
+						if(strbuf.length() > 0) {
+							//log.trace("x2:" + x2 + ", strbuf:" + strbuf.toString());
+							sys.getGraphics().drawString(strbuf.toString(), x2, y);
+							x2 += sys.getGraphics().getStringWidth(strbuf.toString());
+							strbuf = new StringBuilder();
+						}
+
 						String colorCode = text.substring(i+2, nextSharp);
 						Color niftyColor = new Color("#"+colorCode);
 						sys.getGraphics().setColor(nifty2NFColor(niftyColor));
@@ -168,11 +177,19 @@ public class NFRenderDevice implements RenderDevice {
 						i += 2;
 					}
 				} else {
-					String subText = text.substring(i, i+1);
-					sys.getGraphics().drawString(subText, x2, y);
-					x2 += sys.getGraphics().getStringWidth(subText);
+					//String subText = text.substring(i, i+1);
+					//sys.getGraphics().drawString(subText, x2, y);
+					//x2 += sys.getGraphics().getStringWidth(subText);
+					strbuf.append(text.charAt(i));
 					i++;
 				}
+			}
+
+			// Output the last text
+			if(strbuf.length() > 0) {
+				//log.trace("x2:" + x2 + ", strbuf:" + strbuf.toString());
+				sys.getGraphics().drawString(strbuf.toString(), x2, y);
+				x2 += sys.getGraphics().getStringWidth(strbuf.toString());
 			}
 		} else {
 			// No. Just draw it.

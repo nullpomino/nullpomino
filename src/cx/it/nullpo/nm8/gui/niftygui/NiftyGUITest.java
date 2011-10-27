@@ -51,7 +51,7 @@ public class NiftyGUITest implements NFGame {
 		if(nifty != null) {
 			nifty.update();
 		}
-		sys.setWindowTitle("NullpoMino GUI Test (FPS:" + sys.getFPS() + "/" + sys.getTargetFPS() + ")");
+		sys.setWindowTitle("NullpoMino GUI Test (FPS:" + sys.getFPS() + "/" + sys.getTargetFPS() + ") " + delta);
 	}
 
 	public void render(NFSystem sys, NFGraphics g) {
