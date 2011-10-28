@@ -54,4 +54,9 @@ public interface NFKeyboard extends Serializable {
 	 * @param c The character of the key that was released
 	 */
 	public void dispatchKeyReleased(int key, char c);
+
+	/**
+	 * Poll the input. It will be called every frame.
+	 */
+	public void poll();
 }

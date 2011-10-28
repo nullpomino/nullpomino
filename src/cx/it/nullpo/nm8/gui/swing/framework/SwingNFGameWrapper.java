@@ -115,6 +115,11 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		sys.getNFGame().init(sys);
 
 		while(!shutdownRequested) {
+			// Poll the keyboard input
+			if(sys.getKeyboard() != null) {
+				sys.getKeyboard().poll();
+			}
+
 			// Update the game
 			update();
 

@@ -372,4 +372,7 @@ public class SlickNFKeyboard implements NFKeyboard {
 			}
 		}
 	}
+
+	public void poll() {
+	}
 }

@@ -117,6 +117,22 @@
 												<label text="@slick_chkbox_awtkey_desc4" />
 											</gridlayout>
 										</panel>
+										<panel>
+											<titledborder title="@slick_chkbox_jinput_title"/>
+											<gridlayout rows="0" columns="1">
+												<checkbox id="slick_chkbox_jinput" text="@slick_chkbox_jinput_label" />
+												<panel>
+													<borderlayout>
+														<constraint location="West">
+															<label text="@slick_txtfld_jinput_label" />
+														</constraint>
+														<constraint location="Center">
+															<textfield id="slick_txtfld_jinput" />
+														</constraint>
+													</borderlayout>
+												</panel>
+											</gridlayout>
+										</panel>
 									</gridlayout>
 								</panel>
 							</constraint>

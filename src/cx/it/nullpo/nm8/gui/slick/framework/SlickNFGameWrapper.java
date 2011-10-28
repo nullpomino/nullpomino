@@ -65,6 +65,11 @@ public class SlickNFGameWrapper implements Game, KeyListener, MouseListener {
 	}
 
 	public void update(GameContainer container, int delta) throws SlickException {
+		// Poll the keyboard input
+		if(sys.getKeyboard() != null) {
+			sys.getKeyboard().poll();
+		}
+
 		// We don't rely on Slick's default delta because
 		// LWJGL's timer is way faster than the real time
 		// and we need nanoseconds for our game anyway.

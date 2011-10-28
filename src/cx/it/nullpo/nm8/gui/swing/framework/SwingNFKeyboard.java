@@ -86,4 +86,7 @@ public class SwingNFKeyboard implements NFKeyboard {
 			}
 		}
 	}
+
+	public void poll() {
+	}
 }

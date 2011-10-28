@@ -103,7 +103,7 @@ public class SwingNFGraphics implements NFGraphics {
 	 */
 	protected void setAlphaComposite(NFColor nfColor) {
 		if(nfColor.getAlpha() >= 255) return;
-		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(nfColor.getAlpha() / 255f));
+		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (nfColor.getAlpha() / 255f));
 		g.setComposite(newComposite);
 	}
 
@@ -113,7 +113,7 @@ public class SwingNFGraphics implements NFGraphics {
 	 */
 	protected void setAlphaComposite(Color awtColor) {
 		if(awtColor.getAlpha() >= 255) return;
-		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(awtColor.getAlpha() / 255f));
+		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (awtColor.getAlpha() / 255f));
 		g.setComposite(newComposite);
 	}
 
@@ -137,6 +137,7 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawImage(NFImage img, int x, int y, NFColor col) {
+		if(col.getAlpha() <= 0) return;
 		Image nimg = getNativeImage(img);
 
 		if(col.isColorFilter()) {
@@ -177,6 +178,7 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, NFColor col) {
+		if(col.getAlpha() <= 0) return;
 		Image nimg = getNativeImage(img);
 
 		if(col.isColorFilter()) {
@@ -213,6 +215,7 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawString(String str, int x, int y) {
+		if(getColor().getAlpha() <= 0) return;
 		/*
 		setAlphaComposite(getColor());
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -239,24 +242,28 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {
+		if(getColor().getAlpha() <= 0) return;
 		setAlphaComposite(getColor());
 		g.drawLine(x1, y1, x2, y2);
 		clearAlphaComposite();
 	}
 
 	public void drawRect(int x, int y, int width, int height) {
+		if(getColor().getAlpha() <= 0) return;
 		setAlphaComposite(getColor());
 		g.drawRect(x, y, width, height);
 		clearAlphaComposite();
 	}
 
 	public void fillRect(int x, int y, int width, int height) {
+		if(getColor().getAlpha() <= 0) return;
 		setAlphaComposite(getColor());
 		g.fillRect(x, y, width, height);
 		clearAlphaComposite();
 	}
 
 	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
+		if(getColor().getAlpha() <= 0) return;
 		Paint curPaint = g.getPaint();
 		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
 		g.setPaint(gradient);
@@ -267,6 +274,7 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void gradientFillRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
+		if(getColor().getAlpha() <= 0) return;
 		Paint curPaint = g.getPaint();
 		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
 		g.setPaint(gradient);

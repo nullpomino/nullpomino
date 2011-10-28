@@ -203,6 +203,12 @@ public class ConfigTool {
 		// Slick tab
 		JCheckBox chkboxSlickAWTKey = (JCheckBox)getJComponent("slick_chkbox_awtkey");
 		chkboxSlickAWTKey.setSelected(p.getProperty("slick.awtkey", false));
+		JCheckBox chkboxSlickJInput = (JCheckBox)getJComponent("slick_chkbox_jinput");
+		chkboxSlickJInput.setSelected(p.getProperty("slick.jinput.enable", false));
+		JTextField txtfldSlickJInput = (JTextField)getJComponent("slick_txtfld_jinput");
+		try {
+			txtfldSlickJInput.setText(p.getProperty("slick.jinput.keyboardID", "0"));
+		} catch (IllegalArgumentException e) {}
 
 		// Key Config
 		for(int player = 0; player < MAX_PLAYERS; player++) {
@@ -265,6 +271,12 @@ public class ConfigTool {
 		// Slick tab
 		JCheckBox chkboxSlickAWTKey = (JCheckBox)getJComponent("slick_chkbox_awtkey");
 		p.setProperty("slick.awtkey", chkboxSlickAWTKey.isSelected());
+		JCheckBox chkboxSlickJInput = (JCheckBox)getJComponent("slick_chkbox_jinput");
+		p.setProperty("slick.jinput.enable", chkboxSlickJInput.isSelected());
+		JTextField txtfldSlickJInput = (JTextField)getJComponent("slick_txtfld_jinput");
+		try {
+			p.setProperty("slick.jinput.keyboardID", Integer.parseInt(txtfldSlickJInput.getText()));
+		} catch (NumberFormatException e) {}
 
 		// Key Config
 		for(int player = 0; player < MAX_PLAYERS; player++) {

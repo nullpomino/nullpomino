@@ -52,7 +52,7 @@ public class SlickNFSystem extends NFSystem {
 	protected SlickNFGraphics g;
 
 	/** Keyboard Input */
-	protected SlickNFKeyboard keyboard;
+	protected NFKeyboard keyboard;
 
 	/** Mouse Input */
 	protected SlickNFMouse mouse;
@@ -71,6 +71,12 @@ public class SlickNFSystem extends NFSystem {
 
 	/** SlickKeyReceiverJFrame for AWT key receiver */
 	protected SlickKeyReceiverJFrame slickKeyReceiverJFrame;
+
+	/** Use JInput to detect keyboard inputs */
+	protected boolean useJInputForKeyboard;
+
+	/** Preferred Keyboard ID for JInput */
+	protected int jinputKeyboardID = -1;
 
 	public SlickNFSystem() {
 		super();
@@ -161,14 +167,19 @@ public class SlickNFSystem extends NFSystem {
 	@Override
 	public NFKeyboard getKeyboard() {
 		if((keyboard == null) && (container != null)) {
-			if(useAWTKeyReceiver) {
+			if(useJInputForKeyboard) {
+				keyboard = new SlickNFJInputKeyboard(jinputKeyboardID);
+			} else if(useAWTKeyReceiver) {
 				slickKeyReceiverJFrame = new SlickKeyReceiverJFrame(this);
 				keyboard = new SlickNFKeyboard(container.getInput(), slickKeyReceiverJFrame);
 			} else {
 				keyboard = new SlickNFKeyboard(container.getInput());
 			}
-		} else if (keyboard.getNativeInput() == null && container != null) {
-			keyboard.setNativeInput(container.getInput());
+		} else if(keyboard instanceof SlickNFKeyboard) {
+			SlickNFKeyboard k = (SlickNFKeyboard)keyboard;
+			if (k.getNativeInput() == null && container != null) {
+				k.setNativeInput(container.getInput());
+			}
 		}
 		return keyboard;
 	}
@@ -424,5 +435,41 @@ public class SlickNFSystem extends NFSystem {
 	 */
 	public void setUseAWTKeyReceiver(boolean useAWTKeyReceiver) {
 		this.useAWTKeyReceiver = useAWTKeyReceiver;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * Returns true if we use JInput to detect keyboard inputs instead of LWJGL's
+	 * @return true if we use JInput to detect keyboard inputs
+	 */
+	public boolean isUseJInputForKeyboard() {
+		return useJInputForKeyboard;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * If set to true, we'll use JInput to detect keyboard inputs instead of LWJGL's
+	 * @param useJInputForKeyboard true if we use JInput to detect keyboard inputs
+	 */
+	public void setUseJInputForKeyboard(boolean useJInputForKeyboard) {
+		this.useJInputForKeyboard = useJInputForKeyboard;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * Get the preferred keyboard ID of JInput keyboard detection.
+	 * @return Preferred keyboard ID
+	 */
+	public int getJinputKeyboardID() {
+		return jinputKeyboardID;
+	}
+
+	/**
+	 * [Slick only]<br>
+	 * Set the preferred keyboard ID of JInput keyboard detection.
+	 * @param jinputKeyboardID Preferred keyboard ID
+	 */
+	public void setJinputKeyboardID(int jinputKeyboardID) {
+		this.jinputKeyboardID = jinputKeyboardID;
 	}
 }

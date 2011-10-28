@@ -38,6 +38,8 @@ public class NullpoMinoSlick {
 			SlickNFSystem sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
 			NGlobalConfig.applyNFSystem(sys);
 			if(!fullscreen) sys.setUseAWTKeyReceiver(propGlobal.getProperty("slick.awtkey", false));
+			sys.setUseJInputForKeyboard(propGlobal.getProperty("slick.jinput.enable", false));
+			sys.setJinputKeyboardID(propGlobal.getProperty("slick.jinput.keyboardID", -1));
 
 			sys.init();
 			sys.start();
