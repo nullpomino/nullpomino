@@ -15,7 +15,7 @@ public class ComboRaceSeedSearch extends DummyAI {
 	static Logger log = Logger.getLogger(ComboRaceSeedSearch.class);
 
 	/** List of field state codes which are possible to sustain a stable combo */
-	private static final int[] FIELDS = {
+	private static final short[] FIELDS = {
 		0x7, 0xB, 0xD, 0xE,
 		0x13, 0x15, 0x16, 0x19, 0x1A, 0x1C,
 		0x23, 0x29,
@@ -44,6 +44,7 @@ public class ComboRaceSeedSearch extends DummyAI {
 
     public static void main(String[] args)
     {
+    	//long start = System.currentTimeMillis();
     	createTables();
     	long bestSeed = 0l;
     	int bestResult = 0;
@@ -86,7 +87,9 @@ public class ComboRaceSeedSearch extends DummyAI {
 				if (result > 8l*QUEUE_SIZE*FIELDS.length)
 				{
 					System.out.println("Endless loop found! Seed = " + Long.toString(seed, 16));
-					break;
+			    	//long end = System.currentTimeMillis();
+					//System.out.println("Runtime: " + (end - start) + "ms");
+			    	break;
 				}
 			}
 			if (result > bestResult)
@@ -237,7 +240,7 @@ public class ComboRaceSeedSearch extends DummyAI {
 		for (int i = 0; i < FIELDS.length; i++)
 		{
 			fldBackup.copy(fldEmpty);
-			int code = FIELDS[i];
+			short code = FIELDS[i];
 
 			for (int y = Field.DEFAULT_HEIGHT-1; y > Field.DEFAULT_HEIGHT-4; y--)
 				for (int x = 3; x >= 0; x--)
@@ -357,10 +360,10 @@ public class ComboRaceSeedSearch extends DummyAI {
 	 * @param valleyX Leftmost x-coordinate of 4-block-wide valley to combo in
 	 * @return Field state int code.
 	 */
-	public static int fieldToCode(Field field, int valleyX)
+	public static short fieldToCode(Field field, int valleyX)
 	{
 		int height = field.getHeight();
-		int result = 0;
+		short result = 0;
 		for (int y = height-3; y < height; y++)
 			for (int x = 0; x < 4; x++)
 			{
@@ -370,7 +373,7 @@ public class ComboRaceSeedSearch extends DummyAI {
 			}
 		return result;
 	}
-	public static int fieldToCode(Field field)
+	public static short fieldToCode(Field field)
 	{
 		return fieldToCode(field, 3);
 	}
@@ -380,7 +383,7 @@ public class ComboRaceSeedSearch extends DummyAI {
 	 * @param field Field state int code
 	 * @return State index if found; -1 if not found.
 	 */
-	public static int fieldToIndex(int field)
+	public static int fieldToIndex(short field)
 	{
 		int min = 0;
 		int max = FIELDS.length-1;

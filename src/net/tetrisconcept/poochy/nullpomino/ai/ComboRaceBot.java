@@ -22,7 +22,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	static Logger log = Logger.getLogger(ComboRaceBot.class);
 
 	/** List of field state codes which are possible to sustain a stable combo */
-	private static final int[] FIELDS = {
+	private static final short[] FIELDS = {
 		0x7, 0xB, 0xD, 0xE,
 		0x13, 0x15, 0x16, 0x19, 0x1A, 0x1C,
 		0x23, 0x29,
@@ -501,6 +501,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		pieceNow = checkOffset(pieceNow, engine);
 		pieceHold = checkOffset(pieceHold, engine);
 		boolean holdOK = engine.isHoldOK();
+		int holdID = -1;
+		if (engine.holdPieceObject != null)
+			holdID = engine.holdPieceObject.id;
 
 		nextQueueIDs = new int[MAX_THINK_DEPTH];
 		for (int i = 0; i < nextQueueIDs.length; i++)
@@ -516,9 +519,6 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 		while (t != null)
 		{
-			int holdID = -1;
-			if (engine.holdPieceObject != null)
-				holdID = engine.holdPieceObject.id;
 			int pts = thinkMain(engine, t.newField, holdID, 0);
 
 			if (pts > bestPts)
@@ -713,7 +713,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		for (int i = 0; i < FIELDS.length; i++)
 		{
 			fldBackup.copy(fldEmpty);
-			int code = FIELDS[i];
+			short code = FIELDS[i];
 
 			for (int y = Field.DEFAULT_HEIGHT-1; y > Field.DEFAULT_HEIGHT-4; y--)
 				for (int x = 3; x >= 0; x--)
@@ -839,10 +839,10 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 * @param valleyX Leftmost x-coordinate of 4-block-wide valley to combo in
 	 * @return Field state int code.
 	 */
-	public static int fieldToCode(Field field, int valleyX)
+	public static short fieldToCode(Field field, int valleyX)
 	{
 		int height = field.getHeight();
-		int result = 0;
+		short result = 0;
 		for (int y = height-3; y < height; y++)
 			for (int x = 0; x < 4; x++)
 			{
@@ -852,7 +852,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 			}
 		return result;
 	}
-	public static int fieldToCode(Field field)
+	public static short fieldToCode(Field field)
 	{
 		return fieldToCode(field, 3);
 	}
@@ -862,7 +862,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 * @param field Field state int code
 	 * @return State index if found; -1 if not found.
 	 */
-	public static int fieldToIndex(int field)
+	public static int fieldToIndex(short field)
 	{
 		int min = 0;
 		int max = FIELDS.length-1;
@@ -971,7 +971,6 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		
 	}
 
-	
 	protected static class Transition
 	{
 		public int x, rt, rtSub, newField;
