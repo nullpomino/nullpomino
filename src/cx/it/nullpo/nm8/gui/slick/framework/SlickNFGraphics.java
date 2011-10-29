@@ -35,8 +35,9 @@ public class SlickNFGraphics implements NFGraphics {
 	 * @param col NFColor
 	 * @return Slick native Color
 	 */
-	public static Color nfColor2Native(NFColor col) {
-		return new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
+	public Color nfColor2Native(NFColor col) {
+		int alpha = sys.isEnableAlphaImage() ? col.getAlpha() : 255;
+		return new Color(col.getRed(), col.getGreen(), col.getBlue(), alpha);
 	}
 
 	/**
@@ -44,8 +45,9 @@ public class SlickNFGraphics implements NFGraphics {
 	 * @param col Slick native Color
 	 * @return NFColor
 	 */
-	public static NFColor nativeColor2NF(Color col) {
-		return new NFColor(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
+	public NFColor nativeColor2NF(Color col) {
+		int alpha = sys.isEnableAlphaImage() ? col.getAlpha() : 255;
+		return new NFColor(col.getRed(), col.getGreen(), col.getBlue(), alpha);
 	}
 
 	/**
@@ -93,7 +95,11 @@ public class SlickNFGraphics implements NFGraphics {
 
 	public void drawImage(NFImage img, int x, int y, NFColor col) {
 		Image nimg = getNativeImage(img);
-		g.drawImage(nimg, x, y, nfColor2Native(col));
+		if(sys.isEnableColorFilter()) {
+			g.drawImage(nimg, x, y, nfColor2Native(col));
+		} else {
+			g.drawImage(nimg, x, y);
+		}
 	}
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
@@ -103,7 +109,11 @@ public class SlickNFGraphics implements NFGraphics {
 
 	public void drawImage(NFImage img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, NFColor col) {
 		Image nimg = getNativeImage(img);
-		g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, nfColor2Native(col));
+		if(sys.isEnableColorFilter()) {
+			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, nfColor2Native(col));
+		} else {
+			g.drawImage(nimg, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);
+		}
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {
@@ -132,15 +142,25 @@ public class SlickNFGraphics implements NFGraphics {
 	}
 
 	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
-		GradientFill gf = new GradientFill(sx, sy, nfColor2Native(sc), ex, ey, nfColor2Native(ec));
-		Rectangle rect = new Rectangle(x, y, width, height);
-		g.draw(rect, gf);
+		if(sys.isEnableGradient()) {
+			GradientFill gf = new GradientFill(sx, sy, nfColor2Native(sc), ex, ey, nfColor2Native(ec));
+			Rectangle rect = new Rectangle(x, y, width, height);
+			g.draw(rect, gf);
+		} else {
+			setColor(sc);
+			g.drawRect(x, y, width, height);
+		}
 	}
 
 	public void gradientFillRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
-		GradientFill gf = new GradientFill(sx, sy, nfColor2Native(sc), ex, ey, nfColor2Native(ec));
-		Rectangle rect = new Rectangle(x, y, width, height);
-		g.fill(rect, gf);
+		if(sys.isEnableGradient()) {
+			GradientFill gf = new GradientFill(sx, sy, nfColor2Native(sc), ex, ey, nfColor2Native(ec));
+			Rectangle rect = new Rectangle(x, y, width, height);
+			g.fill(rect, gf);
+		} else {
+			setColor(sc);
+			g.fillRect(x, y, width, height);
+		}
 	}
 
 	public NFColor getColor() {

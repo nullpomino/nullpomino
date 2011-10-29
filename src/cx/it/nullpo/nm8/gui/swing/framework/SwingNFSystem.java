@@ -151,7 +151,7 @@ public class SwingNFSystem extends NFSystem {
 		int style = Font.PLAIN;
 		if(bold) style |= Font.BOLD;
 		if(italic) style |= Font.ITALIC;
-		Font newfont = font.deriveFont(style, (float)size);
+		Font newfont = font.deriveFont(style, size);
 		return new SwingNFFont(newfont, getGraphics(), this);
 	}
 
@@ -201,7 +201,7 @@ public class SwingNFSystem extends NFSystem {
 			if(bold) style |= Font.BOLD;
 			if(italic) style |= Font.ITALIC;
 
-			Font newfont = basefont.deriveFont(style, (float)size);
+			Font newfont = basefont.deriveFont(style, size);
 			return new SwingNFFont(newfont, getGraphics(), this);
 		} catch (FontFormatException e) {
 			throw new UnsupportedOperationException(url + " is not a valid font (" + e.getMessage() + ")", e);

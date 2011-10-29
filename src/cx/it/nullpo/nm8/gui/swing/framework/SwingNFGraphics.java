@@ -102,6 +102,7 @@ public class SwingNFGraphics implements NFGraphics {
 	 * @param nfColor NFColor with alpha setting
 	 */
 	protected void setAlphaComposite(NFColor nfColor) {
+		if(!sys.isEnableAlphaImage()) return;
 		if(nfColor.getAlpha() >= 255) return;
 		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (nfColor.getAlpha() / 255f));
 		g.setComposite(newComposite);
@@ -112,6 +113,7 @@ public class SwingNFGraphics implements NFGraphics {
 	 * @param awtColor AWT Color with alpha setting
 	 */
 	protected void setAlphaComposite(Color awtColor) {
+		if(!sys.isEnableAlphaImage()) return;
 		if(awtColor.getAlpha() >= 255) return;
 		AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (awtColor.getAlpha() / 255f));
 		g.setComposite(newComposite);
@@ -140,7 +142,7 @@ public class SwingNFGraphics implements NFGraphics {
 		if(col.getAlpha() <= 0) return;
 		Image nimg = getNativeImage(img);
 
-		if(col.isColorFilter()) {
+		if(col.isColorFilter() && sys.isEnableColorFilter()) {
 			String hash = img.getHash();
 			CFCacheEntry cache = getCFCache(hash, col);
 
@@ -181,7 +183,7 @@ public class SwingNFGraphics implements NFGraphics {
 		if(col.getAlpha() <= 0) return;
 		Image nimg = getNativeImage(img);
 
-		if(col.isColorFilter()) {
+		if(col.isColorFilter() && sys.isEnableColorFilter()) {
 			String hash = img.getHash();
 			CFCacheEntry cache = getCFCache(hash, col);
 
@@ -264,24 +266,40 @@ public class SwingNFGraphics implements NFGraphics {
 
 	public void gradientRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
 		if(getColor().getAlpha() <= 0) return;
-		Paint curPaint = g.getPaint();
-		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
-		g.setPaint(gradient);
-		setAlphaComposite(getColor());
-		g.drawRect(x, y, width, height);
-		clearAlphaComposite();
-		g.setPaint(curPaint);
+
+		if(sys.isEnableGradient()) {
+			Paint curPaint = g.getPaint();
+			GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
+			g.setPaint(gradient);
+			setAlphaComposite(getColor());
+			g.drawRect(x, y, width, height);
+			clearAlphaComposite();
+			g.setPaint(curPaint);
+		} else {
+			setAlphaComposite(getColor());
+			setColor(sc);
+			g.drawRect(x, y, width, height);
+			clearAlphaComposite();
+		}
 	}
 
 	public void gradientFillRect(int x, int y, int width, int height, int sx, int sy, NFColor sc, int ex, int ey, NFColor ec) {
 		if(getColor().getAlpha() <= 0) return;
-		Paint curPaint = g.getPaint();
-		GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
-		g.setPaint(gradient);
-		setAlphaComposite(getColor());
-		g.fillRect(x, y, width, height);
-		clearAlphaComposite();
-		g.setPaint(curPaint);
+
+		if(sys.isEnableGradient()) {
+			Paint curPaint = g.getPaint();
+			GradientPaint gradient = new GradientPaint(sx, sy, sc.toAWTColor(), ex, ey, ec.toAWTColor());
+			g.setPaint(gradient);
+			setAlphaComposite(getColor());
+			g.fillRect(x, y, width, height);
+			clearAlphaComposite();
+			g.setPaint(curPaint);
+		} else {
+			setAlphaComposite(getColor());
+			setColor(sc);
+			g.fillRect(x, y, width, height);
+			clearAlphaComposite();
+		}
 	}
 
 	public void setColor(NFColor col) {

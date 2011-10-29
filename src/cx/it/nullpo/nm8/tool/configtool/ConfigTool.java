@@ -199,6 +199,12 @@ public class ConfigTool {
 		chkboxEnableSound.setSelected(p.getProperty("sys.enablesound", true));
 		JCheckBox chkboxNativeLookFeel = (JCheckBox)getJComponent("sys_chkbox_nativelookfeel");
 		chkboxNativeLookFeel.setSelected(p.getProperty("sys.nativelookfeel", true));
+		JCheckBox chkboxEnableAlpha = (JCheckBox)getJComponent("sys_chkbox_enablealpha");
+		chkboxEnableAlpha.setSelected(p.getProperty("sys.enablealpha", true));
+		JCheckBox chkboxEnableColorFilter = (JCheckBox)getJComponent("sys_chkbox_enablecolorfilter");
+		chkboxEnableColorFilter.setSelected(p.getProperty("sys.enablecolorfilter", true));
+		JCheckBox chkboxEnableGradient = (JCheckBox)getJComponent("sys_chkbox_enablegradient");
+		chkboxEnableGradient.setSelected(p.getProperty("sys.enablegradient", true));
 
 		// Slick tab
 		JCheckBox chkboxSlickAWTKey = (JCheckBox)getJComponent("slick_chkbox_awtkey");
@@ -267,6 +273,12 @@ public class ConfigTool {
 		p.setProperty("sys.enablesound", chkboxEnableSound.isSelected());
 		JCheckBox chkboxNativeLookFeel = (JCheckBox)getJComponent("sys_chkbox_nativelookfeel");
 		p.setProperty("sys.nativelookfeel", chkboxNativeLookFeel.isSelected());
+		JCheckBox chkboxEnableAlpha = (JCheckBox)getJComponent("sys_chkbox_enablealpha");
+		p.setProperty("sys.enablealpha", chkboxEnableAlpha.isSelected());
+		JCheckBox chkboxEnableColorFilter = (JCheckBox)getJComponent("sys_chkbox_enablecolorfilter");
+		p.setProperty("sys.enablecolorfilter", chkboxEnableColorFilter.isSelected());
+		JCheckBox chkboxEnableGradient = (JCheckBox)getJComponent("sys_chkbox_enablegradient");
+		p.setProperty("sys.enablegradient", chkboxEnableGradient.isSelected());
 
 		// Slick tab
 		JCheckBox chkboxSlickAWTKey = (JCheckBox)getJComponent("slick_chkbox_awtkey");

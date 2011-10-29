@@ -78,7 +78,7 @@ public class SlickNFImage implements NFImage {
 	}
 
 	public NFColor getColor(int x, int y) {
-		return SlickNFGraphics.nativeColor2NF(nativeImage.getColor(x, y));
+		return g.nativeColor2NF(nativeImage.getColor(x, y));
 	}
 
 	public byte[] getBytes() {

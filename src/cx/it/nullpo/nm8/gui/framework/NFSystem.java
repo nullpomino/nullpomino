@@ -50,6 +50,15 @@ public abstract class NFSystem implements Serializable {
 	/** Music volume */
 	protected float musicVolume = 1f;
 
+	/** Enable transparency */
+	protected boolean enableAlphaImage = true;
+
+	/** Enable color filter */
+	protected boolean enableColorFilter = true;
+
+	/** Enable gradient */
+	protected boolean enableGradient = true;
+
 	/**
 	 * Empty constructor - should not be used
 	 */
@@ -582,5 +591,50 @@ public abstract class NFSystem implements Serializable {
 	 */
 	public String getWindowTitle() {
 		return "";
+	}
+
+	/**
+	 * @return true if transparency is enabled
+	 */
+	public boolean isEnableAlphaImage() {
+		return enableAlphaImage;
+	}
+
+	/**
+	 * Set whether to allow transparency
+	 * @param enableAlphaImage true to enable transparency
+	 */
+	public void setEnableAlphaImage(boolean enableAlphaImage) {
+		this.enableAlphaImage = enableAlphaImage;
+	}
+
+	/**
+	 * @return true if color filter is enabled
+	 */
+	public boolean isEnableColorFilter() {
+		return enableColorFilter;
+	}
+
+	/**
+	 * Set whether to allow color filter to the images (if the system has the support for it)
+	 * @param enableColorFilter true to enable color filter
+	 */
+	public void setEnableColorFilter(boolean enableColorFilter) {
+		this.enableColorFilter = enableColorFilter;
+	}
+
+	/**
+	 * @return true if gradient is enabled
+	 */
+	public boolean isEnableGradient() {
+		return enableGradient;
+	}
+
+	/**
+	 * Set whether to allow gradient
+	 * @param enableGradient true to enable gradient
+	 */
+	public void setEnableGradient(boolean enableGradient) {
+		this.enableGradient = enableGradient;
 	}
 }

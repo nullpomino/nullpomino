@@ -93,6 +93,15 @@
 										<checkbox text="@sys_chkbox_nativelookfeel_label"
 										          id="sys_chkbox_nativelookfeel"
 										          tooltiptext="@sys_chkbox_nativelookfeel_tooltip" />
+										<checkbox text="@sys_chkbox_enablealpha_label"
+										          id="sys_chkbox_enablealpha"
+										          tooltiptext="@sys_chkbox_enablealpha_tooltip" />
+										<checkbox text="@sys_chkbox_enablecolorfilter_label"
+										          id="sys_chkbox_enablecolorfilter"
+										          tooltiptext="@sys_chkbox_enablecolorfilter_tooltip" />
+										<checkbox text="@sys_chkbox_enablegradient_label"
+										          id="sys_chkbox_enablegradient"
+										          tooltiptext="@sys_chkbox_enablegradient_tooltip" />
 									</gridlayout>
 								</panel>
 							</constraint>
