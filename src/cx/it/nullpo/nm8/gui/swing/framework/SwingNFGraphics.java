@@ -303,8 +303,12 @@ public class SwingNFGraphics implements NFGraphics {
 	}
 
 	public void setColor(NFColor col) {
-		currentColor = col;
-		g.setColor(col.toAWTColor());
+		if(col.isAlpha() && !sys.isEnableAlphaImage()) {
+			currentColor = new NFColor(col.getRed(), col.getGreen(), col.getBlue());
+		} else {
+			currentColor = col;
+		}
+		g.setColor(currentColor.toAWTColor());
 	}
 
 	public NFColor getColor() {

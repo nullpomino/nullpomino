@@ -52,6 +52,9 @@ public class SwingNFSystem extends NFSystem {
 	/** Sound Provider */
 	protected NFSoundProvider nfSoundProvider;
 
+	/** Use BufferStrategy (may slower or faster) */
+	protected boolean useBufferStrategy = true;
+
 	public SwingNFSystem() {
 		super();
 	}
@@ -288,5 +291,22 @@ public class SwingNFSystem extends NFSystem {
 	 */
 	public SwingNFGameWrapper getGameWrapper() {
 		return gameWrapper;
+	}
+
+	/**
+	 * @return true when BufferStrategy is going to be used
+	 */
+	public boolean isUseBufferStrategy() {
+		return useBufferStrategy;
+	}
+
+	/**
+	 * Set whether to use BufferStrategy (and VolatileImage) to render the screen.
+	 * It's usually fast, but depending on your video card and OS, it might be faster to not using this.
+	 * This setting is ignored when window scaling is used.
+	 * @param useBufferStrategy true to use BufferStrategy
+	 */
+	public void setUseBufferStrategy(boolean useBufferStrategy) {
+		this.useBufferStrategy = useBufferStrategy;
 	}
 }

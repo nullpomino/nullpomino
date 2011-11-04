@@ -109,6 +109,26 @@
 					</panel>
 				</tab>
 
+				<!-- Swing Settings -->
+				<tab title="@tab_swing">
+					<panel>
+						<borderlayout>
+							<constraint location="North">
+								<panel>
+									<gridlayout rows="0" columns="1">
+										<panel>
+											<titledborder title="@swing_chkbox_usebufferstrategy_title"/>
+											<gridlayout rows="0" columns="1">
+												<checkbox id="swing_chkbox_usebufferstrategy" text="@swing_chkbox_usebufferstrategy_label" />
+											</gridlayout>
+										</panel>
+									</gridlayout>
+								</panel>
+							</constraint>
+						</borderlayout>
+					</panel>
+				</tab>
+
 				<!-- Slick Settings -->
 				<tab title="@tab_slick">
 					<panel>

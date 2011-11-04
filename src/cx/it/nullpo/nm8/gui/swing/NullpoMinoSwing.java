@@ -27,14 +27,18 @@ public class NullpoMinoSwing {
 			boolean fullscreen = propGlobal.getProperty("sys.fullscreen", false);
 
 			NFGame game = null;
+			SwingNFSystem sys = null;
 			if(args.length > 0 && args[0].equals("--guitest")) {
 				game = new NiftyGUITest();
+				sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
 			} else {
 				game = new NullpoMino();
+				sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
 			}
 
-			SwingNFSystem sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
 			NGlobalConfig.applyNFSystem(sys);
+			sys.setUseBufferStrategy(propGlobal.getProperty("swing.useBufferStrategy", true));
+			log.trace("Use BufferStrategy:" + sys.isUseBufferStrategy());
 
 			sys.init();
 			sys.start();

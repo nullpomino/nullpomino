@@ -29,13 +29,15 @@ public class NullpoMinoSlick {
 			boolean fullscreen = propGlobal.getProperty("sys.fullscreen", false);
 
 			NFGame game = null;
+			SlickNFSystem sys = null;
 			if(args.length > 0 && args[0].equals("--guitest")) {
 				game = new NiftyGUITest();
+				sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
 			} else {
 				game = new NullpoMino();
+				sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
 			}
 
-			SlickNFSystem sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
 			NGlobalConfig.applyNFSystem(sys);
 			if(!fullscreen) sys.setUseAWTKeyReceiver(propGlobal.getProperty("slick.awtkey", false));
 			sys.setUseJInputForKeyboard(propGlobal.getProperty("slick.jinput.enable", false));

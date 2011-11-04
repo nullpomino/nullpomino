@@ -14,8 +14,6 @@ import cx.it.nullpo.nm8.neuro.plugin.nullterm.Nullterm;
  *
  */
 public class TestingNEURO extends NEUROBase {
-	private static final long serialVersionUID = -6550770298827744267L;
-
 	/** Log */
 	private static Log log = LogFactory.getLog(TestingNEURO.class);
 

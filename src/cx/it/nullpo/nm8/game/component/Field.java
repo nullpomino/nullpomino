@@ -2559,15 +2559,12 @@ public class Field implements Serializable {
 			int index = (getHeight() - 1 - i) * getWidth();
 
 			try{
-				String strTemp = "";
 				String[] strArray2 = new String[getWidth()];
 				for(int j = 0; j < getWidth(); j++){
 					if(index + j < strArray.length)
 						strArray2[j] = strArray[index + j];
 					else
 						strArray2[j] = "";
-
-					strTemp += strArray2[j] + "/";
 				}
 
 				Block[] row = attrStringToRow(strArray2, skin);

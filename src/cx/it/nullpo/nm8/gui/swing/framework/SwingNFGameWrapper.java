@@ -76,7 +76,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		addWindowListener(new WindowEventHandler());
 		addKeyListener(new KeyEventHandler());
 
-		useBufferStrategy = !sys.isGameWindowScalingUsed();
+		useBufferStrategy = !sys.isGameWindowScalingUsed() && sys.isUseBufferStrategy();
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		if(useBufferStrategy) {
 			canUseBufferStrategy = true;
 
-			if((bufferStrategy == null) || bufferStrategy.contentsLost()) {
+			if(bufferStrategy == null) {
 				try {
 					createBufferStrategy(2);
 					bufferStrategy = getBufferStrategy();

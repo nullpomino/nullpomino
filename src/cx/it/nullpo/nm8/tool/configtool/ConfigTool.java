@@ -206,6 +206,10 @@ public class ConfigTool {
 		JCheckBox chkboxEnableGradient = (JCheckBox)getJComponent("sys_chkbox_enablegradient");
 		chkboxEnableGradient.setSelected(p.getProperty("sys.enablegradient", true));
 
+		// Swing Tab
+		JCheckBox chkboxSwingUseBufferStrategy = (JCheckBox)getJComponent("swing_chkbox_usebufferstrategy");
+		chkboxSwingUseBufferStrategy.setSelected(p.getProperty("swing.useBufferStrategy", true));
+
 		// Slick tab
 		JCheckBox chkboxSlickAWTKey = (JCheckBox)getJComponent("slick_chkbox_awtkey");
 		chkboxSlickAWTKey.setSelected(p.getProperty("slick.awtkey", false));
@@ -279,6 +283,10 @@ public class ConfigTool {
 		p.setProperty("sys.enablecolorfilter", chkboxEnableColorFilter.isSelected());
 		JCheckBox chkboxEnableGradient = (JCheckBox)getJComponent("sys_chkbox_enablegradient");
 		p.setProperty("sys.enablegradient", chkboxEnableGradient.isSelected());
+
+		// Swing Tab
+		JCheckBox chkboxSwingUseBufferStrategy = (JCheckBox)getJComponent("swing_chkbox_usebufferstrategy");
+		p.setProperty("swing.useBufferStrategy", chkboxSwingUseBufferStrategy.isSelected());
 
 		// Slick tab
 		JCheckBox chkboxSlickAWTKey = (JCheckBox)getJComponent("slick_chkbox_awtkey");
