@@ -59,12 +59,8 @@ public abstract class NEUROBase implements NEURO {
 			return;
 		}
 		// Dispatch the event
-		for (Class<? extends NEUROEvent> type : listeners.keySet()) {
-			if (e.getClass().equals(type)) {
-				for (PluginListener p : listeners.get(type)) {
-					p.invoke(e);
-				}
-			}
+		for (PluginListener p : listeners.get(e.getClass())) {
+			p.invoke(e);
 		}
 	}
 	
