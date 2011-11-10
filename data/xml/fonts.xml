@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles>
+  <style id="button-font">
+    <attributes font="data/res/font/font.ttf" />
+  </style>
+
+  <style id="base-font">
+    <attributes font="data/res/font/font.ttf" />
+  </style>
+</nifty-styles>

@@ -112,7 +112,7 @@ public class SwingNFGameWrapper extends JFrame implements Runnable {
 		beforeTime = System.nanoTime();
 		prevCalcTime = beforeTime;
 
-		sys.getNFGame().init(sys);
+		if(sys.getNFGame().isEnableNEURO()) sys.getNFGame().init(sys);
 
 		while(!shutdownRequested) {
 			// Poll the keyboard input

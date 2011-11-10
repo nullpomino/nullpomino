@@ -15,7 +15,7 @@ import cx.it.nullpo.nm8.neuro.plugin.PluginListener;
 
 /**
  * NEUROBase implements the event-passing functionality of NEURO along with some basic plugin loading and stopping
- * functions. 
+ * functions.
  * @author Zircean
  *
  */
@@ -25,7 +25,7 @@ public abstract class NEUROBase implements NEURO {
 	protected Set<NEUROPlugin> plugins;
 	/** The map containing mappings of event types to the plugin listeners registered for that event type. */
 	protected Map<Class<? extends NEUROEvent>,Set<PluginListener>> listeners;
-	
+
 	/**
 	 * Constructor for NEUROBase.
 	 */
@@ -34,11 +34,11 @@ public abstract class NEUROBase implements NEURO {
 		plugins = new HashSet<NEUROPlugin>();
 		listeners = new HashMap<Class<? extends NEUROEvent>,Set<PluginListener>>();
 	}
-	
+
 	public void addPlugin(NEUROPlugin p) {
 		plugins.add(p);
 	}
-	
+
 	public void addListener(NEUROPlugin p, Class<? extends NEUROEvent> type) {
 		PluginListener pl = PluginListener.create(p,type);
 		if (pl != null) {
@@ -59,15 +59,18 @@ public abstract class NEUROBase implements NEURO {
 			return;
 		}
 		// Dispatch the event
-		for (PluginListener p : listeners.get(e.getClass())) {
-			p.invoke(e);
-		}
+		try {
+			for (PluginListener p : listeners.get(e.getClass())) {
+				if(p != null)
+					p.invoke(e);
+			}
+		} catch (NullPointerException e2) {}
 	}
-	
+
 	public void update(long delta) { }
 
 	public void draw(NFGraphics g) { }
-	
+
 	/**
 	 * Loads the plugin at the given classpath.
 	 */
@@ -92,7 +95,7 @@ public abstract class NEUROBase implements NEURO {
 				it.remove();
 			}
 		}
-		
+
 		// Remove the listeners attached to this plugin.
 		PluginListener pl = null;
 
@@ -114,7 +117,7 @@ public abstract class NEUROBase implements NEURO {
 	/**
 	 * Stops all plugins
 	 */
-	protected void stopAll() {		
+	protected void stopAll() {
 		Set<NEUROPlugin> bPlugins = new HashSet<NEUROPlugin>(plugins);
 
 		for (NEUROPlugin p : bPlugins) {

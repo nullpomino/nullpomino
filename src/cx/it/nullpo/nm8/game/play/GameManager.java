@@ -124,12 +124,18 @@ public class GameManager implements Serializable {
 	 * Start game
 	 */
 	public void start() {
+		if(engine == null) {
+			init();
+		}
+
 		for(int i = 0; i < engine.length; i++) {
 			engine[i].start();
 		}
 	}
 
 	public void stop() {
+		if(engine == null) return;
+
 		for (int i = 0; i < engine.length; i++) {
 			// TODO stop engines
 		}
@@ -140,6 +146,8 @@ public class GameManager implements Serializable {
 	 * @param runMsec Nanoseconds elapsed from the last execution
 	 */
 	public void update(long runMsec) {
+		if(engine == null) return;
+
 		gameLoopTime += runMsec;
 
 		while(gameLoopTime >= frameBasedLoopTime) {
@@ -192,5 +200,31 @@ public class GameManager implements Serializable {
 	 */
 	public GamePlay getGamePlay(int engineID, int playerID) {
 		return engine[engineID].gamePlay[playerID];
+	}
+
+	/**
+	 * @return true if at least 1 engine is active
+	 */
+	public boolean isGameActive() {
+		if(engine == null) return false;
+		for(int i = 0; i < engine.length; i++) {
+			if(engine[i].gameActive) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if at least 1 engine has started the game (It will not change back to false until the game is reset)
+	 */
+	public boolean isGameStarted() {
+		if(engine == null) return false;
+		for(int i = 0; i < engine.length; i++) {
+			if(engine[i].gameStarted) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

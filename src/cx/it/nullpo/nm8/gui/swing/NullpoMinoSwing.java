@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.game.NullpoMino;
-import cx.it.nullpo.nm8.gui.niftygui.NiftyGUITest;
+import cx.it.nullpo.nm8.gui.game.NullpoMinoNiftyGUI;
 import cx.it.nullpo.nm8.gui.swing.framework.SwingNFSystem;
 import cx.it.nullpo.nm8.util.CustomProperties;
 import cx.it.nullpo.nm8.util.NGlobalConfig;
@@ -29,7 +29,7 @@ public class NullpoMinoSwing {
 			NFGame game = null;
 			SwingNFSystem sys = null;
 			if(args.length > 0 && args[0].equals("--guitest")) {
-				game = new NiftyGUITest();
+				game = new NullpoMinoNiftyGUI();
 				sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
 			} else {
 				game = new NullpoMino();

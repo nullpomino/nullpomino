@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+	<useStyles filename="data/xml/fonts.xml" />
+
+	<controlDefinition name="gamefield" controller="cx.it.nullpo.nm8.gui.game.GameFieldController">
+		<panel childLayout="center">
+			<panel id="panel-field" backgroundColor="#000000" childLayout="absolute">
+			</panel>
+		</panel>
+	</controlDefinition>
+
+	<screen id="start" controller="cx.it.nullpo.nm8.gui.game.MainScreenController">
+		<layer childLayout="vertical" backgroundColor="#202020">
+			<panel childLayout="horizontal" width="100%" height="10%" />
+			
+			<panel backgroundColor="#FF0000" childLayout="center" width="162" height="326" align="center" valign="center">
+				<panel childLayout="center" width="160" height="324" align="center" valign="center">
+					<control id="field-0" name="gamefield" blocksize="16" />
+				</panel>
+			</panel>
+			
+			<panel childLayout="horizontal" width="100%" height="20%">
+				<control id="buttonStart" name="button" label="Start" focusable="false" />
+				<control id="buttonQuit" name="button" label="Quit" focusable="false" />
+			</panel>
+		</layer>
+	</screen>
+</nifty>

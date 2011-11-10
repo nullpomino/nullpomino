@@ -18,6 +18,21 @@ public class CustomProperties extends Properties {
 	private static final long serialVersionUID = 3L;
 
 	/**
+	 * Create a new, empty CustomProperties.
+	 */
+	public CustomProperties() {
+		super();
+	}
+
+	/**
+	 * Create a CustomProperties from an existing Properties.
+	 * @param defaults Properties to copy from
+	 */
+	public CustomProperties(Properties defaults) {
+		super(defaults);
+	}
+
+	/**
 	 * Set byte property
 	 * @param key Key
 	 * @param value Value
