@@ -302,11 +302,6 @@ public class NullpoMino extends AbstractPlugin implements NFGame {
 		addListener(KeyInputEvent.class);
 	}
 
-	@Override
-	public void draw(NFGraphics g) {
-		render(sys, g);
-	}
-
 	public void stop() {
 
 	}

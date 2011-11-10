@@ -137,10 +137,9 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		return false;
 	}
 
-	protected void updateOverlay(long delta) { }
+	protected void updateOverlay(long delta) {}
 	
-	protected void drawOverlay(NFGraphics g) {
-	}
+	protected void drawOverlay(NFGraphics g) {}
 	
 	protected abstract void drawLast(NFGraphics g);
 
