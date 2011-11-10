@@ -20,7 +20,9 @@ public class ScreenStack implements ScreenManager {
 
 	@Override
 	public void register(ScreenHolder s) {
-		stack.push(s);
+		if (s.getGUI() != null) {
+			stack.push(s);
+		}		
 	}
 
 	@Override

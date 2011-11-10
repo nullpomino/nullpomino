@@ -6,12 +6,12 @@ import org.apache.commons.logging.LogFactory;
 import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
-import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
+import cx.it.nullpo.nm8.neuro.plugin.AbstractPlugin;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.tools.TimeProvider;
 
-public class NiftyGUITest implements NFGame {
+public class NiftyGUITest extends AbstractPlugin implements NFGame {
 	private static final long serialVersionUID = 1L;
 	private Log log = LogFactory.getLog(NiftyGUITest.class);
 
@@ -34,18 +34,11 @@ public class NiftyGUITest implements NFGame {
 		return "The NullpoMino Team";
 	}
 
-	public void init(NEURO parent) throws PluginInitializationException {
-	}
+	protected void init() throws PluginInitializationException {}
 
-	public void draw(NFGraphics g) {
-	}
+	public void stop() {}
 
-	public void stop() {
-	}
-
-	public void init(NFSystem sys) {
-
-	}
+	public void init(NFSystem sys) {}
 
 	public void update(NFSystem sys, long delta) {
 		if(nifty != null) {
@@ -90,5 +83,5 @@ public class NiftyGUITest implements NFGame {
 
 		// Sometimes nifty's thread is keep running. I don't know why
 		System.exit(0);
-	}
+	}	
 }

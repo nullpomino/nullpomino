@@ -9,6 +9,9 @@ import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
+import cx.it.nullpo.nm8.gui.niftygui.NFInputSystem;
+import cx.it.nullpo.nm8.gui.niftygui.NFRenderDevice;
+import cx.it.nullpo.nm8.gui.niftygui.NFSoundDevice;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.JoyAxisEvent;
 import cx.it.nullpo.nm8.neuro.event.JoyButtonEvent;
@@ -21,8 +24,12 @@ import cx.it.nullpo.nm8.neuro.event.MouseMoveEvent;
 import cx.it.nullpo.nm8.neuro.event.MouseWheelEvent;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
 import cx.it.nullpo.nm8.neuro.event.QuitEvent;
+import cx.it.nullpo.nm8.neuro.gui.DummyManager;
+import cx.it.nullpo.nm8.neuro.gui.ScreenManager;
 import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.tools.TimeProvider;
 
 /**
  * Implements some common functionality in all NEURO implementations, such as passing events.
@@ -46,6 +53,21 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 
 	/** true if the overlay is currently up and want rendering. */
 	protected boolean overlayDrawFlag;
+	
+	/** The GUI manager for this NEURO. */
+	protected ScreenManager manager;
+	
+	/** The render device that will be used by this NEURO. */
+	private NFRenderDevice renderDevice;
+	
+	/** The sound device that will be used by this NEURO. */
+	private NFSoundDevice soundDevice;
+	
+	/** The input system that will be used by this NEURO. */
+	private NFInputSystem inputSys;
+	
+	/** The time provider that will be used by this NEURO. */
+	private TimeProvider timeProvider;
 
 	/**
 	 * Constructor for NEUROCore.
@@ -66,6 +88,14 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		 
 		overlayUpdateFlag = false;
 		overlayDrawFlag = false;
+		
+		manager = new DummyManager();
+		
+		renderDevice = new NFRenderDevice(sys);
+		soundDevice = new NFSoundDevice(sys);
+		inputSys = new NFInputSystem(sys.getKeyboard(),sys.getMouse());
+		timeProvider = new TimeProvider();
+		
 	}
 	
 	@Override
@@ -73,6 +103,7 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		if (p instanceof NFGame) {
 			game = (NFGame) p;
 		}
+		p.initGUI(new Nifty(renderDevice,soundDevice,inputSys,timeProvider));
 		super.addPlugin(p);
 	}
 	
@@ -108,7 +139,7 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		game.render(sys,g);
 		// Draw the overlay if applicable
 		if (overlayDrawFlag) {
-			drawOverlay(g);
+			drawOverlay();
 		}
 		// Draw whatever else is necessary
 		drawLast(g);
@@ -139,7 +170,9 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 
 	protected void updateOverlay(long delta) {}
 	
-	protected void drawOverlay(NFGraphics g) {}
+	protected void drawOverlay() {
+		manager.render();
+	}
 	
 	protected abstract void drawLast(NFGraphics g);
 

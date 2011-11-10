@@ -3,7 +3,6 @@ package cx.it.nullpo.nm8.neuro.plugin;
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
 import cx.it.nullpo.nm8.neuro.event.NEUROEvent;
-import cx.it.nullpo.nm8.neuro.gui.ScreenHolder;
 import de.lessvoid.nifty.Nifty;
 
 /**
@@ -11,7 +10,7 @@ import de.lessvoid.nifty.Nifty;
  * @author Zircean
  *
  */
-public abstract class AbstractPlugin implements NEUROPlugin, ScreenHolder {
+public abstract class AbstractPlugin implements NEUROPlugin {
 
 	/** The parent NEURO. */
 	private NEURO neuro;

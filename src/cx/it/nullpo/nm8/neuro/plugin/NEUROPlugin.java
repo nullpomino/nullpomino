@@ -2,13 +2,14 @@ package cx.it.nullpo.nm8.neuro.plugin;
 
 import cx.it.nullpo.nm8.neuro.core.NEURO;
 import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
+import cx.it.nullpo.nm8.neuro.gui.ScreenHolder;
 
 /**
  * NEUROPlugins are the subscribers to NEUROEvents, which makes them the heart and soul of NullpoMino.
  * @author Zircean
  *
  */
-public interface NEUROPlugin {
+public interface NEUROPlugin extends ScreenHolder {
 	
 	/**
 	 * Gets the name of this plugin.

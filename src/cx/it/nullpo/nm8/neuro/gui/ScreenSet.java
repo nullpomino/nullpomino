@@ -27,8 +27,10 @@ public class ScreenSet implements ScreenManager {
 
 	@Override
 	public void register(ScreenHolder s) {
-		set.add(s);
-		stack.push(s);
+		if (s.getGUI() != null) {
+			set.add(s);
+			stack.push(s);
+		}
 	}
 
 	@Override
