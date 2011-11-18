@@ -98,7 +98,7 @@ public class NGlobalConfig {
 	 */
 	public static void applyNFSystem(NFSystem sys, CustomProperties prop) {
 		sys.setTargetFPS(prop.getProperty("sys.fps", 60));
-		sys.setSoundProviderType(prop.getProperty("sys.soundprovider", NFSystem.SOUND_PROVIDER_OPENAL));
+		sys.setSoundProviderType(prop.getProperty("sys.soundprovider", NFSystem.SOUND_PROVIDER_OPENAL_LWJGL));
 		sys.setEnableAlphaImage(prop.getProperty("sys.enablealpha", true));
 		sys.setEnableColorFilter(prop.getProperty("sys.enablecolorfilter", true));
 		sys.setEnableGradient(prop.getProperty("sys.enablegradient", true));

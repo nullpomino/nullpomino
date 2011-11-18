@@ -53,19 +53,19 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 
 	/** true if the overlay is currently up and want rendering. */
 	protected boolean overlayDrawFlag;
-	
+
 	/** The GUI manager for this NEURO. */
 	protected ScreenManager manager;
-	
+
 	/** The render device that will be used by this NEURO. */
 	private NFRenderDevice renderDevice;
-	
+
 	/** The sound device that will be used by this NEURO. */
 	private NFSoundDevice soundDevice;
-	
+
 	/** The input system that will be used by this NEURO. */
 	private NFInputSystem inputSys;
-	
+
 	/** The time provider that will be used by this NEURO. */
 	private TimeProvider timeProvider;
 
@@ -84,20 +84,20 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 			if(sys.getJoystickManager() != null && sys.getJoystickManager().isInited()) {
 				sys.getJoystickManager().addListener(this);
 			}
+			inputSys = new NFInputSystem(sys.getKeyboard(),sys.getMouse());
 		}
-		 
+
 		overlayUpdateFlag = false;
 		overlayDrawFlag = false;
-		
+
 		manager = new DummyManager();
-		
+
 		renderDevice = new NFRenderDevice(sys);
 		soundDevice = new NFSoundDevice(sys);
-		inputSys = new NFInputSystem(sys.getKeyboard(),sys.getMouse());
 		timeProvider = new TimeProvider();
-		
+
 	}
-	
+
 	@Override
 	public void addPlugin(NEUROPlugin p) {
 		if (p instanceof NFGame) {
@@ -106,7 +106,7 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		p.initGUI(new Nifty(renderDevice,soundDevice,inputSys,timeProvider));
 		super.addPlugin(p);
 	}
-	
+
 	@Override
 	public synchronized void dispatchEvent(NEUROEvent e) {
 		// Check if this event should trigger a quit
@@ -132,7 +132,7 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 			updateOverlay(delta);
 		}
 	}
-	
+
 	@Override
 	public final void draw(NFGraphics g) {
 		// Draw the game
@@ -169,11 +169,11 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 	}
 
 	protected void updateOverlay(long delta) {}
-	
+
 	protected void drawOverlay() {
 		manager.render();
 	}
-	
+
 	protected abstract void drawLast(NFGraphics g);
 
 	// Key listener methods
@@ -242,6 +242,6 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 	public void joyButtonReleased(NFJoystick joy, int button) {
 		dispatchEvent(new JoyButtonEvent(this, joy, button, false));
 	}
-	
-	
+
+
 }

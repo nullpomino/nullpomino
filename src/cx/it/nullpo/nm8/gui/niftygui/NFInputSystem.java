@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
@@ -16,6 +19,8 @@ import de.lessvoid.nifty.spi.input.InputSystem;
 
 public class NFInputSystem implements InputSystem, NFKeyListener, NFMouseListener {
 	private static final long serialVersionUID = 1L;
+
+	private Log log = LogFactory.getLog(NFInputSystem.class);
 
 	/** AWT->NiftyGUI keycode table. It's HUGE, and lots of keys are unsupported. */
 	public static final int[] KEYTABLE =
@@ -562,8 +567,16 @@ public class NFInputSystem implements InputSystem, NFKeyListener, NFMouseListene
 	}
 
 	public NFInputSystem(NFKeyboard keyboard, NFMouse mouse) {
-		keyboard.addKeyListener(this);
-		mouse.addMouseListener(this);
+		if(keyboard != null) {
+			keyboard.addKeyListener(this);
+		} else {
+			log.warn("keyboard is null");
+		}
+		if(mouse != null) {
+			mouse.addMouseListener(this);
+		} else {
+			log.warn("mouse is null");
+		}
 	}
 
 	public void forwardEvents(NiftyInputConsumer inputEventConsumer) {

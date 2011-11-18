@@ -336,7 +336,7 @@ public class SlickNFSystem extends NFSystem {
 	@Override
 	public boolean isSoundProviderTypeSupported(int type) {
 		if(type == SOUND_PROVIDER_JAVASOUND) return true;
-		if(type == SOUND_PROVIDER_OPENAL) return true;
+		if(type == SOUND_PROVIDER_OPENAL_LWJGL) return true;
 		return false;
 	}
 
@@ -345,10 +345,25 @@ public class SlickNFSystem extends NFSystem {
 		try {
 			if(type == SOUND_PROVIDER_JAVASOUND) {
 				nfSoundProvider = new JSSoundProvider();
-			} else if(type == SOUND_PROVIDER_OPENAL) {
+				return true;
+			} else if(type == SOUND_PROVIDER_OPENAL_LWJGL) {
 				nfSoundProvider = new SlickNFSoundProvider();
+				return true;
+			} else if(type == SOUND_PROVIDER_OPENAL_JOAL) {
+				try {
+					Class<?> c = null;
+					NFSoundProvider obj = null;
+
+					c = Class.forName("cx.it.nullpo.nm8.gui.common.sound.joal.JOALSoundProvider");
+					obj = (NFSoundProvider) c.newInstance();
+
+					nfSoundProvider = obj;
+					return true;
+				} catch (Throwable e) {
+					log.error("Cannot initialize JOAL's OpenAL", e);
+					return false;
+				}
 			}
-			return true;
 		} catch (Exception e) {
 			log.error("Cannot set sound provider type to " + type, e);
 		}

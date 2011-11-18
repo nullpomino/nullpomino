@@ -3,6 +3,9 @@ package cx.it.nullpo.nm8.gui.common.sound.javasound;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cx.it.nullpo.nm8.gui.framework.NFSound;
 
 /**
@@ -10,6 +13,9 @@ import cx.it.nullpo.nm8.gui.framework.NFSound;
  */
 public class JSNFSound implements NFSound {
 	private static final long serialVersionUID = 7484516954156886425L;
+
+	/** Log */
+	private Log log = LogFactory.getLog(JSNFSound.class);
 
 	/** Java Sound native Clip */
 	protected Clip clip;
@@ -47,8 +53,13 @@ public class JSNFSound implements NFSound {
 
 	public void setVolume(float volume) {
 		currentVolume = volume;
-		FloatControl ctrl = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
-		ctrl.setValue((float)Math.log10(volume) * 20);
+
+		try {
+			FloatControl ctrl = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+			ctrl.setValue((float)Math.log10(volume) * 20);
+		} catch (IllegalArgumentException e) {
+			log.warn("Your Java Sound system does not support the control of master gain. Volume cannot be changed.", e);
+		}
 	}
 
 	public float getVolume() {

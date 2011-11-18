@@ -243,7 +243,7 @@ public class SwingNFSystem extends NFSystem {
 		if(type == NFSystem.SOUND_PROVIDER_JAVASOUND) {
 			nfSoundProvider = new JSSoundProvider();
 			return true;
-		} else if(type == NFSystem.SOUND_PROVIDER_OPENAL) {
+		} else if(type == NFSystem.SOUND_PROVIDER_OPENAL_LWJGL) {
 			try {
 				Class<?> c = null;
 				NFSoundProvider obj = null;
@@ -254,7 +254,21 @@ public class SwingNFSystem extends NFSystem {
 				nfSoundProvider = obj;
 				return true;
 			} catch (Throwable e) {
-				log.error("Cannot initialize OpenAL", e);
+				log.error("Cannot initialize LWJGL's OpenAL", e);
+				return false;
+			}
+		} else if(type == NFSystem.SOUND_PROVIDER_OPENAL_JOAL) {
+			try {
+				Class<?> c = null;
+				NFSoundProvider obj = null;
+
+				c = Class.forName("cx.it.nullpo.nm8.gui.common.sound.joal.JOALSoundProvider");
+				obj = (NFSoundProvider) c.newInstance();
+
+				nfSoundProvider = obj;
+				return true;
+			} catch (Throwable e) {
+				log.error("Cannot initialize JOAL's OpenAL", e);
 				return false;
 			}
 		}

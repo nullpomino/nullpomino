@@ -29,7 +29,7 @@ public class SlickNFSoundProvider extends NFSoundProvider {
 
 	@Override
 	public int getSoundProviderType() {
-		return NFSystem.SOUND_PROVIDER_OPENAL;
+		return NFSystem.SOUND_PROVIDER_OPENAL_LWJGL;
 	}
 
 	@Override

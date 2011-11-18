@@ -183,7 +183,7 @@ public class ConfigTool {
 		JComboBox comboboxResolution = (JComboBox)getJComponent("sys_combobox_resolution");
 		comboboxResolution.setSelectedItem(p.getProperty("sys.resolution.string", "640x480"));
 		JComboBox comboboxSoundProvider = (JComboBox)getJComponent("sys_combobox_soundprovider");
-		comboboxSoundProvider.setSelectedIndex(p.getProperty("sys.soundprovider", NFSystem.SOUND_PROVIDER_OPENAL));
+		comboboxSoundProvider.setSelectedIndex(p.getProperty("sys.soundprovider", NFSystem.SOUND_PROVIDER_OPENAL_LWJGL));
 
 		JTextField txtfldVolume = (JTextField)getJComponent("sys_txtfld_volume");
 		txtfldVolume.setText(String.valueOf(p.getProperty("sys.soundvolume", 1f)));

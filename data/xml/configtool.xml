@@ -33,7 +33,7 @@
 												</constraint>
 											</borderlayout>
 										</panel>
-										
+
 										<!-- Sound Provider -->
 										<panel>
 											<borderlayout>
@@ -44,13 +44,14 @@
 													<combobox id="sys_combobox_soundprovider" tooltiptext="@sys_combobox_soundprovider_tooltip">
 														<defaultcomboboxmodel setas="model">
 															<string text="Java Sound"/>
-															<string text="OpenAL"/>
+															<string text="OpenAL (LWJGL)"/>
+															<string text="OpenAL (JOAL)"/>
 														</defaultcomboboxmodel>
 													</combobox>
 												</constraint>
 											</borderlayout>
 										</panel>
-										
+
 										<!-- Sound volume -->
 										<panel>
 											<borderlayout>
@@ -62,7 +63,7 @@
 												</constraint>
 											</borderlayout>
 										</panel>
-										
+
 										<!-- FPS -->
 										<panel>
 											<borderlayout>
@@ -82,7 +83,7 @@
 												</constraint>
 											</borderlayout>
 										</panel>
-										
+
 										<!-- Checkboxes -->
 										<checkbox text="@sys_chkbox_fullscreen_label"
 										          id="sys_chkbox_fullscreen"
@@ -205,7 +206,7 @@
 																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll0_0" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hard drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_0"/>
@@ -216,7 +217,7 @@
 																					<textfield id="key_0_0_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Soft drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_1"/>
@@ -227,7 +228,7 @@
 																					<textfield id="key_0_0_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																			</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_2"/>
@@ -238,7 +239,7 @@
 																					<textfield id="key_0_0_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_3"/>
@@ -249,7 +250,7 @@
 																					<textfield id="key_0_0_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_4"/>
@@ -260,7 +261,7 @@
 																					<textfield id="key_0_0_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_5"/>
@@ -271,7 +272,7 @@
 																					<textfield id="key_0_0_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate 180 -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_6"/>
@@ -282,7 +283,7 @@
 																					<textfield id="key_0_0_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hold -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_7"/>
@@ -293,7 +294,7 @@
 																					<textfield id="key_0_0_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Special -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_8"/>
@@ -325,7 +326,7 @@
 																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll0_1" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hard drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_0"/>
@@ -336,7 +337,7 @@
 																					<textfield id="key_0_1_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Soft drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_1"/>
@@ -347,7 +348,7 @@
 																					<textfield id="key_0_1_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																			</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_2"/>
@@ -358,7 +359,7 @@
 																					<textfield id="key_0_1_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_3"/>
@@ -369,7 +370,7 @@
 																					<textfield id="key_0_1_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_4"/>
@@ -380,7 +381,7 @@
 																					<textfield id="key_0_1_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_5"/>
@@ -391,7 +392,7 @@
 																					<textfield id="key_0_1_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate 180 -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_6"/>
@@ -402,7 +403,7 @@
 																					<textfield id="key_0_1_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hold -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_7"/>
@@ -413,7 +414,7 @@
 																					<textfield id="key_0_1_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Special -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_8"/>
@@ -436,7 +437,7 @@
 										</panel>
 									</tab>
 									<!-- End of 1P key config -->
-									
+
 									<!-- 2P key config -->
 									<tab title="2P">
 										<panel>
@@ -458,7 +459,7 @@
 																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll1_0" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hard drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_0"/>
@@ -469,7 +470,7 @@
 																					<textfield id="key_1_0_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Soft drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_1"/>
@@ -480,7 +481,7 @@
 																					<textfield id="key_1_0_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																			</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_2"/>
@@ -491,7 +492,7 @@
 																					<textfield id="key_1_0_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_3"/>
@@ -502,7 +503,7 @@
 																					<textfield id="key_1_0_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_4"/>
@@ -513,7 +514,7 @@
 																					<textfield id="key_1_0_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_5"/>
@@ -524,7 +525,7 @@
 																					<textfield id="key_1_0_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate 180 -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_6"/>
@@ -535,7 +536,7 @@
 																					<textfield id="key_1_0_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hold -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_7"/>
@@ -546,7 +547,7 @@
 																					<textfield id="key_1_0_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Special -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_8"/>
@@ -578,7 +579,7 @@
 																					<button text="@keyconfig_tools_clearall" actionlistener="actClearAll1_1" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hard drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_0"/>
@@ -589,7 +590,7 @@
 																					<textfield id="key_1_1_3_0" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Soft drop -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_1"/>
@@ -600,7 +601,7 @@
 																					<textfield id="key_1_1_3_1" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																			</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_2"/>
@@ -611,7 +612,7 @@
 																					<textfield id="key_1_1_3_2" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Move Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_3"/>
@@ -622,7 +623,7 @@
 																					<textfield id="key_1_1_3_3" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Left -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_4"/>
@@ -633,7 +634,7 @@
 																					<textfield id="key_1_1_3_4" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate Right -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_5"/>
@@ -644,7 +645,7 @@
 																					<textfield id="key_1_1_3_5" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Rotate 180 -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_6"/>
@@ -655,7 +656,7 @@
 																					<textfield id="key_1_1_3_6" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Hold -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_7"/>
@@ -666,7 +667,7 @@
 																					<textfield id="key_1_1_3_7" keylistener="klKeyConfigTextField" mouselistener="maKeyConfigTextField" />
 																				</gridlayout>
 																			</panel>
-																			
+
 																			<!-- Special -->
 																			<panel>
 																				<titledborder title="@keyconfig_key_8"/>

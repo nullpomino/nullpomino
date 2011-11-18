@@ -18,6 +18,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.ALCcontext;
+import org.lwjgl.openal.ALCdevice;
 import org.lwjgl.util.WaveData;
 
 import cx.it.nullpo.nm8.gui.framework.NFSound;
@@ -304,7 +306,11 @@ public class LWJGLALSoundProvider extends NFSoundProvider {
 
 	@Override
 	public int getSoundProviderType() {
-		return NFSystem.SOUND_PROVIDER_OPENAL;
+		return NFSystem.SOUND_PROVIDER_OPENAL_LWJGL;
+	}
+
+	public int getNumberOfSoundLoaded() {
+		return soundList.size();
 	}
 
 	@Override
@@ -369,5 +375,24 @@ public class LWJGLALSoundProvider extends NFSoundProvider {
 				it.remove();
 			}
 		}
+
+		// Close the OpenAL
+		ALCcontext curContext;
+		ALCdevice curDevice;
+
+		// Get the current context.
+		curContext = ALC10.alcGetCurrentContext();
+
+		// Get the device used by that context.
+		curDevice = ALC10.alcGetContextsDevice(curContext);
+
+		// Reset the current context to NULL.
+		ALC10.alcMakeContextCurrent(null);
+
+		// Release the context and the device.
+		ALC10.alcDestroyContext(curContext);
+		ALC10.alcCloseDevice(curDevice);
+
+		log.trace("OpenAL (LWJGL) disposed");
 	}
 }

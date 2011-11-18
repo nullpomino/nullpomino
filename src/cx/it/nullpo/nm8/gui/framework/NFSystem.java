@@ -17,8 +17,15 @@ public abstract class NFSystem implements Serializable {
 
 	/** Sound Provider Type: Java Sound */
 	public static final int SOUND_PROVIDER_JAVASOUND = 0;
-	/** Sound Provider Type: OpenAL */
-	public static final int SOUND_PROVIDER_OPENAL = 1;
+	/** Sound Provider Type: OpenAL (LWJGL) */
+	public static final int SOUND_PROVIDER_OPENAL_LWJGL = 1;
+	/**
+	 * Sound Provider Type: OpenAL (LWJGL)
+	 * @deprecated Renamed to {@link #SOUND_PROVIDER_OPENAL_LWJGL}
+	 */
+	public static final int SOUND_PROVIDER_OPENAL = SOUND_PROVIDER_OPENAL_LWJGL;
+	/** Sound Provider Type: OpenAL (JOAL) */
+	public static final int SOUND_PROVIDER_OPENAL_JOAL = 2;
 
 	/** NEURO: The event framework */
 	protected NEURO neuro;
