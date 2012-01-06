@@ -13,16 +13,14 @@ import cx.it.nullpo.nm8.game.play.GameEngine;
 import cx.it.nullpo.nm8.game.play.GameManager;
 import cx.it.nullpo.nm8.game.play.GamePlay;
 import cx.it.nullpo.nm8.gui.framework.NFColor;
-import cx.it.nullpo.nm8.gui.framework.NFGame;
 import cx.it.nullpo.nm8.gui.framework.NFGraphics;
-import cx.it.nullpo.nm8.gui.framework.NFKeyListener;
 import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
+import cx.it.nullpo.nm8.gui.framework.NFNEUROGame;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
 import cx.it.nullpo.nm8.gui.niftygui.NFInputSystem;
 import cx.it.nullpo.nm8.gui.niftygui.NFRenderDevice;
 import cx.it.nullpo.nm8.gui.niftygui.NFSoundDevice;
-import cx.it.nullpo.nm8.neuro.core.NEURO;
-import cx.it.nullpo.nm8.neuro.error.PluginInitializationException;
+import cx.it.nullpo.nm8.neuro.event.KeyInputEvent;
 import cx.it.nullpo.nm8.util.NGlobalConfig;
 import cx.it.nullpo.nm8.util.NUtil;
 import de.lessvoid.nifty.Nifty;
@@ -33,7 +31,7 @@ import de.lessvoid.nifty.tools.TimeProvider;
 /**
  * NFGame implementation of NullpoMino (WIP)
  */
-public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
+public class NullpoMinoNiftyGUI extends NFNEUROGame {
 	private static final long serialVersionUID = 612498635208267339L;
 
 	/** Log */
@@ -60,40 +58,32 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 	protected static final int MAX_KEY_SLOTS = 4;
 	protected static final int MAX_KEY_KINDS = 9;
 
+	@Override
 	public String getName() {
 		return "NullpoMino";
 	}
 
+	@Override
 	public float getVersion() {
 		return GameManager.getVersionMajor();
 	}
 
+	@Override
 	public String getAuthor() {
 		return "The NullpoMino Dev Team";
 	}
 
-	public void init(NEURO parent) throws PluginInitializationException {
-	}
-
-	public void draw(NFGraphics g) {
-	}
-
-	public void stop() {
-	}
-
-	public boolean isEnableNEURO() {
-		return false;
-	}
-
+	@Override
 	public void init(NFSystem sys) {
 		log.trace("init");
 
 		this.sys = sys;
-		sys.getKeyboard().addKeyListener(this);
+		addListener(KeyInputEvent.class);
 
 		sys.setWindowTitle("NullpoMino8 (NiftyGUI)");
 	}
 
+	@Override
 	public void update(NFSystem sys, long delta) {
 		if(!isResourceLoaded) {
 			isResourceLoaded = true;
@@ -138,7 +128,11 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 		}
 	}
 
+	@Override
 	public void render(NFSystem sys, NFGraphics g) {
+		g.setColor(NFColor.black);
+		g.fillRect(0, 0, sys.getOriginalWidth(), sys.getOriginalHeight());
+
 		if(!niftyInited && (nifty == null)) {
 			try {
 				nifty = new Nifty(new NFRenderDevice(sys),
@@ -146,6 +140,7 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 				                   new NFInputSystem(sys.getKeyboard(), sys.getMouse()),
 				                   new TimeProvider());
 				log.trace("NiftyGUI created");
+				initGUI(nifty);
 
 				nifty.fromXml("data/xml/game_main.xml", "start", new MainScreenController(this));
 				niftyInited = true;
@@ -155,7 +150,7 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 		}
 
 		if(niftyInited && (nifty != null)) {
-			nifty.render(true);
+			nifty.render(false);
 
 			if((gameManager != null) && gameManager.isGameStarted()) {
 				Screen curScreen = nifty.getCurrentScreen();
@@ -183,6 +178,7 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 		g.drawString("FPS:" + sys.getFPS(), 0, 0);
 	}
 
+	@Override
 	public void onExit(NFSystem sys) {
 		try {
 			ResourceHolder.unloadSoundEffects();
@@ -215,6 +211,10 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 		log.trace("Started a new game");
 	}
 
+	public void receiveEvent(KeyInputEvent e) {
+		handleKeyEvent(e.getKeyboard(), e.getKey(), e.getChar(), e.getPressed());
+	}
+
 	public void handleKeyEvent(NFKeyboard keyboard, int key, char c, boolean pressed) {
 		if(gameManager != null && gameManager.isGameActive()) {
 			for(int engineID = 0; engineID < gameManager.getNumberOfEngines(); engineID++) {
@@ -242,12 +242,5 @@ public class NullpoMinoNiftyGUI implements NFGame, NFKeyListener {
 				}
 			}
 		}
-	}
-
-	public void initGUI(Nifty n) {
-	}
-
-	public Nifty getGUI() {
-		return null;
 	}
 }

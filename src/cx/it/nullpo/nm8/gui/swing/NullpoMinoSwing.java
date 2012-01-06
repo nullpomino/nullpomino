@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cx.it.nullpo.nm8.gui.framework.NFGame;
-import cx.it.nullpo.nm8.gui.game.NullpoMino;
 import cx.it.nullpo.nm8.gui.game.NullpoMinoNiftyGUI;
 import cx.it.nullpo.nm8.gui.swing.framework.SwingNFSystem;
 import cx.it.nullpo.nm8.util.CustomProperties;
@@ -28,13 +27,9 @@ public class NullpoMinoSwing {
 
 			NFGame game = null;
 			SwingNFSystem sys = null;
-			if(args.length > 0 && args[0].equals("--guitest")) {
-				game = new NullpoMinoNiftyGUI();
-				sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
-			} else {
-				game = new NullpoMino();
-				sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
-			}
+
+			game = new NullpoMinoNiftyGUI();
+			sys = new SwingNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
 
 			NGlobalConfig.applyNFSystem(sys);
 			sys.setUseBufferStrategy(propGlobal.getProperty("swing.useBufferStrategy", true));

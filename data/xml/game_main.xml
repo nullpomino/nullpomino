@@ -12,7 +12,7 @@
 	</controlDefinition>
 
 	<screen id="start" controller="cx.it.nullpo.nm8.gui.game.MainScreenController">
-		<layer childLayout="vertical" backgroundColor="#202020">
+		<layer childLayout="vertical" backgroundColor="#00000000">
 			<panel childLayout="horizontal" width="100%" height="10%" />
 			
 			<panel backgroundColor="#FF0000" childLayout="center" width="162" height="326" align="center" valign="center">

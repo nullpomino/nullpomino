@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cx.it.nullpo.nm8.gui.framework.NFGame;
-import cx.it.nullpo.nm8.gui.game.NullpoMino;
 import cx.it.nullpo.nm8.gui.game.NullpoMinoNiftyGUI;
 import cx.it.nullpo.nm8.gui.slick.framework.SlickNFSystem;
 import cx.it.nullpo.nm8.util.CustomProperties;
@@ -30,13 +29,9 @@ public class NullpoMinoSlick {
 
 			NFGame game = null;
 			SlickNFSystem sys = null;
-			if(args.length > 0 && args[0].equals("--guitest")) {
-				game = new NullpoMinoNiftyGUI();
-				sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
-			} else {
-				game = new NullpoMino();
-				sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, 640, 480, true, args);
-			}
+
+			game = new NullpoMinoNiftyGUI();
+			sys = new SlickNFSystem(game, fullscreen, screenWidth, screenHeight, screenWidth, screenHeight, true, args);
 
 			NGlobalConfig.applyNFSystem(sys);
 			if(!fullscreen) sys.setUseAWTKeyReceiver(propGlobal.getProperty("slick.awtkey", false));
