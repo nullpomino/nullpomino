@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
+import de.lessvoid.nifty.Nifty;
+
 /**
  * A ScreenSet allows switching between various screens. In this way, you can have multiple
  * plugins running at once, and go between the screens. If you close the current screen, you
@@ -13,13 +15,13 @@ import java.util.Stack;
  *
  */
 public class ScreenSet implements ScreenManager {
-	
+
 	/** The set of registered plugins. */
 	Set<ScreenHolder> set;
-	
+
 	/** The stack of last-used plugins. */
 	Stack<ScreenHolder> stack;
-	
+
 	public ScreenSet() {
 		set = new HashSet<ScreenHolder>();
 		stack = new Stack<ScreenHolder>();
@@ -63,7 +65,8 @@ public class ScreenSet implements ScreenManager {
 
 	@Override
 	public void render() {
-		stack.peek().getGUI().render(true);
+		Nifty gui = stack.peek().getGUI();
+		if(gui != null) gui.render(true);
 	}
 
 }

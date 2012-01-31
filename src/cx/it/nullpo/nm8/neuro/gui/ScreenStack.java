@@ -3,6 +3,8 @@ package cx.it.nullpo.nm8.neuro.gui;
 import java.util.Collection;
 import java.util.Stack;
 
+import de.lessvoid.nifty.Nifty;
+
 /**
  * The ScreenStack is a manager which pushes new screens on top of the stack. It doesn't allow manual
  * switching, and only allows the user to remove the top screen. It is essentially an implementation of
@@ -11,9 +13,9 @@ import java.util.Stack;
  *
  */
 public class ScreenStack implements ScreenManager {
-	
+
 	private Stack<ScreenHolder> stack;
-	
+
 	public ScreenStack() {
 		stack = new Stack<ScreenHolder>();
 	}
@@ -22,7 +24,7 @@ public class ScreenStack implements ScreenManager {
 	public void register(ScreenHolder s) {
 		if (s.getGUI() != null) {
 			stack.push(s);
-		}		
+		}
 	}
 
 	@Override
@@ -38,12 +40,12 @@ public class ScreenStack implements ScreenManager {
 	public void remove() {
 		stack.pop();
 	}
-	
+
 	@Override
 	public void remove(ScreenHolder s) {
 		StackUtils.remove(stack,s);
 	}
-	
+
 	@Override
 	public void removeAll() {
 		while (!stack.isEmpty()) {
@@ -53,7 +55,8 @@ public class ScreenStack implements ScreenManager {
 
 	@Override
 	public void render() {
-		stack.peek().getGUI().render(true);
+		Nifty gui = stack.peek().getGUI();
+		if(gui != null) gui.render(true);
 	}
 
 }

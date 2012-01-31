@@ -26,12 +26,17 @@ public class GameFieldController extends AbstractController {
 
 		elementMain = element;
 		if(elementMain == null) log.warn("elementMain == null!");
-		elementPanelField = element.findElementByName("panel-field");
+		elementPanelField = element.findElementByName("#panel-field");
 		if(elementPanelField == null) log.warn("elementPanelField == null!");
 
 		CustomProperties params = new CustomProperties(parameter);
-		blocksize = params.getProperty("blksize", 16);
-		log.trace("blocksize:" + blocksize);
+		String strBlkSize = params.getProperty("blocksize");
+		if(strBlkSize == null) {
+			log.warn("No blksize is set for " + elementMain.getId() + ". Using 16 for default.");
+			blocksize = 16;
+		} else {
+			blocksize = params.getProperty("blocksize", 16);
+		}
 	}
 
 	public void onStartScreen() {

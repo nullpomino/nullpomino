@@ -31,6 +31,9 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 	/** true if JInput has inited */
 	public static boolean isInited;
 
+	/** true if keyboard will be autodetected */
+	public static boolean isAutoDetect;
+
 	/** ControllerEnvironment: Main object of JInput */
 	public static ControllerEnvironment controllerEnvironment;
 
@@ -43,8 +46,11 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 	/** Keysym map */
 	public static HashMap<Integer, Component.Identifier.Key> keyMap;
 
+	/** List of all keyboards */
+	protected static List<Keyboard> listKeyboard = new ArrayList<Keyboard>();
+
 	/** Key down array */
-	protected boolean[] keyDownFlagArray = new boolean[KeyEvent.KEY_LAST];
+	protected static boolean[][] keyDownFlagArray;
 
 	/** Keyboard Listeners */
 	protected List<NFKeyListener> keyListeners = Collections.synchronizedList(new ArrayList<NFKeyListener>());
@@ -58,8 +64,7 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 	protected static void initKeyboard(int keyboardID) {
 		controllerEnvironment = ControllerEnvironment.getDefaultEnvironment();
 		controllers = controllerEnvironment.getControllers();
-
-		List<Keyboard> listKeyboard = new ArrayList<Keyboard>();
+		isAutoDetect = false;
 
 		log.trace("Start finding the controllers...");
 		for(int i = 0; i < controllers.length; i++) {
@@ -69,8 +74,9 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 				listKeyboard.add((Keyboard)c);
 			}
 
-			log.trace("Controller " + i + " : " + c.getType().toString());
+			log.trace("Controller #" + i + " : " + c.getType().toString() + " (" + c.toString() + ")");
 		}
+		keyDownFlagArray = new boolean[listKeyboard.size()][KeyEvent.KEY_LAST];
 
 		if(listKeyboard.size() == 0) {
 			log.error("JInput couldn't find any keyboard.");
@@ -81,11 +87,19 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 			return;
 		} else if(listKeyboard.size() >= 2) {
 			log.debug(listKeyboard.size() + " keyboards are found by JInput. (#0 - #" + (listKeyboard.size()-1) + ")");
+			for(int i = 0; i < listKeyboard.size(); i++) {
+				Keyboard kb = listKeyboard.get(i);
+				log.trace("Keyboard #" + i + " : " + kb.toString());
+			}
 		}
 
-		if(keyboardID < 0) {
-			log.trace("Preferred keyboard ID is less than 0. Last Keyboard (#" + (listKeyboard.size()-1) + ") will be used.");
-			keyboard = listKeyboard.get(listKeyboard.size()-1);
+		if(keyboardID == -1) {
+			log.trace("Preferred keyboard ID is -1. Keyboard will be auto-detected.");
+			keyboard = null;
+			isAutoDetect = true;
+		} else if(keyboardID < -1) {
+			log.trace("Preferred keyboard ID is less than -1. All keyboards will be used.");
+			keyboard = null;
 		} else if(keyboardID >= listKeyboard.size()) {
 			log.warn("Keyboard #" + keyboardID + " doesn't exist. " +
 					 "Last Keyboard (#" + (listKeyboard.size()-1) + ") will be used instead.");
@@ -235,16 +249,6 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 		}
 	}
 
-	public boolean isKeyDown(int key) {
-		if(keyboard != null) {
-			Component.Identifier.Key jiKey = keyMap.get(key);
-			if((jiKey != null) && (jiKey != Component.Identifier.Key.VOID)) {
-				return keyboard.isKeyDown(jiKey);
-			}
-		}
-		return false;
-	}
-
 	public String getKeyName(int key) {
 		return KeyEvent.getKeyText(key);
 	}
@@ -284,24 +288,55 @@ public class SlickNFJInputKeyboard implements NFKeyboard {
 		}
 	}
 
+	public boolean isKeyDown(int key) {
+		for(int i = 0; i < listKeyboard.size(); i++) {
+			Keyboard kb = listKeyboard.get(i);
+			if(keyboard == null || kb == keyboard) {
+				if(isKeyDown(key, kb)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public boolean isKeyDown(int key, Keyboard kb) {
+		if(kb != null) {
+			Component.Identifier.Key jiKey = keyMap.get(key);
+			if((jiKey != null) && (jiKey != Component.Identifier.Key.VOID)) {
+				return kb.isKeyDown(jiKey);
+			}
+		}
+		return false;
+	}
+
 	public void poll() {
-		if(keyboard != null) {
-			keyboard.poll();
+		for(int i = 0; i < listKeyboard.size(); i++) {
+			Keyboard kb = listKeyboard.get(i);
+			if(keyboard == null || kb == keyboard) {
+				kb.poll();
 
-			for(int i = 0; i < KeyEvent.KEY_LAST; i++) {
-				if(isKeySupported(i)) {
-					boolean down = isKeyDown(i);
+				for(int j = 0; j < KeyEvent.KEY_LAST; j++) {
+					if(isKeySupported(j)) {
+						boolean down = isKeyDown(j, kb);
 
-					if(down != keyDownFlagArray[i]) {
-						if(down) {
-							dispatchKeyPressed(i, (char)0);
-						} else {
-							dispatchKeyReleased(i, (char)0);
+						if(down != keyDownFlagArray[i][j]) {
+							if(isAutoDetect && (keyboard == null)) {
+								log.debug("Keyboard #" + i + " (" + kb.toString() + ") is autodetected");
+								keyboard = kb;
+							}
+							if(down) {
+								dispatchKeyPressed(j, (char)0);
+							} else {
+								dispatchKeyReleased(j, (char)0);
+							}
+							keyDownFlagArray[i][j] = down;
 						}
-						keyDownFlagArray[i] = down;
 					}
 				}
 			}
 		}
 	}
+
 }

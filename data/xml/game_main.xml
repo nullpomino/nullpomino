@@ -6,22 +6,75 @@
 
 	<controlDefinition name="gamefield" controller="cx.it.nullpo.nm8.gui.game.GameFieldController">
 		<panel childLayout="center">
-			<panel id="panel-field" backgroundColor="#000000" childLayout="absolute">
+			<panel id="#panel-field" backgroundColor="#000000" childLayout="absolute">
 			</panel>
 		</panel>
 	</controlDefinition>
 
 	<screen id="start" controller="cx.it.nullpo.nm8.gui.game.MainScreenController">
-		<layer childLayout="vertical" backgroundColor="#00000000">
-			<panel childLayout="horizontal" width="100%" height="10%" />
-			
-			<panel backgroundColor="#FF0000" childLayout="center" width="162" height="326" align="center" valign="center">
-				<panel childLayout="center" width="160" height="324" align="center" valign="center">
-					<control id="field-0" name="gamefield" blocksize="16" />
+		<layer childLayout="horizontal">
+			<!-- Player 1 -->
+			<panel childLayout="center" width="*" height="*">
+				<panel childLayout="horizontal" width="294" align="center" valign="center">
+					<!-- Hold -->
+					<panel backgroundColor="#FF0000" childLayout="center" width="66" height="66">
+						<panel childLayout="center" width="64" height="64" align="center" valign="center">
+							<control id="hold-0" name="gamefield" blocksize="16" />
+						</panel>
+					</panel>
+					<!-- Field -->
+					<panel backgroundColor="#FF0000" childLayout="center" width="162" height="326">
+						<panel childLayout="center" width="160" height="324" align="center" valign="center">
+							<control id="field-0" name="gamefield" blocksize="16" />
+						</panel>
+					</panel>
+					<!-- Next -->
+					<panel childLayout="vertical" width="66" height="326">
+						<!-- Next1 -->
+						<panel backgroundColor="#FF0000" childLayout="center" width="66" height="66" align="center">
+							<panel childLayout="center" width="64" height="64" align="center" valign="center">
+								<control id="next-0-0" name="gamefield" blocksize="16" />
+							</panel>
+						</panel>
+						<!-- Next2 -->
+						<panel backgroundColor="#FF0000" childLayout="center" width="59" height="59" align="center">
+							<panel childLayout="center" width="57" height="57" align="center" valign="center">
+								<control id="next-0-1" name="gamefield" blocksize="14" />
+							</panel>
+						</panel>
+						<!-- Next3 -->
+						<panel backgroundColor="#FF0000" childLayout="center" width="53" height="53" align="center">
+							<panel childLayout="center" width="51" height="51" align="center" valign="center">
+								<control id="next-0-2" name="gamefield" blocksize="12" />
+							</panel>
+						</panel>
+						<!-- Next4 -->
+						<panel backgroundColor="#FF0000" childLayout="center" width="46" height="46" align="center">
+							<panel childLayout="center" width="44" height="44" align="center" valign="center">
+								<control id="next-0-3" name="gamefield" blocksize="11" />
+							</panel>
+						</panel>
+						<!-- Next5 -->
+						<panel backgroundColor="#FF0000" childLayout="center" width="46" height="46" align="center">
+							<panel childLayout="center" width="44" height="44" align="center" valign="center">
+								<control id="next-0-4" name="gamefield" blocksize="11" />
+							</panel>
+						</panel>
+						<!-- Next6 -->
+						<panel backgroundColor="#FF0000" childLayout="center" width="46" height="46" align="center">
+							<panel childLayout="center" width="44" height="44" align="center" valign="center">
+								<control id="next-0-5" name="gamefield" blocksize="11" />
+							</panel>
+						</panel>
+					</panel>
 				</panel>
 			</panel>
-			
-			<panel childLayout="horizontal" width="100%" height="20%">
+		</layer>
+		
+		<layer childLayout="vertical">
+			<panel width="100%" height="90%" />
+			<panel childLayout="horizontal">
+				<panel width="5%" />
 				<control id="buttonStart" name="button" label="Start" focusable="false" />
 				<control id="buttonQuit" name="button" label="Quit" focusable="false" />
 			</panel>

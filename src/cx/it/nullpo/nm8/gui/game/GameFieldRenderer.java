@@ -176,6 +176,22 @@ public class GameFieldRenderer {
 		drawPiece(piece, piece.direction, g, x, y, blksize);
 	}
 
+	public static void drawPieceCenter(Piece piece, int direction, NFGraphics g, int x, int y, int blksize,
+										 int boxWidth, int boxHeight)
+	{
+		int pWidth = piece.getWidth() + 1;
+		int pHeight = piece.getHeight() + 1;
+		int x2 = ((boxWidth - (pWidth * blksize)) / 2) - (piece.getMinimumBlockX() * blksize);
+		int y2 = ((boxHeight - (pHeight * blksize)) / 2) - (piece.getMinimumBlockY() * blksize);
+		drawPiece(piece, direction, g, x+x2, y+y2, blksize);
+	}
+
+	public static void drawPieceCenter(Piece piece, NFGraphics g, int x, int y, int blksize,
+										int boxWidth, int boxHeight)
+	{
+		drawPieceCenter(piece, piece.direction, g, x, y, blksize, boxWidth, boxHeight);
+	}
+
 	/**
 	 * Draw a Block to somewhere on the screen
 	 * @param blk Block
@@ -190,11 +206,12 @@ public class GameFieldRenderer {
 
 		if(ResourceHolder.blockSkin != null) {
 			// TODO: Add support of multiple block skin
-			NFImage img = ResourceHolder.blockSkin.mapImageNormal.get(16);
+			int obs = 16;
+			NFImage img = ResourceHolder.blockSkin.mapImageNormal.get(obs);
 
 			if(img != null) {
 				NFColor col = new NFColor(255,255,255,(int)(blk.alpha * 255));
-				g.drawImage(img, x, y, x+blksize, y+blksize, blk.color * blksize, 0, (blk.color * blksize) + blksize, blksize, col);
+				g.drawImage(img, x, y, x+blksize, y+blksize, blk.color * obs, 0, (blk.color * obs) + obs, obs, col);
 			}
 		} else {
 			g.setColor(NFColor.green);

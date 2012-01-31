@@ -9,6 +9,7 @@ import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 
 import cx.it.nullpo.nm8.game.component.Controller;
+import cx.it.nullpo.nm8.game.component.Piece;
 import cx.it.nullpo.nm8.game.play.GameEngine;
 import cx.it.nullpo.nm8.game.play.GameManager;
 import cx.it.nullpo.nm8.game.play.GamePlay;
@@ -156,11 +157,41 @@ public class NullpoMinoNiftyGUI extends NFNEUROGame {
 				Screen curScreen = nifty.getCurrentScreen();
 				if(curScreen != null) {
 					for(int engineID = 0; engineID < gameManager.getNumberOfEngines(); engineID++) {
-						GameFieldController fldctl = curScreen.findControl("field-" + engineID, GameFieldController.class);
+						GameFieldController fldctl = null;
+						GameEngine engine = gameManager.getGameEngine(engineID);
 
+						// Draw Hold
+						fldctl = curScreen.findControl("hold-" + engineID, GameFieldController.class);
 						if((fldctl != null) && (fldctl.getElementPanelField() != null)) {
 							Element e = fldctl.getElementPanelField();
-							GameEngine engine = gameManager.getGameEngine(engineID);
+
+							if(engine.gameStarted) {
+								Piece piece = engine.getGamePlay(0).holdPieceObject;
+								if(piece != null) {
+									GameFieldRenderer.drawPieceCenter(piece, g, e.getX(), e.getY(),
+											fldctl.getBlockSize(), e.getWidth(), e.getHeight());
+								}
+							}
+						}
+						// Draw Next
+						for(int i = 0; i < engine.getGamePlay(0).ruleopt.nextDisplay; i++) {
+							fldctl = curScreen.findControl("next-" + engineID + "-" + i, GameFieldController.class);
+							if((fldctl != null) && (fldctl.getElementPanelField() != null)) {
+								Element e = fldctl.getElementPanelField();
+
+								if(engine.gameStarted) {
+									Piece piece = engine.getGamePlay(0).nextPieceArray[i];
+									if(piece != null) {
+										GameFieldRenderer.drawPieceCenter(piece, g, e.getX(), e.getY(),
+												fldctl.getBlockSize(), e.getWidth(), e.getHeight());
+									}
+								}
+							}
+						}
+						// Draw Field
+						fldctl = curScreen.findControl("field-" + engineID, GameFieldController.class);
+						if((fldctl != null) && (fldctl.getElementPanelField() != null)) {
+							Element e = fldctl.getElementPanelField();
 
 							if(engine.gameStarted) {
 								GameFieldRenderer.drawField(engine, g, e.getX(), e.getY(), e.getWidth(), e.getHeight(), fldctl.getBlockSize());

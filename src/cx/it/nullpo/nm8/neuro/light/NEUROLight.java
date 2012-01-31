@@ -28,14 +28,14 @@ public class NEUROLight extends NEUROCore {
 			dispatchEvent(new DebugEvent(this,DebugEvent.TYPE_WARNING,"Unable to load NEURO font"));
 		}
 	}
-	
+
 	public static NEURO create(NFSystem sys) {
 		NEUROLight neuro = new NEUROLight(sys);
-		
+
 		try {
 			new Nullterm().init(neuro);
 		} catch (PluginInitializationException e) {}
-		
+
 		return neuro;
 	}
 
@@ -62,7 +62,8 @@ public class NEUROLight extends NEUROCore {
 			String str = "POWERED BY "+getName().toUpperCase()+" "+getVersion();
 			int width = g.getStringWidth(str);
 			int x = (sys.getOriginalWidth() - width) / 2;
-			g.drawString(str,x,450);
+			int y = sys.getOriginalHeight() - 30;
+			g.drawString(str,x,y);
 		}
 	}
 

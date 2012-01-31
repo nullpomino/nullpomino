@@ -9,9 +9,6 @@ import cx.it.nullpo.nm8.gui.framework.NFKeyboard;
 import cx.it.nullpo.nm8.gui.framework.NFMouse;
 import cx.it.nullpo.nm8.gui.framework.NFMouseListener;
 import cx.it.nullpo.nm8.gui.framework.NFSystem;
-import cx.it.nullpo.nm8.gui.niftygui.NFInputSystem;
-import cx.it.nullpo.nm8.gui.niftygui.NFRenderDevice;
-import cx.it.nullpo.nm8.gui.niftygui.NFSoundDevice;
 import cx.it.nullpo.nm8.neuro.event.DebugEvent;
 import cx.it.nullpo.nm8.neuro.event.JoyAxisEvent;
 import cx.it.nullpo.nm8.neuro.event.JoyButtonEvent;
@@ -28,8 +25,6 @@ import cx.it.nullpo.nm8.neuro.gui.DummyManager;
 import cx.it.nullpo.nm8.neuro.gui.ScreenManager;
 import cx.it.nullpo.nm8.neuro.network.NetworkCommunicator;
 import cx.it.nullpo.nm8.neuro.plugin.NEUROPlugin;
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.tools.TimeProvider;
 
 /**
  * Implements some common functionality in all NEURO implementations, such as passing events.
@@ -58,16 +53,25 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 	protected ScreenManager manager;
 
 	/** The render device that will be used by this NEURO. */
-	private NFRenderDevice renderDevice;
+	//private NFRenderDevice renderDevice;
 
 	/** The sound device that will be used by this NEURO. */
-	private NFSoundDevice soundDevice;
+	//private NFSoundDevice soundDevice;
 
 	/** The input system that will be used by this NEURO. */
-	private NFInputSystem inputSys;
+	//private NFInputSystem inputSys;
 
 	/** The time provider that will be used by this NEURO. */
-	private TimeProvider timeProvider;
+	//private TimeProvider timeProvider;
+
+	/** true if keyboard manager becomes available */
+	private boolean keyboardAvailable;
+
+	/** true if mouse manager becomes available */
+	private boolean mouseAvailable;
+
+	/** true if joystick manager becomes available */
+	private boolean joystickAvailable;
 
 	/**
 	 * Constructor for NEUROCore.
@@ -77,14 +81,8 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		// Set up system and input handling
 		this.sys = sys;
 		if (sys != null) {
-			sys.getKeyboard().addKeyListener(this);
-			if(sys.getMouse() != null) {
-				sys.getMouse().addMouseListener(this);
-			}
-			if(sys.getJoystickManager() != null && sys.getJoystickManager().isInited()) {
-				sys.getJoystickManager().addListener(this);
-			}
-			inputSys = new NFInputSystem(sys.getKeyboard(),sys.getMouse());
+			checkDeviceAvailable();
+			//inputSys = new NFInputSystem(sys.getKeyboard(),sys.getMouse());
 		}
 
 		overlayUpdateFlag = false;
@@ -92,10 +90,32 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 
 		manager = new DummyManager();
 
-		renderDevice = new NFRenderDevice(sys);
-		soundDevice = new NFSoundDevice(sys);
-		timeProvider = new TimeProvider();
+		//renderDevice = new NFRenderDevice(sys);
+		//soundDevice = new NFSoundDevice(sys);
+		//timeProvider = new TimeProvider();
 
+	}
+
+	/**
+	 * Check if additional device manager becomes available
+	 * (We need to run this code multiple times as mouse and joysticks are not available when NEURO is inited)
+	 */
+	protected void checkDeviceAvailable() {
+		if(!keyboardAvailable && sys.getKeyboard() != null) {
+			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "Keyboard manager is available"));
+			sys.getKeyboard().addKeyListener(this);
+			keyboardAvailable = true;
+		}
+		if(!mouseAvailable && sys.getMouse() != null) {
+			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "Mouse manager is available"));
+			sys.getMouse().addMouseListener(this);
+			mouseAvailable = true;
+		}
+		if(!joystickAvailable && sys.getJoystickManager() != null && sys.getJoystickManager().isInited()) {
+			dispatchEvent(new DebugEvent(this, DebugEvent.TYPE_DEBUG, "Joystick manager is available"));
+			sys.getJoystickManager().addListener(this);
+			joystickAvailable = true;
+		}
 	}
 
 	@Override
@@ -103,7 +123,7 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 		if (p instanceof NFGame) {
 			game = (NFGame) p;
 		}
-		p.initGUI(new Nifty(renderDevice,soundDevice,inputSys,timeProvider));
+		//p.initGUI(new Nifty(renderDevice,soundDevice,inputSys,timeProvider));
 		super.addPlugin(p);
 	}
 
@@ -125,6 +145,8 @@ public abstract class NEUROCore extends NEUROBase implements NFKeyListener, NFMo
 
 	@Override
 	public void update(long delta) {
+		// Check more devices
+		checkDeviceAvailable();
 		// Update the game
 		game.update(sys, delta);
 		// Update the overlay if applicable
