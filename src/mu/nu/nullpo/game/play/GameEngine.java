@@ -1894,8 +1894,13 @@ public class GameEngine {
 			if(owner.mode != null) owner.mode.renderInput(this, playerID);
 			owner.receiver.renderInput(this, playerID);
 		}
-		if (aiShowState && ai != null)
-			ai.renderState(this, playerID);
+		if (ai != null)
+		{
+			if (aiShowState)
+				ai.renderState(this, playerID);
+			if (aiShowHint)
+				ai.renderHint(this, playerID);
+		}
 
 		// 最後の処理
 		if(owner.mode != null) owner.mode.renderLast(this, playerID);

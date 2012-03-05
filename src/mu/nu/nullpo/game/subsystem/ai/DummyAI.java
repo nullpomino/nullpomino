@@ -83,4 +83,7 @@ public class DummyAI implements AIPlayer {
 
 	public void shutdown(GameEngine engine, int playerID) {
 	}
+
+	public void renderHint(GameEngine engine, int playerID) {
+	}
 }

@@ -90,4 +90,11 @@ public interface AIPlayer {
 	 * @param playerID Player ID
 	 */
 	public void newPiece(GameEngine engine, int playerID);
+
+	/**
+	 * Called to display additional hint information
+	 * @param engine The GameEngine that owns this AI
+	 * @param playerID Player ID
+	 */
+	public void renderHint(GameEngine engine, int playerID);
 }

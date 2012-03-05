@@ -45,6 +45,9 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/** 接地したあとのDirection(0: None) */
 	public int bestRtSub;
 
+	/** Position before twist for hint display */
+	public int bestXSub, bestYSub;
+
 	/** 最善手のEvaluation score */
 	public int bestPts;
 
@@ -93,7 +96,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 */
 	@Override
 	public String getName() {
-		return "Combo Race AI V1.02";
+		return "Combo Race AI V1.03";
 	}
 
 	/*
@@ -269,7 +272,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 					if (DEBUG_ALL) log.debug("lrot = " + lrot + ", rrot = " + rrot);
 
 					if(best180 && (engine.ruleopt.rotateButtonAllowDouble) && !ctrl.isPress(Controller.BUTTON_E))
-						input |= Controller.BUTTON_BIT_E;
+						rotateDir = 2;
 					else if (bestRt == rrot)
 						rotateDir = 1;
 					else if(bestRt == lrot)
@@ -563,6 +566,8 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		{
 			Piece pieceTemp = bestHold ? pieceHold : pieceNow;
 			bestY = pieceTemp.getBottom(bestX, bestY, bestRt, fld);
+			bestXSub = bestX;
+			bestYSub = bestY;
 			if (bestRtSub != 0)
 			{
 				int newRt = (bestRt + bestRtSub + Piece.DIRECTION_COUNT) % Piece.DIRECTION_COUNT;
@@ -576,8 +581,11 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 						bestY = pieceTemp.getBottom(bestX, bestY + kick.offsetY, newRt, fld);
 					}
 				}
+				bestRtSub = bestRt;
 				bestRt = newRt;
 			}
+			else
+				bestRtSub = bestRt;
 		}
 
 		//System.out.println("X:" + bestX + " Y:" + bestY + " R:" + bestRt + " H:" + bestHold + " Pts:" + bestPts);
@@ -911,6 +919,11 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		r.drawScoreFont(engine, playerID, 27, 35, String.valueOf(bestY), !thinkSuccess, 0.5f);
 		r.drawScoreFont(engine, playerID, 30, 35, String.valueOf(bestRt), !thinkSuccess, 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 36, "SUB:", EventReceiver.COLOR_BLUE, 0.5f);
+		if (engine.aiShowHint)
+		{
+			r.drawScoreFont(engine, playerID, 24, 36, String.valueOf(bestXSub), !thinkSuccess, 0.5f);
+			r.drawScoreFont(engine, playerID, 27, 36, String.valueOf(bestYSub), !thinkSuccess, 0.5f);
+		}
 		r.drawScoreFont(engine, playerID, 30, 36, String.valueOf(bestRtSub), !thinkSuccess, 0.5f);
 		r.drawScoreFont(engine, playerID, 19, 37, "NOW:", EventReceiver.COLOR_BLUE, 0.5f);
 		if (engine.nowPieceObject == null)
@@ -969,6 +982,154 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 		r.drawScoreFont(engine, playerID, 25, 45,
 				(code == -1) ? "---" : Integer.toHexString(code).toUpperCase(), 0.5f);
 		
+	}
+
+	public void renderHint(GameEngine engine, int playerID) {
+		EventReceiver r = engine.owner.receiver;
+		r.drawScoreFont(engine, playerID, 10, 3, "AI HINT MOVE:", EventReceiver.COLOR_GREEN);
+		if (bestPts > 0 && (thinkComplete || ((thinkCurrentPieceNo > 0)
+				&& (thinkCurrentPieceNo <= thinkLastPieceNo))))
+		{
+			if((bestHold == true) && thinkComplete && engine.isHoldOK())
+				r.drawScoreFont(engine, playerID, 10, 4, "HOLD");
+			else
+			{
+				Piece pieceNow = engine.nowPieceObject;
+				Field fld = engine.field;
+				if (fld == null || pieceNow == null)
+					return;
+				int nowX = engine.nowPieceX;
+				int nowY = engine.nowPieceY;
+				int rt = pieceNow.direction;
+				boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
+				if (pieceTouchGround && nowX == bestX && nowY == bestY && rt == bestRt)
+					return;
+				else if (pieceTouchGround && nowX == bestXSub && nowY == bestYSub && rt == bestRtSub)
+				{
+					int rotateDir = 0; //-1 = left,  1 = right, 2 = 180
+					boolean best180 = Math.abs(rt - bestRt) == 2;
+					//if (DEBUG_ALL) log.debug("Case 1 rotation");
+
+					int lrot = engine.getRotateDirection(-1);
+					int rrot = engine.getRotateDirection(1);
+					if (DEBUG_ALL) log.debug("lrot = " + lrot + ", rrot = " + rrot);
+
+					if(best180 && (engine.ruleopt.rotateButtonAllowDouble))
+						rotateDir = 2;
+					else if (bestRt == rrot)
+						rotateDir = 1;
+					else if(bestRt == lrot)
+						rotateDir = -1;
+					else if (engine.ruleopt.rotateButtonAllowReverse && best180 && (rt&1) == 1)
+					{
+						if(rrot == Piece.DIRECTION_UP)
+							rotateDir = 1;
+						else
+							rotateDir = -1;
+					}
+					else
+						rotateDir = 1;
+					if (rotateDir == -1)
+						r.drawScoreFont(engine, playerID, 10, 4, "ROTATE LEFT");
+					else if (rotateDir == 1)
+						r.drawScoreFont(engine, playerID, 10, 4, "ROTATE RIGHT");
+					else if (rotateDir == 2)
+						r.drawScoreFont(engine, playerID, 10, 4, "ROTATE 180");
+					return;
+				}
+				
+				int moveDir = 0; //-1 = left,  1 = right
+				int rotateDir = 0; //-1 = left,  1 = right, 2 = 180
+				int drop = 0; //1 = up, -1 = down
+				int writeY = 4;
+				
+				if (rt != bestRtSub)
+				{
+					boolean best180 = Math.abs(rt - bestRtSub) == 2;
+					//if (DEBUG_ALL) log.debug("Case 1 rotation");
+
+					int lrot = engine.getRotateDirection(-1);
+					int rrot = engine.getRotateDirection(1);
+					if (DEBUG_ALL) log.debug("lrot = " + lrot + ", rrot = " + rrot);
+
+					if(best180 && (engine.ruleopt.rotateButtonAllowDouble))
+						rotateDir = 2;
+					else if (bestRtSub == rrot)
+						rotateDir = 1;
+					else if(bestRtSub == lrot)
+						rotateDir = -1;
+					else if (engine.ruleopt.rotateButtonAllowReverse && best180 && (rt&1) == 1)
+					{
+						if(rrot == Piece.DIRECTION_UP)
+							rotateDir = 1;
+						else
+							rotateDir = -1;
+					}
+					else
+						rotateDir = 1;
+					if (rotateDir == -1)
+						r.drawScoreFont(engine, playerID, 10, writeY, "ROTATE LEFT");
+					else if (rotateDir == 1)
+						r.drawScoreFont(engine, playerID, 10, writeY, "ROTATE RIGHT");
+					else if (rotateDir == 2)
+						r.drawScoreFont(engine, playerID, 10, writeY, "ROTATE 180");
+					writeY++;
+				}
+
+				// 到達可能な位置かどうか
+				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
+				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
+
+				if(movestate == 0 && (rt == bestRtSub)
+						 && ((bestXSub < minX - 1) || (bestXSub > maxX + 1) || (bestYSub < nowY))) {
+					// 到達不能なので再度思考する
+					//thinkBestPosition(engine, playerID);
+					thinkComplete = false;
+					//thinkCurrentPieceNo++;
+					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
+					if (DEBUG_ALL) log.debug("Needs rethink - cannot reach desired position");
+					thinkRequest.newRequest();
+				} else {
+					if((nowX == bestXSub || movestate > 0) && (rt == bestRtSub)) {
+						moveDir = 0;
+						// 目標到達
+						if(bestRtSub == bestRt) {
+							if (pieceTouchGround && engine.ruleopt.softdropLock)
+								drop = -1;
+							else if(engine.ruleopt.harddropEnable)
+								drop = 1;
+							else if(engine.ruleopt.softdropEnable || engine.ruleopt.softdropLock)
+								drop = -1;
+						} else {
+							if(engine.ruleopt.harddropEnable && !engine.ruleopt.harddropLock)
+								drop = 1;
+							else if(engine.ruleopt.softdropEnable && !engine.ruleopt.softdropLock)
+								drop = -1;
+						}
+					}
+					else if (nowX > bestXSub)
+						moveDir = -1;
+					else if(nowX < bestXSub)
+						moveDir = 1;
+				}
+				if (moveDir != 0)
+				{
+					if (moveDir == -1)
+						r.drawScoreFont(engine, playerID, 10, writeY, "MOVE LEFT");
+					else if (moveDir == 1)
+						r.drawScoreFont(engine, playerID, 10, writeY, "MOVE RIGHT");
+					writeY++;
+				}
+				if (drop != 0)
+				{
+					if (drop == -1)
+						r.drawScoreFont(engine, playerID, 10, writeY, "SOFT DROP");
+					else if (drop == 1)
+						r.drawScoreFont(engine, playerID, 10, writeY, "HARD DROP");
+					writeY++;
+				}
+			}
+		}
 	}
 
 	protected static class Transition
