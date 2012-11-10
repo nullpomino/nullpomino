@@ -167,7 +167,8 @@ public abstract class Avalanche1PDummyMode extends AbstractMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 		lastscore = 0;
 		lastmultiplier = 0;
 		scgettime = 0;

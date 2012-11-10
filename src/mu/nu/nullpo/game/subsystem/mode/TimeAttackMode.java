@@ -301,7 +301,8 @@ public class TimeAttackMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 
 		norm = 0;
 		goaltype = 0;

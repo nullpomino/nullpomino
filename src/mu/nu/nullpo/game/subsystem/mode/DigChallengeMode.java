@@ -151,7 +151,8 @@ public class DigChallengeMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 
 		lastscore = 0;
 		lastbonusscore = 0;

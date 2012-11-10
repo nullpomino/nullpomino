@@ -239,7 +239,8 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 		ojamaFever[playerID] = 0;
 		feverPoints[playerID] = 0;
 		feverTime[playerID] = feverTimeMin[playerID] * 60;

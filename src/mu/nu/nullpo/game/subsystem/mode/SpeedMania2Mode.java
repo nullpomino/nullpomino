@@ -224,7 +224,8 @@ public class SpeedMania2Mode extends AbstractMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 
 		nextseclv = 0;
 		lvupflag = true;

@@ -254,7 +254,8 @@ public class NetVSBattleMode extends NetDummyVSMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 
 		if((playerID == 0) && (!netvsIsWatch())) {
 			lastHole = -1;

@@ -140,7 +140,8 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 
 		cleared = false;
 		boardsPlayed = 0;

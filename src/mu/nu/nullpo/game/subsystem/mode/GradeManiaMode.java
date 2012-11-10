@@ -240,7 +240,8 @@ public class GradeManiaMode extends AbstractMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 
 		gravityindex = 0;
 		nextseclv = 0;

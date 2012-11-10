@@ -263,7 +263,8 @@ public class AvalancheVSSPFMode extends AvalancheVSDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 		numColors[playerID] = 4;
 		ojamaHard[playerID] = 4;
 		countdownDecremented[playerID] = true;

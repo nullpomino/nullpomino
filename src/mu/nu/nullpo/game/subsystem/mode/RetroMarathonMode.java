@@ -183,7 +183,8 @@ public class RetroMarathonMode extends AbstractMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 		lastscore = 0;
 		scgettime = 0;
 		softdropscore = 0;

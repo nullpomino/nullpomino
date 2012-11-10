@@ -208,7 +208,8 @@ public class TechnicianMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		super.playerInit(engine, playerID);
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 		goal = 0;
 		levelTimer = 0;
 		levelTimeOut = false;
