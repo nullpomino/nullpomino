@@ -218,9 +218,12 @@ public abstract class AbstractMode implements GameMode {
 	}
 
 	public void renderSetting(GameEngine engine, int playerID) {
-		//TODO: Multi-page menus
+		//TODO: Custom page breaks
 		AbstractMenuItem menuItem;
-		for (int i = 0; i < menu.size(); i++)
+		int pageNum = engine.statc[2] / 10;
+		int pageStart = pageNum * 10;
+		int endPage = Math.min(menu.size(), pageStart+10);
+		for (int i = pageStart; i < endPage; i++)
 		{
 			menuItem = menu.get(i);
 			receiver.drawMenuFont(engine, playerID, 0, i << 1, menuItem.displayName, menuItem.color);
