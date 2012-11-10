@@ -33,7 +33,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * Special base class for netplay
  */
-public class NetDummyMode extends DummyMode implements NetLobbyListener {
+public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 	/** Log (Declared in NetDummyMode) */
 	static Logger log = Logger.getLogger(NetDummyMode.class);
 

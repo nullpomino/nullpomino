@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * SCORE ATTACK mode (Original from NullpoUE build 121909 by Zircean)
  */
-public class ScoreAttackMode extends DummyMode {
+public class ScoreAttackMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
 
@@ -75,10 +75,8 @@ public class ScoreAttackMode extends DummyMode {
 	private static final int DEFAULT_SECTION_TIME = 6000;
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Current gravity index number (Increases when the level reaches to certain value that defined in tableGravityChangeLevel) */
 	private int gravityindex;
@@ -174,8 +172,7 @@ public class ScoreAttackMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		gravityindex = 0;
 		nextseclv = 0;
@@ -231,7 +228,7 @@ public class ScoreAttackMode extends DummyMode {
 	/**
 	 * Load the settings
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("scoreattack.startlevel", 0);
 		alwaysghost = prop.getProperty("scoreattack.alwaysghost", false);
 		always20g = prop.getProperty("scoreattack.always20g", false);
@@ -243,7 +240,7 @@ public class ScoreAttackMode extends DummyMode {
 	/**
 	 * Save the settings
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("scoreattack.startlevel", startlevel);
 		prop.setProperty("scoreattack.alwaysghost", alwaysghost);
 		prop.setProperty("scoreattack.always20g", always20g);

@@ -59,9 +59,6 @@ public class DigRaceMode extends NetDummyMode {
 	/** Table of garbage lines */
 	private static final int[] GOAL_TABLE = {5, 10, 18};
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** BGM number */
 	private int bgmno;
 
@@ -102,8 +99,7 @@ public class DigRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		bgmno = 0;
 		big = false;

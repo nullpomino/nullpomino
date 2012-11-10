@@ -132,7 +132,6 @@ public class ComboRaceMode extends NetDummyMode {
 	
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Elapsed time from last line clear (lastscore is displayed to screen until this reaches to 120) */
 	private int scgettime;
@@ -210,8 +209,7 @@ public class ComboRaceMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		scgettime = 0;
 		lastevent = EVENT_NONE;

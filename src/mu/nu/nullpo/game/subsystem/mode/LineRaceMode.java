@@ -55,9 +55,6 @@ public class LineRaceMode extends NetDummyMode {
 	/** Target line count constants */
 	private static final int[] GOAL_TABLE = {20, 40, 100};
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** BGM number */
 	private int bgmno;
 

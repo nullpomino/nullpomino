@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * SPEED MANIA Mode
  */
-public class SpeedManiaMode extends DummyMode {
+public class SpeedManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 3;
 
@@ -85,12 +85,6 @@ public class SpeedManiaMode extends DummyMode {
 
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 2520;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Next Section の level (これ-1のときに levelストップする) */
 	private int nextseclv;
@@ -213,8 +207,7 @@ public class SpeedManiaMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		nextseclv = 0;
 		lvupflag = true;
@@ -280,7 +273,7 @@ public class SpeedManiaMode extends DummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("speedmania.startlevel", 0);
 		lvstopse = prop.getProperty("speedmania.lvstopse", false);
 		showsectiontime = prop.getProperty("speedmania.showsectiontime", false);
@@ -292,7 +285,7 @@ public class SpeedManiaMode extends DummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("speedmania.startlevel", startlevel);
 		prop.setProperty("speedmania.lvstopse", lvstopse);
 		prop.setProperty("speedmania.showsectiontime", showsectiontime);

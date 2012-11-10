@@ -32,14 +32,15 @@ import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.game.subsystem.mode.menu.ManiaLevelMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.OnOffMenuItem;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
  * GRADE MANIA Mode
  */
-public class GradeManiaMode extends DummyMode {
+public class GradeManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
@@ -109,12 +110,6 @@ public class GradeManiaMode extends DummyMode {
 
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
@@ -211,6 +206,16 @@ public class GradeManiaMode extends DummyMode {
 
 	/** Section Time記録 */
 	private int[] bestSectionTime;
+	
+	public GradeManiaMode() {
+		propName = "grademania";
+		menu.add(new ManiaLevelMenuItem("startlevel", "LEVEL", EventReceiver.COLOR_BLUE));
+		menu.add(new OnOffMenuItem("alwaysghost", "FULL GHOST", EventReceiver.COLOR_BLUE, false));
+		menu.add(new OnOffMenuItem("always20g", "20G MODE", EventReceiver.COLOR_BLUE, false));
+		menu.add(new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false));
+		menu.add(new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false));
+		menu.add(new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false));
+	}
 
 	/*
 	 * Mode name
@@ -225,8 +230,7 @@ public class GradeManiaMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		gravityindex = 0;
 		nextseclv = 0;
@@ -286,32 +290,6 @@ public class GradeManiaMode extends DummyMode {
 	}
 
 	/**
-	 * Load settings from property file
-	 * @param prop Property file
-	 */
-	private void loadSetting(CustomProperties prop) {
-		startlevel = prop.getProperty("grademania.startlevel", 0);
-		alwaysghost = prop.getProperty("grademania.alwaysghost", false);
-		always20g = prop.getProperty("grademania.always20g", false);
-		lvstopse = prop.getProperty("grademania.lvstopse", false);
-		showsectiontime = prop.getProperty("grademania.showsectiontime", false);
-		big = prop.getProperty("grademania.big", false);
-	}
-
-	/**
-	 * Save settings to property file
-	 * @param prop Property file
-	 */
-	private void saveSetting(CustomProperties prop) {
-		prop.setProperty("grademania.startlevel", startlevel);
-		prop.setProperty("grademania.alwaysghost", alwaysghost);
-		prop.setProperty("grademania.always20g", always20g);
-		prop.setProperty("grademania.lvstopse", lvstopse);
-		prop.setProperty("grademania.showsectiontime", showsectiontime);
-		prop.setProperty("grademania.big", big);
-	}
-
-	/**
 	 * Update falling speed
 	 * @param engine GameEngine
 	 */
@@ -356,37 +334,8 @@ public class GradeManiaMode extends DummyMode {
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// Menu
-		if(engine.owner.replayMode == false) {
-			// Configuration changes
-			int change = updateCursor(engine, 5);
-
-			if(change != 0) {
-				engine.playSE("change");
-
-				switch(engine.statc[2]) {
-				case 0:
-					startlevel += change;
-					if(startlevel < 0) startlevel = 9;
-					if(startlevel > 9) startlevel = 0;
-					owner.backgroundStatus.bg = startlevel;
-					break;
-				case 1:
-					alwaysghost = !alwaysghost;
-					break;
-				case 2:
-					always20g = !always20g;
-					break;
-				case 3:
-					lvstopse = !lvstopse;
-					break;
-				case 4:
-					showsectiontime = !showsectiontime;
-					break;
-				case 5:
-					big = !big;
-					break;
-				}
-			}
+		if(!engine.owner.replayMode) {
+			updateMenu(engine);
 
 			//  section time display切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
@@ -420,20 +369,6 @@ public class GradeManiaMode extends DummyMode {
 		}
 
 		return true;
-	}
-
-	/*
-	 * Render the settings screen
-	 */
-	@Override
-	public void renderSetting(GameEngine engine, int playerID) {
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"LEVEL", String.valueOf(startlevel * 100),
-				"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
-				"20G MODE", GeneralUtil.getONorOFF(always20g),
-				"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
-				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
-				"BIG",  GeneralUtil.getONorOFF(big));
 	}
 
 	/*

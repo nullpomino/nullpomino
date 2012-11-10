@@ -46,7 +46,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * PHYSICIAN VS-BATTLE mode (beta)
  */
-public class PhysicianVSMode extends DummyMode {
+public class PhysicianVSMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
 
@@ -85,12 +85,6 @@ public class PhysicianVSMode extends DummyMode {
 
 	/** Each player's frame color */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** 溜まっているojama blockのcount */
 	//private int[] garbage;

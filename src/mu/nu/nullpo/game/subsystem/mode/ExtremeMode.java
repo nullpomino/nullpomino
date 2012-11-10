@@ -86,9 +86,6 @@ public class ExtremeMode extends NetDummyMode {
 							 EVENT_TSPIN_TRIPLE = 11,
 							 EVENT_TSPIN_EZ = 12;
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** Most recent increase in score */
 	private int lastscore;
 
@@ -171,8 +168,7 @@ public class ExtremeMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		lastevent = EVENT_NONE;
@@ -755,7 +751,7 @@ public class ExtremeMode extends NetDummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("extreme.startlevel", 0);
 		tspinEnableType = prop.getProperty("extreme.tspinEnableType", 1);
 		enableTSpin = prop.getProperty("extreme.enableTSpin", true);
@@ -773,7 +769,7 @@ public class ExtremeMode extends NetDummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("extreme.startlevel", startlevel);
 		prop.setProperty("extreme.tspinEnableType", tspinEnableType);
 		prop.setProperty("extreme.enableTSpin", enableTSpin);

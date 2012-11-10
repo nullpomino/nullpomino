@@ -545,7 +545,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("avalanche.gametype", 0);
 		sprintTarget = prop.getProperty("avalanche.sprintTarget", 0);
 		scoreType = prop.getProperty("avalanche.scoreType", 0);
@@ -563,7 +563,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("avalanche.gametype", gametype);
 		prop.setProperty("avalanche.sprintTarget", sprintTarget);
 		prop.setProperty("avalanche.scoreType", scoreType);

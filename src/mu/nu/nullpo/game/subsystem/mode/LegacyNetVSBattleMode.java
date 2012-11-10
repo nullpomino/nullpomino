@@ -173,9 +173,6 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 
 	private static int GARBAGE_DENOMINATOR = 60; // can be divided by 2,3,4,5
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** Current room ID */
 	private int currentRoomID;
 

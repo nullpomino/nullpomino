@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 /**
  * GRADE MANIA 3 Mode
  */
-public class GradeMania3Mode extends DummyMode {
+public class GradeMania3Mode extends AbstractMode {
 	/** Log */
 	static final Logger log = Logger.getLogger(GradeMania3Mode.class);
 
@@ -165,12 +165,6 @@ public class GradeMania3Mode extends DummyMode {
 
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
@@ -395,8 +389,7 @@ public class GradeMania3Mode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		gravityindex = 0;
 		nextseclv = 0;
@@ -519,7 +512,7 @@ public class GradeMania3Mode extends DummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("grademania3.startlevel", 0);
 		internalStartLevel = prop.getProperty("grademania3.internalLevel", startlevel * 100);
 		alwaysghost = prop.getProperty("grademania3.alwaysghost", false);
@@ -537,7 +530,7 @@ public class GradeMania3Mode extends DummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("grademania3.startlevel", startlevel);
 		prop.setProperty("grademania3.internalLevel", internalStartLevel);
 		prop.setProperty("grademania3.alwaysghost", alwaysghost);

@@ -13,7 +13,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * VS-LINE RACE Mode
  */
-public class VSLineRaceMode extends DummyMode {
+public class VSLineRaceMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
 
@@ -22,12 +22,6 @@ public class VSLineRaceMode extends DummyMode {
 
 	/** Each player's frame color */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Number of lines to clear */
 	private int[] goalLines;

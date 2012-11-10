@@ -105,9 +105,6 @@ public class TechnicianMode extends NetDummyMode {
 	/** Ending time */
 	private static final int TIMELIMIT_ROLL = 3600;
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** Number of Goal-points remaining */
 	private int goal;
 
@@ -211,8 +208,7 @@ public class TechnicianMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		goal = 0;
 		levelTimer = 0;
 		levelTimeOut = false;
@@ -968,7 +964,7 @@ public class TechnicianMode extends NetDummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		goaltype = prop.getProperty("technician.gametype", 0);
 		startlevel = prop.getProperty("technician.startlevel", 0);
 		tspinEnableType = prop.getProperty("technician.tspinEnableType", 1);
@@ -986,7 +982,7 @@ public class TechnicianMode extends NetDummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("technician.gametype", goaltype);
 		prop.setProperty("technician.startlevel", startlevel);
 		prop.setProperty("technician.tspinEnableType", tspinEnableType);

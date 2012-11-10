@@ -45,7 +45,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * VS-BATTLE Mode
  */
-public class VSBattleMode extends DummyMode {
+public class VSBattleMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 5;
 
@@ -85,12 +85,6 @@ public class VSBattleMode extends DummyMode {
 
 	/** Each player's frame color */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** garbage blockのタイプ */
 	private int[] garbageType;

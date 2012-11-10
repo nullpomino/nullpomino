@@ -82,9 +82,6 @@ public class MarathonPlusMode extends NetDummyMode {
 							 EVENT_TSPIN_TRIPLE = 11,
 							 EVENT_TSPIN_EZ = 12;
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** Most recent increase in score */
 	private int lastscore;
 
@@ -173,8 +170,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		lastevent = EVENT_NONE;
@@ -936,7 +932,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("marathonplus.startlevel", 0);
 		tspinEnableType = prop.getProperty("marathonplus.tspinEnableType", 1);
 		enableTSpin = prop.getProperty("marathonplus.enableTSpin", true);
@@ -953,7 +949,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("marathonplus.startlevel", startlevel);
 		prop.setProperty("marathonplus.tspinEnableType", tspinEnableType);
 		prop.setProperty("marathonplus.enableTSpin", enableTSpin);

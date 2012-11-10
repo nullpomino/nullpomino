@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * GRADE MANIA 2 Mode
  */
-public class GradeMania2Mode extends DummyMode {
+public class GradeMania2Mode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 2;
 
@@ -136,12 +136,6 @@ public class GradeMania2Mode extends DummyMode {
 
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
@@ -306,8 +300,7 @@ public class GradeMania2Mode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		gravityindex = 0;
 		nextseclv = 0;
@@ -386,7 +379,7 @@ public class GradeMania2Mode extends DummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("grademania2.startlevel", 0);
 		alwaysghost = prop.getProperty("grademania2.alwaysghost", false);
 		always20g = prop.getProperty("grademania2.always20g", false);
@@ -399,7 +392,7 @@ public class GradeMania2Mode extends DummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("grademania2.startlevel", startlevel);
 		prop.setProperty("grademania2.alwaysghost", alwaysghost);
 		prop.setProperty("grademania2.always20g", always20g);

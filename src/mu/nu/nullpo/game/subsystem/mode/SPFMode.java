@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 /**
  * SPF VS-BATTLE mode (Beta)
  */
-public class SPFMode extends DummyMode {
+public class SPFMode extends AbstractMode {
 	/** Log (Apache log4j) */
 	static Logger log = Logger.getLogger(SPFMode.class);
 
@@ -200,12 +200,6 @@ public class SPFMode extends DummyMode {
 
 	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** 溜まっているojama blockのcount */
 	private int[] ojama;

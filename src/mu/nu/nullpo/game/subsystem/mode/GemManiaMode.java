@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 /**
  * GEM MANIA
  */
-public class GemManiaMode extends DummyMode {
+public class GemManiaMode extends AbstractMode {
 	/** Log */
 	static Logger log = Logger.getLogger(GemManiaMode.class);
 
@@ -79,12 +79,6 @@ public class GemManiaMode extends DummyMode {
 
 	/** Number of entries in rankings */
 	private static final int RANKING_MAX = 10;
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Stage set property file */
 	private CustomProperties propStageSet;
@@ -466,7 +460,7 @@ public class GemManiaMode extends DummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startstage = prop.getProperty("gemmania.startstage", 0);
 		stageset = prop.getProperty("gemmania.stageset", -1);
 		alwaysghost = prop.getProperty("gemmania.alwaysghost", false);
@@ -482,7 +476,7 @@ public class GemManiaMode extends DummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("gemmania.startstage", startstage);
 		prop.setProperty("gemmania.stageset", stageset);
 		prop.setProperty("gemmania.alwaysghost", alwaysghost);

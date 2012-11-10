@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * RETRO MASTERY mode by Pineapple 20100722 - 20100808
  */
-public class RetroMasteryMode extends DummyMode {
+public class RetroMasteryMode extends AbstractMode {
 	/** Current version of this mode */
 	private static final int CURRENT_VERSION = 1;
 
@@ -88,10 +88,8 @@ public class RetroMasteryMode extends DummyMode {
 	private static final int RANKING_TYPE = 3;
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Amount of points you just get from line clears */
 	private int lastscore;
@@ -533,7 +531,7 @@ public class RetroMasteryMode extends DummyMode {
 	 * Load the settings
 	 * @param prop CustomProperties
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("retromastery.gametype", 0);
 		startlevel = prop.getProperty("retromastery.startlevel", 0);
 		big = prop.getProperty("retromastery.big", false);
@@ -544,7 +542,7 @@ public class RetroMasteryMode extends DummyMode {
 	 * Save the settings
 	 * @param prop CustomProperties
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("retromastery.gametype", gametype);
 		prop.setProperty("retromastery.startlevel", startlevel);
 		prop.setProperty("retromastery.big", big);

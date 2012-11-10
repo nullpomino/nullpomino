@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * RETRO MANIA mode (Original from NullpoUE build 121909 by Zircean)
  */
-public class RetroManiaMode extends DummyMode {
+public class RetroManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 2;
 
@@ -87,10 +87,8 @@ public class RetroManiaMode extends DummyMode {
 	private static final int MAX_LEVEL = 99;
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Amount of points you just get from line clears */
 	private int lastscore;
@@ -144,8 +142,7 @@ public class RetroManiaMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		levelTimer = 0;
@@ -473,7 +470,7 @@ public class RetroManiaMode extends DummyMode {
 	/**
 	 * Load the settings
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("retromania.startlevel", 0);
 		gametype = prop.getProperty("retromania.gametype", 0);
 		big = prop.getProperty("retromania.big", false);
@@ -484,7 +481,7 @@ public class RetroManiaMode extends DummyMode {
 	/**
 	 * Save the settings
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("retromania.startlevel", startlevel);
 		prop.setProperty("retromania.gametype", gametype);
 		prop.setProperty("retromania.big", big);

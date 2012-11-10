@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * FINAL mode (Original from NullpoUE build 010210 by Zircean)
  */
-public class FinalMode extends DummyMode {
+public class FinalMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 3;
 
@@ -82,10 +82,8 @@ public class FinalMode extends DummyMode {
 	private static final int DEFAULT_SECTION_TIME = 1800;
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Next section level */
 	private int nextseclv;
@@ -196,8 +194,7 @@ public class FinalMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		nextseclv = 0;
 		lvupflag = true;
@@ -255,7 +252,7 @@ public class FinalMode extends DummyMode {
 	 * Load the settings
 	 * @param prop CustomProperties
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("final.startlevel", 0);
 		lvstopse = prop.getProperty("final.lvstopse", false);
 		showsectiontime = prop.getProperty("final.showsectiontime", false);
@@ -266,7 +263,7 @@ public class FinalMode extends DummyMode {
 	 * Save the settings
 	 * @param prop CustomProperties
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("final.startlevel", startlevel);
 		prop.setProperty("final.lvstopse", lvstopse);
 		prop.setProperty("final.showsectiontime", showsectiontime);

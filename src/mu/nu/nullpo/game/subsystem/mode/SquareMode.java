@@ -40,7 +40,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * SQUARE Mode
  */
-public class SquareMode extends DummyMode {
+public class SquareMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
@@ -73,10 +73,8 @@ public class SquareMode extends DummyMode {
 	private static final int SPRINT_MAX_SCORE = 150;
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Current gravity number (When the point reaches tableGravityChangeScore's value, this variable will increase) */
 	private int gravityindex;
@@ -133,8 +131,7 @@ public class SquareMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		squares = 0;
@@ -678,7 +675,7 @@ public class SquareMode extends DummyMode {
 	 * Load the settings from CustomProperties
 	 * @param prop CustomProperties to read
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("square.gametype", 0);
 		outlinetype = prop.getProperty("square.outlinetype", 0);
 		tspinEnableType = prop.getProperty("square.tspinEnableType", 2);
@@ -694,7 +691,7 @@ public class SquareMode extends DummyMode {
 	 * Save the settings to CustomProperties
 	 * @param prop CustomProperties to write
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("square.gametype", gametype);
 		prop.setProperty("square.outlinetype", outlinetype);
 		prop.setProperty("square.tspinEnableType", tspinEnableType);

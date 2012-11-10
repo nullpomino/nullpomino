@@ -40,7 +40,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * PHYSICIAN mode (beta)
  */
-public class PhysicianMode extends DummyMode {
+public class PhysicianMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 0;
 
@@ -78,10 +78,8 @@ public class PhysicianMode extends DummyMode {
 	};
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Amount of points you just get from line clears */
 	private int lastscore;
@@ -131,8 +129,7 @@ public class PhysicianMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		gemsClearedChainTotal = 0;
@@ -421,7 +418,7 @@ public class PhysicianMode extends DummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		hoverBlocks = prop.getProperty("physician.hoverBlocks", 40);
 		speed = prop.getProperty("physician.speed", 1);
 		version = prop.getProperty("physician.version", 0);
@@ -431,7 +428,7 @@ public class PhysicianMode extends DummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("physician.hoverBlocks", hoverBlocks);
 		prop.setProperty("physician.speed", speed);
 		prop.setProperty("physician.version", version);

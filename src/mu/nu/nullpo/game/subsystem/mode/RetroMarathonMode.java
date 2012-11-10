@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * CLASSIC MARATHON mode (Original from NullpoUE build 010210 by Zircean)
  */
-public class RetroMarathonMode extends DummyMode {
+public class RetroMarathonMode extends AbstractMode {
 	/** Current version of this mode */
 	private static final int CURRENT_VERSION = 2;
 
@@ -125,10 +125,8 @@ public class RetroMarathonMode extends DummyMode {
 	};
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Amount of points you just get from line clears */
 	private int lastscore;
@@ -185,8 +183,7 @@ public class RetroMarathonMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		softdropscore = 0;
@@ -540,7 +537,7 @@ public class RetroMarathonMode extends DummyMode {
 	 * Load the settings
 	 * @param prop CustomProperties
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		gametype = prop.getProperty("retromarathon.gametype", 0);
 		startlevel = prop.getProperty("retromarathon.startlevel", 0);
 		startheight = prop.getProperty("retromarathon.startheight", 0);
@@ -552,7 +549,7 @@ public class RetroMarathonMode extends DummyMode {
 	 * Save the settings
 	 * @param prop CustomProperties
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("retromarathon.gametype", gametype);
 		prop.setProperty("retromarathon.startlevel", startlevel);
 		prop.setProperty("retromarathon.startheight", startheight);

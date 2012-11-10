@@ -43,7 +43,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * AVALANCHE VS DUMMY Mode
  */
-public abstract class AvalancheVSDummyMode extends DummyMode {
+public abstract class AvalancheVSDummyMode extends AbstractMode {
 	/** Enabled piece types */
 	public static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
 
@@ -96,10 +96,8 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 	/** Each player's frame color */
 	public static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
-	/** GameManager that owns this mode */
 	protected GameManager owner;
 
-	/** Drawing and event handling EventReceiver */
 	protected EventReceiver receiver;
 
 	/** Rule settings for countering ojama not yet dropped */
@@ -768,7 +766,6 @@ public abstract class AvalancheVSDummyMode extends DummyMode {
 		engine.field.setAllSkin(engine.getSkin());
 		engine.field.shuffleColors(BLOCK_COLORS, numColors[playerID], new Random(rand.nextLong()));
 	}
-
 
 	/*
 	 * Called after every frame

@@ -68,9 +68,6 @@ public class UltraMode extends NetDummyMode {
 							 EVENT_TSPIN_TRIPLE = 11,
 							 EVENT_TSPIN_EZ = 12;
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** Most recent increase in score */
 	private int lastscore;
 
@@ -147,8 +144,7 @@ public class UltraMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		scgettime = 0;
 		lastevent = EVENT_NONE;

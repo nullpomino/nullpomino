@@ -60,9 +60,6 @@ public class DigChallengeMode extends NetDummyMode {
 	/** Fall velocity table (denominators) */
 	private static final int tableDenominator[] = {63, 50, 39, 30, 22, 16, 12,  8,  6,  4,  3,  2,  1, 256, 256,  256,  256, 256, 256, 256};
 
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
-
 	/** Most recent increase in score */
 	private int lastscore;
 
@@ -154,8 +151,7 @@ public class DigChallengeMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		lastscore = 0;
 		lastbonusscore = 0;
@@ -862,7 +858,7 @@ public class DigChallengeMode extends NetDummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		goaltype = prop.getProperty("digchallenge.goaltype", GOALTYPE_NORMAL);
 		startlevel = prop.getProperty("digchallenge.startlevel", 0);
 		bgmno = prop.getProperty("digchallenge.bgmno", 0);
@@ -880,7 +876,7 @@ public class DigChallengeMode extends NetDummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("digchallenge.goaltype", goaltype);
 		prop.setProperty("digchallenge.startlevel", startlevel);
 		prop.setProperty("digchallenge.bgmno", bgmno);

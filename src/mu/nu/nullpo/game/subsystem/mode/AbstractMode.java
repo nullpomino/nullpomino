@@ -28,18 +28,21 @@
 */
 package mu.nu.nullpo.game.subsystem.mode;
 
+import java.util.ArrayList;
+
 import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
 import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.game.subsystem.mode.menu.AbstractMenuItem;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
  * Dummy implementation of game mode. Used as a base of most game modes.
  */
-public class DummyMode implements GameMode {
+public abstract class AbstractMode implements GameMode {
 
 	/** Total score */
 	protected static final int STAT_SCORE = 1, STAT_LINES = 2, STAT_TIME = 3,
@@ -48,13 +51,36 @@ public class DummyMode implements GameMode {
 			STAT_LPM = 11, STAT_LPS = 12, STAT_PPM = 13, STAT_PPS = 14,
 			STAT_MAXCHAIN = 15, STAT_LEVEL_ADD_DISP = 16;
 
+	/** GameManager that owns this mode */
+	protected GameManager owner;
+
+	/** Drawing and event handling EventReceiver */
+	protected EventReceiver receiver;
+
 	/** Current state of menu for drawMenu */
 	protected int statcMenu, menuColor, menuY;
 
-	public DummyMode() {
+	protected ArrayList<AbstractMenuItem> menu;
+	
+	/** Name of mode in properties file */
+	protected String propName;
+
+	public AbstractMode() {
 		statcMenu = 0;
 		menuColor = EventReceiver.COLOR_WHITE;
 		menuY = 0;
+		menu = new ArrayList<AbstractMenuItem>();
+		propName = "dummy";
+	}
+
+	protected void loadSetting(CustomProperties prop) {
+		for (AbstractMenuItem i : menu)
+			i.load(-1, prop, propName);
+	}
+
+	protected void saveSetting(CustomProperties prop) {
+		for (AbstractMenuItem i : menu)
+			i.save(-1, prop, propName);
 	}
 
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
@@ -151,6 +177,8 @@ public class DummyMode implements GameMode {
 	}
 
 	public void playerInit(GameEngine engine, int playerID) {
+		owner = engine.owner;
+		receiver = engine.owner.receiver;
 	}
 
 	public void renderARE(GameEngine engine, int playerID) {
@@ -190,6 +218,17 @@ public class DummyMode implements GameMode {
 	}
 
 	public void renderSetting(GameEngine engine, int playerID) {
+		//TODO: Multi-page menus
+		AbstractMenuItem menuItem;
+		for (int i = 0; i < menu.size(); i++)
+		{
+			menuItem = menu.get(i);
+			receiver.drawMenuFont(engine, playerID, 0, i << 1, menuItem.displayName, menuItem.color);
+			if (engine.statc[2] == i && !engine.owner.replayMode)
+				receiver.drawMenuFont(engine, playerID, 0, (i << 1) + 1, "b" + menuItem.getValueString(), true);
+			else 
+				receiver.drawMenuFont(engine, playerID, 1, (i << 1) + 1, menuItem.getValueString());
+		}
 	}
 
 	public void renderFieldEdit(GameEngine engine, int playerID) {
@@ -253,6 +292,19 @@ public class DummyMode implements GameMode {
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_LEFT)) return -1;
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_RIGHT)) return 1;
 		return 0;
+	}
+
+	protected void updateMenu(GameEngine engine) {
+		// Configuration changes
+		int change = updateCursor(engine, menu.size()-1);
+
+		if(change != 0) {
+			engine.playSE("change");
+			int fast = 0;
+			if (engine.ctrl.isPush(Controller.BUTTON_E)) fast++;
+			if (engine.ctrl.isPush(Controller.BUTTON_F)) fast += 2;
+			menu.get(engine.statc[2]).change(change, fast);
+		}
 	}
 
 	protected void initMenu (int y, int color, int statc) {

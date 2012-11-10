@@ -5,7 +5,7 @@ import mu.nu.nullpo.game.play.GameEngine;
 /**
  * PREVIEW mode - A game mode for Tuning preview
  */
-public class PreviewMode extends DummyMode {
+public class PreviewMode extends AbstractMode {
 	/*
 	 * Mode name
 	 */

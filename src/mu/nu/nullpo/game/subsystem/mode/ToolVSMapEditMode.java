@@ -42,12 +42,7 @@ import mu.nu.nullpo.util.CustomProperties;
 /**
  * TOOL-VS MAP EDIT
  */
-public class ToolVSMapEditMode extends DummyMode {
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
+public class ToolVSMapEditMode extends AbstractMode {
 
 	/** Map dataの入ったProperty file */
 	private CustomProperties propMap;

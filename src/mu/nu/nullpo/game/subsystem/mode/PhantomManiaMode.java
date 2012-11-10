@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * PHANTOM MANIA mode (Original from NullpoUE build 121909 by Zircean)
  */
-public class PhantomManiaMode extends DummyMode {
+public class PhantomManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
@@ -99,10 +99,8 @@ public class PhantomManiaMode extends DummyMode {
 	private static final int DEFAULT_SECTION_TIME = 3600;
 
 	/** GameManager object (Manages entire game status) */
-	private GameManager owner;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Next section level */
 	private int nextseclv;
@@ -234,8 +232,7 @@ public class PhantomManiaMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		nextseclv = 0;
 		lvupflag = true;
@@ -303,7 +300,7 @@ public class PhantomManiaMode extends DummyMode {
 	/**
 	 * Load the settings
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("phantommania.startlevel", 0);
 		lvstopse = prop.getProperty("phantommania.lvstopse", false);
 		showsectiontime = prop.getProperty("phantommania.showsectiontime", true);
@@ -313,7 +310,7 @@ public class PhantomManiaMode extends DummyMode {
 	/**
 	 * Save the settings
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("phantommania.startlevel", startlevel);
 		prop.setProperty("phantommania.lvstopse", lvstopse);
 		prop.setProperty("phantommania.showsectiontime", showsectiontime);

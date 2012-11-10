@@ -39,7 +39,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * GARBAGE MANIA Mode
  */
-public class GarbageManiaMode extends DummyMode {
+public class GarbageManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 3;
 
@@ -138,12 +138,6 @@ public class GarbageManiaMode extends DummyMode {
 		{1,1,0,1,1},
 		{1,0,0,0,1},
 	};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
 	private int gravityindex;
@@ -248,8 +242,7 @@ public class GarbageManiaMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		gravityindex = 0;
 		nextseclv = 0;
@@ -311,7 +304,7 @@ public class GarbageManiaMode extends DummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		startlevel = prop.getProperty("garbagemania.startlevel", 0);
 		alwaysghost = prop.getProperty("garbagemania.alwaysghost", false);
 		always20g = prop.getProperty("garbagemania.always20g", false);
@@ -324,7 +317,7 @@ public class GarbageManiaMode extends DummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("garbagemania.startlevel", startlevel);
 		prop.setProperty("garbagemania.alwaysghost", alwaysghost);
 		prop.setProperty("garbagemania.always20g", always20g);

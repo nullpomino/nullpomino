@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.GeneralUtil;
 /**
  * AVALANCHE DUMMY Mode
  */
-public abstract class Avalanche1PDummyMode extends DummyMode {
+public abstract class Avalanche1PDummyMode extends AbstractMode {
 	/** Enabled piece types */
 	public static final int[] PIECE_ENABLE = {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0};
 
@@ -167,8 +167,7 @@ public abstract class Avalanche1PDummyMode extends DummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 		lastscore = 0;
 		lastmultiplier = 0;
 		scgettime = 0;

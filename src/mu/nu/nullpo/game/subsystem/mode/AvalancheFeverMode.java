@@ -660,7 +660,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	 * Load settings from property file
 	 * @param prop Property file
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		mapSet = prop.getProperty("avalanchefever.gametype", 0);
 		outlinetype = prop.getProperty("avalanchefever.outlinetype", 0);
 		numColors = prop.getProperty("avalanchefever.numcolors", 4);
@@ -673,7 +673,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	 * Save settings to property file
 	 * @param prop Property file
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("avalanchefever.gametype", mapSet);
 		prop.setProperty("avalanchefever.outlinetype", outlinetype);
 		prop.setProperty("avalanchefever.numcolors", numColors);

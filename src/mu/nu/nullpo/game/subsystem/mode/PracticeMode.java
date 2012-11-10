@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 /**
  * PRACTICE Mode
  */
-public class PracticeMode extends DummyMode {
+public class PracticeMode extends AbstractMode {
 	/** Log */
 	static Logger log = Logger.getLogger(PracticeMode.class);
 
@@ -93,12 +93,6 @@ public class PracticeMode extends DummyMode {
 
 	/** Outline type names */
 	private static final String[] BLOCK_OUTLINE_TYPE_STRING = {"NONE", "NORMAL", "CONNECT", "SAMECOLOR"};
-
-	/** GameManager that owns this mode */
-	private GameManager owner;
-
-	/** Drawing and event handling EventReceiver */
-	private EventReceiver receiver;
 
 	/** Level upまでの残り point */
 	private int goal;

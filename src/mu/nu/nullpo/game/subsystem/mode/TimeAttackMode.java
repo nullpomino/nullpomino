@@ -233,7 +233,6 @@ public class TimeAttackMode extends NetDummyMode {
 	private static final int RANKING_TYPE = 11;
 
 	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	private EventReceiver receiver;
 
 	/** Remaining level time */
 	private int levelTimer;
@@ -302,8 +301,7 @@ public class TimeAttackMode extends NetDummyMode {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		owner = engine.owner;
-		receiver = engine.owner.receiver;
+		super.playerInit(engine, playerID);
 
 		norm = 0;
 		goaltype = 0;
@@ -984,7 +982,7 @@ public class TimeAttackMode extends NetDummyMode {
 	 * Load the settings
 	 * @param prop CustomProperties
 	 */
-	private void loadSetting(CustomProperties prop) {
+	protected void loadSetting(CustomProperties prop) {
 		goaltype = prop.getProperty("timeattack.gametype", 0);
 		startlevel = prop.getProperty("timeattack.startlevel", 0);
 		big = prop.getProperty("timeattack.big", false);
@@ -996,7 +994,7 @@ public class TimeAttackMode extends NetDummyMode {
 	 * Save the settings
 	 * @param prop CustomProperties
 	 */
-	private void saveSetting(CustomProperties prop) {
+	protected void saveSetting(CustomProperties prop) {
 		prop.setProperty("timeattack.gametype", goaltype);
 		prop.setProperty("timeattack.startlevel", startlevel);
 		prop.setProperty("timeattack.big", big);
