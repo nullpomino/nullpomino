@@ -96,10 +96,6 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	/** Each player's frame color */
 	public static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
-	protected GameManager owner;
-
-	protected EventReceiver receiver;
-
 	/** Rule settings for countering ojama not yet dropped */
 	protected int[] ojamaCounterMode;
 

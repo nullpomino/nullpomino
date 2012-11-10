@@ -32,7 +32,6 @@ import mu.nu.nullpo.game.component.Block;
 import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
 import mu.nu.nullpo.util.GeneralUtil;
 
 /**
@@ -75,12 +74,6 @@ public abstract class Avalanche1PDummyMode extends AbstractMode {
 	};
 
 	public static final int DAS = 10;
-
-	/** GameManager object (Manages entire game status) */
-	protected GameManager owner;
-
-	/** EventReceiver object (This receives many game events, can also be used for drawing the fonts.) */
-	protected EventReceiver receiver;
 
 	/** Amount of points earned from most recent clear */
 	protected int lastscore, lastmultiplier;
