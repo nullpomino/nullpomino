@@ -74,13 +74,13 @@ public abstract class AbstractMode implements GameMode {
 	}
 
 	protected void loadSetting(CustomProperties prop) {
-		for (AbstractMenuItem i : menu)
-			i.load(-1, prop, propName);
+		for (AbstractMenuItem item : menu)
+			item.load(-1, prop, propName);
 	}
 
 	protected void saveSetting(CustomProperties prop) {
-		for (AbstractMenuItem i : menu)
-			i.save(-1, prop, propName);
+		for (AbstractMenuItem item : menu)
+			item.save(-1, prop, propName);
 	}
 
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {

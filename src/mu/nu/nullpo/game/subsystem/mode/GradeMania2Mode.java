@@ -32,7 +32,8 @@ import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.play.GameManager;
+import mu.nu.nullpo.game.subsystem.mode.menu.IntegerMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.OnOffMenuItem;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -249,22 +250,22 @@ public class GradeMania2Mode extends AbstractMode {
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
-	private int startlevel;
+	private IntegerMenuItem startlevel;
 
 	/** When true, always ghost ON */
-	private boolean alwaysghost;
+	private OnOffMenuItem alwaysghost;
 
 	/** When true, always 20G */
-	private boolean always20g;
+	private OnOffMenuItem always20g;
 
 	/** When true, levelstop sound is enabled */
-	private boolean lvstopse;
+	private OnOffMenuItem lvstopse;
 
 	/** BigMode */
-	private boolean big;
+	private OnOffMenuItem big;
 
 	/** When true, section time display is enabled */
-	private boolean showsectiontime;
+	private OnOffMenuItem showsectiontime;
 
 	/** Version */
 	private int version;
@@ -286,6 +287,30 @@ public class GradeMania2Mode extends AbstractMode {
 
 	/** Section Time記録 */
 	private int[] bestSectionTime;
+
+	public GradeMania2Mode() {
+		propName = "grademania2";
+		startlevel = new IntegerMenuItem("startlevel", "LEVEL", EventReceiver.COLOR_BLUE, 0, 0, 9) {
+			public String getValueString() {
+				if (value == 10)
+					return "ROLL";
+				if (value == 11)
+					return "M-ROLL";
+				return String.valueOf(value * 100);
+			}
+		};
+		alwaysghost = new OnOffMenuItem("alwaysghost", "FULL GHOST", EventReceiver.COLOR_BLUE, false);
+		always20g = new OnOffMenuItem("always20g", "20G MODE", EventReceiver.COLOR_BLUE, false);
+		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
+		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
+		showsectiontime = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
+		menu.add(startlevel);
+		menu.add(alwaysghost);
+		menu.add(always20g);
+		menu.add(lvstopse);
+		menu.add(big);
+		menu.add(showsectiontime);
+	}
 
 	/*
 	 * Mode name
@@ -339,11 +364,6 @@ public class GradeMania2Mode extends AbstractMode {
 		recoveryFlag = false;
 		rotateCount = 0;
 		isShowBestSectionTime = false;
-		startlevel = 0;
-		alwaysghost = false;
-		always20g = false;
-		lvstopse = false;
-		big = false;
 
 		rankingRank = -1;
 		rankingGrade = new int[RANKING_MAX];
@@ -372,33 +392,7 @@ public class GradeMania2Mode extends AbstractMode {
 			version = owner.replayProp.getProperty("grademania2.version", 0);
 		}
 
-		owner.backgroundStatus.bg = Math.min(9, startlevel);
-	}
-
-	/**
-	 * Load settings from property file
-	 * @param prop Property file
-	 */
-	protected void loadSetting(CustomProperties prop) {
-		startlevel = prop.getProperty("grademania2.startlevel", 0);
-		alwaysghost = prop.getProperty("grademania2.alwaysghost", false);
-		always20g = prop.getProperty("grademania2.always20g", false);
-		lvstopse = prop.getProperty("grademania2.lvstopse", false);
-		showsectiontime = prop.getProperty("grademania2.showsectiontime", false);
-		big = prop.getProperty("grademania2.big", false);
-	}
-
-	/**
-	 * Save settings to property file
-	 * @param prop Property file
-	 */
-	protected void saveSetting(CustomProperties prop) {
-		prop.setProperty("grademania2.startlevel", startlevel);
-		prop.setProperty("grademania2.alwaysghost", alwaysghost);
-		prop.setProperty("grademania2.always20g", always20g);
-		prop.setProperty("grademania2.lvstopse", lvstopse);
-		prop.setProperty("grademania2.showsectiontime", showsectiontime);
-		prop.setProperty("grademania2.big", big);
+		owner.backgroundStatus.bg = Math.min(9, startlevel.value);
 	}
 
 	/**
@@ -415,7 +409,7 @@ public class GradeMania2Mode extends AbstractMode {
 	 * @param engine GameEngine
 	 */
 	private void setSpeed(GameEngine engine) {
-		if((always20g == true) || (engine.statistics.time >= 54000)) {
+		if((always20g.value) || (engine.statistics.time >= 54000)) {
 			engine.speed.gravity = -1;
 		} else {
 			while(engine.statistics.level >= tableGravityChangeLevel[gravityindex]) gravityindex++;
@@ -443,9 +437,9 @@ public class GradeMania2Mode extends AbstractMode {
 	 * Update average section time
 	 */
 	private void setAverageSectionTime() {
-		if(sectionscomp > 0 && startlevel < 10) {
+		if(sectionscomp > 0 && startlevel.value < 10) {
 			int temp = 0;
-			for(int i = startlevel; i < startlevel + sectionscomp; i++) {
+			for(int i = startlevel.value; i < startlevel.value + sectionscomp; i++) {
 				if((i >= 0) && (i < sectiontime.length)) temp += sectiontime[i];
 			}
 			sectionavgtime = temp / sectionscomp;
@@ -539,36 +533,8 @@ public class GradeMania2Mode extends AbstractMode {
 	public boolean onSetting(GameEngine engine, int playerID) {
 		// Menu
 		if(engine.owner.replayMode == false) {
-			// Configuration changes
-			int change = updateCursor(engine, 5);
-
-			if(change != 0) {
-				engine.playSE("change");
-
-				switch(engine.statc[2]) {
-				case 0:
-					startlevel += change;
-					if(startlevel < 0) startlevel = 11;
-					if(startlevel > 11) startlevel = 0;
-					owner.backgroundStatus.bg = Math.min(9, startlevel);
-					break;
-				case 1:
-					alwaysghost = !alwaysghost;
-					break;
-				case 2:
-					always20g = !always20g;
-					break;
-				case 3:
-					lvstopse = !lvstopse;
-					break;
-				case 4:
-					showsectiontime = !showsectiontime;
-					break;
-				case 5:
-					big = !big;
-					break;
-				}
-			}
+			updateMenu(engine);
+			owner.backgroundStatus.bg = Math.min(9, startlevel.value);
 
 			//  section time display切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
@@ -605,29 +571,11 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * Render the settings screen
-	 */
-	@Override
-	public void renderSetting(GameEngine engine, int playerID) {
-		String level;
-		if (startlevel == 10) level = "ROLL";
-		else if (startlevel == 11) level = "M-ROLL";
-		else level = String.valueOf(startlevel * 100);
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"LEVEL", level,
-				"FULL GHOST", GeneralUtil.getONorOFF(alwaysghost),
-				"20G MODE", GeneralUtil.getONorOFF(always20g),
-				"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
-				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
-				"BIG",  GeneralUtil.getONorOFF(big));
-	}
-
-	/*
 	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.statistics.level = Math.min(999, startlevel * 100);
+		engine.statistics.level = Math.min(999, startlevel.value * 100);
 
 		nextseclv = engine.statistics.level + 100;
 		if(engine.statistics.level < 0) nextseclv = 100;
@@ -635,19 +583,19 @@ public class GradeMania2Mode extends AbstractMode {
 
 		owner.backgroundStatus.bg = engine.statistics.level / 100;
 
-		engine.big = big;
+		engine.big = big.value;
 
 		setSpeed(engine);
 		setStartBgmlv(engine);
 		owner.bgmStatus.bgm = bgmlv;
 
-		if (startlevel >= 10)
+		if (startlevel.value >= 10)
 		{
 			// Ending
 			engine.timerActive = false;
 			engine.ending = 2;
 			rollclear = 1;
-			mrollFlag = (startlevel == 11);
+			mrollFlag = (startlevel.value == 11);
 			rollstarted = true;
 
 			if(mrollFlag) {
@@ -673,7 +621,7 @@ public class GradeMania2Mode extends AbstractMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "GRADE MANIA 2", EventReceiver.COLOR_CYAN);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
-			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (always20g == false) && (engine.ai == null)) {
+			if((owner.replayMode == false) && (startlevel.value == 0) && (big.value == false) && (always20g.value == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
 					float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
@@ -768,7 +716,7 @@ public class GradeMania2Mode extends AbstractMode {
 			if(medalCO >= 1) receiver.drawScoreFont(engine, playerID, 3, 22, "CO", getMedalFontColor(medalCO));
 
 			// Section Time
-			if((showsectiontime == true) && (sectiontime != null)) {
+			if((showsectiontime.value) && (sectiontime != null)) {
 				int x = (receiver.getNextDisplayType() == 2) ? 8 : 12;
 				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
 				receiver.drawScoreFont(engine, playerID, x, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
@@ -807,7 +755,7 @@ public class GradeMania2Mode extends AbstractMode {
 			// Level up
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) engine.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) engine.playSE("levelstop");
 			}
 			levelUp(engine);
 
@@ -880,7 +828,7 @@ public class GradeMania2Mode extends AbstractMode {
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) engine.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) engine.playSE("levelstop");
 			}
 			levelUp(engine);
 			lvupflag = true;
@@ -904,7 +852,7 @@ public class GradeMania2Mode extends AbstractMode {
 		setSpeed(engine);
 
 		// LV100到達でghost を消す
-		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
+		if((engine.statistics.level >= 100) && (!alwaysghost.value)) engine.ghost = false;
 
 		// BGM fadeout
 		if((tableBGMFadeout[bgmlv] != -1) && (engine.statistics.level >= tableBGMFadeout[bgmlv]))
@@ -986,7 +934,7 @@ public class GradeMania2Mode extends AbstractMode {
 				sectionfourline[engine.statistics.level / 100]++;
 
 				// SK medal
-				if(big == true) {
+				if(big.value) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						engine.playSE("medal");
 						medalSK++;
@@ -1010,7 +958,7 @@ public class GradeMania2Mode extends AbstractMode {
 			}
 
 			// CO medal
-			if(big == true) {
+			if(big.value) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					engine.playSE("medal");
 					medalCO = 1;
@@ -1098,7 +1046,7 @@ public class GradeMania2Mode extends AbstractMode {
 				// Update level for next section
 				nextseclv += 100;
 				if(nextseclv > 999) nextseclv = 999;
-			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
+			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) {
 				engine.playSE("levelstop");
 			}
 
@@ -1298,7 +1246,7 @@ public class GradeMania2Mode extends AbstractMode {
 		owner.replayProp.setProperty("grademania2.version", version);
 
 		// Update rankings
-		if((owner.replayMode == false) && (startlevel == 0) && (always20g == false) && (big == false) && (engine.ai == null)) {
+		if((owner.replayMode == false) && (startlevel.value == 0) && (always20g.value) && (big.value) && (engine.ai == null)) {
 			updateRanking(grade, engine.statistics.level, lastGradeTime, rollclear);
 			if(medalST == 3) updateBestSectionTime();
 

@@ -32,7 +32,7 @@ import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
-import mu.nu.nullpo.game.subsystem.mode.menu.ManiaLevelMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.IntegerMenuItem;
 import mu.nu.nullpo.game.subsystem.mode.menu.OnOffMenuItem;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
@@ -172,22 +172,22 @@ public class GradeManiaMode extends AbstractMode {
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
-	private int startlevel;
+	private IntegerMenuItem startlevel;
 
 	/** When true, always ghost ON */
-	private boolean alwaysghost;
+	private OnOffMenuItem alwaysghost;
 
 	/** When true, always 20G */
-	private boolean always20g;
+	private OnOffMenuItem always20g;
 
 	/** When true, levelstop sound is enabled */
-	private boolean lvstopse;
+	private OnOffMenuItem lvstopse;
 
 	/** BigMode */
-	private boolean big;
+	private OnOffMenuItem big;
 
 	/** When true, section time display is enabled */
-	private boolean showsectiontime;
+	private OnOffMenuItem showsectiontime;
 
 	/** Version */
 	private int version;
@@ -206,15 +206,25 @@ public class GradeManiaMode extends AbstractMode {
 
 	/** Section Time記録 */
 	private int[] bestSectionTime;
-	
+
 	public GradeManiaMode() {
 		propName = "grademania";
-		menu.add(new ManiaLevelMenuItem("startlevel", "LEVEL", EventReceiver.COLOR_BLUE));
-		menu.add(new OnOffMenuItem("alwaysghost", "FULL GHOST", EventReceiver.COLOR_BLUE, false));
-		menu.add(new OnOffMenuItem("always20g", "20G MODE", EventReceiver.COLOR_BLUE, false));
-		menu.add(new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false));
-		menu.add(new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false));
-		menu.add(new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false));
+		startlevel = new IntegerMenuItem("startlevel", "LEVEL", EventReceiver.COLOR_BLUE, 0, 0, 9) {
+			public String getValueString() {
+				return String.valueOf(value * 100);
+			}
+		};
+		alwaysghost = new OnOffMenuItem("alwaysghost", "FULL GHOST", EventReceiver.COLOR_BLUE, false);
+		always20g = new OnOffMenuItem("always20g", "20G MODE", EventReceiver.COLOR_BLUE, false);
+		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
+		showsectiontime = new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false);
+		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
+		menu.add(startlevel);
+		menu.add(alwaysghost);
+		menu.add(always20g);
+		menu.add(lvstopse);
+		menu.add(showsectiontime);
+		menu.add(big);
 	}
 
 	/*
@@ -252,11 +262,6 @@ public class GradeManiaMode extends AbstractMode {
 		sectionscomp = 0;
 		sectionavgtime = 0;
 		isShowBestSectionTime = false;
-		startlevel = 0;
-		alwaysghost = false;
-		always20g = false;
-		lvstopse = false;
-		big = false;
 
 		rankingRank = -1;
 		rankingGrade = new int[RANKING_MAX];
@@ -286,7 +291,7 @@ public class GradeManiaMode extends AbstractMode {
 			version = owner.replayProp.getProperty("grademania.version", 0);
 		}
 
-		owner.backgroundStatus.bg = startlevel;
+		owner.backgroundStatus.bg = startlevel.value;
 	}
 
 	/**
@@ -294,7 +299,7 @@ public class GradeManiaMode extends AbstractMode {
 	 * @param engine GameEngine
 	 */
 	private void setSpeed(GameEngine engine) {
-		if(always20g == true) {
+		if(always20g.value) {
 			engine.speed.gravity = -1;
 		} else {
 			while(engine.statistics.level >= tableGravityChangeLevel[gravityindex]) gravityindex++;
@@ -308,7 +313,7 @@ public class GradeManiaMode extends AbstractMode {
 	private void setAverageSectionTime() {
 		if(sectionscomp > 0) {
 			int temp = 0;
-			for(int i = startlevel; i < startlevel + sectionscomp; i++) {
+			for(int i = startlevel.value; i < startlevel.value + sectionscomp; i++) {
 				if((i >= 0) && (i < sectiontime.length)) temp += sectiontime[i];
 			}
 			sectionavgtime = temp / sectionscomp;
@@ -336,6 +341,7 @@ public class GradeManiaMode extends AbstractMode {
 		// Menu
 		if(!engine.owner.replayMode) {
 			updateMenu(engine);
+			owner.backgroundStatus.bg = Math.min(9, startlevel.value);
 
 			//  section time display切替
 			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
@@ -376,7 +382,7 @@ public class GradeManiaMode extends AbstractMode {
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.statistics.level = startlevel * 100;
+		engine.statistics.level = startlevel.value * 100;
 
 		nextseclv = engine.statistics.level + 100;
 		if(engine.statistics.level < 0) nextseclv = 100;
@@ -387,7 +393,7 @@ public class GradeManiaMode extends AbstractMode {
 		if(engine.statistics.level < 500) bgmlv = 0;
 		else bgmlv = 1;
 
-		engine.big = big;
+		engine.big = big.value;
 
 		setSpeed(engine);
 		owner.bgmStatus.bgm = bgmlv;
@@ -400,8 +406,8 @@ public class GradeManiaMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "GRADE MANIA", EventReceiver.COLOR_CYAN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
-			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (always20g == false) && (engine.ai == null)) {
+		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (!owner.replayMode)) ) {
+			if((owner.replayMode == false) && (startlevel.value == 0) && (!big.value) && (!always20g.value) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
 					float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
@@ -482,7 +488,7 @@ public class GradeManiaMode extends AbstractMode {
 			}
 
 			// Section Time
-			if((showsectiontime == true) && (sectiontime != null)) {
+			if((showsectiontime.value) && (sectiontime != null)) {
 				int x = (receiver.getNextDisplayType() == 2) ? 8 : 12;
 				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
 				receiver.drawScoreFont(engine, playerID, x, 2, "SECTION TIME", EventReceiver.COLOR_BLUE);
@@ -520,7 +526,7 @@ public class GradeManiaMode extends AbstractMode {
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) engine.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) engine.playSE("levelstop");
 			}
 			levelUp(engine);
 		}
@@ -540,7 +546,7 @@ public class GradeManiaMode extends AbstractMode {
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) engine.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) engine.playSE("levelstop");
 			}
 			levelUp(engine);
 			lvupflag = true;
@@ -564,7 +570,7 @@ public class GradeManiaMode extends AbstractMode {
 		setSpeed(engine);
 
 		// LV100到達でghost を消す
-		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
+		if((engine.statistics.level >= 100) && (!alwaysghost.value)) engine.ghost = false;
 
 		// BGM fadeout
 		if((bgmlv == 0) && (engine.statistics.level >= 490))
@@ -670,7 +676,7 @@ public class GradeManiaMode extends AbstractMode {
 
 				nextseclv += 100;
 				if(nextseclv > 999) nextseclv = 999;
-			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
+			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) {
 				engine.playSE("levelstop");
 			}
 		}
@@ -810,7 +816,7 @@ public class GradeManiaMode extends AbstractMode {
 		owner.replayProp.setProperty("grademania.version", version);
 
 		// Update rankings
-		if((owner.replayMode == false) && (startlevel == 0) && (always20g == false) && (big == false) && (engine.ai == null)) {
+		if((owner.replayMode == false) && (startlevel.value == 0) && (!always20g.value) && (big.value) && (engine.ai == null)) {
 			updateRanking(grade, engine.statistics.level, lastGradeTime);
 			if(sectionAnyNewRecord) updateBestSectionTime();
 
