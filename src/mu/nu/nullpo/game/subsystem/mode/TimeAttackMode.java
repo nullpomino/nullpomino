@@ -612,7 +612,7 @@ public class TimeAttackMode extends NetDummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "TIME ATTACK", EventReceiver.COLOR_PURPLE);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "("+GAMETYPE_NAME_LONG[goaltype]+")", EventReceiver.COLOR_PURPLE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null) && (!netIsWatch)) {
 				receiver.drawScoreFont(engine, playerID, 3, 3, "LINE TIME", EventReceiver.COLOR_BLUE);
 
@@ -738,7 +738,7 @@ public class TimeAttackMode extends NetDummyMode {
 			} else if(!netIsWatch) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_GAMEOVER;
+				engine.stat = GameEngine.Status.GAMEOVER;
 			}
 		}
 
@@ -791,7 +791,7 @@ public class TimeAttackMode extends NetDummyMode {
 				engine.statistics.rollclear = 2;
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 			}
 		}
 	}
@@ -894,7 +894,7 @@ public class TimeAttackMode extends NetDummyMode {
 			receiver.drawMenuFont(engine, playerID,  0, 3, strLines, gcolor);
 
 			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
-					STAT_LEVEL, STAT_TIME, STAT_PIECE, STAT_LPM, STAT_PPS);
+					Statistic.LEVEL, Statistic.TIME, Statistic.PIECE, Statistic.LPM, Statistic.PPS);
 			drawResultRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, rankingRank);
 			drawResultNetRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[0]);
 			drawResultNetRankDaily(engine, playerID, receiver, 18, EventReceiver.COLOR_BLUE, netRankingRank[1]);

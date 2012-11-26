@@ -256,7 +256,7 @@ public class PhysicianMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "PHYSICIAN", EventReceiver.COLOR_DARKBLUE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
 				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE  TIME", EventReceiver.COLOR_BLUE);
 				for(int i = 0; i < RANKING_MAX; i++) {
@@ -345,7 +345,7 @@ public class PhysicianMode extends AbstractMode {
 			engine.gameEnded();
 			engine.timerActive = false;
 			engine.resetStatc();
-			engine.stat = GameEngine.STAT_EXCELLENT;
+			engine.stat = GameEngine.Status.EXCELLENT;
 		}
 	}
 

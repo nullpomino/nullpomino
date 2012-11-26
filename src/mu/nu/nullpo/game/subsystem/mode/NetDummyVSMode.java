@@ -554,7 +554,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		netvsIsPracticeExitAllowed = false;
 
 		engine.init();
-		engine.stat = GameEngine.STAT_READY;
+		engine.stat = GameEngine.Status.READY;
 		engine.resetStatc();
 		netUpdatePlayerExist();
 		netvsSetGameScreenLayout();
@@ -888,7 +888,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			engine.field.reset();
 			engine.gameEnded();
-			engine.stat = GameEngine.STAT_SETTING;
+			engine.stat = GameEngine.Status.SETTING;
 			engine.resetStatc();
 		}
 	}
@@ -947,7 +947,7 @@ public class NetDummyVSMode extends NetDummyMode {
 				return false;
 			} else {
 				engine.field.reset();
-				engine.stat = GameEngine.STAT_RESULT;
+				engine.stat = GameEngine.Status.RESULT;
 				engine.resetStatc();
 				return true;
 			}
@@ -969,7 +969,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		// Player/Opponent died
 		if(netvsPlayerDead[playerID]) {
 			if(engine.field == null) {
-				engine.stat = GameEngine.STAT_SETTING;
+				engine.stat = GameEngine.Status.SETTING;
 				engine.resetStatc();
 				return true;
 			}
@@ -1055,7 +1055,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			if((!netvsIsGameActive) && (netvsPlayerResultReceived[playerID])) {
 				if(engine.field != null) engine.field.reset();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_RESULT;
+				engine.stat = GameEngine.Status.RESULT;
 			}
 		} else {
 			engine.statc[0]++;
@@ -1109,7 +1109,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_A)) {
 				engine.playSE("decide");
 				netvsIsPractice = false;
-				engine.stat = GameEngine.STAT_SETTING;
+				engine.stat = GameEngine.Status.SETTING;
 				engine.resetStatc();
 				return true;
 			}
@@ -1200,7 +1200,7 @@ public class NetDummyVSMode extends NetDummyMode {
 	@Override
 	public void netlobbyOnDisconnect(NetLobbyFrame lobby, NetPlayerClient client, Throwable ex) {
 		for(int i = 0; i < getPlayers(); i++) {
-			owner.engine[i].stat = GameEngine.STAT_NOTHING;
+			owner.engine[i].stat = GameEngine.Status.NOTHING;
 		}
 	}
 
@@ -1252,7 +1252,7 @@ public class NetDummyVSMode extends NetDummyMode {
 					netvsIsNewcomer = true;
 				}
 
-				owner.engine[0].stat = GameEngine.STAT_SETTING;
+				owner.engine[0].stat = GameEngine.Status.SETTING;
 
 				for(int i = 0; i < getPlayers(); i++) {
 					if(owner.engine[i].field != null) {
@@ -1260,8 +1260,8 @@ public class NetDummyVSMode extends NetDummyMode {
 					}
 					owner.engine[i].nowPieceObject = null;
 
-					if((owner.engine[i].stat == GameEngine.STAT_NOTHING) || (!netvsIsGameActive)) {
-						owner.engine[i].stat = GameEngine.STAT_SETTING;
+					if((owner.engine[i].stat == GameEngine.Status.NOTHING) || (!netvsIsGameActive)) {
+						owner.engine[i].stat = GameEngine.Status.SETTING;
 					}
 					owner.engine[i].resetStatc();
 				}
@@ -1328,7 +1328,7 @@ public class NetDummyVSMode extends NetDummyMode {
 
 				if(netvsPlayerExist[i]) {
 					netvsPlayerActive[i] = true;
-					engine.stat = GameEngine.STAT_READY;
+					engine.stat = GameEngine.Status.READY;
 					engine.randSeed = randseed;
 					engine.random = new Random(randseed);
 
@@ -1349,7 +1349,7 @@ public class NetDummyVSMode extends NetDummyMode {
 						}
 					}
 				} else if(i < netCurrentRoomInfo.maxPlayers) {
-					engine.stat = GameEngine.STAT_SETTING;
+					engine.stat = GameEngine.Status.SETTING;
 					engine.isVisible = true;
 					engine.isNextVisible = false;
 					engine.isHoldVisible = false;
@@ -1358,7 +1358,7 @@ public class NetDummyVSMode extends NetDummyMode {
 						engine.isVisible = false;
 					}
 				} else {
-					engine.stat = GameEngine.STAT_SETTING;
+					engine.stat = GameEngine.Status.SETTING;
 					engine.isVisible = false;
 				}
 
@@ -1375,7 +1375,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			if(!netvsPlayerDead[playerID]) {
 				netvsPlayerDead[playerID] = true;
 				netvsPlayerPlace[playerID] = Integer.parseInt(message[4]);
-				owner.engine[playerID].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[playerID].stat = GameEngine.Status.GAMEOVER;
 				owner.engine[playerID].resetStatc();
 				netvsNumAlivePlayers--;
 
@@ -1410,7 +1410,7 @@ public class NetDummyVSMode extends NetDummyMode {
 				netvsIsPracticeExitAllowed = false;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 				owner.engine[0].gameEnded();
-				owner.engine[0].stat = GameEngine.STAT_SETTING;
+				owner.engine[0].stat = GameEngine.Status.SETTING;
 				owner.engine[0].resetStatc();
 			}
 
@@ -1422,7 +1422,7 @@ public class NetDummyVSMode extends NetDummyMode {
 					if(netvsPlayerExist[i] && !netvsPlayerDead[i]) {
 						netvsPlayerPlace[i] = 1;
 						owner.engine[i].gameEnded();
-						owner.engine[i].stat = GameEngine.STAT_EXCELLENT;
+						owner.engine[i].stat = GameEngine.Status.EXCELLENT;
 						owner.engine[i].resetStatc();
 						owner.engine[i].statistics.time = netvsPlayTimer;
 						netvsNumAlivePlayers--;
@@ -1440,7 +1440,7 @@ public class NetDummyVSMode extends NetDummyMode {
 					if(netvsPlayerExist[playerID]) {
 						netvsPlayerPlace[playerID] = 1;
 						owner.engine[playerID].gameEnded();
-						owner.engine[playerID].stat = GameEngine.STAT_EXCELLENT;
+						owner.engine[playerID].stat = GameEngine.Status.EXCELLENT;
 						owner.engine[playerID].resetStatc();
 						owner.engine[playerID].statistics.time = netvsPlayTimer;
 						netvsNumAlivePlayers--;
@@ -1489,7 +1489,7 @@ public class NetDummyVSMode extends NetDummyMode {
 
 				// Force start
 				if((!netvsIsWatch()) && (netvsPlayTimerActive) && (!netvsIsPractice) &&
-				   (engine.stat == GameEngine.STAT_READY) && (engine.statc[0] < engine.goEnd))
+				   (engine.stat == GameEngine.Status.READY) && (engine.statc[0] < engine.goEnd))
 				{
 					engine.statc[0] = engine.goEnd;
 				}

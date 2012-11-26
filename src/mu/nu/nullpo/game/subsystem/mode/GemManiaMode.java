@@ -523,11 +523,11 @@ public class GemManiaMode extends AbstractMode {
 			skipflag = false;
 			engine.nowPieceObject = null;
 			engine.timerActive = false;
-			engine.stat = GameEngine.STAT_CUSTOM;
+			engine.stat = GameEngine.Status.CUSTOM;
 			engine.resetStatc();
 		} else if((limittimeNow <= 0) && (engine.timerActive)) {
 			engine.nowPieceObject = null;
-			engine.stat = GameEngine.STAT_GAMEOVER;
+			engine.stat = GameEngine.Status.GAMEOVER;
 			engine.resetStatc();
 		}
 	}
@@ -913,7 +913,7 @@ public class GemManiaMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "GEM MANIA " + ((randomnext) ? "(RANDOM)" : ""), EventReceiver.COLOR_RED);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((startstage == 0) && (always20g == false) && (trainingType == 0) && (startnextc == 0) && (stageset < 0) && (engine.ai == null)) {
 				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
 				int topY = (receiver.getNextDisplayType() == 2) ? 5 : 3;
@@ -1039,7 +1039,7 @@ public class GemManiaMode extends AbstractMode {
 				skipflag = true;
 				engine.nowPieceObject = null;
 				engine.timerActive = false;
-				engine.stat = GameEngine.STAT_CUSTOM;
+				engine.stat = GameEngine.Status.CUSTOM;
 				engine.resetStatc();
 			}
 		} else {
@@ -1324,7 +1324,7 @@ public class GemManiaMode extends AbstractMode {
 				if(clearflag) limittimeNow += timeextendStageClearSeconds * 60;
 				if(skipflag) limittimeNow -= timeextendStageClearSeconds * 60;
 				if(trainingType == 2) engine.nextPieceCount = continueNextPieceCount;
-				engine.stat = GameEngine.STAT_READY;
+				engine.stat = GameEngine.Status.READY;
 				engine.resetStatc();
 			}
 			// Ending
@@ -1332,7 +1332,7 @@ public class GemManiaMode extends AbstractMode {
 				allclear = (stage >= MAX_STAGE_TOTAL - 1) ? 2 : 1;
 				engine.ending = 1;
 				engine.gameEnded();
-				engine.stat = GameEngine.STAT_ENDINGSTART;
+				engine.stat = GameEngine.Status.ENDINGSTART;
 				engine.resetStatc();
 			}
 			// Next  stage
@@ -1340,7 +1340,7 @@ public class GemManiaMode extends AbstractMode {
 				stage++;
 				if(clearflag) limittimeNow += timeextendStageClearSeconds * 60;
 				if(skipflag) limittimeNow -= timeextendStageClearSeconds * 60;
-				engine.stat = GameEngine.STAT_READY;
+				engine.stat = GameEngine.Status.READY;
 				engine.resetStatc();
 			}
 			return true;
@@ -1466,7 +1466,7 @@ public class GemManiaMode extends AbstractMode {
 						engine.nextPieceCount = continueNextPieceCount;
 						if(trainingType == 0) engine.statistics.time += 60 * 60 * 2;
 						engine.allowTextRenderByReceiver = true;
-						engine.stat = GameEngine.STAT_READY;
+						engine.stat = GameEngine.Status.READY;
 						engine.resetStatc();
 						engine.playSE("decide");
 					} else {
@@ -1551,7 +1551,7 @@ public class GemManiaMode extends AbstractMode {
 			drawResult(engine, playerID, receiver, 4, EventReceiver.COLOR_PINK,
 					"CLEAR", String.format("%9d%%", clearper));
 			drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_PINK,
-					STAT_LINES, STAT_PIECE, STAT_TIME);
+					Statistic.LINES, Statistic.PIECE, Statistic.TIME);
 			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_PINK, rankingRank);
 		} else if(engine.statc[1] == 1) {
 			receiver.drawMenuFont(engine, playerID, 0, 2, "SECTION1/2", EventReceiver.COLOR_PINK);

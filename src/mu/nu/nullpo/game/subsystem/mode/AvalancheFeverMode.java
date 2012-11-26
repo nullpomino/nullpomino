@@ -365,7 +365,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + FEVER_MAPS[mapSet].toUpperCase() + " " +
 				numColors + " COLORS)", EventReceiver.COLOR_DARKBLUE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
 				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
 				int topY = (receiver.getNextDisplayType() == 2) ? 6 : 4;
@@ -419,7 +419,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 18, "CLEARED", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 19, String.valueOf(blocksCleared));
 
-			if(engine.gameStarted && (engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT)) {
+			if(engine.gameStarted && (engine.stat != GameEngine.Status.MOVE) && (engine.stat != GameEngine.Status.RESULT)) {
 				drawXorTimer(engine, playerID);
 			}
 
@@ -512,7 +512,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if(timeLimit <= 300) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 		if (!fastinuse && engine.ctrl.isPress(Controller.BUTTON_F) &&
-				((fastenable == 2) || (engine.stat == GameEngine.STAT_LINECLEAR && fastenable == 1))) {
+				((fastenable == 2) || (engine.stat == GameEngine.Status.LINECLEAR && fastenable == 1))) {
 			fastinuse = true;
 			for (int i = 0; i < 4; i++) engine.owner.updateAll();
 			fastinuse = false;
@@ -585,7 +585,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		{
 			if (!engine.field.getBlockEmpty(2, 0) || !engine.field.getBlockEmpty(3, 0))
 			{
-				engine.stat = GameEngine.STAT_GAMEOVER;
+				engine.stat = GameEngine.Status.GAMEOVER;
 				engine.gameEnded();
 				engine.resetStatc();
 				engine.statc[1] = 1;
@@ -596,7 +596,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 		if((timeLimit <= 0) && (engine.timerActive == true)) {
 			engine.gameEnded();
 			engine.resetStatc();
-			engine.stat = GameEngine.STAT_ENDINGSTART;
+			engine.stat = GameEngine.Status.ENDINGSTART;
 		}
 		return false;
 	}

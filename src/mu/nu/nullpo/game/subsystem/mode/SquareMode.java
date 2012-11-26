@@ -310,7 +310,7 @@ public class SquareMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "SQUARE ("+GAMETYPE_NAME[gametype]+")", EventReceiver.COLOR_DARKBLUE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null)) {
 				float scale = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 0.5f : 1.0f;
 				int topY = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 6 : 4;
@@ -401,7 +401,7 @@ public class SquareMode extends AbstractMode {
 			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_ENDINGSTART;
+				engine.stat = GameEngine.Status.ENDINGSTART;
 				return;
 			}
 		} else if (gametype == 2) {
@@ -417,7 +417,7 @@ public class SquareMode extends AbstractMode {
 			if((engine.statistics.score >= SPRINT_MAX_SCORE) && (engine.timerActive == true)) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_ENDINGSTART;
+				engine.stat = GameEngine.Status.ENDINGSTART;
 			}
 		}
 	}

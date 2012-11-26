@@ -452,7 +452,7 @@ public class SpeedManiaMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "SPEED MANIA", EventReceiver.COLOR_RED);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel.value == 0) && (big.value == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
@@ -883,7 +883,7 @@ public class SpeedManiaMode extends AbstractMode {
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 			}
 		}
 	}
@@ -914,7 +914,7 @@ public class SpeedManiaMode extends AbstractMode {
 			}
 
 			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
-					STAT_SCORE, STAT_LINES, STAT_LEVEL_MANIA, STAT_TIME);
+					Statistic.SCORE, Statistic.LINES, Statistic.LEVEL_MANIA, Statistic.TIME);
 			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 			if(secretGrade > 4) {
 				drawResult(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE,
@@ -943,7 +943,7 @@ public class SpeedManiaMode extends AbstractMode {
 			if(medalCO >= 1) receiver.drawMenuFont(engine, playerID, 8, 5, "CO", getMedalFontColor(medalCO));
 
 			drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
-					STAT_LPM, STAT_SPM, STAT_PIECE, STAT_PPS);
+					Statistic.LPM, Statistic.SPM, Statistic.PIECE, Statistic.PPS);
 		}
 	}
 

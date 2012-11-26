@@ -477,7 +477,7 @@ public class UltraMode extends NetDummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "ULTRA", EventReceiver.COLOR_CYAN);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + (goaltype + 1) + " MINUTE GAME)", EventReceiver.COLOR_CYAN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
 				receiver.drawScoreFont(engine, playerID, 0, 3, "SCORE RANKING", EventReceiver.COLOR_GREEN);
 				receiver.drawScoreFont(engine, playerID, 3, 4, "SCORE  LINE", EventReceiver.COLOR_BLUE);
@@ -748,7 +748,7 @@ public class UltraMode extends NetDummyMode {
 				if(engine.statistics.time >= limitTime) {
 					engine.gameEnded();
 					engine.resetStatc();
-					engine.stat = GameEngine.STAT_ENDINGSTART;
+					engine.stat = GameEngine.Status.ENDINGSTART;
 					return;
 				}
 
@@ -779,20 +779,20 @@ public class UltraMode extends NetDummyMode {
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
-		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, STAT_SCORE);
+		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, Statistic.SCORE);
 		if(rankingRank[0] != -1) {
 			String strRank = String.format("RANK %d", rankingRank[0] + 1);
 			receiver.drawMenuFont(engine, playerID, 4, 2, strRank, EventReceiver.COLOR_ORANGE);
 		}
 
-		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE, STAT_LINES);
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE, Statistic.LINES);
 		if(rankingRank[1] != -1) {
 			String strRank = String.format("RANK %d", rankingRank[1] + 1);
 			receiver.drawMenuFont(engine, playerID, 4, 5, strRank, EventReceiver.COLOR_ORANGE);
 		}
 
 		drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
-				STAT_PIECE, STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
+				Statistic.PIECE, Statistic.SPL, Statistic.SPM, Statistic.LPM, Statistic.PPS);
 
 		drawResultNetRank(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[0]);
 		drawResultNetRankDaily(engine, playerID, receiver, 18, EventReceiver.COLOR_BLUE, netRankingRank[1]);

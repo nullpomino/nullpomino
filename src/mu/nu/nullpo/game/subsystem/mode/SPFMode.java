@@ -769,8 +769,8 @@ public class SPFMode extends AbstractMode {
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
-				owner.engine[0].stat = GameEngine.STAT_READY;
-				owner.engine[1].stat = GameEngine.STAT_READY;
+				owner.engine[0].stat = GameEngine.Status.READY;
+				owner.engine[1].stat = GameEngine.Status.READY;
 				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
 			}
@@ -1524,27 +1524,27 @@ public class SPFMode extends AbstractMode {
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			if((owner.engine[0].stat == GameEngine.Status.GAMEOVER) && (owner.engine[1].stat == GameEngine.Status.GAMEOVER)) {
 				// Draw
 				winnerID = -1;
 				owner.engine[0].gameEnded();
 				owner.engine[1].gameEnded();
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			} else if((owner.engine[0].stat != GameEngine.Status.GAMEOVER) && (owner.engine[1].stat == GameEngine.Status.GAMEOVER)) {
 				// 1P win
 				winnerID = 0;
 				owner.engine[0].gameEnded();
 				owner.engine[1].gameEnded();
-				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].stat = GameEngine.Status.EXCELLENT;
 				owner.engine[0].resetStatc();
 				owner.engine[0].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
+			} else if((owner.engine[0].stat == GameEngine.Status.GAMEOVER) && (owner.engine[1].stat != GameEngine.Status.GAMEOVER)) {
 				// 2P win
 				winnerID = 1;
 				owner.engine[0].gameEnded();
 				owner.engine[1].gameEnded();
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[1].stat = GameEngine.Status.EXCELLENT;
 				owner.engine[1].resetStatc();
 				owner.engine[1].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
@@ -1570,11 +1570,11 @@ public class SPFMode extends AbstractMode {
 		drawResult(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,
 				"ATTACK", String.format("%10d", ojamaSent[playerID]));
 		drawResultStats(engine, playerID, receiver, 5, EventReceiver.COLOR_ORANGE,
-				STAT_LINES, STAT_PIECE);
+				Statistic.LINES, Statistic.PIECE);
 		drawResult(engine, playerID, receiver, 9, EventReceiver.COLOR_ORANGE,
 				"ATTACK/MIN", String.format("%10g", apm));
 		drawResultStats(engine, playerID, receiver, 11, EventReceiver.COLOR_ORANGE,
-				STAT_LPM, STAT_PPS, STAT_TIME);
+				Statistic.LPM, Statistic.PPS, Statistic.TIME);
 	}
 
 	/*

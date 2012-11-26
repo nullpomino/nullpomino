@@ -452,7 +452,7 @@ public class DigRaceMode extends NetDummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "DIG RACE", EventReceiver.COLOR_GREEN);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "(" + GOAL_TABLE[goaltype] + " GARBAGE GAME)", EventReceiver.COLOR_GREEN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if(!owner.replayMode && (engine.ai == null) && !netIsWatch) {
 				String strPieceTemp = (owner.receiver.getNextDisplayType() == 2) ? "P." : "PIECE";
 				receiver.drawScoreFont(engine, playerID, 3, 3, "TIME     LINE " + strPieceTemp, EventReceiver.COLOR_BLUE);
@@ -536,7 +536,7 @@ public class DigRaceMode extends NetDummyMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		drawResultStats(engine, playerID, receiver, 1, EventReceiver.COLOR_BLUE,
-				STAT_LINES, STAT_PIECE, STAT_TIME, STAT_LPM, STAT_PPS);
+				Statistic.LINES, Statistic.PIECE, Statistic.TIME, Statistic.LPM, Statistic.PPS);
 		drawResultRank(engine, playerID, receiver, 11, EventReceiver.COLOR_BLUE, rankingRank);
 		drawResultNetRank(engine, playerID, receiver, 13, EventReceiver.COLOR_BLUE, netRankingRank[0]);
 		drawResultNetRankDaily(engine, playerID, receiver, 15, EventReceiver.COLOR_BLUE, netRankingRank[1]);

@@ -741,11 +741,11 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 		if (big[playerID])
 		{
 			if (!engine.field.getBlockEmpty(1, 0))
-				engine.stat = GameEngine.STAT_GAMEOVER;
+				engine.stat = GameEngine.Status.GAMEOVER;
 		}
 		else if (!engine.field.getBlockEmpty(2, 0) ||
 				(dangerColumnDouble[playerID] && !engine.field.getBlockEmpty(3, 0)))
-			engine.stat = GameEngine.STAT_GAMEOVER;
+			engine.stat = GameEngine.Status.GAMEOVER;
 	}
 
 	protected void loadFeverMap(GameEngine engine, int playerID, int chain) {
@@ -779,23 +779,23 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
-			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
+			boolean p1Lose = (owner.engine[0].stat == GameEngine.Status.GAMEOVER);
+			boolean p2Lose = (owner.engine[1].stat == GameEngine.Status.GAMEOVER);
 			if(p1Lose && p2Lose) {
 				// Draw
 				winnerID = -1;
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[0].stat = GameEngine.Status.GAMEOVER;
+				owner.engine[1].stat = GameEngine.Status.GAMEOVER;
 			} else if(p2Lose && !p1Lose) {
 				// 1P win
 				winnerID = 0;
-				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
-				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[0].stat = GameEngine.Status.EXCELLENT;
+				owner.engine[1].stat = GameEngine.Status.GAMEOVER;
 			} else if(p1Lose && !p2Lose) {
 				// 2P win
 				winnerID = 1;
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].stat = GameEngine.Status.GAMEOVER;
+				owner.engine[1].stat = GameEngine.Status.EXCELLENT;
 			}
 			if (p1Lose || p2Lose) {
 				owner.engine[0].gameEnded();

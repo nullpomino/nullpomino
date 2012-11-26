@@ -583,7 +583,7 @@ public class ComboRaceMode extends NetDummyMode {
 		else
 			receiver.drawScoreFont(engine, playerID, 0, 1, "(" + GOAL_TABLE[goaltype] + " LINES GAME)", EventReceiver.COLOR_WHITE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if(!owner.replayMode && !big && (engine.ai == null)) {
 				receiver.drawScoreFont(engine, playerID, 3, 3, "COMBO TIME", EventReceiver.COLOR_BLUE);
 
@@ -771,7 +771,7 @@ public class ComboRaceMode extends NetDummyMode {
 			engine.gameEnded();
 			engine.resetStatc();
 			engine.stat = (engine.statistics.maxCombo > 40) ?
-					GameEngine.STAT_EXCELLENT : GameEngine.STAT_GAMEOVER;
+					GameEngine.Status.EXCELLENT : GameEngine.Status.GAMEOVER;
 		}
 	}
 
@@ -789,9 +789,9 @@ public class ComboRaceMode extends NetDummyMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN,
-				STAT_MAXCOMBO, STAT_TIME);
+				Statistic.MAXCOMBO, Statistic.TIME);
 		drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
-				STAT_LINES, STAT_PIECE, STAT_LPM, STAT_PPS);
+				Statistic.LINES, Statistic.PIECE, Statistic.LPM, Statistic.PPS);
 		drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 		drawResultNetRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, netRankingRank[0]);
 		drawResultNetRankDaily(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[1]);

@@ -31,6 +31,7 @@ package mu.nu.nullpo.game.play;
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.BackgroundStatus;
 import mu.nu.nullpo.game.event.EventReceiver;
+import mu.nu.nullpo.game.play.GameEngine.Status;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.util.CustomProperties;
 
@@ -274,7 +275,7 @@ public class GameManager {
 		if(engine.length < 2) return -1;
 
 		for(int i = 0; i < engine.length; i++) {
-			if(engine[i].stat != GameEngine.STAT_GAMEOVER) {
+			if(engine[i].stat != GameEngine.Status.GAMEOVER) {
 				return i;
 			}
 		}

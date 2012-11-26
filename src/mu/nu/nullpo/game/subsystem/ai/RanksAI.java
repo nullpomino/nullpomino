@@ -290,7 +290,7 @@ public class RanksAI extends DummyAI implements Runnable {
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
 	
-		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) && (delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
+		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.Status.MOVE) && (delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 				(!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{
 			int totalPieceLocked=engine.statistics.totalPieceLocked+1;

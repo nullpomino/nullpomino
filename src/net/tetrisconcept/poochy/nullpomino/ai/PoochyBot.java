@@ -155,7 +155,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 */
 	public void onFirst(GameEngine engine, int playerID) {
 		inputARE = 0;
-		boolean newInARE = engine.stat == GameEngine.STAT_ARE;
+		boolean newInARE = engine.stat == GameEngine.Status.ARE;
 		if ((engine.aiPrethink && engine.getARE() > 0 && engine.getARELine() > 0)
 				&& ((newInARE && !inARE) || (!thinking && !thinkSuccess)))
 		{
@@ -212,7 +212,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 	 * Set button input states
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
-		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
+		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.Status.MOVE) &&
 			(delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 		    (!engine.aiUseThread || (threadRunning && !thinking && thinkComplete)))
 		{
@@ -795,7 +795,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		thinkSuccess = false;
 
 		Field fld;
-		if (engine.stat == GameEngine.STAT_READY)
+		if (engine.stat == GameEngine.Status.READY)
 			fld = new Field(engine.fieldWidth, engine.fieldHeight,
 					engine.fieldHiddenHeight, engine.ruleopt.fieldCeiling);
 		else
@@ -876,7 +876,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 				int maxX = Math.min(mostMovableX(nowX, tempY, 1, engine, fld, pieceNow, rt),
 						pieceNow.getMostMovableRight(nowX, tempY, rt, engine.field));
 				boolean spawnOK = true;
-				if (engine.stat == GameEngine.STAT_ARE)
+				if (engine.stat == GameEngine.Status.ARE)
 				{
 					int spawnX = engine.getSpawnPosX(fld, pieceNow);
 					int spawnY = engine.getSpawnPosY(pieceNow);
@@ -1821,7 +1821,7 @@ public class PoochyBot extends DummyAI implements Runnable {
 		if ((piece.id == Piece.PIECE_I || piece.id == Piece.PIECE_T) &&
 				((engine.nowUpwardWallkickCount < engine.ruleopt.rotateMaxUpwardWallkick
 						|| engine.ruleopt.rotateMaxUpwardWallkick < 0) ||
-						(engine.stat == GameEngine.STAT_ARE)))
+						(engine.stat == GameEngine.Status.ARE)))
 			floorKickOK = true;
 		testY = piece.getBottom(testX, testY, testRt, fld);
 		if (piece.id == Piece.PIECE_T && piece.direction != Piece.DIRECTION_UP)

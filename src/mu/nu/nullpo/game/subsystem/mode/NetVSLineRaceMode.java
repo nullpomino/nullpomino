@@ -126,7 +126,7 @@ public class NetVSLineRaceMode extends NetDummyVSMode {
 		// Game Completed
 		if((engine.statistics.lines >= goalLines) && (playerID == 0)) {
 			if(netvsIsPractice) {
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 				engine.resetStatc();
 			} else {
 				// Send game end message
@@ -150,7 +150,7 @@ public class NetVSLineRaceMode extends NetDummyVSMode {
 				netLobby.netPlayerClient.send(strMsg);
 
 				// Wait until everyone dies
-				engine.stat = GameEngine.STAT_NOTHING;
+				engine.stat = GameEngine.Status.NOTHING;
 				engine.resetStatc();
 			}
 		}
@@ -168,7 +168,7 @@ public class NetVSLineRaceMode extends NetDummyVSMode {
 		int fontColor = EventReceiver.COLOR_WHITE;
 
 		if(netvsPlayerExist[playerID] && engine.isVisible) {
-			if( ((netvsIsGameActive) || ((netvsIsPractice) && (playerID == 0))) && (engine.stat != GameEngine.STAT_RESULT) ) {
+			if( ((netvsIsGameActive) || ((netvsIsPractice) && (playerID == 0))) && (engine.stat != GameEngine.Status.RESULT) ) {
 				// Lines left
 				int remainLines = Math.max(0, goalLines - engine.statistics.lines);
 				fontColor = EventReceiver.COLOR_WHITE;
@@ -197,7 +197,7 @@ public class NetVSLineRaceMode extends NetDummyVSMode {
 				}
 			}
 
-			if((netvsIsGameActive) && (engine.stat != GameEngine.STAT_RESULT)) {
+			if((netvsIsGameActive) && (engine.stat != GameEngine.Status.RESULT)) {
 				// Place
 				int place = getNowPlayerPlace(engine, playerID);
 				if(netvsPlayerDead[playerID]) place = netvsPlayerPlace[playerID];
@@ -238,7 +238,7 @@ public class NetVSLineRaceMode extends NetDummyVSMode {
 
 				if(engine.displaysize != -1) {
 					int y2 = 21;
-					if(engine.stat == GameEngine.STAT_RESULT) y2 = 22;
+					if(engine.stat == GameEngine.Status.RESULT) y2 = 22;
 					owner.receiver.drawMenuFont(engine, playerID, 0, y2, strTemp, EventReceiver.COLOR_WHITE);
 				} else {
 					owner.receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);

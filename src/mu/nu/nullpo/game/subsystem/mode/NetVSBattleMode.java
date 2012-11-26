@@ -656,7 +656,7 @@ public class NetVSBattleMode extends NetDummyVSMode {
 
 		if(netvsPlayerExist[playerID] && engine.isVisible) {
 			// Garbage Count
-			if((garbage[playerID] > 0) && (netCurrentRoomInfo.useFractionalGarbage) && (engine.stat != GameEngine.STAT_RESULT)) {
+			if((garbage[playerID] > 0) && (netCurrentRoomInfo.useFractionalGarbage) && (engine.stat != GameEngine.Status.RESULT)) {
 				String strTempGarbage;
 
 				int fontColor = EventReceiver.COLOR_WHITE;
@@ -689,7 +689,7 @@ public class NetVSBattleMode extends NetDummyVSMode {
 		}
 
 		// Practice mode
-		if((playerID == 0) && (netvsIsPractice) && (netvsIsPracticeExitAllowed) && (engine.stat != GameEngine.STAT_RESULT)) {
+		if((playerID == 0) && (netvsIsPractice) && (netvsIsPracticeExitAllowed) && (engine.stat != GameEngine.Status.RESULT)) {
 			if((lastevent[playerID] == EVENT_NONE) || (scgettime[playerID] >= 120)) {
 				owner.receiver.drawMenuFont(engine, 0, 0, 21,
 						"F(" + owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):\n END GAME",
@@ -856,7 +856,7 @@ public class NetVSBattleMode extends NetDummyVSMode {
 
 				if(engine.displaysize != -1) {
 					int y2 = 21;
-					if(engine.stat == GameEngine.STAT_RESULT) y2 = 22;
+					if(engine.stat == GameEngine.Status.RESULT) y2 = 22;
 					owner.receiver.drawMenuFont(engine, playerID, 0, y2, strTemp, EventReceiver.COLOR_WHITE);
 				} else {
 					owner.receiver.drawDirectFont(engine, playerID, x + 4, y + 168, strTemp, EventReceiver.COLOR_WHITE, 0.5f);

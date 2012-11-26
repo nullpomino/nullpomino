@@ -458,7 +458,7 @@ public class FinalMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "FINAL", EventReceiver.COLOR_WHITE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Leaderboard
@@ -824,7 +824,7 @@ public class FinalMode extends AbstractMode {
 				rollclear = 2;
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 			}
 		}
 	}
@@ -858,7 +858,7 @@ public class FinalMode extends AbstractMode {
 			}
 
 			drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
-					STAT_SCORE, STAT_LINES, STAT_LEVEL_MANIA, STAT_TIME);
+					Statistic.SCORE, Statistic.LINES, Statistic.LEVEL_MANIA, Statistic.TIME);
 			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 			if(secretGrade > 4) {
 				drawResult(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE,
@@ -885,7 +885,7 @@ public class FinalMode extends AbstractMode {
 			if(medalCO >= 1) receiver.drawMenuFont(engine, playerID, 8, 4, "CO", getMedalFontColor(medalCO));
 
 			drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
-					STAT_LPS, STAT_SPS, STAT_PIECE, STAT_PPS);
+					Statistic.LPS, Statistic.SPS, Statistic.PIECE, Statistic.PPS);
 		}
 	}
 

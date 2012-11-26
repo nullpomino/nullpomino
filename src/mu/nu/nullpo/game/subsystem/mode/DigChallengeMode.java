@@ -404,7 +404,7 @@ public class DigChallengeMode extends NetDummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 1, "(REALTIME GAME)", EventReceiver.COLOR_GREEN);
 		}
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel == 0) && (engine.ai == null)) {
 				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
 				int topY = (receiver.getNextDisplayType() == 2) ? 6 : 4;
@@ -543,7 +543,7 @@ public class DigChallengeMode extends NetDummyMode {
 
 			// Add Garbage (Realtime)
 			if((garbageTimer >= getGarbageMaxTime(engine.statistics.level)) && (goaltype == GOALTYPE_REALTIME) &&
-			   (engine.stat != GameEngine.STAT_LINECLEAR) && (!netIsWatch))
+			   (engine.stat != GameEngine.Status.LINECLEAR) && (!netIsWatch))
 			{
 				addGarbage(engine);
 				garbageTimer = 0;
@@ -554,7 +554,7 @@ public class DigChallengeMode extends NetDummyMode {
 					netSendStats(engine);
 				}
 
-				if((engine.stat == GameEngine.STAT_MOVE) && (engine.nowPieceObject != null)) {
+				if((engine.stat == GameEngine.Status.MOVE) && (engine.nowPieceObject != null)) {
 					if(engine.nowPieceObject.checkCollision(engine.nowPieceX, engine.nowPieceY, engine.field)) {
 						// Push up the current piece
 						while(engine.nowPieceObject.checkCollision(engine.nowPieceX, engine.nowPieceY, engine.field)) {
@@ -563,7 +563,7 @@ public class DigChallengeMode extends NetDummyMode {
 
 						// Pushed out from the visible part of the field
 						if(!engine.nowPieceObject.canPlaceToVisibleField(engine.nowPieceX, engine.nowPieceY, engine.field)) {
-							engine.stat = GameEngine.STAT_GAMEOVER;
+							engine.stat = GameEngine.Status.GAMEOVER;
 							engine.resetStatc();
 							engine.gameEnded();
 						}
@@ -812,11 +812,11 @@ public class DigChallengeMode extends NetDummyMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
-				STAT_SCORE, STAT_LINES);
+				Statistic.SCORE, Statistic.LINES);
 		drawResult(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
 				"GARBAGE", String.format("%10d", garbageTotal));
 		drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
-				STAT_PIECE, STAT_LEVEL, STAT_TIME);
+				Statistic.PIECE, Statistic.LEVEL, Statistic.TIME);
 		drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 		drawResultNetRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, netRankingRank[0]);
 		drawResultNetRankDaily(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[1]);

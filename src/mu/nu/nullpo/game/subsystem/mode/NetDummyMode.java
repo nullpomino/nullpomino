@@ -210,7 +210,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 	 */
 	@Override
 	public void playerInit(GameEngine engine, int playerID) {
-		engine.stat = GameEngine.STAT_NOTHING;
+		engine.stat = GameEngine.Status.NOTHING;
 		engine.isVisible = false;
 	}
 
@@ -366,7 +366,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 					return false;
 				} else {
 					engine.field.reset();
-					engine.stat = GameEngine.STAT_RESULT;
+					engine.stat = GameEngine.Status.RESULT;
 					engine.resetStatc();
 					return true;
 				}
@@ -501,7 +501,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 
 			if(netIsWatch) {
 				owner.reset();
-				owner.engine[0].stat = GameEngine.STAT_READY;
+				owner.engine[0].stat = GameEngine.Status.READY;
 				owner.engine[0].resetStatc();
 			}
 		}
@@ -512,8 +512,8 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 			if(netIsWatch) {
 				owner.engine[0].gameEnded();
 
-				if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[0].stat != GameEngine.STAT_RESULT)) {
-					owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
+				if((owner.engine[0].stat != GameEngine.Status.GAMEOVER) && (owner.engine[0].stat != GameEngine.Status.RESULT)) {
+					owner.engine[0].stat = GameEngine.Status.GAMEOVER;
 					owner.engine[0].resetStatc();
 				}
 			}
@@ -550,7 +550,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 
 				// Move cursor
 				if(message[3].equals("cursor")) {
-					if(engine.stat == GameEngine.STAT_SETTING) {
+					if(engine.stat == GameEngine.Status.SETTING) {
 						menuCursor = Integer.parseInt(message[4]);
 						engine.playSE("cursor");
 					}
@@ -579,26 +579,26 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 				if(message[3].equals("ending")) {
 					engine.ending = 1;
 					if(!engine.staffrollEnable) engine.gameEnded();
-					engine.stat = GameEngine.STAT_ENDINGSTART;
+					engine.stat = GameEngine.Status.ENDINGSTART;
 					engine.resetStatc();
 				}
 				// Excellent
 				if(message[3].equals("excellent")) {
-					engine.stat = GameEngine.STAT_EXCELLENT;
+					engine.stat = GameEngine.Status.EXCELLENT;
 					engine.resetStatc();
 				}
 				// Retry
 				if(message[3].equals("retry")) {
 					engine.ending = 0;
 					engine.gameEnded();
-					engine.stat = GameEngine.STAT_SETTING;
+					engine.stat = GameEngine.Status.SETTING;
 					engine.resetStatc();
 					engine.playSE("decide");
 				}
 				// Display results screen
 				if(message[3].equals("resultsscreen")) {
 					engine.field.reset();
-					engine.stat = GameEngine.STAT_RESULT;
+					engine.stat = GameEngine.Status.RESULT;
 					engine.resetStatc();
 				}
 			}
@@ -731,7 +731,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+0, "SPECTATORS", fontcolor);
 			owner.receiver.drawScoreFont(engine, engine.playerID, x, y+1, "" + netNumSpectators, EventReceiver.COLOR_WHITE);
 
-			if(engine.stat == GameEngine.STAT_SETTING && !netIsWatch && netIsNetRankingViewOK(engine)) {
+			if(engine.stat == GameEngine.Status.SETTING && !netIsWatch && netIsNetRankingViewOK(engine)) {
 				int y2 = y + 2;
 				if(y2 > 24) y2 = 24;
 				String strBtnD = engine.owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_D);
@@ -819,12 +819,12 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 			engine.nowPieceBottomY =
 				engine.nowPieceObject.getBottom(pieceX, pieceY, engine.field);
 
-			if((engine.stat != GameEngine.STAT_EXCELLENT) && (engine.stat != GameEngine.STAT_GAMEOVER) &&
-			   (engine.stat != GameEngine.STAT_RESULT))
+			if((engine.stat != GameEngine.Status.EXCELLENT) && (engine.stat != GameEngine.Status.GAMEOVER) &&
+			   (engine.stat != GameEngine.Status.RESULT))
 			{
 				engine.gameActive = true;
 				engine.timerActive = true;
-				engine.stat = GameEngine.STAT_MOVE;
+				engine.stat = GameEngine.Status.MOVE;
 				engine.statc[0] = 2;
 			}
 
@@ -892,7 +892,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 			if(message.length > 4) {
 				engine.nowPieceObject = null;
 				engine.holdDisable = false;
-				if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
+				if(engine.stat == GameEngine.Status.SETTING) engine.stat = GameEngine.Status.MOVE;
 				int skin = Integer.parseInt(message[4]);
 				netPlayerSkin = skin;
 				if(message.length > 6) {
@@ -909,7 +909,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 			if(message.length > 5) {
 				engine.nowPieceObject = null;
 				engine.holdDisable = false;
-				if(engine.stat == GameEngine.STAT_SETTING) engine.stat = GameEngine.STAT_MOVE;
+				if(engine.stat == GameEngine.Status.SETTING) engine.stat = GameEngine.Status.MOVE;
 				int skin = Integer.parseInt(message[4]);
 				int highestWallY = Integer.parseInt(message[5]);
 				netPlayerSkin = skin;

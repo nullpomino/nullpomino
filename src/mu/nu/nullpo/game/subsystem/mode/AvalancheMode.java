@@ -312,7 +312,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "AVALANCHE (" + modeStr + ")", EventReceiver.COLOR_DARKBLUE);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "("+SCORETYPE_NAME[scoreType] + " " + numColors + " COLORS)", EventReceiver.COLOR_DARKBLUE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (engine.ai == null) && (engine.colorClearSize == 4)) {
 				float scale = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 0.5f : 1.0f;
 				int topY = ((receiver.getNextDisplayType() == 2) && (gametype == 0)) ? 6 : 4;
@@ -370,7 +370,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			receiver.drawScoreFont(engine, playerID, 11, 12, "MAX CHAIN", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 11, 13, String.valueOf(engine.statistics.maxChain));
 
-			if(dangerColumnShowX && engine.gameStarted && (engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT)) {
+			if(dangerColumnShowX && engine.gameStarted && (engine.stat != GameEngine.Status.MOVE) && (engine.stat != GameEngine.Status.RESULT)) {
 				drawXorTimer(engine, playerID);
 			}
 
@@ -428,7 +428,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			if((engine.statistics.time >= ULTRA_MAX_TIME) && (engine.timerActive == true)) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_ENDINGSTART;
+				engine.stat = GameEngine.Status.ENDINGSTART;
 				return;
 			}
 		} else if (gametype == 2) {
@@ -444,7 +444,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			if((engine.statistics.score >= SPRINT_MAX_SCORE[sprintTarget]) && (engine.timerActive == true)) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_ENDINGSTART;
+				engine.stat = GameEngine.Status.ENDINGSTART;
 			}
 		}
 	}
@@ -478,7 +478,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		{
 			if (!engine.field.getBlockEmpty(2, 0) || (dangerColumnDouble && !engine.field.getBlockEmpty(3, 0)))
 			{
-				engine.stat = GameEngine.STAT_GAMEOVER;
+				engine.stat = GameEngine.Status.GAMEOVER;
 				engine.gameEnded();
 				engine.resetStatc();
 				engine.statc[1] = 1;

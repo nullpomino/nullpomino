@@ -159,7 +159,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	@Override
 	public void onFirst(GameEngine engine, int playerID) {
 		inputARE = 0;
-		boolean newInARE = engine.stat == GameEngine.STAT_ARE;
+		boolean newInARE = engine.stat == GameEngine.Status.ARE;
 		if ((engine.aiPrethink && engine.getARE() > 0 && engine.getARELine() > 0)
 				&& ((newInARE && !inARE) || (!thinking && !thinkSuccess)))
 		{
@@ -206,7 +206,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		if (engine.stat == GameEngine.STAT_READY && engine.statc[0] == 0)
+		if (engine.stat == GameEngine.Status.READY && engine.statc[0] == 0)
 			thinkRequest.newCreateTablesRequest();
 	}
 
@@ -215,7 +215,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	 */
 	@Override
 	public void setControl(GameEngine engine, int playerID, Controller ctrl) {
-		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.STAT_MOVE) &&
+		if( (engine.nowPieceObject != null) && (engine.stat == GameEngine.Status.MOVE) &&
 			(delay >= engine.aiMoveDelay) && (engine.statc[0] > 0) &&
 		    (!engine.aiUseThread || (threadRunning && !thinking && (thinkCurrentPieceNo <= thinkLastPieceNo))) )
 		{

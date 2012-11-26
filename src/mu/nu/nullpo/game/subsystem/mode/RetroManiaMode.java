@@ -298,7 +298,7 @@ public class RetroManiaMode extends AbstractMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "RETRO MANIA", EventReceiver.COLOR_GREEN);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "("+GAMETYPE_NAME[gametype]+" SPEED)", EventReceiver.COLOR_GREEN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			// Leaderboard
 			if((owner.replayMode == false) && (big == false) && (startlevel == 0) && (engine.ai == null)) {
 				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
@@ -445,7 +445,7 @@ public class RetroManiaMode extends AbstractMode {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
 		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE,
-				STAT_SCORE, STAT_LINES, STAT_LEVEL, STAT_TIME);
+				Statistic.SCORE, Statistic.LINES, Statistic.LEVEL, Statistic.TIME);
 		drawResultRank(engine, playerID, receiver, 11, EventReceiver.COLOR_BLUE, rankingRank);
 	}
 

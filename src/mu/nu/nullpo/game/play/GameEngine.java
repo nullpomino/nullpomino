@@ -68,20 +68,9 @@ public class GameEngine {
 	public static final String[] GAMESTYLE_NAMES = {"TETROMINO", "AVALANCHE", "PHYSICIAN", "SPF"};
 
 	/** Constants of main game status */
-	public static final int STAT_NOTHING = -1,
-							STAT_SETTING = 0,
-							STAT_READY = 1,
-							STAT_MOVE = 2,
-							STAT_LOCKFLASH = 3,
-							STAT_LINECLEAR = 4,
-							STAT_ARE = 5,
-							STAT_ENDINGSTART = 6,
-							STAT_CUSTOM = 7,
-							STAT_EXCELLENT = 8,
-							STAT_GAMEOVER = 9,
-							STAT_RESULT = 10,
-							STAT_FIELDEDIT = 11,
-							STAT_INTERRUPTITEM = 12;
+	public static enum Status {
+		NOTHING, SETTING, READY, MOVE, LOCKFLASH, LINECLEAR, ARE, ENDINGSTART, CUSTOM, EXCELLENT, GAMEOVER, RESULT, FIELDEDIT, INTERRUPTITEM
+	};
 
 	/** Number of free status counters (used by statc array) */
 	public static final int MAX_STATC = 10;
@@ -225,7 +214,7 @@ public class GameEngine {
 	public boolean aiHintReady;
 
 	/** Current main game status */
-	public int stat;
+	public Status stat;
 
 	/** Free status counters */
 	public int[] statc;
@@ -558,7 +547,7 @@ public class GameEngine {
 	public int fldeditColor;
 
 	/** Field edit screen: Previous game status number */
-	public int fldeditPreviousStat;
+	public Status fldeditPreviousStat;
 
 	/** Field edit screen: Frame counter */
 	public int fldeditFrames;
@@ -591,7 +580,7 @@ public class GameEngine {
 	public int interruptItemNumber;
 
 	/** Post-status of interruptable item */
-	public int interruptItemPreviousStat;
+	public Status interruptItemPreviousStat;
 
 	/** Backup field for Mirror item */
 	public Field interruptItemMirrorField;
@@ -760,7 +749,7 @@ public class GameEngine {
 
 		quitflag = false;
 
-		stat = STAT_SETTING;
+		stat = Status.SETTING;
 		statc = new int[MAX_STATC];
 
 		isInGame = false;
@@ -1665,7 +1654,7 @@ public class GameEngine {
 	 */
 	public void enterFieldEdit() {
 		fldeditPreviousStat = stat;
-		stat = STAT_FIELDEDIT;
+		stat = Status.FIELDEDIT;
 		fldeditX = 0;
 		fldeditY = 0;
 		fldeditColor = Block.BLOCK_COLOR_GRAY;
@@ -1752,49 +1741,49 @@ public class GameEngine {
 		// 各ステータスの処理
 		if(!lagStop) {
 			switch(stat) {
-			case STAT_NOTHING:
+			case NOTHING:
 				break;
-			case STAT_SETTING:
+			case SETTING:
 				statSetting();
 				break;
-			case STAT_READY:
+			case READY:
 				statReady();
 				break;
-			case STAT_MOVE:
+			case MOVE:
 				dasRepeat = true;
 				dasInstant = false;
 				while(dasRepeat){
 					statMove();
 				}
 				break;
-			case STAT_LOCKFLASH:
+			case LOCKFLASH:
 				statLockFlash();
 				break;
-			case STAT_LINECLEAR:
+			case LINECLEAR:
 				statLineClear();
 				break;
-			case STAT_ARE:
+			case ARE:
 				statARE();
 				break;
-			case STAT_ENDINGSTART:
+			case ENDINGSTART:
 				statEndingStart();
 				break;
-			case STAT_CUSTOM:
+			case CUSTOM:
 				statCustom();
 				break;
-			case STAT_EXCELLENT:
+			case EXCELLENT:
 				statExcellent();
 				break;
-			case STAT_GAMEOVER:
+			case GAMEOVER:
 				statGameOver();
 				break;
-			case STAT_RESULT:
+			case RESULT:
 				statResult();
 				break;
-			case STAT_FIELDEDIT:
+			case FIELDEDIT:
 				statFieldEdit();
 				break;
-			case STAT_INTERRUPTITEM:
+			case INTERRUPTITEM:
 				statInterruptItem();
 				break;
 			}
@@ -1835,57 +1824,57 @@ public class GameEngine {
 
 		// 各ステータスの処理
 		switch(stat) {
-		case STAT_NOTHING:
+		case NOTHING:
 			break;
-		case STAT_SETTING:
+		case SETTING:
 			if(owner.mode != null) owner.mode.renderSetting(this, playerID);
 			owner.receiver.renderSetting(this, playerID);
 			break;
-		case STAT_READY:
+		case READY:
 			if(owner.mode != null) owner.mode.renderReady(this, playerID);
 			owner.receiver.renderReady(this, playerID);
 			break;
-		case STAT_MOVE:
+		case MOVE:
 			if(owner.mode != null) owner.mode.renderMove(this, playerID);
 			owner.receiver.renderMove(this, playerID);
 			break;
-		case STAT_LOCKFLASH:
+		case LOCKFLASH:
 			if(owner.mode != null) owner.mode.renderLockFlash(this, playerID);
 			owner.receiver.renderLockFlash(this, playerID);
 			break;
-		case STAT_LINECLEAR:
+		case LINECLEAR:
 			if(owner.mode != null) owner.mode.renderLineClear(this, playerID);
 			owner.receiver.renderLineClear(this, playerID);
 			break;
-		case STAT_ARE:
+		case ARE:
 			if(owner.mode != null) owner.mode.renderARE(this, playerID);
 			owner.receiver.renderARE(this, playerID);
 			break;
-		case STAT_ENDINGSTART:
+		case ENDINGSTART:
 			if(owner.mode != null) owner.mode.renderEndingStart(this, playerID);
 			owner.receiver.renderEndingStart(this, playerID);
 			break;
-		case STAT_CUSTOM:
+		case CUSTOM:
 			if(owner.mode != null) owner.mode.renderCustom(this, playerID);
 			owner.receiver.renderCustom(this, playerID);
 			break;
-		case STAT_EXCELLENT:
+		case EXCELLENT:
 			if(owner.mode != null) owner.mode.renderExcellent(this, playerID);
 			owner.receiver.renderExcellent(this, playerID);
 			break;
-		case STAT_GAMEOVER:
+		case GAMEOVER:
 			if(owner.mode != null) owner.mode.renderGameOver(this, playerID);
 			owner.receiver.renderGameOver(this, playerID);
 			break;
-		case STAT_RESULT:
+		case RESULT:
 			if(owner.mode != null) owner.mode.renderResult(this, playerID);
 			owner.receiver.renderResult(this, playerID);
 			break;
-		case STAT_FIELDEDIT:
+		case FIELDEDIT:
 			if(owner.mode != null) owner.mode.renderFieldEdit(this, playerID);
 			owner.receiver.renderFieldEdit(this, playerID);
 			break;
-		case STAT_INTERRUPTITEM:
+		case INTERRUPTITEM:
 			break;
 		}
 
@@ -1918,7 +1907,7 @@ public class GameEngine {
 		owner.receiver.onSetting(this, playerID);
 
 		// Mode側が何もしない場合はReady画面へ移動
-		stat = STAT_READY;
+		stat = Status.READY;
 		resetStatc();
 	}
 
@@ -2029,7 +2018,7 @@ public class GameEngine {
 			if(owner.mode != null) owner.mode.startGame(this, playerID);
 			owner.receiver.startGame(this, playerID);
 			initialRotate();
-			stat = STAT_MOVE;
+			stat = Status.MOVE;
 			resetStatc();
 			if(!readyDone) {
 				startTime = System.nanoTime();
@@ -2342,8 +2331,8 @@ public class GameEngine {
 				if(nowPieceObject.checkCollision(nowPieceX, nowPieceY, field) == true) {
 					nowPieceObject.placeToField(nowPieceX, nowPieceY, field);
 					nowPieceObject = null;
-					stat = STAT_GAMEOVER;
-					if((ending == 2) && (staffrollNoDeath)) stat = STAT_NOTHING;
+					stat = Status.GAMEOVER;
+					if((ending == 2) && (staffrollNoDeath)) stat = Status.NOTHING;
 					resetStatc();
 					return;
 				}
@@ -2666,42 +2655,42 @@ public class GameEngine {
 				dasInstant = false;
 
 				// Next 処理を決める(Mode 側でステータスを弄っている場合は何もしない)
-				if((stat == STAT_MOVE) || (versionMajor <= 6.3f)) {
+				if((stat == Status.MOVE) || (versionMajor <= 6.3f)) {
 					resetStatc();
 
 					if((ending == 1) && (versionMajor >= 6.6f) && (versionMinorOld >= 0.1f)) {
 						// Ending
-						stat = STAT_ENDINGSTART;
+						stat = Status.ENDINGSTART;
 					} else if( (!put && ruleopt.fieldLockoutDeath) || (partialLockOut && ruleopt.fieldPartialLockoutDeath) ) {
 						// 画面外に置いて死亡
-						stat = STAT_GAMEOVER;
-						if((ending == 2) && (staffrollNoDeath)) stat = STAT_NOTHING;
+						stat = Status.GAMEOVER;
+						if((ending == 2) && (staffrollNoDeath)) stat = Status.NOTHING;
 					} else if ((lineGravityType == LINE_GRAVITY_CASCADE || lineGravityType == LINE_GRAVITY_CASCADE_SLOW)
 							&& !connectBlocks) {
-						stat = STAT_LINECLEAR;
+						stat = Status.LINECLEAR;
 						statc[0] = getLineDelay();
 						statLineClear();
 					} else if( (lineClearing > 0) && ((ruleopt.lockflash <= 0) || (!ruleopt.lockflashBeforeLineClear)) ) {
 						// Line clear
-						stat = STAT_LINECLEAR;
+						stat = Status.LINECLEAR;
 						statLineClear();
 					} else if( ((getARE() > 0) || (lagARE) || (ruleopt.lockflashBeforeLineClear)) &&
 							    (ruleopt.lockflash > 0) && (ruleopt.lockflashOnlyFrame) )
 					{
 						// AREあり (光あり）
-						stat = STAT_LOCKFLASH;
+						stat = Status.LOCKFLASH;
 					} else if((getARE() > 0) || (lagARE)) {
 						// AREあり (光なし）
 						statc[1] = getARE();
-						stat = STAT_ARE;
+						stat = Status.ARE;
 					} else if(interruptItemNumber != INTERRUPTITEM_NONE) {
 						// 中断効果のあるアイテム処理
 						nowPieceObject = null;
-						interruptItemPreviousStat = STAT_MOVE;
-						stat = STAT_INTERRUPTITEM;
+						interruptItemPreviousStat = Status.MOVE;
+						stat = Status.INTERRUPTITEM;
 					} else {
 						// AREなし
-						stat = STAT_MOVE;
+						stat = Status.MOVE;
 						if(ruleopt.moveFirstFrame == false) statMove();
 					}
 				}
@@ -2743,12 +2732,12 @@ public class GameEngine {
 
 			if(lineClearing > 0) {
 				// Line clear
-				stat = STAT_LINECLEAR;
+				stat = Status.LINECLEAR;
 				statLineClear();
 			} else {
 				// ARE
 				statc[1] = getARE();
-				stat = STAT_ARE;
+				stat = Status.ARE;
 			}
 			return;
 		}
@@ -2978,27 +2967,27 @@ public class GameEngine {
 
 				field.lineColorsCleared = null;
 
-				if((stat == STAT_LINECLEAR) || (versionMajor <= 6.3f)) {
+				if((stat == Status.LINECLEAR) || (versionMajor <= 6.3f)) {
 					resetStatc();
 					if(ending == 1) {
 						// Ending
-						stat = STAT_ENDINGSTART;
+						stat = Status.ENDINGSTART;
 					} else if((getARELine() > 0) || (lagARE)) {
 						// AREあり
 						statc[0] = 0;
 						statc[1] = getARELine();
 						statc[2] = 1;
-						stat = STAT_ARE;
+						stat = Status.ARE;
 					} else if(interruptItemNumber != INTERRUPTITEM_NONE) {
 						// 中断効果のあるアイテム処理
 						nowPieceObject = null;
-						interruptItemPreviousStat = STAT_MOVE;
-						stat = STAT_INTERRUPTITEM;
+						interruptItemPreviousStat = Status.MOVE;
+						stat = Status.INTERRUPTITEM;
 					} else {
 						// AREなし
 						nowPieceObject = null;
 						if(versionMajor < 7.5f) initialRotate(); //XXX: Weird IRS thing on lines cleared but no ARE
-						stat = STAT_MOVE;
+						stat = Status.MOVE;
 					}
 				}
 			}
@@ -3060,12 +3049,12 @@ public class GameEngine {
 
 			if(interruptItemNumber != INTERRUPTITEM_NONE) {
 				// 中断効果のあるアイテム処理
-				interruptItemPreviousStat = STAT_MOVE;
-				stat = STAT_INTERRUPTITEM;
+				interruptItemPreviousStat = Status.MOVE;
+				stat = Status.INTERRUPTITEM;
 			} else {
 				// Blockピース移動処理
 				initialRotate();
-				stat = STAT_MOVE;
+				stat = Status.MOVE;
 			}
 		}
 	}
@@ -3121,9 +3110,9 @@ public class GameEngine {
 
 			if(staffrollEnable) {
 				nowPieceObject = null;
-				stat = STAT_MOVE;
+				stat = Status.MOVE;
 			} else {
-				stat = STAT_EXCELLENT;
+				stat = Status.EXCELLENT;
 			}
 		}
 	}
@@ -3164,7 +3153,7 @@ public class GameEngine {
 
 		if((statc[0] >= 600) && (statc[1] == 0)) {
 			resetStatc();
-			stat = STAT_GAMEOVER;
+			stat = Status.GAMEOVER;
 		} else {
 			statc[0]++;
 		}
@@ -3230,7 +3219,7 @@ public class GameEngine {
 							owner.engine[i].field.reset();
 						}
 						owner.engine[i].resetStatc();
-						owner.engine[i].stat = STAT_RESULT;
+						owner.engine[i].stat = Status.RESULT;
 					}
 				}
 			}
@@ -3260,7 +3249,7 @@ public class GameEngine {
 			} else {
 				lives--;
 				resetStatc();
-				stat = STAT_MOVE;
+				stat = Status.MOVE;
 			}
 		}
 	}

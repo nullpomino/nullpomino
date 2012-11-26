@@ -926,7 +926,7 @@ public class GradeMania3Mode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "GRADE MANIA 3" + (enableexam ? "(+EXAM)" : ""), EventReceiver.COLOR_CYAN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (!owner.replayMode)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (!owner.replayMode)) ) {
 			if((startlevel == 0) && (!big) && (!always20g) && (!owner.replayMode) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
@@ -1561,7 +1561,7 @@ public class GradeMania3Mode extends AbstractMode {
 
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 			}
 		}
@@ -1649,7 +1649,7 @@ public class GradeMania3Mode extends AbstractMode {
 				receiver.drawMenuFont(engine, playerID, 0, 3, strGrade, gcolor);
 
 				drawResultStats(engine, playerID, receiver, 4, EventReceiver.COLOR_BLUE,
-						STAT_SCORE, STAT_LINES, STAT_LEVEL_MANIA, STAT_TIME);
+						Statistic.SCORE, Statistic.LINES, Statistic.LEVEL_MANIA, Statistic.TIME);
 				drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 				if(secretGrade > 4) {
 					drawResult(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE,
@@ -1689,7 +1689,7 @@ public class GradeMania3Mode extends AbstractMode {
 				}
 
 				drawResultStats(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE,
-						STAT_LPM, STAT_SPM, STAT_PIECE, STAT_PPS);
+						Statistic.LPM, Statistic.SPM, Statistic.PIECE, Statistic.PPS);
 			}
 		}
 	}

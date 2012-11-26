@@ -915,7 +915,7 @@ public class PracticeMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "PRACTICE", EventReceiver.COLOR_YELLOW);
 
-		if(engine.stat == GameEngine.STAT_FIELDEDIT) {
+		if(engine.stat == GameEngine.Status.FIELDEDIT) {
 			// fieldエディットのとき
 
 			// 座標
@@ -1108,7 +1108,7 @@ public class PracticeMode extends AbstractMode {
 			if(rolltime >= rolltimelimit) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 			}
 		} else {
 			if((timelimitTimer > 0) && (engine.timerActive == true)) timelimitTimer--;
@@ -1118,8 +1118,8 @@ public class PracticeMode extends AbstractMode {
 				engine.gameEnded();
 				engine.timerActive = false;
 				engine.resetStatc();
-				if(goallv == -1) engine.stat = GameEngine.STAT_ENDINGSTART;
-				else engine.stat = GameEngine.STAT_GAMEOVER;
+				if(goallv == -1) engine.stat = GameEngine.Status.ENDINGSTART;
+				else engine.stat = GameEngine.Status.GAMEOVER;
 			}
 
 			// 10秒前からのカウントダウン
@@ -1587,7 +1587,7 @@ public class PracticeMode extends AbstractMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
-				STAT_SCORE, STAT_LINES, STAT_LEVEL_ADD_DISP, STAT_TIME, STAT_SPL, STAT_SPM, STAT_LPM);
+				Statistic.SCORE, Statistic.LINES, Statistic.LEVEL_ADD_DISP, Statistic.TIME, Statistic.SPL, Statistic.SPM, Statistic.LPM);
 		if(secretGrade > 0) {
 			drawResult(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE,
 					"S. GRADE", String.format("%10s", tableSecretGradeName[secretGrade-1]));

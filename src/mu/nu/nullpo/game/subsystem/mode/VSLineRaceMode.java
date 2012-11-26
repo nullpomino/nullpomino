@@ -281,8 +281,8 @@ public class VSLineRaceMode extends AbstractMode {
 		} else {
 			// Start the game when both players are ready
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
-				owner.engine[0].stat = GameEngine.STAT_READY;
-				owner.engine[1].stat = GameEngine.STAT_READY;
+				owner.engine[0].stat = GameEngine.Status.READY;
+				owner.engine[1].stat = GameEngine.Status.READY;
 				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
 			}
@@ -439,7 +439,7 @@ public class VSLineRaceMode extends AbstractMode {
 		// Game completed
 		if(engine.statistics.lines >= goalLines[playerID]) {
 			engine.timerActive = false;
-			owner.engine[enemyID].stat = GameEngine.STAT_GAMEOVER;
+			owner.engine[enemyID].stat = GameEngine.Status.GAMEOVER;
 			owner.engine[enemyID].resetStatc();
 		}
 	}
@@ -448,28 +448,28 @@ public class VSLineRaceMode extends AbstractMode {
 	public void onLast(GameEngine engine, int playerID) {
 		// Game End
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			if((owner.engine[0].stat == GameEngine.Status.GAMEOVER) && (owner.engine[1].stat == GameEngine.Status.GAMEOVER)) {
 				// Draw
 				winnerID = -1;
 				owner.engine[0].gameEnded();
 				owner.engine[1].gameEnded();
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
-			} else if((owner.engine[0].stat != GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat == GameEngine.STAT_GAMEOVER)) {
+			} else if((owner.engine[0].stat != GameEngine.Status.GAMEOVER) && (owner.engine[1].stat == GameEngine.Status.GAMEOVER)) {
 				// 1P win
 				winnerID = 0;
 				owner.engine[0].gameEnded();
 				owner.engine[1].gameEnded();
-				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].stat = GameEngine.Status.EXCELLENT;
 				owner.engine[0].resetStatc();
 				owner.engine[0].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 				if(!owner.replayMode) winCount[0]++;
-			} else if((owner.engine[0].stat == GameEngine.STAT_GAMEOVER) && (owner.engine[1].stat != GameEngine.STAT_GAMEOVER)) {
+			} else if((owner.engine[0].stat == GameEngine.Status.GAMEOVER) && (owner.engine[1].stat != GameEngine.Status.GAMEOVER)) {
 				// 2P win
 				winnerID = 1;
 				owner.engine[0].gameEnded();
 				owner.engine[1].gameEnded();
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[1].stat = GameEngine.Status.EXCELLENT;
 				owner.engine[1].resetStatc();
 				owner.engine[1].statc[1] = 1;
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
@@ -492,7 +492,7 @@ public class VSLineRaceMode extends AbstractMode {
 			receiver.drawMenuFont(engine, playerID, 6, 1, "LOSE", EventReceiver.COLOR_WHITE);
 		}
 		drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_ORANGE,
-				STAT_LINES, STAT_PIECE, STAT_LPM, STAT_PPS, STAT_TIME);
+				Statistic.LINES, Statistic.PIECE, Statistic.LPM, Statistic.PPS, Statistic.TIME);
 	}
 
 	/*

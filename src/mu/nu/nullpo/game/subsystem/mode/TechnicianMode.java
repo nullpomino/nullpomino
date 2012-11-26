@@ -466,7 +466,7 @@ public class TechnicianMode extends NetDummyMode {
 
 		receiver.drawScoreFont(engine, playerID, 0, 0, "TECHNICIAN\n(" + GAMETYPE_NAME[goaltype] + ")", EventReceiver.COLOR_WHITE);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (big == false) && (startlevel == 0) && (engine.ai == null)) {
 				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
 				int topY = (receiver.getNextDisplayType() == 2) ? 6 : 4;
@@ -637,7 +637,7 @@ public class TechnicianMode extends NetDummyMode {
 					if((goaltype == GAMETYPE_LV15_HARD) || (goaltype == GAMETYPE_10MIN_HARD)) {
 						engine.gameEnded();
 						engine.resetStatc();
-						engine.stat = GameEngine.STAT_GAMEOVER;
+						engine.stat = GameEngine.Status.GAMEOVER;
 					} else if(goaltype == GAMETYPE_10MIN_EASY) {
 						regretdispframe = 180;
 						engine.playSE("regret");
@@ -671,9 +671,9 @@ public class TechnicianMode extends NetDummyMode {
 					engine.resetStatc();
 
 					if((goaltype == GAMETYPE_10MIN_EASY) || (goaltype == GAMETYPE_10MIN_HARD)) {
-						engine.stat = GameEngine.STAT_ENDINGSTART;
+						engine.stat = GameEngine.Status.ENDINGSTART;
 					} else {
-						engine.stat = GameEngine.STAT_GAMEOVER;
+						engine.stat = GameEngine.Status.GAMEOVER;
 					}
 
 					totalTimer = 0;
@@ -706,7 +706,7 @@ public class TechnicianMode extends NetDummyMode {
 
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 			}
 		}
 	}
@@ -922,7 +922,7 @@ public class TechnicianMode extends NetDummyMode {
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
 		drawResultStats(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE,
-				STAT_SCORE, STAT_LINES, STAT_LEVEL, STAT_TIME, STAT_SPL, STAT_LPM);
+				Statistic.SCORE, Statistic.LINES, Statistic.LEVEL, Statistic.TIME, Statistic.SPL, Statistic.LPM);
 		drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
 		drawResultNetRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, netRankingRank[0]);
 		drawResultNetRankDaily(engine, playerID, receiver, 16, EventReceiver.COLOR_BLUE, netRankingRank[1]);

@@ -543,8 +543,8 @@ public class PhysicianVSMode extends AbstractMode {
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
-				owner.engine[0].stat = GameEngine.STAT_READY;
-				owner.engine[1].stat = GameEngine.STAT_READY;
+				owner.engine[0].stat = GameEngine.Status.READY;
+				owner.engine[1].stat = GameEngine.Status.READY;
 				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
 			}
@@ -757,7 +757,7 @@ public class PhysicianVSMode extends AbstractMode {
 		{
 			if (garbageCheck(engine, playerID))
 			{
-				engine.stat = GameEngine.STAT_LINECLEAR;
+				engine.stat = GameEngine.Status.LINECLEAR;
 				engine.statc[0] = engine.getLineDelay();
 			}
 		}
@@ -869,13 +869,13 @@ public class PhysicianVSMode extends AbstractMode {
 
 		// 決着
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
-			boolean p1Lose = (owner.engine[0].stat == GameEngine.STAT_GAMEOVER);
+			boolean p1Lose = (owner.engine[0].stat == GameEngine.Status.GAMEOVER);
 			if (!p1Lose && owner.engine[1].field != null)
 			{
 				rest[1] = owner.engine[1].field.getHowManyGems();
 				p1Lose = (rest[1] == 0);
 			}
-			boolean p2Lose = (owner.engine[1].stat == GameEngine.STAT_GAMEOVER);
+			boolean p2Lose = (owner.engine[1].stat == GameEngine.Status.GAMEOVER);
 			if (!p2Lose && owner.engine[0].field != null)
 			{
 				rest[0] = owner.engine[0].field.getHowManyGems();
@@ -884,18 +884,18 @@ public class PhysicianVSMode extends AbstractMode {
 			if(p1Lose && p2Lose) {
 				// Draw
 				winnerID = -1;
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[0].stat = GameEngine.Status.GAMEOVER;
+				owner.engine[1].stat = GameEngine.Status.GAMEOVER;
 			} else if(p2Lose && !p1Lose) {
 				// 1P win
 				winnerID = 0;
-				owner.engine[0].stat = GameEngine.STAT_EXCELLENT;
-				owner.engine[1].stat = GameEngine.STAT_GAMEOVER;
+				owner.engine[0].stat = GameEngine.Status.EXCELLENT;
+				owner.engine[1].stat = GameEngine.Status.GAMEOVER;
 			} else if(p1Lose && !p2Lose) {
 				// 2P win
 				winnerID = 1;
-				owner.engine[0].stat = GameEngine.STAT_GAMEOVER;
-				owner.engine[1].stat = GameEngine.STAT_EXCELLENT;
+				owner.engine[0].stat = GameEngine.Status.GAMEOVER;
+				owner.engine[1].stat = GameEngine.Status.EXCELLENT;
 			}
 			if (p1Lose || p2Lose) {
 				owner.engine[0].gameEnded();
@@ -924,7 +924,7 @@ public class PhysicianVSMode extends AbstractMode {
 		}
 
 		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,
-				STAT_LINES, STAT_PIECE, STAT_LPM, STAT_PPS, STAT_TIME);
+				Statistic.LINES, Statistic.PIECE, Statistic.LPM, Statistic.PPS, Statistic.TIME);
 		/*
 		float apm = (float)(garbageSent[playerID] * 3600) / (float)(engine.statistics.time);
 		drawResult(engine, playerID, receiver, 3, EventReceiver.COLOR_ORANGE,

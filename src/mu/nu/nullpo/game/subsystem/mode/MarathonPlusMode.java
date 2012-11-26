@@ -424,7 +424,7 @@ public class MarathonPlusMode extends NetDummyMode {
 			receiver.drawScoreFont(engine, playerID, 0, 1, "(NORMAL GAME)", EventReceiver.COLOR_GREEN);
 		}
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if( (owner.replayMode == false) && (big == false) && ((startlevel == 0) || (startlevel == 20)) && (engine.ai == null) ) {
 				float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
 				int topY = (receiver.getNextDisplayType() == 2) ? 6 : 4;
@@ -769,7 +769,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	 */
 	@Override
 	public boolean onEndingStart(GameEngine engine, int playerID) {
-		engine.stat = GameEngine.STAT_CUSTOM;
+		engine.stat = GameEngine.Status.CUSTOM;
 		engine.resetStatc();
 		return true;
 	}
@@ -801,7 +801,7 @@ public class MarathonPlusMode extends NetDummyMode {
 			}
 		} else if(engine.statc[0] >= 480) {
 			engine.ending = 0;
-			engine.stat = GameEngine.STAT_READY;
+			engine.stat = GameEngine.Status.READY;
 			engine.resetStatc();
 
 			// NET: Send game restarted messages
@@ -854,12 +854,12 @@ public class MarathonPlusMode extends NetDummyMode {
 		receiver.drawMenuFont(engine, playerID, 0, 0, "kn PAGE" + (engine.statc[1] + 1) + "/2", EventReceiver.COLOR_RED);
 
 		if(engine.statc[1] == 0) {
-			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE, STAT_SCORE, STAT_LINES);
+			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE, Statistic.SCORE, Statistic.LINES);
 			if(engine.statistics.level >= 20) {
 				drawResult(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE,
 						"BONUS LINE", String.format("%10d", bonusLines));
 			} else {
-				drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE, STAT_LEVEL);
+				drawResultStats(engine, playerID, receiver, 6, EventReceiver.COLOR_BLUE, Statistic.LEVEL);
 			}
 			drawResult(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE,
 					"TOTAL TIME", String.format("%10s", GeneralUtil.getTime(engine.statistics.time)),
@@ -871,7 +871,7 @@ public class MarathonPlusMode extends NetDummyMode {
 			drawResultNetRankDaily(engine, playerID, receiver, 18, EventReceiver.COLOR_BLUE, netRankingRank[1]);
 		} else {
 			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE,
-					STAT_SPL, STAT_SPM, STAT_LPM, STAT_PPS);
+					Statistic.SPL, Statistic.SPM, Statistic.LPM, Statistic.PPS);
 		}
 
 		if(netIsPB) {
@@ -1056,13 +1056,13 @@ public class MarathonPlusMode extends NetDummyMode {
 				owner.bgmStatus.bgm = BGMStatus.BGM_NOTHING;
 				engine.timerActive = false;
 				engine.ending = 1;
-				engine.stat = GameEngine.STAT_CUSTOM;
+				engine.stat = GameEngine.Status.CUSTOM;
 				engine.resetStatc();
 			}
 			// Bonus level started
 			else if(message[3].equals("bonuslevelstart")) {
 				engine.ending = 0;
-				engine.stat = GameEngine.STAT_READY;
+				engine.stat = GameEngine.Status.READY;
 				engine.resetStatc();
 			}
 		}

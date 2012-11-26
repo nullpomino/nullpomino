@@ -359,8 +359,8 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
-				owner.engine[0].stat = GameEngine.STAT_READY;
-				owner.engine[1].stat = GameEngine.STAT_READY;
+				owner.engine[0].stat = GameEngine.Status.READY;
+				owner.engine[1].stat = GameEngine.Status.READY;
 				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
 			}
@@ -499,11 +499,11 @@ public class AvalancheVSBombBattleMode extends AvalancheVSDummyMode {
 			receiver.drawDirectFont(engine, playerID, fldPosX - 28, fldPosY + 264, String.format("%8s", strScoreMultiplier), playerColor);
 		}
 
-		if((engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted)) {
+		if((engine.stat != GameEngine.Status.MOVE) && (engine.stat != GameEngine.Status.RESULT) && (engine.gameStarted)) {
 			drawX(engine, playerID);
 		}
 
-		if((engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted)) {
+		if((engine.stat != GameEngine.Status.RESULT) && (engine.gameStarted)) {
 			if (engine.field != null)
 				for (int x = 0; x < engine.field.getWidth(); x++)
 					for (int y = 0; y < engine.field.getHeight(); y++)

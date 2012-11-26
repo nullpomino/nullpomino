@@ -631,8 +631,8 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
-				owner.engine[0].stat = GameEngine.STAT_READY;
-				owner.engine[1].stat = GameEngine.STAT_READY;
+				owner.engine[0].stat = GameEngine.Status.READY;
+				owner.engine[1].stat = GameEngine.Status.READY;
 				owner.engine[0].resetStatc();
 				owner.engine[1].resetStatc();
 			}
@@ -884,7 +884,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			}
 		}
 
-		if((engine.stat != GameEngine.STAT_MOVE) && (engine.stat != GameEngine.STAT_RESULT) && (engine.gameStarted))
+		if((engine.stat != GameEngine.Status.MOVE) && (engine.stat != GameEngine.Status.RESULT) && (engine.gameStarted))
 			drawXorTimer(engine, playerID);
 
 		if(ojamaHard[playerID] > 0)

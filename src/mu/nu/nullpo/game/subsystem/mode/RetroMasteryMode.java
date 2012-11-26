@@ -334,7 +334,7 @@ public class RetroMasteryMode extends AbstractMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "RETRO MASTERY", EventReceiver.COLOR_GREEN);
 		receiver.drawScoreFont(engine, playerID, 0, 1, "("+GAMETYPE_NAME[gametype]+")", EventReceiver.COLOR_GREEN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (big == false) && (engine.ai == null)) {
 				receiver.drawScoreFont(engine, playerID, 3, 3, "SCORE    LINE LV.", EventReceiver.COLOR_BLUE);
 
@@ -493,7 +493,7 @@ public class RetroMasteryMode extends AbstractMode {
 	public void renderResult(GameEngine engine, int playerID) {
 		receiver.drawMenuFont(engine, playerID,  0, 1, "PLAY DATA", EventReceiver.COLOR_ORANGE);
 
-		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE, STAT_SCORE);
+		drawResultStats(engine, playerID, receiver, 3, EventReceiver.COLOR_BLUE, Statistic.SCORE);
 
 		receiver.drawMenuFont(engine, playerID,  0, 5, "LINES", EventReceiver.COLOR_BLUE);
 		String strLines = String.format("%10d", loons);
@@ -502,7 +502,7 @@ public class RetroMasteryMode extends AbstractMode {
 		receiver.drawMenuFont(engine, playerID,  0, 7, strFour);
 
 		drawResultStats(engine, playerID, receiver, 8, EventReceiver.COLOR_BLUE,
-				STAT_LEVEL, STAT_TIME);
+				Statistic.LEVEL, Statistic.TIME);
 		drawResult(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE,
 				"EFFICIENCY", String.format("%10.3f", efficiency));
 		drawResultRank(engine, playerID, receiver, 14, EventReceiver.COLOR_BLUE, rankingRank);

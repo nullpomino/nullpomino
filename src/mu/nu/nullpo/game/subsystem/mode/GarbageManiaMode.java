@@ -487,7 +487,7 @@ public class GarbageManiaMode extends AbstractMode {
 	public void renderLast(GameEngine engine, int playerID) {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "GARBAGE MANIA", EventReceiver.COLOR_CYAN);
 
-		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
+		if( (engine.stat == GameEngine.Status.SETTING) || ((engine.stat == GameEngine.Status.RESULT) && (owner.replayMode == false)) ) {
 			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (always20g == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
@@ -826,7 +826,7 @@ public class GarbageManiaMode extends AbstractMode {
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameEnded();
 				engine.resetStatc();
-				engine.stat = GameEngine.STAT_EXCELLENT;
+				engine.stat = GameEngine.Status.EXCELLENT;
 			}
 		}
 	}
@@ -851,7 +851,7 @@ public class GarbageManiaMode extends AbstractMode {
 
 		if(engine.statc[1] == 0) {
 			drawResultStats(engine, playerID, receiver, 2, EventReceiver.COLOR_BLUE,
-					STAT_SCORE, STAT_LINES, STAT_LEVEL_MANIA, STAT_TIME);
+					Statistic.SCORE, Statistic.LINES, Statistic.LEVEL_MANIA, Statistic.TIME);
 			drawResult(engine, playerID, receiver, 10, EventReceiver.COLOR_BLUE,
 					"GARBAGE", String.format("%10d", garbageTotal));
 			drawResultRank(engine, playerID, receiver, 12, EventReceiver.COLOR_BLUE, rankingRank);
@@ -874,7 +874,7 @@ public class GarbageManiaMode extends AbstractMode {
 			}
 		} else if(engine.statc[1] == 2) {
 			drawResultStats(engine, playerID, receiver, 1, EventReceiver.COLOR_BLUE,
-					STAT_LPM, STAT_SPM, STAT_PIECE, STAT_PPS);
+					Statistic.LPM, Statistic.SPM, Statistic.PIECE, Statistic.PPS);
 		}
 	}
 
