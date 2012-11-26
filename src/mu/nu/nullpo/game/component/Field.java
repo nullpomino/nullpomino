@@ -2104,9 +2104,9 @@ public class Field implements Serializable {
 		return total;
 	}
 
-	public boolean doCascadeGravity(int type) {
+	public boolean doCascadeGravity(GameEngine.LineGravity type) {
 		setAllAttribute(Block.BLOCK_ATTRIBUTE_LAST_COMMIT, false);
-		if (type == GameEngine.LINE_GRAVITY_CASCADE_SLOW)
+		if (type == GameEngine.LineGravity.CASCADE_SLOW)
 			return doCascadeSlow();
 		else
 			return doCascadeGravity();

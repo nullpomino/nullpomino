@@ -386,7 +386,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
 			engine.numColors = numColors[playerID];
-			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
+			engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LineGravity.CASCADE_SLOW : GameEngine.LineGravity.CASCADE;
 			engine.rainbowAnimate = true;
 			engine.displaysize = bigDisplay ? 1 : 0;
 

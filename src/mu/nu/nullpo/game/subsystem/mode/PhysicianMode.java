@@ -147,10 +147,10 @@ public class PhysicianMode extends AbstractMode {
 		}
 
 		engine.framecolor = GameEngine.FRAME_COLOR_PURPLE;
-		engine.clearMode = GameEngine.CLEAR_LINE_COLOR;
+		engine.clearMode = GameEngine.ClearType.LINE_COLOR;
 		engine.garbageColorClear = false;
 		engine.colorClearSize = 4;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LineGravity.CASCADE;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
 		engine.randomBlockColor = true;

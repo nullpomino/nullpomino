@@ -31,7 +31,6 @@ package mu.nu.nullpo.game.play;
 import mu.nu.nullpo.game.component.BGMStatus;
 import mu.nu.nullpo.game.component.BackgroundStatus;
 import mu.nu.nullpo.game.event.EventReceiver;
-import mu.nu.nullpo.game.play.GameEngine.Status;
 import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import mu.nu.nullpo.util.CustomProperties;
 

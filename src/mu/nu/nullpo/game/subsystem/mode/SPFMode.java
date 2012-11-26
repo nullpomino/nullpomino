@@ -526,9 +526,9 @@ public class SPFMode extends AbstractMode {
 		}
 
 		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
-		engine.clearMode = GameEngine.CLEAR_GEM_COLOR;
+		engine.clearMode = GameEngine.ClearType.GEM_COLOR;
 		engine.garbageColorClear = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LineGravity.CASCADE;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
 		engine.blockColors = BLOCK_COLORS;

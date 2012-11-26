@@ -186,7 +186,7 @@ public abstract class Avalanche1PDummyMode extends AbstractMode {
 		toNextLevel = blocksPerLevel;
 
 		engine.framecolor = GameEngine.FRAME_COLOR_PURPLE;
-		engine.clearMode = GameEngine.CLEAR_COLOR;
+		engine.clearMode = GameEngine.ClearType.COLOR;
 		engine.garbageColorClear = true;
 		engine.colorClearSize = 4;
 		engine.ignoreHidden = true;
@@ -230,7 +230,7 @@ public abstract class Avalanche1PDummyMode extends AbstractMode {
 
 	protected boolean readyInit(GameEngine engine, int playerID) {
 		engine.numColors = numColors;
-		engine.lineGravityType = cascadeSlow ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = cascadeSlow ? GameEngine.LineGravity.CASCADE_SLOW : GameEngine.LineGravity.CASCADE;
 		engine.displaysize = bigDisplay ? 1 : 0;
 
 		if(outlinetype == 0) engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;

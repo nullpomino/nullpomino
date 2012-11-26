@@ -485,9 +485,9 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 		}
 
 		engine.framecolor = PLAYER_COLOR_FRAME[playerID];
-		engine.clearMode = GameEngine.CLEAR_COLOR;
+		engine.clearMode = GameEngine.ClearType.COLOR;
 		engine.garbageColorClear = true;
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LineGravity.CASCADE;
 		for(int i = 0; i < Piece.PIECE_COUNT; i++)
 			engine.nextPieceEnable[i] = (PIECE_ENABLE[i] == 1);
 		engine.blockColors = BLOCK_COLORS;
@@ -519,7 +519,7 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 
 	public boolean readyInit(GameEngine engine, int playerID) {
 		engine.numColors = numColors[playerID];
-		engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LINE_GRAVITY_CASCADE_SLOW : GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = cascadeSlow[playerID] ? GameEngine.LineGravity.CASCADE_SLOW : GameEngine.LineGravity.CASCADE;
 		engine.displaysize = bigDisplay ? 1 : 0;
 		engine.sticky = 2;
 

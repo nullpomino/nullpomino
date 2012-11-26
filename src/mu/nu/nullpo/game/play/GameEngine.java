@@ -76,13 +76,9 @@ public class GameEngine {
 	public static final int MAX_STATC = 10;
 
 	/** Constants of last successful movements */
-	public static final int LASTMOVE_NONE = 0,
-							LASTMOVE_FALL_AUTO = 1,
-							LASTMOVE_FALL_SELF = 2,
-							LASTMOVE_SLIDE_AIR = 3,
-							LASTMOVE_SLIDE_GROUND = 4,
-							LASTMOVE_ROTATE_AIR = 5,
-							LASTMOVE_ROTATE_GROUND = 6;
+	public enum LastMove {
+		NONE, FALL_AUTO, FALL_SELF, SLIDE_AIR, SLIDE_GROUND, ROTATE_AIR, ROTATE_GROUND
+	}
 
 	/** Constants of block outline type */
 	public static final int BLOCK_OUTLINE_AUTO = -1,
@@ -122,10 +118,14 @@ public class GameEngine {
 							INTERRUPTITEM_MIRROR = 1;
 
 	/** Line gravity types */
-	public static final int LINE_GRAVITY_NATIVE = 0, LINE_GRAVITY_CASCADE = 1, LINE_GRAVITY_CASCADE_SLOW = 2;
+	public enum LineGravity {
+		NATIVE, CASCADE, CASCADE_SLOW
+	}
 
-	/** Clear mode settings */
-	public static final int CLEAR_LINE = 0, CLEAR_COLOR = 1, CLEAR_LINE_COLOR = 2, CLEAR_GEM_COLOR = 3;
+	/** Clear mode settings  */
+	public enum ClearType {
+		LINE, COLOR, LINE_COLOR, GEM_COLOR
+	}
 
 	/** Table for color-block item */
 	public static final int[] ITEM_COLOR_BRIGHT_TABLE =
@@ -298,7 +298,7 @@ public class GameEngine {
 	public int lineClearing;
 
 	/** Line gravity type (Native, Cascade, etc) */
-	public int lineGravityType;
+	public LineGravity lineGravityType;
 
 	/** Current number of chains */
 	public int chain;
@@ -379,7 +379,7 @@ public class GameEngine {
 	public boolean manualLock;
 
 	/** Last successful movement */
-	public int lastmove;
+	public LastMove lastmove;
 
 	/** ture if T-Spin */
 	public boolean tspin;
@@ -610,7 +610,7 @@ public class GameEngine {
 	public int owBlockShowOutlineOnly;
 
 	/** Clear mode selection */
-	public int clearMode;
+	public ClearType clearMode;
 
 	/** Size needed for a color-group clear */
 	public int colorClearSize;
@@ -776,7 +776,7 @@ public class GameEngine {
 		holdUsedCount = 0;
 
 		lineClearing = 0;
-		lineGravityType = LINE_GRAVITY_NATIVE;
+		lineGravityType = LineGravity.NATIVE;
 		chain = 0;
 		lineGravityTotalLines = 0;
 
@@ -812,7 +812,7 @@ public class GameEngine {
 
 		manualLock = false;
 
-		lastmove = LASTMOVE_NONE;
+		lastmove = LastMove.NONE;
 
 		tspin = false;
 		tspinmini = false;
@@ -906,7 +906,7 @@ public class GameEngine {
 
 		interruptItemNumber = INTERRUPTITEM_NONE;
 
-		clearMode = CLEAR_LINE;
+		clearMode = ClearType.LINE;
 		colorClearSize = -1;
 		garbageColorClear = false;
 		ignoreHidden = false;
@@ -2162,7 +2162,7 @@ public class GameEngine {
 			nowWallkickCount = 0;
 			nowUpwardWallkickCount = 0;
 			lineClearing = 0;
-			lastmove = LASTMOVE_NONE;
+			lastmove = LastMove.NONE;
 			kickused = false;
 			tspin = false;
 			tspinmini = false;
@@ -2295,9 +2295,9 @@ public class GameEngine {
 
 					if(onGroundBeforeRotate) {
 						extendedRotateCount++;
-						lastmove = LASTMOVE_ROTATE_GROUND;
+						lastmove = LastMove.ROTATE_GROUND;
 					} else {
-						lastmove = LASTMOVE_ROTATE_AIR;
+						lastmove = LastMove.ROTATE_AIR;
 					}
 
 					if(initialRotateDirection == 0) {
@@ -2396,9 +2396,9 @@ public class GameEngine {
 
 							if(onGroundBeforeMove) {
 								extendedMoveCount++;
-								lastmove = LASTMOVE_SLIDE_GROUND;
+								lastmove = LastMove.SLIDE_GROUND;
 							} else {
-								lastmove = LASTMOVE_SLIDE_AIR;
+								lastmove = LastMove.SLIDE_AIR;
 							}
 
 							if(!dasInstant) playSE("move");
@@ -2432,7 +2432,7 @@ public class GameEngine {
 					if(owner.mode != null) owner.mode.afterHardDropFall(this, playerID, harddropFall);
 					owner.receiver.afterHardDropFall(this, playerID, harddropFall);
 	
-					lastmove = LASTMOVE_FALL_SELF;
+					lastmove = LastMove.FALL_SELF;
 					if(ruleopt.lockresetFall == true) {
 						lockDelayNow = 0;
 						nowPieceObject.setDarkness(0f);
@@ -2496,18 +2496,18 @@ public class GameEngine {
 					nowPieceObject.setDarkness(0f);
 				}
 
-				if((lastmove != LASTMOVE_ROTATE_GROUND) && (lastmove != LASTMOVE_SLIDE_GROUND) && (lastmove != LASTMOVE_FALL_SELF)) {
+				if((lastmove != LastMove.ROTATE_GROUND) && (lastmove != LastMove.SLIDE_GROUND) && (lastmove != LastMove.FALL_SELF)) {
 					extendedMoveCount = 0;
 					extendedRotateCount = 0;
 				}
 
 				if(softdropUsed == true) {
-					lastmove = LASTMOVE_FALL_SELF;
+					lastmove = LastMove.FALL_SELF;
 					softdropFall++;
 					softdropFallNow++;
 					playSE("softdrop");
 				} else {
-					lastmove = LASTMOVE_FALL_AUTO;
+					lastmove = LastMove.FALL_AUTO;
 				}
 			} else {
 				break;
@@ -2603,7 +2603,7 @@ public class GameEngine {
 				if(ruleopt.lockflash > 0) nowPieceObject.setDarkness(-0.8f);
 
 				// T-Spin判定
-				if(((lastmove == LASTMOVE_ROTATE_GROUND) || (lastmove == LASTMOVE_ROTATE_AIR)) && (tspinEnable == true)) {
+				if(((lastmove == LastMove.ROTATE_GROUND) || (lastmove == LastMove.ROTATE_AIR)) && (tspinEnable == true)) {
 					if(useAllSpinBonus)
 						setAllSpin(nowPieceX, nowPieceY, nowPieceObject, field);
 					else
@@ -2621,13 +2621,13 @@ public class GameEngine {
 
 				if((ending == 0) || (staffrollEnableStatistics)) statistics.totalPieceLocked++;
 
-				if (clearMode == CLEAR_LINE)
+				if (clearMode == ClearType.LINE)
 					lineClearing = field.checkLineNoFlag();
-				else if (clearMode == CLEAR_COLOR)
+				else if (clearMode == ClearType.COLOR)
 					lineClearing = field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden);
-				else if (clearMode == CLEAR_LINE_COLOR)
+				else if (clearMode == ClearType.LINE_COLOR)
 					lineClearing = field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor);
-				else if (clearMode == CLEAR_GEM_COLOR)
+				else if (clearMode == ClearType.GEM_COLOR)
 					lineClearing = field.gemColorCheck(colorClearSize, false, garbageColorClear, ignoreHidden);
 				chain = 0;
 				lineGravityTotalLines = 0;
@@ -2665,7 +2665,7 @@ public class GameEngine {
 						// 画面外に置いて死亡
 						stat = Status.GAMEOVER;
 						if((ending == 2) && (staffrollNoDeath)) stat = Status.NOTHING;
-					} else if ((lineGravityType == LINE_GRAVITY_CASCADE || lineGravityType == LINE_GRAVITY_CASCADE_SLOW)
+					} else if ((lineGravityType == LineGravity.CASCADE || lineGravityType == LineGravity.CASCADE_SLOW)
 							&& !connectBlocks) {
 						stat = Status.LINECLEAR;
 						statc[0] = getLineDelay();
@@ -2766,15 +2766,15 @@ public class GameEngine {
 			if (sticky == 2)
 				field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
 			// Line clear flagを設定
-			if (clearMode == CLEAR_LINE)
+			if (clearMode == ClearType.LINE)
 				lineClearing = field.checkLine();
 			// Set color clear flags
-			else if (clearMode == CLEAR_COLOR)
+			else if (clearMode == ClearType.COLOR)
 				lineClearing = field.checkColor(colorClearSize, true, garbageColorClear, gemSameColor, ignoreHidden);
 			// Set line color clear flags
-			else if (clearMode == CLEAR_LINE_COLOR)
+			else if (clearMode == ClearType.LINE_COLOR)
 				lineClearing = field.checkLineColor(colorClearSize, true, lineColorDiagonals, gemSameColor);
-			else if (clearMode == CLEAR_GEM_COLOR)
+			else if (clearMode == ClearType.GEM_COLOR)
 				lineClearing = field.gemColorCheck(colorClearSize, true, garbageColorClear, ignoreHidden);
 
 			// Linescountを決める
@@ -2794,7 +2794,7 @@ public class GameEngine {
 					if(li == 3) statistics.totalTSpinTriple++;
 				}
 			} else {
-				if (clearMode == CLEAR_LINE)
+				if (clearMode == ClearType.LINE)
 					playSE("erase" + li);
 
 				if((ending == 0) || (staffrollEnableStatistics)) {
@@ -2855,7 +2855,7 @@ public class GameEngine {
 			owner.receiver.calcScore(this, playerID, li);
 
 			// Blockを消す演出を出す (まだ実際には消えていない）
-			if (clearMode == CLEAR_LINE) {
+			if (clearMode == ClearType.LINE) {
 				for(int i = 0; i < field.getHeight(); i++) {
 					if(field.getLineFlag(i)) {
 						for(int j = 0; j < field.getWidth(); j++) {
@@ -2868,7 +2868,7 @@ public class GameEngine {
 						}
 					}
 				}
-			} else if (clearMode == CLEAR_LINE_COLOR || clearMode == CLEAR_COLOR || clearMode == CLEAR_GEM_COLOR)
+			} else if (clearMode == ClearType.LINE_COLOR || clearMode == ClearType.COLOR || clearMode == ClearType.GEM_COLOR)
 				for(int i = 0; i < field.getHeight(); i++) {
 					for(int j = 0; j < field.getWidth(); j++) {
 						Block blk = field.getBlock(j, i);
@@ -2890,18 +2890,18 @@ public class GameEngine {
 				}
 
 			// Blockを消す
-			if (clearMode == CLEAR_LINE)
+			if (clearMode == ClearType.LINE)
 				field.clearLine();
-			else if (clearMode == CLEAR_COLOR)
+			else if (clearMode == ClearType.COLOR)
 				field.clearColor(colorClearSize, garbageColorClear, gemSameColor, ignoreHidden);
-			else if (clearMode == CLEAR_LINE_COLOR)
+			else if (clearMode == ClearType.LINE_COLOR)
 				field.clearLineColor(colorClearSize, lineColorDiagonals, gemSameColor);
-			else if (clearMode == CLEAR_GEM_COLOR)
+			else if (clearMode == ClearType.GEM_COLOR)
 				lineClearing = field.gemClearColor(colorClearSize, garbageColorClear, ignoreHidden);
 		}
 
 		// Linesを1段落とす
-		if((lineGravityType == LINE_GRAVITY_NATIVE) &&
+		if((lineGravityType == LineGravity.NATIVE) &&
 		   (getLineDelay() >= (lineClearing - 1)) && (statc[0] >= getLineDelay() - (lineClearing - 1)) && (ruleopt.lineFallAnim))
 		{
 			field.downFloatingBlocksSingleLine();
@@ -2927,7 +2927,7 @@ public class GameEngine {
 		// Next ステータス
 		if(statc[0] >= getLineDelay()) {
 			// Cascade
-			if((lineGravityType == LINE_GRAVITY_CASCADE || lineGravityType == LINE_GRAVITY_CASCADE_SLOW)) {
+			if((lineGravityType == LineGravity.CASCADE || lineGravityType == LineGravity.CASCADE_SLOW)) {
 				if (statc[6] < getCascadeDelay()) {
 					statc[6]++;
 					return;
@@ -2939,10 +2939,10 @@ public class GameEngine {
 						field.setBlockLinkByColor();
 					statc[6]++;
 					return;
-				} else if(((clearMode == CLEAR_LINE) && field.checkLineNoFlag() > 0) ||
-						((clearMode == CLEAR_COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden) > 0) ||
-						((clearMode == CLEAR_LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0) ||
-						((clearMode == CLEAR_GEM_COLOR) && field.gemColorCheck(colorClearSize, false, garbageColorClear, ignoreHidden) > 0)) {
+				} else if(((clearMode == ClearType.LINE) && field.checkLineNoFlag() > 0) ||
+						((clearMode == ClearType.COLOR) && field.checkColor(colorClearSize, false, garbageColorClear, gemSameColor, ignoreHidden) > 0) ||
+						((clearMode == ClearType.LINE_COLOR) && field.checkLineColor(colorClearSize, false, lineColorDiagonals, gemSameColor) > 0) ||
+						((clearMode == ClearType.GEM_COLOR) && field.gemColorCheck(colorClearSize, false, garbageColorClear, ignoreHidden) > 0)) {
 					tspin = false;
 					tspinmini = false;
 					chain++;
@@ -2962,7 +2962,7 @@ public class GameEngine {
 				field.setAllAttribute(Block.BLOCK_ATTRIBUTE_IGNORE_BLOCKLINK, true);
 
 			if(!skip) {
-				if(lineGravityType == LINE_GRAVITY_NATIVE) field.downFloatingBlocks();
+				if(lineGravityType == LineGravity.NATIVE) field.downFloatingBlocks();
 				playSE("linefall");
 
 				field.lineColorsCleared = null;

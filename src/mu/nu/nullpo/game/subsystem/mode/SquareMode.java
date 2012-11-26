@@ -299,7 +299,7 @@ public class SquareMode extends AbstractMode {
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
 		// Disable cascade
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_NATIVE;
+		engine.lineGravityType = GameEngine.LineGravity.NATIVE;
 		return false;
 	}
 
@@ -466,7 +466,7 @@ public class SquareMode extends AbstractMode {
 		int pts = lines;
 
 		if (lines > 0) {
-			engine.lineGravityType = GameEngine.LINE_GRAVITY_NATIVE;
+			engine.lineGravityType = GameEngine.LineGravity.NATIVE;
 			if (engine.field.isEmpty()) {
 				engine.playSE("bravo");
 			}
@@ -551,7 +551,7 @@ public class SquareMode extends AbstractMode {
 		for (int y = (-1 * hiddenHeight); y < height; y++)
 			engine.field.setLineFlag(y, false);
 		// Set cascade flag
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LineGravity.CASCADE;
 	}
 
 	/**
@@ -605,7 +605,7 @@ public class SquareMode extends AbstractMode {
 		}
 
 		// Set cascade flag
-		engine.lineGravityType = GameEngine.LINE_GRAVITY_CASCADE;
+		engine.lineGravityType = GameEngine.LineGravity.CASCADE;
 	}
 
 	/*
@@ -613,7 +613,7 @@ public class SquareMode extends AbstractMode {
 	 */
 	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
-		if((engine.lineGravityType == GameEngine.LINE_GRAVITY_CASCADE) && (engine.lineGravityTotalLines > 0) && (tntAvalanche)) {
+		if((engine.lineGravityType == GameEngine.LineGravity.CASCADE) && (engine.lineGravityTotalLines > 0) && (tntAvalanche)) {
 			Field field = engine.field;
 			for(int i = field.getHeightWithoutHurryupFloor() - 1; i >= (field.getHiddenHeight() * -1); i--) {
 				if(field.isEmptyLine(i)) {
