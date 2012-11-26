@@ -64,9 +64,17 @@ public abstract class AbstractMode implements GameMode {
 	
 	/** Name of mode in properties file */
 	protected String propName;
+	
+	/** Position of cursor in menu */
+	protected int menuCursor;
+	
+	/** Number of frames spent in menu */
+	protected int menuTime;
 
 	public AbstractMode() {
 		statcMenu = 0;
+		menuCursor = 0;
+		menuTime = 0;
 		menuColor = EventReceiver.COLOR_WHITE;
 		menuY = 0;
 		menu = new ArrayList<AbstractMenuItem>();
@@ -220,14 +228,14 @@ public abstract class AbstractMode implements GameMode {
 	public void renderSetting(GameEngine engine, int playerID) {
 		//TODO: Custom page breaks
 		AbstractMenuItem menuItem;
-		int pageNum = engine.statc[2] / 10;
+		int pageNum = menuCursor / 10;
 		int pageStart = pageNum * 10;
 		int endPage = Math.min(menu.size(), pageStart+10);
 		for (int i = pageStart; i < endPage; i++)
 		{
 			menuItem = menu.get(i);
 			receiver.drawMenuFont(engine, playerID, 0, i << 1, menuItem.displayName, menuItem.color);
-			if (engine.statc[2] == i && !engine.owner.replayMode)
+			if (menuCursor == i && !engine.owner.replayMode)
 				receiver.drawMenuFont(engine, playerID, 0, (i << 1) + 1, "b" + menuItem.getValueString(), true);
 			else 
 				receiver.drawMenuFont(engine, playerID, 1, (i << 1) + 1, menuItem.getValueString());
@@ -280,14 +288,14 @@ public abstract class AbstractMode implements GameMode {
 	protected int updateCursor (GameEngine engine, int maxCursor, int playerID) {
 		// Up
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-			engine.statc[2]--;
-			if(engine.statc[2] < 0) engine.statc[2] = maxCursor;
+			menuCursor--;
+			if(menuCursor < 0) menuCursor = maxCursor;
 			engine.playSE("cursor");
 		}
 		// Down
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-			engine.statc[2]++;
-			if(engine.statc[2] > maxCursor) engine.statc[2] = 0;
+			menuCursor++;
+			if(menuCursor > maxCursor) menuCursor = 0;
 			engine.playSE("cursor");
 		}
 
@@ -306,7 +314,7 @@ public abstract class AbstractMode implements GameMode {
 			int fast = 0;
 			if (engine.ctrl.isPush(Controller.BUTTON_E)) fast++;
 			if (engine.ctrl.isPush(Controller.BUTTON_F)) fast += 2;
-			menu.get(engine.statc[2]).change(change, fast);
+			menu.get(menuCursor).change(change, fast);
 		}
 	}
 
@@ -327,7 +335,7 @@ public abstract class AbstractMode implements GameMode {
 		{
 			if ((i&1) == 0)
 				receiver.drawMenuFont(engine, playerID, 0, menuY, str[i], menuColor);
-			else if (engine.statc[2] == statcMenu && !engine.owner.replayMode)
+			else if (menuCursor == statcMenu && !engine.owner.replayMode)
 			{
 				receiver.drawMenuFont(engine, playerID, 0, menuY, "b" + str[i], true);
 				statcMenu++;
@@ -352,7 +360,7 @@ public abstract class AbstractMode implements GameMode {
 		for (int i = 0; i < str.length-1; i+= 2)
 		{
 			receiver.drawMenuFont(engine, playerID, 1, menuY, str[i] + ":", menuColor);
-			if (engine.statc[2] == statcMenu && !engine.owner.replayMode)
+			if (menuCursor == statcMenu && !engine.owner.replayMode)
 			{
 				receiver.drawMenuFont(engine, playerID, 0, menuY, "b", true);
 				receiver.drawMenuFont(engine, playerID, str[i].length()+2, menuY, str[i+1], true);

@@ -482,7 +482,7 @@ public class VSBattleMode extends AbstractMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					engine.speed.gravity += change * m;
 					if(engine.speed.gravity < -1) engine.speed.gravity = 99999;
@@ -621,12 +621,12 @@ public class VSBattleMode extends AbstractMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 7) {
+				if(menuCursor == 7) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID]);
-				} else if(engine.statc[2] == 8) {
+				} else if(menuCursor == 8) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID]);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -643,28 +643,28 @@ public class VSBattleMode extends AbstractMode {
 			}
 
 			// プレビュー用Map読み込み
-			if(useMap[playerID] && (engine.statc[3] == 0)) {
+			if(useMap[playerID] && (menuTime == 0)) {
 				loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 			}
 
 			// Random map preview
 			if(useMap[playerID] && (propMap[playerID] != null) && (mapNumber[playerID] < 0)) {
-				if(engine.statc[3] % 30 == 0) {
+				if(menuTime % 30 == 0) {
 					engine.statc[5]++;
 					if(engine.statc[5] >= mapMaxNo[playerID]) engine.statc[5] = 0;
 					loadMapPreview(engine, playerID, engine.statc[5], false);
 				}
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else if(engine.statc[4] == 0) {
-			engine.statc[3]++;
-			engine.statc[2] = 0;
+			menuTime++;
+			menuCursor = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 9;
+			if(menuTime >= 60) {
+				menuCursor = 9;
 			}
-			if(engine.statc[3] >= 120) {
+			if(menuTime >= 120) {
 				engine.statc[4] = 1;
 			}
 		} else {
@@ -690,7 +690,7 @@ public class VSBattleMode extends AbstractMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 9) {
+			if(menuCursor < 9) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
 						"GRAVITY", String.valueOf(engine.speed.gravity),
 						"G-MAX", String.valueOf(engine.speed.denominator),
@@ -702,7 +702,7 @@ public class VSBattleMode extends AbstractMode {
 				drawMenu(engine, playerID, receiver, 14, EventReceiver.COLOR_GREEN, 7,
 						"LOAD", String.valueOf(presetNumber[playerID]),
 						"SAVE", String.valueOf(presetNumber[playerID]));
-			} else if(engine.statc[2] < 19) {
+			} else if(menuCursor < 19) {
 				String strTSpinEnable = "";
 				if(version >= 4) {
 					if(tspinEnableType[playerID] == 0) strTSpinEnable = "OFF";

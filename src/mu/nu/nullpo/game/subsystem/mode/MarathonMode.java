@@ -223,7 +223,7 @@ public class MarathonMode extends NetDummyMode {
 			if(change != 0) {
 				engine.playSE("change");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					startlevel += change;
 					if(tableGameClearLines[goaltype] >= 0) {
@@ -280,7 +280,7 @@ public class MarathonMode extends NetDummyMode {
 			}
 
 			// Confirm
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -302,14 +302,14 @@ public class MarathonMode extends NetDummyMode {
 				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		}
 		// Replay
 		else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}

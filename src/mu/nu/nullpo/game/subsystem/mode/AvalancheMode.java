@@ -157,16 +157,16 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 		if(engine.owner.replayMode == false) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 10;
-				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]--;
+				menuCursor--;
+				if(menuCursor < 0) menuCursor = 10;
+				else if(menuCursor == 1 && gametype != 2) menuCursor--;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 10) engine.statc[2] = 0;
-				else if(engine.statc[2] == 1 && gametype != 2) engine.statc[2]++;
+				menuCursor++;
+				if(menuCursor > 10) menuCursor = 0;
+				else if(menuCursor == 1 && gametype != 2) menuCursor++;
 				engine.playSE("cursor");
 			}
 
@@ -178,7 +178,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			if(change != 0) {
 				engine.playSE("change");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 
 				case 0:
 					gametype += change;
@@ -229,7 +229,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -241,14 +241,14 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60)
-				engine.statc[2] = 9;
-			else if(engine.statc[3] >= 120)
+			if(menuTime >= 60)
+				menuCursor = 9;
+			else if(menuTime >= 120)
 				return false;
 		}
 
@@ -260,7 +260,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if (engine.statc[2] <= 8) {
+		if (menuCursor <= 8) {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GAME TYPE", GAMETYPE_NAME[gametype]);
 			if (gametype == 2)

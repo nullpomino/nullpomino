@@ -31,6 +31,9 @@ package mu.nu.nullpo.game.subsystem.mode;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
+import mu.nu.nullpo.game.subsystem.mode.menu.BooleanMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.IntegerMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.OnOffMenuItem;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -186,16 +189,16 @@ public class PhantomManiaMode extends AbstractMode {
 	private boolean isShowBestSectionTime;
 
 	/** Selected start level */
-	private int startlevel;
+	private IntegerMenuItem startlevel;
 
 	/** Enable/Disable level stop sfx */
-	private boolean lvstopse;
+	private BooleanMenuItem lvstopse;
 
 	/** Big mode */
-	private boolean big;
+	private BooleanMenuItem big;
 
 	/** Show section time */
-	private boolean showsectiontime;
+	private BooleanMenuItem showsectiontime;
 
 	/** Version of this mode */
 	private int version;
@@ -218,6 +221,23 @@ public class PhantomManiaMode extends AbstractMode {
 	/** Best section time records */
 	private int[] bestSectionTime;
 
+	public PhantomManiaMode()
+	{
+		propName = "phantommania";
+
+		startlevel = new IntegerMenuItem("startlevel", "LEVEL", EventReceiver.COLOR_BLUE, 0, 0, 9) {
+			public String getValueString() {
+				return String.valueOf(value * 100);
+			}
+		};
+		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
+		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
+		showsectiontime = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, true);
+		menu.add(startlevel);
+		menu.add(lvstopse);
+		menu.add(showsectiontime);
+		menu.add(big);
+	}
 	/**
 	 * Returns the name of this mode
 	 */
@@ -260,10 +280,6 @@ public class PhantomManiaMode extends AbstractMode {
 		recoveryFlag = false;
 		rotateCount = 0;
 		isShowBestSectionTime = false;
-		startlevel = 0;
-		lvstopse = false;
-		big = false;
-		showsectiontime = true;
 
 		rankingRank = -1;
 		rankingGrade = new int[RANKING_MAX];
@@ -294,27 +310,7 @@ public class PhantomManiaMode extends AbstractMode {
 			version = owner.replayProp.getProperty("phantommania.version", 0);
 		}
 
-		owner.backgroundStatus.bg = startlevel;
-	}
-
-	/**
-	 * Load the settings
-	 */
-	protected void loadSetting(CustomProperties prop) {
-		startlevel = prop.getProperty("phantommania.startlevel", 0);
-		lvstopse = prop.getProperty("phantommania.lvstopse", false);
-		showsectiontime = prop.getProperty("phantommania.showsectiontime", true);
-		big = prop.getProperty("phantommania.big", false);
-	}
-
-	/**
-	 * Save the settings
-	 */
-	protected void saveSetting(CustomProperties prop) {
-		prop.setProperty("phantommania.startlevel", startlevel);
-		prop.setProperty("phantommania.lvstopse", lvstopse);
-		prop.setProperty("phantommania.showsectiontime", showsectiontime);
-		prop.setProperty("phantommania.big", big);
+		owner.backgroundStatus.bg = startlevel.value;
 	}
 
 	/**
@@ -347,7 +343,7 @@ public class PhantomManiaMode extends AbstractMode {
 	private void setAverageSectionTime() {
 		if(sectionscomp > 0) {
 			int temp = 0;
-			for(int i = startlevel; i < startlevel + sectionscomp; i++) temp += sectiontime[i];
+			for(int i = startlevel.value; i < startlevel.value + sectionscomp; i++) temp += sectiontime[i];
 			sectionavgtime = temp / sectionscomp;
 		} else {
 			sectionavgtime = 0;
@@ -407,39 +403,17 @@ public class PhantomManiaMode extends AbstractMode {
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
 		if(engine.owner.replayMode == false) {
-			// Configuration changes
-			int change = updateCursor(engine, 3);
-
-			if(change != 0) {
-				receiver.playSE("change");
-
-				switch(engine.statc[2]) {
-				case 0:
-					startlevel += change;
-					if(startlevel < 0) startlevel = 9;
-					if(startlevel > 9) startlevel = 0;
-					owner.backgroundStatus.bg = startlevel;
-					break;
-				case 1:
-					lvstopse = !lvstopse;
-					break;
-				case 2:
-					showsectiontime = !showsectiontime;
-					break;
-				case 3:
-					big = !big;
-					break;
-				}
-			}
+			updateMenu(engine);
+			owner.backgroundStatus.bg = startlevel.value;
 
 			// Check for F button, when pressed this will flip Leaderboard/Best Section Time Records
-			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_F) && (menuTime >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
 			}
 
 			// Check for A button, when pressed this will begin the game
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				receiver.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -452,12 +426,12 @@ public class PhantomManiaMode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}
@@ -466,23 +440,11 @@ public class PhantomManiaMode extends AbstractMode {
 	}
 
 	/**
-	 * Renders game setup screen
-	 */
-	@Override
-	public void renderSetting(GameEngine engine, int playerID) {
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"LEVEL", String.valueOf(startlevel * 100),
-				"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
-				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
-				"BIG",  GeneralUtil.getONorOFF(big));
-	}
-
-	/**
 	 * This function will be called before the game actually begins (after Ready&Go screen disappears)
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.statistics.level = startlevel * 100;
+		engine.statistics.level = startlevel.value * 100;
 
 		nextseclv = engine.statistics.level + 100;
 		if(engine.statistics.level < 0) nextseclv = 100;
@@ -490,7 +452,7 @@ public class PhantomManiaMode extends AbstractMode {
 
 		owner.backgroundStatus.bg = engine.statistics.level / 100;
 
-		engine.big = big;
+		engine.big = big.value;
 
 		setSpeed(engine);
 		setStartBgmlv(engine);
@@ -507,7 +469,7 @@ public class PhantomManiaMode extends AbstractMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "PHANTOM MANIA", EventReceiver.COLOR_WHITE);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
-			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
+			if((owner.replayMode == false) && (startlevel.value == 0) && (!big.value) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Leaderboard
 					float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
@@ -595,7 +557,7 @@ public class PhantomManiaMode extends AbstractMode {
 			if(medalRO >= 1) receiver.drawScoreFont(engine, playerID, 0, 22, "RO", getMedalFontColor(medalRO));
 			if(medalCO >= 1) receiver.drawScoreFont(engine, playerID, 3, 22, "CO", getMedalFontColor(medalCO));
 
-			if((showsectiontime == true) && (sectiontime != null)) {
+			if(showsectiontime.value && (sectiontime != null)) {
 				int x = (receiver.getNextDisplayType() == 2) ? 8 : 12;
 				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
 
@@ -633,7 +595,7 @@ public class PhantomManiaMode extends AbstractMode {
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) owner.receiver.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && lvstopse.value) owner.receiver.playSE("levelstop");
 			}
 			levelUp(engine);
 
@@ -672,7 +634,7 @@ public class PhantomManiaMode extends AbstractMode {
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) owner.receiver.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && lvstopse.value) owner.receiver.playSE("levelstop");
 			}
 			levelUp(engine);
 			lvupflag = true;
@@ -718,7 +680,7 @@ public class PhantomManiaMode extends AbstractMode {
 			if(lines >= 4) {
 				sectionfourline++;
 
-				if(big == true) {
+				if(big.value) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						receiver.playSE("medal");
 						medalSK++;
@@ -740,7 +702,7 @@ public class PhantomManiaMode extends AbstractMode {
 				}
 			}
 
-			if(big == true) {
+			if(big.value) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					receiver.playSE("medal");
 					medalCO = 1;
@@ -879,7 +841,7 @@ public class PhantomManiaMode extends AbstractMode {
 
 				if((nextseclv == 300) || (nextseclv == 700)) roMedalCheck(engine);
 
-				if (startlevel == 0)
+				if (startlevel.value == 0)
 				{
 					for (int i = 0; i < tableGradeLevel.length - 1; i++)
 					{
@@ -892,7 +854,7 @@ public class PhantomManiaMode extends AbstractMode {
 
 				nextseclv += 100;
 				if(nextseclv > 999) nextseclv = 999;
-			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
+			} else if((engine.statistics.level == nextseclv - 1) && lvstopse.value) {
 				receiver.playSE("levelstop");
 			}
 
@@ -1046,7 +1008,7 @@ public class PhantomManiaMode extends AbstractMode {
 		saveSetting(owner.replayProp);
 		owner.replayProp.setProperty("phantommania.version", version);
 
-		if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
+		if((owner.replayMode == false) && (startlevel.value == 0) && (!big.value) && (engine.ai == null)) {
 			updateRanking(grade, engine.statistics.level, engine.statistics.time, rollclear);
 			if(medalST == 3) updateBestSectionTime();
 

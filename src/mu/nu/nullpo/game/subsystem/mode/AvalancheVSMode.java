@@ -277,7 +277,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					engine.speed.gravity += change * m;
 					if(engine.speed.gravity < -1) engine.speed.gravity = 99999;
@@ -569,17 +569,17 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if ((xyzzy == 573) && engine.statc[2] > 43) {
+				if ((xyzzy == 573) && menuCursor > 43) {
 					loadFeverMap(engine, playerID, new Random(), previewChain[playerID], previewSubset[playerID]);
 				} else if (xyzzy == 9 && playerID == 0) {
 					engine.playSE("levelup");
 					xyzzy = 573;
-				} else if(engine.statc[2] == 42) {
+				} else if(menuCursor == 42) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "");
-				} else if(engine.statc[2] == 43) {
+				} else if(menuCursor == 43) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -600,34 +600,34 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 			}
 
 			// プレビュー用Map読み込み
-			if(useMap[playerID] && (engine.statc[3] == 0)) {
+			if(useMap[playerID] && (menuTime == 0)) {
 				loadMapPreview(engine, playerID, (mapNumber[playerID] < 0) ? 0 : mapNumber[playerID], true);
 			}
 
 			// Random map preview
 			if(useMap[playerID] && (propMap[playerID] != null) && (mapNumber[playerID] < 0)) {
-				if(engine.statc[3] % 30 == 0) {
+				if(menuTime % 30 == 0) {
 					engine.statc[5]++;
 					if(engine.statc[5] >= mapMaxNo[playerID]) engine.statc[5] = 0;
 					loadMapPreview(engine, playerID, engine.statc[5], false);
 				}
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else if(engine.statc[4] == 0) {
-			engine.statc[3]++;
-			engine.statc[2] = 0;
+			menuTime++;
+			menuCursor = 0;
 
-			if(engine.statc[3] >= 300)
+			if(menuTime >= 300)
 				engine.statc[4] = 1;
-			else if(engine.statc[3] >= 240)
-				engine.statc[2] = 36;
-			else if(engine.statc[3] >= 180)
-				engine.statc[2] = 26;
-			else if(engine.statc[3] >= 120)
-				engine.statc[2] = 17;
-			else if(engine.statc[3] >= 60)
-				engine.statc[2] = 9;
+			else if(menuTime >= 240)
+				menuCursor = 36;
+			else if(menuTime >= 180)
+				menuCursor = 26;
+			else if(menuTime >= 120)
+				menuCursor = 17;
+			else if(menuTime >= 60)
+				menuCursor = 9;
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
@@ -651,7 +651,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 9) {
+			if(menuCursor < 9) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
 						"GRAVITY", String.valueOf(engine.speed.gravity),
 						"G-MAX", String.valueOf(engine.speed.denominator),
@@ -664,7 +664,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
 				receiver.drawMenuFont(engine, playerID, 0, 21, "PAGE 1/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 17) {
+			} else if(menuCursor < 17) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
 						"MAX ATTACK", String.valueOf(maxAttack[playerID]),
@@ -676,7 +676,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"CHAINPOWER", newChainPower[playerID] ? "FEVER" : "CLASSIC");
 
 				receiver.drawMenuFont(engine, playerID, 0, 21, "PAGE 2/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 26) {
+			} else if(menuCursor < 26) {
 				initMenu(EventReceiver.COLOR_DARKBLUE, 17);
 				drawMenu(engine, playerID, receiver,
 						"OUTLINE", OUTLINE_TYPE_NAMES[outlineType[playerID]],
@@ -697,7 +697,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"ZK-BONUS", (zenKeshiType[playerID] == ZENKESHI_MODE_FEVER) ?
 							zenKeshiChain[playerID] + " CHAIN" : zenKeshiOjama[playerID] + " OJAMA");
 				receiver.drawMenuFont(engine, playerID, 0, 21, "PAGE 3/5", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 36) {
+			} else if(menuCursor < 36) {
 				initMenu(big[playerID] ? EventReceiver.COLOR_WHITE : EventReceiver.COLOR_PURPLE, 26);
 				drawMenu(engine, playerID, receiver,
 						"FEVER", (feverThreshold[playerID] == 0) ? "NONE" : feverThreshold[playerID]+" PTS");
@@ -718,7 +718,7 @@ public class AvalancheVSMode extends AvalancheVSDummyMode {
 						"SIDE METER", (ojamaMeter[playerID] || feverThreshold[playerID] == 0) ? "OJAMA" : "FEVER");
 
 				receiver.drawMenuFont(engine, playerID, 0, 21, "PAGE 4/5", EventReceiver.COLOR_YELLOW);
-			} else if (engine.statc[2] < 44){
+			} else if (menuCursor < 44){
 				initMenu(EventReceiver.COLOR_PINK, 36);
 				drawMenu(engine, playerID, receiver,
 						"USE MAP", GeneralUtil.getONorOFF(useMap[playerID]),

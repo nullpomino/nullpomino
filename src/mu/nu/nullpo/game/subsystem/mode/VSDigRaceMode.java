@@ -187,7 +187,7 @@ public class VSDigRaceMode extends AbstractMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					engine.speed.gravity += change * m;
 					if(engine.speed.gravity < -1) engine.speed.gravity = 99999;
@@ -251,12 +251,12 @@ public class VSDigRaceMode extends AbstractMode {
 			}
 
 			// Confirm
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 7) {
+				if(menuCursor == 7) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID]);
-				} else if(engine.statc[2] == 8) {
+				} else if(menuCursor == 8) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID]);
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -272,16 +272,16 @@ public class VSDigRaceMode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else if(engine.statc[4] == 0) {
 			// Replay start
-			engine.statc[3]++;
-			engine.statc[2] = 0;
+			menuTime++;
+			menuCursor = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 9;
+			if(menuTime >= 60) {
+				menuCursor = 9;
 			}
-			if(engine.statc[3] >= 120) {
+			if(menuTime >= 120) {
 				engine.statc[4] = 1;
 			}
 		} else {
@@ -307,7 +307,7 @@ public class VSDigRaceMode extends AbstractMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 9) {
+			if(menuCursor < 9) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
 						"GRAVITY", String.valueOf(engine.speed.gravity),
 						"G-MAX", String.valueOf(engine.speed.denominator),

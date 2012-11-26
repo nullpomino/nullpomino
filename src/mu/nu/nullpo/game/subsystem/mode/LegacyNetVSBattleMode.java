@@ -983,13 +983,13 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			if((netLobby != null) && (netLobby.netPlayerClient != null)) {
 				if((!isReadyChangePending) && (numPlayers >= 2)) {
 					// Ready ON
-					if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
+					if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5) && (isReady[0] == false) && (!currentRoomInfo.playing)) {
 						engine.playSE("decide");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\ttrue\n");
 					}
 					// Ready OFF
-					if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
+					if(engine.ctrl.isPush(Controller.BUTTON_B) && (menuTime >= 5) && (isReady[0] == true) && (!currentRoomInfo.playing)) {
 						engine.playSE("change");
 						isReadyChangePending = true;
 						netLobby.netPlayerClient.send("ready\tfalse\n");
@@ -998,7 +998,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 
 				// Random map preview
 				if((currentRoomInfo != null) && currentRoomInfo.useMap && !netLobby.mapList.isEmpty()) {
-					if(engine.statc[3] % 30 == 0) {
+					if(menuTime % 30 == 0) {
 						engine.statc[5]++;
 						if(engine.statc[5] >= netLobby.mapList.size()) engine.statc[5] = 0;
 						engine.createFieldIfNeeded();
@@ -1011,18 +1011,18 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				}
 
 				// Practice mode
-				if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
+				if(engine.ctrl.isPush(Controller.BUTTON_F) && (menuTime >= 5)) {
 					engine.playSE("decide");
 					startPractice(engine);
 				}
 			}
 
 			// GC呼び出し
-			if(engine.statc[3] == 0) {
+			if(menuTime == 0) {
 				System.gc();
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		}
 
 		return true;

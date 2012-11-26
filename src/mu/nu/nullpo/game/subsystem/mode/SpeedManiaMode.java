@@ -31,6 +31,10 @@ package mu.nu.nullpo.game.subsystem.mode;
 import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.event.EventReceiver;
 import mu.nu.nullpo.game.play.GameEngine;
+import mu.nu.nullpo.game.subsystem.mode.menu.BooleanMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.IntegerMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.OnOffMenuItem;
+import mu.nu.nullpo.game.subsystem.mode.menu.TimeMenuItem;
 import mu.nu.nullpo.util.CustomProperties;
 import mu.nu.nullpo.util.GeneralUtil;
 
@@ -161,19 +165,19 @@ public class SpeedManiaMode extends AbstractMode {
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
-	private int startlevel;
+	private IntegerMenuItem startlevel;
 
 	/** When true, levelstop sound is enabled */
-	private boolean lvstopse;
+	private BooleanMenuItem lvstopse;
 
 	/** BigMode */
-	private boolean big;
+	private BooleanMenuItem big;
 
 	/** LV500の足切りTime */
-	private int lv500torikan;
+	private TimeMenuItem lv500torikan;
 
 	/** When true, section time display is enabled */
-	private boolean showsectiontime;
+	private BooleanMenuItem showsectiontime;
 
 	/** Version */
 	private int version;
@@ -193,6 +197,28 @@ public class SpeedManiaMode extends AbstractMode {
 	/** Section Time記録 */
 	private int[] bestSectionTime;
 
+	public SpeedManiaMode() {
+		propName = "speedmania";
+
+		startlevel = new IntegerMenuItem("startlevel", "LEVEL", EventReceiver.COLOR_BLUE, 0, 0, 9) {
+			public String getValueString() {
+				return String.valueOf(value * 100);
+			}
+		};
+		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
+		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
+		showsectiontime = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, true);
+		lv500torikan = new TimeMenuItem("lv500torikan", "LV500LIMIT", EventReceiver.COLOR_BLUE, 12300, 0, 72000) {
+			public String getValueString() {
+				return (value == 0) ? "NONE" : GeneralUtil.getTime(value);
+			}
+		};
+		menu.add(startlevel);
+		menu.add(lvstopse);
+		menu.add(showsectiontime);
+		menu.add(big);
+		menu.add(lv500torikan);
+	}
 	/*
 	 * Mode name
 	 */
@@ -234,10 +260,6 @@ public class SpeedManiaMode extends AbstractMode {
 		recoveryFlag = false;
 		rotateCount = 0;
 		isShowBestSectionTime = false;
-		startlevel = 0;
-		lvstopse = false;
-		big = false;
-		lv500torikan = 12300;
 
 		rankingRank = -1;
 		rankingGrade = new int[RANKING_MAX];
@@ -266,31 +288,7 @@ public class SpeedManiaMode extends AbstractMode {
 			version = owner.replayProp.getProperty("speedmania.version", 0);
 		}
 
-		owner.backgroundStatus.bg = startlevel;
-	}
-
-	/**
-	 * Load settings from property file
-	 * @param prop Property file
-	 */
-	protected void loadSetting(CustomProperties prop) {
-		startlevel = prop.getProperty("speedmania.startlevel", 0);
-		lvstopse = prop.getProperty("speedmania.lvstopse", false);
-		showsectiontime = prop.getProperty("speedmania.showsectiontime", false);
-		big = prop.getProperty("speedmania.big", false);
-		lv500torikan = prop.getProperty("speedmania.lv500torikan", 12300);
-	}
-
-	/**
-	 * Save settings to property file
-	 * @param prop Property file
-	 */
-	protected void saveSetting(CustomProperties prop) {
-		prop.setProperty("speedmania.startlevel", startlevel);
-		prop.setProperty("speedmania.lvstopse", lvstopse);
-		prop.setProperty("speedmania.showsectiontime", showsectiontime);
-		prop.setProperty("speedmania.big", big);
-		prop.setProperty("speedmania.lv500torikan", lv500torikan);
+		owner.backgroundStatus.bg = startlevel.value;
 	}
 
 	/**
@@ -324,7 +322,7 @@ public class SpeedManiaMode extends AbstractMode {
 	private void setAverageSectionTime() {
 		if(sectionscomp > 0) {
 			int temp = 0;
-			for(int i = startlevel; i < startlevel + sectionscomp; i++) {
+			for(int i = startlevel.value; i < startlevel.value + sectionscomp; i++) {
 				if((i >= 0) && (i < sectiontime.length)) temp += sectiontime[i];
 			}
 			sectionavgtime = temp / sectionscomp;
@@ -391,43 +389,16 @@ public class SpeedManiaMode extends AbstractMode {
 		// Menu
 		if(engine.owner.replayMode == false) {
 			// Configuration changes
-			int change = updateCursor(engine, 4);
-
-			if(change != 0) {
-				engine.playSE("change");
-
-				switch(engine.statc[2]) {
-				case 0:
-					startlevel += change;
-					if(startlevel < 0) startlevel = 9;
-					if(startlevel > 9) startlevel = 0;
-					owner.backgroundStatus.bg = startlevel;
-					break;
-				case 1:
-					lvstopse = !lvstopse;
-					break;
-				case 2:
-					showsectiontime = !showsectiontime;
-					break;
-				case 3:
-					big = !big;
-					break;
-				case 4:
-					lv500torikan += 60 * change;
-					if(lv500torikan < 0) lv500torikan = 72000;
-					if(lv500torikan > 72000) lv500torikan = 0;
-					break;
-				}
-			}
+			updateMenu(engine);
 
 			//  section time display切替
-			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_F) && (menuTime >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -441,12 +412,12 @@ public class SpeedManiaMode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}
@@ -455,24 +426,11 @@ public class SpeedManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Render the settings screen
-	 */
-	@Override
-	public void renderSetting(GameEngine engine, int playerID) {
-		drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
-				"LEVEL", String.valueOf(startlevel * 100),
-				"LVSTOPSE", GeneralUtil.getONorOFF(lvstopse),
-				"SHOW STIME", GeneralUtil.getONorOFF(showsectiontime),
-				"BIG",  GeneralUtil.getONorOFF(big),
-				"LV500LIMIT", (lv500torikan == 0) ? "NONE" : GeneralUtil.getTime(lv500torikan));
-	}
-
-	/*
 	 * Called at game start
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		engine.statistics.level = startlevel * 100;
+		engine.statistics.level = startlevel.value * 100;
 
 		nextseclv = engine.statistics.level + 100;
 		if(engine.statistics.level < 0) nextseclv = 100;
@@ -480,7 +438,7 @@ public class SpeedManiaMode extends AbstractMode {
 
 		owner.backgroundStatus.bg = engine.statistics.level / 100;
 
-		engine.big = big;
+		engine.big = big.value;
 
 		setSpeed(engine);
 		setStartBgmlv(engine);
@@ -495,7 +453,7 @@ public class SpeedManiaMode extends AbstractMode {
 		receiver.drawScoreFont(engine, playerID, 0, 0, "SPEED MANIA", EventReceiver.COLOR_RED);
 
 		if( (engine.stat == GameEngine.STAT_SETTING) || ((engine.stat == GameEngine.STAT_RESULT) && (owner.replayMode == false)) ) {
-			if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
+			if((owner.replayMode == false) && (startlevel.value == 0) && (big.value == false) && (engine.ai == null)) {
 				if(!isShowBestSectionTime) {
 					// Rankings
 					float scale = (receiver.getNextDisplayType() == 2) ? 0.5f : 1.0f;
@@ -586,7 +544,7 @@ public class SpeedManiaMode extends AbstractMode {
 			if(medalCO >= 1) receiver.drawScoreFont(engine, playerID, 3, 22, "CO", getMedalFontColor(medalCO));
 
 			// Section Time
-			if((showsectiontime == true) && (sectiontime != null)) {
+			if((showsectiontime.value) && (sectiontime != null)) {
 				int x = (receiver.getNextDisplayType() == 2) ? 8 : 12;
 				int x2 = (receiver.getNextDisplayType() == 2) ? 9 : 12;
 
@@ -626,7 +584,7 @@ public class SpeedManiaMode extends AbstractMode {
 			// Level up
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) engine.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) engine.playSE("levelstop");
 			}
 			levelUp(engine);
 
@@ -668,7 +626,7 @@ public class SpeedManiaMode extends AbstractMode {
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
-				if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) engine.playSE("levelstop");
+				if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) engine.playSE("levelstop");
 			}
 			levelUp(engine);
 			lvupflag = true;
@@ -735,7 +693,7 @@ public class SpeedManiaMode extends AbstractMode {
 			// 4-line clearカウント
 			if(lines >= 4) {
 				// SK medal
-				if(big == true) {
+				if(big.value) {
 					if((engine.statistics.totalFour == 1) || (engine.statistics.totalFour == 2) || (engine.statistics.totalFour == 4)) {
 						engine.playSE("medal");
 						medalSK++;
@@ -759,7 +717,7 @@ public class SpeedManiaMode extends AbstractMode {
 			}
 
 			// CO medal
-			if(big == true) {
+			if(big.value) {
 				if((engine.combo >= 2) && (medalCO < 1)) {
 					engine.playSE("medal");
 					medalCO = 1;
@@ -808,7 +766,7 @@ public class SpeedManiaMode extends AbstractMode {
 
 				// RO medal
 				roMedalCheck(engine);
-			} else if((nextseclv == 500) && (engine.statistics.level >= 500) && (lv500torikan > 0) && (engine.statistics.time > lv500torikan)) {
+			} else if((nextseclv == 500) && (engine.statistics.level >= 500) && (lv500torikan.value > 0) && (engine.statistics.time > lv500torikan.value)) {
 				//  level500とりカン
 				engine.playSE("endingstart");
 				engine.statistics.level = 500;
@@ -865,7 +823,7 @@ public class SpeedManiaMode extends AbstractMode {
 				// Update level for next section
 				nextseclv += 100;
 				if(nextseclv > 999) nextseclv = 999;
-			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
+			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse.value)) {
 				engine.playSE("levelstop");
 			}
 
@@ -1023,7 +981,7 @@ public class SpeedManiaMode extends AbstractMode {
 		owner.replayProp.setProperty("speedmania.version", version);
 
 		// Update rankings
-		if((owner.replayMode == false) && (startlevel == 0) && (big == false) && (engine.ai == null)) {
+		if((owner.replayMode == false) && (startlevel.value == 0) && (big.value == false) && (engine.ai == null)) {
 			updateRanking(grade, engine.statistics.level, engine.statistics.time);
 			if(medalST == 3) updateBestSectionTime();
 

@@ -21,10 +21,11 @@ public abstract class AbstractMenuItem<T> {
 	public abstract String getValueString();
 
 	/**
-	 * Change the attribute
-	 * 
+	 * Change the attribute.
+	 *
 	 * @param dir
-	 *            Direction pressed: -1 = left, 1 = right
+	 *            Direction pressed: -1 = left, 1 = right.
+	 *            If 0, update without changing any settings.
 	 * @param fast
 	 *            0 by default, +1 if E held, +2 if F held.
 	 */

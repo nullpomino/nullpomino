@@ -678,7 +678,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			engine.enableSE = true;
 			engine.isVisible = true;
 
-			if((!netvsIsReadyChangePending) && (netvsNumPlayers >= 2) && (!netvsIsNewcomer) && (engine.statc[3] >= 5)) {
+			if((!netvsIsReadyChangePending) && (netvsNumPlayers >= 2) && (!netvsIsNewcomer) && (menuTime >= 5)) {
 				// Ready ON
 				if(engine.ctrl.isPush(Controller.BUTTON_A) && !netvsPlayerReady[0]) {
 					engine.playSE("decide");
@@ -694,7 +694,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			}
 
 			// Practice Mode
-			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_F) && (menuTime >= 5)) {
 				engine.playSE("decide");
 				netvsStartPractice(engine);
 				return true;
@@ -704,7 +704,7 @@ public class NetDummyVSMode extends NetDummyMode {
 		// Random Map Preview
 		if((netCurrentRoomInfo != null) && netCurrentRoomInfo.useMap && !netLobby.mapList.isEmpty()) {
 			if(netvsPlayerExist[playerID]) {
-				if(engine.statc[3] % 30 == 0) {
+				if(menuTime % 30 == 0) {
 					engine.statc[5]++;
 					if(engine.statc[5] >= netLobby.mapList.size()) engine.statc[5] = 0;
 					engine.createFieldIfNeeded();
@@ -719,7 +719,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			}
 		}
 
-		engine.statc[3]++;
+		menuTime++;
 
 		return true;
 	}
@@ -757,7 +757,7 @@ public class NetDummyVSMode extends NetDummyMode {
 			}
 		}
 
-		if((playerID == 0) && !netvsIsWatch() && (engine.statc[3] >= 5)) {
+		if((playerID == 0) && !netvsIsWatch() && (menuTime >= 5)) {
 			String strTemp = "F(" + owner.receiver.getKeyNameByButtonID(engine, Controller.BUTTON_F) + " KEY):";
 			if(strTemp.length() > 10) strTemp = strTemp.substring(0, 10);
 			strTemp = strTemp.toUpperCase();

@@ -131,7 +131,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					engine.speed.gravity += change * m;
 					if(engine.speed.gravity < -1) engine.speed.gravity = 99999;
@@ -269,12 +269,12 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 27) {
+				if(menuCursor == 27) {
 					loadPreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
-				} else if(engine.statc[2] == 28) {
+				} else if(menuCursor == 28) {
 					savePreset(engine, owner.modeConfig, presetNumber[playerID], "digrace");
 					receiver.saveModeConfig(owner.modeConfig);
 				} else {
@@ -289,17 +289,17 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 			if(engine.ctrl.isPush(Controller.BUTTON_B)) {
 				engine.quitflag = true;
 			}
-			engine.statc[3]++;
+			menuTime++;
 		} else if(engine.statc[4] == 0) {
-			engine.statc[3]++;
-			engine.statc[2] = 0;
+			menuTime++;
+			menuCursor = 0;
 
-			if(engine.statc[3] >= 180)
+			if(menuTime >= 180)
 				engine.statc[4] = 1;
-			else if(engine.statc[3] >= 120)
-				engine.statc[2] = 18;
-			else if(engine.statc[3] >= 60)
-				engine.statc[2] = 9;
+			else if(menuTime >= 120)
+				menuCursor = 18;
+			else if(menuTime >= 60)
+				menuCursor = 9;
 		} else {
 			// 開始
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
@@ -323,7 +323,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.statc[4] == 0) {
-			if(engine.statc[2] < 9) {
+			if(menuCursor < 9) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_ORANGE, 0,
 						"GRAVITY", String.valueOf(engine.speed.gravity),
 						"G-MAX", String.valueOf(engine.speed.denominator),
@@ -336,7 +336,7 @@ public class AvalancheVSDigRaceMode extends AvalancheVSDummyMode {
 						"CLEAR DELAY", String.valueOf(engine.cascadeClearDelay));
 
 				receiver.drawMenuFont(engine, playerID, 0, 19, "PAGE 1/3", EventReceiver.COLOR_YELLOW);
-			} else if(engine.statc[2] < 18) {
+			} else if(menuCursor < 18) {
 				drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_CYAN, 9,
 						"COUNTER", OJAMA_COUNTER_STRING[ojamaCounterMode[playerID]],
 						"MAX ATTACK", String.valueOf(maxAttack[playerID]),

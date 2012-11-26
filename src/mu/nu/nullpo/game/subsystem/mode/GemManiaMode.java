@@ -557,7 +557,7 @@ public class GemManiaMode extends AbstractMode {
 			if(change != 0) {
 				engine.playSE("change");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					break;
 				case 1:
@@ -576,14 +576,14 @@ public class GemManiaMode extends AbstractMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					editModeScreen = 2;
-					engine.statc[2] = 0;
-					engine.statc[3] = 0;
+					menuCursor = 0;
+					menuTime = 0;
 					break;
 				case 1:
 					if((propStageSet != null) && (engine.field != null)) {
@@ -608,24 +608,24 @@ public class GemManiaMode extends AbstractMode {
 			// Cancel
 			if(engine.ctrl.isPress(Controller.BUTTON_D) && engine.ctrl.isPress(Controller.BUTTON_E)) {
 				editModeScreen = 0;
-				engine.statc[2] = 0;
-				engine.statc[3] = 0;
+				menuCursor = 0;
+				menuTime = 0;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		}
 		// エディットMenu   stage 画面
 		else if(editModeScreen == 2) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 4;
+				menuCursor--;
+				if(menuCursor < 0) menuCursor = 4;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 4) engine.statc[2] = 0;
+				menuCursor++;
+				if(menuCursor > 4) menuCursor = 0;
 				engine.playSE("cursor");
 			}
 
@@ -641,7 +641,7 @@ public class GemManiaMode extends AbstractMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					break;
 				case 1:
@@ -668,40 +668,40 @@ public class GemManiaMode extends AbstractMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 0) {
+				if(menuCursor == 0) {
 					engine.enterFieldEdit();
 					return true;
 				} else {
 					editModeScreen = 1;
-					engine.statc[2] = 0;
-					engine.statc[3] = 0;
+					menuCursor = 0;
+					menuTime = 0;
 				}
 			}
 
 			// Cancel
-			if(engine.ctrl.isPush(Controller.BUTTON_B) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_B) && (menuTime >= 5)) {
 				editModeScreen = 1;
-				engine.statc[2] = 0;
-				engine.statc[3] = 0;
+				menuCursor = 0;
+				menuTime = 0;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		}
 		// 普通のMenu
 		else if(engine.owner.replayMode == false) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 8;
+				menuCursor--;
+				if(menuCursor < 0) menuCursor = 8;
 				engine.playSE("cursor");
 			}
 			// Down
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] > 8) engine.statc[2] = 0;
+				menuCursor++;
+				if(menuCursor > 8) menuCursor = 0;
 				engine.playSE("cursor");
 			}
 
@@ -713,7 +713,7 @@ public class GemManiaMode extends AbstractMode {
 			if(change != 0) {
 				engine.playSE("change");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					startstage += change;
 					if(startstage < 0) startstage = MAX_STAGE_TOTAL - 1;
@@ -763,7 +763,7 @@ public class GemManiaMode extends AbstractMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -784,16 +784,16 @@ public class GemManiaMode extends AbstractMode {
 				engine.field.setAllSkin(engine.getSkin());
 
 				editModeScreen = 1;
-				engine.statc[2] = 0;
-				engine.statc[3] = 0;
+				menuCursor = 0;
+				menuTime = 0;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}

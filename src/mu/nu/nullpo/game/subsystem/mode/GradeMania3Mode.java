@@ -722,7 +722,7 @@ public class GradeMania3Mode extends AbstractMode {
 				engine.playSE("change");
 
 				
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					startlevel += change;
 					if(startlevel < 0) startlevel = 11;
@@ -787,13 +787,13 @@ public class GradeMania3Mode extends AbstractMode {
 			}
 
 			//  section time display切替
-			if(engine.ctrl.isPush(Controller.BUTTON_F) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_F) && (menuTime >= 5)) {
 				engine.playSE("change");
 				isShowBestSectionTime = !isShowBestSectionTime;
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -834,12 +834,12 @@ public class GradeMania3Mode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}
@@ -1643,7 +1643,7 @@ public class GradeMania3Mode extends AbstractMode {
 				int gcolor = EventReceiver.COLOR_WHITE;
 				if((rollclear == 1) || (rollclear == 3)) gcolor = EventReceiver.COLOR_GREEN;
 				if((rollclear == 2) || (rollclear == 4)) gcolor = EventReceiver.COLOR_ORANGE;
-				if((grade >= 32) && (engine.statc[2] % 2 == 0)) gcolor = EventReceiver.COLOR_YELLOW;
+				if((grade >= 32) && (menuCursor % 2 == 0)) gcolor = EventReceiver.COLOR_YELLOW;
 				receiver.drawMenuFont(engine, playerID, 0, 2, "GRADE", EventReceiver.COLOR_BLUE);
 				String strGrade = String.format("%10s", getGradeName(rgrade));
 				receiver.drawMenuFont(engine, playerID, 0, 3, strGrade, gcolor);
@@ -1750,7 +1750,7 @@ public class GradeMania3Mode extends AbstractMode {
 			isShowBestSectionTime = !isShowBestSectionTime;
 		}
 
-		engine.statc[2]++;
+		menuCursor++;
 
 		return false;
 	}

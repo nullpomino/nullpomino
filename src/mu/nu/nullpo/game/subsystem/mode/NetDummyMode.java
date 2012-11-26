@@ -311,7 +311,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 	 */
 	@Override
 	public boolean onEndingStart(GameEngine engine, int playerID) {
-		if(engine.statc[2] == 0) {
+		if(menuCursor == 0) {
 			// NET: Send game completed messages
 			if(netIsNetPlay && !netIsWatch && ((netNumSpectators > 0) || (netForceSendMovements))) {
 				netSendField(engine);
@@ -431,7 +431,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 		if((engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP) || engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) &&
 			netIsNetPlay && ((netNumSpectators > 0) || (netForceSendMovements)))
 		{
-			netLobby.netPlayerClient.send("game\tcursor\t" + engine.statc[2] + "\n");
+			netLobby.netPlayerClient.send("game\tcursor\t" + menuCursor + "\n");
 		}
 
 		return change;
@@ -551,7 +551,7 @@ public class NetDummyMode extends AbstractMode implements NetLobbyListener {
 				// Move cursor
 				if(message[3].equals("cursor")) {
 					if(engine.stat == GameEngine.STAT_SETTING) {
-						engine.statc[2] = Integer.parseInt(message[4]);
+						menuCursor = Integer.parseInt(message[4]);
 						engine.playSE("cursor");
 					}
 				}

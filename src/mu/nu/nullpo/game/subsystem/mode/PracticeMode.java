@@ -407,7 +407,7 @@ public class PracticeMode extends AbstractMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					engine.speed.gravity += change * m;
 					if(engine.speed.gravity < -1) engine.speed.gravity = 99999;
@@ -585,14 +585,14 @@ public class PracticeMode extends AbstractMode {
 			}
 
 			// 決定
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 41) {
+				if(menuCursor == 41) {
 					// fieldエディット
 					engine.enterFieldEdit();
 					return true;
-				} else if(engine.statc[2] == 42) {
+				} else if(menuCursor == 42) {
 					// Map読み込み
 					engine.createFieldIfNeeded();
 					engine.field.reset();
@@ -602,17 +602,17 @@ public class PracticeMode extends AbstractMode {
 						loadMap(engine.field, prop, 0);
 						engine.field.setAllSkin(engine.getSkin());
 					}
-				} else if(engine.statc[2] == 43) {
+				} else if(menuCursor == 43) {
 					// Map保存
 					if(engine.field != null) {
 						CustomProperties prop = new CustomProperties();
 						saveMap(engine.field, prop, 0);
 						receiver.saveProperties("config/map/practice/" + mapNumber + ".map", prop);
 					}
-				} else if(engine.statc[2] == 44) {
+				} else if(menuCursor == 44) {
 					// Preset読み込み
 					loadPreset(engine, owner.modeConfig, presetNumber);
-				} else if(engine.statc[2] == 45) {
+				} else if(menuCursor == 45) {
 					// Preset保存
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
@@ -644,17 +644,17 @@ public class PracticeMode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
 			owner.menuOnly = true;
 
-			engine.statc[3]++;
-			engine.statc[2] = 0;
+			menuTime++;
+			menuCursor = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 22;
+			if(menuTime >= 60) {
+				menuCursor = 22;
 			}
-			if((engine.statc[3] >= 120) || engine.ctrl.isPush(Controller.BUTTON_F)) {
+			if((menuTime >= 120) || engine.ctrl.isPush(Controller.BUTTON_F)) {
 				owner.menuOnly = false;
 				return false;
 			}
@@ -676,21 +676,21 @@ public class PracticeMode extends AbstractMode {
 			receiver.drawMenuFont(engine, playerID, 1, 27, "F:SKIP", EventReceiver.COLOR_RED);
 		}
 
-		if(engine.statc[2] < 23) {
+		if(menuCursor < 23) {
 			if(owner.replayMode == false) {
-				receiver.drawMenuFont(engine, playerID, 1, engine.statc[2] + 3, "b", EventReceiver.COLOR_RED);
+				receiver.drawMenuFont(engine, playerID, 1, menuCursor + 3, "b", EventReceiver.COLOR_RED);
 			}
 
-			receiver.drawMenuFont(engine, playerID, 2,  3, "GRAVITY:" + engine.speed.gravity, (engine.statc[2] == 0));
-			receiver.drawMenuFont(engine, playerID, 2,  4, "G-MAX:" + engine.speed.denominator, (engine.statc[2] == 1));
-			receiver.drawMenuFont(engine, playerID, 2,  5, "ARE:" + engine.speed.are, (engine.statc[2] == 2));
-			receiver.drawMenuFont(engine, playerID, 2,  6, "ARE LINE:" + engine.speed.areLine, (engine.statc[2] == 3));
-			receiver.drawMenuFont(engine, playerID, 2,  7, "LINE DELAY:" + engine.speed.lineDelay, (engine.statc[2] == 4));
-			receiver.drawMenuFont(engine, playerID, 2,  8, "LOCK DELAY:" + engine.speed.lockDelay, (engine.statc[2] == 5));
-			receiver.drawMenuFont(engine, playerID, 2,  9, "DAS:" + engine.speed.das, (engine.statc[2] == 6));
-			receiver.drawMenuFont(engine, playerID, 2, 10, "BGM:" + bgmno, (engine.statc[2] == 7));
-			receiver.drawMenuFont(engine, playerID, 2, 11, "BIG:" + GeneralUtil.getONorOFF(big), (engine.statc[2] == 8));
-			receiver.drawMenuFont(engine, playerID, 2, 12, "LEVEL TYPE:" + LEVELTYPE_STRING[leveltype], (engine.statc[2] == 9));
+			receiver.drawMenuFont(engine, playerID, 2,  3, "GRAVITY:" + engine.speed.gravity, (menuCursor == 0));
+			receiver.drawMenuFont(engine, playerID, 2,  4, "G-MAX:" + engine.speed.denominator, (menuCursor == 1));
+			receiver.drawMenuFont(engine, playerID, 2,  5, "ARE:" + engine.speed.are, (menuCursor == 2));
+			receiver.drawMenuFont(engine, playerID, 2,  6, "ARE LINE:" + engine.speed.areLine, (menuCursor == 3));
+			receiver.drawMenuFont(engine, playerID, 2,  7, "LINE DELAY:" + engine.speed.lineDelay, (menuCursor == 4));
+			receiver.drawMenuFont(engine, playerID, 2,  8, "LOCK DELAY:" + engine.speed.lockDelay, (menuCursor == 5));
+			receiver.drawMenuFont(engine, playerID, 2,  9, "DAS:" + engine.speed.das, (menuCursor == 6));
+			receiver.drawMenuFont(engine, playerID, 2, 10, "BGM:" + bgmno, (menuCursor == 7));
+			receiver.drawMenuFont(engine, playerID, 2, 11, "BIG:" + GeneralUtil.getONorOFF(big), (menuCursor == 8));
+			receiver.drawMenuFont(engine, playerID, 2, 12, "LEVEL TYPE:" + LEVELTYPE_STRING[leveltype], (menuCursor == 9));
 			String strTSpinEnable = "";
 			if(version >= 4) {
 				if(tspinEnableType == 0) strTSpinEnable = "OFF";
@@ -699,15 +699,15 @@ public class PracticeMode extends AbstractMode {
 			} else {
 				strTSpinEnable = GeneralUtil.getONorOFF(enableTSpin);
 			}
-			receiver.drawMenuFont(engine, playerID, 2, 13, "SPIN BONUS:" + strTSpinEnable, (engine.statc[2] == 10));
-			receiver.drawMenuFont(engine, playerID, 2, 14, "EZ SPIN:" + GeneralUtil.getONorOFF(enableTSpinKick), (engine.statc[2] == 11));
-			receiver.drawMenuFont(engine, playerID, 2, 15, "SPIN TYPE:" + ((spinCheckType == 0) ? "4POINT" : "IMMOBILE"), (engine.statc[2] == 12));
-			receiver.drawMenuFont(engine, playerID, 2, 16, "EZ IMMOBILE:" + GeneralUtil.getONorOFF(tspinEnableEZ), (engine.statc[2] == 13));
-			receiver.drawMenuFont(engine, playerID, 2, 17, "B2B:" + GeneralUtil.getONorOFF(enableB2B), (engine.statc[2] == 14));
-			receiver.drawMenuFont(engine, playerID, 2, 18, "COMBO:" + COMBOTYPE_STRING[comboType], (engine.statc[2] == 15));
-			receiver.drawMenuFont(engine, playerID, 2, 19, "LEVEL STOP SE:" + GeneralUtil.getONorOFF(lvstopse), (engine.statc[2] == 16));
-			receiver.drawMenuFont(engine, playerID, 2, 20, "BIG MOVE:" + (bigmove ? "2 CELL" : "1 CELL"), (engine.statc[2] == 17));
-			receiver.drawMenuFont(engine, playerID, 2, 21, "BIG HALF:" + GeneralUtil.getONorOFF(bighalf), (engine.statc[2] == 18));
+			receiver.drawMenuFont(engine, playerID, 2, 13, "SPIN BONUS:" + strTSpinEnable, (menuCursor == 10));
+			receiver.drawMenuFont(engine, playerID, 2, 14, "EZ SPIN:" + GeneralUtil.getONorOFF(enableTSpinKick), (menuCursor == 11));
+			receiver.drawMenuFont(engine, playerID, 2, 15, "SPIN TYPE:" + ((spinCheckType == 0) ? "4POINT" : "IMMOBILE"), (menuCursor == 12));
+			receiver.drawMenuFont(engine, playerID, 2, 16, "EZ IMMOBILE:" + GeneralUtil.getONorOFF(tspinEnableEZ), (menuCursor == 13));
+			receiver.drawMenuFont(engine, playerID, 2, 17, "B2B:" + GeneralUtil.getONorOFF(enableB2B), (menuCursor == 14));
+			receiver.drawMenuFont(engine, playerID, 2, 18, "COMBO:" + COMBOTYPE_STRING[comboType], (menuCursor == 15));
+			receiver.drawMenuFont(engine, playerID, 2, 19, "LEVEL STOP SE:" + GeneralUtil.getONorOFF(lvstopse), (menuCursor == 16));
+			receiver.drawMenuFont(engine, playerID, 2, 20, "BIG MOVE:" + (bigmove ? "2 CELL" : "1 CELL"), (menuCursor == 17));
+			receiver.drawMenuFont(engine, playerID, 2, 21, "BIG HALF:" + GeneralUtil.getONorOFF(bighalf), (menuCursor == 18));
 			String strGoalLv = "ENDLESS";
 			if(goallv >= 0) {
 				if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS))
@@ -717,48 +717,48 @@ public class PracticeMode extends AbstractMode {
 				else
 					strGoalLv = "LV" + String.valueOf(goallv + 1);
 			}
-			receiver.drawMenuFont(engine, playerID, 2, 22, "GOAL LEVEL:" + strGoalLv, (engine.statc[2] == 19));
+			receiver.drawMenuFont(engine, playerID, 2, 22, "GOAL LEVEL:" + strGoalLv, (menuCursor == 19));
 			receiver.drawMenuFont(engine, playerID, 2, 23, "TIME LIMIT:" + ((timelimit == 0) ? "NONE" : GeneralUtil.getTime(timelimit)),
-								  (engine.statc[2] == 20));
+								  (menuCursor == 20));
 			receiver.drawMenuFont(engine, playerID, 2, 24, "ROLL LIMIT:" + ((rolltimelimit == 0) ? "NONE" : GeneralUtil.getTime(rolltimelimit)),
-								  (engine.statc[2] == 21));
+								  (menuCursor == 21));
 			receiver.drawMenuFont(engine, playerID, 2, 25, "TIME LIMIT RESET EVERY LEVEL:" + GeneralUtil.getONorOFF(timelimitResetEveryLevel),
-					  (engine.statc[2] == 22));
-		} else if(engine.statc[2] < 46) {
+					  (menuCursor == 22));
+		} else if(menuCursor < 46) {
 			if(owner.replayMode == false) {
-				receiver.drawMenuFont(engine, playerID, 1, engine.statc[2] - 23 + 3, "b", EventReceiver.COLOR_RED);
+				receiver.drawMenuFont(engine, playerID, 1, menuCursor - 23 + 3, "b", EventReceiver.COLOR_RED);
 			}
 
-			receiver.drawMenuFont(engine, playerID, 2,  3, "USE BONE BLOCKS:" + GeneralUtil.getONorOFF(bone), (engine.statc[2] == 23));
+			receiver.drawMenuFont(engine, playerID, 2,  3, "USE BONE BLOCKS:" + GeneralUtil.getONorOFF(bone), (menuCursor == 23));
 			String strHiddenFrames = "NONE";
 			if(blockHidden == -2) strHiddenFrames = "LOCK FLASH (" + engine.ruleopt.lockflash + "F)";
 			if(blockHidden >= 0) strHiddenFrames = String.format("%d (%.2f SEC.)", blockHidden, (float)(blockHidden / 60f));
-			receiver.drawMenuFont(engine, playerID, 2,  4, "BLOCK HIDDEN FRAMES:" + strHiddenFrames, (engine.statc[2] == 24));
+			receiver.drawMenuFont(engine, playerID, 2,  4, "BLOCK HIDDEN FRAMES:" + strHiddenFrames, (menuCursor == 24));
 			receiver.drawMenuFont(engine, playerID, 2,  5, "BLOCK HIDDEN ANIM:" + GeneralUtil.getONorOFF(blockHiddenAnim),
-					(engine.statc[2] == 25));
+					(menuCursor == 25));
 			receiver.drawMenuFont(engine, playerID, 2,  6, "BLOCK OUTLINE TYPE:" + BLOCK_OUTLINE_TYPE_STRING[blockOutlineType],
-					(engine.statc[2] == 26));
+					(menuCursor == 26));
 			receiver.drawMenuFont(engine, playerID, 2,  7, "BLOCK OUTLINE ONLY:" + GeneralUtil.getONorOFF(blockShowOutlineOnly),
-					(engine.statc[2] == 27));
+					(menuCursor == 27));
 			receiver.drawMenuFont(engine, playerID, 2,  8, "HEBO HIDDEN:" + ((heboHiddenLevel == 0) ? "NONE" : "LV"+heboHiddenLevel),
-					(engine.statc[2] == 28));
-			receiver.drawMenuFont(engine, playerID, 2,  9, "PIECE I:" + GeneralUtil.getONorOFF(pieceEnable[0]), (engine.statc[2] == 29));
-			receiver.drawMenuFont(engine, playerID, 2, 10, "PIECE L:" + GeneralUtil.getONorOFF(pieceEnable[1]), (engine.statc[2] == 30));
-			receiver.drawMenuFont(engine, playerID, 2, 11, "PIECE O:" + GeneralUtil.getONorOFF(pieceEnable[2]), (engine.statc[2] == 31));
-			receiver.drawMenuFont(engine, playerID, 2, 12, "PIECE Z:" + GeneralUtil.getONorOFF(pieceEnable[3]), (engine.statc[2] == 32));
-			receiver.drawMenuFont(engine, playerID, 2, 13, "PIECE T:" + GeneralUtil.getONorOFF(pieceEnable[4]), (engine.statc[2] == 33));
-			receiver.drawMenuFont(engine, playerID, 2, 14, "PIECE J:" + GeneralUtil.getONorOFF(pieceEnable[5]), (engine.statc[2] == 34));
-			receiver.drawMenuFont(engine, playerID, 2, 15, "PIECE S:" + GeneralUtil.getONorOFF(pieceEnable[6]), (engine.statc[2] == 35));
-			receiver.drawMenuFont(engine, playerID, 2, 16, "PIECE I1:" + GeneralUtil.getONorOFF(pieceEnable[7]), (engine.statc[2] == 36));
-			receiver.drawMenuFont(engine, playerID, 2, 17, "PIECE I2:" + GeneralUtil.getONorOFF(pieceEnable[8]), (engine.statc[2] == 37));
-			receiver.drawMenuFont(engine, playerID, 2, 18, "PIECE I3:" + GeneralUtil.getONorOFF(pieceEnable[9]), (engine.statc[2] == 38));
-			receiver.drawMenuFont(engine, playerID, 2, 19, "PIECE L3:" + GeneralUtil.getONorOFF(pieceEnable[10]), (engine.statc[2] == 39));
-			receiver.drawMenuFont(engine, playerID, 2, 20, "USE MAP:" + GeneralUtil.getONorOFF(useMap), (engine.statc[2] == 40));
-			receiver.drawMenuFont(engine, playerID, 2, 21, "[EDIT FIELD MAP]", (engine.statc[2] == 41));
-			receiver.drawMenuFont(engine, playerID, 2, 22, "[LOAD FIELD MAP]:" + mapNumber, (engine.statc[2] == 42));
-			receiver.drawMenuFont(engine, playerID, 2, 23, "[SAVE FIELD MAP]:" + mapNumber, (engine.statc[2] == 43));
-			receiver.drawMenuFont(engine, playerID, 2, 24, "[LOAD PRESET]:" + presetNumber, (engine.statc[2] == 44));
-			receiver.drawMenuFont(engine, playerID, 2, 25, "[SAVE PRESET]:" + presetNumber, (engine.statc[2] == 45));
+					(menuCursor == 28));
+			receiver.drawMenuFont(engine, playerID, 2,  9, "PIECE I:" + GeneralUtil.getONorOFF(pieceEnable[0]), (menuCursor == 29));
+			receiver.drawMenuFont(engine, playerID, 2, 10, "PIECE L:" + GeneralUtil.getONorOFF(pieceEnable[1]), (menuCursor == 30));
+			receiver.drawMenuFont(engine, playerID, 2, 11, "PIECE O:" + GeneralUtil.getONorOFF(pieceEnable[2]), (menuCursor == 31));
+			receiver.drawMenuFont(engine, playerID, 2, 12, "PIECE Z:" + GeneralUtil.getONorOFF(pieceEnable[3]), (menuCursor == 32));
+			receiver.drawMenuFont(engine, playerID, 2, 13, "PIECE T:" + GeneralUtil.getONorOFF(pieceEnable[4]), (menuCursor == 33));
+			receiver.drawMenuFont(engine, playerID, 2, 14, "PIECE J:" + GeneralUtil.getONorOFF(pieceEnable[5]), (menuCursor == 34));
+			receiver.drawMenuFont(engine, playerID, 2, 15, "PIECE S:" + GeneralUtil.getONorOFF(pieceEnable[6]), (menuCursor == 35));
+			receiver.drawMenuFont(engine, playerID, 2, 16, "PIECE I1:" + GeneralUtil.getONorOFF(pieceEnable[7]), (menuCursor == 36));
+			receiver.drawMenuFont(engine, playerID, 2, 17, "PIECE I2:" + GeneralUtil.getONorOFF(pieceEnable[8]), (menuCursor == 37));
+			receiver.drawMenuFont(engine, playerID, 2, 18, "PIECE I3:" + GeneralUtil.getONorOFF(pieceEnable[9]), (menuCursor == 38));
+			receiver.drawMenuFont(engine, playerID, 2, 19, "PIECE L3:" + GeneralUtil.getONorOFF(pieceEnable[10]), (menuCursor == 39));
+			receiver.drawMenuFont(engine, playerID, 2, 20, "USE MAP:" + GeneralUtil.getONorOFF(useMap), (menuCursor == 40));
+			receiver.drawMenuFont(engine, playerID, 2, 21, "[EDIT FIELD MAP]", (menuCursor == 41));
+			receiver.drawMenuFont(engine, playerID, 2, 22, "[LOAD FIELD MAP]:" + mapNumber, (menuCursor == 42));
+			receiver.drawMenuFont(engine, playerID, 2, 23, "[SAVE FIELD MAP]:" + mapNumber, (menuCursor == 43));
+			receiver.drawMenuFont(engine, playerID, 2, 24, "[LOAD PRESET]:" + presetNumber, (menuCursor == 44));
+			receiver.drawMenuFont(engine, playerID, 2, 25, "[SAVE PRESET]:" + presetNumber, (menuCursor == 45));
 		}
 	}
 

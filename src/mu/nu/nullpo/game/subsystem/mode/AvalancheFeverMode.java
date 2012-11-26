@@ -199,7 +199,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			if(change != 0) {
 				engine.playSE("change");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 
 				case 0:
 				case 6:
@@ -278,14 +278,14 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 			}
 
 			if (engine.ctrl.isPush(Controller.BUTTON_A)) {
-				if ((xyzzy == 573) && engine.statc[2] > 5) {
+				if ((xyzzy == 573) && menuCursor > 5) {
 					loadMapSetFever(engine, playerID, mapSet, true);
 					loadFeverMap(engine, new Random(), previewChain, previewSubset);
 				} else if (xyzzy == 9) {
 					engine.playSE("levelup");
 					xyzzy = 573;
 					loadMapSetFever(engine, playerID, mapSet, true);
-				} else if (engine.statc[3] >= 5) {
+				} else if (menuTime >= 5) {
 					// 決定
 					engine.playSE("decide");
 					saveSetting(owner.modeConfig);
@@ -303,12 +303,12 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 				}
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}
@@ -331,7 +331,7 @@ public class AvalancheFeverMode extends Avalanche1PDummyMode {
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
-		if (engine.statc[2] <= 5) {
+		if (menuCursor <= 5) {
 			String strOutline = "";
 			if(outlinetype == 0) strOutline = "NORMAL";
 			if(outlinetype == 1) strOutline = "COLOR";

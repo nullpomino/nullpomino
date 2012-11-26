@@ -215,16 +215,16 @@ public class RetroMasteryMode extends AbstractMode {
 		if(engine.owner.replayMode == false) {
 			// Check for UP button, when pressed it will move cursor up.
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
-				engine.statc[2]--;
-				if(engine.statc[2] == 1 && gametype == GAMETYPE_PRESSURE) engine.statc[2]--;
-				if(engine.statc[2] < 0) engine.statc[2] = 2;
+				menuCursor--;
+				if(menuCursor == 1 && gametype == GAMETYPE_PRESSURE) menuCursor--;
+				if(menuCursor < 0) menuCursor = 2;
 				receiver.playSE("cursor");
 			}
 			// Check for DOWN button, when pressed it will move cursor down.
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_DOWN)) {
-				engine.statc[2]++;
-				if(engine.statc[2] == 1 && gametype == GAMETYPE_PRESSURE) engine.statc[2]++;
-				if(engine.statc[2] > 2) engine.statc[2] = 0;
+				menuCursor++;
+				if(menuCursor == 1 && gametype == GAMETYPE_PRESSURE) menuCursor++;
+				if(menuCursor > 2) menuCursor = 0;
 				receiver.playSE("cursor");
 			}
 
@@ -236,7 +236,7 @@ public class RetroMasteryMode extends AbstractMode {
 			if(change != 0) {
 				receiver.playSE("change");
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					gametype += change;
 					if(gametype < 0) gametype = GAMETYPE_MAX - 1;
@@ -256,7 +256,7 @@ public class RetroMasteryMode extends AbstractMode {
 			}
 
 			// Check for A button, when pressed this will begin the game
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				receiver.playSE("decide");
 				saveSetting(owner.modeConfig);
 				receiver.saveModeConfig(owner.modeConfig);
@@ -268,12 +268,12 @@ public class RetroMasteryMode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		} else {
-			engine.statc[3]++;
-			engine.statc[2] = -1;
+			menuTime++;
+			menuCursor = -1;
 
-			if(engine.statc[3] >= 60) {
+			if(menuTime >= 60) {
 				return false;
 			}
 		}
@@ -287,17 +287,17 @@ public class RetroMasteryMode extends AbstractMode {
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
 		if(engine.owner.replayMode == false) {
-			receiver.drawMenuFont(engine, playerID, 0, (engine.statc[2] * 2) + 1, "b", EventReceiver.COLOR_RED);
+			receiver.drawMenuFont(engine, playerID, 0, (menuCursor * 2) + 1, "b", EventReceiver.COLOR_RED);
 		}
 
 		receiver.drawMenuFont(engine, playerID, 0, 0, "GAME TYPE", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (engine.statc[2] == 0));
+		receiver.drawMenuFont(engine, playerID, 1, 1, GAMETYPE_NAME[gametype], (menuCursor == 0));
 		if(gametype != GAMETYPE_PRESSURE){
 			receiver.drawMenuFont(engine, playerID, 0, 2, "LEVEL", EventReceiver.COLOR_BLUE);
-			receiver.drawMenuFont(engine, playerID, 1, 3, String.format("%02d", startlevel), (engine.statc[2] == 1));
+			receiver.drawMenuFont(engine, playerID, 1, 3, String.format("%02d", startlevel), (menuCursor == 1));
 		}
 		receiver.drawMenuFont(engine, playerID, 0, 4, "BIG", EventReceiver.COLOR_BLUE);
-		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(big), (engine.statc[2] == 2));
+		receiver.drawMenuFont(engine, playerID, 1, 5, GeneralUtil.getONorOFF(big), (menuCursor == 2));
 	}
 
 	/**

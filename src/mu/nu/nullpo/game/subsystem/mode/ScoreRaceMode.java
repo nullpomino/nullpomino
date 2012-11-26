@@ -260,7 +260,7 @@ public class ScoreRaceMode extends NetDummyMode {
 				if(engine.ctrl.isPress(Controller.BUTTON_E)) m = 100;
 				if(engine.ctrl.isPress(Controller.BUTTON_F)) m = 1000;
 
-				switch(engine.statc[2]) {
+				switch(menuCursor) {
 				case 0:
 					engine.speed.gravity += change * m;
 					if(engine.speed.gravity < -1) engine.speed.gravity = 99999;
@@ -347,10 +347,10 @@ public class ScoreRaceMode extends NetDummyMode {
 			}
 
 			// Confirm
-			if(engine.ctrl.isPush(Controller.BUTTON_A) && (engine.statc[3] >= 5)) {
+			if(engine.ctrl.isPush(Controller.BUTTON_A) && (menuTime >= 5)) {
 				engine.playSE("decide");
 
-				if(engine.statc[2] == 16) {
+				if(menuCursor == 16) {
 					// Load preset
 					loadPreset(engine, owner.modeConfig, presetNumber);
 
@@ -358,7 +358,7 @@ public class ScoreRaceMode extends NetDummyMode {
 					if(netIsNetPlay && (netNumSpectators > 0)) {
 						netSendOptions(engine);
 					}
-				} else if(engine.statc[2] == 17) {
+				} else if(menuCursor == 17) {
 					// Save preset
 					savePreset(engine, owner.modeConfig, presetNumber);
 					receiver.saveModeConfig(owner.modeConfig);
@@ -386,17 +386,17 @@ public class ScoreRaceMode extends NetDummyMode {
 				netEnterNetPlayRankingScreen(engine, playerID, goaltype);
 			}
 
-			engine.statc[3]++;
+			menuTime++;
 		}
 		// Replay
 		else {
-			engine.statc[3]++;
-			engine.statc[2] = 0;
+			menuTime++;
+			menuCursor = 0;
 
-			if(engine.statc[3] >= 60) {
-				engine.statc[2] = 10;
+			if(menuTime >= 60) {
+				menuCursor = 10;
 			}
-			if(engine.statc[3] >= 120) {
+			if(menuTime >= 120) {
 				return false;
 			}
 		}
@@ -412,7 +412,7 @@ public class ScoreRaceMode extends NetDummyMode {
 		if(netIsNetRankingDisplayMode) {
 			// NET: Netplay Ranking
 			netOnRenderNetPlayRanking(engine, playerID, receiver);
-		} else if(engine.statc[2] < 10) {
+		} else if(menuCursor < 10) {
 			drawMenu(engine, playerID, receiver, 0, EventReceiver.COLOR_BLUE, 0,
 					"GRAVITY", String.valueOf(engine.speed.gravity),
 					"G-MAX", String.valueOf(engine.speed.denominator),
