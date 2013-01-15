@@ -59,7 +59,7 @@ public class AIRanksTester {
 	private void playGame(){
 		init();
 		/*if ((pieces[0]==Piece.PIECE_S) || (pieces[0]==Piece.PIECE_Z) || (pieces[0]==Piece.PIECE_O)){
-			//System.out.println("・ｽchec !!");
+			//System.out.println("Suchec !!");
 		}*/
 		int [] heights=new int[9];
 		int [] holdPiece={-1};

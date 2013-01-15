@@ -31,13 +31,13 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * Blockピース
+ * BlockPeace
  */
 public class Piece implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 1204901746632931186L;
 
-	/** BlockピースのIDの定count */
+	/** BlockOf PeaceIDConstantcount */
 	public static final int PIECE_NONE = -1,
 							PIECE_I = 0,
 							PIECE_L = 1,
@@ -51,16 +51,16 @@ public class Piece implements Serializable {
 							PIECE_I3 = 9,
 							PIECE_L3 = 10;
 
-	/** BlockピースのName */
+	/** BlockOf PeaceName */
 	public static final String[] PIECE_NAMES = {"I","L","O","Z","T","J","S","I1","I2","I3","L3"};
 
-	/** 通常のBlockピースのIDのMaximumcount */
+	/** NormalBlockOf PeaceIDOfMaximumcount */
 	public static final int PIECE_STANDARD_COUNT = 7;
 
-	/** BlockピースのIDのMaximumcount */
+	/** BlockOf PeaceIDOfMaximumcount */
 	public static final int PIECE_COUNT = 11;
 
-	/**  default のBlockピースの data (X-coordinate) */
+	/**  default OfBlockOf Peace data (X-coordinate) */
 	public static final int[][][] DEFAULT_PIECE_DATA_X = {
 		{{0,1,2,3},{2,2,2,2},{3,2,1,0},{1,1,1,1}},	// I
 		{{2,2,1,0},{2,1,1,1},{0,0,1,2},{0,1,1,1}},	// L
@@ -75,7 +75,7 @@ public class Piece implements Serializable {
 		{{1,0,0  },{0,0,1  },{0,1,1  },{1,1,0  }},	// L3
 	};
 
-	/**  default のBlockピースの data (Y-coordinate) */
+	/**  default OfBlockOf Peace data (Y-coordinate) */
 	public static final int[][][] DEFAULT_PIECE_DATA_Y = {
 		{{1,1,1,1},{0,1,2,3},{2,2,2,2},{3,2,1,0}},	// I
 		{{0,1,1,1},{2,2,1,0},{2,1,1,1},{0,0,1,2}},	// L
@@ -90,7 +90,7 @@ public class Piece implements Serializable {
 		{{1,1,0  },{1,0,0  },{0,0,1  },{0,1,1  }},	// L3
 	};
 
-	/** 新スピン bonus用座標 dataA(X-coordinate) */
+	/** New Spin bonusUse coordinate dataA(X-coordinate) */
 	public static final int[][][] SPINBONUSDATA_HIGH_X = {
 		{{1,2,2,1},{1,3,1,3},{1,2,2,1},{0,2,0,2}},	// I
 		{{1,0    },{2,2    },{1,2    },{0,0    }},	// L
@@ -105,7 +105,7 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** 新スピン bonus用座標 dataA(Y-coordinate) */
+	/** New Spin bonusUse coordinate dataA(Y-coordinate) */
 	public static final int[][][] SPINBONUSDATA_HIGH_Y = {
 		{{0,2,0,2},{1,2,2,1},{1,3,1,3},{1,2,2,1}},	// I
 		{{0,0    },{1,0    },{2,2    },{1,2    }},	// L
@@ -120,7 +120,7 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** 新スピン bonus用座標 dataB(X-coordinate) */
+	/** New Spin bonusUse coordinate dataB(X-coordinate) */
 	public static final int[][][] SPINBONUSDATA_LOW_X = {
 		{{-1,4,-1,4},{2,2,2,2},{-1,4,-1,4},{1,1,1,1}},	// I
 		{{2,0    },{0,0    },{0,2    },{2,2    }},	// L
@@ -135,7 +135,7 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** 新スピン bonus用座標 dataB(Y-coordinate) */
+	/** New Spin bonusUse coordinate dataB(Y-coordinate) */
 	public static final int[][][] SPINBONUSDATA_LOW_Y = {
 		{{1,1,1,1},{-1,4,-1,4},{2,2,2,2},{-1,4,-1,4}},	// I
 		{{2,2    },{2,0    },{0,0    },{0,3    }},	// L
@@ -150,19 +150,19 @@ public class Piece implements Serializable {
 		{{       },{       },{       },{       }},	// L3
 	};
 
-	/** Directionの定count */
+	/** DirectionConstantcount */
 	public static final int DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3, DIRECTION_RANDOM = 4;
 
-	/** DirectionのMaximumcount */
+	/** DirectionOfMaximumcount */
 	public static final int DIRECTION_COUNT = 4;
 
-	/** 相対X位置 (4Direction×nBlock) */
+	/** RelativeXPosition (4Direction×nBlock) */
 	public int[][] dataX;
 
-	/** 相対Y位置 (4Direction×nBlock) */
+	/** RelativeYPosition (4Direction×nBlock) */
 	public int[][] dataY;
 
-	/** ピースを構成するBlock (nBlock) */
+	/** Configure the pieceBlock (nBlock) */
 	public Block[] block;
 
 	/** ID */
@@ -174,22 +174,22 @@ public class Piece implements Serializable {
 	/** BigBlock */
 	public boolean big;
 
-	/** 相対X位置と相対Y位置がオリジナル stateからずらされているならtrue */
+	/** RelativeXPosition and relativeYOriginal position stateIt has been shifted from thetrue */
 	public boolean offsetApplied;
 
-	/** 相対X位置のずれ幅 */
+	/** RelativeXWidth misalignment */
 	public int[] dataOffsetX;
 
-	/** 相対Y位置のずれ幅 */
+	/** RelativeYWidth misalignment */
 	public int[] dataOffsetY;
 
 	/** Connect blocks in this piece? */
 	public boolean connectBlocks;
 
 	/**
-	 * ピース名を取得
-	 * @param id ピースID
-	 * @return ピース名(不正な場合は?を返す)
+	 * Gets the name of the piece
+	 * @param id PeaceID
+	 * @return Piece name(If an invalid?Returns)
 	 */
 	public static String getPieceName(int id) {
 		if((id >= 0) && (id < PIECE_NAMES.length)) {
@@ -215,16 +215,16 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * BlockピースのIDを指定できるConstructor
-	 * @param id BlockピースのID
+	 * BlockOf PeaceIDWe can specifyConstructor
+	 * @param id BlockOf PeaceID
 	 */
 	public Piece(int id) {
 		initPiece(id);
 	}
 
 	/**
-	 * BlockピースのInitialization
-	 * @param pieceID BlockピースのID
+	 * BlockOf PeaceInitialization
+	 * @param pieceID BlockOf PeaceID
 	 */
 	public void initPiece(int pieceID) {
 		this.id = pieceID;
@@ -245,7 +245,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * Blockピースの dataを他のPieceからコピー
+	 * BlockOf Peace dataOtherPieceCopied from the
 	 * @param p Copy source
 	 */
 	public void copy(Piece p) {
@@ -274,24 +274,24 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つのピースに含まれるBlockのcountを取得
-	 * @return 1つのピースに含まれるBlockのcount
+	 * 1Are included in one piece ofBlockOfcountGet the
+	 * @return 1Are included in one piece ofBlockOfcount
 	 */
 	public int getMaxBlock() {
 		return DEFAULT_PIECE_DATA_X[id][direction].length;
 	}
 
 	/**
-	 * すべてのBlock stateをbと同じに設定
-	 * @param b 設定するBlock
+	 * AllBlock stateAbSet the same as the
+	 * @param b SetBlock
 	 */
 	public void setBlock(Block b) {
 		for(int i = 0; i < block.length; i++) block[i].copy(b);
 	}
 
 	/**
-	 * すべてのBlock colorを変更
-	 * @param color 色
+	 * AllBlock colorChange
+	 * @param color Color
 	 */
 	public void setColor(int color) {
 		for(int i = 0; i < block.length; i++) {
@@ -367,8 +367,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの模様を変更
-	 * @param skin 模様
+	 * AllBlockChange the pattern of
+	 * @param skin Pattern
 	 */
 	public void setSkin(int skin) {
 		for(int i = 0; i < block.length; i++) {
@@ -377,8 +377,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの経過 frame を変更
-	 * @param elapsedFrames 固定してから経過した frame count
+	 * AllBlockOf course frame Change
+	 * @param elapsedFrames I have elapsed since a fixed frame count
 	 */
 	public void setElapsedFrames(int elapsedFrames) {
 		for(int i = 0; i < block.length; i++) {
@@ -387,8 +387,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの暗さまたは明るさを変更
-	 * @param darkness 暗さまたは明るさ (0.03だったら3%暗く, -0.05だったら5%明るい）
+	 * AllBlockChange the darkness or lightness of
+	 * @param darkness It is the darkness or lightness (0.03If it&#39;s the case3%Darkly, -0.05If it&#39;s the case5%Bright)
 	 */
 	public void setDarkness(float darkness) {
 		for(int i = 0; i < block.length; i++) {
@@ -397,8 +397,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの透明度を変更
-	 * @param alpha 透明度 (1.0fで不透明, 0.0fで完全に透明）
+	 * AllBlockChange the transparency of
+	 * @param alpha Transparency (1.0fOpacity in, 0.0fCompletely transparent in)
 	 */
 	public void setAlpha(float alpha) {
 		for(int i = 0; i < block.length; i++) {
@@ -407,18 +407,18 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * すべてのBlockの属性を設定
-	 * @param attr 変更したい属性
-	 * @param status 変更後 state
+	 * AllBlockSet the attributes of the
+	 * @param attr I want to change the attributes
+	 * @param status After the change state
 	 */
 	public void setAttribute(int attr, boolean status) {
 		for(int i = 0; i < block.length; i++) block[i].setAttribute(attr, status);
 	}
 
 	/**
-	 * 相対X位置と相対Y位置をずらす
-	 * @param offsetX X位置補正量の配列 (int[DIRECTION_COUNT]）
-	 * @param offsetY Y位置補正量の配列 (int[DIRECTION_COUNT]）
+	 * RelativeXPosition and relativeYPosition is shifted
+	 * @param offsetX XArray of position correction amount (int[DIRECTION_COUNT])
+	 * @param offsetY YArray of position correction amount (int[DIRECTION_COUNT])
 	 */
 	public void applyOffsetArray(int[] offsetX, int[] offsetY) {
 		applyOffsetArrayX(offsetX);
@@ -426,8 +426,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 相対X位置をずらす
-	 * @param offsetX X位置補正量の配列 (int[DIRECTION_COUNT]）
+	 * RelativeXPosition is shifted
+	 * @param offsetX XArray of position correction amount (int[DIRECTION_COUNT])
 	 */
 	public void applyOffsetArrayX(int[] offsetX) {
 		offsetApplied = true;
@@ -441,8 +441,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 相対Y位置をずらす
-	 * @param offsetY Y位置補正量の配列 (int[DIRECTION_COUNT]）
+	 * RelativeYPosition is shifted
+	 * @param offsetY YArray of position correction amount (int[DIRECTION_COUNT])
 	 */
 	public void applyOffsetArrayY(int[] offsetY) {
 		offsetApplied = true;
@@ -456,7 +456,7 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 相対X位置と相対Y位置を初期状態に戻す
+	 * RelativeXPosition and relativeYPosition back to the initial state
 	 */
 	public void resetOffsetArray() {
 		for(int i = 0; i < DIRECTION_COUNT; i++) {
@@ -471,11 +471,11 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * Blockの繋がり dataを更新
+	 * BlockTies dataUpdate
 	 */
 	public void updateConnectData() {
 		for(int j = 0; j < getMaxBlock(); j++) {
-			// 相対X位置と相対Y位置
+			// RelativeXPosition and relativeYPosition
 			int bx = dataX[direction][j];
 			int by = dataY[direction][j];
 
@@ -487,7 +487,7 @@ public class Piece implements Serializable {
 			if (connectBlocks)
 			{
 				block[j].setAttribute(Block.BLOCK_ATTRIBUTE_BROKEN, false);
-				// 他の3つのBlockとの繋がりを調べる
+				// Other3Of oneBlockExamine the relationship between the
 				for(int k = 0; k < getMaxBlock(); k++) {
 					if(k != j) {
 						int bx2 = dataX[direction][k];
@@ -495,8 +495,8 @@ public class Piece implements Serializable {
 
 						if((bx == bx2) && (by - 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_UP, true);		// Up
 						if((bx == bx2) && (by + 1 == by2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_DOWN, true);	// Down
-						if((by == by2) && (bx - 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);	// 左
-						if((by == by2) && (bx + 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);	// 右
+						if((by == by2) && (bx - 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_LEFT, true);	// Left
+						if((by == by2) && (bx + 1 == bx2)) block[j].setAttribute(Block.BLOCK_ATTRIBUTE_CONNECT_RIGHT, true);	// Right
 					}
 				}
 			}
@@ -506,15 +506,15 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockがfield枠外に置かれるかどうか判定
+	 * 1One or moreBlockThefieldBe placed to determine whether Attempts off target
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return 1つ以上Blockがfield枠外に置かれるならtrue, そうでないならfalse
+	 * @return 1One or moreBlockThefieldAttempts off target would be placed intrue, Otherwisefalse
 	 */
 	public boolean isPartialLockOut(int x, int y, int rt, Field fld) {
-		// Bigでは専用処理
+		// BigThe only treatment
 		if(big == true) return isPartialLockOutBig(x, y, rt, fld);
 
 		boolean placed = false;
@@ -528,12 +528,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockがfield枠外に置かれるかどうか判定(Big用)
+	 * 1One or moreBlockThefieldBe placed to determine whether Attempts off target(BigUse)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return 1つ以上Blockがfield枠外に置かれるならtrue, そうでないならfalse
+	 * @return 1One or moreBlockThefieldAttempts off target would be placed intrue, Otherwisefalse
 	 */
 	protected boolean isPartialLockOutBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -541,7 +541,7 @@ public class Piece implements Serializable {
 		for(int i = 0; i < getMaxBlock(); i++) {
 			int y2 = (y + dataY[rt][i] * 2);
 
-			// 4Block分置く
+			// 4BlockMinute put
 			for(int k = 0; k < 2; k++)for(int l = 0; l < 2; l++) {
 				int y3 = y2 + l;
 				if(y3 < 0) placed = true;
@@ -552,26 +552,26 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockがfield枠外に置かれるかどうか判定
+	 * 1One or moreBlockThefieldBe placed to determine whether Attempts off target
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld field
-	 * @return 1つ以上Blockがfield枠外に置かれるならtrue, そうでないならfalse
+	 * @return 1One or moreBlockThefieldAttempts off target would be placed intrue, Otherwisefalse
 	 */
 	public boolean isPartialLockOut(int x, int y, Field fld) {
 		return isPartialLockOut(x, y, direction, fld);
 	}
 
 	/**
-	 * 1つ以上Blockをfield枠内に置けるかどうか判定(fieldに変更は加えません)
+	 * 1One or moreBlockAfieldDecision whether to put in the frame(fieldBut make no changes to the)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return 1つ以上Blockをfield枠内に置けるならtrue, そうでないならfalse
+	 * @return 1One or moreBlockAfieldI put in the frametrue, Otherwisefalse
 	 */
 	public boolean canPlaceToVisibleField(int x, int y, int rt, Field fld) {
-		// Bigでは専用処理
+		// BigThe only treatment
 		if(big == true) return canPlaceToVisibleFieldBig(x, y, rt, fld);
 
 		boolean placed = false;
@@ -585,12 +585,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockをfield枠内に置けるかどうか判定(fieldに変更は加えません。Big用)
+	 * 1One or moreBlockAfieldDecision whether to put in the frame(fieldBut make no changes to the.BigUse)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return 1つ以上Blockをfield枠内に置けるならtrue, そうでないならfalse
+	 * @return 1One or moreBlockAfieldI put in the frametrue, Otherwisefalse
 	 */
 	protected boolean canPlaceToVisibleFieldBig(int x, int y, int rt, Field fld) {
 		boolean placed = false;
@@ -598,7 +598,7 @@ public class Piece implements Serializable {
 		for(int i = 0; i < getMaxBlock(); i++) {
 			int y2 = (y + dataY[rt][i] * 2);
 
-			// 4Block分置く
+			// 4BlockMinute put
 			for(int k = 0; k < 2; k++)for(int l = 0; l < 2; l++) {
 				int y3 = y2 + l;
 				if(y3 >= 0) placed = true;
@@ -609,23 +609,23 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 1つ以上Blockをfield枠内に置けるかどうか判定(fieldに変更は加えません)
+	 * 1One or moreBlockAfieldDecision whether to put in the frame(fieldBut make no changes to the)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld field
-	 * @return 1つ以上Blockをfield枠内に置けるならtrue, そうでないならfalse
+	 * @return 1One or moreBlockAfieldI put in the frametrue, Otherwisefalse
 	 */
 	public boolean canPlaceToVisibleField(int x, int y, Field fld) {
 		return canPlaceToVisibleField(x, y, direction, fld);
 	}
 
 	/**
-	 * fieldにピースを置く
+	 * fieldPlace the piece to
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return 1つ以上Blockをfield枠内に置けたらtrue, そうでないならfalse
+	 * @return 1One or moreBlockAfieldI was put in the frametrue, Otherwisefalse
 	 */
 	public boolean placeToField(int x, int y, int rt, Field fld) {
 		updateConnectData();
@@ -765,37 +765,37 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * fieldにピースを置く
+	 * fieldPlace the piece to
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld field
-	 * @return 1つ以上Blockをfield枠内に置けたらtrue, そうでないならfalse
+	 * @return 1One or moreBlockAfieldI was put in the frametrue, Otherwisefalse
 	 */
 	public boolean placeToField(int x, int y, Field fld) {
 		return placeToField(x, y, direction, fld);
 	}
 
 	/**
-	 * ピースの当たり判定
+	 * Collision detection of Peace
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld field
-	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
+	 * @return BlockI was overlaptrue, They do not overlapfalse
 	 */
 	public boolean checkCollision(int x, int y, Field fld) {
 		return checkCollision(x, y, direction, fld);
 	}
 
 	/**
-	 * ピースの当たり判定
+	 * Collision detection of Peace
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
+	 * @return BlockI was overlaptrue, They do not overlapfalse
 	 */
 	public boolean checkCollision(int x, int y, int rt, Field fld) {
-		// Bigでは専用処理
+		// BigThe only treatment
 		if(big == true) return checkCollisionBig(x, y, rt, fld);
 
 		for(int i = 0; i < getMaxBlock(); i++) {
@@ -820,19 +820,19 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * ピースの当たり判定 (Big用）
+	 * Collision detection of Peace (BigFor)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return Blockに重なっていたらtrue, 重なっていないならfalse
+	 * @return BlockI was overlaptrue, They do not overlapfalse
 	 */
 	protected boolean checkCollisionBig(int x, int y, int rt, Field fld) {
 		for(int i = 0; i < getMaxBlock(); i++) {
 			int x2 = (x + dataX[rt][i] * 2);
 			int y2 = (y + dataY[rt][i] * 2);
 
-			// 4Block分調べる
+			// 4BlockMinutes to examine
 			for(int k = 0; k < 2; k++)for(int l = 0; l < 2; l++) {
 				int x3 = x2 + k;
 				int y3 = y2 + l;
@@ -856,12 +856,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * ピースをそのまま落とした場合のY-coordinateを取得
+	 * When I dropped the piece as it isY-coordinateGet the
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return ピースをそのまま落とした場合のY-coordinate
+	 * @return When I dropped the piece as it isY-coordinate
 	 */
 	public int getBottom(int x, int y, int rt, Field fld) {
 		int y2 = y;
@@ -874,19 +874,19 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * ピースをそのまま落とした場合のY-coordinateを取得
+	 * When I dropped the piece as it isY-coordinateGet the
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param fld field
-	 * @return ピースをそのまま落とした場合のY-coordinate
+	 * @return When I dropped the piece as it isY-coordinate
 	 */
 	public int getBottom(int x, int y, Field fld) {
 		return getBottom(x, y, direction, fld);
 	}
 
 	/**
-	 * ピースの幅を取得
-	 * @return ピースの幅
+	 * Gets the width of the piece
+	 * @return The width of the piece
 	 */
 	public int getWidth() {
 		int max = dataX[direction][0];
@@ -906,8 +906,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * ピースの高さを取得
-	 * @return ピースの高さ
+	 * Gets the height of the piece
+	 * @return The height of the piece
 	 */
 	public int getHeight() {
 		int max = dataY[direction][0];
@@ -927,8 +927,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * テトラミノの最も高いBlockのX-coordinateを取得
-	 * @return テトラミノの最も高いBlockのX-coordinate
+	 * Highest TetoraminoBlockOfX-coordinateGet the
+	 * @return Highest TetoraminoBlockOfX-coordinate
 	 */
 	public int getMinimumBlockX() {
 		int min = dataX[direction][0];
@@ -946,8 +946,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * テトラミノの最も低いBlockのX-coordinateを取得
-	 * @return テトラミノの最も低いBlockのX-coordinate
+	 * Lowest TetoraminoBlockOfX-coordinateGet the
+	 * @return Lowest TetoraminoBlockOfX-coordinate
 	 */
 	public int getMaximumBlockX() {
 		int max = dataX[direction][0];
@@ -965,8 +965,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * テトラミノの最も高いBlockのY-coordinateを取得
-	 * @return テトラミノの最も高いBlockのY-coordinate
+	 * Highest TetoraminoBlockOfY-coordinateGet the
+	 * @return Highest TetoraminoBlockOfY-coordinate
 	 */
 	public int getMinimumBlockY() {
 		int min = dataY[direction][0];
@@ -984,8 +984,8 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * テトラミノの最も低いBlockのY-coordinateを取得
-	 * @return テトラミノの最も低いBlockのY-coordinate
+	 * Lowest TetoraminoBlockOfY-coordinateGet the
+	 * @return Lowest TetoraminoBlockOfY-coordinate
 	 */
 	public int getMaximumBlockY() {
 		int max = dataY[direction][0];
@@ -1003,12 +1003,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 現在位置からどこまで左に移動できるかを判定
-	 * @param nowX 現在X位置
-	 * @param nowY 現在Y位置
-	 * @param rt ピースのDirection
+	 * Determines how far we can move to the left or from the current position
+	 * @param nowX CurrentXPosition
+	 * @param nowY CurrentYPosition
+	 * @param rt Of PeaceDirection
 	 * @param fld field
-	 * @return 移動可能なもっとも左の位置
+	 * @return Left-most position of a movable
 	 */
 	public int getMostMovableLeft(int nowX, int nowY, int rt, Field fld) {
 		int x = nowX;
@@ -1017,12 +1017,12 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * 現在位置からどこまで右に移動できるかを判定
-	 * @param nowX 現在X位置
-	 * @param nowY 現在Y位置
-	 * @param rt ピースのDirection
+	 * Determines how far you can move from the current position to the right
+	 * @param nowX CurrentXPosition
+	 * @param nowY CurrentYPosition
+	 * @param rt Of PeaceDirection
 	 * @param fld field
-	 * @return 移動可能なもっとも右の位置
+	 * @return Rightmost position of movable
 	 */
 	public int getMostMovableRight(int nowX, int nowY, int rt, Field fld) {
 		int x = nowX;
@@ -1031,9 +1031,9 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * rotation buttonを押したあとのピースのDirectionを取得
-	 * @param move rotationDirection (-1:左 1:右 2:180度）
-	 * @return rotation buttonを押したあとのピースのDirection
+	 * rotation buttonPiece after pressing theDirectionGet the
+	 * @param move rotationDirection (-1:Left 1:Right 2:180Degrees)
+	 * @return rotation buttonPiece after pressing theDirection
 	 */
 	public int getRotateDirection(int move) {
 		int rt = direction + move;
@@ -1050,10 +1050,10 @@ public class Piece implements Serializable {
 	}
 
 	/**
-	 * rotation buttonを押したあとのピースのDirectionを取得
-	 * @param move rotationDirection (-1:左 1:右 2:180度）
-	 * @param dir 元のDirection
-	 * @return rotation buttonを押したあとのピースのDirection
+	 * rotation buttonPiece after pressing theDirectionGet the
+	 * @param move rotationDirection (-1:Left 1:Right 2:180Degrees)
+	 * @param dir OriginalDirection
+	 * @return rotation buttonPiece after pressing theDirection
 	 */
 	public int getRotateDirection(int move, int dir) {
 		int rt = dir + move;

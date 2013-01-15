@@ -35,13 +35,13 @@ import mu.nu.nullpo.game.play.GameManager;
 import org.apache.log4j.Logger;
 
 /**
- * クライアント(Observer用)
+ * Client(ObserverUse)
  */
 public class NetObserverClient extends NetBaseClient {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetObserverClient.class);
 
-	/** サーバーVersion */
+	/** ServerVersion */
 	protected volatile float serverVersion = 0f;
 
 	/** Number of players */
@@ -59,7 +59,7 @@ public class NetObserverClient extends NetBaseClient {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
+	 * @param host Destination host
 	 */
 	public NetObserverClient(String host) {
 		super(host);
@@ -67,21 +67,21 @@ public class NetObserverClient extends NetBaseClient {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
-	 * @param port 接続先ポート number
+	 * @param host Destination host
+	 * @param port Destination port number
 	 */
 	public NetObserverClient(String host, int port) {
 		super(host, port);
 	}
 
 	/*
-	 * 受信したメッセージに応じていろいろ処理をする
+	 * The various processing depending on the received message
 	 */
 	@Override
 	protected void processPacket(String fullMessage) throws IOException {
-		String[] message = fullMessage.split("\t");	// タブ区切り
+		String[] message = fullMessage.split("\t");	// Tab delimited
 
-		// 接続完了
+		// Connection completion
 		if(message[0].equals("welcome")) {
 			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]\t[DEV BUILD]
 			serverVersion = Float.parseFloat(message[1]);
@@ -95,7 +95,7 @@ public class NetObserverClient extends NetBaseClient {
 
 			send("observerlogin\t" + GameManager.getVersionMajor() + "\t" + GameManager.getVersionMinor() + "\t" + GameManager.isDevBuild() + "\n");
 		}
-		// 人count更新
+		// PeoplecountUpdate
 		if(message[0].equals("observerupdate")) {
 			//observerupdate\t[PLAYERS]\t[OBSERVERS]
 			playerCount = Integer.parseInt(message[1]);

@@ -307,7 +307,7 @@ public class PhysicianMode extends AbstractMode {
 	}
 
 	/*
-	 * Ready画面の処理
+	 * ReadyScreen processing
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {

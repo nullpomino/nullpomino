@@ -49,7 +49,7 @@ public class StateConfigAISelect extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 8;
 
-	/** 1画面に表示するMaximumAIcount */
+	/** 1Displayed on the screenMaximumAIcount */
 	public static final int MAX_AI_IN_ONE_PAGE = 20;
 
 	/** Log */
@@ -58,25 +58,25 @@ public class StateConfigAISelect extends BaseGameState {
 	/** Player ID */
 	public int player = 0;
 
-	/** AIのクラス一覧 */
+	/** AIList of classes */
 	protected String[] aiPathList;
 
-	/** AIのName一覧 */
+	/** AIOfNameList */
 	protected String[] aiNameList;
 
-	/** Current AIのクラス */
+	/** Current AIClass of */
 	protected String currentAI;
 
-	/** AIのID */
+	/** AIOfID */
 	protected int aiID = 0;
 
-	/** AIの移動間隔 */
+	/** AIMovement interval of */
 	protected int aiMoveDelay = 0;
 
-	/** AIの思考の待ち time */
+	/** AIThinking of waiting time */
 	protected int aiThinkDelay = 0;
 
-	/** AIでスレッドを使う */
+	/** AIUsing threads in */
 	protected boolean aiUseThread = false;
 
 	protected boolean aiShowHint = false;
@@ -131,9 +131,9 @@ public class StateConfigAISelect extends BaseGameState {
 	}
 
 	/**
-	 * AI一覧を読み込み
-	 * @param bf 読み込み元のテキストファイル
-	 * @return AI一覧
+	 * AIReads the list
+	 * @param bf To read from a text file
+	 * @return AIList
 	 */
 	public String[] loadAIList(BufferedReader bf) {
 		ArrayList<String> aiArrayList = new ArrayList<String>();
@@ -159,9 +159,9 @@ public class StateConfigAISelect extends BaseGameState {
 	}
 
 	/**
-	 * AIのName一覧を作成
-	 * @param aiPath AIのクラスのリスト
-	 * @return AIのName一覧
+	 * AIOfNameCreate a list
+	 * @param aiPath AIList of classes
+	 * @return AIOfNameList
 	 */
 	public String[] loadAINames(String[] aiPath) {
 		String[] aiName = new String[aiPath.length];

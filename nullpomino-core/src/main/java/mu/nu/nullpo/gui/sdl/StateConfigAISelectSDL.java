@@ -42,37 +42,37 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * AI選択画面のステート
+ * AIState selection screen
  */
 public class StateConfigAISelectSDL extends BaseStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateConfigAISelectSDL.class);
 
-	/** 1画面に表示するMaximumAIcount */
+	/** 1Displayed on the screenMaximumAIcount */
 	public static final int MAX_AI_IN_ONE_PAGE = 20;
 
 	/** Player ID */
 	public int player = 0;
 
-	/** AIのクラス一覧 */
+	/** AIList of classes */
 	protected String[] aiPathList;
 
-	/** AIのName一覧 */
+	/** AIOfNameList */
 	protected String[] aiNameList;
 
-	/** Current AIのクラス */
+	/** Current AIClass of */
 	protected String currentAI;
 
-	/** AIのID */
+	/** AIOfID */
 	protected int aiID = 0;
 
-	/** AIの移動間隔 */
+	/** AIMovement interval of */
 	protected int aiMoveDelay = 0;
 
-	/** AIの思考の待ち time */
+	/** AIThinking of waiting time */
 	protected int aiThinkDelay = 0;
 
-	/** AIでスレッドを使う */
+	/** AIUsing threads in */
 	protected boolean aiUseThread = false;
 
 	protected boolean aiShowHint = false;
@@ -118,9 +118,9 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * AI一覧を読み込み
-	 * @param bf 読み込み元のテキストファイル
-	 * @return AI一覧
+	 * AIReads the list
+	 * @param bf To read from a text file
+	 * @return AIList
 	 */
 	public String[] loadAIList(BufferedReader bf) {
 		ArrayList<String> aiArrayList = new ArrayList<String>();
@@ -146,9 +146,9 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * AIのName一覧を作成
-	 * @param aiPath AIのクラスのリスト
-	 * @return AIのName一覧
+	 * AIOfNameCreate a list
+	 * @param aiPath AIList of classes
+	 * @return AIOfNameList
 	 */
 	public String[] loadAINames(String[] aiPath) {
 		String[] aiName = new String[aiPath.length];
@@ -198,7 +198,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 	}
 
 	/*
-	 * 内部状態の更新
+	 * Update of the internal state
 	 */
 	@Override
 	public void update() throws SDLException {
@@ -253,7 +253,7 @@ public class StateConfigAISelectSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定 button
+		// Decision button
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			ResourceHolderSDL.soundManager.play("decide");
 

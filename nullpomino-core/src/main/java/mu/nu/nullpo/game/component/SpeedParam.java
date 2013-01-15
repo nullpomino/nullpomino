@@ -31,31 +31,31 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * Blockピースの落下速度や出現待ち timeなどの data
+ * BlockWait and emergence rate of fall of the piece timeSuch as data
  */
 public class SpeedParam implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -955934100998757270L;
 
-	/** 落下速度 */
+	/** Fall velocity */
 	public int gravity;
 
-	/** 落下速度の分母 (gravity==denominatorなら1Gになる) */
+	/** Denominator of the rate of fall (gravity==denominatorIf1GBecome) */
 	public int denominator;
 
-	/** 出現待ち time */
+	/** Wait appearance time */
 	public int are;
 
-	/** Line clear後の出現待ち time */
+	/** Line clearAfter waiting for the emergence of time */
 	public int areLine;
 
 	/** Line clear time */
 	public int lineDelay;
 
-	/** 固定 time */
+	/** Fixation time */
 	public int lockDelay;
 
-	/** 横移動 time */
+	/** Lateral motion time */
 	public int das;
 
 	/**
@@ -87,7 +87,7 @@ public class SpeedParam implements Serializable {
 	}
 
 	/**
-	 * 別のSpeedParamからコピー
+	 * AnotherSpeedParamCopied from the
 	 * @param s Copy source
 	 */
 	public void copy(SpeedParam s) {

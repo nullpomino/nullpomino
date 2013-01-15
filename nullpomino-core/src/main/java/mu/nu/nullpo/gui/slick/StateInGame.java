@@ -149,7 +149,7 @@ public class StateInGame extends BasicGameState {
 
 		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
-			// チューニング設定
+			// Tuning settings
 			gameManager.engine[i].owRotateButtonDefaultRight = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", -1);
 			gameManager.engine[i].owSkin = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owSkin", -1);
 			gameManager.engine[i].owMinDAS = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
@@ -160,7 +160,7 @@ public class StateInGame extends BasicGameState {
 			gameManager.engine[i].owBlockOutlineType = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owBlockOutlineType", -1);
 			gameManager.engine[i].owBlockShowOutlineOnly = NullpoMinoSlick.propGlobal.getProperty(i + ".tuning.owBlockShowOutlineOnly", -1);
 
-			// ルール
+			// Rule
 			RuleOptions ruleopt = null;
 			String rulename = strRulePath;
 			if(rulename == null) {
@@ -179,7 +179,7 @@ public class StateInGame extends BasicGameState {
 			}
 			gameManager.engine[i].ruleopt = ruleopt;
 
-			// NEXT順生成アルゴリズム
+			// NEXTOrder generation algorithm
 			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
 				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
 				gameManager.engine[i].randomizer = randomizerObject;
@@ -237,12 +237,12 @@ public class StateInGame extends BasicGameState {
 
 		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
-			// ルール
+			// Rule
 			RuleOptions ruleopt = new RuleOptions();
 			ruleopt.readProperty(prop, i);
 			gameManager.engine[i].ruleopt = ruleopt;
 
-			// NEXT順生成アルゴリズム
+			// NEXTOrder generation algorithm
 			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
 				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
 				gameManager.engine[i].randomizer = randomizerObject;
@@ -254,7 +254,7 @@ public class StateInGame extends BasicGameState {
 				gameManager.engine[i].wallkick = wallkickObject;
 			}
 
-			// AI (リプレイ追記用）
+			// AI (For added replay)
 			String aiName = NullpoMinoSlick.propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
 				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
@@ -365,7 +365,7 @@ public class StateInGame extends BasicGameState {
 	}
 
 	/*
-	 * ゲーム stateを更新
+	 * Game stateUpdate
 	 */
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if(!container.hasFocus()) {

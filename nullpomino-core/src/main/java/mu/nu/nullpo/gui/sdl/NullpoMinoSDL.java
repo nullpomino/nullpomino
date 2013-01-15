@@ -102,7 +102,7 @@ public class NullpoMinoSDL {
 		"POWER","EURO","UNDO"
 	};
 
-	/** ゲームステートのID */
+	/** State of the gameID */
 	public static final int STATE_TITLE = 0,
 							STATE_CONFIG_MAINMENU = 1,
 							STATE_CONFIG_RULESELECT = 2,
@@ -123,31 +123,31 @@ public class NullpoMinoSDL {
 							STATE_SELECTRULEFROMLIST = 17,
 							STATE_SELECTMODEFOLDER = 18;
 
-	/** ゲームステートのcount */
+	/** State of the gamecount */
 	public static final int STATE_MAX = 19;
 
-	/** 認識するキーのMaximum値 */
+	/** To recognize the keyMaximumValue */
 	public static final int SDL_KEY_MAX = 322;
 
-	/** プログラムに渡されたコマンドLines引count */
+	/** Command that was passed to the programLinesArgumentcount */
 	public static String[] programArgs;
 
-	/** Save settings用Property file */
+	/** Save settingsUseProperty file */
 	public static CustomProperties propConfig;
 
-	/** Save settings用Property file (全Version共通) */
+	/** Save settingsUseProperty file (AllVersionCommon) */
 	public static CustomProperties propGlobal;
 
-	/** 音楽リストProperty file */
+	/** Music ListProperty file */
 	public static CustomProperties propMusic;
 
-	/** Observer機能用Property file */
+	/** ObserverFor the functionProperty file */
 	public static CustomProperties propObserver;
 
 	/** Default language file */
 	public static CustomProperties propLangDefault;
 
-	/** 言語ファイル */
+	/** Language file */
 	public static CustomProperties propLang;
 
 	/** Default game mode description file */
@@ -156,28 +156,28 @@ public class NullpoMinoSDL {
 	/** Game mode description file */
 	public static CustomProperties propModeDesc;
 
-	/** Mode 管理 */
+	/** Mode Management */
 	public static ModeManager modeManager;
 
-	/** 終了 flag */
+	/** End flag */
 	public static boolean quit = false;
 
-	/** FPS表示 */
+	/** FPSDisplay */
 	public static boolean showfps = true;
 
-	/** FPS計算用 */
+	/** FPSFor calculation */
 	protected static long calcInterval = 0;
 
-	/** FPS計算用 */
+	/** FPSFor calculation */
 	protected static long prevCalcTime = 0;
 
 	/**  frame count */
 	protected static long frameCount = 0;
 
-	/** 実際のFPS */
+	/** ActualFPS */
 	public static double actualFPS = 0.0;
 
-	/** FPS表示用DecimalFormat */
+	/** FPSDisplayDecimalFormat */
 	public static DecimalFormat df = new DecimalFormat("0.0");
 
 	/** Used by perfect fps mode */
@@ -189,52 +189,52 @@ public class NullpoMinoSDL {
 	/** Execute Thread.yield() during Perfect FPS mode */
 	public static boolean perfectYield = true;
 
-	/** キーを押しているならtrue */
+	/** If you hold down the keytrue */
 	public static boolean[] keyPressedState;
 
-	/** 使用するJoystick の number */
+	/** UseJoystick Of number */
 	public static int[] joyUseNumber;
 
-	/** Joystick のアナログスティック無視 */
+	/** Joystick Ignore analog sticks */
 	public static boolean[] joyIgnoreAxis;
 
-	/** Joystick のハットスイッチ無視 */
+	/** Joystick Hat switch ignores */
 	public static boolean[] joyIgnorePOV;
 
-	/** Joystick のcount */
+	/** Joystick Ofcount */
 	public static int joystickMax;
 
 	/** Joystick */
 	public static SDLJoystick[] joystick;
 
-	/** Joystick direction key 状態 */
+	/** Joystick direction key State */
 	public static int[] joyAxisX, joyAxisY;
 
-	/** Joystick のハットスイッチのcount */
+	/** Joystick Hat switchcount */
 	public static int[] joyMaxHat;
 
-	/** Joystick のハットスイッチ state */
+	/** Joystick Hat switch state */
 	public static HatState[] joyHatState;
 
-	/** Joystick の buttonのcount */
+	/** Joystick Of buttonOfcount */
 	public static int[] joyMaxButton;
 
-	/** Joystick の buttonを押しているならtrue */
+	/** Joystick Of buttonIf you press thetrue */
 	public static boolean[][] joyPressedState;
 
-	/** ゲームステート */
+	/** State game */
 	public static BaseStateSDL[] gameStates;
 
-	/** Current ステート */
+	/** Current State */
 	public static int currentState;
 
 	/** In-game flag (if false, Perfect FPS will not used) */
 	public static boolean isInGame;
 
-	/** Exit buttonやScreenshot buttonの使用許可 */
+	/** Exit buttonYaScreenshot buttonPermission to use */
 	public static boolean enableSpecialKeys;
 
-	/** Exit button使用許可 */
+	/** Exit buttonLicense */
 	public static boolean allowQuit;
 
 	/** true if disable automatic input update */
@@ -243,12 +243,12 @@ public class NullpoMinoSDL {
 	/** MaximumFPS */
 	public static int maxFPS;
 
-	/** Observerクライアント */
+	/** ObserverClient */
 	public static NetObserverClient netObserverClient;
 
 	/**
-	 * メイン関count
-	 * @param args プログラムに渡された引count
+	 * Main functioncount
+	 * @param args Argument that was passed to the programcount
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log_sdl.cfg");
@@ -259,7 +259,7 @@ public class NullpoMinoSDL {
 		propGlobal = new CustomProperties();
 		propMusic = new CustomProperties();
 
-		// 設定ファイル読み込み
+		// Read configuration file
 		try {
 			FileInputStream in = new FileInputStream("config/setting/sdl.cfg");
 			propConfig.load(in);
@@ -276,7 +276,7 @@ public class NullpoMinoSDL {
 			in.close();
 		} catch(IOException e) {}
 
-		// 言語ファイル読み込み
+		// Read language file
 		propLangDefault = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/sdl_default.properties");
@@ -310,7 +310,7 @@ public class NullpoMinoSDL {
 			in.close();
 		} catch(IOException e) {}
 
-		// Mode読み込み
+		// ModeRead
 		modeManager = new ModeManager();
 		try {
 			BufferedReader txtMode = new BufferedReader(new FileReader("config/list/mode.lst"));
@@ -348,7 +348,7 @@ public class NullpoMinoSDL {
 				}
 		} catch (Exception e) {}
 
-		// Key input のInitialization
+		// Key input OfInitialization
 		keyPressedState = new boolean[SDL_KEY_MAX];
 		GameKeySDL.initGlobalGameKeySDL();
 		GameKeySDL.gamekey[0].loadConfig(propConfig);
@@ -423,8 +423,8 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * SDLのInitialization
-	 * @throws SDLException SDLのエラーが発生した場合
+	 * SDLOfInitialization
+	 * @throws SDLException SDLIf an error has occurred
 	 */
 	public static void init() throws SDLException {
 		log.info("Now initializing SDL...");
@@ -488,8 +488,8 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * メインループ
-	 * @throws SDLException SDLのエラーが発生した場合
+	 * Main loop
+	 * @throws SDLException SDLIf an error has occurred
 	 */
 	public static void run() throws SDLException {
 		maxFPS = propConfig.getProperty("option.maxfps", 60);
@@ -513,7 +513,7 @@ public class NullpoMinoSDL {
 
 		SDLSurface surface = SDLVideo.getVideoSurface();
 
-		// 画像などの読み込み
+		// Reading, such as image
 		ResourceHolderSDL.load();
 		NormalFontSDL.dest = surface;
 
@@ -547,13 +547,13 @@ public class NullpoMinoSDL {
 
 		perfectFPSDelay = System.nanoTime();
 
-		// メインループ
+		// Main loop
 		while(quit == false) {
-			//  event 処理
+			//  event Processing
 			processEvent();
 			if(quit == true) break;
 
-			// Joystick の更新
+			// Joystick Updates
 			if(joystickMax > 0) joyUpdate();
 
 			// Update key input states
@@ -569,14 +569,14 @@ public class NullpoMinoSDL {
 				}
 			}
 
-			// 各ステートの処理を実行
+			// Processing is executed for each state
 			gameStates[currentState].update();
 			gameStates[currentState].render(surface);
 
-			// FPS描画
+			// FPSDrawing
 			if(showfps) NormalFontSDL.printFont(0, 480 - 16, NullpoMinoSDL.df.format(NullpoMinoSDL.actualFPS), NormalFontSDL.COLOR_BLUE, 1.0f);
 
-			// Observerクライアント
+			// ObserverClient
 			if((netObserverClient != null) && netObserverClient.isConnected()) {
 				int fontcolor = NormalFontSDL.COLOR_BLUE;
 				if(netObserverClient.getObserverCount() > 1) fontcolor = NormalFontSDL.COLOR_GREEN;
@@ -586,7 +586,7 @@ public class NullpoMinoSDL {
 				NormalFontSDL.printFont(0, 480 - 16, strObserverString, fontcolor);
 			}
 
-			// 特殊キー
+			// Special key
 			if(enableSpecialKeys) {
 				// Screenshot
 				if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_SCREENSHOT) || GameKeySDL.gamekey[1].isPushKey(GameKeySDL.BUTTON_SCREENSHOT))
@@ -599,7 +599,7 @@ public class NullpoMinoSDL {
 				}
 			}
 
-			// 画面に表示
+			// Displayed on the screen
 			surface.flip();
 
 			// FPS cap
@@ -657,7 +657,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * SDLの終了処理
+	 * SDLEnd processing of
 	 */
 	public static void shutdown() {
 		log.info("NullpoMinoSDL shutdown()");
@@ -673,9 +673,9 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * ステート切り替え
-	 * @param id 切り替え先ステートID (-1で終了）
-	 * @throws SDLException SDLのエラーが発生した場合
+	 * Switching state
+	 * @param id Destination state switchingID (-1Ends at)
+	 * @throws SDLException SDLIf an error has occurred
 	 */
 	public static void enterState(int id) throws SDLException {
 		if((currentState >= 0) && (currentState < STATE_MAX) && (gameStates[currentState] != null)) {
@@ -692,7 +692,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * 設定ファイルを保存
+	 * Save the configuration file
 	 */
 	public static void saveConfig() {
 		try {
@@ -726,11 +726,11 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * Screenshotを保存
-	 * @throws SDLException 保存に失敗した場合
+	 * ScreenshotSave the
+	 * @throws SDLException If I fail to save
 	 */
 	public static void saveScreenShot() throws SDLException {
-		// Filenameを決める
+		// FilenameI decided to
 		String dir = NullpoMinoSDL.propGlobal.getProperty("custom.screenshot.directory", "ss");
 		Calendar c = Calendar.getInstance();
 		DateFormat dfm = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -746,14 +746,14 @@ public class NullpoMinoSDL {
 			}
 		}
 
-		// ファイルに保存
+		// Save to File
 		SDLVideo.getVideoSurface().saveBMP(filename);
 	}
 
 	/**
-	 * 画面外にはみ出す画像をちゃんと描画できるようにSDLRectを修正する
-	 * @param rectSrc 修正するSDLRect (描画元）
-	 * @param rectDst 修正するSDLRect (描画先）
+	 * So you can draw the image properly protrude outside the screenSDLRectModify the
+	 * @param rectSrc FixSDLRect (Rendering source)
+	 * @param rectDst FixSDLRect (Which to draw)
 	 */
 	public static void fixRect(SDLRect rectSrc, SDLRect rectDst) {
 		if(rectSrc == null) return;
@@ -777,9 +777,9 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * 翻訳後のUIの文字列を取得
-	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
+	 * PosttranslationalUIGets a string of
+	 * @param str String
+	 * @return PosttranslationalUIString (If you do not acceptstrReturns)
 	 */
 	public static String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -790,8 +790,8 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 *  event 処理
-	 * @throws SDLException SDLのエラーが発生した場合
+	 *  event Processing
+	 * @throws SDLException SDLIf an error has occurred
 	 */
 	protected static void processEvent() throws SDLException {
 		while(true) {
@@ -817,7 +817,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * Joystick  stateの更新
+	 * Joystick  stateUpdates
 	 */
 	protected static void joyUpdate() {
 		try {
@@ -848,22 +848,22 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * FPSの計算
-	 * @param period FPSを計算する間隔
+	 * FPSCalculation of
+	 * @param period FPSInterval to calculate the
 	 */
 	protected static void calcFPS(long period) {
 		frameCount++;
 		calcInterval += period;
 
-		// 1秒おきにFPSを再計算する
+		// 1Second intervalsFPSRecalculate the
 		if(calcInterval >= 1000000000L) {
 			long timeNow = System.nanoTime();
 
-			// 実際の経過 timeを測定
-			long realElapsedTime = timeNow - prevCalcTime; // 単位: ns
+			// Actual elapsed timeMeasure
+			long realElapsedTime = timeNow - prevCalcTime; // Unit: ns
 
-			// FPSを計算
-			// realElapsedTimeの単位はnsなのでsに変換する
+			// FPSCalculate the
+			// realElapsedTimeThe unit ofnsSosConverted to
 			actualFPS = ((double) frameCount / realElapsedTime) * 1000000000L;
 
 			frameCount = 0L;
@@ -873,7 +873,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * Observerクライアントを開始
+	 * ObserverStart the client
 	 */
 	public static void startObserverClient() {
 		log.debug("startObserverClient called");
@@ -898,7 +898,7 @@ public class NullpoMinoSDL {
 	}
 
 	/**
-	 * Observerクライアントを停止
+	 * ObserverStop the client
 	 */
 	public static void stopObserverClient() {
 		log.debug("stopObserverClient called");

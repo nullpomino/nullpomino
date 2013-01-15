@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import org.newdawn.slick.util.LogSystem;
 
 /**
- * Slickのシステムログをlog4jに渡す
+ * SlickThe system loglog4jPassed on to the
  */
 public class LogSystemLog4j implements LogSystem {
 	/** Log */

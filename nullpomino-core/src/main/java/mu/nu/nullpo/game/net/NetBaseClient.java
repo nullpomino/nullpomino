@@ -38,55 +38,55 @@ import java.util.TimerTask;
 import org.apache.log4j.Logger;
 
 /**
- * クライアント(基本部分)
+ * Client(Basic part)
  */
 public class NetBaseClient extends Thread {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetBaseClient.class);
 
-	/**  default のポート number */
+	/**  default Port of number */
 	public static final int DEFAULT_PORT = 9200;
 
-	/** 読み込みバッファのサイズ */
+	/** The size of the read buffer */
 	public static final int BUF_SIZE = 2048;
 
 	/** Default ping interval (1000=1s) */
 	public static final int PING_INTERVAL = 5 * 1000;
 
-	/** この countだけpingを打っても反応がない場合は自動切断 */
+	/** This countOnlypingIf there is no reaction even hit the automatic disconnection */
 	public static final int PING_AUTO_DISCONNECT_COUNT = 6;
 
-	/** trueの間スレッドが動く */
+	/** trueThread moves between */
 	public volatile boolean threadRunning;
 
-	/** 正 always 接続している間true */
+	/** Regular always While you are connectedtrue */
 	public volatile boolean connectedFlag;
 
-	/** 接続用ソケット */
+	/** Socket for connection */
 	protected Socket socket;
 
-	/** 接続先ホスト */
+	/** Destination host */
 	protected String host;
 
-	/** 接続先ポート number */
+	/** Destination port number */
 	protected int port;
 
 	/** IP address */
 	protected String ip;
 
-	/** 前回の不完全パケット */
+	/** Previous incomplete packet */
 	protected StringBuilder notCompletePacketBuffer;
 
-	/** メッセージ受け取りインターフェース */
+	/** Interface receiving messages */
 	protected LinkedList<NetMessageListener> listeners = new LinkedList<NetMessageListener>();
 
-	/** ping打った count(サーバーからpongメッセージを受信するとリセット) */
+	/** pingHit count(From serverpongReset When a message is received) */
 	protected int pingCount;
 
 	/** Ping task */
 	protected TimerTask taskPing;
 
-	/** 自動ping打ちTimer */
+	/** AutomaticpingHitTimer */
 	protected Timer timerPing;
 
 	/**
@@ -100,7 +100,7 @@ public class NetBaseClient extends Thread {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
+	 * @param host Destination host
 	 */
 	public NetBaseClient(String host) {
 		super("NET_"+host);
@@ -110,8 +110,8 @@ public class NetBaseClient extends Thread {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
-	 * @param port 接続先ポート number
+	 * @param host Destination host
+	 * @param port Destination port number
 	 */
 	public NetBaseClient(String host, int port) {
 		super("NET_"+host+":"+port);
@@ -120,7 +120,7 @@ public class NetBaseClient extends Thread {
 	}
 
 	/*
-	 * スレッドの処理
+	 * Processing of the thread
 	 */
 	@Override
 	public void run() {
@@ -131,15 +131,15 @@ public class NetBaseClient extends Thread {
 		Throwable exDisconnectReason = null;
 
 		try {
-			// 接続
+			// Connection
 			socket = new Socket(host, port);
 			connectedFlag = true;
 			ip = socket.getInetAddress().getHostAddress();
 
-			// ping打ちTimer準備
+			// pingHitTimerPreparation
 			startPingTask();
 
-			// メッセージ受信
+			// Message reception
 			byte[] buf = new byte[BUF_SIZE];
 			int size;
 
@@ -147,7 +147,7 @@ public class NetBaseClient extends Thread {
 				String message = new String(buf, 0, size, "UTF-8");
 				//log.debug(message);
 
-				// 受信したメッセージに応じていろいろ処理をする
+				// The various processing depending on the received message
 				StringBuilder packetBuffer = new StringBuilder();
 				if(notCompletePacketBuffer != null) packetBuffer.append(notCompletePacketBuffer);
 				packetBuffer.append(message);
@@ -159,7 +159,7 @@ public class NetBaseClient extends Thread {
 					packetBuffer = packetBuffer.replace(0, index+1, "");
 				}
 
-				// 不完全パケットがある場合
+				// If there is an incomplete packet
 				if(packetBuffer.length() > 0) {
 					notCompletePacketBuffer = packetBuffer;
 				} else {
@@ -188,14 +188,14 @@ public class NetBaseClient extends Thread {
 	}
 
 	/**
-	 * 受信したメッセージに応じていろいろ処理をする
-	 * @param fullMessage 受信したメッセージ
-	 * @throws IOException 何かエラーがあったとき
+	 * The various processing depending on the received message
+	 * @param fullMessage Received Messages
+	 * @throws IOException If there are any errors
 	 */
 	protected void processPacket(String fullMessage) throws IOException {
-		String[] message = fullMessage.split("\t");	// タブ区切り
+		String[] message = fullMessage.split("\t");	// Tab delimited
 
-		// ping返答
+		// pingReply
 		if(message[0].equals("pong")) {
 			if(pingCount >= (PING_AUTO_DISCONNECT_COUNT / 2)) {
 				log.debug("pong " + pingCount);
@@ -203,7 +203,7 @@ public class NetBaseClient extends Thread {
 			pingCount = 0;
 		}
 
-		// Listener呼び出し
+		// ListenerCall
 		for(int i = 0; i < listeners.size(); i++) {
 			try {
 				listeners.get(i).netOnMessage(this, message);
@@ -214,8 +214,8 @@ public class NetBaseClient extends Thread {
 	}
 
 	/**
-	 * サーバーにメッセージを送信
-	 * @param bytes 送信するメッセージ
+	 * Send a message to the server
+	 * @param bytes Message to be sent
 	 * @return true if successful
 	 */
 	public boolean send(byte[] bytes) {
@@ -229,8 +229,8 @@ public class NetBaseClient extends Thread {
 	}
 
 	/**
-	 * サーバーにメッセージを送信
-	 * @param msg 送信するメッセージ
+	 * Send a message to the server
+	 * @param msg Message to be sent
 	 * @return true if successful
 	 */
 	public boolean send(String msg) {
@@ -244,21 +244,21 @@ public class NetBaseClient extends Thread {
 	}
 
 	/**
-	 * @return 正 always 接続されているとtrue
+	 * @return Regular always And are connectedtrue
 	 */
 	public boolean isConnected() {
 		return (socket == null) ? false : (socket.isConnected() && connectedFlag);
 	}
 
 	/**
-	 * @return 接続先ホスト
+	 * @return Destination host
 	 */
 	public String getHost() {
 		return host;
 	}
 
 	/**
-	 * @return 接続先ポート number
+	 * @return Destination port number
 	 */
 	public int getPort() {
 		return port;
@@ -272,17 +272,17 @@ public class NetBaseClient extends Thread {
 	}
 
 	/**
-	 * 新しいNetMessageListenerを追加
-	 * @param l 追加するNetMessageListener
+	 * NewNetMessageListenerAdd
+	 * @param l AddNetMessageListener
 	 */
 	public void addListener(NetMessageListener l) {
 		if(!listeners.contains(l)) listeners.add(l);
 	}
 
 	/**
-	 * 指定したNetMessageListenerを削除
-	 * @param l 削除するNetMessageListener
-	 * @return 実際に削除されたらtrue, もともと追加されてなかったらfalse
+	 * SpecifiedNetMessageListenerDelete the
+	 * @param l RemoveNetMessageListener
+	 * @return Actually been removedtrue, I has not been added originallyfalse
 	 */
 	public boolean removeListener(NetMessageListener l) {
 		return listeners.remove(l);

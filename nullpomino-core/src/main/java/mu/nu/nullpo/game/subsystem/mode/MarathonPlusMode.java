@@ -67,7 +67,7 @@ public class MarathonPlusMode extends NetDummyMode {
 	/** Number of game types */
 	private static final int GAMETYPE_MAX = 2;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event typeConstantcount */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -646,13 +646,13 @@ public class MarathonPlusMode extends NetDummyMode {
 			}
 		} else {
 			if(lines == 1) {
-				pts += 100 * (engine.statistics.level + 1); // 1列
+				pts += 100 * (engine.statistics.level + 1); // 1Column
 				lastevent = EVENT_SINGLE;
 			} else if(lines == 2) {
-				pts += 300 * (engine.statistics.level + 1); // 2列
+				pts += 300 * (engine.statistics.level + 1); // 2Column
 				lastevent = EVENT_DOUBLE;
 			} else if(lines == 3) {
-				pts += 500 * (engine.statistics.level + 1); // 3列
+				pts += 500 * (engine.statistics.level + 1); // 3Column
 				lastevent = EVENT_TRIPLE;
 			} else if(lines >= 4) {
 				// 4 lines

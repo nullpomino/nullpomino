@@ -36,38 +36,38 @@ import org.lwjgl.input.Controllers;
 import org.newdawn.slick.Input;
 
 /**
- * Joystick 関連の処理
+ * Joystick Related processing
  */
 public class ControllerManager {
 	/** Log */
 	static Logger log = Logger.getLogger(ControllerManager.class);
 
-	/** 最小/Maximum buttoncount */
+	/** Minimum/Maximum buttoncount */
 	public static final int MIN_BUTTONS = 3, MAX_BUTTONS = 100;
 
-	/** Joystick 状態検出法の定count */
+	/** Joystick Constant state detection methodcount */
 	public static final int CONTROLLER_METHOD_NONE = 0,
 							CONTROLLER_METHOD_SLICK_DEFAULT = 1,
 							CONTROLLER_METHOD_SLICK_ALTERNATE = 2,
 							CONTROLLER_METHOD_LWJGL = 3,
 							CONTROLLER_METHOD_MAX = 4;
 
-	/** Joystick 状態検出法 */
+	/** Joystick State detection method */
 	public static int method = CONTROLLER_METHOD_SLICK_DEFAULT;
 
 	/** Joystick  state */
 	public static ArrayList<Controller> controllers;
 
-	/** 各Playerが使用するJoystick の number */
+	/** EachPlayerIs usedJoystick Of number */
 	public static int[] controllerID;
 
-	/** Joystick direction key が反応する閾値 (一部検出法では使えない) */
+	/** Joystick direction key Threshold for the reaction (Detection method can not be used in some) */
 	public static float[] border;
 
-	/** アナログスティック無視 */
+	/** Ignore analog stick */
 	public static boolean[] ignoreAxis;
 
-	/** ハットスイッチ無視 */
+	/** Ignore hat switch */
 	public static boolean[] ignorePOV;
 
 	/**
@@ -100,8 +100,8 @@ public class ControllerManager {
 	}
 
 	/**
-	 * Joystick のcountを取得
-	 * @return Joystick のcount
+	 * Joystick OfcountGet the
+	 * @return Joystick Ofcount
 	 */
 	public static int getControllerCount() {
 		if(controllers == null) return 0;
@@ -109,10 +109,10 @@ public class ControllerManager {
 	}
 
 	/**
-	 * Joystick の上を押しているとtrue
+	 * Joystick If you hold ontrue
 	 * @param player Player number
-	 * @param input Inputクラス (container.getInput()で取得可能）
-	 * @return 上を押しているとtrue
+	 * @param input InputClass (container.getInput()Can be obtained by)
+	 * @return Press down on thetrue
 	 */
 	public static boolean isControllerUp(int player, Input input) {
 		try {
@@ -138,10 +138,10 @@ public class ControllerManager {
 	}
 
 	/**
-	 * Joystick の下を押しているとtrue
+	 * Joystick When I press the bottom of thetrue
 	 * @param player Player number
-	 * @param input Inputクラス (container.getInput()で取得可能）
-	 * @return 下を押しているとtrue
+	 * @param input InputClass (container.getInput()Can be obtained by)
+	 * @return If you hold undertrue
 	 */
 	public static boolean isControllerDown(int player, Input input) {
 		try {
@@ -167,10 +167,10 @@ public class ControllerManager {
 	}
 
 	/**
-	 * Joystick の左を押しているとtrue
+	 * Joystick When I press the lefttrue
 	 * @param player Player number
-	 * @param input Inputクラス (container.getInput()で取得可能）
-	 * @return 左を押しているとtrue
+	 * @param input InputClass (container.getInput()Can be obtained by)
+	 * @return If you hold the lefttrue
 	 */
 	public static boolean isControllerLeft(int player, Input input) {
 		try {
@@ -196,10 +196,10 @@ public class ControllerManager {
 	}
 
 	/**
-	 * Joystick の右を押しているとtrue
+	 * Joystick When I press the righttrue
 	 * @param player Player number
-	 * @param input Inputクラス (container.getInput()で取得可能）
-	 * @return 右を押しているとtrue
+	 * @param input InputClass (container.getInput()Can be obtained by)
+	 * @return If you hold the righttrue
 	 */
 	public static boolean isControllerRight(int player, Input input) {
 		try {
@@ -225,11 +225,11 @@ public class ControllerManager {
 	}
 
 	/**
-	 * Joystick の特定の buttonが押されているならtrue
+	 * Joystick Specific buttonHas not been pressedtrue
 	 * @param player Player number
-	 * @param input Inputクラス (container.getInput()で取得可能）
+	 * @param input InputClass (container.getInput()Can be obtained by)
 	 * @param button Button number
-	 * @return 指定した buttonが押されているとtrue
+	 * @return Specified buttonWith Shifttrue
 	 */
 	public static boolean isControllerButton(int player, Input input, int button) {
 		try {

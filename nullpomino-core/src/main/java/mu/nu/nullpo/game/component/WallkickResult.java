@@ -31,19 +31,19 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * Wallkick結果のクラス
+ * WallkickThe resulting class
  */
 public class WallkickResult implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -7985029240622355609L;
 
-	/** X-coordinate補正量 */
+	/** X-coordinateCorrection amount */
 	public int offsetX;
 
-	/** Y-coordinate補正量 */
+	/** Y-coordinateCorrection amount */
 	public int offsetY;
 
-	/** rotation後のピースのDirection */
+	/** rotationPiece afterDirection */
 	public int direction;
 
 	/**
@@ -54,10 +54,10 @@ public class WallkickResult implements Serializable {
 	}
 
 	/**
-	 * パラメータ付きConstructor
-	 * @param offsetX X-coordinate補正量
-	 * @param offsetY Y-coordinate補正量
-	 * @param direction rotation後のテトラミノのDirection
+	 * With parametersConstructor
+	 * @param offsetX X-coordinateCorrection amount
+	 * @param offsetY Y-coordinateCorrection amount
+	 * @param direction rotationOf Tetoramino afterDirection
 	 */
 	public WallkickResult(int offsetX, int offsetY, int direction) {
 		this.offsetX = offsetX;
@@ -83,7 +83,7 @@ public class WallkickResult implements Serializable {
 	}
 
 	/**
-	 * 別のWallkickResultからコピー
+	 * AnotherWallkickResultCopied from the
 	 * @param w Copy source
 	 */
 	public void copy(WallkickResult w) {
@@ -93,8 +93,8 @@ public class WallkickResult implements Serializable {
 	}
 
 	/**
-	 * 上DirectionへのWallkickかどうか判定
-	 * @return 上DirectionへのWallkickのとき (offsetY < 0のとき）にtrue
+	 * TopDirectionToWallkickDetermine whether
+	 * @return TopDirectionToWallkickWhen (offsetY < 0To), in which case thetrue
 	 */
 	public boolean isUpward() {
 		return (offsetY < 0);

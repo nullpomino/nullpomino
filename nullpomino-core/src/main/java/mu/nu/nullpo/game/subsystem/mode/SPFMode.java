@@ -201,16 +201,16 @@ public class SPFMode extends AbstractMode {
 	/** Each player's frame color */
 	private static final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
-	/** 溜まっているojama blockのcount */
+	/** Has accumulatedojama blockOfcount */
 	private int[] ojama;
 
-	/** 送ったojama blockのcount */
+	/** Had sentojama blockOfcount */
 	private int[] ojamaSent;
 
 	/** Time to display the most recent increase in score */
 	private int[] scgettime;
 
-	/** 使用するBGM */
+	/** UseBGM */
 	private int bgmno;
 
 	/** Big */
@@ -219,31 +219,31 @@ public class SPFMode extends AbstractMode {
 	/** Sound effectsON/OFF */
 	private boolean[] enableSE;
 
-	/** Map使用 flag */
+	/** MapUse flag */
 	private boolean[] useMap;
 
-	/** 使用するMapセット number */
+	/** UseMapSet number */
 	private int[] mapSet;
 
-	/** Map number(-1でランダム) */
+	/** Map number(-1Random in) */
 	private int[] mapNumber;
 
 	/** Last preset number used */
 	private int[] presetNumber;
 
-	/** 勝者 */
+	/** Winner */
 	private int winnerID;
 
-	/** MapセットのProperty file */
+	/** MapSets ofProperty file */
 	private CustomProperties[] propMap;
 
 	/** MaximumMap number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
+	/** For backupfield (MapUsed to save the replay) */
 	private Field[] fldBackup;
 
-	/** Map選択用乱count */
+	/** MapRan for selectioncount */
 	private Random randMap;
 
 	/** Version */
@@ -261,7 +261,7 @@ public class SPFMode extends AbstractMode {
 	/** True if use bigger field display */
 	private boolean bigDisplay;
 
-	/** Hurryup開始までの秒count(0でHurryupなし) */
+	/** HurryupSeconds before the startcount(0InHurryupNo) */
 	private int[] hurryupSeconds;
 
 	/** Time to display "ZENKESHI!" */
@@ -441,10 +441,10 @@ public class SPFMode extends AbstractMode {
 	}
 
 	/**
-	 * Map読み込み
+	 * MapRead
 	 * @param field field
 	 * @param prop Property file to read from
-	 * @param preset 任意のID
+	 * @param preset AnyID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
 		field.reset();
@@ -456,10 +456,10 @@ public class SPFMode extends AbstractMode {
 	}
 
 	/**
-	 * Map保存
+	 * MapSave
 	 * @param field field
 	 * @param prop Property file to save to
-	 * @param id 任意のID
+	 * @param id AnyID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
 		//field.writeProperty(prop, id);
@@ -467,11 +467,11 @@ public class SPFMode extends AbstractMode {
 	}
 
 	/**
-	 * プレビュー用にMapを読み込み
+	 * For previewMapRead
 	 * @param engine GameEngine
 	 * @param playerID Player number
 	 * @param id MapID
-	 * @param forceReload trueにするとMapファイルを強制再読み込み
+	 * @param forceReload trueWhen youMapForce Reload the file
 	 */
 	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
@@ -767,7 +767,7 @@ public class SPFMode extends AbstractMode {
 			else if(menuTime >= 60)
 				menuCursor = 9;
 		} else {
-			// 開始
+			// Start
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
 				owner.engine[0].stat = GameEngine.Status.READY;
 				owner.engine[1].stat = GameEngine.Status.READY;
@@ -784,7 +784,7 @@ public class SPFMode extends AbstractMode {
 	}
 
 	/*
-	 * 設定画面の描画
+	 * Setting screen drawing
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
@@ -883,7 +883,7 @@ public class SPFMode extends AbstractMode {
 			attackMultiplier[playerID] = getAttackMultiplier(dropSet[playerID], dropMap[playerID]);
 			defendMultiplier[playerID] = getDefendMultiplier(dropSet[playerID], dropMap[playerID]);
 
-			// Map読み込み・リプレイ保存用にバックアップ
+			// MapFor storing backup Replay read
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
 					engine.createFieldIfNeeded();
@@ -1512,7 +1512,7 @@ public class SPFMode extends AbstractMode {
 		if (engine.field != null)
 			width = engine.field.getWidth();
 		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
-		// せり上がりMeter
+		// Rising auctionMeter
 		if(ojama[playerID] * blockHeight / width > engine.meterValue) {
 			engine.meterValue++;
 		} else if(ojama[playerID] * blockHeight / width < engine.meterValue) {
@@ -1522,7 +1522,7 @@ public class SPFMode extends AbstractMode {
 		else if(ojama[playerID] > 10) engine.meterColor = GameEngine.METER_COLOR_YELLOW;
 		else engine.meterColor = GameEngine.METER_COLOR_GREEN;
 
-		// 決着
+		// Settlement
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
 			if((owner.engine[0].stat == GameEngine.Status.GAMEOVER) && (owner.engine[1].stat == GameEngine.Status.GAMEOVER)) {
 				// Draw

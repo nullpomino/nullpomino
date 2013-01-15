@@ -37,28 +37,28 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * Joystick テスト画面のステート
+ * Joystick State of the test screen
  */
 public class StateConfigJoystickTest extends BasicGameState {
 	/** This state's ID */
 	public static final int ID = 13;
 
-	/** Key input を受付可能になるまでの frame count */
+	/** Key input Accepted to be enabled. frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
 	public int player = 0;
 
-	/** Screenshot撮影 flag */
+	/** ScreenshotShooting flag */
 	protected boolean ssflag = false;
 
-	/** 使用するJoystick の number */
+	/** UseJoystick Of number */
 	protected int joyNumber;
 
-	/** 最後に押された button */
+	/** I was last pressed button */
 	protected int lastPressButton;
 
-	/** 経過 frame count */
+	/** Course frame count */
 	protected int frame;
 
 	/** Buttoncount */
@@ -83,7 +83,7 @@ public class StateConfigJoystickTest extends BasicGameState {
 	}
 
 	/**
-	 * いろいろリセット
+	 * Various reset
 	 */
 	protected void reset() {
 		joyNumber = ControllerManager.controllerID[player];

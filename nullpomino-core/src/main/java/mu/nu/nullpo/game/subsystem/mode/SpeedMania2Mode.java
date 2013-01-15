@@ -58,13 +58,13 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Line clear time table */
 	private static final int[] tableLineDelay = { 6,  5,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  6};
 
-	/** 固定 time table */
+	/** Fixation time table */
 	private static final int[] tableLockDelay = {19, 19, 18, 16, 16, 14, 13, 13, 13, 13, 13, 11,  9, 16};
 
 	/** DAS table */
 	private static final int[] tableDAS       = { 9,  7,  7,  7,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5};
 
-	/** せり上がり間隔 */
+	/** Rising auction interval */
 	private static final int[] tableGarbage   = { 0,  0,  0,  0,  0, 20, 18, 10,  9,  8,  0,  0,  0,  0};
 
 	/** REGRET criteria Time */
@@ -76,14 +76,14 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** BGM change levels */
 	private static final int[] tableBGMChange  = {500, 700, 1000, -1};
 
-	/** 段位のName */
+	/** Of danName */
 	private static final String[] tableGradeName = {"1", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S12", "S13"};
 
-	/** 裏段位のName */
+	/** Dan&#39;s backName */
 	private static final String[] tableSecretGradeName =
 	{
-		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  0～ 8
-		"M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9",	//  9～17
+		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  0~ 8
+		"M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9",	//  9~17
 		"GM"													// 18
 	};
 
@@ -99,16 +99,16 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 2520;
 
-	/** Next Section の level (これ-1のときに levelストップする) */
+	/** Next Section Of level (This-1At levelStop) */
 	private int nextseclv;
 
-	/** Levelが増えた flag */
+	/** LevelHas increased flag */
 	private boolean lvupflag;
 
-	/** 最終結果などに表示される実際の段位 */
+	/** The actual gear position display, such as the final result */
 	private int grade;
 
-	/** 段位表示を光らせる残り frame count */
+	/** Illuminate the display remaining dan frame count */
 	private int gradeflash;
 
 	/** Combo bonus */
@@ -117,10 +117,10 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り time */
+	/** AcquisitionRender scoreIs remaining to be time */
 	private int scgettime;
 
-	/** Roll 経過 time */
+	/** Roll Course time */
 	private int rolltime;
 
 	/** Roll started flag */
@@ -129,13 +129,13 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Roll completely cleared flag */
 	private int rollclear;
 
-	/** せり上がりまでのBlockcount */
+	/** Rising up to auctionBlockcount */
 	private int garbageCount;
 
 	/** REGRET display time frame count */
 	private int regretdispframe;
 
-	/** 裏段位 */
+	/** Dan back */
 	private int secretGrade;
 
 	/** Current BGM */
@@ -144,7 +144,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たSection はtrue */
+	/** New record came outSection Thetrue */
 	private boolean[] sectionIsNewRecord;
 
 	/** Cleared Section count */
@@ -153,22 +153,22 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Average Section Time */
 	private int sectionavgtime;
 
-	/** 直前のSection Time */
+	/** PreviousSection Time */
 	private int sectionlasttime;
 
-	/** AC medal 状態 */
+	/** AC medal State */
 	private int medalAC;
 
-	/** ST medal 状態 */
+	/** ST medal State */
 	private int medalST;
 
-	/** SK medal 状態 */
+	/** SK medal State */
 	private int medalSK;
 
-	/** CO medal 状態 */
+	/** CO medal State */
 	private int medalCO;
 
-	/** Section Time記録表示中ならtrue */
+	/** Section TimeShowing record iftrue */
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
@@ -180,13 +180,13 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** BigMode */
 	private boolean big;
 
-	/** LV500の足切りTime */
+	/** LV500Cut legsTime */
 	private int torikan;
 
 	/** When true, section time display is enabled */
 	private boolean showsectiontime;
 
-	/** 段位表示 */
+	/** Dan view */
 	private boolean gradedisp;
 
 	/** Version */
@@ -195,7 +195,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** Rankings' 段位 */
+	/** Rankings' Dan */
 	private int[] rankingGrade;
 
 	/** Rankings'  level */
@@ -207,7 +207,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	/** Rankings' Roll completely cleared flag */
 	private int[] rankingRollclear;
 
-	/** Section Time記録 */
+	/** Section TimeRecord */
 	private int[] bestSectionTime;
 
 	/*
@@ -392,9 +392,9 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/**
-	 *  medal の文字色を取得
-	 * @param medalColor  medal 状態
-	 * @return  medal の文字色
+	 *  medal Gets the color of the character
+	 * @param medalColor  medal State
+	 * @return  medal Text color of the
 	 */
 	private int getMedalFontColor(int medalColor) {
 		if(medalColor == 1) return EventReceiver.COLOR_RED;
@@ -612,7 +612,7 @@ public class SpeedMania2Mode extends AbstractMode {
 			receiver.drawScoreFont(engine, playerID, 0, 14, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(engine.statistics.time));
 
-			// Roll 残り time
+			// Roll Rest time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int time = ROLLTIMELIMIT - rolltime;
 				if(time < 0) time = 0;
@@ -620,7 +620,7 @@ public class SpeedMania2Mode extends AbstractMode {
 				receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(time), ((time > 0) && (time < 10 * 60)));
 			}
 
-			// REGRET表示
+			// REGRETDisplay
 			if(regretdispframe > 0) {
 				receiver.drawMenuFont(engine,playerID,2,21,"REGRET",(regretdispframe % 4 == 0),EventReceiver.COLOR_WHITE,EventReceiver.COLOR_ORANGE);
 			}
@@ -664,11 +664,11 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// 新規ピース出現時
+		// Occurrence new piece
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			// Level up
 			if(engine.statistics.level < nextseclv - 1) {
@@ -682,10 +682,10 @@ public class SpeedMania2Mode extends AbstractMode {
 		}
 
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false)) {
-			// せり上がりカウント
+			// Count rising auction
 			if(tableGarbage[engine.statistics.level / 100] != 0) garbageCount++;
 
-			// せり上がり
+			// Rising auction
 			if((garbageCount >= tableGarbage[engine.statistics.level / 100]) && (tableGarbage[engine.statistics.level / 100] != 0)) {
 				engine.playSE("garbage");
 				engine.field.addBottomCopyGarbage(Block.BLOCK_COLOR_GRAY,
@@ -696,7 +696,7 @@ public class SpeedMania2Mode extends AbstractMode {
 			}
 		}
 
-		// Endingスタート
+		// EndingStart
 		if((engine.ending == 2) && (rollstarted == false)) {
 			rollstarted = true;
 			engine.big = true;
@@ -707,11 +707,11 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * ARE中の処理
+	 * AREProcessing during
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame
+		// Last frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -725,7 +725,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/**
-	 *  levelが上がったときの共通処理
+	 *  levelcommon process is raised when
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -735,7 +735,7 @@ public class SpeedMania2Mode extends AbstractMode {
 		if(engine.statistics.level % 100 >= 80) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(engine.statistics.level == nextseclv - 1) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-		// 速度変更
+		// Speed ​​change
 		setSpeed(engine);
 
 		// BGM fadeout
@@ -757,7 +757,7 @@ public class SpeedMania2Mode extends AbstractMode {
 		}
 
 		if((lines >= 1) && (engine.ending == 0)) {
-			// 4-line clearカウント
+			// 4-line clearCount
 			if(lines >= 4) {
 				// SK medal
 				if(big == true) {
@@ -808,7 +808,7 @@ public class SpeedMania2Mode extends AbstractMode {
 				}
 			}
 
-			// せり上がりカウント減少
+			// Count decrease rising auction
 			if(tableGarbage[engine.statistics.level / 100] != 0) garbageCount -= lines;
 			if(garbageCount < 0) garbageCount = 0;
 
@@ -830,7 +830,7 @@ public class SpeedMania2Mode extends AbstractMode {
 				engine.ending = 1;
 				rollclear = 1;
 
-				// Section Timeを記録
+				// Section TimeRecord
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
@@ -839,11 +839,11 @@ public class SpeedMania2Mode extends AbstractMode {
 				stMedalCheck(engine, levelb / 100);
 
 				if(sectionlasttime > tableTimeRegret[levelb / 100]) {
-					// REGRET判定
+					// REGRETJudgment
 					regretdispframe = 180;
 					engine.playSE("regret");
 				} else {
-					// 段位上昇
+					// Dan rise
 					grade++;
 					if(grade > 13) grade = 13;
 					gradeflash = 180;
@@ -851,7 +851,7 @@ public class SpeedMania2Mode extends AbstractMode {
 			} else if( ((nextseclv ==  500) && (engine.statistics.level >=  500) && (torikan > 0) && (engine.statistics.time > torikan)) ||
 					   ((nextseclv == 1000) && (engine.statistics.level >= 1000) && (torikan > 0) && (engine.statistics.time > torikan * 2)) )
 			{
-				//  level500/1000とりカン
+				//  level500/1000Kang birds
 				engine.playSE("endingstart");
 
 				if(nextseclv == 500) engine.statistics.level = 500;
@@ -863,7 +863,7 @@ public class SpeedMania2Mode extends AbstractMode {
 
 				secretGrade = engine.field.getSecretGrade();
 
-				// Section Timeを記録
+				// Section TimeRecord
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
@@ -872,11 +872,11 @@ public class SpeedMania2Mode extends AbstractMode {
 				stMedalCheck(engine, levelb / 100);
 
 				if(sectionlasttime > tableTimeRegret[levelb / 100]) {
-					// REGRET判定
+					// REGRETJudgment
 					regretdispframe = 180;
 					engine.playSE("regret");
 				} else {
-					// 段位上昇
+					// Dan rise
 					grade++;
 					if(grade > 13) grade = 13;
 					gradeflash = 180;
@@ -885,19 +885,19 @@ public class SpeedMania2Mode extends AbstractMode {
 				// Next Section
 				engine.playSE("levelup");
 
-				// Background切り替え
+				// BackgroundSwitching
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
 
-				// BGM切り替え
+				// BGMSwitching
 				if((tableBGMChange[bgmlv] != -1) && (engine.statistics.level >= tableBGMChange[bgmlv])) {
 					bgmlv++;
 					owner.bgmStatus.fadesw = false;
 					owner.bgmStatus.bgm = bgmlv + 2;
 				}
 
-				// Section Timeを記録
+				// Section TimeRecord
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
@@ -905,18 +905,18 @@ public class SpeedMania2Mode extends AbstractMode {
 				// ST medal
 				stMedalCheck(engine, levelb / 100);
 
-				// 骨Block出現開始
+				// BoneBlockAdvent start
 				if(engine.statistics.level >= 1000) engine.bone = true;
 
 				// Update level for next section
 				nextseclv += 100;
 
 				if(sectionlasttime > tableTimeRegret[levelb / 100]) {
-					// REGRET判定
+					// REGRETJudgment
 					regretdispframe = 180;
 					engine.playSE("regret");
 				} else {
-					// 段位上昇
+					// Dan rise
 					grade++;
 					if(grade > 13) grade = 13;
 					gradeflash = 180;
@@ -944,7 +944,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * Ready→Goの処理
+	 * Ready→GoProcessing
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -954,20 +954,20 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 各 frame の終わりの処理
+	 * Each frame Processing at the end of
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		// 段位上昇時のフラッシュ
+		// Flash at elevated dan
 		if(gradeflash > 0) gradeflash--;
 
-		// 獲得Render score
+		// AcquisitionRender score
 		if(scgettime > 0) scgettime--;
 
-		// REGRET表示
+		// REGRETDisplay
 		if(regretdispframe > 0) regretdispframe--;
 
-		// Section Time増加
+		// Section TimeIncrease
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -988,7 +988,7 @@ public class SpeedMania2Mode extends AbstractMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Roll 終了
+			// Roll End
 			if(rolltime >= ROLLTIMELIMIT) {
 				secretGrade = engine.field.getSecretGrade();
 				rollclear = 2;
@@ -1012,7 +1012,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面
+	 * Results screen
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -1059,11 +1059,11 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面の処理
+	 * Processing of the results screen
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
-		// ページ切り替え
+		// Page switching
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 			engine.statc[1]--;
 			if(engine.statc[1] < 0) engine.statc[1] = 2;
@@ -1074,7 +1074,7 @@ public class SpeedMania2Mode extends AbstractMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		//  section time display切替
+		//  section time displaySwitching
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -1084,7 +1084,7 @@ public class SpeedMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * リプレイ保存
+	 * Save replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
@@ -1139,10 +1139,10 @@ public class SpeedMania2Mode extends AbstractMode {
 
 	/**
 	 * Update rankings
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
-	 * @param clear Roll クリア flag
+	 * @param clear Roll Clear flag
 	 */
 	private void updateRanking(int gr, int lv, int time, int clear) {
 		rankingRank = checkRanking(gr, lv, time, clear);
@@ -1166,10 +1166,10 @@ public class SpeedMania2Mode extends AbstractMode {
 
 	/**
 	 * Calculate ranking position
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
-	 * @param clear Roll クリア flag
+	 * @param clear Roll Clear flag
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int gr, int lv, int time, int clear) {

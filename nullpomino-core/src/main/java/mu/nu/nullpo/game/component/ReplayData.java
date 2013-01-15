@@ -34,13 +34,13 @@ import java.util.ArrayList;
 import mu.nu.nullpo.util.CustomProperties;
 
 /**
- * リプレイで使用する button input dataのクラス
+ * Used in the replay button input dataClass of
  */
 public class ReplayData implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 737226985994393117L;
 
-	/** Button input dataの default の長さ */
+	/** Button input dataOf default The length of the */
 	public static final int DEFAULT_ARRAYLIST_SIZE = 60 * 60 * 10;
 
 	/** Button input data */
@@ -72,7 +72,7 @@ public class ReplayData implements Serializable {
 	}
 
 	/**
-	 * 他のReplayDataからコピー
+	 * OtherReplayDataCopied from the
 	 * @param r Copy source
 	 */
 	public void copy(ReplayData r) {
@@ -84,9 +84,9 @@ public class ReplayData implements Serializable {
 	}
 
 	/**
-	 *  button input状況を設定
-	 * @param input  button input状況のビット flag
-	 * @param frame  frame  (経過 time）
+	 *  button inputSet the status
+	 * @param input  button inputBit of status flag
+	 * @param frame  frame  (Course time)
 	 */
 	public void setInputData(int input, int frame) {
 		if((frame < 0) || (frame >= inputDataArray.size())) {
@@ -97,9 +97,9 @@ public class ReplayData implements Serializable {
 	}
 
 	/**
-	 *  button input状況を取得
-	 * @param frame  frame  (経過 time）
-	 * @return  button input状況のビット flag
+	 *  button inputGet status
+	 * @param frame  frame  (Course time)
+	 * @return  button inputBit of status flag
 	 */
 	public int getInputData(int frame) {
 		if((frame < 0) || (frame >= inputDataArray.size())) {
@@ -109,10 +109,10 @@ public class ReplayData implements Serializable {
 	}
 
 	/**
-	 * プロパティセットに保存
-	 * @param p プロパティセット
-	 * @param id 任意のID (Player IDなど）
-	 * @param maxFrame 保存する frame count (-1で全部保存）
+	 * Stored in the property set
+	 * @param p Property Set
+	 * @param id AnyID (Player IDEtc.)
+	 * @param maxFrame Save frame count (-1Save in all)
 	 */
 	public void writeProperty(CustomProperties p, int id, int maxFrame) {
 		int max = maxFrame;
@@ -127,9 +127,9 @@ public class ReplayData implements Serializable {
 	}
 
 	/**
-	 * プロパティセットから読み込み
-	 * @param p プロパティセット
-	 * @param id 任意のID (Player IDなど）
+	 * Read from the property set
+	 * @param p Property Set
+	 * @param id AnyID (Player IDEtc.)
 	 */
 	public void readProperty(CustomProperties p, int id) {
 		reset();

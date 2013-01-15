@@ -29,17 +29,17 @@
 package mu.nu.nullpo.gui.net;
 
 /**
- * 新Versionチェッカー用Listener
+ * NewVersionChecker forListener
  */
 public interface UpdateCheckerListener {
 	/**
-	 * 更新 check 開始時
+	 * Update check At the beginning
 	 */
 	public void onUpdateCheckerStart();
 
 	/**
-	 * 更新 check 終了時
-	 * @param status 状態(失敗するとSTATUS_ERROR, 成功するとSTATUS_COMPLETE)
+	 * Update check When finished
+	 * @param status State(FailureSTATUS_ERROR, The successSTATUS_COMPLETE)
 	 */
 	public void onUpdateCheckerEnd(int status);
 }

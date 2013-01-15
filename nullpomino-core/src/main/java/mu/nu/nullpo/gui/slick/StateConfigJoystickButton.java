@@ -36,13 +36,13 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * Joystick button設定画面のステート
+ * Joystick buttonState of the configuration screen
  */
 public class StateConfigJoystickButton extends BasicGameState {
 	/** This state's ID */
 	public static final int ID = 10;
 
-	/** Key input を受付可能になるまでの frame count */
+	/** Key input Accepted to be enabled. frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
@@ -51,13 +51,13 @@ public class StateConfigJoystickButton extends BasicGameState {
 	/** StateBasedGame */
 	protected StateBasedGame gameObj;
 
-	/** 使用するJoystick の number */
+	/** UseJoystick Of number */
 	protected int joyNumber;
 
 	/** Number of button currently being configured */
 	protected int keynum;
 
-	/** 経過 frame count */
+	/** Course frame count */
 	protected int frame;
 
 	/** Button settings */

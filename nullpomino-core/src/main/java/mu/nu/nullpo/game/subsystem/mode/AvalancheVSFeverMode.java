@@ -339,7 +339,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 			else if(menuTime >= 60)
 				menuCursor = 9;
 		} else {
-			// 開始
+			// Start
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
 				owner.engine[0].stat = GameEngine.Status.READY;
 				owner.engine[1].stat = GameEngine.Status.READY;
@@ -356,7 +356,7 @@ public class AvalancheVSFeverMode extends AvalancheVSDummyMode {
 	}
 
 	/*
-	 * 設定画面の描画
+	 * Setting screen drawing
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {

@@ -35,7 +35,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.component.WallkickResult;
 
 /**
- * ClassicWallkick - クラシックルールなWallkick (旧VersionのCLASSIC1と2相当）
+ * ClassicWallkick - Classic rulesWallkick (OldVersionOfCLASSIC1And2Equivalent)
  */
 public class ClassicWallkick implements Wallkick {
 	/*
@@ -45,7 +45,7 @@ public class ClassicWallkick implements Wallkick {
 		int check = 0;
 		if(piece.big) check = 1;
 
-		// 通常のWallkick (I以外）
+		// NormalWallkick (IOther)
 		if(piece.id != Piece.PIECE_I) {
 			if(checkCollisionKick(piece, x, y, rtNew, field) || (piece.id == Piece.PIECE_I2) || (piece.id == Piece.PIECE_L3)) {
 				int temp = 0;
@@ -63,16 +63,16 @@ public class ClassicWallkick implements Wallkick {
 	}
 
 	/**
-	 * Wallkick可能かどうか調べる
-	 * @param piece Blockピース
+	 * WallkickIt is possible to examine whether
+	 * @param piece BlockPeace
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return Wallkick可能ならtrue
+	 * @return WallkickIf possibletrue
 	 */
 	private boolean checkCollisionKick(Piece piece, int x, int y, int rt, Field fld) {
-		// Bigでは専用処理
+		// BigThe only treatment
 		if(piece.big == true) return checkCollisionKickBig(piece, x, y, rt, fld);
 
 		for(int i = 0; i < piece.getMaxBlock(); i++) {
@@ -99,13 +99,13 @@ public class ClassicWallkick implements Wallkick {
 	}
 
 	/**
-	 * Wallkick可能かどうか調べる (Big用）
-	 * @param piece Blockピース
+	 * WallkickIt is possible to examine whether (BigFor)
+	 * @param piece BlockPeace
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
 	 * @param fld field
-	 * @return Wallkick可能ならtrue
+	 * @return WallkickIf possibletrue
 	 */
 	private boolean checkCollisionKickBig(Piece piece, int x, int y, int rt, Field fld) {
 		for(int i = 0; i < piece.getMaxBlock(); i++) {
@@ -113,7 +113,7 @@ public class ClassicWallkick implements Wallkick {
 				int x2 = (x + piece.dataX[rt][i] * 2);
 				int y2 = (y + piece.dataY[rt][i] * 2);
 
-				// 4Block分調べる
+				// 4BlockMinutes to examine
 				for(int k = 0; k < 2; k++)for(int l = 0; l < 2; l++) {
 					int x3 = x2 + k;
 					int y3 = y2 + l;

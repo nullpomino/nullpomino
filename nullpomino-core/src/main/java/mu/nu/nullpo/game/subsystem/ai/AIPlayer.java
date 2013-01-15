@@ -32,12 +32,12 @@ import mu.nu.nullpo.game.component.Controller;
 import mu.nu.nullpo.game.play.GameEngine;
 
 /**
- * AIのインターフェイス
+ * AIInterface
  */
 public interface AIPlayer {
 	/**
-	 * Nameを取得
-	 * @return AIのName
+	 * NameGet the
+	 * @return AIOfName
 	 */
 	public String getName();
 
@@ -49,7 +49,7 @@ public interface AIPlayer {
 	public void init(GameEngine engine, int playerID);
 
 	/**
-	 * 終了処理
+	 * End processing
 	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */
@@ -59,7 +59,7 @@ public interface AIPlayer {
 	 *  Set button input states
 	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
-	 * @param ctrl Button input状態管理クラス
+	 * @param ctrl Button inputState management class
 	 */
 	public void setControl(GameEngine engine, int playerID, Controller ctrl);
 
@@ -85,7 +85,7 @@ public interface AIPlayer {
 	public void renderState(GameEngine engine, int playerID);
 
 	/**
-	 * 新しいピースが出現したときの処理
+	 * Happens when a new piece appeared
 	 * @param engine The GameEngine that owns this AI
 	 * @param playerID Player ID
 	 */

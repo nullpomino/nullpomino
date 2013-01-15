@@ -38,7 +38,7 @@ import mu.nu.nullpo.util.CustomProperties;
 import org.apache.log4j.Logger;
 
 /**
- * ゲームfield
+ * Gamefield
  */
 public class Field implements Serializable {
 	/** Log */
@@ -47,34 +47,34 @@ public class Field implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = 7745183278794213487L;
 
-	/**  default の幅 */
+	/**  default The width of the */
 	public static final int DEFAULT_WIDTH = 10;
 
-	/**  default の高さ */
+	/**  default The height of the */
 	public static final int DEFAULT_HEIGHT = 20;
 
-	/**  default の見えない部分の高さ */
+	/**  default The height of the unseen parts of */
 	public static final int DEFAULT_HIDDEN_HEIGHT = 3;
 
-	/** 座標の属性 (通常) */
+	/** Attributes of the coordinate (Usually) */
 	public static final int COORD_NORMAL = 0;
 
-	/** 座標の属性 (見えない部分) */
+	/** Attributes of the coordinate (Invisible part) */
 	public static final int COORD_HIDDEN = 1;
 
-	/** 座標の属性 (置いたBlockが消える) */
+	/** Attributes of the coordinate (Was placedBlockDisappears) */
 	public static final int COORD_VANISH = 2;
 
-	/** 座標の属性 (壁) */
+	/** Attributes of the coordinate (Wall) */
 	public static final int COORD_WALL = 3;
 
-	/** fieldの幅 */
+	/** fieldThe width of the */
 	protected int width;
 
 	/** Field height */
 	protected int height;
 
-	/** fieldより上の見えない部分の高さ */
+	/** fieldThe height of the invisible part of the above */
 	protected int hidden_height;
 
 	/*
@@ -87,22 +87,22 @@ public class Field implements Serializable {
 	 *				-Kitaru
 	 */
 
-	/** fieldのBlock */
+	/** fieldOfBlock */
 	protected Block[][] block_field;
 
-	/** field上の見えない部分のBlock */
+	/** fieldInvisible on the part ofBlock */
 	protected Block[][] block_hidden;
 
 	/** Line clear flag */
 	protected boolean[] lineflag_field;
 
-	/** 見えない部分のLine clear flag */
+	/** I do not look the part ofLine clear flag */
 	protected boolean[] lineflag_hidden;
 
-	/** HURRY UP地面のcount */
+	/** HURRY UPOf groundcount */
 	protected int hurryupFloorLines;
 
-	/** 天井の有無 */
+	/** Presence or absence of a ceiling */
 	public boolean ceiling;
 
 	/** Number of total blocks above minimum required in color clears */
@@ -127,10 +127,10 @@ public class Field implements Serializable {
 	//public ArrayList<Block[]> pendingGarbage;
 
 	/**
-	 * パラメータ付きConstructor
-	 * @param w fieldの幅
+	 * With parametersConstructor
+	 * @param w fieldThe width of the
 	 * @param h Field height
-	 * @param hh fieldより上の見えない部分の高さ
+	 * @param hh fieldThe height of the invisible part of the above
 	 */
 	public Field(int w, int h, int hh) {
 		width = w;
@@ -142,11 +142,11 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * パラメータ付きConstructor
-	 * @param w fieldの幅
+	 * With parametersConstructor
+	 * @param w fieldThe width of the
 	 * @param h Field height
-	 * @param hh fieldより上の見えない部分の高さ
-	 * @param c 天井の有無
+	 * @param hh fieldThe height of the invisible part of the above
+	 * @param c Presence or absence of a ceiling
 	 */
 	public Field(int w, int h, int hh, boolean c) {
 		this(w, h, hh);
@@ -196,7 +196,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 別のFieldからコピー
+	 * AnotherFieldCopied from the
 	 * @param f Copy source
 	 */
 	public void copy(Field f) {
@@ -229,9 +229,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * プロパティセットに保存
-	 * @param p プロパティセット
-	 * @param id 適当なID
+	 * Stored in the property set
+	 * @param p Property Set
+	 * @param id AppropriateID
 	 */
 	public void writeProperty(CustomProperties p, int id) {
 		for(int i = 0; i < height; i++) {
@@ -247,9 +247,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * プロパティセットから読み込み
-	 * @param p プロパティセット
-	 * @param id 適当なID
+	 * Read from the property set
+	 * @param p Property Set
+	 * @param id AppropriateID
 	 */
 	public void readProperty(CustomProperties p, int id) {
 		for(int i = 0; i < height; i++) {
@@ -273,15 +273,15 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * fieldの幅を取得
-	 * @return fieldの幅
+	 * fieldGets the width of the
+	 * @return fieldThe width of the
 	 */
 	public int getWidth() {
 		return width;
 	}
 
 	/**
-	 * Field heightを取得
+	 * Field heightGet the
 	 * @return Field height
 	 */
 	public int getHeight() {
@@ -289,34 +289,34 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * fieldより上の見えない部分の高さを取得
-	 * @return fieldより上の見えない部分の高さ
+	 * fieldGets the height of the invisible part of the above
+	 * @return fieldThe height of the invisible part of the above
 	 */
 	public int getHiddenHeight() {
 		return hidden_height;
 	}
 
 	/**
-	 * 指定された座標の属性を取得
+	 * Gets the attributes of the specified coordinates
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 座標の属性
+	 * @return Attributes of the coordinate
 	 */
 	public int getCoordAttribute(int x, int y) {
-		// 天井
+		// Ceiling
 		if((y < 0) && (ceiling)) return COORD_WALL;
 
-		// 壁
+		// Wall
 		if((x < 0) || (x >= width) || (y >= height)) return COORD_WALL;
 
-		// 通常
+		// Usually
 		if((y >= 0) && (y < height)) return COORD_NORMAL;
 
-		// 見えない部分
+		// Invisible part
 		int y2 = (y * -1) - 1;
 		if(y2 < hidden_height) return COORD_HIDDEN;
 
-		// 置いたBlockが消える
+		// Was placedBlockDisappears
 		return COORD_VANISH;
 	}
 
@@ -345,7 +345,7 @@ public class Field implements Serializable {
 				throw e;
 			}
 		}
-		// field外
+		// fieldOutside
 		try {
 			int y2 = (y * -1) - 1;
 			return block_hidden[y2];
@@ -355,10 +355,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockを取得
+	 * Is located at the specified coordinatesBlockGet the
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 成功したら指定した座標にあるBlockオブジェクト, 失敗したらnull
+	 * @return Is located at the specified coordinates successfulBlockObject, Failednull
 	 */
 	public Block getBlock(int x, int y) {
 		try {
@@ -369,11 +369,11 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockを取得 (失敗したら例外送出）
+	 * Is located at the specified coordinatesBlockGet the (Exception sending failed)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockオブジェクト
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @return Is located at the specified coordinatesBlockObject
+	 * @throws ArrayIndexOutOfBoundsException The specified coordinates out of range
 	 */
 	public Block getBlockE(int x, int y) throws ArrayIndexOutOfBoundsException {
 		try {
@@ -418,10 +418,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlock colorを取得
+	 * Is located at the specified coordinatesBlock colorGet the
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlock color (失敗したらBLOCK_COLOR_INVALID）
+	 * @return Is located at the specified coordinatesBlock color (FailedBLOCK_COLOR_INVALID)
 	 */
 	public int getBlockColor(int x, int y) {
 		try {
@@ -432,22 +432,22 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlock colorを取得
+	 * Is located at the specified coordinatesBlock colorGet the
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param gemSame If true, a gem block will return the color of the corresponding normal block.
-	 * @return 指定した座標にあるBlock color (失敗したらBLOCK_COLOR_INVALID）
+	 * @return Is located at the specified coordinatesBlock color (FailedBLOCK_COLOR_INVALID)
 	 */
 	public int getBlockColor(int x, int y, boolean gemSame) {
 		return Block.gemToNormalColor(getBlockColor(x, y));
 	}
 
 	/**
-	 * 指定した座標にあるBlock colorを取得 (失敗したら例外送出）
+	 * Is located at the specified coordinatesBlock colorGet the (Exception sending failed)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlock color
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @return Is located at the specified coordinatesBlock color
+	 * @throws ArrayIndexOutOfBoundsException The specified coordinates out of range
 	 */
 	public int getBlockColorE(int x, int y) throws ArrayIndexOutOfBoundsException {
 		try {
@@ -458,10 +458,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlock colorを変更
+	 * Is located at the specified coordinatesBlock colorChange
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param c 色
+	 * @param c Color
 	 * @return true if successful, false if failed
 	 */
 	public boolean setBlockColor(int x, int y, int c) {
@@ -475,11 +475,11 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlock colorを変更 (失敗したら例外送出）
+	 * Is located at the specified coordinatesBlock colorChange (Exception sending failed)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param c 色
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @param c Color
+	 * @throws ArrayIndexOutOfBoundsException The specified coordinates out of range
 	 */
 	public void setBlockColorE(int x, int y, int c) throws ArrayIndexOutOfBoundsException {
 		try {
@@ -490,12 +490,12 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear flagを取得
+	 * Line clear flagGet the
 	 * @param y Y-coordinate
-	 * @return 消える列ならtrue, そうでないなら (もしくは座標が範囲外なら）false
+	 * @return If the column to disappeartrue, Otherwise (If the coordinates are out of range) orfalse
 	 */
 	public boolean getLineFlag(int y) {
-		// field内
+		// fieldIn
 		if(y >= 0) {
 			try {
 				return lineflag_field[y];
@@ -504,7 +504,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// field外
+		// fieldOutside
 		int y2 = (y * -1) - 1;
 
 		try {
@@ -515,10 +515,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockが空白かどうか判定
+	 * Is located at the specified coordinatesBlockDetermine whether the space is
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合もtrue）
+	 * @return Is located at the specified coordinatesBlockIf space istrue (In the case of a specified coordinate is out of rangetrue)
 	 */
 	public boolean getBlockEmpty(int x, int y) {
 		try {
@@ -529,10 +529,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockが空白かどうか判定 (指定した座標が範囲外の場合はfalse）
+	 * Is located at the specified coordinatesBlockDetermine whether the space is (If the coordinates are outside the specified rangefalse)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockが空白ならtrue (指定した座標が範囲外の場合はfalse）
+	 * @return Is located at the specified coordinatesBlockIf space istrue (If the coordinates are outside the specified rangefalse)
 	 */
 	public boolean getBlockEmptyF(int x, int y) {
 		try {
@@ -543,11 +543,11 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標にあるBlockが空白かどうか判定 (失敗したら例外送出）
+	 * Is located at the specified coordinatesBlockDetermine whether the space is (Exception sending failed)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標にあるBlockが空白ならtrue
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @return Is located at the specified coordinatesBlockIf space istrue
+	 * @throws ArrayIndexOutOfBoundsException The specified coordinates out of range
 	 */
 	public boolean getBlockEmptyE(int x, int y) throws ArrayIndexOutOfBoundsException {
 		try {
@@ -558,13 +558,13 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear flagを取得 (失敗したら例外送出）
+	 * Line clear flagGet the (Exception sending failed)
 	 * @param y Y-coordinate
-	 * @return 消える列ならtrue, そうでないならfalse
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @return If the column to disappeartrue, Otherwisefalse
+	 * @throws ArrayIndexOutOfBoundsException The specified coordinates out of range
 	 */
 	public boolean getLineFlagE(int y) throws ArrayIndexOutOfBoundsException {
-		// field内
+		// fieldIn
 		if(y >= 0) {
 			try {
 				return lineflag_field[y];
@@ -573,7 +573,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// field外
+		// fieldOutside
 		try {
 			int y2 = (y * -1) - 1;
 			return lineflag_hidden[y2];
@@ -583,13 +583,13 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear flagを設定
+	 * Line clear flagSet the
 	 * @param y Y-coordinate
-	 * @param flag 設定するLine clear flag
+	 * @param flag SetLine clear flag
 	 * @return true if successful, false if failed
 	 */
 	public boolean setLineFlag(int y, boolean flag) {
-		// field内
+		// fieldIn
 		if(y >= 0) {
 			try {
 				lineflag_field[y] = flag;
@@ -597,7 +597,7 @@ public class Field implements Serializable {
 				return false;
 			}
 		}
-		// field外
+		// fieldOutside
 		else {
 			int y2 = (y * -1) - 1;
 
@@ -612,13 +612,13 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear flagを設定 (失敗したら例外送出）
+	 * Line clear flagSet the (Exception sending failed)
 	 * @param y Y-coordinate
-	 * @param flag 設定するLine clear flag
-	 * @throws ArrayIndexOutOfBoundsException 指定した座標が範囲外
+	 * @param flag SetLine clear flag
+	 * @throws ArrayIndexOutOfBoundsException The specified coordinates out of range
 	 */
 	public void setLineFlagE(int y, boolean flag) throws ArrayIndexOutOfBoundsException {
-		// field内
+		// fieldIn
 		if(y >= 0) {
 			try {
 				lineflag_field[y] = flag;
@@ -626,7 +626,7 @@ public class Field implements Serializable {
 				throw e;
 			}
 		}
-		// field外
+		// fieldOutside
 		else {
 			try {
 				int y2 = (y * -1) - 1;
@@ -639,7 +639,7 @@ public class Field implements Serializable {
 
 	/**
 	 * Line clear check
-	 * @return 消えるLinescount
+	 * @return VanishLinescount
 	 */
 	public int checkLine() {
 		int lines = 0;
@@ -678,8 +678,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Line clear check  (消去 flagの設定とかはしない）
-	 * @return 消えるLinescount
+	 * Line clear check  (Elimination flagI will not or settings)
+	 * @return VanishLinescount
 	 */
 	public int checkLineNoFlag() {
 		int lines = 0;
@@ -703,13 +703,13 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * Linesを消す
-	 * @return 消えたLinescount
+	 * LinesDisappear
+	 * @return Had disappearedLinescount
 	 */
 	public int clearLine() {
 		int lines = 0;
 
-		// field内
+		// fieldIn
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			if(getLineFlag(i)) {
 				lines++;
@@ -729,7 +729,7 @@ public class Field implements Serializable {
 			}
 		}
 
-		// 消えたLinesの上下のBlockの結合を解除
+		// Had disappearedLinesThe top and bottom of theBlockClear the binding of
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			if(getLineFlag(i - 1)) {
 				for(int j = 0; j < width; j++) {
@@ -757,8 +757,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 上にあったBlockをすべて下まで下ろす
-	 * @return 消えていたLinescount
+	 * Was on theBlockDown to the bottom all the
+	 * @return Had disappearedLinescount
 	 */
 	public int downFloatingBlocks() {
 		int lines = 0;
@@ -768,7 +768,7 @@ public class Field implements Serializable {
 			if(getLineFlag(y)) {
 				lines++;
 
-				// Blockを1段上からコピー
+				// BlockA1Copied from the rows above
 				for(int k = y; k > (hidden_height * -1); k--) {
 					for(int l = 0; l < width; l++) {
 						Block blk = getBlock(l, k - 1);
@@ -778,7 +778,7 @@ public class Field implements Serializable {
 					}
 				}
 
-				// 一番上を空白にする
+				// Blank to the top
 				for(int l = 0; l < width; l++) {
 					Block blk = new Block();
 					setBlock(l, (hidden_height * -1), blk);
@@ -793,14 +793,14 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 上にあったBlockを1段だけ下ろす
+	 * Was on theBlockA1Only step down
 	 */
 	public void downFloatingBlocksSingleLine() {
 		int y = getHeightWithoutHurryupFloor() - 1;
 
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
 			if(getLineFlag(y)) {
-				// Blockを1段上からコピー
+				// BlockA1Copied from the rows above
 				for(int k = y; k > (hidden_height * -1); k--) {
 					for(int l = 0; l < width; l++) {
 						Block blk = getBlock(l, k - 1);
@@ -810,7 +810,7 @@ public class Field implements Serializable {
 					}
 				}
 
-				// 一番上を空白にする
+				// Blank to the top
 				for(int l = 0; l < width; l++) {
 					Block blk = new Block();
 					setBlock(l, (hidden_height * -1), blk);
@@ -824,7 +824,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 消えるLinescountをcountえる
+	 * VanishLinescountAcountObtained
 	 * @return Linescount
 	 */
 	public int getLines() {
@@ -838,8 +838,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * All clearだったらtrue
-	 * @return All clearだったらtrue
+	 * All clearIf it&#39;s the casetrue
+	 * @return All clearIf it&#39;s the casetrue
 	 */
 	public boolean isEmpty() {
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
@@ -870,14 +870,14 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinになる地形だったらtrue
+	 * T-SpinIf it was the terrain to betrue
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param big Bigかどうか
-	 * @return T-Spinになる地形だったらtrue
+	 * @param big BigWhether
+	 * @return T-SpinIf it was the terrain to betrue
 	 */
 	public boolean isTSpinSpot(int x, int y, boolean big) {
-		// 判定用相対座標を設定
+		// Sets the coordinates for determining the relative
 		int[] tx = new int[4];
 		int[] ty = new int[4];
 
@@ -901,7 +901,7 @@ public class Field implements Serializable {
 			ty[3] = 2;
 		}
 
-		// 判定
+		// Judgment
 		int count = 0;
 
 		for(int i = 0; i < tx.length; i++) {
@@ -914,23 +914,23 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinできそうな穴だったらtrue
+	 * T-SpinIf it was a hole I cantrue
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param big Bigかどうか
-	 * @return T-Spinできそうな穴だったらtrue
+	 * @param big BigWhether
+	 * @return T-SpinIf it was a hole I cantrue
 	 */
 	public boolean isTSlot(int x, int y, boolean big) {
-		// 中央が埋まってると無理
+		// I wonder if the central buried
 		if(big == true) {
 			if(!getBlockEmptyF(x + 2, y + 2)) {
 				return false;
 			}
 		} else {
-			//□□□※※※□□□□
-			//□□□★※□□□□□
-			//□□□※※※□□□□
-			//□□□○※○□□□□
+			//□ □ □ ※ ※ ※ □ □ □ □
+			//□ □ □ ★ ※ □ □ □ □ □
+			//□ □ □ ※ ※ ※ □ □ □ □
+			//□ □ □ ○ ※ ○ □ □ □ □
 
 			if(!getBlockEmptyF(x + 1, y + 0)) return false;
 			if(!getBlockEmptyF(x + 1, y + 1)) return false;
@@ -942,7 +942,7 @@ public class Field implements Serializable {
 			if(!getBlockEmptyF(x + 1, y - 1)) return false;
 		}
 
-		// 判定用相対座標を設定
+		// Sets the coordinates for determining the relative
 		int[] tx = new int[4];
 		int[] ty = new int[4];
 
@@ -966,7 +966,7 @@ public class Field implements Serializable {
 			ty[3] = 2;
 		}
 
-		// 判定
+		// Judgment
 		int count = 0;
 
 		for(int i = 0; i < tx.length; i++) {
@@ -979,9 +979,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinできそうな穴が何個あるか調べる
-	 * @param big Bigだったらtrue
-	 * @return T-Spinできそうな穴のcount
+	 * T-SpinFind out what pieces I can have holes
+	 * @param big BigIf it&#39;s the casetrue
+	 * @return T-SpinOf holes I cancount
 	 */
 	public int getHowManyTSlot(boolean big) {
 		int result = 0;
@@ -1019,11 +1019,11 @@ public class Field implements Serializable {
 		return blocksCovered;
 	}
 	/**
-	 * T-Spinで消えるLinescountを返す
+	 * T-SpinI disappearLinescountReturns
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param big Bigかどうか(未対応)
-	 * @return T-Spinで消えるLinescount(T-Spinじゃない場合などは0)
+	 * @param big BigWhether(Not supported)
+	 * @return T-SpinI disappearLinescount(T-SpinFor example, if not the0)
 	 */
 	public int getTSlotLineClear(int x, int y, boolean big) {
 		if(!isTSlot(x, y, big)) return 0;
@@ -1033,9 +1033,9 @@ public class Field implements Serializable {
 
 		for(int j = 0; j < width; j++) {
 			for(int i = 0; i < 2; i++) {
-				//■■■★※■■■■■
-				//□□□※※※□□□□
-				//□□□○※○□□□□
+				//■ ■ ■ ★ ※ ■ ■ ■ ■ ■
+				//□ □ □ ※ ※ ※ □ □ □ □
+				//□ □ □ ○ ※ ○ □ □ □ □
 				if((j < x) || (j >= x + 3)) {
 					if(getBlockEmptyF(j, y + 1 + i) == true) {
 						lineflag[i] = false;
@@ -1053,9 +1053,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinで消えるLinescountを返す(field全体)
-	 * @param big Bigかどうか(未対応)
-	 * @return T-Spinで消えるLinescount(T-Spinじゃない場合などは0)
+	 * T-SpinI disappearLinescountReturns(fieldWhole)
+	 * @param big BigWhether(Not supported)
+	 * @return T-SpinI disappearLinescount(T-SpinFor example, if not the0)
 	 */
 	public int getTSlotLineClearAll(boolean big) {
 		int result = 0;
@@ -1072,10 +1072,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * T-Spinで消えるLinescountを返す(field全体)
-	 * @param big Bigかどうか(未対応)
-	 * @param minimum 最低Linescount(2にするとT-Spin Doubleにだけ反応)
-	 * @return T-Spinで消えるLinescount(T-Spinじゃない場合やminimumに満たないLinesなどは0)
+	 * T-SpinI disappearLinescountReturns(fieldWhole)
+	 * @param big BigWhether(Not supported)
+	 * @param minimum LowestLinescount(2When youT-Spin DoubleOnly sensitive to the)
+	 * @return T-SpinI disappearLinescount(T-SpinOr if it is notminimumI do not meet theLinesEtc.0)
 	 */
 	public int getTSlotLineClearAll(boolean big, int minimum) {
 		int result = 0;
@@ -1095,8 +1095,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * field内に何個のBlockがあるか調べる
-	 * @return field内にあるBlockのcount
+	 * fieldWhat in the number ofBlockExamine whether there is
+	 * @return fieldAre withinBlockOfcount
 	 */
 	public int getHowManyBlocks() {
 		int count = 0;
@@ -1115,8 +1115,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 左から何個のBlockが並んでいるか調べる
-	 * @return 左から並んでいるBlockの総count
+	 * How many of the left-BlockI examine whether the side-by-side
+	 * @return Are arranged from leftBlockThe totalcount
 	 */
 	public int getHowManyBlocksFromLeft() {
 		int count = 0;
@@ -1137,8 +1137,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 右から何個のBlockが並んでいるか調べる
-	 * @return 右から並んでいるBlockの総count
+	 * How many of the rightBlockI examine whether the side-by-side
+	 * @return Side-by-side from the rightBlockThe totalcount
 	 */
 	public int getHowManyBlocksFromRight() {
 		int count = 0;
@@ -1159,8 +1159,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 一番上にあるBlockのY-coordinateを取得
-	 * @return 一番上にあるBlockのY-coordinate
+	 * At the topBlockOfY-coordinateGet the
+	 * @return At the topBlockOfY-coordinate
 	 */
 	public int getHighestBlockY() {
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
@@ -1175,9 +1175,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 一番上にあるBlockのY-coordinateを取得 (X-coordinateを指定できるVersion）
+	 * At the topBlockOfY-coordinateGet the (X-coordinateWe can specifyVersion)
 	 * @param x X-coordinate
-	 * @return 一番上にあるBlockのY-coordinate
+	 * @return At the topBlockOfY-coordinate
 	 */
 	public int getHighestBlockY(int x) {
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
@@ -1190,8 +1190,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * garbage blockが最初に現れるY-coordinateを取得
-	 * @return garbage blockが最初に現れるY-coordinate
+	 * garbage blockFirst occurrence of theY-coordinateGet the
+	 * @return garbage blockFirst occurrence of theY-coordinate
 	 */
 	public int getHighestGarbageBlockY() {
 		for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor(); i++) {
@@ -1207,10 +1207,10 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 指定した座標の下に隙間があるか調べる
+	 * I will see if there is a gap under the specified coordinates
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @return 指定した座標の下に隙間があればtrue
+	 * @return If there is a gap under the specified coordinatestrue
 	 */
 	public boolean isHoleBelow(int x, int y) {
 		if(!getBlockEmpty(x, y) && getBlockEmpty(x, y + 1)) return true;
@@ -1218,8 +1218,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * field内の隙間のcountを調べる
-	 * @return field内の隙間のcount
+	 * fieldThe gap in thecountExamine the
+	 * @return fieldThe gap in thecount
 	 */
 	public int getHowManyHoles() {
 		int hole = 0;
@@ -1245,8 +1245,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 隙間の上に何個Blockが積み重なっているか調べる
-	 * @return 積み重なっているBlockのcount
+	 * Many pieces on top of the gapBlockI find out that you have stacked
+	 * @return Are stackedBlockOfcount
 	 */
 	public int getHowManyLidAboveHoles() {
 		int blocks = 0;
@@ -1271,8 +1271,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 全ての谷 (■　■になっている地形）の深さを合計したものを返す (谷が多くて深いほど戻り値も大きくなる）
-	 * @return 全ての谷の深さを合計したもの
+	 * Every valley (■ ■ which returns the total depth of the) terrain that is (The return value is large enough to have many deep valleys)
+	 * @return I shall be the sum of the depth of the valley all
 	 */
 	public int getTotalValleyDepth() {
 		int depth = 0;
@@ -1286,8 +1286,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * I型が必要な谷 (深さ3以上）のcountを返す
-	 * @return I型が必要な谷のcount
+	 * IValley type is required (Depth3Or more)countReturns
+	 * @return IValley type is requiredcount
 	 */
 	public int getTotalValleyNeedIPiece() {
 		int count = 0;
@@ -1300,9 +1300,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 谷 (■　■になっている地形）の深さを調べる
-	 * @param x 調べるX-coordinate
-	 * @return 谷の深さ (無かったら0）
+	 * Valley (■ ■ examine the depth of the) terrain that is
+	 * @param x ExamineX-coordinate
+	 * @return The depth of the valley (If you do not have0)
 	 */
 	public int getValleyDepth(int x) {
 		int depth = 0;
@@ -1322,13 +1322,13 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * field全体を上にずらす
-	 * @param lines ずらす段count
+	 * fieldSlide on the entire
+	 * @param lines shifting stagecount
 	 */
 	public void pushUp(int lines) {
 		for(int k = 0; k < lines; k++) {
 			for(int i = (hidden_height * -1); i < getHeightWithoutHurryupFloor() - 1; i++) {
-				// Blockを1段下からコピー
+				// BlockA1Copy from the bottom stage
 				for(int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i + 1);
 					if(blk == null) blk = new Block();
@@ -1337,7 +1337,7 @@ public class Field implements Serializable {
 				}
 			}
 
-			// 一番下を空白にする
+			// Blank to the bottom
 			for(int j = 0; j < width; j++) {
 				int y = getHeightWithoutHurryupFloor() - 1;
 				setBlock(j, y, new Block());
@@ -1347,20 +1347,20 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * field全体を1段上にずらす
+	 * fieldThe entire1Staggered rows above
 	 */
 	public void pushUp() {
 		pushUp(1);
 	}
 
 	/**
-	 * field全体を下にずらす
-	 * @param lines ずらす段count
+	 * fieldSlide down the entire
+	 * @param lines shifting stagecount
 	 */
 	public void pushDown(int lines) {
 		for(int k = 0; k < lines; k++) {
 			for(int i = getHeightWithoutHurryupFloor() - 1; i > (hidden_height * -1); i--) {
-				// Blockを1段上からコピー
+				// BlockA1Copied from the rows above
 				for(int j = 0; j < width; j++) {
 					Block blk = getBlock(j, i - 1);
 					if(blk == null) blk = new Block();
@@ -1369,7 +1369,7 @@ public class Field implements Serializable {
 				}
 			}
 
-			// 一番上を空白にする
+			// Blank to the top
 			for(int j = 0; j < width; j++) {
 				setBlock(j, (hidden_height * -1), new Block());
 				setLineFlag((hidden_height * -1), false);
@@ -1378,7 +1378,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * field全体を1段下にずらす
+	 * fieldThe entire1Slide down the stage
 	 */
 	public void pushDown() {
 		pushDown(1);
@@ -1434,12 +1434,12 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 穴が1箇所だけ開いたgarbage blockを一番下に追加
-	 * @param hole 穴の位置 (-1なら穴なし）
+	 * Holes1I only place opengarbage blockAdded to the bottom of the
+	 * @param hole Hole position (-1If no hole)
 	 * @param color garbage block color
-	 * @param skin garbage blockの絵柄
-	 * @param attribute garbage blockの属性
-	 * @param lines 追加するgarbage blockのLinescount
+	 * @param skin garbage blockPicture of
+	 * @param attribute garbage blockAttributes
+	 * @param lines Addgarbage blockOfLinescount
 	 */
 	public void addSingleHoleGarbage(int hole, int color, int skin, int attribute, int lines) {
 		for(int k = 0; k < lines; k++) {
@@ -1494,11 +1494,11 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 一番下のLinesの形をコピーしたgarbage blockを一番下に追加
+	 * BottommostLinesI copied the shape of thegarbage blockAdded to the bottom of the
 	 * @param color garbage block color
-	 * @param skin garbage blockの絵柄
-	 * @param attribute garbage blockの属性
-	 * @param lines 追加するgarbage blockのLinescount
+	 * @param skin garbage blockPicture of
+	 * @param attribute garbage blockAttributes
+	 * @param lines Addgarbage blockOfLinescount
 	 */
 	public void addBottomCopyGarbage(int color, int skin, int attribute, int lines) {
 		for(int k = 0; k < lines; k++) {
@@ -1522,7 +1522,7 @@ public class Field implements Serializable {
 	 * 裏段位を取得
 	 * (from NullpoMino Unofficial Expansion build 091309)
 	 * @author Zircean
-	 * @return 裏段位
+	 * @return Dan back
 	 */
 	public int getSecretGrade() {
 		int holeLoc;
@@ -1553,9 +1553,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 全てのBlockの属性を変更
-	 * @param attr 変更したい属性
-	 * @param status 変更後 state
+	 * AllBlockChange the attributes of the
+	 * @param attr I want to change the attributes
+	 * @param status After the change state
 	 */
 	public void setAllAttribute(int attr, boolean status) {
 		for(int i = (hidden_height * -1); i < height; i++) {
@@ -1570,8 +1570,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 全てのBlockの絵柄を変更
-	 * @param skin 絵柄
+	 * AllBlockChange the pattern of
+	 * @param skin Picture
 	 */
 	public void setAllSkin(int skin) {
 		for(int i = (hidden_height * -1); i < height; i++) {
@@ -1586,8 +1586,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 宝石Blockのcountを取得
-	 * @return 宝石Blockのcount
+	 * JewelBlockOfcountGet the
+	 * @return JewelBlockOfcount
 	 */
 	public int getHowManyGems() {
 		int gems = 0;
@@ -1604,8 +1604,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * 宝石Blockがいくつ消えるか取得
-	 * @return 消える宝石Blockのcount
+	 * JewelBlockDisappears or gets the number of
+	 * @return gems disappearBlockOfcount
 	 */
 	public int getHowManyGemClears() {
 		int gems = 0;
@@ -2380,9 +2380,9 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * HURRY UPの地面を一番下に追加
-	 * @param lines 上げるLinescount
-	 * @param skin 地面の絵柄
+	 * HURRY UPAdded to the bottom of the ground
+	 * @param lines RaiseLinescount
+	 * @param skin Picture of the ground
 	 */
 	public void addHurryupFloor(int lines, int skin) {
 		for(int k = 0; k < lines; k++) {
@@ -2401,16 +2401,16 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * HURRY UPの地面が何Linesあるか調べる
-	 * @return HURRY UPの地面Linesのcount
+	 * HURRY UPWhat is the ground ofLinesI will see if there
+	 * @return HURRY UPGroundLinesOfcount
 	 */
 	public int getHurryupFloorLines() {
 		return hurryupFloorLines;
 	}
 
 	/**
-	 * HURRY UPの地面を除いたField heightを返す
-	 * @return HURRY UPの地面を除いたField height
+	 * HURRY UPI except the groundField heightReturns
+	 * @return HURRY UPI except the groundField height
 	 */
 	public int getHeightWithoutHurryupFloor() {
 		return height - hurryupFloorLines;
@@ -2431,8 +2431,8 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * fieldを文字列に変換
-	 * @return 文字列に変換されたfield
+	 * fieldConverted to a string
+	 * @return It was converted to a stringfield
 	 */
 	public String fieldToString() {
 		String strResult = "";
@@ -2441,7 +2441,7 @@ public class Field implements Serializable {
 			strResult += rowToString(getRow(i));
 		}
 
-		// 終わりの0を取り除く
+		// Closing0Remove the
 		while(strResult.endsWith("0")) {
 			strResult = strResult.substring(0, strResult.length() - 1);
 		}
@@ -2496,19 +2496,19 @@ public class Field implements Serializable {
 
 
 	/**
-	 * 文字列を元にfieldを変更
-	 * @param str 文字列
+	 * Based on a stringfieldChange
+	 * @param str String
 	 */
 	public void stringToField(String str) {
 		stringToField(str, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 
 	/**
-	 * 文字列を元にfieldを変更
-	 * @param str 文字列
-	 * @param skin Blockの絵柄
-	 * @param highestGarbageY 最も高いgarbage blockの位置
-	 * @param highestWallY 最も高いHurryupBlockの位置
+	 * Based on a stringfieldChange
+	 * @param str String
+	 * @param skin BlockPicture of
+	 * @param highestGarbageY The highestgarbage blockThe position of the
+	 * @param highestWallY The highestHurryupBlockThe position of the
 	 */
 	public void stringToField(String str, int skin, int highestGarbageY, int highestWallY) {
 		for(int i = -1; i < getHeight(); i++) {
@@ -2627,7 +2627,7 @@ public class Field implements Serializable {
 	}
 
 	/**
-	 * fieldの文字列表現を取得
+	 * fieldGets the string representation of the
 	 */
 	@Override
 	public String toString() {

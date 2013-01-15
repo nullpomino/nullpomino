@@ -45,7 +45,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 /**
- * 設定画面の frame
+ * Setting screen frame
  */
 public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -57,7 +57,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		{320,240}, {400,300}, {480,360}, {512,384}, {640,480}, {800,600}, {1024,768}, {1152,864}, {1280,960}
 	};
 
-	/** 親ウィンドウ */
+	/** Parent window */
 	protected NullpoMinoSwing owner;
 
 	/** Model of screen size combobox */
@@ -69,40 +69,40 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** MaximumFPS */
 	protected JTextField txtfldMaxFPS;
 
-	/** Sound effectsの音量 */
+	/** Sound effectsVolume of */
 	protected JTextField txtfldSEVolume;
 
 	/** Line clear effect speed */
 	protected JTextField txtfldLineClearEffectSpeed;
 
-	/** FPS表示 */
+	/** FPSDisplay */
 	protected JCheckBox chkboxShowFPS;
 
-	/** Background表示 */
+	/** BackgroundDisplay */
 	protected JCheckBox chkboxShowBackground;
 
-	/** Meter表示 */
+	/** MeterDisplay */
 	protected JCheckBox chkboxShowMeter;
 
-	/** fieldのBlockの絵を表示 ( check なしの場合は枠線だけ) */
+	/** fieldOfBlockDisplay a picture of a ( check Only if there is no border) */
 	protected JCheckBox chkboxShowFieldBlockGraphics;
 
-	/** シンプルな絵柄のBlockを使う */
+	/** Simple picture ofBlockI use */
 	protected JCheckBox chkboxSimpleBlock;
 
 	/** Sound effects */
 	protected JCheckBox chkboxSE;
 
-	/** ネイティブのLook and Feelを使う */
+	/** NativeLook and FeelI use */
 	protected JCheckBox chkboxUseNativeLookAndFeel;
 
-	/**  frame ステップ */
+	/**  frame Step */
 	protected JCheckBox chkboxEnableFrameStep;
 
-	/** ghost ピースの上にNEXT表示 */
+	/** ghost On top of the pieceNEXTDisplay */
 	protected JCheckBox chkboxNextShadow;
 
-	/** 枠線型ghost ピース */
+	/** Linear frameghost Peace */
 	protected JCheckBox chkboxOutlineGhost;
 
 	/** Side piece preview */
@@ -134,14 +134,14 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 
 	/**
 	 * Constructor
-	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
+	 * @param owner Parent window
+	 * @throws HeadlessException Keyboard, Mouse, Exceptions such as the display if there is no
 	 */
 	public GeneralConfigFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
 		this.owner = owner;
 
-		// GUIのInitialization
+		// GUIOfInitialization
 		setTitle(NullpoMinoSwing.getUIText("Title_GeneralConfig"));
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setResizable(false);
@@ -150,7 +150,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * GUIのInitialization
+	 * GUIOfInitialization
 	 */
 	protected void initUI() {
 		this.getContentPane().setLayout(new BorderLayout());
@@ -164,7 +164,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		pBasicTab.setLayout(new BoxLayout(pBasicTab, BoxLayout.Y_AXIS));
 		tabPane.addTab(NullpoMinoSwing.getUIText("GeneralConfig_TabName_Basic"), pBasicTab);
 
-		// ---------- Sound effectsの音量 ----------
+		// ---------- Sound effectsVolume of ----------
 		JPanel pSEVolume = new JPanel();
 		pSEVolume.setAlignmentX(LEFT_ALIGNMENT);
 		pBasicTab.add(pSEVolume);
@@ -175,7 +175,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		txtfldSEVolume = new JTextField(5);
 		pSEVolume.add(txtfldSEVolume);
 
-		// ---------- checkボックス ----------
+		// ---------- checkBox ----------
 		chkboxShowBackground = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_ShowBackground"));
 		chkboxShowBackground.setAlignmentX(LEFT_ALIGNMENT);
 		pBasicTab.add(chkboxShowBackground);
@@ -296,7 +296,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxShowLineClearEffect.setAlignmentX(LEFT_ALIGNMENT);
 		pAdvancedTab.add(chkboxShowLineClearEffect);
 
-		// ---------- 画面下の button ----------
+		// ---------- The bottom of the screen button ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(pButtons, BorderLayout.SOUTH);
@@ -315,7 +315,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Current 設定をGUIに反映させる
+	 * Current SettingsGUIBe reflected in the
 	 */
 	public void load() {
 		int sWidth = NullpoMinoSwing.propConfig.getProperty("option.screenwidth", 640);

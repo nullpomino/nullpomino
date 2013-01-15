@@ -40,10 +40,10 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 /**
- * 画像や音声の管理をするクラス
+ * Class to the management of image and sound
  */
 public class ResourceHolderSwing {
-	/** Backgroundのcount */
+	/** BackgroundOfcount */
 	public static final int BACKGROUND_MAX = 20;
 
 	/** Number of images for block spatter animation during line clears */
@@ -79,14 +79,14 @@ public class ResourceHolderSwing {
 	/** Effects for clearing gem blocks */
 	public static Image[] imgPErase;
 
-	/** プレイ中のBackground */
+	/** In playBackground */
 	public static Image[] imgPlayBG;
 
-	/** 音声ファイル管理 */
+	/** Audio file management */
 	public static WaveEngine soundManager;
 
 	/**
-	 * 画像や音声を読み込み
+	 * Loading images and sound files
 	 */
 	public static void load() {
 		String skindir = NullpoMinoSwing.propConfig.getProperty("custom.skin.directory", "res");
@@ -251,9 +251,9 @@ public class ResourceHolderSwing {
 	}
 
 	/**
-	 * 画像を読み込み
-	 * @param url 画像ファイルのURL
-	 * @return 画像ファイル (失敗するとnull）
+	 * Load an image
+	 * @param url Image filesURL
+	 * @return Image file (Failurenull)
 	 */
 	public static BufferedImage loadImage(URL url) {
 		BufferedImage img = null;
@@ -270,9 +270,9 @@ public class ResourceHolderSwing {
 	}
 
 	/**
-	 * リソースファイルのURLを返す
+	 * Resource FilesURLReturns
 	 * @param str Filename
-	 * @return リソースファイルのURL
+	 * @return Resource FilesURL
 	 */
 	public static URL getURL(String str) {
 		URL url = null;

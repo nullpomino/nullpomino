@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class ResourceHolder {
 
-	/** Backgroundのcount */
+	/** BackgroundOfcount */
 	public static final int BACKGROUND_MAX = 20;
 
 	/** Number of images for block spatter animation during line clears */

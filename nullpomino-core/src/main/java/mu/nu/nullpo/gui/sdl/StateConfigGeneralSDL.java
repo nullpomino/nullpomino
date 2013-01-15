@@ -35,7 +35,7 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * 全般の設定画面のステート
+ * State of the general settings screen
  */
 public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** UI Text identifier Strings */
@@ -73,49 +73,49 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** Cursor position */
 	protected int cursor;
 
-	/** フルスクリーン flag */
+	/** Full screen flag */
 	protected boolean fullscreen;
 
 	/** Sound effectsON/OFF */
 	protected boolean se;
 
-	/** BGMのON/OFF */
+	/** BGMOfON/OFF */
 	protected boolean bgm;
 
-	/** BGMの事前読み込み */
+	/** BGMPreloading of */
 	protected boolean bgmpreload;
 
-	/** Background表示 */
+	/** BackgroundDisplay */
 	protected boolean showbg;
 
-	/** FPS表示 */
+	/** FPSDisplay */
 	protected boolean showfps;
 
-	/**  frame ステップ is enabled */
+	/**  frame Step is enabled */
 	protected boolean enableframestep;
 
 	/** MaximumFPS */
 	protected int maxfps;
 
-	/** Line clearエフェクト表示 */
+	/** Line clearDisplay Effects */
 	protected boolean showlineeffect;
 
 	/** Line clear effect speed */
 	protected int lineeffectspeed;
 
-	/** サウンドバッファサイズ */
+	/** Sound buffer size */
 	protected int soundbuffer;
 
-	/** 重い演出を使う */
+	/** Heavy production use */
 	protected boolean heavyeffect;
 
-	/** fieldBackgroundの明るさ */
+	/** fieldBackgroundThe brightness of the */
 	protected int fieldbgbright;
 
 	/** Show field BG grid */
 	protected boolean showfieldbggrid;
 
-	/** NEXT欄を暗くする */
+	/** NEXTDarken the field */
 	protected boolean darknextarea;
 
 	/** Sound effects volume */
@@ -124,16 +124,16 @@ public class StateConfigGeneralSDL extends BaseStateSDL {
 	/** BGM volume */
 	protected int bgmvolume;
 
-	/** 同時再生できるSound effectsのcount */
+	/** You can play simultaneouslySound effectsOfcount */
 	protected int soundChannels;
 
-	/** field右側にMeterを表示 */
+	/** fieldTo the rightMeterShow */
 	protected boolean showmeter;
 
-	/** ghost ピースの上にNEXT表示 */
+	/** ghost On top of the pieceNEXTDisplay */
 	protected boolean nextshadow;
 
-	/** 枠線型ghost ピース */
+	/** Linear frameghost Peace */
 	protected boolean outlineghost;
 
 	/** Piece preview type (0=Top 1=Side small 2=Side big) */

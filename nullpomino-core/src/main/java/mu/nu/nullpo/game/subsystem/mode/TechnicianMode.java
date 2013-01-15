@@ -787,13 +787,13 @@ public class TechnicianMode extends NetDummyMode {
 			}
 		} else {
 			if(lines == 1) {
-				pts += 100 * (engine.statistics.level + 1); // 1列
+				pts += 100 * (engine.statistics.level + 1); // 1Column
 				lastevent = EVENT_SINGLE;
 			} else if(lines == 2) {
-				pts += 300 * (engine.statistics.level + 1); // 2列
+				pts += 300 * (engine.statistics.level + 1); // 2Column
 				lastevent = EVENT_DOUBLE;
 			} else if(lines == 3) {
-				pts += 500 * (engine.statistics.level + 1); // 3列
+				pts += 500 * (engine.statistics.level + 1); // 3Column
 				lastevent = EVENT_TRIPLE;
 			} else if(lines >= 4) {
 				// 4 lines
@@ -865,11 +865,11 @@ public class TechnicianMode extends NetDummyMode {
 
 			if(goal <= 0) {
 				if((engine.statistics.level >= 14) && ((goaltype == GAMETYPE_LV15_EASY) || (goaltype == GAMETYPE_LV15_HARD))) {
-					// Ending (LV15-EASY/HARD）
+					// Ending (LV15-EASY/HARD)
 					engine.ending = 1;
 					engine.gameEnded();
 				} else if((engine.statistics.level >= 29) && (goaltype == GAMETYPE_SPECIAL)) {
-					// Ending (SPECIAL）
+					// Ending (SPECIAL)
 					engine.ending = 2;
 					engine.timerActive = false;
 					owner.bgmStatus.bgm = BGMStatus.BGM_ENDING1;

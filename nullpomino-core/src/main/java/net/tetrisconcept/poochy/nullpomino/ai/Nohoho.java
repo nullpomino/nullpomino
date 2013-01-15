@@ -18,19 +18,19 @@ public class Nohoho extends DummyAI implements Runnable {
 	/** Log */
 	static Logger log = Logger.getLogger(Nohoho.class);
 
-	/** 接地したあとのX-coordinate */
+	/** After that I was groundedX-coordinate */
 	public int bestXSub;
 
-	/** 接地したあとのY-coordinate */
+	/** After that I was groundedY-coordinate */
 	public int bestYSub;
 
-	/** 接地したあとのDirection(-1: None) */
+	/** After that I was groundedDirection(-1: None) */
 	public int bestRtSub;
 
-	/** 最善手のEvaluation score */
+	/** The best moveEvaluation score */
 	public int bestPts;
 
-	/** 移動を遅らせる用の変count */
+	/** Delay the move for changecount */
 	public int delay;
 
 	/** The GameEngine that owns this AI */
@@ -39,16 +39,16 @@ public class Nohoho extends DummyAI implements Runnable {
 	/** The GameManager that owns this AI */
 	public GameManager gManager;
 
-	/** When true,スレッドにThink routineの実行を指示 */
+	/** When true,To threadThink routineInstructing the execution of the */
 	public ThinkRequestMutex thinkRequest;
 
 	/** true when thread is executing the think routine. */
 	public boolean thinking;
 
-	/** スレッドを停止させる time */
+	/** To stop a thread time */
 	public int thinkDelay;
 
-	/** When true,スレッド動作中 */
+	/** When true,Running thread */
 	public volatile boolean threadRunning;
 
 	/** Thread for executing the think routine */
@@ -65,7 +65,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	protected int setDAS;
 	/** Last input if done in ARE */
 	protected int inputARE;
-	/** Maximum妥協 level */
+	/** MaximumCompromise level */
 	protected static final int MAX_THINK_DEPTH = 2;
 	/** Set to true to print debug information */
 	protected static final boolean DEBUG_ALL = true;
@@ -117,7 +117,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 終了処理
+	 * End processing
 	 */
 	public void shutdown(GameEngine engine, int playerID) {
 		if((thread != null) && (thread.isAlive())) {
@@ -250,12 +250,12 @@ public class Nohoho extends DummyAI implements Runnable {
 						rotateDir = 1;
 				}
 
-				// 到達可能な位置かどうか
+				// Whether reachable position
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
 
 				if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt) ) {
-					// 到達不能なので再度思考する
+					// Again because it is thought unreachable
 					//thinkBestPosition(engine, playerID);
 					thinkRequest.newRequest();
 					thinkComplete = false;
@@ -263,15 +263,15 @@ public class Nohoho extends DummyAI implements Runnable {
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
 					if (DEBUG_ALL) log.debug("Needs rethink - cannot reach desired position");
 				} else {
-					// 到達できる場合
+					// If you are able to reach
 					if((nowX == bestX) && (pieceTouchGround)) {
 						if (rt == bestRt) {
-							// 接地rotation
+							// Groundrotation
 							if(bestRtSub != -1) {
 								bestRt = bestRtSub;
 								bestRtSub = -1;
 							}
-							// ずらし移動
+							// Shift move
 							if(bestX != bestXSub) {
 								bestX = bestXSub;
 								bestY = bestYSub;
@@ -285,7 +285,7 @@ public class Nohoho extends DummyAI implements Runnable {
 					else if((nowX == bestX) && (rt == bestRt)) {
 						moveDir = 0;
 						setDAS = 0;
-						// 目標到達
+						// Funnel
 						if((bestRtSub == -1) && (bestX == bestXSub)) {
 							if (pieceTouchGround && engine.ruleopt.softdropLock)
 								drop = -1;
@@ -473,7 +473,7 @@ public class Nohoho extends DummyAI implements Runnable {
 					int y = pieceNow.getBottom(x, nowY, rt, fld);
 
 					if(!pieceNow.checkCollision(x, y, rt, fld)) {
-						// そのまま
+						// As it is
 						int pts = thinkMain(x, y, rt, -1, fld, pieceNow, defcon);
 
 						if(pts >= bestPts) {
@@ -505,7 +505,7 @@ public class Nohoho extends DummyAI implements Runnable {
 						int y = pieceHold.getBottom(x, spawnY, rt, fld);
 
 						if(!pieceHold.checkCollision(x, y, rt, fld)) {
-							// そのまま
+							// As it is
 							int pts = thinkMain(x, y, rt, -1, fld, pieceHold, defcon);
 							if(pts >= bestPts) {
 								bestHold = true;
@@ -536,7 +536,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld Direction before rotation (-1: None）
+	 * @param rtOld Direction before rotation (-1: None)
 	 * @param fld Field (Can be modified without problems)
 	 * @param piece Piece
 	 * @param defcon Defense level (the lower, the more defensive)
@@ -548,7 +548,7 @@ public class Nohoho extends DummyAI implements Runnable {
 		if (defcon <= 3)
 			pts -= fld.getHighestBlockY(2);
 		
-		// ピースを置く
+		// Place the piece
 		if(!piece.placeToField(x, y, rt, fld)) {
 			if (DEBUG_ALL)
 				log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
@@ -658,7 +658,7 @@ public class Nohoho extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * スレッドの処理
+	 * Processing of the thread
 	 */
 	public void run() {
 		log.info("Nohoho: Thread start");

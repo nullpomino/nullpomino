@@ -44,38 +44,38 @@ public class GradeManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 1;
 
-	/** 落下速度 table */
+	/** Fall velocity table */
 	private static final int[] tableGravityValue =
 	{
 		4, 6, 8, 10, 12, 16, 32, 48, 64, 80, 96, 112, 128, 144, 4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 1280, 1024, 768, -1
 	};
 
-	/** 落下速度が変わる level */
+	/** Fall velocity changes level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
 	};
 
-	/** 段位上昇に必要なScore */
+	/** Needed to rise danScore */
 	private static final int[] tableGradeScore =
 	{
-		   400,   800,  1400,  2000,  3500,  5500,  8000,  12000,			// 8～1
-		 16000, 22000, 30000, 40000, 52000, 66000, 82000, 100000, 120000,	// S1～S9
+		   400,   800,  1400,  2000,  3500,  5500,  8000,  12000,			// 8~1
+		 16000, 22000, 30000, 40000, 52000, 66000, 82000, 100000, 120000,	// S1~S9
 		126000																// GM
 	};
 
-	/** 段位のName */
+	/** Of danName */
 	private static final String[] tableGradeName =
 	{
-		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
-		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9～17
+		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0~ 8
+		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9~17
 		"GM"													// 18
 	};
 
-	/** GMの時の評価Time */
+	/** GMEvaluation at the time ofTime */
 	private static final int[] tablePier21GradeTime = {48600,43200,39600,37800,36000,33600,32400};
 
-	/** GMの時の評価 */
+	/** GMEvaluation at the time of */
 	private static final String[] tablePier21GradeName =
 	{
 		"ALUMINUM","STEEL","BRONZE","SILVER","GOLD","PLATINUM","DIAMOND"
@@ -84,22 +84,22 @@ public class GradeManiaMode extends AbstractMode {
 	/** LV999 roll time */
 	private static final int ROLLTIMELIMIT = 2968;
 
-	/** GMを取るために必要なLV300到達時の最低段位 */
+	/** GMI need to takeLV300Dan when reaching the minimum */
 	private static final int GM_300_GRADE_REQUIRE = 8;
 
-	/** GMを取るために必要なLV500到達時の最低段位 */
+	/** GMI need to takeLV500Dan when reaching the minimum */
 	private static final int GM_500_GRADE_REQUIRE = 12;
 
-	/** GMを取るために必要なLV300到達時のTime */
+	/** GMI need to takeLV300When reaching theTime */
 	private static final int GM_300_TIME_REQUIRE = 15300;
 
-	/** GMを取るために必要なLV500到達時のTime */
+	/** GMI need to takeLV500When reaching theTime */
 	private static final int GM_500_TIME_REQUIRE = 27000;
 
-	/** GMを取るために必要なLV500到達時のTime(古いVersion用) */
+	/** GMI need to takeLV500When reaching theTime(OldVersionUse) */
 	private static final int GM_500_TIME_REQUIRE_V0 = 25200;
 
-	/** GMを取るために必要なLV999到達時のTime */
+	/** GMI need to takeLV999When reaching theTime */
 	private static final int GM_999_TIME_REQUIRE = 48600;
 
 	/** Number of entries in rankings */
@@ -111,19 +111,19 @@ public class GradeManiaMode extends AbstractMode {
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
-	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
+	/** Current Speed ​​of fall number (tableGravityChangeLevelOf levelAt each of1Increase one) */
 	private int gravityindex;
 
-	/** Next Section の level (これ-1のときに levelストップする) */
+	/** Next Section Of level (This-1At levelStop) */
 	private int nextseclv;
 
-	/** Levelが増えた flag */
+	/** LevelHas increased flag */
 	private boolean lvupflag;
 
-	/** 段位 */
+	/** Dan */
 	private int grade;
 
-	/** 最後に段位が上がった time */
+	/** Dan went up at the end time */
 	private int lastGradeTime;
 
 	/** Combo bonus */
@@ -132,34 +132,34 @@ public class GradeManiaMode extends AbstractMode {
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り time */
+	/** AcquisitionRender scoreIs remaining to be time */
 	private int scgettime;
 
-	/** Roll 経過 time */
+	/** Roll Course time */
 	private int rolltime;
 
-	/** LV300到達時に段位が規定count以上だったらtrueになる */
+	/** LV300Dan provisions when it reachescountIf it was more thantrueBecome */
 	private boolean gm300;
 
-	/** LV500到達時に段位が規定count以上＆Timeが規定以下だったらtrueになる */
+	/** LV500Dan provisions when it reachescount&amp; MoreTimeIf it was less than the prescribedtrueBecome */
 	private boolean gm500;
 
-	/** 裏段位 */
+	/** Dan back */
 	private int secretGrade;
 
 	/** Current BGM */
 	private int bgmlv;
 
-	/** 段位表示を光らせる残り frame count */
+	/** Illuminate the display remaining dan frame count */
 	private int gradeflash;
 
 	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たSection はtrue */
+	/** New record came outSection Thetrue */
 	private boolean[] sectionIsNewRecord;
 
-	/** どこかのSection で新記録を出すとtrue */
+	/** SomewhereSection When I put out a new record intrue */
 	private boolean sectionAnyNewRecord;
 
 	/** Cleared Section count */
@@ -168,7 +168,7 @@ public class GradeManiaMode extends AbstractMode {
 	/** Average Section Time */
 	private int sectionavgtime;
 
-	/** Section Time記録表示中ならtrue */
+	/** Section TimeShowing record iftrue */
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
@@ -195,7 +195,7 @@ public class GradeManiaMode extends AbstractMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** Rankings' 段位 */
+	/** Rankings' Dan */
 	private int[] rankingGrade;
 
 	/** Rankings'  level */
@@ -204,7 +204,7 @@ public class GradeManiaMode extends AbstractMode {
 	/** Rankings' times */
 	private int[] rankingTime;
 
-	/** Section Time記録 */
+	/** Section TimeRecord */
 	private int[] bestSectionTime;
 
 	public GradeManiaMode() {
@@ -324,7 +324,7 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/**
-	 * Section Time更新処理
+	 * Section TimeUpdate process
 	 * @param sectionNumber Section number
 	 */
 	private void stNewRecordCheck(int sectionNumber) {
@@ -519,11 +519,11 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// 新規ピース出現時
+		// Occurrence new piece
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -539,11 +539,11 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * ARE中の処理
+	 * AREProcessing during
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame
+		// Last frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -557,7 +557,7 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  levelが上がったときの共通処理
+	 *  levelcommon process is raised when
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -567,10 +567,10 @@ public class GradeManiaMode extends AbstractMode {
 		if(engine.statistics.level % 100 >= 80) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(engine.statistics.level == nextseclv - 1) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-		// 速度変更
+		// Speed ​​change
 		setSpeed(engine);
 
-		// LV100到達でghost を消す
+		// LV100In reachingghost Disappear
 		if((engine.statistics.level >= 100) && (!alwaysghost.value)) engine.ghost = false;
 
 		// BGM fadeout
@@ -608,7 +608,7 @@ public class GradeManiaMode extends AbstractMode {
 			engine.statistics.score += lastscore;
 			scgettime = 120;
 
-			// 段位上昇
+			// Dan rise
 			while((grade < 17) && (engine.statistics.score >= tableGradeScore[grade])) {
 				engine.playSE("gradeup");
 				grade++;
@@ -684,17 +684,17 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 各 frame の終わりの処理
+	 * Each frame Processing at the end of
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		// 段位上昇時のフラッシュ
+		// Flash at elevated dan
 		if(gradeflash > 0) gradeflash--;
 
-		// 獲得Render score
+		// AcquisitionRender score
 		if(scgettime > 0) scgettime--;
 
-		// Section Time増加
+		// Section TimeIncrease
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -715,7 +715,7 @@ public class GradeManiaMode extends AbstractMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Roll 終了
+			// Roll End
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameEnded();
 				engine.resetStatc();
@@ -736,7 +736,7 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面
+	 * Results screen
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -782,11 +782,11 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面の処理
+	 * Processing of the results screen
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
-		// ページ切り替え
+		// Page switching
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 			engine.statc[1]--;
 			if(engine.statc[1] < 0) engine.statc[1] = 2;
@@ -797,7 +797,7 @@ public class GradeManiaMode extends AbstractMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		//  section time display切替
+		//  section time displaySwitching
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -807,7 +807,7 @@ public class GradeManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * リプレイ保存
+	 * Save replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
@@ -862,7 +862,7 @@ public class GradeManiaMode extends AbstractMode {
 
 	/**
 	 * Update rankings
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
 	 */
@@ -886,7 +886,7 @@ public class GradeManiaMode extends AbstractMode {
 
 	/**
 	 * Calculate ranking position
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
 	 * @return Position (-1 if unranked)

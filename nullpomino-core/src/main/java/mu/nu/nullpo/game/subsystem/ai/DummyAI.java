@@ -38,22 +38,22 @@ public class DummyAI implements AIPlayer {
 	/** ホールド使用予定 */
 	public boolean bestHold;
 
-	/** 置く予定のX-coordinate */
+	/** Plan to putX-coordinate */
 	public int bestX;
 
-	/** 置く予定のY-coordinate */
+	/** Plan to putY-coordinate */
 	public int bestY;
 
-	/** 置く予定のDirection */
+	/** Plan to putDirection */
 	public int bestRt;
 
-	/** 強制ホールド */
+	/** Hold Force */
 	public boolean forceHold;
 
 	/** Current piece number */
 	public int thinkCurrentPieceNo;
 
-	/** 思考が終わったピースの number */
+	/** Peace of thoughts is finished number */
 	public int thinkLastPieceNo;
 
 	/** Did the thinking thread finish successfully? */

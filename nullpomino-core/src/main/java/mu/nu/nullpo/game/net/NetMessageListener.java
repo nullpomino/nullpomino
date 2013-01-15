@@ -31,21 +31,21 @@ package mu.nu.nullpo.game.net;
 import java.io.IOException;
 
 /**
- * 受信したメッセージに応じて何か処理をするクラス用のインターフェース
+ * Interface for the class to do something in response to processing the received message
  */
 public interface NetMessageListener {
 	/**
-	 * メッセージ受信時に呼び出される
-	 * @param client クライアント(NetBaseClientとその派生クラス)
-	 * @param message 受信したメッセージ(タブ区切り済み)
-	 * @throws IOException 何かエラーがあったとき
+	 * I called when receiving a message
+	 * @param client Client(NetBaseClientAnd its derived classes)
+	 * @param message Received Messages(Pre-tab-delimited)
+	 * @throws IOException If there are any errors
 	 */
 	public void netOnMessage(NetBaseClient client, String[] message) throws IOException;
 
 	/**
-	 * 切断時に呼び出される
-	 * @param client クライアント(NetBaseClientとその派生クラス)
-	 * @param ex 切断原因となった例外(不明な場合と正常終了の場合はnull)
+	 * I called at the time of disconnection
+	 * @param client Client(NetBaseClientAnd its derived classes)
+	 * @param ex Exception that caused the disconnection(If successful and if you do not knownull)
 	 */
 	public void netOnDisconnect(NetBaseClient client, Throwable ex);
 }

@@ -32,17 +32,17 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
 /**
- * 普通の文字列の表示クラス
+ * Normal display class string
  */
 public class NormalFontSlick {
-	/** 文字色の定count */
+	/** Character constant colorcount */
 	public static final int COLOR_WHITE = 0, COLOR_BLUE = 1, COLOR_RED = 2, COLOR_PINK = 3, COLOR_GREEN = 4, COLOR_YELLOW = 5, COLOR_CYAN = 6,
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
 
 	/**
-	 * 指定した font 色をSlick用Colorとして取得
-	 * @param fontColor  font 色
-	 * @return  font 色のColor
+	 * Specified font ColorSlickUseColorObtained as
+	 * @param fontColor  font Color
+	 * @return  font ColorColor
 	 */
 	public static Color getFontColorAsColor(int fontColor) {
 		switch(fontColor) {
@@ -61,11 +61,11 @@ public class NormalFontSlick {
 	}
 
 	/**
-	 * TTF font を使用して文字列を描画
+	 * TTF font Drawing a string using the
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
+	 * @param fontStr String
+	 * @param fontColor Letter color
 	 */
 	public static void printTTFFont(int fontX, int fontY, String fontStr, int fontColor) {
 		if(ResourceHolderSlick.ttfFont == null) return;
@@ -73,23 +73,23 @@ public class NormalFontSlick {
 	}
 
 	/**
-	 * TTF font を使用して文字列を描画
-	 * (各ステートのupdateメソッドでResourceHolder.ttfFont.loadGlyphs()を呼ばないと描画されないので注意)
+	 * TTF font Drawing a string using the
+	 * (Of each stateupdateThe methodResourceHolder.ttfFont.loadGlyphs()I will not be drawing attention not to call)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
+	 * @param fontStr String
 	 */
 	public static void printTTFFont(int fontX, int fontY, String fontStr) {
 		printTTFFont(fontX, fontY, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * 文字列を描画
+	 * Draws the string
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
-	 * @param scale 拡大率
+	 * @param fontStr String
+	 * @param fontColor Letter color
+	 * @param scale Enlargement factor
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, int fontColor, float scale) {
 		int dx = fontX;
@@ -99,7 +99,7 @@ public class NormalFontSlick {
 			int stringChar = fontStr.charAt(i);
 
 			if(stringChar == 0x0A) {
-				// 改行 (\n）
+				// New line (\n)
 				if(scale == 1.0f) {
 					dy = (int)(dy + 16 * scale);
 					dx = fontX;
@@ -108,7 +108,7 @@ public class NormalFontSlick {
 					dx = fontX;
 				}
 			} else {
-				// 文字出力
+				// Character output
 				if(scale == 0.5f) {
 					int sx = ((stringChar - 32) % 32) * 8;
 					int sy = ((stringChar - 32) / 32) * 8 + fontColor * 24;
@@ -128,34 +128,34 @@ public class NormalFontSlick {
 	}
 
 	/**
-	 * 文字列を描画
+	 * Draws the string
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
+	 * @param fontStr String
+	 * @param fontColor Letter color
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, int fontColor) {
 		printFont(fontX, fontY, fontStr, fontColor, 1.0f);
 	}
 
 	/**
-	 * 文字列を描画 (文字色は白）
+	 * Draws the string (Character color is white)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
+	 * @param fontStr String
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr) {
 		printFont(fontX, fontY, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue) {
 		if(!flag)
@@ -165,26 +165,26 @@ public class NormalFontSlick {
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画
+	 * flagThefalseIf I were white, trueDraws the string in red if I was
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
+	 * @param fontStr String
+	 * @param flag Conditional expression
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag) {
 		printFont(fontX, fontY, fontStr, flag, COLOR_WHITE, COLOR_RED);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (拡大率指定可能）
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in (You can specify the magnification)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
-	 * @param scale 拡大率
-	 * @throws SlickException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
+	 * @param scale Enlargement factor
+	 * @throws SlickException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue, float scale) throws SlickException {
 		if(!flag)
@@ -194,58 +194,58 @@ public class NormalFontSlick {
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (拡大率指定可能）
+	 * flagThefalseIf I were white, trueDraws the string in red if I was (You can specify the magnification)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param scale 拡大率
-	 * @throws SlickException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param scale Enlargement factor
+	 * @throws SlickException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, float scale) throws SlickException {
 		printFont(fontX, fontY, fontStr, flag, COLOR_WHITE, COLOR_RED, scale);
 	}
 
 	/**
-	 * 文字列を描画 (16x16のグリッド単位）
+	 * Draws the string (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
+	 * @param fontStr String
+	 * @param fontColor Letter color
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, int fontColor) {
 		printFont(fontX * 16, fontY * 16, fontStr, fontColor);
 	}
 
 	/**
-	 * 文字列を描画 (16x16のグリッド単位・文字色は白）
+	 * Draws the string (16x16Color and character of the white grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
+	 * @param fontStr String
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr) {
 		printFont(fontX * 16, fontY * 16, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (16x16のグリッド単位）
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue) {
 		printFont(fontX * 16, fontY * 16, fontStr, flag, fontColorFalse, fontColorTrue);
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (16x16のグリッド単位）
+	 * flagThefalseIf I were white, trueDraws the string in red if I was (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
+	 * @param fontStr String
+	 * @param flag Conditional expression
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, boolean flag) {
 		printFont(fontX * 16, fontY * 16, fontStr, flag, COLOR_WHITE, COLOR_RED);

@@ -376,9 +376,9 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	private int targetTimer;
 
 	/**
-	 * ゲーム席 numberを元にfield numberを返す
-	 * @param seat ゲーム席 number
-	 * @return 対応するfield number
+	 * Game seat numberBased on thefield numberReturns
+	 * @param seat Game seat number
+	 * @return Correspondingfield number
 	 */
 	private int getPlayerIDbySeatID(int seat) {
 		int myseat = playerSeatNumber;
@@ -387,7 +387,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * Player存在 flagと人countを更新
+	 * PlayerPresence flagAnd humancountUpdate
 	 */
 	private void updatePlayerExist() {
 		numPlayers = 0;
@@ -422,8 +422,8 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 生き残っているチームcountを返す(チーム無しPlayerも1つのチームとcountえる)
-	 * @return 生き残っているチームcount
+	 * Surviving teamcountReturns(No teamPlayerAs well1Team and onecountObtained)
+	 * @return Surviving teamcount
 	 */
 	private int getNumberOfTeamsAlive() {
 		LinkedList<String> listTeamName = new LinkedList<String>();
@@ -499,8 +499,8 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 今この部屋で参戦状態のNumber of playersを返す
-	 * @return 参戦状態のNumber of players
+	 * State of war in this room nowNumber of playersReturns
+	 * @return State of warNumber of players
 	 */
 	/*
 	private int getCurrentNumberOfPlayers() {
@@ -534,7 +534,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * ネットプレイ
+	 * NetPlay
 	 */
 	@Override
 	public boolean isNetplayMode() {
@@ -587,7 +587,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * いろいろリセット
+	 * Various reset
 	 */
 	private void resetFlags() {
 //		isTank = false;
@@ -760,8 +760,8 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 今溜まっているgarbage blockのcountを返す
-	 * @return 今溜まっているgarbage blockのcount
+	 * I have now accumulatedgarbage blockOfcountReturns
+	 * @return I have now accumulatedgarbage blockOfcount
 	 */
 	private int getTotalGarbageLines() {
 		int count = 0;
@@ -1146,11 +1146,11 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// Start game直後の新規ピース出現時
+		// Start gameImmediately after the occurrence of a new piece
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) &&
 		   (playerID == 0) && (playerSeatNumber >= 0) && (!isPractice))
 		{
@@ -1158,7 +1158,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			sendField(engine);
 		}
 
-		// 移動
+		// Move
 		if((engine.ending == 0) && (playerID == 0) && (playerSeatNumber >= 0) && (engine.nowPieceObject != null) && (!isPractice) &&
 		   (numPlayers + numSpectators >= 2))
 		{
@@ -1188,7 +1188,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			}
 		}
 
-		// 強制固定
+		// Fixed Force
 		if((engine.ending == 0) && (playerID == 0) && (playerSeatNumber >= 0) && (engine.nowPieceObject != null)) {
 			pieceMoveTimer++;
 			if(pieceMoveTimer >= PIECE_AUTO_LOCK_TIME) {
@@ -1231,7 +1231,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
-		// 攻撃
+		// Attack
 		if(lines > 0) {
 			//int pts = 0;
 			int[] pts = new int[ATTACK_CATEGORIES];
@@ -1280,15 +1280,15 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				}
 			} else {
 				if(lines == 1) {
-					// 1列
+					// 1Column
 					attackLineIndex = LINE_ATTACK_INDEX_SINGLE;
 					lastevent[playerID] = EVENT_SINGLE;
 				} else if(lines == 2) {
-					// 2列
+					// 2Column
 					attackLineIndex = LINE_ATTACK_INDEX_DOUBLE;
 					lastevent[playerID] = EVENT_DOUBLE;
 				} else if(lines == 3) {
-					// 3列
+					// 3Column
 					attackLineIndex = LINE_ATTACK_INDEX_TRIPLE;
 					lastevent[playerID] = EVENT_TRIPLE;
 				} else if(lines >= 4) {
@@ -1298,7 +1298,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				}
 			}
 
-			// 攻撃力計算
+			// Attack force calculation
 			//log.debug("attackNumPlayerIndex:" + attackNumPlayerIndex + ", attackLineIndex:" + attackLineIndex);
 			if(engine.useAllSpinBonus)
 				pts[mainAttackCategory] += LINE_ATTACK_TABLE_ALLSPIN[attackLineIndex][attackNumPlayerIndex];
@@ -1355,7 +1355,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				garbageSent[playerID] += i;
 			}
 
-			// 相殺
+			// Offset
 			garbage[playerID] = getTotalGarbageLines();
 			for(int i = 0; i < pts.length; i++){ //TODO: Establish specific priority of garbage cancellation.
 				if((pts[i] > 0) && (garbage[playerID] > 0) && (currentRoomInfo.counter)) {
@@ -1391,11 +1391,11 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			}
 		}
 
-		// せり上がり
+		// Rising auction
 		if(((lines == 0) || (!currentRoomInfo.rensaBlock)) && (getTotalGarbageLines() >= GARBAGE_DENOMINATOR) && (!isPractice)) {
 			engine.playSE("garbage");
 
-			int smallGarbageCount = 0;	// 10pts未満のgarbage blockcountの合計count(後でまとめてせり上げる)
+			int smallGarbageCount = 0;	// 10ptsLess thangarbage blockcountThe totalcount(Overcall together later)
 			int hole = lastHole;
 			int newHole;
 			if(hole == -1) {
@@ -1442,7 +1442,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			}
 
 			if(smallGarbageCount > 0) {
-				// 10pts以上の部分をすべてせり上げる
+				// 10ptsAll overcall or more parts
 
 				//int hole = engine.random.nextInt(engine.field.getWidth());
 				//engine.field.addSingleHoleGarbage(hole, Block.BLOCK_COLOR_GRAY, engine.getSkin(),
@@ -1477,7 +1477,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 					}
 
 				}
-				// 10pts未満は次回繰越
+				// 10ptsBrought forward under the next
 				if(smallGarbageCount % GARBAGE_DENOMINATOR > 0) {
 					GarbageEntry smallGarbageEntry = new GarbageEntry(smallGarbageCount % GARBAGE_DENOMINATOR, -1);
 					garbageEntries.add(smallGarbageEntry);
@@ -1531,7 +1531,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			hurryupShowFrames = 60 * 5;
 		}
 
-		// せり上がりMeter
+		// Rising auctionMeter
 		int tempGarbage = garbage[playerID] / GARBAGE_DENOMINATOR;
 		float tempGarbageF = (float) garbage[playerID] / GARBAGE_DENOMINATOR;
 		int newMeterValue = (int)(tempGarbageF * receiver.getBlockGraphicsHeight(engine, playerID));
@@ -1654,7 +1654,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 		// All number of players
 		if(playerID == getPlayers() - 1) netDrawAllPlayersCount(engine);
 
-		// 経過 time
+		// Course time
 		if((playerID == 0) && (currentRoomID != -1)) {
 			receiver.drawDirectFont(engine, 0, 256, 16, GeneralUtil.getTime(netPlayTimer));
 
@@ -1990,7 +1990,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * EXCELLENT画面の処理
+	 * EXCELLENTScreen processing
 	 */
 	@Override
 	public boolean onExcellent(GameEngine engine, int playerID) {
@@ -2021,7 +2021,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * EXCELLENT画面の描画処理
+	 * EXCELLENTProcess of drawing the screen
 	 */
 	@Override
 	public void renderExcellent(GameEngine engine, int playerID) {
@@ -2050,13 +2050,13 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * 結果画面の処理
+	 * Processing of the results screen
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
 		engine.allowTextRenderByReceiver = false;
 
-		// 設定画面へ
+		// To the setting screen
 		if(engine.ctrl.isPush(Controller.BUTTON_A) && !isNetGameActive && (playerID == 0)) {
 			engine.playSE("decide");
 			resetFlags();
@@ -2072,7 +2072,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/*
-	 * Render results screen処理
+	 * Render results screenProcessing
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -2151,7 +2151,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 
 	@Override
 	public void netlobbyOnMessage(NetLobbyFrame lobby, NetPlayerClient client, String[] message) throws IOException {
-		// Player状態変更
+		// PlayerState change
 		if(message[0].equals("playerupdate")) {
 			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
 
@@ -2173,7 +2173,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 			updatePlayerExist();
 			updatePlayerNames();
 		}
-		// Player切断
+		// PlayerCut
 		if(message[0].equals("playerlogout")) {
 			NetPlayerInfo pInfo = new NetPlayerInfo(message[1]);
 
@@ -2182,7 +2182,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				updatePlayerNames();
 			}
 		}
-		// 参戦状態変更
+		// Participation status change
 		if(message[0].equals("changestatus")) {
 			int uid = Integer.parseInt(message[2]);
 
@@ -2194,14 +2194,14 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				updatePlayerNames();
 
 				if(playerSeatNumber >= 0) {
-					// 参戦
+					// Participation in a war
 					owner.engine[0].displaysize = 0;
 					owner.engine[0].enableSE = true;
 					for(int i = 1; i < getPlayers(); i++) {
 						owner.engine[i].displaysize = -1;
 					}
 				} else {
-					// 観戦
+					// Spectator
 					for(int i = 0; i < getPlayers(); i++) {
 						owner.engine[i].displaysize = -1;
 						owner.engine[i].enableSE = false;
@@ -2239,14 +2239,14 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				}
 			}
 		}
-		// 誰か来た
+		// I came someone
 		if(message[0].equals("playerenter")) {
 			int seatID = Integer.parseInt(message[3]);
 			if((seatID != -1) && (numPlayers < 2)) {
 				owner.receiver.playSE("levelstop");
 			}
 		}
-		// 誰か出て行った
+		// I went out someone
 		if(message[0].equals("playerleave")) {
 			int seatID = Integer.parseInt(message[3]);
 
@@ -2345,7 +2345,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 				isReady[i] = false;
 			}
 		}
-		// 死亡
+		// Death
 		if(message[0].equals("dead")) {
 			int seatID = Integer.parseInt(message[3]);
 			int playerID = getPlayerIDbySeatID(seatID);
@@ -2504,7 +2504,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 					}
 				}
 			}
-			// 操作中Block
+			// During operationBlock
 			if(message[3].equals("piece")) {
 				int id = Integer.parseInt(message[4]);
 
@@ -2609,7 +2609,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 					netLobby.netPlayerClient.send("game\tgarbageupdate\t" + garbage[0] + "\n");
 				}
 			}
-			// せり上がりバー更新
+			// Update bar rising auction
 			if(message[3].equals("garbageupdate")) {
 				garbage[playerID] = Integer.parseInt(message[4]);
 			}
@@ -2666,16 +2666,16 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 	}
 
 	/**
-	 * 敵から送られてきたgarbage blockの data
+	 * I was sent from the enemygarbage blockOf data
 	 */
 	private class GarbageEntry {
 		/** garbage blockcount */
 		public int lines = 0;
 
-		/** 送信元(ゲーム用Player number) */
+		/** Source(For gamesPlayer number) */
 		public int playerID = 0;
 
-		/** 送信元(ゲーム以外用Player number) */
+		/** Source(For non-gamePlayer number) */
 		public int uid = 0;
 
 		/**
@@ -2686,7 +2686,7 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 		}
 
 		/**
-		 * パラメータ付きConstructor
+		 * With parametersConstructor
 		 * @param g garbage blockcount
 		 */
 		@SuppressWarnings("unused")
@@ -2695,9 +2695,9 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 		}
 
 		/**
-		 * パラメータ付きConstructor
+		 * With parametersConstructor
 		 * @param g garbage blockcount
-		 * @param p 送信元(ゲーム用Player number)
+		 * @param p Source(For gamesPlayer number)
 		 */
 		public GarbageEntry(int g, int p) {
 			lines = g;
@@ -2705,10 +2705,10 @@ public class LegacyNetVSBattleMode extends NetDummyMode {
 		}
 
 		/**
-		 * パラメータ付きConstructor
+		 * With parametersConstructor
 		 * @param g garbage blockcount
-		 * @param p 送信元(ゲーム用Player number)
-		 * @param s 送信元(ゲーム以外用Player number)
+		 * @param p Source(For gamesPlayer number)
+		 * @param s Source(For non-gamePlayer number)
 		 */
 		public GarbageEntry(int g, int p, int s) {
 			lines = g;

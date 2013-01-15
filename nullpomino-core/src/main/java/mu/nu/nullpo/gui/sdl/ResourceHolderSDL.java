@@ -45,13 +45,13 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * 画像や音声の管理をするクラス
+ * Class to the management of image and sound
  */
 public class ResourceHolderSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolderSDL.class);
 
-	/** Backgroundのcount */
+	/** BackgroundOfcount */
 	public static final int BACKGROUND_MAX = 20;
 
 	/** Number of images for block spatter animation during line clears */
@@ -73,7 +73,7 @@ public class ResourceHolderSDL {
 	/** Regular font */
 	public static SDLSurface imgFont, imgFontSmall, imgFontBig;
 
-	/** 小物画像 */
+	/** Small image */
 	public static SDLSurface imgSprite;
 
 	/** Title */
@@ -88,7 +88,7 @@ public class ResourceHolderSDL {
 	/** Field background */
 	public static SDLSurface imgFieldbg, imgFieldbg2, imgFieldbg2Small, imgFieldbg2Big;
 
-	/** 真っ黒画像と真っ白画像 */
+	/** Black and white image image */
 	public static SDLSurface imgBlankBlack, imgBlankWhite;
 
 	/** Block spatter animation during line clears */
@@ -97,7 +97,7 @@ public class ResourceHolderSDL {
 	/** Effects for clearing gem blocks */
 	public static SDLSurface[] imgPErase;
 
-	/** プレイ中のBackground */
+	/** In playBackground */
 	public static SDLSurface[] imgPlayBG;
 
 	/** TTF font */
@@ -113,7 +113,7 @@ public class ResourceHolderSDL {
 	public static int bgmPlaying;
 
 	/**
-	 * 画像や音声を読み込み
+	 * Loading images and sound files
 	 * @throws SDLException Failed to load
 	 */
 	public static void load() throws SDLException {
@@ -254,7 +254,7 @@ public class ResourceHolderSDL {
 			}
 		}
 
-		// 音楽
+		// Music
 		bgm = new MixMusic[BGMStatus.BGM_COUNT];
 		bgmPlaying = -1;
 
@@ -304,9 +304,9 @@ public class ResourceHolderSDL {
 	}
 
 	/**
-	 * 画像読み込み
+	 * Image loading
 	 * @param filename Filename
-	 * @return 画像 data
+	 * @return Image data
 	 */
 	public static SDLSurface loadImage(String filename) {
 		SDLSurface img = null;
@@ -324,9 +324,9 @@ public class ResourceHolderSDL {
 	}
 
 	/**
-	 * 指定した numberのBGMをメモリ上に読み込み
+	 * Specified numberOfBGMRead into memory
 	 * @param no BGM number
-	 * @param showerr 例外が発生したときにコンソールに表示する
+	 * @param showerr displayed on the console when an exception occurs
 	 */
 	public static void bgmLoad(int no, boolean showerr) {
 		if(NullpoMinoSDL.propConfig.getProperty("option.bgm", false) == false) return;
@@ -359,7 +359,7 @@ public class ResourceHolderSDL {
 	}
 
 	/**
-	 * 指定した numberのBGMを再生
+	 * Specified numberOfBGMPlay
 	 * @param no BGM number
 	 */
 	public static void bgmStart(int no) {
@@ -387,7 +387,7 @@ public class ResourceHolderSDL {
 	}
 
 	/**
-	 * Current BGMを一時停止
+	 * Current BGMPause
 	 */
 	public static void bgmPause() {
 		if(bgmIsPlaying()) {
@@ -396,7 +396,7 @@ public class ResourceHolderSDL {
 	}
 
 	/**
-	 * 一時停止中のBGMを再開
+	 * PausedBGMResumes
 	 */
 	public static void bgmResume() {
 		if(bgmIsPlaying()) {
@@ -405,15 +405,15 @@ public class ResourceHolderSDL {
 	}
 
 	/**
-	 * BGM再生中かどうか
-	 * @return 再生中ならtrue
+	 * BGMWhether during playback
+	 * @return If during playbacktrue
 	 */
 	public static boolean bgmIsPlaying() {
 		return SDLMixer.playingMusic();
 	}
 
 	/**
-	 * BGMを停止
+	 * BGMStop
 	 */
 	public static void bgmStop() {
 		try {

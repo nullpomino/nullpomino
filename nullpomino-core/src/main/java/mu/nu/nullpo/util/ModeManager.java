@@ -37,13 +37,13 @@ import mu.nu.nullpo.game.subsystem.mode.GameMode;
 import org.apache.log4j.Logger;
 
 /**
- * Mode 管理クラス
+ * Mode Management class
  */
 public class ModeManager {
 	/** Log */
 	static Logger log = Logger.getLogger(ModeManager.class);
 
-	/** Mode の動的配列 */
+	/** Mode Dynamic array of */
 	public ArrayList<GameMode> modelist = new ArrayList<GameMode>();
 
 	/**
@@ -61,17 +61,17 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode のcountを取得(通常+ネットプレイ全部)
-	 * @return Modeのcount(通常+ネットプレイ全部)
+	 * Mode OfcountGet the(Usually+All net play)
+	 * @return ModeOfcount(Usually+All net play)
 	 */
 	public int getSize() {
 		return modelist.size();
 	}
 
 	/**
-	 * Mode のcountを取得
-	 * @param netplay falseなら通常Mode だけ, When true,ネットプレイ用Mode だけcountえる
-	 * @return Modeのcount
+	 * Mode OfcountGet the
+	 * @param netplay falseIf normalMode Only, When true,For net playMode OnlycountObtained
+	 * @return ModeOfcount
 	 */
 	public int getNumberOfModes(boolean netplay) {
 		int count = 0;
@@ -87,8 +87,8 @@ public class ModeManager {
 	}
 
 	/**
-	 * 読み込まれている全てのMode nameを取得
-	 * @return Mode nameの配列
+	 * All that has been readMode nameGet the
+	 * @return Mode nameAn array of
 	 */
 	public String[] getAllModeNames() {
 		String[] strings = new String[getSize()];
@@ -101,9 +101,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * 読み込まれているMode nameを取得
-	 * @param netplay falseなら通常Mode だけ, When true,ネットプレイ用Mode だけ取得
-	 * @return Mode nameの配列
+	 * Are loadedMode nameGet the
+	 * @param netplay falseIf normalMode Only, When true,For net playMode Only obtained
+	 * @return Mode nameAn array of
 	 */
 	public String[] getModeNames(boolean netplay) {
 		int num = getNumberOfModes(netplay);
@@ -123,9 +123,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode  nameを取得
+	 * Mode  nameGet the
 	 * @param id ModeID
-	 * @return Mode name (idが不正なら「*INVALID MODE*」）
+	 * @return Mode name (idIf the incorrect &quot;*INVALID MODE*&quot;)
 	 */
 	public String getName(int id) {
 		try {
@@ -136,9 +136,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode  nameからIDを取得
+	 * Mode  nameFromIDGet the
 	 * @param name Mode name
-	 * @return ModeID (見つからない場合は-1）
+	 * @return ModeID (If it is not found-1)
 	 */
 	public int getIDbyName(String name) {
 		if(name == null) return -1;
@@ -153,9 +153,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode オブジェクトを取得
+	 * Mode Gets an object
 	 * @param id ModeID
-	 * @return Modeオブジェクト (idが不正ならnull）
+	 * @return ModeObject (idIf the incorrectnull)
 	 */
 	public GameMode getMode(int id) {
 		try {
@@ -166,9 +166,9 @@ public class ModeManager {
 	}
 
 	/**
-	 * Mode オブジェクトを取得
+	 * Mode Gets an object
 	 * @param name Mode name
-	 * @return Modeオブジェクト (見つからないならnull）
+	 * @return ModeObject (Not foundnull)
 	 */
 	public GameMode getMode(String name) {
 		try {
@@ -179,14 +179,14 @@ public class ModeManager {
 	}
 
 	/**
-	 * Property fileに書かれた一覧からゲームMode を読み込み
+	 * Property fileGame from the list that was written toMode Read
 	 * @param prop Property file
 	 */
 	public void loadGameModes(CustomProperties prop) {
 		int count = 0;
 
 		while(true) {
-			// クラス名を読み込み
+			// Read the name of a class
 			String name = prop.getProperty(String.valueOf(count), null);
 			if(name == null) return;
 
@@ -208,12 +208,12 @@ public class ModeManager {
 	}
 
 	/**
-	 * テキストファイルに書かれた一覧からゲームMode を読み込み
-	 * @param bf テキストファイルを読み込んだBufferedReader
+	 * Game from the list that was written to a text fileMode Read
+	 * @param bf I read a text fileBufferedReader
 	 */
 	public void loadGameModes(BufferedReader bf) {
 		while(true) {
-			// クラス名を読み込み
+			// Read the name of a class
 			String name = null;
 			try {
 				name = bf.readLine();

@@ -32,31 +32,31 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * ステート
+ * State
  */
 public class BaseStateSDL {
 	/**
 	 * Called when entering this state
-	 * @throws SDLException SDLのエラー
+	 * @throws SDLException SDLErrors
 	 */
 	public void enter() throws SDLException {}
 
 	/**
-	 * このステートを出るときの処理
-	 * @throws SDLException SDLのエラー
+	 * What happens when you leave this state
+	 * @throws SDLException SDLErrors
 	 */
 	public void leave() throws SDLException {}
 
 	/**
 	 * Draw the game screen
-	 * @param screen ゲーム画面のサーフェイス
-	 * @throws SDLException SDLのエラー
+	 * @param screen Surface of the game screen
+	 * @throws SDLException SDLErrors
 	 */
 	public void render(SDLSurface screen) throws SDLException {}
 
 	/**
 	 * Update game state
-	 * @throws SDLException SDLのエラー
+	 * @throws SDLException SDLErrors
 	 */
 	public void update() throws SDLException {}
 }

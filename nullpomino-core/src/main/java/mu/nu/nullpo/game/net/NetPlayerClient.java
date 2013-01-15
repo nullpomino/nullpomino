@@ -37,28 +37,28 @@ import mu.nu.nullpo.game.play.GameManager;
 import org.apache.log4j.Logger;
 
 /**
- * クライアント(Player用)
+ * Client(PlayerUse)
  */
 public class NetPlayerClient extends NetBaseClient {
 	/** Log */
 	static final Logger log = Logger.getLogger(NetPlayerClient.class);
 
-	/** Player情報 */
+	/** PlayerInformation */
 	protected LinkedList<NetPlayerInfo> playerInfoList = new LinkedList<NetPlayerInfo>();
 
-	/** ルーム情報 */
+	/** Room Information */
 	protected LinkedList<NetRoomInfo> roomInfoList = new LinkedList<NetRoomInfo>();
 
-	/** 自分のPlayer名 */
+	/** OwnPlayerName */
 	protected String playerName;
 
-	/** 自分のTeam name */
+	/** OwnTeam name */
 	protected String playerTeam;
 
-	/** 自分のPlayer識別 number */
+	/** OwnPlayerIdentification number */
 	protected int playerUID;
 
-	/** サーバーVersion */
+	/** ServerVersion */
 	protected float serverVersion = -1f;
 
 	/** Number of players */
@@ -76,7 +76,7 @@ public class NetPlayerClient extends NetBaseClient {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
+	 * @param host Destination host
 	 */
 	public NetPlayerClient(String host) {
 		super(host);
@@ -84,8 +84,8 @@ public class NetPlayerClient extends NetBaseClient {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
-	 * @param port 接続先ポート number
+	 * @param host Destination host
+	 * @param port Destination port number
 	 */
 	public NetPlayerClient(String host, int port) {
 		super(host, port);
@@ -93,9 +93,9 @@ public class NetPlayerClient extends NetBaseClient {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
-	 * @param port 接続先ポート number
-	 * @param name PlayerのName
+	 * @param host Destination host
+	 * @param port Destination port number
+	 * @param name PlayerOfName
 	 */
 	public NetPlayerClient(String host, int port, String name) {
 		super();
@@ -107,10 +107,10 @@ public class NetPlayerClient extends NetBaseClient {
 
 	/**
 	 * Constructor
-	 * @param host 接続先ホスト
-	 * @param port 接続先ポート number
-	 * @param name PlayerのName
-	 * @param team 所属するTeam name
+	 * @param host Destination host
+	 * @param port Destination port number
+	 * @param name PlayerOfName
+	 * @param team BelongTeam name
 	 */
 	public NetPlayerClient(String host, int port, String name, String team) {
 		super();
@@ -121,13 +121,13 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/*
-	 * 受信したメッセージに応じていろいろ処理をする
+	 * The various processing depending on the received message
 	 */
 	@Override
 	protected void processPacket(String fullMessage) throws IOException {
-		String[] message = fullMessage.split("\t");	// タブ区切り
+		String[] message = fullMessage.split("\t");	// Tab delimited
 
-		// 接続完了
+		// Connection completion
 		if(message[0].equals("welcome")) {
 			//welcome\t[VERSION]\t[PLAYERS]\t[OBSERVERS]\t[VERSION MINOR]\t[VERSION STRING]\t[PING INTERVAL]\t[DEV BUILD]
 			playerCount = Integer.parseInt(message[2]);
@@ -141,19 +141,19 @@ public class NetPlayerClient extends NetBaseClient {
 			send("login\t" + GameManager.getVersionMajor() + "\t" + NetUtil.urlEncode(playerName) + "\t" + Locale.getDefault().getCountry() + "\t" +
 				 NetUtil.urlEncode(playerTeam) + "\t" + GameManager.getVersionMinor() + "\t" + GameManager.isDevBuild() + "\n");
 		}
-		// 人count更新
+		// PeoplecountUpdate
 		if(message[0].equals("observerupdate")) {
 			//observerupdate\t[PLAYERS]\t[OBSERVERS]
 			playerCount = Integer.parseInt(message[1]);
 			observerCount = Integer.parseInt(message[2]);
 		}
-		// ログイン成功
+		// Successful login
 		if(message[0].equals("loginsuccess")) {
 			//loginsuccess\t[NAME]\t[UID]
 			playerName = NetUtil.urlDecode(message[1]);
 			playerUID = Integer.parseInt(message[2]);
 		}
-		// Playerリスト
+		// PlayerList
 		if(message[0].equals("playerlist")) {
 			//playerlist\t[PLAYERS]\t[PLAYERDATA...]
 
@@ -164,7 +164,7 @@ public class NetPlayerClient extends NetBaseClient {
 				playerInfoList.add(p);
 			}
 		}
-		// Player情報更新/新規Player
+		// PlayerInformation update/A newPlayer
 		if(message[0].equals("playerupdate") || message[0].equals("playernew")) {
 			//playerupdate\t[PLAYERDATA]
 
@@ -178,7 +178,7 @@ public class NetPlayerClient extends NetBaseClient {
 				playerInfoList.set(index, p);
 			}
 		}
-		// Player切断
+		// PlayerCut
 		if(message[0].equals("playerlogout")) {
 			//playerlogout\t[PLAYERDATA]
 
@@ -190,7 +190,7 @@ public class NetPlayerClient extends NetBaseClient {
 				p2.delete();
 			}
 		}
-		// ルームリスト
+		// Room list
 		if(message[0].equals("roomlist")) {
 			//roomlist\t[ROOMS]\t[ROOMDATA...]
 
@@ -201,7 +201,7 @@ public class NetPlayerClient extends NetBaseClient {
 				roomInfoList.add(r);
 			}
 		}
-		// ルーム情報更新/新規ルーム出現
+		// Room information update/New room appearance
 		if(message[0].equals("roomupdate") || message[0].equals("roomcreate")) {
 			//roomupdate\t[ROOMDATA]
 
@@ -215,7 +215,7 @@ public class NetPlayerClient extends NetBaseClient {
 				roomInfoList.set(index, r);
 			}
 		}
-		// ルーム消滅
+		// Annihilation Room
 		if(message[0].equals("roomdelete")) {
 			//roomdelete\t[ROOMDATA]
 
@@ -227,7 +227,7 @@ public class NetPlayerClient extends NetBaseClient {
 				r2.delete();
 			}
 		}
-		// 参戦状態変更
+		// Participation status change
 		if(message[0].equals("changestatus")) {
 			NetPlayerInfo p = getPlayerInfoByUID(Integer.parseInt(message[2]));
 
@@ -245,14 +245,14 @@ public class NetPlayerClient extends NetBaseClient {
 			}
 		}
 
-		// Listener呼び出し
+		// ListenerCall
 		super.processPacket(fullMessage);
 	}
 
 	/**
-	 * 指定されたIDのルーム情報を返す
-	 * @param roomID ルームID
-	 * @return ルーム情報(存在しないならnull)
+	 * DesignatedIDReturns information room
+	 * @param roomID RoomID
+	 * @return Room Information(Does not existnull)
 	 */
 	public NetRoomInfo getRoomInfo(int roomID) {
 		if(roomID < 0) return null;
@@ -267,9 +267,9 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * 指定したNameのPlayerを取得
+	 * SpecifiedNameOfPlayerGet the
 	 * @param name Name
-	 * @return 指定したNameのPlayer情報(いなかったらnull)
+	 * @return SpecifiedNameOfPlayerInformation(There were nonull)
 	 */
 	public NetPlayerInfo getPlayerInfoByName(String name) {
 		for(NetPlayerInfo pInfo: playerInfoList) {
@@ -281,9 +281,9 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * 指定したIDのPlayerを取得
+	 * SpecifiedIDOfPlayerGet the
 	 * @param uid ID
-	 * @return 指定したIDのPlayer情報(いなかったらnull)
+	 * @return SpecifiedIDOfPlayerInformation(There were nonull)
 	 */
 	public NetPlayerInfo getPlayerInfoByUID(int uid) {
 		for(NetPlayerInfo pInfo: playerInfoList) {
@@ -295,36 +295,36 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return Player情報のリスト
+	 * @return PlayerList of information
 	 */
 	public LinkedList<NetPlayerInfo> getPlayerInfoList() {
 		return playerInfoList;
 	}
 
 	/**
-	 * @return ルーム情報のリスト
+	 * @return Listing Information Room
 	 */
 	public LinkedList<NetRoomInfo> getRoomInfoList() {
 		return roomInfoList;
 	}
 
 	/**
-	 * @return Current Player名
+	 * @return Current PlayerName
 	 */
 	public String getPlayerName() {
 		return playerName;
 	}
 
 	/**
-	 * @return Current Playerの識別 number
+	 * @return Current PlayerIdentification of number
 	 */
 	public int getPlayerUID() {
 		return playerUID;
 	}
 
 	/**
-	 * 自分自身の情報を取得
-	 * @return 自分自身の情報
+	 * Get your own information
+	 * @return Their own information
 	 */
 	public NetPlayerInfo getYourPlayerInfo() {
 		return getPlayerInfoByUID(playerUID);
@@ -348,7 +348,7 @@ public class NetPlayerClient extends NetBaseClient {
 	}
 
 	/**
-	 * @return サーバーVersion
+	 * @return ServerVersion
 	 */
 	public float getServerVersion() {
 		return serverVersion;

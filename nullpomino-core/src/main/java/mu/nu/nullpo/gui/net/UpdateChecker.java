@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /**
- * 新Versionチェッカー
+ * NewVersionChecker
  */
 public class UpdateChecker implements Runnable {
 	/** Log */
@@ -48,38 +48,38 @@ public class UpdateChecker implements Runnable {
 	/**  default のXMLのURL */
 	public static final String DEFAULT_XML_URL = "http://nullpomino.googlecode.com/svn/trunk/NullpoUpdate.xml";
 
-	/** 状態の定count */
+	/** Constant statecount */
 	public static final int STATUS_INACTIVE = 0,
 							STATUS_LOADING = 1,
 							STATUS_ERROR = 2,
 							STATUS_COMPLETE = 3;
 
-	/** Current 状態 */
+	/** Current State */
 	private static volatile int status = 0;
 
-	/**  event リスナー */
+	/**  event Listener */
 	private static LinkedList<UpdateCheckerListener> listeners = null;
 
-	/** アップデート情報が書かれたXMLのURL */
+	/** Update information has been writtenXMLOfURL */
 	private static String strURLofXML = null;
 
-	/** 最新版のVersion number */
+	/** The latest version ofVersion number */
 	private static String strLatestVersion = null;
 
-	/** リリース日 */
+	/** Release Date */
 	private static String strReleaseDate = null;
 
-	/** ダウンロードURL */
+	/** DownloadURL */
 	private static String strDownloadURL = null;
 
 	/** Installer for Windows URL */
 	private static String strWindowsInstallerURL = null;
 
-	/** 更新 check 用スレッド */
+	/** Update check Thread for */
 	private static Thread thread = null;
 
 	/**
-	 * XMLをダウンロードしてVersion numberなどを取得
+	 * XMLDownload theVersion numberAcquisition and
 	 * @return true if successful
 	 */
 	private static boolean checkUpdate() {
@@ -141,8 +141,8 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * 最新版のメジャーVersionを取得
-	 * @return 最新版のメジャーVersion(float型)
+	 * Major latestVersionGet the
+	 * @return Major latestVersion(floatType)
 	 */
 	public static float getLatestMajorVersionAsFloat() {
 		float resultVersion = 0f;
@@ -161,8 +161,8 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * 最新版のマイナーVersionを取得
-	 * @return 最新版のマイナーVersion(int型)
+	 * Minor version of the latestVersionGet the
+	 * @return Minor version of the latestVersion(intType)
 	 */
 	public static int getLatestMinorVersionAsInt() {
 		int resultVersion = 0;
@@ -181,18 +181,18 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * 最新版のVersion numberのString型表現を取得
-	 * @return 最新版のVersion numberのString型表現("7.0.0"など)
+	 * The latest version ofVersion numberOfStringGets the type representation
+	 * @return The latest version ofVersion numberOfStringType representation("7.0.0"Such as)
 	 */
 	public static String getLatestVersionFullString() {
 		return getLatestMajorVersionAsFloat() + "." + getLatestMinorVersionAsInt();
 	}
 
 	/**
-	 * Current versionよりも最新版のVersionの方が新しいか判定
-	 * @param nowMajor Current メジャーVersion
-	 * @param nowMinor Current マイナーVersion
-	 * @return 最新版の方が新しいとtrue
+	 * Current versionThan the latest version ofVersionWho will determine whether the new
+	 * @param nowMajor Current MajorVersion
+	 * @param nowMinor Current MinorVersion
+	 * @return The latest edition of the new and bettertrue
 	 */
 	public static boolean isNewVersionAvailable(float nowMajor, int nowMinor) {
 		if(!isCompleted()) return false;
@@ -208,7 +208,7 @@ public class UpdateChecker implements Runnable {
 
 	/**
 	 * Version check
-	 * @param strURL 最新版の情報が入ったXMLファイルのURL(nullまたは空文字列にすると default 値を使う)
+	 * @param strURL Latest information entersXMLIn the fileURL(nullWhen I or an empty string default Using the value)
 	 */
 	public static void startCheckForUpdates(String strURL) {
 		if((strURL == null) || (strURL.length() <= 0)) {
@@ -222,54 +222,54 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 * @return スレッドが動作中(読み込み中)ならtrue
+	 * @return Thread is running(Loading)Iftrue
 	 */
 	public static boolean isRunning() {
 		return (status == STATUS_LOADING);
 	}
 
 	/**
-	 * @return 読み込み完了したらtrue
+	 * @return Completed readingtrue
 	 */
 	public static boolean isCompleted() {
 		return (status == STATUS_COMPLETE);
 	}
 
 	/**
-	 * Current 状態を取得
-	 * @return Current 状態
+	 * Current Gets the state
+	 * @return Current State
 	 */
 	public static int getStatus() {
 		return status;
 	}
 
 	/**
-	 * XMLのURLを取得
-	 * @return XMLのURL
+	 * XMLOfURLGet the
+	 * @return XMLOfURL
 	 */
 	public static String getStrURLofXML() {
 		return strURLofXML;
 	}
 
 	/**
-	 * 最新版のVersion number(未整形)を取得(7_0_0_0など)
-	 * @return 最新版のVersion number(未整形)
+	 * The latest version ofVersion number(Unformatted)Get the(7_0_0_0Such as)
+	 * @return The latest version ofVersion number(Unformatted)
 	 */
 	public static String getStrLatestVersion() {
 		return strLatestVersion;
 	}
 
 	/**
-	 * 最新版がリリースされた日を取得
-	 * @return 最新版がリリースされた日
+	 * Gets the date on which the latest version has been released
+	 * @return Sun has released the latest version
 	 */
 	public static String getStrReleaseDate() {
 		return strReleaseDate;
 	}
 
 	/**
-	 * 最新版のダウンロード先URLを取得
-	 * @return 最新版のダウンロード先URL
+	 * Where to download the latest versionURLGet the
+	 * @return Where to download the latest versionURL
 	 */
 	public static String getStrDownloadURL() {
 		return strDownloadURL;
@@ -284,8 +284,8 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 *  event リスナーを追加(もう追加されていると何も起こりません)
-	 * @param l 追加する event リスナー
+	 *  event Adds a listener(Nothing happens and another has been added)
+	 * @param l Add event Listener
 	 */
 	public static void addListener(UpdateCheckerListener l) {
 		if(listeners == null) {
@@ -298,9 +298,9 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/**
-	 *  event リスナーを削除
-	 * @param l 削除する event リスナー
-	 * @return 削除されたらtrue, 最初から登録されていなかったらfalse
+	 *  event Removes a listener
+	 * @param l Remove event Listener
+	 * @return Has been deletedtrue, It has not been registered from the beginningfalse
 	 */
 	public static boolean removeListener(UpdateCheckerListener l) {
 		if(listeners == null) {
@@ -310,10 +310,10 @@ public class UpdateChecker implements Runnable {
 	}
 
 	/*
-	 * 更新 check スレッドの処理
+	 * Update check Processing of the thread
 	 */
 	public void run() {
-		// 開始
+		// Start
 		status = STATUS_LOADING;
 		if(listeners != null) {
 			for(UpdateCheckerListener l : listeners) {
@@ -321,14 +321,14 @@ public class UpdateChecker implements Runnable {
 			}
 		}
 
-		// 更新 check
+		// Update check
 		if(checkUpdate() == true) {
 			status = STATUS_COMPLETE;
 		} else {
 			status = STATUS_ERROR;
 		}
 
-		// 終了
+		// End
 		if(listeners != null) {
 			for(UpdateCheckerListener l : listeners) {
 				l.onUpdateCheckerEnd(status);

@@ -38,25 +38,25 @@ import mu.nu.nullpo.game.play.GameManager;
 import org.apache.log4j.Logger;
 
 /**
- * 普通のAI
+ * CommonAI
  */
 public class BasicAI extends DummyAI implements Runnable {
 	/** Log */
 	static Logger log = Logger.getLogger(BasicAI.class);
 
-	/** 接地したあとのX-coordinate */
+	/** After that I was groundedX-coordinate */
 	public int bestXSub;
 
-	/** 接地したあとのY-coordinate */
+	/** After that I was groundedY-coordinate */
 	public int bestYSub;
 
-	/** 接地したあとのDirection(-1: None) */
+	/** After that I was groundedDirection(-1: None) */
 	public int bestRtSub;
 
-	/** 最善手のEvaluation score */
+	/** The best moveEvaluation score */
 	public int bestPts;
 
-	/** 移動を遅らせる用の変count */
+	/** Delay the move for changecount */
 	public int delay;
 
 	/** The GameEngine that owns this AI */
@@ -65,23 +65,23 @@ public class BasicAI extends DummyAI implements Runnable {
 	/** The GameManager that owns this AI */
 	public GameManager gManager;
 
-	/** When true,スレッドにThink routineの実行を指示 */
+	/** When true,To threadThink routineInstructing the execution of the */
 	public boolean thinkRequest;
 
 	/** true when thread is executing the think routine. */
 	public boolean thinking;
 
-	/** スレッドを停止させる time */
+	/** To stop a thread time */
 	public int thinkDelay;
 
-	/** When true,スレッド動作中 */
+	/** When true,Running thread */
 	public volatile boolean threadRunning;
 
 	/** Thread for executing the think routine */
 	public Thread thread;
 
 	/*
-	 * AIのName
+	 * AIOfName
 	 */
 	@Override
 	public String getName() {
@@ -111,7 +111,7 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 終了処理
+	 * End processing
 	 */
 	@Override
 	public void shutdown(GameEngine engine, int playerID) {
@@ -166,7 +166,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			boolean pieceTouchGround = pieceNow.checkCollision(nowX, nowY + 1, fld);
 
 			if((bestHold || forceHold) && engine.isHoldOK()) {
-				// ホールド
+				// Hold
 				input |= Controller.BUTTON_BIT_D;
 			} else {
 				// rotation
@@ -187,25 +187,25 @@ public class BasicAI extends DummyAI implements Runnable {
 					}
 				}
 
-				// 到達可能な位置かどうか
+				// Whether reachable position
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
 
 				if( ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY)) && (rt == bestRt) ) {
-					// 到達不能なので再度思考する
+					// Again because it is thought unreachable
 					//thinkBestPosition(engine, playerID);
 					thinkRequest = true;
 					//thinkCurrentPieceNo++;
 					//System.out.println("rethink c:" + thinkCurrentPieceNo + " l:" + thinkLastPieceNo);
 				} else {
-					// 到達できる場合
+					// If you are able to reach
 					if((nowX == bestX) && (pieceTouchGround) && (rt == bestRt)) {
-						// 接地rotation
+						// Groundrotation
 						if(bestRtSub != -1) {
 							bestRt = bestRtSub;
 							bestRtSub = -1;
 						}
-						// ずらし移動
+						// Shift move
 						if(bestX != bestXSub) {
 							bestX = bestXSub;
 							bestY = bestYSub;
@@ -213,15 +213,15 @@ public class BasicAI extends DummyAI implements Runnable {
 					}
 
 					if(nowX > bestX) {
-						// 左
+						// Left
 						if(!ctrl.isPress(Controller.BUTTON_LEFT) || (engine.aiMoveDelay >= 0))
 							input |= Controller.BUTTON_BIT_LEFT;
 					} else if(nowX < bestX) {
-						// 右
+						// Right
 						if(!ctrl.isPress(Controller.BUTTON_RIGHT) || (engine.aiMoveDelay >= 0))
 							input |= Controller.BUTTON_BIT_RIGHT;
 					} else if((nowX == bestX) && (rt == bestRt)) {
-						// 目標到達
+						// Funnel
 						if((bestRtSub == -1) && (bestX == bestXSub)) {
 							if(engine.ruleopt.harddropEnable && !ctrl.isPress(Controller.BUTTON_UP))
 								input |= Controller.BUTTON_BIT_UP;
@@ -275,7 +275,7 @@ public class BasicAI extends DummyAI implements Runnable {
 
 		for(int depth = 0; depth < getMaxThinkDepth(); depth++) {
 			for(int rt = 0; rt < Piece.DIRECTION_COUNT; rt++) {
-				// 今のピース
+				// Peace for now
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, engine.field);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, engine.field);
 
@@ -284,7 +284,7 @@ public class BasicAI extends DummyAI implements Runnable {
 					int y = pieceNow.getBottom(x, nowY, rt, fld);
 
 					if(!pieceNow.checkCollision(x, y, rt, fld)) {
-						// そのまま
+						// As it is
 						int pts = thinkMain(engine, x, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, depth);
 
 						if(pts >= bestPts) {
@@ -299,7 +299,7 @@ public class BasicAI extends DummyAI implements Runnable {
 						}
 
 						if((depth > 0) || (bestPts <= 10) || (pieceNow.id == Piece.PIECE_T)) {
-							// 左ずらし
+							// Left shift
 							fld.copy(engine.field);
 							if(!pieceNow.checkCollision(x - 1, y, rt, fld) && pieceNow.checkCollision(x - 1, y - 1, rt, fld)) {
 								pts = thinkMain(engine, x - 1, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, depth);
@@ -316,7 +316,7 @@ public class BasicAI extends DummyAI implements Runnable {
 								}
 							}
 
-							// 右ずらし
+							// Right shift
 							fld.copy(engine.field);
 							if(!pieceNow.checkCollision(x + 1, y, rt, fld) && pieceNow.checkCollision(x + 1, y - 1, rt, fld)) {
 								pts = thinkMain(engine, x + 1, y, rt, -1, fld, pieceNow, pieceNext, pieceHold, depth);
@@ -333,7 +333,7 @@ public class BasicAI extends DummyAI implements Runnable {
 								}
 							}
 
-							// 左rotation
+							// Leftrotation
 							if(!engine.isRotateButtonDefaultRight() || engine.ruleopt.rotateButtonAllowReverse) {
 								int rot = pieceNow.getRotateDirection(-1, rt);
 								int newX = x;
@@ -368,7 +368,7 @@ public class BasicAI extends DummyAI implements Runnable {
 								}
 							}
 
-							// 右rotation
+							// Rightrotation
 							if(engine.isRotateButtonDefaultRight() || engine.ruleopt.rotateButtonAllowReverse) {
 								int rot = pieceNow.getRotateDirection(1, rt);
 								int newX = x;
@@ -444,7 +444,7 @@ public class BasicAI extends DummyAI implements Runnable {
 				if(pieceHold == null) {
 					pieceHold = engine.getNextObject(engine.nextPieceCount);
 				}
-				// ホールドピース
+				// Hold Peace
 				if((holdOK == true) && (pieceHold != null) && (depth == 0)) {
 					int spawnX = engine.getSpawnPosX(engine.field, pieceHold);
 					int spawnY = engine.getSpawnPosY(pieceHold);
@@ -488,11 +488,11 @@ public class BasicAI extends DummyAI implements Runnable {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld Direction before rotation (-1: None）
+	 * @param rtOld Direction before rotation (-1: None)
 	 * @param fld Field (Can be modified without problems)
 	 * @param piece Piece
-	 * @param nextpiece NEXTピース
-	 * @param holdpiece HOLDピース(nullの場合あり)
+	 * @param nextpiece NEXTPeace
+	 * @param holdpiece HOLDPeace(nullMay be)
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
 	 * @return Evaluation score
 	 */
@@ -516,7 +516,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			tspin = true;
 		}
 
-		// ピースを置く
+		// Place the piece
 		if(!piece.placeToField(x, y, rt, fld)) {
 			return 0;
 		}
@@ -544,7 +544,7 @@ public class BasicAI extends DummyAI implements Runnable {
 		else
 			pts += y * 20;
 
-		// Linescountで加点
+		// LinescountAdditional points in
 		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) && (!tspin) && (engine.combo < 1)) {
 			return 0;
 		}
@@ -579,7 +579,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			}
 
 			if(lidAfter > lidBefore) {
-				// 穴の上に乗っているBlockを増やすと減点
+				// Is riding on top of the holeBlockIncreasing the deduction
 				if(!danger)
 					pts -= (lidAfter - lidBefore) * 10;
 				else
@@ -598,7 +598,7 @@ public class BasicAI extends DummyAI implements Runnable {
 			}
 
 			if((needIValleyAfter > needIValleyBefore) && (needIValleyAfter >= 2)) {
-				// 2つ以上I型が必要な穴を作ると減点
+				// 2One or moreIDeduction and make a hole type is required
 				pts -= (needIValleyAfter - needIValleyBefore) * 10;
 				if(depth == 0) return 0;
 			} else if(needIValleyAfter < needIValleyBefore) {
@@ -631,15 +631,15 @@ public class BasicAI extends DummyAI implements Runnable {
 	}
 
 	/**
-	 * Maximum妥協 levelを取得
-	 * @return Maximum妥協 level
+	 * MaximumCompromise levelGet the
+	 * @return MaximumCompromise level
 	 */
 	public int getMaxThinkDepth() {
 		return 2;
 	}
 
 	/*
-	 * スレッドの処理
+	 * Processing of the thread
 	 */
 	public void run() {
 		log.info("BasicAI: Thread start");

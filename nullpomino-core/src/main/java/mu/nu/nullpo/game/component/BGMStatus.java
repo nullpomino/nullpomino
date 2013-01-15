@@ -31,13 +31,13 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * 音楽の再生状況を管理するクラス
+ * Class that manages the state of music playback
  */
 public class BGMStatus implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -1003092972570497408L;
 
-	/** 音楽の定count */
+	/** Constant musiccount */
 	public static final int BGM_NOTHING = -1,
 							BGM_NORMAL1 = 0,
 							BGM_NORMAL2 = 1,
@@ -56,16 +56,16 @@ public class BGMStatus implements Serializable {
 							BGM_SPECIAL3 = 14,
 							BGM_SPECIAL4 = 15;
 
-	/** 音楽のMaximumcount */
+	/** MusicalMaximumcount */
 	public static final int BGM_COUNT = 16;
 
 	/** Current BGM number */
 	public int bgm;
 
-	/** 音量 (1f=100%, 0.5f=50%) */
+	/** Volume (1f=100%, 0.5f=50%) */
 	public float volume;
 
-	/** BGM fadeoutスイッチ */
+	/** BGM fadeoutSwitch */
 	public boolean fadesw;
 
 	/**
@@ -93,7 +93,7 @@ public class BGMStatus implements Serializable {
 	}
 
 	/**
-	 * 他のBGMStatusからコピー
+	 * OtherBGMStatusCopied from the
 	 * @param b Copy source
 	 */
 	public void copy(BGMStatus b) {
@@ -103,7 +103,7 @@ public class BGMStatus implements Serializable {
 	}
 
 	/**
-	 * BGM fade状態と音量の更新
+	 * BGM fadeUpdate of state and volume
 	 */
 	public void fadeUpdate() {
 		if(fadesw == true) {

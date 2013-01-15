@@ -33,7 +33,7 @@ import mu.nu.nullpo.game.component.Piece;
 import mu.nu.nullpo.game.play.GameEngine;
 
 /**
- * T-SpinしてくるAI (WIP)
+ * T-SpinHaveAI (WIP)
  */
 public class TSpinAI extends BasicAI {
 	@Override
@@ -61,13 +61,13 @@ public class TSpinAI extends BasicAI {
 		if((piece.id == Piece.PIECE_T) && (rtOld != -1) && (fld.isTSpinSpot(x, y, piece.big))) {
 			tspin = true;
 		}
-		// T-Spin穴のcount (before placement)
+		// T-SpinHolecount (before placement)
 		int tslotBefore = 0;
 		//if( (nextpiece.id == Piece.PIECE_T) || ((holdpiece != null) && (holdpiece.id == Piece.PIECE_T)) ) {
 			tslotBefore = fld.getTSlotLineClearAll(false);
 		//}
 
-		// ピースを置く
+		// Place the piece
 		if(!piece.placeToField(x, y, rt, fld)) {
 			return 0;
 		}
@@ -95,7 +95,7 @@ public class TSpinAI extends BasicAI {
 		else
 			pts += y * 20;
 
-		// Linescountで加点
+		// LinescountAdditional points in
 		if((lines == 1) && (!danger) && (depth == 0) && (heightAfter >= 16) && (holeBefore < 3) && (!tspin) && (engine.combo < 1)) {
 			return 0;
 		}
@@ -116,7 +116,7 @@ public class TSpinAI extends BasicAI {
 			int holeAfter = fld.getHowManyHoles();
 			int lidAfter = fld.getHowManyLidAboveHoles();
 			int needIValleyAfter = fld.getTotalValleyNeedIPiece();
-			// T-Spin穴のcount (after placement)
+			// T-SpinHolecount (after placement)
 			int tslotAfter = 0;
 			//if( (nextpiece.id == Piece.PIECE_T) || ((holdpiece != null) && (holdpiece.id == Piece.PIECE_T)) ) {
 				tslotAfter = fld.getTSlotLineClearAll(false);
@@ -124,16 +124,16 @@ public class TSpinAI extends BasicAI {
 			boolean newtslot = false;
 
 			if((!danger) && (tslotAfter > tslotBefore) && (tslotAfter == 1) && (holeAfter == holeBefore + 1)) {
-				// 新たにT-Spin穴ができると加点
+				// NewlyT-SpinHole and additional points can be
 				pts += 100000;
 				newtslot = true;
 
-				// ホールドのTを必ず出す
+				// HoldTBe sure to give
 				if((nextpiece.id != Piece.PIECE_T) && (holdpiece != null) && (holdpiece.id == Piece.PIECE_T)) {
 					forceHold = true;
 				}
 			} else if((tslotAfter < tslotBefore) && (!tspin) && (!danger)) {
-				// T-Spin穴壊すとNG
+				// T-SpinBreaking holeNG
 				return 0;
 			} else if(holeAfter > holeBefore) {
 				// Demerits for new holes
@@ -148,7 +148,7 @@ public class TSpinAI extends BasicAI {
 			}
 
 			if((lidAfter > lidBefore) && (!newtslot)) {
-				// 穴の上に乗っているBlockを増やすと減点
+				// Is riding on top of the holeBlockIncreasing the deduction
 				if(!danger)
 					pts -= (lidAfter - lidBefore) * 10;
 				else
@@ -167,7 +167,7 @@ public class TSpinAI extends BasicAI {
 			}
 
 			if((needIValleyAfter > needIValleyBefore) && (needIValleyAfter >= 2)) {
-				// 2つ以上I型が必要な穴を作ると減点
+				// 2One or moreIDeduction and make a hole type is required
 				pts -= (needIValleyAfter - needIValleyBefore) * 10;
 				if(depth == 0) return 0;
 			} else if(needIValleyAfter < needIValleyBefore) {
