@@ -47,7 +47,7 @@ public class GameManager {
 	public static final float VERSION_MAJOR = 7.6f;
 
 	/** Minor version */
-	public static final int VERSION_MINOR = 0;
+	public static final int VERSION_MINOR = 1;
 
 	/** Development-build flag (false:Release-build true:Dev-build) */
 	public static final boolean DEV_BUILD = true;
