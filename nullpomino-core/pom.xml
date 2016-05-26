@@ -16,7 +16,7 @@
 			<releases>
 				<checksumPolicy>ignore</checksumPolicy>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<updatePolicy>always</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
@@ -78,4 +78,5 @@
 			<version>LOCAL</version>
 		</dependency>
 	</dependencies>
+	
 </project>
