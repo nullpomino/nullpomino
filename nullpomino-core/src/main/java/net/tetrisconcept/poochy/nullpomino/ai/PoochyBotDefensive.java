@@ -17,7 +17,7 @@ public class PoochyBotDefensive extends PoochyBot {
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
 	 * @param rt Direction
-	 * @param rtOld Direction before rotation (-1: None）
+	 * @param rtOld Direction before rotation (-1: None)
 	 * @param fld Field (Can be modified without problems)
 	 * @param piece Piece
 	 * @param depth Compromise level (ranges from 0 through getMaxThinkDepth-1)
@@ -126,7 +126,7 @@ public class PoochyBotDefensive extends PoochyBot {
 			}
 		}
 
-		// ピースを置く
+		// Place the piece
 		if(!piece.placeToField(x, y, rt, fld)) {
 			if (DEBUG_ALL) log.debug("End of thinkMain(" + x + ", " + y + ", " + rt + ", " + rtOld +
 					", fld, piece " + piece.id + ", " + depth + "). pts = 0 (Cannot place piece)");

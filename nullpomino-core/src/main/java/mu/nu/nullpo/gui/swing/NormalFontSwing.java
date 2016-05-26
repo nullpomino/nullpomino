@@ -31,23 +31,23 @@ package mu.nu.nullpo.gui.swing;
 import java.awt.Graphics2D;
 
 /**
- * 普通の文字列の表示クラス (Swing用）
+ * Normal display class string (SwingFor)
  */
 public class NormalFontSwing {
-	/** 文字色の定count */
+	/** Character constant colorcount */
 	public static final int COLOR_WHITE = 0, COLOR_BLUE = 1, COLOR_RED = 2, COLOR_PINK = 3, COLOR_GREEN = 4, COLOR_YELLOW = 5, COLOR_CYAN = 6,
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
 
-	/** 描画先 */
+	/** To draw */
 	public static Graphics2D graphics = null;
 
 	/**
-	 *  font を描画
+	 *  font Draw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param str 文字列
-	 * @param color 文字色
-	 * @param scale 拡大率
+	 * @param str String
+	 * @param color Letter color
+	 * @param scale Enlargement factor
 	 */
 	public static void printFont(int x, int y, String str, int color, float scale) {
 		if(graphics == null) return;
@@ -59,11 +59,11 @@ public class NormalFontSwing {
 			int stringChar = str.charAt(i);
 
 			if(stringChar == 0x0A) {
-				// 改行 (\n）
+				// New line (\n)
 				dy = (int) (dy + 16 * scale);
 				dx = x;
 			} else {
-				// 文字出力
+				// Character output
 				if(scale == 0.5f) {
 					int sx = ((stringChar - 32) % 32) * 8;
 					int sy = ((stringChar - 32) / 32) * 8 + color * 24;
@@ -80,34 +80,34 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * 文字列を描画
+	 * Draws the string
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
+	 * @param fontStr String
+	 * @param fontColor Letter color
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, int fontColor) {
 		printFont(fontX, fontY, fontStr, fontColor, 1.0f);
 	}
 
 	/**
-	 * 文字列を描画 (文字色は白）
+	 * Draws the string (Character color is white)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
+	 * @param fontStr String
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr) {
 		printFont(fontX, fontY, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue) {
 		if(!flag)
@@ -117,25 +117,25 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画
+	 * flagThefalseIf I were white, trueDraws the string in red if I was
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
+	 * @param fontStr String
+	 * @param flag Conditional expression
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag) {
 		printFont(fontX, fontY, fontStr, flag, COLOR_WHITE, COLOR_RED);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (拡大率指定可能）
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in (You can specify the magnification)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
-	 * @param scale 拡大率
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
+	 * @param scale Enlargement factor
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue, float scale) {
 		if(!flag)
@@ -145,57 +145,57 @@ public class NormalFontSwing {
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (拡大率指定可能）
+	 * flagThefalseIf I were white, trueDraws the string in red if I was (You can specify the magnification)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param scale 拡大率
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param scale Enlargement factor
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, float scale) {
 		printFont(fontX, fontY, fontStr, flag, COLOR_WHITE, COLOR_RED, scale);
 	}
 
 	/**
-	 * 文字列を描画 (16x16のグリッド単位）
+	 * Draws the string (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
+	 * @param fontStr String
+	 * @param fontColor Letter color
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, int fontColor) {
 		printFont(fontX * 16, fontY * 16, fontStr, fontColor);
 	}
 
 	/**
-	 * 文字列を描画 (16x16のグリッド単位・文字色は白）
+	 * Draws the string (16x16Color and character of the white grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
+	 * @param fontStr String
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr) {
 		printFont(fontX * 16, fontY * 16, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (16x16のグリッド単位）
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue) {
 		printFont(fontX * 16, fontY * 16, fontStr, flag, fontColorFalse, fontColorTrue);
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (16x16のグリッド単位）
+	 * flagThefalseIf I were white, trueDraws the string in red if I was (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
+	 * @param fontStr String
+	 * @param flag Conditional expression
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, boolean flag) {
 		printFont(fontX * 16, fontY * 16, fontStr, flag, COLOR_WHITE, COLOR_RED);

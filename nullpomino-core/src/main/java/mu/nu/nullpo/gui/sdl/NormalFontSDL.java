@@ -34,20 +34,20 @@ import sdljava.video.SDLRect;
 import sdljava.video.SDLSurface;
 
 /**
- * 普通の文字列の表示クラス
+ * Normal display class string
  */
 public class NormalFontSDL {
-	/** 文字色の定count */
+	/** Character constant colorcount */
 	public static final int COLOR_WHITE = 0, COLOR_BLUE = 1, COLOR_RED = 2, COLOR_PINK = 3, COLOR_GREEN = 4, COLOR_YELLOW = 5, COLOR_CYAN = 6,
 			COLOR_ORANGE = 7, COLOR_PURPLE = 8, COLOR_DARKBLUE = 9;
 
-	/** 描画先のSDLSurface */
+	/** Which to drawSDLSurface */
 	public static SDLSurface dest;
 
 	/**
-	 * 指定した font 色をSDLColorとして取得
-	 * @param fontColor  font 色
-	 * @return  font 色のSDLColor
+	 * Specified font ColorSDLColorObtained as
+	 * @param fontColor  font Color
+	 * @return  font ColorSDLColor
 	 */
 	public static SDLColor getFontColorAsSDLColor(int fontColor) {
 		switch(fontColor) {
@@ -66,12 +66,12 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * TTF font を使用して文字列を描画
+	 * TTF font Drawing a string using the
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param fontColor Letter color
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printTTFFont(int fontX, int fontY, String fontStr, int fontColor) throws SDLException {
 		if(ResourceHolderSDL.ttfFont == null) return;
@@ -83,24 +83,24 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * TTF font を使用して文字列を描画
+	 * TTF font Drawing a string using the
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printTTFFont(int fontX, int fontY, String fontStr) throws SDLException {
 		printTTFFont(fontX, fontY, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * 文字列を描画
+	 * Draws the string
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
-	 * @param scale 拡大率 (1.0fと0.5fのみ is enabled）
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param fontColor Letter color
+	 * @param scale Enlargement factor (1.0fAnd0.5fOnly is enabled)
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, int fontColor, float scale) throws SDLException {
 		int dx = fontX;
@@ -110,7 +110,7 @@ public class NormalFontSDL {
 			int stringChar = fontStr.charAt(i);
 
 			if(stringChar == 0x0A) {
-				// 改行 (\n）
+				// New line (\n)
 				if(scale == 2.0f) {
 					dy = dy + 32;
 					dx = fontX;
@@ -122,7 +122,7 @@ public class NormalFontSDL {
 					dx = fontX;
 				}
 			} else {
-				// 文字出力
+				// Character output
 				if(scale == 2.0f) {
 					int sx = ((stringChar - 32) % 32) * 32;
 					int sy = ((stringChar - 32) / 32) * 32 + fontColor * 96;
@@ -150,37 +150,37 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * 文字列を描画
+	 * Draws the string
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param fontColor Letter color
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, int fontColor) throws SDLException {
 		printFont(fontX, fontY, fontStr, fontColor, 1.0f);
 	}
 
 	/**
-	 * 文字列を描画 (文字色は白）
+	 * Draws the string (Character color is white)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr) throws SDLException {
 		printFont(fontX, fontY, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue) throws SDLException {
 		if(!flag)
@@ -190,27 +190,27 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画
+	 * flagThefalseIf I were white, trueDraws the string in red if I was
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag) throws SDLException {
 		printFont(fontX, fontY, fontStr, flag, COLOR_WHITE, COLOR_RED);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (拡大率指定可能）
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in (You can specify the magnification)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
-	 * @param scale 拡大率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
+	 * @param scale Enlargement factor
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue, float scale) throws SDLException {
 		if(!flag)
@@ -220,62 +220,62 @@ public class NormalFontSDL {
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (拡大率指定可能）
+	 * flagThefalseIf I were white, trueDraws the string in red if I was (You can specify the magnification)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param scale 拡大率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param scale Enlargement factor
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFont(int fontX, int fontY, String fontStr, boolean flag, float scale) throws SDLException {
 		printFont(fontX, fontY, fontStr, flag, COLOR_WHITE, COLOR_RED, scale);
 	}
 
 	/**
-	 * 文字列を描画 (16x16のグリッド単位）
+	 * Draws the string (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param fontColor 文字色
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param fontColor Letter color
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, int fontColor) throws SDLException {
 		printFont(fontX * 16, fontY * 16, fontStr, fontColor);
 	}
 
 	/**
-	 * 文字列を描画 (16x16のグリッド単位・文字色は白）
+	 * Draws the string (16x16Color and character of the white grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr) throws SDLException {
 		printFont(fontX * 16, fontY * 16, fontStr, COLOR_WHITE);
 	}
 
 	/**
-	 * flagがfalseだったらfontColorTrue color, trueだったらfontColorTrue colorで文字列を描画 (16x16のグリッド単位）
+	 * flagThefalseIf it&#39;s the casefontColorTrue color, trueIf it&#39;s the casefontColorTrue colorDraws the string in (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @param fontColorFalse flagがfalseの場合の文字色
-	 * @param fontColorTrue flagがtrueの場合の文字色
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @param fontColorFalse flagThefalseText color in the case of
+	 * @param fontColorTrue flagThetrueText color in the case of
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, boolean flag, int fontColorFalse, int fontColorTrue) throws SDLException {
 		printFont(fontX * 16, fontY * 16, fontStr, flag, fontColorFalse, fontColorTrue);
 	}
 
 	/**
-	 * flagがfalseだったら白, trueだったら赤で文字列を描画 (16x16のグリッド単位）
+	 * flagThefalseIf I were white, trueDraws the string in red if I was (16x16Grid units)
 	 * @param fontX X-coordinate
 	 * @param fontY Y-coordinate
-	 * @param fontStr 文字列
-	 * @param flag 条件式
-	 * @throws SDLException 描画に失敗した場合
+	 * @param fontStr String
+	 * @param flag Conditional expression
+	 * @throws SDLException If I failed to draw
 	 */
 	public static void printFontGrid(int fontX, int fontY, String fontStr, boolean flag) throws SDLException {
 		printFont(fontX * 16, fontY * 16, fontStr, flag, COLOR_WHITE, COLOR_RED);

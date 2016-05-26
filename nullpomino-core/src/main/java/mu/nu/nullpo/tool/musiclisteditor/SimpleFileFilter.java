@@ -33,13 +33,13 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * シンプルなファイルフィルタ
+ * A simple file filter
  */
 public class SimpleFileFilter extends FileFilter {
-	/** 拡張子 */
+	/** Extension */
 	protected String extension;
 
-	/** 表示名 */
+	/** Display name */
 	protected String description;
 
 	/**
@@ -53,7 +53,7 @@ public class SimpleFileFilter extends FileFilter {
 
 	/**
 	 * Constructor
-	 * @param extension 拡張子
+	 * @param extension Extension
 	 */
 	public SimpleFileFilter(String extension) {
 		super();
@@ -63,8 +63,8 @@ public class SimpleFileFilter extends FileFilter {
 
 	/**
 	 * Constructor
-	 * @param extension 拡張子
-	 * @param description 表示名
+	 * @param extension Extension
+	 * @param description Display name
 	 */
 	public SimpleFileFilter(String extension, String description) {
 		super();
@@ -85,7 +85,7 @@ public class SimpleFileFilter extends FileFilter {
 	}
 
 	/**
-	 * @param description セットする description
+	 * @param description Set in description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -99,7 +99,7 @@ public class SimpleFileFilter extends FileFilter {
 	}
 
 	/**
-	 * @param extension セットする extension
+	 * @param extension Set in extension
 	 */
 	public void setExtension(String extension) {
 		this.extension = extension;

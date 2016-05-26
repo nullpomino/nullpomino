@@ -42,13 +42,13 @@ public class GarbageManiaMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 3;
 
-	/** 落下速度 table */
+	/** Fall velocity table */
 	private static final int[] tableGravityValue =
 	{
 		4, 6, 8, 10, 12, 16, 32, 48, 64, 80, 96, 112, 128, 144, 4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 1280, 1024, 768, -1
 	};
 
-	/** 落下速度が変わる level */
+	/** Fall velocity changes level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
@@ -60,11 +60,11 @@ public class GarbageManiaMode extends AbstractMode {
 	/** BGM change levels */
 	private static final int[] tableBGMChange  = {500,700,900,-1};
 
-	/** 裏段位のName */
+	/** Dan&#39;s backName */
 	private static final String[] tableSecretGradeName =
 	{
-		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
-		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9～17
+		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0~ 8
+		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9~17
 		"GM"													// 18
 	};
 
@@ -80,7 +80,7 @@ public class GarbageManiaMode extends AbstractMode {
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
-	/** せり上がりパターン */
+	/** Rising pattern auction */
 	private static final int[][] tableGarbagePattern =
 	{
 		{0,1,1,1,1,1,1,1,1,1},
@@ -109,7 +109,7 @@ public class GarbageManiaMode extends AbstractMode {
 		{1,1,1,0,0,0,1,1,1,1},
 	};
 
-	/** BIG用せり上がりパターン */
+	/** BIGRising pattern for auction */
 	private static final int[][] tableGarbagePatternBig =
 	{
 		{0,1,1,1,1},
@@ -138,16 +138,16 @@ public class GarbageManiaMode extends AbstractMode {
 		{1,0,0,0,1},
 	};
 
-	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
+	/** Current Speed ​​of fall number (tableGravityChangeLevelOf levelAt each of1Increase one) */
 	private int gravityindex;
 
-	/** Next Section の level (これ-1のときに levelストップする) */
+	/** Next Section Of level (This-1At levelStop) */
 	private int nextseclv;
 
-	/** Levelが増えた flag */
+	/** LevelHas increased flag */
 	private boolean lvupflag;
 
-	/** Hard dropした段count */
+	/** Hard dropStage wascount */
 	private int harddropBonus;
 
 	/** Combo bonus */
@@ -156,13 +156,13 @@ public class GarbageManiaMode extends AbstractMode {
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り time */
+	/** AcquisitionRender scoreIs remaining to be time */
 	private int scgettime;
 
-	/** Roll 経過 time */
+	/** Roll Course time */
 	private int rolltime;
 
-	/** 裏段位 */
+	/** Dan back */
 	private int secretGrade;
 
 	/** Current BGM */
@@ -171,10 +171,10 @@ public class GarbageManiaMode extends AbstractMode {
 	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たSection はtrue */
+	/** New record came outSection Thetrue */
 	private boolean[] sectionIsNewRecord;
 
-	/** どこかのSection で新記録を出すとtrue */
+	/** SomewhereSection When I put out a new record intrue */
 	private boolean sectionAnyNewRecord;
 
 	/** Cleared Section count */
@@ -183,16 +183,16 @@ public class GarbageManiaMode extends AbstractMode {
 	/** Average Section Time */
 	private int sectionavgtime;
 
-	/** せり上がりパターン number */
+	/** Rising pattern auction number */
 	private int garbagePos;
 
-	/** せり上がり usage counter (Linesを消さないと+1) */
+	/** Rising auction usage counter (LinesI do not turn off the+1) */
 	private int garbageCount;
 
-	/** せり上がりした count */
+	/** Seri was up count */
 	private int garbageTotal;
 
-	/** Section Time記録表示中ならtrue */
+	/** Section TimeShowing record iftrue */
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
@@ -225,7 +225,7 @@ public class GarbageManiaMode extends AbstractMode {
 	/** Rankings' times */
 	private int[] rankingTime;
 
-	/** Section Time記録 */
+	/** Section TimeRecord */
 	private int[] bestSectionTime;
 
 	/*
@@ -364,7 +364,7 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/**
-	 * Section Time更新処理
+	 * Section TimeUpdate process
 	 * @param sectionNumber Section number
 	 */
 	private void stNewRecordCheck(int sectionNumber) {
@@ -556,7 +556,7 @@ public class GarbageManiaMode extends AbstractMode {
 			receiver.drawScoreFont(engine, playerID, 0, 14, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(engine.statistics.time));
 
-			// Roll 残り time
+			// Roll Rest time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int time = ROLLTIMELIMIT - rolltime;
 				if(time < 0) time = 0;
@@ -596,11 +596,11 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// 新規ピース出現時
+		// Occurrence new piece
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			// Level up
 			if(engine.statistics.level < nextseclv - 1) {
@@ -620,11 +620,11 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * ARE中の処理
+	 * AREProcessing during
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame
+		// Last frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -638,7 +638,7 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  levelが上がったときの共通処理
+	 *  levelcommon process is raised when
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -648,10 +648,10 @@ public class GarbageManiaMode extends AbstractMode {
 		if(engine.statistics.level % 100 >= 80) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(engine.statistics.level == nextseclv - 1) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-		// 速度変更
+		// Speed ​​change
 		setSpeed(engine);
 
-		// LV100到達でghost を消す
+		// LV100In reachingghost Disappear
 		if((engine.statistics.level >= 100) && (!alwaysghost)) engine.ghost = false;
 
 		// BGM fadeout
@@ -673,7 +673,7 @@ public class GarbageManiaMode extends AbstractMode {
 		}
 
 		if(lines == 0) {
-			// せり上がり
+			// Rising auction
 			garbageCount++;
 
 			if(garbageCount >= 13 - (engine.statistics.level / 100)) {
@@ -743,12 +743,12 @@ public class GarbageManiaMode extends AbstractMode {
 				setAverageSectionTime();
 				stNewRecordCheck(sectionscomp - 1);
 
-				// Background切り替え
+				// BackgroundSwitching
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
 
-				// BGM切り替え
+				// BGMSwitching
 				if((tableBGMChange[bgmlv] != -1) && (engine.statistics.level >= tableBGMChange[bgmlv])) {
 					bgmlv++;
 					owner.bgmStatus.fadesw = false;
@@ -791,14 +791,14 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 各 frame の終わりの処理
+	 * Each frame Processing at the end of
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		// 獲得Render score
+		// AcquisitionRender score
 		if(scgettime > 0) scgettime--;
 
-		// Section Time増加
+		// Section TimeIncrease
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -822,7 +822,7 @@ public class GarbageManiaMode extends AbstractMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Roll 終了
+			// Roll End
 			if(rolltime >= ROLLTIMELIMIT) {
 				engine.gameEnded();
 				engine.resetStatc();
@@ -843,7 +843,7 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面
+	 * Results screen
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -879,11 +879,11 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面の処理
+	 * Processing of the results screen
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
-		// ページ切り替え
+		// Page switching
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 			engine.statc[1]--;
 			if(engine.statc[1] < 0) engine.statc[1] = 2;
@@ -894,7 +894,7 @@ public class GarbageManiaMode extends AbstractMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		//  section time display切替
+		//  section time displaySwitching
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -904,7 +904,7 @@ public class GarbageManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * リプレイ保存
+	 * Save replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
@@ -955,7 +955,7 @@ public class GarbageManiaMode extends AbstractMode {
 
 	/**
 	 * Update rankings
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
 	 */
@@ -977,7 +977,7 @@ public class GarbageManiaMode extends AbstractMode {
 
 	/**
 	 * Calculate ranking position
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
 	 * @return Position (-1 if unranked)

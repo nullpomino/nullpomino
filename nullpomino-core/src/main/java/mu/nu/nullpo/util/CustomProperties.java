@@ -36,7 +36,7 @@ import java.net.URLEncoder;
 import java.util.Properties;
 
 /**
- * String以外も格納できるプロパティセット
+ * StringSet of properties that can be stored in non-
  */
 public class CustomProperties extends Properties {
 	/**
@@ -45,90 +45,90 @@ public class CustomProperties extends Properties {
 	private static final long serialVersionUID = 2L;
 
 	/**
-	 * byte型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * byteSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, byte value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * short型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * shortSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, short value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * int型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * intSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, int value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * long型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * longSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, long value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * float型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * floatSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, float value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * double型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * doubleSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, double value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * char型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * charSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, char value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * boolean型のプロパティを設定
-	 * @param key キー
-	 * @param value keyに対応する変count
-	 * @return プロパティリストの指定されたキーの前の値。それがない場合は null
+	 * booleanSet the properties of the type
+	 * @param key Key
+	 * @param value keyVariable that corresponds to thecount
+	 * @return The previous value of the specified key in the property list. If you do not have it null
 	 */
 	public synchronized Object setProperty(String key, boolean value) {
 		return setProperty(key, String.valueOf(value));
 	}
 
 	/**
-	 * byte型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * byteGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public byte getProperty(String key, byte defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -144,10 +144,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * short型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * shortGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public short getProperty(String key, short defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -163,10 +163,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * int型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * intGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public int getProperty(String key, int defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -182,10 +182,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * long型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * longGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public long getProperty(String key, long defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -201,10 +201,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * float型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * floatGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public float getProperty(String key, float defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -220,10 +220,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * double型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * doubleGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public double getProperty(String key, double defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -239,10 +239,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * char型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応する整count (見つからなかったらdefaultValue）
+	 * charGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Integer that corresponds to the specified keycount (Not founddefaultValue)
 	 */
 	public char getProperty(String key, char defaultValue) {
 		String str = getProperty(key, String.valueOf(defaultValue));
@@ -258,10 +258,10 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * boolean型のプロパティを取得
-	 * @param key キー
-	 * @param defaultValue keyが見つからない場合に返す変count
-	 * @return 指定されたキーに対応するboolean型変count (見つからなかったらdefaultValue）
+	 * booleanGets a property of type
+	 * @param key Key
+	 * @param defaultValue keyStrange that I return if it can not find thecount
+	 * @return Corresponding to the specified keybooleanType variablecount (Not founddefaultValue)
 	 */
 	public boolean getProperty(String key, boolean defaultValue) {
 		String str = getProperty(key, Boolean.toString(defaultValue));
@@ -269,9 +269,9 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * このプロパティセットを文字列に変換する(URLEncoderでエンコード)
-	 * @param comments 識別コメント
-	 * @return URLEncoderでエンコードされたプロパティセット文字列
+	 * Converted to a string this property set(URLEncoderEncoded)
+	 * @param comments Identifying comment
+	 * @return URLEncoderProperty string sets that are encoded in
 	 */
 	public String encode(String comments) {
 		String result = null;
@@ -290,9 +290,9 @@ public class CustomProperties extends Properties {
 	}
 
 	/**
-	 * encode(String)でエンコードしたStringからプロパティセットを復元
-	 * @param source encode(String)でエンコードしたString
-	 * @return 成功するとtrue
+	 * encode(String)I encodedStringRestore the property set from
+	 * @param source encode(String)I encodedString
+	 * @return The successtrue
 	 */
 	public boolean decode(String source) {
 		try {

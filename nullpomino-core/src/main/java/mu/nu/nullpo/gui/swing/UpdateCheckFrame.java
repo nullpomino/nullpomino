@@ -54,7 +54,7 @@ import org.apache.log4j.Logger;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 
 /**
- * 更新 check 設定画面
+ * Update check Setting screen
  */
 public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCheckerListener {
 	/** Log */
@@ -63,52 +63,52 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	/** Serial version ID */
 	private static final long serialVersionUID = 1L;
 
-	/** 親ウィンドウ */
+	/** Parent window */
 	protected NullpoMinoSwing owner;
 
-	/** 状態ラベル */
+	/** State labels */
 	protected JLabel lStatus;
 
-	/** 最新版のVersion number */
+	/** The latest version ofVersion number */
 	protected JTextField txtfldLatestVersion;
 
-	/** 最新版のリリース日 */
+	/** The release date of the latest version */
 	protected JTextField txtfldReleaseDate;
 
-	/** 最新版のダウンロードURL */
+	/** Download the latest versionURL */
 	protected JTextField txtfldDownloadURL;
 
 	/** Windows Installer URL */
 	protected JTextField txtfldWindowsInstallerURL;
 
-	/** 今すぐ更新 check ボタン */
+	/** Update Now check Button */
 	protected JButton btnCheckNow;
 
-	/** ブラウザでダウンロードボタン */
+	/** Download button in the browser */
 	protected JButton btnOpenDownloadURL;
 
 	/** Installer download button */
 	protected JButton btnOpenInstallerURL;
 
-	/** 更新 check  is enabled */
+	/** Update check  is enabled */
 	protected JCheckBox chkboxEnable;
 
-	/** XMLのURL */
+	/** XMLOfURL */
 	protected JTextField txtfldXMLURL;
 
-	/** この起動 countごとに更新 check */
+	/** This startup countUpdated every check */
 	protected JTextField txtfldStartupMax;
 
 	/**
 	 * Constructor
-	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
+	 * @param owner Parent window
+	 * @throws HeadlessException Keyboard, Mouse, Exceptions such as the display if there is no
 	 */
 	public UpdateCheckFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
 		this.owner = owner;
 
-		// GUIのInitialization
+		// GUIOfInitialization
 		setTitle(NullpoMinoSwing.getUIText("Title_UpdateCheck"));
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setResizable(false);
@@ -119,17 +119,17 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	protected void initUI() {
 		this.getContentPane().setLayout(new BorderLayout());
 
-		// タブ
+		// Tab
 		JTabbedPane tabPane = new JTabbedPane();
 		this.getContentPane().add(tabPane, BorderLayout.NORTH);
 
-		// 情報パネル
+		// Information Panel
 		JPanel pUpdateInfo = new JPanel();
 		pUpdateInfo.setAlignmentX(0f);
 		pUpdateInfo.setLayout(new BoxLayout(pUpdateInfo, BoxLayout.Y_AXIS));
 		tabPane.addTab(NullpoMinoSwing.getUIText("UpdateCheck_Tab_UpdateInfo"), pUpdateInfo);
 
-		// * 状態ラベル
+		// * State labels
 		lStatus = new JLabel(NullpoMinoSwing.getUIText("UpdateCheck_Label_Status_Ready"));
 		lStatus.setAlignmentX(0f);
 		pUpdateInfo.add(lStatus);
@@ -147,7 +147,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldLatestVersion.setEditable(false);
 		spLatestVersion.add(txtfldLatestVersion, BorderLayout.EAST);
 
-		// * リリース日
+		// * Release Date
 		JPanel spReleaseDate = new JPanel(new BorderLayout());
 		spReleaseDate.setAlignmentX(0f);
 		pUpdateInfo.add(spReleaseDate);
@@ -160,7 +160,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldReleaseDate.setEditable(false);
 		spReleaseDate.add(txtfldReleaseDate, BorderLayout.EAST);
 
-		// * ダウンロードURL
+		// * DownloadURL
 		JPanel spDownloadURL = new JPanel(new BorderLayout());
 		spDownloadURL.setAlignmentX(0f);
 		pUpdateInfo.add(spDownloadURL);
@@ -187,7 +187,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldWindowsInstallerURL.setVisible(System.getProperty("os.name").startsWith("Windows"));
 		spInstallerURL.add(txtfldWindowsInstallerURL, BorderLayout.EAST);
 
-		// * 今すぐ check ボタン
+		// * Right now check Button
 		btnCheckNow = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_CheckNow"));
 		btnCheckNow.setAlignmentX(0f);
 		btnCheckNow.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
@@ -196,7 +196,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnCheckNow.setActionCommand("CheckNow");
 		pUpdateInfo.add(btnCheckNow);
 
-		// * ブラウザでダウンロードボタン
+		// * Download button in the browser
 		btnOpenDownloadURL = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_OpenDownloadURL"));
 		btnOpenDownloadURL.setAlignmentX(0f);
 		btnOpenDownloadURL.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
@@ -218,24 +218,24 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnOpenInstallerURL.setVisible(System.getProperty("os.name").startsWith("Windows"));
 		pUpdateInfo.add(btnOpenInstallerURL);
 
-		// 設定パネル
+		// Settings panel
 		JPanel pSetting = new JPanel(new BorderLayout());
 		pSetting.setAlignmentX(0f);
 		tabPane.addTab(NullpoMinoSwing.getUIText("UpdateCheck_Tab_Setting"), pSetting);
 
-		// * そのままだと縦に引き伸ばされてしまうのでもう1枚パネルを使う
+		// * Anymore because I would have been stretched vertically with it as it is1Using a panel sheet
 		JPanel spSetting = new JPanel();
 		spSetting.setAlignmentX(0f);
 		spSetting.setLayout(new BoxLayout(spSetting, BoxLayout.Y_AXIS));
 		pSetting.add(spSetting, BorderLayout.NORTH);
 
-		// * 更新 check  is enabled
+		// * Update check  is enabled
 		chkboxEnable = new JCheckBox(NullpoMinoSwing.getUIText("UpdateCheck_CheckBox_Enable"));
 		chkboxEnable.setAlignmentX(0f);
 		chkboxEnable.setMnemonic('E');
 		spSetting.add(chkboxEnable);
 
-		// * XMLのURL
+		// * XMLOfURL
 		JPanel spXMLURL = new JPanel(new BorderLayout());
 		spXMLURL.setAlignmentX(0f);
 		spSetting.add(spXMLURL);
@@ -247,7 +247,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldXMLURL.setPreferredSize(new Dimension(220, 20));
 		spXMLURL.add(txtfldXMLURL, BorderLayout.EAST);
 
-		// * この起動 countごとに更新 check
+		// * This startup countUpdated every check
 		JPanel spStartupMax = new JPanel(new BorderLayout());
 		spStartupMax.setAlignmentX(0f);
 		spSetting.add(spStartupMax);
@@ -259,7 +259,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		txtfldStartupMax.setPreferredSize(new Dimension(220, 20));
 		spStartupMax.add(txtfldStartupMax, BorderLayout.EAST);
 
-		// * 保存ボタン
+		// * Save button
 		JButton btnSave = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_Save"));
 		btnSave.setAlignmentX(0f);
 		btnSave.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
@@ -268,7 +268,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		btnSave.setActionCommand("Save");
 		spSetting.add(btnSave);
 
-		// 閉じるボタン
+		// Close button
 		JButton btnClose = new JButton(NullpoMinoSwing.getUIText("UpdateCheck_Button_Close"));
 		btnClose.setAlignmentX(0f);
 		btnClose.setMnemonic('C');
@@ -278,7 +278,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	}
 
 	/**
-	 * Current 設定をGUIに反映させる
+	 * Current SettingsGUIBe reflected in the
 	 */
 	public void load() {
 		txtfldLatestVersion.setForeground(Color.black);
@@ -298,10 +298,10 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 	}
 
 	/*
-	 * ボタンクリック時の処理
+	 * Processing at the time of button click
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// 今すぐ更新 check
+		// Update Now check
 		if(e.getActionCommand() == "CheckNow") {
 			if(!UpdateChecker.isRunning()) {
 				txtfldLatestVersion.setForeground(Color.black);
@@ -310,7 +310,7 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 				btnCheckNow.setEnabled(false);
 			}
 		}
-		// ブラウザでダウンロード
+		// Downloaded in the browser
 		else if(e.getActionCommand() == "OpenDownloadURL") {
 			BareBonesBrowserLaunch.openURL(txtfldDownloadURL.getText());
 		}
@@ -318,14 +318,14 @@ public class UpdateCheckFrame extends JFrame implements ActionListener, UpdateCh
 		else if(e.getActionCommand() == "OpenInstallerURL") {
 			BareBonesBrowserLaunch.openURL(txtfldWindowsInstallerURL.getText());
 		}
-		// 保存
+		// Save
 		else if(e.getActionCommand() == "Save") {
 			NullpoMinoSwing.propGlobal.setProperty("updatechecker.enable", chkboxEnable.isSelected());
 			NullpoMinoSwing.propGlobal.setProperty("updatechecker.url", txtfldXMLURL.getText());
 			NullpoMinoSwing.propGlobal.setProperty("updatechecker.startupMax", NullpoMinoSwing.getIntTextField(20, txtfldStartupMax));
 			NullpoMinoSwing.saveConfig();
 		}
-		// 閉じる
+		// Close
 		else if(e.getActionCommand() == "Close") {
 			this.setVisible(false);
 		}

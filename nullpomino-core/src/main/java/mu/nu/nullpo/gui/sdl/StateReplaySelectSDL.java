@@ -46,13 +46,13 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * リプレイ選択画面のステート
+ * State selection screen replay
  */
 public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	/** Log */
 	static Logger log = Logger.getLogger(StateReplaySelectSDL.class);
 
-	/** 1画面に表示するMaximumファイルcount */
+	/** 1Displayed on the screenMaximumFilecount */
 	public static final int PAGE_HEIGHT = 20;
 
 	/** Mode  name */
@@ -61,7 +61,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	/** Rule name */
 	protected String[] rulenameList;
 
-	/** Scoreなどの情報 */
+	/** ScoreInformation such as the */
 	protected Statistics[] statsList;
 
 	public StateReplaySelectSDL () {
@@ -81,8 +81,8 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	}
 
 	/**
-	 * リプレイファイル一覧を取得
-	 * @return リプレイファイルのFilenameの配列。ディレクトリがないならnull
+	 * Gets the list of files replay
+	 * @return Replay fileFilenameArray of. If there is no directorynull
 	 */
 	protected String[] getReplayFileList() {
 		File dir = new File(NullpoMinoSDL.propGlobal.getProperty("custom.replay.directory", "replay"));
@@ -104,7 +104,7 @@ public class StateReplaySelectSDL extends DummyMenuScrollStateSDL {
 	}
 
 	/**
-	 * リプレイの詳細を設定
+	 * Set the details of replay
 	 */
 	protected void setReplayRuleAndModeList() {
 		if(list == null) return;

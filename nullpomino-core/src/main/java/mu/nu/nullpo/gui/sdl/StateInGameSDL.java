@@ -125,7 +125,7 @@ public class StateInGameSDL extends BaseStateSDL {
 
 		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
-			// チューニング設定
+			// Tuning settings
 			gameManager.engine[i].owRotateButtonDefaultRight = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owRotateButtonDefaultRight", -1);
 			gameManager.engine[i].owSkin = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owSkin", -1);
 			gameManager.engine[i].owMinDAS = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owMinDAS", -1);
@@ -136,7 +136,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			gameManager.engine[i].owBlockOutlineType = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owBlockOutlineType", -1);
 			gameManager.engine[i].owBlockShowOutlineOnly = NullpoMinoSDL.propGlobal.getProperty(i + ".tuning.owBlockShowOutlineOnly", -1);
 
-			// ルール
+			// Rule
 			RuleOptions ruleopt = null;
 			String rulename = strRulePath;
 			if(rulename == null) {
@@ -155,7 +155,7 @@ public class StateInGameSDL extends BaseStateSDL {
 			}
 			gameManager.engine[i].ruleopt = ruleopt;
 
-			// NEXT順生成アルゴリズム
+			// NEXTOrder generation algorithm
 			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
 				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
 				gameManager.engine[i].randomizer = randomizerObject;
@@ -189,8 +189,8 @@ public class StateInGameSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * リプレイを読み込んで再生
-	 * @param prop リプレイ dataの入ったプロパティセット
+	 * Load and play the replay
+	 * @param prop Replay dataProperty set that contains the
 	 */
 	public void startReplayGame(CustomProperties prop) {
 		gameManager = new GameManager(new RendererSDL());
@@ -217,12 +217,12 @@ public class StateInGameSDL extends BaseStateSDL {
 
 		// Initialization for each player
 		for(int i = 0; i < gameManager.getPlayers(); i++) {
-			// ルール
+			// Rule
 			RuleOptions ruleopt = new RuleOptions();
 			ruleopt.readProperty(prop, i);
 			gameManager.engine[i].ruleopt = ruleopt;
 
-			// NEXT順生成アルゴリズム
+			// NEXTOrder generation algorithm
 			if((ruleopt.strRandomizer != null) && (ruleopt.strRandomizer.length() > 0)) {
 				Randomizer randomizerObject = GeneralUtil.loadRandomizer(ruleopt.strRandomizer);
 				gameManager.engine[i].randomizer = randomizerObject;
@@ -234,7 +234,7 @@ public class StateInGameSDL extends BaseStateSDL {
 				gameManager.engine[i].wallkick = wallkickObject;
 			}
 
-			// AI (リプレイ追記用）
+			// AI (For added replay)
 			String aiName = NullpoMinoSDL.propGlobal.getProperty(i + ".ai", "");
 			if(aiName.length() > 0) {
 				DummyAI aiObj = GeneralUtil.loadAIPlayer(aiName);
@@ -401,18 +401,18 @@ public class StateInGameSDL extends BaseStateSDL {
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 				ResourceHolderSDL.soundManager.play("decide");
 				if(cursor == 0) {
-					// 再開
+					// Resumption
 					pause = false;
 					pauseFrame = 0;
 					GameKeySDL.gamekey[0].clear();
 					ResourceHolderSDL.bgmResume();
 				} else if(cursor == 1) {
-					// リトライ
+					// Retry
 					ResourceHolderSDL.bgmStop();
 					pause = false;
 					gameManager.reset();
 				} else if(cursor == 2) {
-					// 終了
+					// End
 					ResourceHolderSDL.bgmStop();
 					NullpoMinoSDL.enterState(NullpoMinoSDL.STATE_TITLE);
 					return;

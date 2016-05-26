@@ -42,19 +42,19 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 
 	protected int[] nextQueueIDs;
 
-	/** 接地したあとのDirection(0: None) */
+	/** After that I was groundedDirection(0: None) */
 	public int bestRtSub;
 
 	/** Position before twist for hint display */
 	public int bestXSub, bestYSub;
 
-	/** 最善手のEvaluation score */
+	/** The best moveEvaluation score */
 	public int bestPts;
 
 	/** Movement state. 0 = initial, 1 = twist, 2 = post-twist */
 	public int movestate;
 
-	/** 移動を遅らせる用の変count */
+	/** Delay the move for changecount */
 	public int delay;
 
 	/** The GameEngine that owns this AI */
@@ -63,16 +63,16 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	/** The GameManager that owns this AI */
 	public GameManager gManager;
 
-	/** When true,スレッドにThink routineの実行を指示 */
+	/** When true,To threadThink routineInstructing the execution of the */
 	public ThinkRequestMutex thinkRequest;
 
 	/** true when thread is executing the think routine. */
 	public boolean thinking;
 
-	/** スレッドを停止させる time */
+	/** To stop a thread time */
 	public int thinkDelay;
 
-	/** When true,スレッド動作中 */
+	/** When true,Running thread */
 	public volatile boolean threadRunning;
 
 	/** Thread for executing the think routine */
@@ -127,7 +127,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * 終了処理
+	 * End processing
 	 */
 	@Override
 	public void shutdown(GameEngine engine, int playerID) {
@@ -288,13 +288,13 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 						rotateDir = 1;
 				}
 
-				// 到達可能な位置かどうか
+				// Whether reachable position
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
 
 				if(movestate == 0 && (rt == bestRt)
 						 && ((bestX < minX - 1) || (bestX > maxX + 1) || (bestY < nowY))) {
-					// 到達不能なので再度思考する
+					// Again because it is thought unreachable
 					//thinkBestPosition(engine, playerID);
 					thinkComplete = false;
 					//thinkCurrentPieceNo++;
@@ -302,10 +302,10 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 					if (DEBUG_ALL) log.debug("Needs rethink - cannot reach desired position");
 					thinkRequest.newRequest();
 				} else {
-					// 到達できる場合
+					// If you are able to reach
 					if((nowX == bestX) && (pieceTouchGround)) {
 						if (rt == bestRt) {
-							// 接地rotation
+							// Groundrotation
 							if(bestRtSub != 0 && movestate == 0) {
 								bestRt = pieceNow.getRotateDirection(bestRtSub, bestRt);
 								rotateDir = bestRtSub;
@@ -316,7 +316,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 					}
 					if((nowX == bestX || movestate > 0) && (rt == bestRt)) {
 						moveDir = 0;
-						// 目標到達
+						// Funnel
 						if(bestRtSub == 0) {
 							if (pieceTouchGround && engine.ruleopt.softdropLock)
 								drop = -1;
@@ -651,7 +651,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 	}
 
 	/*
-	 * スレッドの処理
+	 * Processing of the thread
 	 */
 	public void run() {
 		log.info("ComboRaceBot: Thread start");
@@ -1076,13 +1076,13 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 					writeY++;
 				}
 
-				// 到達可能な位置かどうか
+				// Whether reachable position
 				int minX = pieceNow.getMostMovableLeft(nowX, nowY, rt, fld);
 				int maxX = pieceNow.getMostMovableRight(nowX, nowY, rt, fld);
 
 				if(movestate == 0 && (rt == bestRtSub)
 						 && ((bestXSub < minX - 1) || (bestXSub > maxX + 1) || (bestYSub < nowY))) {
-					// 到達不能なので再度思考する
+					// Again because it is thought unreachable
 					//thinkBestPosition(engine, playerID);
 					thinkComplete = false;
 					//thinkCurrentPieceNo++;
@@ -1092,7 +1092,7 @@ public class ComboRaceBot extends DummyAI implements Runnable {
 				} else {
 					if((nowX == bestXSub || movestate > 0) && (rt == bestRtSub)) {
 						moveDir = 0;
-						// 目標到達
+						// Funnel
 						if(bestRtSub == bestRt) {
 							if (pieceTouchGround && engine.ruleopt.softdropLock)
 								drop = -1;

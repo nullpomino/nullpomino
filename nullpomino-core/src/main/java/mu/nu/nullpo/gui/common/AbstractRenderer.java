@@ -114,48 +114,48 @@ public abstract class AbstractRenderer extends EventReceiver {
 	}
 	
 	/**
-	 * Blockを描画
+	 * BlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param color 色
-	 * @param skin 模様
-	 * @param bone 骨Block
-	 * @param darkness 暗さもしくは明るさ
-	 * @param alpha 透明度
-	 * @param scale 拡大率
+	 * @param color Color
+	 * @param skin Pattern
+	 * @param bone BoneBlock
+	 * @param darkness Lightness or darkness
+	 * @param alpha Transparency
+	 * @param scale Enlargement factor
 	 */
 	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
 		drawBlock(x, y, color, skin, bone, darkness, alpha, scale, 0);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画
+	 * BlockUsing an instance of the classBlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
+	 * @param blk BlockInstance of a class
 	 */
 	protected void drawBlock(int x, int y, Block blk) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f, blk.attribute);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率指定可能）
+	 * BlockUsing an instance of the classBlockDraw a (You can specify the magnification)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @param scale 拡大率
+	 * @param blk BlockInstance of a class
+	 * @param scale Enlargement factor
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率と暗さ指定可能）
+	 * BlockUsing an instance of the classBlockDraw a (You can specify the magnification and dark)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @param scale 拡大率
-	 * @param darkness 暗さもしくは明るさ
+	 * @param blk BlockInstance of a class
+	 * @param scale Enlargement factor
+	 * @param darkness Lightness or darkness
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale, blk.attribute);
@@ -167,33 +167,33 @@ public abstract class AbstractRenderer extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画
+	 * BlockDraw a piece
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
+	 * @param piece Peace to draw
 	 */
 	protected void drawPiece(int x, int y, Piece piece) {
 		drawPiece(x, y, piece, 1.0f);
 	}
 
 	/**
-	 * Blockピースを描画 (拡大率指定可能）
+	 * BlockDraw a piece (You can specify the magnification)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @param scale 拡大率
+	 * @param piece Peace to draw
+	 * @param scale Enlargement factor
 	 */
 	protected void drawPiece(int x, int y, Piece piece, float scale) {
 		drawPiece(x, y, piece, scale, 0f);
 	}
 
 	/**
-	 * Blockピースを描画 (暗さもしくは明るさの指定可能）
+	 * BlockDraw a piece (You can specify the brightness or darkness)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @param scale 拡大率
-	 * @param darkness 暗さもしくは明るさ
+	 * @param piece Peace to draw
+	 * @param scale Enlargement factor
+	 * @param darkness Lightness or darkness
 	 */
 	protected void drawPiece(int x, int y, Piece piece, float scale, float darkness) {
 		for(int i = 0; i < piece.getMaxBlock(); i++) {
@@ -208,11 +208,11 @@ public abstract class AbstractRenderer extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースを描画 (Y-coordinateが0以上のBlockだけ表示）
+	 * Currently working onBlockDraw a piece (Y-coordinateThe0MoreBlockDisplay only)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param scale 表示倍率
+	 * @param engine GameEngineInstance of
+	 * @param scale Display magnification
 	 */
 	protected void drawCurrentPiece(int x, int y, GameEngine engine, float scale) {
 		Piece piece = engine.nowPieceObject;
@@ -248,11 +248,11 @@ public abstract class AbstractRenderer extends EventReceiver {
 	}
 	
 	/**
-	 * fieldのBlockを描画
+	 * fieldOfBlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param small 半分サイズ
+	 * @param engine GameEngineInstance of
+	 * @param small Half size
 	 */
 	protected void drawField(int x, int y, GameEngine engine, int size) {
 		if(!doesGraphicsExist()) return;
@@ -285,7 +285,7 @@ public abstract class AbstractRenderer extends EventReceiver {
 		
 		drawFieldSpecific(x, y, width, viewHeight, blksize, scale, outlineType);
 
-		// ヘボHIDDEN
+		// BunglerHIDDEN
 		if((engine.heboHiddenEnable) && (engine.gameActive) && (field != null)) {
 			int maxY = engine.heboHiddenYNow;
 			if(maxY > height) maxY = height;
@@ -298,11 +298,11 @@ public abstract class AbstractRenderer extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースのghost を描画
+	 * Currently working onBlockOf Peaceghost Draw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param scale 表示倍率
+	 * @param engine GameEngineInstance of
+	 * @param scale Display magnification
 	 */
 	protected abstract void drawGhostPiece(int x, int y, GameEngine engine, float scale);
 	

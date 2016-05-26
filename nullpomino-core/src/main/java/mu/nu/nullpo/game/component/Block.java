@@ -39,7 +39,7 @@ public class Block implements Serializable {
 	/** Serial version ID */
 	private static final long serialVersionUID = -7126899262733374545L;
 
-	/** Block colorの定count */
+	/** Block colorConstantcount */
 	public static final int BLOCK_COLOR_INVALID = -1,
 							BLOCK_COLOR_NONE = 0,
 							BLOCK_COLOR_GRAY = 1,
@@ -78,52 +78,52 @@ public class Block implements Serializable {
 							BLOCK_COLOR_RAINBOW = 34,
 							BLOCK_COLOR_GEM_RAINBOW = 35;
 
-	/** アイテムの定count */
+	/** Constant-itemcount */
 	public static final int BLOCK_ITEM_NONE = 0,
 							BLOCK_ITEM_RANDOM = 1;
 
 	public static final int MAX_ITEM = 1;
 
-	/** 通常のBlock colorのMaximumcount */
+	/** NormalBlock colorOfMaximumcount */
 	public static final int BLOCK_COLOR_COUNT = 9;
 
-	/** 通常＋宝石Block colorのMaximumcount */
+	/** + Normal GemBlock colorOfMaximumcount */
 	public static final int BLOCK_COLOR_EXT_COUNT = 16;
 
-	/** Block表示あり */
+	/** BlockIndicator */
 	public static final int BLOCK_ATTRIBUTE_VISIBLE = 1;
 
-	/** 枠線表示あり */
+	/** Display some border */
 	public static final int BLOCK_ATTRIBUTE_OUTLINE = 2;
 
-	/** 骨Block */
+	/** BoneBlock */
 	public static final int BLOCK_ATTRIBUTE_BONE = 4;
 
-	/** 上のBlockと繋がっている */
+	/** On theBlockAre connected with */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_UP = 8;
 
-	/** 下のBlockと繋がっている */
+	/** UnderBlockAre connected with */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_DOWN = 16;
 
-	/** 左のBlockと繋がっている */
+	/** LeftBlockAre connected with */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_LEFT = 32;
 
-	/** 右のBlockと繋がっている */
+	/** RightBlockAre connected with */
 	public static final int BLOCK_ATTRIBUTE_CONNECT_RIGHT = 64;
 
-	/** 自分で置いたBlock */
+	/** I put my ownBlock */
 	public static final int BLOCK_ATTRIBUTE_SELFPLACED = 128;
 
-	/** 壊れたピースの一部分 */
+	/** Part of the piece that was broken */
 	public static final int BLOCK_ATTRIBUTE_BROKEN = 256;
 
 	/** ojama block */
 	public static final int BLOCK_ATTRIBUTE_GARBAGE = 512;
 
-	/** 壁 */
+	/** Wall */
 	public static final int BLOCK_ATTRIBUTE_WALL = 1024;
 
-	/** 消える予定のBlock */
+	/** Plan to disappearBlock */
 	public static final int BLOCK_ATTRIBUTE_ERASE = 2048;
 
 	/** Temporary mark for block linking check algorithm */
@@ -144,25 +144,25 @@ public class Block implements Serializable {
 	/** Block color */
 	public int color;
 
-	/** Blockの絵柄 */
+	/** BlockPicture of */
 	public int skin;
 
-	/** Blockの属性 */
+	/** BlockAttributes */
 	public int attribute;
 
-	/** 固定してから経過した frame count */
+	/** I have elapsed since a fixed frame count */
 	public int elapsedFrames;
 
-	/** Blockの暗さ, または明るさ (0.03だったら3%暗く, -0.05だったら5%明るい) */
+	/** BlockThe darkness of the, It or brightness (0.03If it&#39;s the case3%Darkly, -0.05If it&#39;s the case5%Bright) */
 	public float darkness;
 
-	/** 透明度 (1.0fで不透明, 0.0fで完全に透明) */
+	/** Transparency (1.0fOpacity in, 0.0fCompletely transparent in) */
 	public float alpha;
 
-	/** ゲームが始まってから何番目に置いたBlockか (負countだったら初期配置やgarbage block) */
+	/** What number I put in the game since the start ofBlockOr (NegativecountIf it was I or initial placementgarbage block) */
 	public int pieceNum;
 
-	/** アイテム number */
+	/** Item number */
 	public int item;
 
 	/** Number of extra clears required before block is erased */
@@ -188,7 +188,7 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 色指定可能なConstructor
+	 * The color can be specifiedConstructor
 	 * @param color Block color
 	 */
 	public Block(int color) {
@@ -197,9 +197,9 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 色と絵柄の指定が可能なConstructor
+	 * Specify color and pattern can beConstructor
 	 * @param color Block color
-	 * @param skin Blockの絵柄
+	 * @param skin BlockPicture of
 	 */
 	public Block(int color, int skin) {
 		reset();
@@ -208,10 +208,10 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 色と絵柄と属性の指定が可能なConstructor
+	 * Specify color and pattern and attributes that can beConstructor
 	 * @param color Block color
-	 * @param skin Blockの絵柄
-	 * @param attribute Blockの属性
+	 * @param skin BlockPicture of
+	 * @param attribute BlockAttributes
 	 */
 	public Block(int color, int skin, int attribute) {
 		reset();
@@ -229,7 +229,7 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 設定をReset to defaults
+	 * SettingsReset to defaults
 	 */
 	public void reset() {
 		color = BLOCK_COLOR_NONE;
@@ -247,7 +247,7 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 設定を他のBlockからコピー
+	 * Settings to otherBlockCopied from the
 	 * @param b Copy source
 	 */
 	public void copy(Block b) {
@@ -266,18 +266,18 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * 指定した属性 stateを調べる
-	 * @param attr 調べたい属性
-	 * @return 指定した属性がすべてセットされている場合はtrue
+	 * Specified attribute stateExamine the
+	 * @param attr I want to examine the attributes
+	 * @return If the specified attribute has been set alltrue
 	 */
 	public boolean getAttribute(int attr) {
 		return ((attribute & attr) != 0);
 	}
 
 	/**
-	 * 属性を変更する
-	 * @param attr 変更したい属性
-	 * @param status 変更後 state
+	 * Change the attributes
+	 * @param attr I want to change the attributes
+	 * @param status After the change state
 	 */
 	public void setAttribute(int attr, boolean status) {
 		if(status) attribute |= attr;
@@ -285,16 +285,16 @@ public class Block implements Serializable {
 	}
 
 	/**
-	 * このBlockが空白かどうか判定
-	 * @return このBlockが空白だったらtrue
+	 * ThisBlockDetermine whether the space is
+	 * @return ThisBlockIf it is left blanktrue
 	 */
 	public boolean isEmpty() {
 		return (color < BLOCK_COLOR_GRAY);
 	}
 
 	/**
-	 * このBlockが宝石Blockかどうか判定
-	 * @return このBlockが宝石Blockだったらtrue
+	 * ThisBlockThe jewelBlockDetermine whether
+	 * @return ThisBlockThe jewelBlockIf it&#39;s the casetrue
 	 */
 	public boolean isGemBlock() {
 		return ((color >= BLOCK_COLOR_GEM_RED) && (color <= BLOCK_COLOR_GEM_PURPLE)) ||

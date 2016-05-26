@@ -99,16 +99,16 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	/** Rule settings for countering ojama not yet dropped */
 	protected int[] ojamaCounterMode;
 
-	/** 溜まっているojama blockのcount */
+	/** Has accumulatedojama blockOfcount */
 	protected int[] ojama;
 
-	/** 送ったojama blockのcount */
+	/** Had sentojama blockOfcount */
 	protected int[] ojamaSent;
 
 	/** Time to display the most recent increase in score */
 	protected int[] scgettime;
 
-	/** 使用するBGM */
+	/** UseBGM */
 	protected int bgmno;
 
 	/** Big */
@@ -117,31 +117,31 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	/** Sound effectsON/OFF */
 	protected boolean[] enableSE;
 
-	/** Map使用 flag */
+	/** MapUse flag */
 	protected boolean[] useMap;
 
-	/** 使用するMapセット number */
+	/** UseMapSet number */
 	protected int[] mapSet;
 
-	/** Map number(-1でランダム) */
+	/** Map number(-1Random in) */
 	protected int[] mapNumber;
 
 	/** Last preset number used */
 	protected int[] presetNumber;
 
-	/** 勝者 */
+	/** Winner */
 	protected int winnerID;
 
-	/** MapセットのProperty file */
+	/** MapSets ofProperty file */
 	protected CustomProperties[] propMap;
 
 	/** MaximumMap number */
 	protected int[] mapMaxNo;
 
-	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
+	/** For backupfield (MapUsed to save the replay) */
 	protected Field[] fldBackup;
 
-	/** Map選択用乱count */
+	/** MapRan for selectioncount */
 	protected Random randMap;
 
 	/** Flag for all clear */
@@ -171,7 +171,7 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	/** Settings for hard ojama blocks */
 	protected int[] ojamaHard;
 
-	/** Hurryup開始までの秒count(0でHurryupなし) */
+	/** HurryupSeconds before the startcount(0InHurryupNo) */
 	protected int[] hurryupSeconds;
 
 	/** Set to true when last drop resulted in a clear */
@@ -413,10 +413,10 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	}
 
 	/**
-	 * Map読み込み
+	 * MapRead
 	 * @param field field
 	 * @param prop Property file to read from
-	 * @param preset 任意のID
+	 * @param preset AnyID
 	 */
 	protected void loadMap(Field field, CustomProperties prop, int id) {
 		field.reset();
@@ -428,10 +428,10 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	}
 
 	/**
-	 * Map保存
+	 * MapSave
 	 * @param field field
 	 * @param prop Property file to save to
-	 * @param id 任意のID
+	 * @param id AnyID
 	 */
 	protected void saveMap(Field field, CustomProperties prop, int id) {
 		//field.writeProperty(prop, id);
@@ -439,11 +439,11 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 	}
 
 	/**
-	 * プレビュー用にMapを読み込み
+	 * For previewMapRead
 	 * @param engine GameEngine
 	 * @param playerID Player number
 	 * @param id MapID
-	 * @param forceReload trueにするとMapファイルを強制再読み込み
+	 * @param forceReload trueWhen youMapForce Reload the file
 	 */
 	protected void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
@@ -540,7 +540,7 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 		}
 		else if (feverMapSet[playerID] >= 0 && feverMapSet[playerID] < FEVER_MAPS.length)
 			loadMapSetFever(engine, playerID, feverMapSet[playerID], true);
-		// Map読み込み・リプレイ保存用にバックアップ
+		// MapFor storing backup Replay read
 		if(useMap[playerID]) {
 			if(owner.replayMode) {
 				engine.createFieldIfNeeded();
@@ -777,7 +777,7 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 		if (chainDisplay[playerID] > 0)
 			chainDisplay[playerID]--;
 
-		// 決着
+		// Settlement
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
 			boolean p1Lose = (owner.engine[0].stat == GameEngine.Status.GAMEOVER);
 			boolean p2Lose = (owner.engine[1].stat == GameEngine.Status.GAMEOVER);
@@ -820,7 +820,7 @@ public abstract class AvalancheVSDummyMode extends AbstractMode {
 		if (engine.field != null)
 			width = engine.field.getWidth();
 		int blockHeight = receiver.getBlockGraphicsHeight(engine, playerID);
-		// せり上がりMeter
+		// Rising auctionMeter
 		int value = ojama[playerID] * blockHeight / width;
 		if(ojama[playerID] >= 5*width) engine.meterColor = GameEngine.METER_COLOR_RED;
 		else if(ojama[playerID] >= width) engine.meterColor = GameEngine.METER_COLOR_ORANGE;

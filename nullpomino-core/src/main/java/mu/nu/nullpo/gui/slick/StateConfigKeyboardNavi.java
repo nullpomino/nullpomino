@@ -34,7 +34,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * キーボード設定画面のステート
+ * State of the keyboard setting screen
  */
 public class StateConfigKeyboardNavi extends DummyMenuChooseState {
 	/** This state's ID */

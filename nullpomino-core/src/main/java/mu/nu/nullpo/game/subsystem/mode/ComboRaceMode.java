@@ -48,10 +48,10 @@ public class ComboRaceMode extends NetDummyMode {
 	/** Number of ranking records */
 	private static final int RANKING_MAX = 10;
 
-	/** 邪魔Linescountの定count */
+	/** HindranceLinescountConstantcount */
 	private static final int[] GOAL_TABLE = {20, 40, 100, -1};
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event typeConstantcount */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -139,13 +139,13 @@ public class ComboRaceMode extends NetDummyMode {
 	/** Most recent scoring event type */
 	private int lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** Most recent scoring eventInB2BIf it&#39;s the casetrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Most recent scoring eventInCombocount */
 	private int lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Most recent scoring eventPeace inID */
 	private int lastpiece;
 
 	/** BGM number */
@@ -154,7 +154,7 @@ public class ComboRaceMode extends NetDummyMode {
 	/** Big */
 	private boolean big;
 
-	/** 邪魔Linescount type (0=5,1=10,2=18) */
+	/** HindranceLinescount type (0=5,1=10,2=18) */
 	private int goaltype;
 
 	/** Current version */
@@ -752,7 +752,7 @@ public class ComboRaceMode extends NetDummyMode {
 				if(remainLines <= 20) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 				if(remainLines <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-				// ゴール
+				// Goal
 				if(engine.statistics.lines >= GOAL_TABLE[goaltype]) {
 					engine.ending = 1;
 					engine.gameEnded();

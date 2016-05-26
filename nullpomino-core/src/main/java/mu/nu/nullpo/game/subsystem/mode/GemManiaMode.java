@@ -61,19 +61,19 @@ public class GemManiaMode extends AbstractMode {
 		"6451324023650143620435621456302513025430312603452013625026345012660132450346213462054360143260534215"+
 		"0621543621435624013542130562345123641230462134502613542";
 
-	/** 落下速度 table */
+	/** Fall velocity table */
 	private static final int[] tableGravityValue =
 	{
 		4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 768, -1
 	};
 
-	/** 落下速度が変わる level */
+	/** Fall velocity changes level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		20, 30, 33, 36, 39, 43, 47, 51, 100, 130, 160, 250, 300, 10000
 	};
 
-	/** Number of ranking typesのcount */
+	/** Number of ranking typesOfcount */
 	private static final int RANKING_TYPE = 2;
 
 	/** Number of entries in rankings */
@@ -82,7 +82,7 @@ public class GemManiaMode extends AbstractMode {
 	/** Stage set property file */
 	private CustomProperties propStageSet;
 
-	/** 残りプラチナBlockcount */
+	/** Platinum remainingBlockcount */
 	private int rest;
 
 	/** Current stage number */
@@ -115,7 +115,7 @@ public class GemManiaMode extends AbstractMode {
 	/** Stage time left */
 	private int stagetimeNow;
 
-	/** Stage 開始後の経過 time */
+	/** Stage Elapsed after the start of time */
 	private int cleartime;
 
 	/** Stage time at start */
@@ -124,7 +124,7 @@ public class GemManiaMode extends AbstractMode {
 	/** Stage BGM */
 	private int stagebgm;
 
-	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
+	/** Current Speed ​​of fall number (tableGravityChangeLevelOf levelAt each of1Increase one) */
 	private int gravityindex;
 
 	/** Next section level (levelstop when this is -1) */
@@ -133,7 +133,7 @@ public class GemManiaMode extends AbstractMode {
 	/** Level */
 	private int speedlevel;
 
-	/** Levelが増えた flag */
+	/** LevelHas increased flag */
 	private boolean lvupflag;
 
 	/** Section Time */
@@ -148,13 +148,13 @@ public class GemManiaMode extends AbstractMode {
 	/** Stage clear time limit extension in seconds */
 	private int timeextendStageClearSeconds;
 
-	/** Blockを置いた count(1面終了でリセット) */
+	/** BlockI put count(1Reset at the end surface) */
 	private int thisStageTotalPieceLockCount;
 
-	/** Skip buttonを押している time */
+	/** Skip buttonI have pressed the time */
 	private int skipbuttonPressTime;
 
-	/** Blockピースを置いた count (NEXTピースの計算用）のバックアップ (コンティニュー時に戻す) */
+	/** BlockI put a piece count (NEXTBackup) for the calculation of the Peace (When I returned to continue) */
 	private int continueNextPieceCount;
 
 	/** Set to true when NO is picked at continue screen */
@@ -166,19 +166,19 @@ public class GemManiaMode extends AbstractMode {
 	/** Best time in training mode */
 	private int trainingBestTime;
 
-	/** ミラー発動間隔 */
+	/** Interval trigger mirror */
 	private int gimmickMirror;
 
-	/** Roll Roll 発動間隔 */
+	/** Roll Roll Trigger interval */
 	private int gimmickRoll;
 
-	/** Big発動間隔 */
+	/** BigTrigger interval */
 	private int gimmickBig;
 
-	/** X-RAY発動間隔 */
+	/** X-RAYTrigger interval */
 	private int gimmickXRay;
 
-	/** カラー発動間隔 */
+	/** Trigger interval color */
 	private int gimmickColor;
 
 	/** Current edit screen */
@@ -202,7 +202,7 @@ public class GemManiaMode extends AbstractMode {
 	/** When true, section time display is enabled */
 	private boolean showsectiontime;
 
-	/** NEXTをランダムにする */
+	/** NEXTAt random */
 	private boolean randomnext;
 
 	/** Training mode */
@@ -230,7 +230,7 @@ public class GemManiaMode extends AbstractMode {
 	private int[][] rankingAllClear;
 
 	/*
-	 * Mode  nameを取得
+	 * Mode  nameGet the
 	 */
 	@Override
 	public String getName() {
@@ -337,11 +337,11 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  stage 開始時の処理
+	 *  stage At the start of treatment
 	 * @param engine GameEngine
 	 */
 	private void startStage(GameEngine engine) {
-		// スピード levelInitialization
+		// Speed levelInitialization
 		speedlevel = -1;
 		gravityindex = 0;
 		nextseclv = 100;
@@ -350,29 +350,29 @@ public class GemManiaMode extends AbstractMode {
 		thisStageTotalPieceLockCount = 0;
 		continueNextPieceCount = engine.nextPieceCount;
 
-		// Background戻す
+		// BackgroundReturn
 		if(owner.backgroundStatus.bg != 0) {
 			owner.backgroundStatus.fadesw = true;
 			owner.backgroundStatus.fadecount = 0;
 			owner.backgroundStatus.fadebg = 0;
 		}
 
-		// ghost 復活
+		// ghost Resurrection
 		engine.ghost = true;
 
-		// ホールド消去
+		// Hold clear
 		engine.holdDisable = false;
 		engine.holdPieceObject = null;
 
 		clearflag = false;
 		skipflag = false;
 
-		//  stage Map読み込み
+		//  stage MapRead
 		engine.createFieldIfNeeded();
 		loadMap(engine.field, propStageSet, stage);
 		engine.field.setAllSkin(engine.getSkin());
 
-		//  stage Timeなどを設定
+		//  stage TimeSettings such as
 		cleartime = 0;
 		sectiontime[stage] = 0;
 		stagetimeNow = stagetimeStart;
@@ -384,8 +384,8 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  stage セットを読み込み
-	 * @param id  stage セット number(-1で default )
+	 *  stage Reads a set
+	 * @param id  stage Set number(-1In default )
 	 */
 	private void loadStageSet(int id) {
 		if(id >= 0) {
@@ -400,8 +400,8 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  stage セットを保存
-	 * @param id  stage セット number(-1で default )
+	 *  stage Save the set
+	 * @param id  stage Set number(-1In default )
 	 */
 	private void saveStageSet(int id) {
 		if((propStageSet != null) && (!owner.replayMode)) {
@@ -416,10 +416,10 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 * Map読み込み
+	 * MapRead
 	 * @param field field
 	 * @param prop Property file to read from
-	 * @param preset 任意のID
+	 * @param preset AnyID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
 		field.reset();
@@ -438,10 +438,10 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 * Map保存
+	 * MapSave
 	 * @param field field
 	 * @param prop Property file to save to
-	 * @param id 任意のID
+	 * @param id AnyID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
 		field.writeProperty(prop, id);
@@ -515,7 +515,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  Stage clearや time切れの判定
+	 *  Stage clearYa timeOut of the determination of
 	 * @param engine GameEngine
 	 */
 	private void checkStageEnd(GameEngine engine) {
@@ -533,9 +533,9 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  stage  numberをStringで取得
+	 *  stage  numberAStringAcquired in
 	 * @param stageNumber  stage  number
-	 * @return  stage  numberの文字列(21面以降はEX扱い)
+	 * @return  stage  numberString(21Since the surfaceEXTreatment)
 	 */
 	private String getStageName(int stageNumber) {
 		if(stageNumber >= MAX_STAGE_NORMAL) {
@@ -549,7 +549,7 @@ public class GemManiaMode extends AbstractMode {
 	 */
 	@Override
 	public boolean onSetting(GameEngine engine, int playerID) {
-		// エディットMenu  メイン画面
+		// EditMenu  Main screen
 		if(editModeScreen == 1) {
 			// Configuration changes
 			int change = updateCursor(engine, 4);
@@ -614,7 +614,7 @@ public class GemManiaMode extends AbstractMode {
 
 			menuTime++;
 		}
-		// エディットMenu   stage 画面
+		// EditMenu   stage Screen
 		else if(editModeScreen == 2) {
 			// Up
 			if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
@@ -775,7 +775,7 @@ public class GemManiaMode extends AbstractMode {
 				engine.quitflag = true;
 			}
 
-			// エディット
+			// Edit
 			if(engine.ctrl.isPush(Controller.BUTTON_D)) {
 				if(stageset < 0) stageset = 0;
 
@@ -845,7 +845,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Ready画面の処理
+	 * ReadyScreen processing
 	 */
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
@@ -869,12 +869,12 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Ready画面の描画処理
+	 * ReadyProcess of drawing the screen
 	 */
 	@Override
 	public void renderReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] >= engine.readyStart) {
-			// トレーニング
+			// Training
 			if(trainingType != 0) {
 				receiver.drawMenuFont(engine, playerID, 1, 5, "TRAINING", EventReceiver.COLOR_GREEN);
 			}
@@ -892,16 +892,16 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Called at game start(2回目以降のReadyも含む)
+	 * Called at game start(2SubsequentReadyAlso includes)
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
-		// X-RAY開始
+		// X-RAYStart
 		if(gimmickXRay > 0) engine.itemXRayEnable = true;
-		// カラー開始
+		// Start color
 		if(gimmickColor > 0) engine.itemColorEnable = true;
 
-		// BGM切り替え
+		// BGMSwitching
 		owner.bgmStatus.fadesw = false;
 		owner.bgmStatus.bgm = stagebgm;
 	}
@@ -1046,7 +1046,7 @@ public class GemManiaMode extends AbstractMode {
 			skipbuttonPressTime = 0;
 		}
 
-		// 経過 time
+		// Course time
 		if(engine.gameActive && engine.timerActive) {
 			cleartime++;
 			sectiontime[stage]++;
@@ -1068,7 +1068,7 @@ public class GemManiaMode extends AbstractMode {
 			if(limittimeNow <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
 			if((limittimeNow > 0) && (limittimeNow <= 10 * 60) && (limittimeNow % 60 == 0)) {
-				// 10秒前からのカウントダウン
+				// 10Seconds before the countdown
 				engine.playSE("countdown");
 			}
 		}
@@ -1078,18 +1078,18 @@ public class GemManiaMode extends AbstractMode {
 			stagetimeNow--;
 
 			if((stagetimeNow > 0) && (stagetimeNow <= 10 * 60) && (stagetimeNow % 60 == 0)) {
-				// 10秒前からのカウントダウン
+				// 10Seconds before the countdown
 				engine.playSE("countdown");
 			}
 		}
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// 新規ピース出現時
+		// Occurrence new piece
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			// Level up
 			if(speedlevel < nextseclv - 1) {
@@ -1118,7 +1118,7 @@ public class GemManiaMode extends AbstractMode {
 				}
 			}
 
-			// カラー
+			// Color
 			if(gimmickColor > 0) {
 				if(thisStageTotalPieceLockCount % gimmickColor == 0) {
 					engine.itemColorEnable = true;
@@ -1133,11 +1133,11 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * ARE中の処理
+	 * AREProcessing during
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame
+		// Last frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(speedlevel < nextseclv - 1) {
 				speedlevel++;
@@ -1155,11 +1155,11 @@ public class GemManiaMode extends AbstractMode {
 	 */
 	@Override
 	public void calcScore(GameEngine engine, int playerID, int lines) {
-		// 実際に消えるLinescount(Big時半分にならない)
+		// Actually disappearsLinescount(BigI do not halved when)
 		int realLines = engine.field.getLines();
 
 		if((realLines >= 1) && (engine.ending == 0)) {
-			// 宝石消去
+			// Clear jewel
 			int gemClears = engine.field.getHowManyGemClears();
 			if(gemClears > 0) {
 				rest -= gemClears;
@@ -1184,7 +1184,7 @@ public class GemManiaMode extends AbstractMode {
 				// Next Section
 				engine.playSE("levelup");
 
-				// Background切り替え
+				// BackgroundSwitching
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
@@ -1198,7 +1198,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Line clear処理が終わったときの処理
+	 * Line clearprocess when the process is finished
 	 */
 	@Override
 	public boolean lineClearEnd(GameEngine engine, int playerID) {
@@ -1208,28 +1208,28 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Blockピースが固定されたときの処理(calcScoreの直後)
+	 * Blockprocessing when the piece is fixed(calcScoreImmediately after the)
 	 */
 	@Override
 	public void pieceLocked(GameEngine engine, int playerID, int lines) {
-		// 固定 count+1
+		// Fixation count+1
 		thisStageTotalPieceLockCount++;
 
-		// ミラー
+		// Miller
 		if((gimmickMirror > 0) && (thisStageTotalPieceLockCount % gimmickMirror == 0)) {
 			engine.interruptItemNumber = GameEngine.INTERRUPTITEM_MIRROR;
 		}
 
-		//  stage 終了判定
+		//  stage End judgment
 		if(lines <= 0) checkStageEnd(engine);
 	}
 
 	/**
-	 *  stage 終了画面の描画
+	 *  stage Exit screen drawing
 	 */
 	@Override
 	public boolean onCustom(GameEngine engine, int playerID) {
-		// 最初の frame の処理
+		// First frame Processing
 		if(engine.statc[0] == 0) {
 			// Sound effects
 			if(clearflag) engine.playSE("stageclear");
@@ -1238,7 +1238,7 @@ public class GemManiaMode extends AbstractMode {
 			// Cleared  stage +1
 			if(clearflag) clearstage++;
 
-			// クリア率計算
+			// Clear rate calculation
 			trystage++;
 			clearper = (clearstage * 100) / trystage;
 
@@ -1253,16 +1253,16 @@ public class GemManiaMode extends AbstractMode {
 				timeextendStageClearSeconds = 30;
 			}
 
-			// 最終 stage を決定
+			// Last stage Determine the
 			if(stage == MAX_STAGE_NORMAL - 1) {
 				if(clearper < 90)
-					laststage = 19;	// クリア率が90%に満たない場合は stage 20で終了
+					laststage = 19;	// Rate is clear90%If it is less than the stage 20Ends at
 				else if(clearper < 100)
-					laststage = 22;	// クリア率が90～99%はEX3まで
+					laststage = 22;	// Rate is clear90~99%TheEX3To
 				else if(engine.statistics.time > 5 * 3600)
-					laststage = 24;	// クリア率が100%で5分超えている場合はEX5
+					laststage = 24;	// Rate is clear100%In5If you have more than a minuteEX5
 				else
-					laststage = MAX_STAGE_TOTAL - 1;	// クリア率が100%で5分以内ならEX7
+					laststage = MAX_STAGE_TOTAL - 1;	// Rate is clear100%In5If minutesEX7
 			}
 
 			// BGM fadeout
@@ -1270,29 +1270,29 @@ public class GemManiaMode extends AbstractMode {
 				owner.bgmStatus.fadesw = true;
 			}
 
-			// ギミック解除
+			// Clear gimmick
 			engine.interruptItemNumber = GameEngine.INTERRUPTITEM_NONE;
 			engine.itemXRayEnable = false;
 			engine.itemColorEnable = false;
 			engine.resetFieldVisible();
 
-			// Section Time設定
+			// Section TimeSetting
 			if(!clearflag) {
 				if(!skipflag)
 					sectiontime[stage] = -1;	// Out of time
 				else
-					sectiontime[stage] = -2;	// スキップ
+					sectiontime[stage] = -2;	// Skip
 			} else {
 				sectiontime[stage] = cleartime;
 			}
 
-			// トレーニングでのベストTime
+			// Best-in-trainingTime
 			if( (trainingType != 0) && (clearflag) && ((cleartime < trainingBestTime) || (trainingBestTime < 0)) ) {
 				trainingBestTime = cleartime;
 			}
 		}
 
-		// Time limitが増える演出
+		// Time limitproduction which increases
 		if(engine.statc[1] < timeextendStageClearSeconds * 60) {
 			if(timeextendStageClearSeconds < 30) {
 				engine.statc[1] += 4;
@@ -1317,7 +1317,7 @@ public class GemManiaMode extends AbstractMode {
 			if(limittimeTemp <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 		}
 
-		// Next 画面へ
+		// Next To screen
 		if((engine.statc[0] >= 300) || (engine.ctrl.isPush(Controller.BUTTON_A))) {
 			// Training
 			if(trainingType != 0) {
@@ -1352,7 +1352,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/**
-	 *  stage 終了画面の描画
+	 *  stage Exit screen drawing
 	 */
 	@Override
 	public void renderCustom(GameEngine engine, int playerID) {
@@ -1381,7 +1381,7 @@ public class GemManiaMode extends AbstractMode {
 			receiver.drawMenuFont(engine, playerID, 0, 16, "TOTAL TIME", EventReceiver.COLOR_PINK);
 			receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getTime(engine.statistics.time));
 		} else if(skipflag) {
-			// スキップ
+			// Skip
 			receiver.drawMenuFont(engine, playerID, 1, 4, "SKIPPED");
 			receiver.drawMenuFont(engine, playerID, 1, 5, "-30 SEC.");
 
@@ -1398,7 +1398,7 @@ public class GemManiaMode extends AbstractMode {
 			receiver.drawMenuFont(engine, playerID, 0, 16, "TOTAL TIME", EventReceiver.COLOR_PINK);
 			receiver.drawMenuFont(engine, playerID, 1, 17, GeneralUtil.getTime(engine.statistics.time));
 		} else if((stagetimeNow <= 0) && (stagetimeStart > 0)) {
-			// Timeアップ
+			// TimeUp
 			receiver.drawMenuFont(engine, playerID, 1, 4, "TIME UP!");
 			receiver.drawMenuFont(engine, playerID, 1, 5, "TRY NEXT");
 
@@ -1416,11 +1416,11 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * Called at game over(主にコンティニュー画面)
+	 * Called at game over(Continue mainly screen)
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
-		// コンティニュー画面
+		// Continue screen
 		if((engine.ending == 0) && (!noContinue)) {
 			if(engine.statc[0] == 0) {
 				engine.playSE("died");
@@ -1435,10 +1435,10 @@ public class GemManiaMode extends AbstractMode {
 
 				engine.resetFieldVisible();
 
-				engine.allowTextRenderByReceiver = false;	// GAMEOVER表示抑制
+				engine.allowTextRenderByReceiver = false;	// GAMEOVERDisplay suppression
 			}
 			if(engine.statc[0] < engine.field.getHeight() + 1) {
-				// field灰色化
+				// fieldGraying
 				for(int i = 0; i < engine.field.getWidth(); i++) {
 					if(engine.field.getBlockColor(i, engine.statc[0]) != Block.BLOCK_COLOR_NONE) {
 						Block blk = engine.field.getBlock(i, engine.statc[0]);
@@ -1452,13 +1452,13 @@ public class GemManiaMode extends AbstractMode {
 				}
 				engine.statc[0]++;
 			} else if(engine.statc[0] < (engine.field.getHeight() + 1) + 600) {
-				// コンティニュー選択
+				// Continue selection
 				if(engine.ctrl.isPush(Controller.BUTTON_UP) || engine.ctrl.isPush(Controller.BUTTON_DOWN)) {
 					engine.statc[1]++;
 					if(engine.statc[1] > 1) engine.statc[1] = 0;
 					engine.playSE("cursor");
 				}
-				// 決定
+				// Decision
 				if(engine.ctrl.isPush(Controller.BUTTON_A)) {
 					if(engine.statc[1] == 0) {
 						// YES
@@ -1477,9 +1477,9 @@ public class GemManiaMode extends AbstractMode {
 					engine.statc[0]++;
 				}
 			} else if(engine.statc[0] >= (engine.field.getHeight() + 1) + 600) {
-				// ＼(^o^)／ｵﾜﾀ
+				// \(^o^)/ オワタ
 				noContinue = true;
-				engine.allowTextRenderByReceiver = true;	// GAMEOVER表示抑制解除
+				engine.allowTextRenderByReceiver = true;	// GAMEOVERDerepression display
 				engine.resetStatc();
 			}
 
@@ -1490,7 +1490,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * game over時の描画処理(主にコンティニュー画面)
+	 * game overDrawing process when(Continue mainly screen)
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1514,7 +1514,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面の処理
+	 * Processing of the results screen
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
@@ -1579,7 +1579,7 @@ public class GemManiaMode extends AbstractMode {
 	}
 
 	/*
-	 * リプレイ保存
+	 * Save replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
@@ -1641,9 +1641,9 @@ public class GemManiaMode extends AbstractMode {
 	 * Update rankings
 	 * @param type Game type
 	 * @param stg  stage
-	 * @param clper クリア率
+	 * @param clper Clear rate
 	 * @param time Time
-	 * @param clear 完全クリア flag
+	 * @param clear Completely clear flag
 	 */
 	private void updateRanking(int type, int stg, int clper, int time, int clear) {
 		rankingRank = checkRanking(type, stg, clper, time, clear);
@@ -1669,9 +1669,9 @@ public class GemManiaMode extends AbstractMode {
 	 * Calculate ranking position
 	 * @param type Game type
 	 * @param stg  stage
-	 * @param clper クリア率
+	 * @param clper Clear rate
 	 * @param time Time
-	 * @param clear 完全クリア flag
+	 * @param clear Completely clear flag
 	 * @return Position (-1 if unranked)
 	 */
 	private int checkRanking(int type, int stg, int clper, int time, int clear) {

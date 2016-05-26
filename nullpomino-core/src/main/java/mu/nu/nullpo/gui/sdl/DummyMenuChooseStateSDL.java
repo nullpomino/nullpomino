@@ -38,7 +38,7 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 	/** Cursor position */
 	protected int cursor = 0;
 
-	/** Screenshot撮影 flag */
+	/** ScreenshotShooting flag */
 	protected boolean ssflag = false;
 
 	/** Max cursor value */
@@ -89,7 +89,7 @@ public abstract class DummyMenuChooseStateSDL extends BaseStateSDL {
 			if(change != 0)
 				onChange(change);
 
-			// 決定 button
+			// Decision button
 			if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A) || mouseConfirm) {
 				if (onDecide())
 					return;

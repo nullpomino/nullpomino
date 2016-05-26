@@ -44,13 +44,13 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 2;
 
-	/** 落下速度 table */
+	/** Fall velocity table */
 	private static final int[] tableGravityValue =
 	{
 		4, 6, 8, 10, 12, 16, 32, 48, 64, 80, 96, 112, 128, 144, 4, 32, 64, 96, 128, 160, 192, 224, 256, 512, 768, 1024, 1280, 1024, 768, -1
 	};
 
-	/** 落下速度が変わる level */
+	/** Fall velocity changes level */
 	private static final int[] tableGravityChangeLevel =
 	{
 		30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 170, 200, 220, 230, 233, 236, 239, 243, 247, 251, 300, 330, 360, 400, 420, 450, 500, 10000
@@ -65,7 +65,7 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Line clear time table */
 	private static final int[] tableLineDelay = {40, 40, 40, 40, 40, 25, 16, 12,  6,  6};
 
-	/** 固定 time table */
+	/** Fixation time table */
 	private static final int[] tableLockDelay = {31, 31, 31, 31, 31, 31, 31, 31, 31, 18};
 
 	/** DAS table */
@@ -77,7 +77,7 @@ public class GradeMania2Mode extends AbstractMode {
 	/** BGM change levels */
 	private static final int[] tableBGMChange  = {500,700,900,-1};
 
-	/** Line clear時に入る段位 point */
+	/** Line clearDan when entering the point */
 	private static final int[][] tableGradePoint =
 	{
 		{10,10,10,10,10, 5, 5, 5, 5, 5, 2},
@@ -86,7 +86,7 @@ public class GradeMania2Mode extends AbstractMode {
 		{50,40,40,40,40,30,30,30,30,30,30},
 	};
 
-	/** 段位 pointのCombo bonus */
+	/** Dan pointOfCombo bonus */
 	private static final float[][] tableGradeComboBonus =
 	{
 		{1.0f,1.2f,1.2f,1.4f,1.4f,1.4f,1.4f,1.5f,1.5f,2.0f},
@@ -95,38 +95,38 @@ public class GradeMania2Mode extends AbstractMode {
 		{1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f},
 	};
 
-	/** 実際の段位を上げるのに必要な内部段位 */
+	/** Required to raise the internal dan dan actual */
 	private static final int[] tableGradeChange =
 	{
 		1, 2, 3, 4, 5, 7, 9, 12, 15, 18, 19, 20, 23, 25, 27, 29, 31, -1
 	};
 
-	/** 段位 pointが1つ減る time */
+	/** Dan pointThe1Reduce one time */
 	private static final int[] tableGradeDecayRate =
 	{
 		125, 80, 80, 50, 45, 45, 45, 40, 40, 40, 40, 40, 30, 30, 30, 20, 20, 20, 20, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10
 	};
 
-	/** 段位のName */
+	/** Of danName */
 	private static final String[] tableGradeName =
 	{
-		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
-		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9～17
-		 "M", "GM"												// 18～19
+		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0~ 8
+		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9~17
+		 "M", "GM"												// 18~19
 	};
 
-	/** 裏段位のName */
+	/** Dan&#39;s backName */
 	private static final String[] tableSecretGradeName =
 	{
-		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
-		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9～17
+		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0~ 8
+		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9~17
 		"GM"													// 18
 	};
 
 	/** LV999 roll time */
 	private static final int ROLLTIMELIMIT = 3694;
 
-	/** 消えRoll に必要なLV999到達時のTime */
+	/** VanishRoll It is necessary toLV999When reaching theTime */
 	private static final int M_ROLL_TIME_REQUIRE = 31500;
 
 	/** Number of entries in rankings */
@@ -138,31 +138,31 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Default section time */
 	private static final int DEFAULT_SECTION_TIME = 5400;
 
-	/** Current 落下速度の number (tableGravityChangeLevelの levelに到達するたびに1つ増える) */
+	/** Current Speed ​​of fall number (tableGravityChangeLevelOf levelAt each of1Increase one) */
 	private int gravityindex;
 
-	/** Next Section の level (これ-1のときに levelストップする) */
+	/** Next Section Of level (This-1At levelStop) */
 	private int nextseclv;
 
-	/** Levelが増えた flag */
+	/** LevelHas increased flag */
 	private boolean lvupflag;
 
-	/** 画面に表示されている実際の段位 */
+	/** The actual gear position is displayed on the screen */
 	private int grade;
 
-	/** 内部段位 */
+	/** Internal dan */
 	private int gradeInternal;
 
-	/** 段位 point */
+	/** Dan point */
 	private int gradePoint;
 
-	/** 段位 pointが1つ減る time */
+	/** Dan pointThe1Reduce one time */
 	private int gradeDecay;
 
-	/** 最後に段位が上がった time */
+	/** Dan went up at the end time */
 	private int lastGradeTime;
 
-	/** Hard dropした段count */
+	/** Hard dropStage wascount */
 	private int harddropBonus;
 
 	/** Combo bonus */
@@ -171,10 +171,10 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Most recent increase in score */
 	private int lastscore;
 
-	/** 獲得Render scoreがされる残り time */
+	/** AcquisitionRender scoreIs remaining to be time */
 	private int scgettime;
 
-	/** Roll 経過 time */
+	/** Roll Course time */
 	private int rolltime;
 
 	/** Roll completely cleared flag */
@@ -183,19 +183,19 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Roll started flag */
 	private boolean rollstarted;
 
-	/** 裏段位 */
+	/** Dan back */
 	private int secretGrade;
 
 	/** Current BGM */
 	private int bgmlv;
 
-	/** 段位表示を光らせる残り frame count */
+	/** Illuminate the display remaining dan frame count */
 	private int gradeflash;
 
 	/** Section Time */
 	private int[] sectiontime;
 
-	/** 新記録が出たSection はtrue */
+	/** New record came outSection Thetrue */
 	private boolean[] sectionIsNewRecord;
 
 	/** Cleared Section count */
@@ -204,49 +204,49 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Average Section Time */
 	private int sectionavgtime;
 
-	/** 直前のSection Time */
+	/** PreviousSection Time */
 	private int sectionlasttime;
 
-	/** Section 内で4-line clearた count */
+	/** Section In4-line clearWas count */
 	private int[] sectionfourline;
 
-	/** 消えRoll  flag１ (Section Time) */
+	/** VanishRoll  flagOne (Section Time) */
 	private boolean mrollSectiontime;
 
-	/** 消えRoll  flag２ (4-line clear) */
+	/** VanishRoll  flagTwo (4-line clear) */
 	private boolean mrollFourline;
 
-	/** 消えRoll started flag */
+	/** VanishRoll started flag */
 	private boolean mrollFlag;
 
-	/** 消えRoll 中に消したline count */
+	/** VanishRoll I turned off during theline count */
 	private int mrollLines;
 
-	/** AC medal 状態 */
+	/** AC medal State */
 	private int medalAC;
 
-	/** ST medal 状態 */
+	/** ST medal State */
 	private int medalST;
 
-	/** SK medal 状態 */
+	/** SK medal State */
 	private int medalSK;
 
-	/** RE medal 状態 */
+	/** RE medal State */
 	private int medalRE;
 
-	/** RO medal 状態 */
+	/** RO medal State */
 	private int medalRO;
 
-	/** CO medal 状態 */
+	/** CO medal State */
 	private int medalCO;
 
-	/** 150個以上Blockがあるとtrue, 70個まで減らすとfalseになる */
+	/** 150More thanBlockIf there is atrue, 70I will reduce up tofalseBecome */
 	private boolean recoveryFlag;
 
-	/** rotationした合計 count (Maximum4個ずつ増える) */
+	/** rotationOf total count (Maximum4Incremented by one) */
 	private int rotateCount;
 
-	/** Section Time記録表示中ならtrue */
+	/** Section TimeShowing record iftrue */
 	private boolean isShowBestSectionTime;
 
 	/** Level at start */
@@ -273,7 +273,7 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Current round's ranking rank */
 	private int rankingRank;
 
-	/** Rankings' 段位 */
+	/** Rankings' Dan */
 	private int[] rankingGrade;
 
 	/** Rankings'  level */
@@ -285,7 +285,7 @@ public class GradeMania2Mode extends AbstractMode {
 	/** Rankings' Roll completely cleared flag */
 	private int[] rankingRollclear;
 
-	/** Section Time記録 */
+	/** Section TimeRecord */
 	private int[] bestSectionTime;
 
 	public GradeMania2Mode() {
@@ -450,8 +450,8 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/**
-	 * 消えRoll 条件を満たしているか check
-	 * @param levelb 上がる前の level
+	 * VanishRoll Do you meet the criteria check
+	 * @param levelb before the rise level
 	 */
 	private void mrollCheck(int levelb) {
 		// Section Time
@@ -516,9 +516,9 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/**
-	 *  medal の文字色を取得
-	 * @param medalColor  medal 状態
-	 * @return  medal の文字色
+	 *  medal Gets the color of the character
+	 * @param medalColor  medal State
+	 * @return  medal Text color of the
 	 */
 	private int getMedalFontColor(int medalColor) {
 		if(medalColor == 1) return EventReceiver.COLOR_RED;
@@ -700,7 +700,7 @@ public class GradeMania2Mode extends AbstractMode {
 			receiver.drawScoreFont(engine, playerID, 0, 14, "TIME", EventReceiver.COLOR_BLUE);
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(engine.statistics.time));
 
-			// Roll 残り time
+			// Roll Rest time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int time = ROLLTIMELIMIT - rolltime;
 				if(time < 0) time = 0;
@@ -747,11 +747,11 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// 新規ピース出現時
+		// Occurrence new piece
 		if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 			// Level up
 			if(engine.statistics.level < nextseclv - 1) {
@@ -760,7 +760,7 @@ public class GradeMania2Mode extends AbstractMode {
 			}
 			levelUp(engine);
 
-			// 旧Version用
+			// OldVersionUse
 			if(version <= 1) {
 				// Hard drop bonusInitialization
 				harddropBonus = 0;
@@ -787,7 +787,7 @@ public class GradeMania2Mode extends AbstractMode {
 			lvupflag = false;
 		}
 
-		// 段位 point減少
+		// Dan pointDecrease
 		if((engine.timerActive == true) && (gradePoint > 0) && (engine.combo <= 0) && (engine.lockDelayNow < engine.getLockDelay() - 1)) {
 			gradeDecay++;
 
@@ -800,7 +800,7 @@ public class GradeMania2Mode extends AbstractMode {
 			}
 		}
 
-		// Endingスタート
+		// EndingStart
 		if((engine.ending == 2) && (rollstarted == false)) {
 			rollstarted = true;
 
@@ -821,11 +821,11 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * ARE中の処理
+	 * AREProcessing during
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame
+		// Last frame
 		if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 			if(engine.statistics.level < nextseclv - 1) {
 				engine.statistics.level++;
@@ -839,7 +839,7 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/**
-	 *  levelが上がったときの共通処理
+	 *  levelcommon process is raised when
 	 */
 	private void levelUp(GameEngine engine) {
 		// Meter
@@ -849,10 +849,10 @@ public class GradeMania2Mode extends AbstractMode {
 		if(engine.statistics.level % 100 >= 80) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 		if(engine.statistics.level == nextseclv - 1) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-		// 速度変更
+		// Speed ​​change
 		setSpeed(engine);
 
-		// LV100到達でghost を消す
+		// LV100In reachingghost Disappear
 		if((engine.statistics.level >= 100) && (!alwaysghost.value)) engine.ghost = false;
 
 		// BGM fadeout
@@ -895,13 +895,13 @@ public class GradeMania2Mode extends AbstractMode {
 			if(comboValue < 1) comboValue = 1;
 		}
 
-		// RO medal 用カウント
+		// RO medal Counts for
 		int rotateTemp = engine.nowPieceRotateCount;
 		if(rotateTemp > 4) rotateTemp = 4;
 		rotateCount += rotateTemp;
 
 		if((lines >= 1) && (engine.ending == 0)) {
-			// 段位 point
+			// Dan point
 			int index = gradeInternal;
 			if(index > 10) index = 10;
 			int basepoint = tableGradePoint[lines - 1][index];
@@ -916,7 +916,7 @@ public class GradeMania2Mode extends AbstractMode {
 			float point = (basepoint * combobonus) * levelbonus;
 			gradePoint += (int)point;
 
-			// 内部段位上昇
+			// Dan rising internal
 			if(gradePoint >= 100) {
 				gradePoint = 0;
 				gradeDecay = 0;
@@ -930,7 +930,7 @@ public class GradeMania2Mode extends AbstractMode {
 				}
 			}
 
-			// 4-line clearカウント
+			// 4-line clearCount
 			if(lines >= 4) {
 				sectionfourline[engine.statistics.level / 100]++;
 
@@ -997,12 +997,12 @@ public class GradeMania2Mode extends AbstractMode {
 
 				lastGradeTime = engine.statistics.time;
 
-				// Section Timeを記録
+				// Section TimeRecord
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// 消えRoll check
+				// VanishRoll check
 				mrollCheck(levelb);
 
 				// ST medal
@@ -1011,31 +1011,31 @@ public class GradeMania2Mode extends AbstractMode {
 				// RO medal
 				roMedalCheck(engine);
 
-				// 条件を全て満たしているなら消えRoll 発動
+				// Disappear if all the conditions are metRoll Invocation
 				if((mrollSectiontime == true) && (mrollFourline == true) && (engine.statistics.time <= M_ROLL_TIME_REQUIRE) && (grade >= 17))
 					mrollFlag = true;
 			} else if(engine.statistics.level >= nextseclv) {
 				// Next Section
 				engine.playSE("levelup");
 
-				// Background切り替え
+				// BackgroundSwitching
 				owner.backgroundStatus.fadesw = true;
 				owner.backgroundStatus.fadecount = 0;
 				owner.backgroundStatus.fadebg = nextseclv / 100;
 
-				// BGM切り替え
+				// BGMSwitching
 				if((tableBGMChange[bgmlv] != -1) && (engine.statistics.level >= tableBGMChange[bgmlv])) {
 					bgmlv++;
 					owner.bgmStatus.fadesw = false;
 					owner.bgmStatus.bgm = bgmlv;
 				}
 
-				// Section Timeを記録
+				// Section TimeRecord
 				sectionlasttime = sectiontime[levelb / 100];
 				sectionscomp++;
 				setAverageSectionTime();
 
-				// 消えRoll check
+				// VanishRoll check
 				mrollCheck(levelb);
 
 				// ST medal
@@ -1066,7 +1066,7 @@ public class GradeMania2Mode extends AbstractMode {
 			engine.statistics.score += lastscore;
 			scgettime = 120;
 		} else if((lines >= 1) && (mrollFlag == true) && (engine.ending == 2)) {
-			// 消えRoll 中のLine clear
+			// VanishRoll InLine clear
 			mrollLines += lines;
 		}
 	}
@@ -1080,22 +1080,22 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 各 frame の終わりの処理
+	 * Each frame Processing at the end of
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
-		// 段位上昇時のフラッシュ
+		// Flash at elevated dan
 		if(gradeflash > 0) gradeflash--;
 
-		// 獲得Render score
+		// AcquisitionRender score
 		if(scgettime > 0) scgettime--;
 
-		// 15分経過
+		// 15Minutes have elapsed
 		if(engine.statistics.time >= 54000) {
 			setSpeed(engine);
 		}
 
-		// Section Time増加
+		// Section TimeIncrease
 		if((engine.timerActive) && (engine.ending == 0)) {
 			int section = engine.statistics.level / 100;
 
@@ -1116,7 +1116,7 @@ public class GradeMania2Mode extends AbstractMode {
 			if(remainRollTime <= 20*60) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainRollTime <= 10*60) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// Roll 終了
+			// Roll End
 			if(rolltime >= ROLLTIMELIMIT) {
 				rollclear = 2;
 
@@ -1144,7 +1144,7 @@ public class GradeMania2Mode extends AbstractMode {
 	 */
 	@Override
 	public boolean onGameOver(GameEngine engine, int playerID) {
-		// 段位M
+		// DanM
 		if((mrollFlag == true) && (grade < 18) && (engine.ending == 2) && (engine.statc[0] == 0)) {
 			grade = 18;
 			gradeflash = 180;
@@ -1153,9 +1153,9 @@ public class GradeMania2Mode extends AbstractMode {
 		}
 
 		if(engine.statc[0] == 0) {
-			// Blockの表示を元に戻す
+			// BlockReplace the display
 			engine.blockOutlineType = GameEngine.BLOCK_OUTLINE_NORMAL;
-			// 裏段位
+			// Dan back
 			secretGrade = engine.field.getSecretGrade();
 		}
 
@@ -1163,7 +1163,7 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面
+	 * Results screen
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -1212,11 +1212,11 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * 結果画面の処理
+	 * Processing of the results screen
 	 */
 	@Override
 	public boolean onResult(GameEngine engine, int playerID) {
-		// ページ切り替え
+		// Page switching
 		if(engine.ctrl.isMenuRepeatKey(Controller.BUTTON_UP)) {
 			engine.statc[1]--;
 			if(engine.statc[1] < 0) engine.statc[1] = 2;
@@ -1227,7 +1227,7 @@ public class GradeMania2Mode extends AbstractMode {
 			if(engine.statc[1] > 2) engine.statc[1] = 0;
 			engine.playSE("change");
 		}
-		//  section time display切替
+		//  section time displaySwitching
 		if(engine.ctrl.isPush(Controller.BUTTON_F)) {
 			engine.playSE("change");
 			isShowBestSectionTime = !isShowBestSectionTime;
@@ -1237,7 +1237,7 @@ public class GradeMania2Mode extends AbstractMode {
 	}
 
 	/*
-	 * リプレイ保存
+	 * Save replay
 	 */
 	@Override
 	public void saveReplay(GameEngine engine, int playerID, CustomProperties prop) {
@@ -1294,7 +1294,7 @@ public class GradeMania2Mode extends AbstractMode {
 
 	/**
 	 * Update rankings
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
 	 */
@@ -1320,7 +1320,7 @@ public class GradeMania2Mode extends AbstractMode {
 
 	/**
 	 * Calculate ranking position
-	 * @param gr 段位
+	 * @param gr Dan
 	 * @param lv  level
 	 * @param time Time
 	 * @return Position (-1 if unranked)

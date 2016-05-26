@@ -47,34 +47,34 @@ import sdljava.video.SDLSurface;
 import sdljava.video.SDLVideo;
 
 /**
- * ゲームの event 処理と描画処理 (SDL版）
+ * Game event Processing and rendering process (SDLVersion)
  */
 public class RendererSDL extends EventReceiver {
 	/** Log */
 	static Logger log = Logger.getLogger(RendererSDL.class);
 
-	/** 描画先サーフェイス */
+	/** Surface to draw */
 	protected SDLSurface graphics;
 
-	/** 演出オブジェクト */
+	/** Production Object */
 	protected ArrayList<EffectObject> effectlist;
 
-	/** Line clearエフェクト表示 */
+	/** Line clearDisplay Effects */
 	protected boolean showlineeffect;
 
-	/** 重い演出を使う */
+	/** Heavy production use */
 	protected boolean heavyeffect;
 
-	/** fieldBackgroundの明るさ */
+	/** fieldBackgroundThe brightness of the */
 	protected int fieldbgbright;
 
 	/** Show field BG grid */
 	protected boolean showfieldbggrid;
 
-	/** NEXT欄を暗くする */
+	/** NEXTDarken the field */
 	protected boolean darknextarea;
 
-	/** ghost ピースの上にNEXT表示 */
+	/** ghost On top of the pieceNEXTDisplay */
 	protected boolean nextshadow;
 
 	/** Line clear effect speed */
@@ -102,11 +102,11 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * SDL用カラー値を取得
-	 * @param r 赤
-	 * @param g 緑
-	 * @param b 青
-	 * @return SDL用カラー値
+	 * SDLGets the color value for
+	 * @param r Red
+	 * @param g Green
+	 * @param b Blue
+	 * @return SDLColor values ​​for
 	 */
 	public long getColorValue(int r, int g, int b) {
 		try {
@@ -118,9 +118,9 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Block colorIDに応じてSDL用カラー値を取得
+	 * Block colorIDDepending onSDLGets the color value for
 	 * @param colorID Block colorID
-	 * @return SDL用カラー値
+	 * @return SDLColor values ​​for
 	 */
 	public long getColorByID(int colorID) {
 		switch(colorID) {
@@ -151,7 +151,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Menu 用の文字列を描画
+	 * Menu Drawing a string for
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -173,7 +173,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Menu 用の文字列をTTF font で描画
+	 * Menu A string forTTF font Drawing on
 	 */
 	@Override
 	public void drawTTFMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -195,7 +195,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Render score用の font を描画
+	 * Render scoreFor font Draw a
 	 */
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -212,7 +212,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Render score用の font をTTF font で描画
+	 * Render scoreFor font ATTF font Drawing on
 	 */
 	@Override
 	public void drawTTFScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -228,7 +228,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 直接指定した座標へ文字列を描画
+	 * Draws the string to the specified coordinates I direct
 	 */
 	@Override
 	public void drawDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -240,7 +240,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 直接指定した座標へ描画できるTTF font を描画
+	 * I can draw directly to the specified coordinatesTTF font Draw a
 	 */
 	@Override
 	public void drawTTFDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -252,7 +252,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * スピードMeterを描画
+	 * SpeedMeterDraw a
 	 */
 	@Override
 	public void drawSpeedMeter(GameEngine engine, int playerID, int x, int y, int s) {
@@ -287,7 +287,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * TTF使用可能
+	 * TTFAvailable
 	 */
 	@Override
 	public boolean isTTFSupport() {
@@ -324,7 +324,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Sound effects再生
+	 * Sound effectsPlayback
 	 */
 	@Override
 	public void playSE(String name) {
@@ -332,7 +332,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 描画先のサーフェイスを設定
+	 * Set the target surface drawing
 	 */
 	@Override
 	public void setGraphics(Object g) {
@@ -342,7 +342,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * リプレイを保存
+	 * Save the replay
 	 */
 	@Override
 	public void saveReplay(GameManager owner, CustomProperties prop) {
@@ -352,7 +352,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 1マスBlockを描画
+	 * 1MassBlockDraw a
 	 */
 	@Override
 	public void drawSingleBlock(GameEngine engine, int playerID, int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
@@ -483,52 +483,52 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockを描画
+	 * BlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param color 色
-	 * @param skin 模様
-	 * @param bone 骨Block
-	 * @param darkness 暗さもしくは明るさ
-	 * @param alpha 透明度
-	 * @param scale 拡大率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param color Color
+	 * @param skin Pattern
+	 * @param bone BoneBlock
+	 * @param darkness Lightness or darkness
+	 * @param alpha Transparency
+	 * @param scale Enlargement factor
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) throws SDLException {
 		drawBlock(x, y, color, skin, bone, darkness, alpha, scale, 0);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画
+	 * BlockUsing an instance of the classBlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @throws SDLException 描画に失敗した場合
+	 * @param blk BlockInstance of a class
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawBlock(int x, int y, Block blk) throws SDLException {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f, blk.attribute);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率指定可能）
+	 * BlockUsing an instance of the classBlockDraw a (You can specify the magnification)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @param scale 拡大率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param blk BlockInstance of a class
+	 * @param scale Enlargement factor
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) throws SDLException {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率と暗さ指定可能）
+	 * BlockUsing an instance of the classBlockDraw a (You can specify the magnification and dark)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @param scale 拡大率
-	 * @param darkness 暗さもしくは明るさ
-	 * @throws SDLException 描画に失敗した場合
+	 * @param blk BlockInstance of a class
+	 * @param scale Enlargement factor
+	 * @param darkness Lightness or darkness
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) throws SDLException {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale, blk.attribute);
@@ -540,36 +540,36 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画
+	 * BlockDraw a piece
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @throws SDLException 描画に失敗した場合
+	 * @param piece Peace to draw
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawPiece(int x, int y, Piece piece) throws SDLException {
 		drawPiece(x, y, piece, 1.0f);
 	}
 
 	/**
-	 * Blockピースを描画 (拡大率指定可能）
+	 * BlockDraw a piece (You can specify the magnification)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @param scale 拡大率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param piece Peace to draw
+	 * @param scale Enlargement factor
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawPiece(int x, int y, Piece piece, float scale) throws SDLException {
 		drawPiece(x, y, piece, scale, 0f);
 	}
 
 	/**
-	 * Blockピースを描画 (暗さもしくは明るさの指定可能）
+	 * BlockDraw a piece (You can specify the brightness or darkness)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @param scale 拡大率
-	 * @param darkness 暗さもしくは明るさ
-	 * @throws SDLException 描画に失敗した場合
+	 * @param piece Peace to draw
+	 * @param scale Enlargement factor
+	 * @param darkness Lightness or darkness
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawPiece(int x, int y, Piece piece, float scale, float darkness) throws SDLException {
 		for(int i = 0; i < piece.getMaxBlock(); i++) {
@@ -584,12 +584,12 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースを描画 (Y-coordinateが0以上のBlockだけ表示）
+	 * Currently working onBlockDraw a piece (Y-coordinateThe0MoreBlockDisplay only)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param scale 表示倍率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param engine GameEngineInstance of
+	 * @param scale Display magnification
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawCurrentPiece(int x, int y, GameEngine engine, float scale) throws SDLException {
 		Piece piece = engine.nowPieceObject;
@@ -625,12 +625,12 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースのghost を描画
+	 * Currently working onBlockOf Peaceghost Draw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param scale 表示倍率
-	 * @throws SDLException 描画に失敗した場合
+	 * @param engine GameEngineInstance of
+	 * @param scale Display magnification
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawGhostPiece(int x, int y, GameEngine engine, float scale) throws SDLException {
 		Piece piece = engine.nowPieceObject;
@@ -842,12 +842,12 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * fieldのBlockを描画
+	 * fieldOfBlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param small 半分サイズ
-	 * @throws SDLException 描画に失敗した場合
+	 * @param engine GameEngineInstance of
+	 * @param small Half size
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawField(int x, int y, GameEngine engine, int size) throws SDLException {
 		if(graphics == null) return;
@@ -953,7 +953,7 @@ public class RendererSDL extends EventReceiver {
 			}
 		}
 
-		// ヘボHIDDEN
+		// BunglerHIDDEN
 		if((engine.heboHiddenEnable) && (engine.gameActive) && (field != null)) {
 			int maxY = engine.heboHiddenYNow;
 			if(maxY > height) maxY = height;
@@ -966,12 +966,12 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * Field frameを描画
+	 * Field frameDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param small 半分サイズ
-	 * @throws SDLException 描画に失敗した場合
+	 * @param engine GameEngineInstance of
+	 * @param small Half size
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawFrame(int x, int y, GameEngine engine, int displaysize) throws SDLException {
 		if(graphics == null) return;
@@ -1012,7 +1012,7 @@ public class RendererSDL extends EventReceiver {
 		SDLRect rectSrc = null;
 		SDLRect rectDst = null;
 
-		// Upと下
+		// UpAnd the lower
 		int maxWidth = (width * size);
 		if(showmeter) maxWidth = (width * size) + 2;
 
@@ -1026,7 +1026,7 @@ public class RendererSDL extends EventReceiver {
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 		}
 
-		// 左と右
+		// Left and Right
 		for(int i = 0; i < height * size; i++) {
 			rectSrc = new SDLRect(offsetX + 0, 4, 4, 4);
 			rectDst = new SDLRect(x, y + ((i + 1) * 4), 4, 4);
@@ -1038,28 +1038,28 @@ public class RendererSDL extends EventReceiver {
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 		}
 
-		// 左上
+		// Upper left
 		rectSrc = new SDLRect(offsetX + 0, 0, 4, 4);
 		rectDst = new SDLRect(x, y, 4, 4);
 		ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 
-		// 左下
+		// Lower left
 		rectSrc = new SDLRect(offsetX + 0, 8, 4, 4);
 		rectDst = new SDLRect(x, y + (height * size * 4) + 4, 4, 4);
 		ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 
 		if(showmeter) {
-			// MeterONのときの右上
+			// MeterONWhen the upper right corner of the
 			rectSrc = new SDLRect(offsetX + 8, 0, 4, 4);
 			rectDst = new SDLRect(x + (width * size * 4) + 12, y, 4, 4);
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 
-			// MeterONのときの右下
+			// MeterONWhen the lower-right corner of
 			rectSrc = new SDLRect(offsetX + 8, 8, 4, 4);
 			rectDst = new SDLRect(x + (width * size * 4) + 12, y + (height * size * 4) + 4, 4, 4);
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 
-			// 右Meterの枠
+			// RightMeterFrame
 			for(int i = 0; i < height * size; i++) {
 				rectSrc = new SDLRect(offsetX + 12, 4, 4, 4);
 				rectDst = new SDLRect(x + (width * size * 4) + 4, y + ((i + 1) * 4), 4, 4);
@@ -1074,7 +1074,7 @@ public class RendererSDL extends EventReceiver {
 			rectDst = new SDLRect(x + (width * size * 4) + 4, y + (height * size * 4) + 4, 4, 4);
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 
-			// 右Meter
+			// RightMeter
 			int maxHeight = height * size * 4;
 			if((engine != null) && (engine.meterValueSub > 0 || engine.meterValue > 0))
 				maxHeight -= Math.max(engine.meterValue, engine.meterValueSub);
@@ -1108,12 +1108,12 @@ public class RendererSDL extends EventReceiver {
 				}
 			}
 		} else {
-			// MeterOFFのときの右上
+			// MeterOFFWhen the upper right corner of the
 			rectSrc = new SDLRect(offsetX + 8, 0, 4, 4);
 			rectDst = new SDLRect(x + (width * size * 4) + 4, y, 4, 4);
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
 
-			// MeterOFFのときの右下
+			// MeterOFFWhen the lower-right corner of
 			rectSrc = new SDLRect(offsetX + 8, 8, 4, 4);
 			rectDst = new SDLRect(x + (width * size * 4) + 4, y + (height * size * 4) + 4, 4, 4);
 			ResourceHolderSDL.imgFrame.blitSurface(rectSrc, graphics, rectDst);
@@ -1121,11 +1121,11 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/**
-	 * NEXTを描画
+	 * NEXTDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @throws SDLException 描画に失敗した場合
+	 * @param engine GameEngineInstance of
+	 * @throws SDLException If I failed to draw
 	 */
 	protected void drawNext(int x, int y, GameEngine engine) throws SDLException {
 		if(graphics == null) return;
@@ -1282,7 +1282,7 @@ public class RendererSDL extends EventReceiver {
 					}
 				}
 
-				// NEXT2・3
+				// NEXT2·3
 				for(int i = 0; i < engine.ruleopt.nextDisplay - 1; i++) {
 					if(i >= 2) break;
 
@@ -1293,7 +1293,7 @@ public class RendererSDL extends EventReceiver {
 					}
 				}
 
-				// NEXT4～
+				// NEXT4~
 				for(int i = 0; i < engine.ruleopt.nextDisplay - 3; i++) {
 					Piece piece = engine.getNextObject(engine.nextPieceCount + i + 3);
 
@@ -1391,7 +1391,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 各 frame 最初の描画処理
+	 * Each frame Drawing process of the first
 	 */
 	@Override
 	public void renderFirst(GameEngine engine, int playerID) {
@@ -1440,7 +1440,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Ready画面の描画処理
+	 * ReadyProcess of drawing the screen
 	 */
 	@Override
 	public void renderReady(GameEngine engine, int playerID) {
@@ -1471,7 +1471,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Blockピース移動時の処理
+	 * BlockHandling when moving piece
 	 */
 	@Override
 	public void renderMove(GameEngine engine, int playerID) {
@@ -1504,13 +1504,13 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Blockを消す演出を出すときの処理
+	 * BlockWhen you issue the production process to turn off the
 	 */
 	@Override
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
 		if(showlineeffect && (blk != null) && engine.displaysize != -1) {
 			int color = blk.getDrawColor();
-			// 通常Block
+			// UsuallyBlock
 			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
 				EffectObject obj =
 					new EffectObject(1,
@@ -1519,7 +1519,7 @@ public class RendererSDL extends EventReceiver {
 										color);
 				effectlist.add(obj);
 			}
-			// 宝石Block
+			// JewelBlock
 			else if(blk.isGemBlock()) {
 				EffectObject obj =
 					new EffectObject(2,
@@ -1532,7 +1532,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * EXCELLENT画面の描画処理
+	 * EXCELLENTProcess of drawing the screen
 	 */
 	@Override
 	public void renderExcellent(GameEngine engine, int playerID) {
@@ -1565,7 +1565,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * game over画面の描画処理
+	 * game overProcess of drawing the screen
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1599,7 +1599,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * Render results screen処理
+	 * Render results screenProcessing
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -1630,7 +1630,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * fieldエディット画面の描画処理
+	 * fieldDrawing process of edit screen
 	 */
 	@Override
 	public void renderFieldEdit(GameEngine engine, int playerID) {
@@ -1647,7 +1647,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 各 frame の最後に行われる処理
+	 * Each frame Processing that takes place at the end of the
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -1655,7 +1655,7 @@ public class RendererSDL extends EventReceiver {
 	}
 
 	/*
-	 * 各 frame の最後に行われる描画処理
+	 * Each frame Drawing process that takes place at the end of the
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {

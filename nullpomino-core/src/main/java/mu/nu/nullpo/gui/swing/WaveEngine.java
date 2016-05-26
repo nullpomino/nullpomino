@@ -47,23 +47,23 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.log4j.Logger;
 
 /**
- * サウンドエンジン
- * <a href="http://javagame.skr.jp/index.php?%A5%B5%A5%A6%A5%F3%A5%C9%A5%A8%A5%F3%A5%B8%A5%F3">転載元</a>
+ * Sound engine
+ * <a href="http://javagame.skr.jp/index.php?%A5%B5%A5%A6%A5%F3%A5%C9%A5%A8%A5%F3%A5%B8%A5%F3">Reprint yuan</a>
  */
 public class WaveEngine implements LineListener {
 	/** Log */
 	static Logger log = Logger.getLogger(WaveEngine.class);
 
-	/** 登録できるWAVE file のMaximumcount */
+	/** You can registerWAVE file OfMaximumcount */
 	private int maxClips;
 
-	/** WAVE file  data (Name-> data本体) */
+	/** WAVE file  data (Name-> dataBody) */
 	private HashMap<String, Clip> clipMap;
 
-	/** 登録されたWAVE file count */
+	/** Was registeredWAVE file count */
 	private int counter = 0;
 
-	/** 音量 */
+	/** Volume */
 	private double volume = 1.0;
 
 	/**
@@ -75,7 +75,7 @@ public class WaveEngine implements LineListener {
 
 	/**
 	 * Constructor
-	 * @param maxClips 登録できるWAVE file のMaximumcount
+	 * @param maxClips You can registerWAVE file OfMaximumcount
 	 */
 	public WaveEngine(int maxClips) {
 		this.maxClips = maxClips;
@@ -83,16 +83,16 @@ public class WaveEngine implements LineListener {
 	}
 
 	/**
-	 * Current 設定音量を取得
-	 * @return Current 設定音量 (1.0が default ）
+	 * Current Get the volume setting
+	 * @return Current Volume setting (1.0The default )
 	 */
 	public double getVolume() {
 		return volume;
 	}
 
 	/**
-	 * 音量を設定
-	 * @param vol 新しい設定音量 (1.0が default ）
+	 * Set the volume
+	 * @param vol New configuration volume (1.0The default )
 	 */
 	public void setVolume(double vol) {
 		volume = vol;
@@ -108,8 +108,8 @@ public class WaveEngine implements LineListener {
 	}
 
 	/**
-	 * WAVE file を読み込み
-	 * @param name 登録名
+	 * WAVE file Read
+	 * @param name Registered name
 	 * @param filename Filename
 	 */
 	public void load(String name, String filename) {
@@ -117,8 +117,8 @@ public class WaveEngine implements LineListener {
 	}
 
 	/**
-	 * WAVE file を読み込み
-	 * @param name 登録名
+	 * WAVE file Read
+	 * @param name Registered name
 	 * @param url URL
 	 */
 	public void load(String name, URL url) {
@@ -128,13 +128,13 @@ public class WaveEngine implements LineListener {
 		}
 
 		try {
-			// オーディオストリームを開く
+			// Open the audio stream
 			AudioInputStream stream = AudioSystem.getAudioInputStream(url);
 
-			// オーディオ形式を取得
+			// Obtains the audio format
 			AudioFormat format = stream.getFormat();
 
-			// ULAW/ALAW形式の場合はPCM形式に変更
+			// ULAW/ALAWIf the format isPCMChange the format
 			if((format.getEncoding() == AudioFormat.Encoding.ULAW) || (format.getEncoding() == AudioFormat.Encoding.ALAW)) {
 				AudioFormat newFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
 														format.getSampleRate(), format.getSampleSizeInBits() * 2,
@@ -144,18 +144,18 @@ public class WaveEngine implements LineListener {
 				format = newFormat;
 			}
 
-			// Lines情報を取得
+			// LinesGet information
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
-			// 空のクリップを作成
+			// Create an empty clip
 			Clip clip = (Clip) AudioSystem.getLine(info);
-			// クリップの event を監視
+			// Clip event Monitoring
 			clip.addLineListener(this);
-			// オーディオストリームをクリップとして開く
+			// Opened as a clip the audio stream
 			clip.open(stream);
-			// クリップを登録
+			// Submit a clip
 			clipMap.put(name, clip);
 
-			// ストリームを閉じる
+			// Close the stream
 			stream.close();
 		} catch (LineUnavailableException e) {
 			log.warn(name + " : Failed to open line", e);
@@ -167,25 +167,25 @@ public class WaveEngine implements LineListener {
 	}
 
 	/**
-	 * 再生
-	 * @param name 登録名
+	 * Playback
+	 * @param name Registered name
 	 */
 	public void play(String name) {
 		Clip clip = clipMap.get(name);
 
 		if(clip != null) {
-			// 停止
+			// Stop
 			clip.stop();
-			// 再生位置を最初に戻す
+			// Playback position back to the beginning
 			clip.setFramePosition(0);
-			// 再生
+			// Playback
 			clip.start();
 		}
 	}
 
 	/**
-	 * 停止
-	 * @param name 登録名
+	 * Stop
+	 * @param name Registered name
 	 */
 	public void stop(String name) {
 		Clip clip = clipMap.get(name);
@@ -196,14 +196,14 @@ public class WaveEngine implements LineListener {
 	}
 
 	/*
-	 * Lines state変化
+	 * Lines stateChange
 	 */
 	public void update(LineEvent event) {
-		// ストップか最後まで再生された場合
+		// If you stop playback or to the end
 		if(event.getType() == LineEvent.Type.STOP) {
 			Clip clip = (Clip) event.getSource();
 			clip.stop();
-			clip.setFramePosition(0); // 再生位置を最初に戻す
+			clip.setFramePosition(0); // Playback position back to the beginning
 		}
 	}
 }

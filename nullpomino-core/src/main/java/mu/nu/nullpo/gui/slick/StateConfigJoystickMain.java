@@ -37,13 +37,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * Joystick 設定メインMenu のステート
+ * Joystick Settings MainMenu State
  */
 public class StateConfigJoystickMain extends BaseGameState {
 	/** This state's ID */
 	public static final int ID = 12;
 
-	/** Key input を受付可能になるまでの frame count */
+	/** Key input Accepted to be enabled. frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Joystick method names */
@@ -66,16 +66,16 @@ public class StateConfigJoystickMain extends BaseGameState {
 	/** Cursor position */
 	protected int cursor = 0;
 
-	/** 使用するJoystick の number */
+	/** UseJoystick Of number */
 	protected int joyUseNumber;
 
-	/** Joystick direction key が反応する閾値 */
+	/** Joystick direction key Threshold for the reaction */
 	protected int joyBorder;
 
-	/** アナログスティック無視 */
+	/** Ignore analog stick */
 	protected boolean joyIgnoreAxis;
 
-	/** ハットスイッチ無視 */
+	/** Ignore hat switch */
 	protected boolean joyIgnorePOV;
 
 	/** Joystick input method */

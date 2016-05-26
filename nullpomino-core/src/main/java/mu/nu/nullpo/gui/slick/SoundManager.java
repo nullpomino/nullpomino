@@ -35,19 +35,19 @@ import org.apache.log4j.Logger;
 import org.newdawn.slick.Sound;
 
 /**
- * Sound effectsマネージャ
+ * Sound effectsManager
  */
 public class SoundManager {
 	/** Log */
 	static Logger log = Logger.getLogger(SoundManager.class);
 
-	/** 登録できるWAVE file のMaximumcount */
+	/** You can registerWAVE file OfMaximumcount */
 	protected int maxClips;
 
-	/** WAVE file  data (Name-> data本体) */
+	/** WAVE file  data (Name-> dataBody) */
 	protected HashMap<String, Sound> clipMap;
 
-	/** 登録されたWAVE file count */
+	/** Was registeredWAVE file count */
 	protected int counter = 0;
 
 	/**
@@ -59,7 +59,7 @@ public class SoundManager {
 
 	/**
 	 * Constructor
-	 * @param maxClips 登録できるWAVE file のMaximumcount
+	 * @param maxClips You can registerWAVE file OfMaximumcount
 	 */
 	public SoundManager(int maxClips) {
 		this.maxClips = maxClips;
@@ -68,8 +68,8 @@ public class SoundManager {
 
 	/**
 	 * Load WAVE file
-	 * @param name 登録名
-	 * @param filename Filename (String）
+	 * @param name Registered name
+	 * @param filename Filename (String)
 	 * @return true if successful, false if failed
 	 */
 	public boolean load(String name, String filename) {
@@ -91,8 +91,8 @@ public class SoundManager {
 
 	/**
 	 * Load WAVE file
-	 * @param name 登録名
-	 * @param fileurl Filename (URL）
+	 * @param name Registered name
+	 * @param fileurl Filename (URL)
 	 * @return true if successful, false if failed
 	 */
 	public boolean load(String name, URL fileurl) {
@@ -113,11 +113,11 @@ public class SoundManager {
 	}
 
 	/**
-	 * 再生
-	 * @param name 登録名
+	 * Playback
+	 * @param name Registered name
 	 */
 	public void play(String name) {
-		// Nameに対応するクリップを取得
+		// NameGet the clip corresponding to the
 		Sound clip = clipMap.get(name);
 
 		if(clip != null) {
@@ -126,8 +126,8 @@ public class SoundManager {
 	}
 
 	/**
-	 * 停止
-	 * @param name 登録名
+	 * Stop
+	 * @param name Registered name
 	 */
 	public void stop(String name) {
 		Sound clip = clipMap.get(name);

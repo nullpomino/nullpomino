@@ -674,13 +674,13 @@ public class ScoreRaceMode extends NetDummyMode {
 			}
 		} else {
 			if(lines == 1) {
-				pts += 100; // 1列
+				pts += 100; // 1Column
 				lastevent = EVENT_SINGLE;
 			} else if(lines == 2) {
-				pts += 300; // 2列
+				pts += 300; // 2Column
 				lastevent = EVENT_DOUBLE;
 			} else if(lines == 3) {
-				pts += 500; // 3列
+				pts += 500; // 3Column
 				lastevent = EVENT_TRIPLE;
 			} else if(lines >= 4) {
 				// 4 lines

@@ -440,7 +440,7 @@ public class AvalancheMode extends Avalanche1PDummyMode {
 			if(remainScore <= 30) engine.meterColor = GameEngine.METER_COLOR_ORANGE;
 			if(remainScore <= 10) engine.meterColor = GameEngine.METER_COLOR_RED;
 
-			// ゴール
+			// Goal
 			if((engine.statistics.score >= SPRINT_MAX_SCORE[sprintTarget]) && (engine.timerActive == true)) {
 				engine.gameEnded();
 				engine.resetStatc();

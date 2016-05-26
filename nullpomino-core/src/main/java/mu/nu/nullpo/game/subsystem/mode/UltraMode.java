@@ -389,7 +389,7 @@ public class UltraMode extends NetDummyMode {
 	}
 
 	/*
-	 * 設定画面の描画
+	 * Setting screen drawing
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
@@ -665,13 +665,13 @@ public class UltraMode extends NetDummyMode {
 			}
 		} else {
 			if(lines == 1) {
-				pts += 100; // 1列
+				pts += 100; // 1Column
 				lastevent = EVENT_SINGLE;
 			} else if(lines == 2) {
-				pts += 300; // 2列
+				pts += 300; // 2Column
 				lastevent = EVENT_DOUBLE;
 			} else if(lines == 3) {
-				pts += 500; // 3列
+				pts += 500; // 3Column
 				lastevent = EVENT_TRIPLE;
 			} else if(lines >= 4) {
 				// 4 lines
@@ -728,7 +728,7 @@ public class UltraMode extends NetDummyMode {
 	}
 
 	/*
-	 * 各 frame の終わりの処理
+	 * Each frame Processing at the end of
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -752,17 +752,17 @@ public class UltraMode extends NetDummyMode {
 					return;
 				}
 
-				// 10秒前からのカウントダウン
+				// 10Seconds before the countdown
 				if((engine.statistics.time >= limitTime - (10 * 60)) && (engine.statistics.time % 60 == 0)) {
 					engine.playSE("countdown");
 				}
 
-				// 5秒前からのBGM fadeout
+				// 5Of seconds beforeBGM fadeout
 				if(engine.statistics.time >= limitTime - (5 * 60)) {
 					owner.bgmStatus.fadesw = true;
 				}
 
-				// 1分ごとのBackground切り替え
+				// 1Per-minuteBackgroundSwitching
 				if((engine.statistics.time > 0) && (engine.statistics.time % 3600 == 0)) {
 					engine.playSE("levelup");
 					owner.backgroundStatus.fadesw = true;

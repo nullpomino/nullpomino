@@ -584,13 +584,13 @@ public class MarathonMode extends NetDummyMode {
 			}
 		} else {
 			if(lines == 1) {
-				pts += 100 * (engine.statistics.level + 1); // 1列
+				pts += 100 * (engine.statistics.level + 1); // 1Column
 				lastevent = EVENT_SINGLE;
 			} else if(lines == 2) {
-				pts += 300 * (engine.statistics.level + 1); // 2列
+				pts += 300 * (engine.statistics.level + 1); // 2Column
 				lastevent = EVENT_DOUBLE;
 			} else if(lines == 3) {
-				pts += 500 * (engine.statistics.level + 1); // 3列
+				pts += 500 * (engine.statistics.level + 1); // 3Column
 				lastevent = EVENT_TRIPLE;
 			} else if(lines >= 4) {
 				// 4 lines

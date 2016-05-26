@@ -45,13 +45,13 @@ import org.newdawn.slick.font.effects.ShadowEffect;
 import org.newdawn.slick.openal.SoundStore;
 
 /**
- * 画像や音声の管理をするクラス
+ * Class to the management of image and sound
  */
 public class ResourceHolderSlick {
 	/** Log */
 	static Logger log = Logger.getLogger(ResourceHolderSlick.class);
 
-	/** Backgroundのcount */
+	/** BackgroundOfcount */
 	public static final int BACKGROUND_MAX = 20;
 
 	/** Number of images for block spatter animation during line clears */
@@ -72,7 +72,7 @@ public class ResourceHolderSlick {
 	/** Regular font */
 	public static Image imgFont, imgFontSmall;
 
-	/** 小物画像 */
+	/** Small image */
 	//public static Image imgSprite;
 
 	/** Title */
@@ -94,7 +94,7 @@ public class ResourceHolderSlick {
 	/** Effects for clearing gem blocks */
 	public static Image[] imgPErase;
 
-	/** プレイ中のBackground */
+	/** In playBackground */
 	public static Image[] imgPlayBG;
 
 	/** TTF font */
@@ -110,7 +110,7 @@ public class ResourceHolderSlick {
 	public static int bgmPlaying;
 
 	/**
-	 * 画像や音声を読み込み
+	 * Loading images and sound files
 	 * @throws SlickException Failed to load
 	 */
 	public static void load() throws SlickException {
@@ -254,7 +254,7 @@ public class ResourceHolderSlick {
 			}
 		}
 
-		// 音楽
+		// Music
 		bgm = new Music[BGMStatus.BGM_COUNT];
 		bgmPlaying = -1;
 
@@ -354,9 +354,9 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * 指定した numberのBGMをメモリ上に読み込み
+	 * Specified numberOfBGMRead into memory
 	 * @param no BGM number
-	 * @param showerr 例外が発生したときにコンソールに表示する
+	 * @param showerr displayed on the console when an exception occurs
 	 */
 	public static void bgmLoad(int no, boolean showerr) {
 		if(NullpoMinoSlick.propConfig.getProperty("option.bgm", false) == false) return;
@@ -386,7 +386,7 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * 指定した numberのBGMを再生
+	 * Specified numberOfBGMPlay
 	 * @param no BGM number
 	 */
 	public static void bgmStart(int no) {
@@ -420,7 +420,7 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * Current BGMを一時停止
+	 * Current BGMPause
 	 */
 	public static void bgmPause() {
 		if(bgmPlaying >= 0) {
@@ -431,7 +431,7 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * 一時停止中のBGMを再開
+	 * PausedBGMResumes
 	 */
 	public static void bgmResume() {
 		if(bgmPlaying >= 0) {
@@ -442,8 +442,8 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * BGM再生中かどうか
-	 * @return 再生中ならtrue
+	 * BGMWhether during playback
+	 * @return If during playbacktrue
 	 */
 	public static boolean bgmIsPlaying() {
 		if(bgmPlaying >= 0) {
@@ -456,7 +456,7 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * BGMを停止
+	 * BGMStop
 	 */
 	public static void bgmStop() {
 		for(int i = 0; i < BGMStatus.BGM_COUNT; i++) {
@@ -468,7 +468,7 @@ public class ResourceHolderSlick {
 	}
 
 	/**
-	 * 全てのBGMをメモリから解放
+	 * AllBGMFreed from memory
 	 */
 	public static void bgmUnloadAll() {
 		for(int i = 0; i < BGMStatus.BGM_COUNT; i++) {

@@ -34,25 +34,25 @@ import sdljava.joystick.HatState;
 import sdljava.video.SDLSurface;
 
 /**
- * Joystick テスト画面のステート
+ * Joystick State of the test screen
  */
 public class StateConfigJoystickTestSDL extends BaseStateSDL {
-	/** Key input を受付可能になるまでの frame count */
+	/** Key input Accepted to be enabled. frame count */
 	public static final int KEYACCEPTFRAME = 20;
 
 	/** Player number */
 	public int player;
 
-	/** 使用するJoystick の number */
+	/** UseJoystick Of number */
 	protected int joyNumber;
 
-	/** 最後に押された button */
+	/** I was last pressed button */
 	protected int lastPressButton;
 
-	/** 経過 frame count */
+	/** Course frame count */
 	protected int frame;
 
-	/** 前の frame のJoystick の input 状態 */
+	/** Previous frame OfJoystick Of input State */
 	protected boolean previousJoyPressedState[];
 
 	/**
@@ -63,7 +63,7 @@ public class StateConfigJoystickTestSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * いろいろリセット
+	 * Various reset
 	 */
 	protected void reset() {
 		joyNumber = NullpoMinoSDL.joyUseNumber[player];
@@ -74,10 +74,10 @@ public class StateConfigJoystickTestSDL extends BaseStateSDL {
 	}
 
 	/**
-	 * 押された buttonの numberを返す
-	 * @param prev 前の frame での input 状態
-	 * @param now この frame での input 状態
-	 * @return 押された buttonの number, 無いなら-1
+	 * Pressed buttonOf numberReturns
+	 * @param prev Previous frame In input State
+	 * @param now This frame In input State
+	 * @return Pressed buttonOf number, If you do not-1
 	 */
 	protected int getPressedKeyNumber(boolean[] prev, boolean[] now) {
 		for(int i = 0; i < now.length; i++) {

@@ -42,7 +42,7 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 * Player numberを指定できるConstructor
+	 * Player numberWe can specifyConstructor
 	 * @param pl Player number
 	 */
 	protected GameKeyDummy(int pl) {
@@ -66,27 +66,27 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 *  buttonが1 frame だけ押されているか判定
+	 *  buttonThe1 frame Determines whether or not pressed only
 	 * @param key Button number
-	 * @return 押されていたらtrue
+	 * @return Has been pressedtrue
 	 */
 	public boolean isPushKey(int key) {
 		return (inputstate[key] == 1);
 	}
 
 	/**
-	 *  buttonが押されているか判定
+	 *  buttonThat determines whether or not pressed
 	 * @param key Button number
-	 * @return 押されていたらtrue
+	 * @return Has been pressedtrue
 	 */
 	public boolean isPressKey(int key) {
 		return (inputstate[key] >= 1);
 	}
 
 	/**
-	 * Menu でカーソルが動くかどうか判定
+	 * Menu Determines whether the cursor is moved in
 	 * @param key Button number
-	 * @return カーソルが動くならtrue
+	 * @return If the cursor movestrue
 	 */
 	public boolean isMenuRepeatKey(int key) {
 		if((inputstate[key] == 1) || ((inputstate[key] >= 25) && (inputstate[key] % 3 == 0)) || ((inputstate[key] >= 1) && isPressKey(BUTTON_C)))
@@ -96,18 +96,18 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 *  buttonを押している timeを取得
+	 *  buttonI have pressed the timeGet the
 	 * @param key Button number
-	 * @return  buttonを押している time (0なら押してない）
+	 * @return  buttonI have pressed the time (0If I have not pressed)
 	 */
 	public int getInputState(int key) {
 		return inputstate[key];
 	}
 
 	/**
-	 *  buttonを押している timeを強制変更
+	 *  buttonI have pressed the timeForced to change
 	 * @param key Button number
-	 * @param state  buttonを押している time
+	 * @param state  buttonI have pressed the time
 	 */
 	public void setInputState(int key, int state) {
 		inputstate[key] = state;
@@ -239,8 +239,8 @@ public class GameKeyDummy {
 	}
 
 	/**
-	 * Controllerに input 状況を伝える
-	 * @param ctrl  input 状況を伝えるControllerのインスタンス
+	 * ControllerTo input Conditions are communicated
+	 * @param ctrl  input Conditions are communicatedControllerInstance of
 	 */
 	public void inputStatusUpdate(Controller ctrl) {
 		for(int i = 0; i < Controller.BUTTON_COUNT; i++) {

@@ -53,7 +53,7 @@ import mu.nu.nullpo.game.subsystem.ai.AIPlayer;
 import org.apache.log4j.Logger;
 
 /**
- * AI選択画面の frame
+ * AISelection screen frame
  */
 public class AISelectFrame extends JFrame implements ActionListener {
 	/** Serial version ID */
@@ -62,31 +62,31 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	/** Log */
 	static Logger log = Logger.getLogger(AISelectFrame.class);
 
-	/** 親ウィンドウ */
+	/** Parent window */
 	protected NullpoMinoSwing owner;
 
 	/** Player number */
 	protected int playerID;
 
-	/** AIのクラス一覧 */
+	/** AIList of classes */
 	protected String[] aiPathList;
 
-	/** AIのName一覧 */
+	/** AIOfNameList */
 	protected String[] aiNameList;
 
-	/** Current AIのクラス */
+	/** Current AIClass of */
 	protected String currentAI;
 
-	/** AIのID */
+	/** AIOfID */
 	protected int aiID = 0;
 
-	/** AIの移動間隔 */
+	/** AIMovement interval of */
 	protected int aiMoveDelay = 0;
 
-	/** AIの思考の待ち time */
+	/** AIThinking of waiting time */
 	protected int aiThinkDelay = 0;
 
-	/** AIでスレッドを使う */
+	/** AIUsing threads in */
 	protected boolean aiUseThread = false;
 
 	protected boolean aiShowHint = false;
@@ -95,16 +95,16 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	protected boolean aiShowState = false;
 
-	/** AI一覧リストボックス */
+	/** AIList list box */
 	protected JList listboxAI;
 
-	/** AIの移動間隔のテキストボックス */
+	/** AIText box of the movement interval */
 	protected JTextField txtfldAIMoveDelay;
 
-	/** AIの思考の待ち timeのテキストボックス */
+	/** AIThinking of waiting timeText box */
 	protected JTextField txtfldAIThinkDelay;
 
-	/** AIでスレッド使用 check ボックス */
+	/** AIThread Usage in check Box */
 	protected JCheckBox chkboxAIUseThread;
 
 	protected JCheckBox chkBoxAIShowHint;
@@ -116,8 +116,8 @@ public class AISelectFrame extends JFrame implements ActionListener {
 
 	/**
 	 * Constructor
-	 * @param owner 親ウィンドウ
-	 * @throws HeadlessException キーボード, マウス, ディスプレイなどが存在しない場合の例外
+	 * @param owner Parent window
+	 * @throws HeadlessException Keyboard, Mouse, Exceptions such as the display if there is no
 	 */
 	public AISelectFrame(NullpoMinoSwing owner) throws HeadlessException {
 		super();
@@ -132,14 +132,14 @@ public class AISelectFrame extends JFrame implements ActionListener {
 			log.warn("Failed to load AI list", e);
 		}
 
-		// GUIのInitialization
+		// GUIOfInitialization
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		initUI();
 		pack();
 	}
 
 	/**
-	 * この frame を表示するときに実行する処理
+	 * This frame Action to take when you view the
 	 * @param pl Player number
 	 */
 	public void load(int pl) {
@@ -174,9 +174,9 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * AI一覧を読み込み
-	 * @param bf 読み込み元のテキストファイル
-	 * @return AI一覧
+	 * AIReads the list
+	 * @param bf To read from a text file
+	 * @return AIList
 	 */
 	public String[] loadAIList(BufferedReader bf) {
 		ArrayList<String> aiArrayList = new ArrayList<String>();
@@ -202,9 +202,9 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * AIのName一覧を作成
-	 * @param aiPath AIのクラスのリスト
-	 * @return AIのName一覧
+	 * AIOfNameCreate a list
+	 * @param aiPath AIList of classes
+	 * @return AIOfNameList
 	 */
 	public String[] loadAINames(String[] aiPath) {
 		String[] aiName = new String[aiPath.length];
@@ -229,12 +229,12 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * GUIをInitialization
+	 * GUIAInitialization
 	 */
 	protected void initUI() {
 		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		// AIリスト
+		// AIList
 		JPanel panelAIList = new JPanel();
 		panelAIList.setLayout(new BorderLayout());
 		panelAIList.setAlignmentX(LEFT_ALIGNMENT);
@@ -257,7 +257,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		btnNoUse.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
 		panelAIList.add(btnNoUse, BorderLayout.SOUTH);
 
-		// AIの移動間隔のテキストボックス
+		// AIText box of the movement interval
 		JPanel panelTxtfldAIMoveDelay = new JPanel();
 		panelTxtfldAIMoveDelay.setLayout(new BorderLayout());
 		panelTxtfldAIMoveDelay.setAlignmentX(LEFT_ALIGNMENT);
@@ -268,7 +268,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		txtfldAIMoveDelay = new JTextField(20);
 		panelTxtfldAIMoveDelay.add(txtfldAIMoveDelay, BorderLayout.EAST);
 
-		// AIの移動間隔のテキストボックス
+		// AIText box of the movement interval
 		JPanel panelTxtfldAIThinkDelay = new JPanel();
 		panelTxtfldAIThinkDelay.setLayout(new BorderLayout());
 		panelTxtfldAIThinkDelay.setAlignmentX(LEFT_ALIGNMENT);
@@ -279,7 +279,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		txtfldAIThinkDelay = new JTextField(20);
 		panelTxtfldAIThinkDelay.add(txtfldAIThinkDelay, BorderLayout.EAST);
 
-		// AIスレッド使用 check ボックス
+		// AIThread use check Box
 		chkboxAIUseThread = new JCheckBox(NullpoMinoSwing.getUIText("AISelect_CheckboxAIUseThread"));
 		chkboxAIUseThread.setAlignmentX(LEFT_ALIGNMENT);
 		chkboxAIUseThread.setMnemonic('T');
@@ -300,7 +300,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 		chkBoxAIShowState.setMnemonic('S');
 		this.add(chkBoxAIShowState);
 
-		//  button類
+		//  buttonKind
 		JPanel panelButtons = new JPanel();
 		panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.X_AXIS));
 		panelButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -328,7 +328,7 @@ public class AISelectFrame extends JFrame implements ActionListener {
 	 *  Called when button clicked
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// AI使わない button
+		// AIUnused button
 		if(e.getActionCommand() == "AISelect_NoUse") {
 			listboxAI.clearSelection();
 		}

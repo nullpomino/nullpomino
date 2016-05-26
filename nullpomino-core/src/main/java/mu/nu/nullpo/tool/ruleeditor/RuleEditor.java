@@ -84,7 +84,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
- * ルールエディター
+ * Rule Editor
  */
 public class RuleEditor extends JFrame implements ActionListener {
 	/** Serial version */
@@ -93,224 +93,224 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Log */
 	static Logger log = Logger.getLogger(RuleEditor.class);
 
-	/** Swing版のSave settings用Property file */
+	/** SwingVersion ofSave settingsUseProperty file */
 	public CustomProperties propConfig;
 
 	/** Default language file */
 	public CustomProperties propLangDefault;
 
-	/** UI翻訳用Property file */
+	/** UIFor translationProperty file */
 	public CustomProperties propLang;
 
 	//----------------------------------------------------------------------
-	/** 今開いているFilename (null:なし) */
+	/** I&#39;m now openFilename (null:No) */
 	private String strNowFile;
 
-	/** タブ */
+	/** Tab */
 	private JTabbedPane tabPane;
 
 	//----------------------------------------------------------------------
-	/* 基本設定パネル */
+	/* Basic Settings panel */
 
 	/** Rule name */
 	private JTextField txtfldRuleName;
 
-	/** NEXT表示countのテキストfield */
+	/** NEXTDisplaycountTextfield */
 	private JTextField txtfldNextDisplay;
 
 	/** Game style combobox */
 	private JComboBox comboboxStyle;
 
-	/** 絵柄のComboボックス */
+	/** Of pictureComboBox */
 	private JComboBox comboboxSkin;
 
 	/** ghost  is enabled */
 	private JCheckBox chkboxGhost;
 
-	/** Blockピースがfield枠外から出現 */
+	/** BlockAnd PeacefieldAttempts off target emerges from */
 	private JCheckBox chkboxEnterAboveField;
 
-	/** 出現予定地が埋まっているときにY-coordinateを上にずらすMaximum count */
+	/** When the planned site appearance is buriedY-coordinateSlide on theMaximum count */
 	private JTextField txtfldEnterMaxDistanceY;
 
-	/** NEXT順生成アルゴリズム */
+	/** NEXTOrder generation algorithm */
 	private JComboBox comboboxRandomizer;
 
-	/** NEXT順生成アルゴリズムのリスト */
+	/** NEXTList of order generation algorithm */
 	private Vector<String> vectorRandomizer;
 
-	/** NEXT順生成アルゴリズムのリセット button */
+	/** NEXTReset sequence generation algorithm button */
 	private JButton btnResetRandomizer;
 
 	//----------------------------------------------------------------------
-	/* field設定パネル */
+	/* fieldSettings panel */
 
-	/** fieldの幅 */
+	/** fieldThe width of the */
 	private JTextField txtfldFieldWidth;
 
 	/** Field height */
 	private JTextField txtfldFieldHeight;
 
-	/** fieldの見えない部分の高さ */
+	/** fieldThe height of the unseen parts of */
 	private JTextField txtfldFieldHiddenHeight;
 
-	/** fieldの天井 */
+	/** fieldCeiling */
 	private JCheckBox chkboxFieldCeiling;
 
-	/** field枠内に置けないと死亡 */
+	/** fieldI would not put to death in the frame */
 	private JCheckBox chkboxFieldLockoutDeath;
 
-	/** field枠外にはみ出しただけで死亡 */
+	/** fieldAttempts off target to death after only protrude */
 	private JCheckBox chkboxFieldPartialLockoutDeath;
 
 	//----------------------------------------------------------------------
-	/* ホールド設定パネル */
+	/* Hold Setting Panel */
 
-	/** ホールド is enabled */
+	/** Hold is enabled */
 	private JCheckBox chkboxHoldEnable;
 
-	/** 先行ホールド */
+	/** Hold preceding */
 	private JCheckBox chkboxHoldInitial;
 
-	/** 先行ホールド連続使用不可 */
+	/** Can not hold prior continuous use */
 	private JCheckBox chkboxHoldInitialLimit;
 
-	/** ホールドを使ったときにBlockピースの向きを初期状態に戻す */
+	/** When using the holdBlockThe orientation of the piece back to its initial state */
 	private JCheckBox chkboxHoldResetDirection;
 
-	/** ホールドできる count (-1:無制限) */
+	/** You can hold count (-1:Limitless) */
 	private JTextField txtfldHoldLimit;
 
 	//----------------------------------------------------------------------
-	/* ドロップ設定パネル */
+	/* Settings panel drop */
 
-	/** Hard drop使用可否 */
+	/** Hard dropAvailability */
 	private JCheckBox chkboxDropHardDropEnable;
 
-	/** Hard dropで即固定 */
+	/** Hard dropImmediately fixed in */
 	private JCheckBox chkboxDropHardDropLock;
 
-	/** Hard drop連続使用不可 */
+	/** Hard dropNot continuous use */
 	private JCheckBox chkboxDropHardDropLimit;
 
-	/** Soft drop使用可否 */
+	/** Soft dropAvailability */
 	private JCheckBox chkboxDropSoftDropEnable;
 
-	/** Soft dropで即固定 */
+	/** Soft dropImmediately fixed in */
 	private JCheckBox chkboxDropSoftDropLock;
 
-	/** Soft drop連続使用不可 */
+	/** Soft dropNot continuous use */
 	private JCheckBox chkboxDropSoftDropLimit;
 
-	/** 接地状態でSoft dropすると即固定 */
+	/** In the ground stateSoft dropThen immediately fixed */
 	private JCheckBox chkboxDropSoftDropSurfaceLock;
 
-	/** Soft drop速度 */
+	/** Soft dropSpeed */
 	private JTextField txtfldDropSoftDropSpeed;
 
-	/** Soft drop速度をCurrent 通常速度×n倍にする */
+	/** Soft dropSpeedCurrent × normal speednTo double */
 	private JCheckBox chkboxDropSoftDropMultiplyNativeSpeed;
 
 	/** Use new soft drop codes */
 	private JCheckBox chkboxDropSoftDropGravitySpeedLimit;
 
 	//----------------------------------------------------------------------
-	/* rotation設定パネル */
+	/* rotationSettings panel */
 
-	/** 先行rotation */
+	/** Precedingrotation */
 	private JCheckBox chkboxRotateInitial;
 
-	/** 先行rotation連続使用不可 */
+	/** PrecedingrotationNot continuous use */
 	private JCheckBox chkboxRotateInitialLimit;
 
 	/** Wallkick */
 	private JCheckBox chkboxRotateWallkick;
 
-	/** 先行rotationでもWallkickする */
+	/** PrecedingrotationButWallkickMake */
 	private JCheckBox chkboxRotateInitialWallkick;
 
-	/** 上DirectionへのWallkickができる count (-1:無限) */
+	/** TopDirectionToWallkickYou count (-1:Infinite) */
 	private JTextField txtfldRotateMaxUpwardWallkick;
 
-	/** falseなら左が正rotation, When true,右が正rotation */
+	/** falseLeft is positive ifrotation, When true,Right is positiverotation */
 	private JCheckBox chkboxRotateButtonDefaultRight;
 
-	/** 逆rotationを許可 (falseなら正rotationと同じ) */
+	/** ReverserotationAllow (falseIf positiverotationThe same as the) */
 	private JCheckBox chkboxRotateButtonAllowReverse;
 
-	/** 2rotationを許可 (falseなら正rotationと同じ) */
+	/** 2rotationAllow (falseIf positiverotationThe same as the) */
 	private JCheckBox chkboxRotateButtonAllowDouble;
 
-	/** Wallkickアルゴリズム */
+	/** WallkickAlgorithm */
 	private JComboBox comboboxWallkickSystem;
 
-	/** Wallkickアルゴリズムのリスト */
+	/** WallkickList of Algorithms */
 	private Vector<String> vectorWallkickSystem;
 
-	/** Wallkickアルゴリズムのリセット button */
+	/** WallkickReset of the algorithm button */
 	private JButton btnResetWallkickSystem;
 
 	//----------------------------------------------------------------------
-	/* 固定 time設定パネル */
+	/* Fixation timeSettings panel */
 
-	/** 最低固定 time */
+	/** Minimum fixed time */
 	private JTextField txtfldLockDelayMin;
 
-	/** 最高固定 time */
+	/** Highest fixed time */
 	private JTextField txtfldLockDelayMax;
 
-	/** 落下で固定 timeリセット */
+	/** In the fall fixing timeReset */
 	private JCheckBox chkboxLockDelayLockResetFall;
 
-	/** 移動で固定 timeリセット */
+	/** Move fixed timeReset */
 	private JCheckBox chkboxLockDelayLockResetMove;
 
-	/** rotationで固定 timeリセット */
+	/** rotationFixed at timeReset */
 	private JCheckBox chkboxLockDelayLockResetRotate;
 
 	/** Lock delay reset by wallkick */
 	private JCheckBox chkboxLockDelayLockResetWallkick;
 
-	/** 横移動 counterとrotation counterを共有 (横移動 counterだけ使う) */
+	/** Lateral motion counterAndrotation counterShare (Lateral motion counterI use only) */
 	private JCheckBox chkboxLockDelayLockResetLimitShareCount;
 
-	/** 横移動 count制限 */
+	/** Lateral motion countLimit */
 	private JTextField txtfldLockDelayLockResetLimitMove;
 
-	/** rotation count制限 */
+	/** rotation countLimit */
 	private JTextField txtfldLockDelayLockResetLimitRotate;
 
-	/** 横移動 counterかrotation counterが超過したら固定 timeリセットを無効にする */
+	/** Lateral motion counterOrrotation counterExceeded the fixed timeTo disable the reset */
 	private JRadioButton radioLockDelayLockResetLimitOverNoReset;
 
-	/** 横移動 counterかrotation counterが超過したら即座に固定する */
+	/** Lateral motion counterOrrotation counterI fixed the excess is immediately */
 	private JRadioButton radioLockDelayLockResetLimitOverInstant;
 
-	/** 横移動 counterかrotation counterが超過したらWallkick無効にする */
+	/** Lateral motion counterOrrotation counterI exceeded theWallkickDisable */
 	private JRadioButton radioLockDelayLockResetLimitOverNoWallkick;
 
 	//----------------------------------------------------------------------
-	/* ARE設定パネル */
+	/* ARESettings panel */
 
-	/** 最低ARE */
+	/** LowestARE */
 	private JTextField txtfldAREMin;
 
-	/** 最高ARE */
+	/** HighestARE */
 	private JTextField txtfldAREMax;
 
-	/** 最低ARE after line clear */
+	/** LowestARE after line clear */
 	private JTextField txtfldARELineMin;
 
-	/** 最高ARE after line clear */
+	/** HighestARE after line clear */
 	private JTextField txtfldARELineMax;
 
-	/** 固定した瞬間に光る frame count */
+	/** Shining moment fixed frame count */
 	private JTextField txtfldARELockFlash;
 
-	/** Blockが光る専用 frame を入れる */
+	/** BlockDedicated shines frame Put */
 	private JCheckBox chkboxARELockFlashOnlyFrame;
 
-	/** Line clear前にBlockが光る frame を入れる */
+	/** Line clearBeforeBlockShine frame Put */
 	private JCheckBox chkboxARELockFlashBeforeLineClear;
 
 	/** ARE cancel on move checkbox */
@@ -323,15 +323,15 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JCheckBox chkboxARECancelHold;
 
 	//----------------------------------------------------------------------
-	/* Line clear設定パネル */
+	/* Line clearSettings panel */
 
-	/** 最低Line clear time */
+	/** LowestLine clear time */
 	private JTextField txtfldLineDelayMin;
 
-	/** 最高Line clear time */
+	/** HighestLine clear time */
 	private JTextField txtfldLineDelayMax;
 
-	/** 落下アニメ */
+	/** Animated falling */
 	private JCheckBox chkboxLineFallAnim;
 
 	/** Line delay cancel on move checkbox */
@@ -344,36 +344,36 @@ public class RuleEditor extends JFrame implements ActionListener {
 	private JCheckBox chkboxLineCancelHold;
 
 	//----------------------------------------------------------------------
-	/* 移動設定パネル */
+	/* Move the settings panel */
 
-	/** 最低横溜め time */
+	/** Minimum horizontal reservoir time */
 	private JTextField txtfldMoveDASMin;
 
-	/** 最高横溜め time */
+	/** Maximum horizontal reservoir time */
 	private JTextField txtfldMoveDASMax;
 
-	/** 横移動間隔 */
+	/** Lateral movement interval */
 	private JTextField txtfldMoveDASDelay;
 
-	/** Ready画面で横溜め可能 */
+	/** ReadyCan accumulate on the screen next to */
 	private JCheckBox chkboxMoveDASInReady;
 
-	/** 最初の frame で横溜め可能 */
+	/** First frame Can accumulate in the horizontal */
 	private JCheckBox chkboxMoveDASInMoveFirstFrame;
 
-	/** Blockが光った瞬間に横溜め可能 */
+	/** BlockPossible reservoir beside the moment it shines */
 	private JCheckBox chkboxMoveDASInLockFlash;
 
-	/** Line clear中に横溜め可能 */
+	/** Line clearCan I accumulate in horizontal */
 	private JCheckBox chkboxMoveDASInLineClear;
 
-	/** ARE中に横溜め可能 */
+	/** ARECan I accumulate in horizontal */
 	private JCheckBox chkboxMoveDASInARE;
 
-	/** AREの最後の frame で横溜め可能 */
+	/** AREAt the end of the frame Can accumulate in the horizontal */
 	private JCheckBox chkboxMoveDASInARELastFrame;
 
-	/** Ending突入画面で横溜め可能 */
+	/** EndingCan accumulate on the screen next to the inrush */
 	private JCheckBox chkboxMoveDASInEndingStart;
 
 	/** DAS charge on blocked move checkbox*/
@@ -385,68 +385,68 @@ public class RuleEditor extends JFrame implements ActionListener {
 	/** Redirect in delay checkbox **/
 	private JCheckBox chkboxMoveDASRedirectInDelay;
 
-	/** 最初の frame に移動可能 */
+	/** First frame Can move in the */
 	private JCheckBox chkboxMoveFirstFrame;
 
-	/** 斜め移動 */
+	/** Diagonal movement */
 	private JCheckBox chkboxMoveDiagonal;
 
-	/** 上下同時押し可能 */
+	/** Can be pressed together up and down */
 	private JCheckBox chkboxMoveUpAndDown;
 
-	/** 左右同時押し可能 */
+	/** Can simultaneously pressing the left and right */
 	private JCheckBox chkboxMoveLeftAndRightAllow;
 
-	/** 左右同時押ししたときに前の frame の input Directionを優先する */
+	/** Before when I press the left and right simultaneously frame Of input DirectionGive priority to */
 	private JCheckBox chkboxMoveLeftAndRightUsePreviousInput;
 
 	/** Shift lock checkbox */
 	private JCheckBox chkboxMoveShiftLockEnable;
 
 	//----------------------------------------------------------------------
-	/* rotationパターン補正パネル */
+	/* rotationPanel pattern correction */
 
-	/** rotationパターン補正タブ */
+	/** rotationPattern correction tab */
 	private JTabbedPane tabPieceOffset;
 
-	/** rotationパターン補正(X) input 欄 */
+	/** rotationPattern correction(X) input Column */
 	private JTextField[][] txtfldPieceOffsetX;
 
-	/** rotationパターン補正(Y) input 欄 */
+	/** rotationPattern correction(Y) input Column */
 	private JTextField[][] txtfldPieceOffsetY;
 
 	//----------------------------------------------------------------------
-	/* rotationパターン補正パネル */
+	/* rotationPanel pattern correction */
 
-	/** rotationパターン補正タブ */
+	/** rotationPattern correction tab */
 	private JTabbedPane tabPieceSpawn;
 
-	/** 出現位置補正(X) input 欄 */
+	/** Appearance position correction(X) input Column */
 	private JTextField[][] txtfldPieceSpawnX;
 
-	/** 出現位置補正(Y) input 欄 */
+	/** Appearance position correction(Y) input Column */
 	private JTextField[][] txtfldPieceSpawnY;
 
-	/** Big時出現位置補正(X) input 欄 */
+	/** BigAppearance position correction during(X) input Column */
 	private JTextField[][] txtfldPieceSpawnBigX;
 
-	/** Big時出現位置補正(Y) input 欄 */
+	/** BigAppearance position correction during(Y) input Column */
 	private JTextField[][] txtfldPieceSpawnBigY;
 
 	//----------------------------------------------------------------------
-	/* 色設定パネル */
+	/* Panel color settings */
 
-	/** 色選択Comboボックス */
+	/** Color selectionComboBox */
 	private JComboBox[] comboboxPieceColor;
 
 	//----------------------------------------------------------------------
-	/* 初期Direction設定パネル */
+	/* InitialDirectionSettings panel */
 
-	/** 初期Direction選択Comboボックス */
+	/** InitialDirectionSelectionComboBox */
 	private JComboBox[] comboboxPieceDirection;
 
 	//----------------------------------------------------------------------
-	/** Block画像 */
+	/** BlockImage */
 	private BufferedImage[] imgBlockSkins;
 
 	/**
@@ -462,8 +462,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 特定のファイルを読み込むConstructor
-	 * @param filename Filename (空文字列かnullにするとパラメータなしConstructorと同じ動作）
+	 * Reads a specific fileConstructor
+	 * @param filename Filename (Empty string ornullIt without parameters and toConstructorThe same behavior)
 	 */
 	public RuleEditor(String filename) {
 		super();
@@ -493,7 +493,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	 * Initialization
 	 */
 	private void init() {
-		// 設定ファイル読み込み
+		// Read configuration file
 		propConfig = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/setting/swing.cfg");
@@ -501,7 +501,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			in.close();
 		} catch(IOException e) {}
 
-		// 言語ファイル読み込み
+		// Read language file
 		propLangDefault = new CustomProperties();
 		try {
 			FileInputStream in = new FileInputStream("config/lang/ruleeditor_default.properties");
@@ -518,7 +518,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			in.close();
 		} catch(IOException e) {}
 
-		// Look&Feel設定
+		// Look&FeelSetting
 		if(propConfig.getProperty("option.usenativelookandfeel", true) == true) {
 			try {
 				UIManager.getInstalledLookAndFeels();
@@ -540,21 +540,21 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 画面のInitialization
+	 * ScreenInitialization
 	 */
 	private void initUI() {
 		getContentPane().setLayout(new BorderLayout());
 
-		// Menuバー --------------------------------------------------
+		// MenuBar --------------------------------------------------
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
-		// ファイルMenu
+		// FileMenu
 		JMenu mFile = new JMenu(getUIText("JMenu_File"));
 		mFile.setMnemonic('F');
 		menuBar.add(mFile);
 
-		// 新規作成
+		// New
 		JMenuItem miNew = new JMenuItem(getUIText("JMenuItem_New"));
 		miNew.setMnemonic('N');
 		miNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
@@ -562,7 +562,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		miNew.addActionListener(this);
 		mFile.add(miNew);
 
-		// 開く
+		// Open
 		JMenuItem miOpen = new JMenuItem(getUIText("JMenuItem_Open"));
 		miOpen.setMnemonic('O');
 		miOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -570,7 +570,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		miOpen.addActionListener(this);
 		mFile.add(miOpen);
 
-		// Up書き保存
+		// UpDisclaimer save
 		JMenuItem miSave = new JMenuItem(getUIText("JMenuItem_Save"));
 		miSave.setMnemonic('S');
 		miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
@@ -578,7 +578,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		miSave.addActionListener(this);
 		mFile.add(miSave);
 
-		// Nameを付けて保存
+		// NameSave
 		JMenuItem miSaveAs = new JMenuItem(getUIText("JMenuItem_SaveAs"));
 		miSaveAs.setMnemonic('A');
 		miSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
@@ -586,18 +586,18 @@ public class RuleEditor extends JFrame implements ActionListener {
 		miSaveAs.addActionListener(this);
 		mFile.add(miSaveAs);
 
-		// 終了
+		// End
 		JMenuItem miExit = new JMenuItem(getUIText("JMenuItem_Exit"));
 		miExit.setMnemonic('X');
 		miExit.setActionCommand("Exit");
 		miExit.addActionListener(this);
 		mFile.add(miExit);
 
-		// タブ全体 --------------------------------------------------
+		// Entire tab --------------------------------------------------
 		tabPane = new JTabbedPane();
 		getContentPane().add(tabPane, BorderLayout.NORTH);
 
-		// 基本設定タブ --------------------------------------------------
+		// Preferences tab --------------------------------------------------
 		JPanel panelBasic = new JPanel();
 		panelBasic.setLayout(new BoxLayout(panelBasic, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Basic"), panelBasic);
@@ -612,7 +612,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldRuleName = new JTextField("", 15);
 		pRuleName.add(txtfldRuleName);
 
-		// NEXT表示count
+		// NEXTDisplaycount
 		JPanel pNextDisplay = new JPanel();
 		panelBasic.add(pNextDisplay);
 
@@ -633,7 +633,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		comboboxStyle.setPreferredSize(new Dimension(100, 30));
 		pStyle.add(comboboxStyle);
 
-		// 絵柄
+		// Picture
 		JPanel pSkin = new JPanel();
 		panelBasic.add(pSkin);
 
@@ -653,11 +653,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxGhost = new JCheckBox(getUIText("Basic_Ghost"));
 		panelBasic.add(chkboxGhost);
 
-		// field枠外から出現
+		// fieldAttempts off target emerges from
 		chkboxEnterAboveField = new JCheckBox(getUIText("Basic_EnterAboveField"));
 		panelBasic.add(chkboxEnterAboveField);
 
-		// 出現予定地が埋まっているときにY-coordinateを上にずらすMaximum count
+		// When the planned site appearance is buriedY-coordinateSlide on theMaximum count
 		JPanel pEnterMaxDistanceY = new JPanel();
 		panelBasic.add(pEnterMaxDistanceY);
 
@@ -667,7 +667,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldEnterMaxDistanceY = new JTextField("", 5);
 		pEnterMaxDistanceY.add(txtfldEnterMaxDistanceY);
 
-		// NEXT順生成アルゴリズム
+		// NEXTOrder generation algorithm
 		JPanel pRandomizer = new JPanel();
 		panelBasic.add(pRandomizer);
 
@@ -685,12 +685,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		btnResetRandomizer.addActionListener(this);
 		pRandomizer.add(btnResetRandomizer);
 
-		// fieldタブ --------------------------------------------------
+		// fieldTab --------------------------------------------------
 		JPanel panelField = new JPanel();
 		panelField.setLayout(new BoxLayout(panelField, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Field"), panelField);
 
-		// fieldの幅
+		// fieldThe width of the
 		JPanel pFieldWidth = new JPanel();
 		panelField.add(pFieldWidth);
 
@@ -710,7 +710,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldFieldHeight = new JTextField("", 5);
 		pFieldHeight.add(txtfldFieldHeight);
 
-		// fieldの見えない部分の高さ
+		// fieldThe height of the unseen parts of
 		JPanel pFieldHiddenHeight = new JPanel();
 		panelField.add(pFieldHiddenHeight);
 
@@ -720,40 +720,40 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldFieldHiddenHeight = new JTextField("", 5);
 		pFieldHiddenHeight.add(txtfldFieldHiddenHeight);
 
-		// fieldの天井
+		// fieldCeiling
 		chkboxFieldCeiling = new JCheckBox(getUIText("Field_FieldCeiling"));
 		panelField.add(chkboxFieldCeiling);
 
-		// field枠内に置けないと死亡
+		// fieldI would not put to death in the frame
 		chkboxFieldLockoutDeath = new JCheckBox(getUIText("Field_FieldLockoutDeath"));
 		panelField.add(chkboxFieldLockoutDeath);
 
-		// field枠外にはみ出しただけで死亡
+		// fieldAttempts off target to death after only protrude
 		chkboxFieldPartialLockoutDeath = new JCheckBox(getUIText("Field_FieldPartialLockoutDeath"));
 		panelField.add(chkboxFieldPartialLockoutDeath);
 
-		// ホールドタブ --------------------------------------------------
+		// Hold tab --------------------------------------------------
 		JPanel panelHold = new JPanel();
 		panelHold.setLayout(new BoxLayout(panelHold, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Hold"), panelHold);
 
-		// ホールド is enabled
+		// Hold is enabled
 		chkboxHoldEnable = new JCheckBox(getUIText("Hold_HoldEnable"));
 		panelHold.add(chkboxHoldEnable);
 
-		// 先行ホールド
+		// Hold preceding
 		chkboxHoldInitial = new JCheckBox(getUIText("Hold_HoldInitial"));
 		panelHold.add(chkboxHoldInitial);
 
-		// 先行ホールド連続使用不可
+		// Can not hold prior continuous use
 		chkboxHoldInitialLimit = new JCheckBox(getUIText("Hold_HoldInitialLimit"));
 		panelHold.add(chkboxHoldInitialLimit);
 
-		// ホールドを使ったときにBlockピースの向きを初期状態に戻す
+		// When using the holdBlockThe orientation of the piece back to its initial state
 		chkboxHoldResetDirection = new JCheckBox(getUIText("Hold_HoldResetDirection"));
 		panelHold.add(chkboxHoldResetDirection);
 
-		// ホールドできる count
+		// You can hold count
 		JPanel pHoldLimit = new JPanel();
 		panelHold.add(pHoldLimit);
 
@@ -763,40 +763,40 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldHoldLimit = new JTextField("", 5);
 		pHoldLimit.add(txtfldHoldLimit);
 
-		// ドロップタブ --------------------------------------------------
+		// Drop tab --------------------------------------------------
 		JPanel panelDrop = new JPanel();
 		panelDrop.setLayout(new BoxLayout(panelDrop, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Drop"), panelDrop);
 
-		// Hard drop使用可否
+		// Hard dropAvailability
 		chkboxDropHardDropEnable = new JCheckBox(getUIText("Drop_HardDropEnable"));
 		panelDrop.add(chkboxDropHardDropEnable);
 
-		// Hard dropで即固定
+		// Hard dropImmediately fixed in
 		chkboxDropHardDropLock = new JCheckBox(getUIText("Drop_HardDropLock"));
 		panelDrop.add(chkboxDropHardDropLock);
 
-		// Hard drop連続使用不可
+		// Hard dropNot continuous use
 		chkboxDropHardDropLimit = new JCheckBox(getUIText("Drop_HardDropLimit"));
 		panelDrop.add(chkboxDropHardDropLimit);
 
-		// Soft drop使用可否
+		// Soft dropAvailability
 		chkboxDropSoftDropEnable = new JCheckBox(getUIText("Drop_SoftDropEnable"));
 		panelDrop.add(chkboxDropSoftDropEnable);
 
-		// Soft dropで即固定
+		// Soft dropImmediately fixed in
 		chkboxDropSoftDropLock = new JCheckBox(getUIText("Drop_SoftDropLock"));
 		panelDrop.add(chkboxDropSoftDropLock);
 
-		// Soft drop連続使用不可
+		// Soft dropNot continuous use
 		chkboxDropSoftDropLimit = new JCheckBox(getUIText("Drop_SoftDropLimit"));
 		panelDrop.add(chkboxDropSoftDropLimit);
 
-		// 接地状態でSoft dropすると即固定
+		// In the ground stateSoft dropThen immediately fixed
 		chkboxDropSoftDropSurfaceLock = new JCheckBox(getUIText("Drop_SoftDropSurfaceLock"));
 		panelDrop.add(chkboxDropSoftDropSurfaceLock);
 
-		// Soft drop速度をCurrent 通常速度×n倍にする
+		// Soft dropSpeedCurrent × normal speednTo double
 		chkboxDropSoftDropMultiplyNativeSpeed = new JCheckBox(getUIText("Drop_SoftDropMultiplyNativeSpeed"));
 		panelDrop.add(chkboxDropSoftDropMultiplyNativeSpeed);
 
@@ -804,7 +804,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxDropSoftDropGravitySpeedLimit = new JCheckBox(getUIText("Drop_SoftDropGravitySpeedLimit"));
 		panelDrop.add(chkboxDropSoftDropGravitySpeedLimit);
 
-		// Soft drop速度
+		// Soft dropSpeed
 		JPanel pDropSoftDropSpeed = new JPanel();
 		panelDrop.add(pDropSoftDropSpeed);
 		JLabel lDropSoftDropSpeed = new JLabel(getUIText("Drop_SoftDropSpeed"));
@@ -813,16 +813,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldDropSoftDropSpeed = new JTextField("", 5);
 		pDropSoftDropSpeed.add(txtfldDropSoftDropSpeed);
 
-		// rotationタブ --------------------------------------------------
+		// rotationTab --------------------------------------------------
 		JPanel panelRotate = new JPanel();
 		panelRotate.setLayout(new BoxLayout(panelRotate, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Rotate"), panelRotate);
 
-		// 先行rotation
+		// Precedingrotation
 		chkboxRotateInitial = new JCheckBox(getUIText("Rotate_RotateInitial"));
 		panelRotate.add(chkboxRotateInitial);
 
-		// 先行rotation連続使用不可
+		// PrecedingrotationNot continuous use
 		chkboxRotateInitialLimit = new JCheckBox(getUIText("Rotate_RotateInitialLimit"));
 		panelRotate.add(chkboxRotateInitialLimit);
 
@@ -830,23 +830,23 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxRotateWallkick = new JCheckBox(getUIText("Rotate_RotateWallkick"));
 		panelRotate.add(chkboxRotateWallkick);
 
-		// 先行rotationでもWallkickする
+		// PrecedingrotationButWallkickMake
 		chkboxRotateInitialWallkick = new JCheckBox(getUIText("Rotate_RotateInitialWallkick"));
 		panelRotate.add(chkboxRotateInitialWallkick);
 
-		// Aで右rotation
+		// ARight onrotation
 		chkboxRotateButtonDefaultRight = new JCheckBox(getUIText("Rotate_RotateButtonDefaultRight"));
 		panelRotate.add(chkboxRotateButtonDefaultRight);
 
-		// 逆rotation許可
+		// ReverserotationPermit
 		chkboxRotateButtonAllowReverse = new JCheckBox(getUIText("Rotate_RotateButtonAllowReverse"));
 		panelRotate.add(chkboxRotateButtonAllowReverse);
 
-		// 2rotation許可
+		// 2rotationPermit
 		chkboxRotateButtonAllowDouble = new JCheckBox(getUIText("Rotate_RotateButtonAllowDouble"));
 		panelRotate.add(chkboxRotateButtonAllowDouble);
 
-		// UpDirectionへWallkickできる count
+		// UpDirectionToWallkickAble to count
 		JPanel pRotateMaxUpwardWallkick = new JPanel();
 		panelRotate.add(pRotateMaxUpwardWallkick);
 		JLabel lRotateMaxUpwardWallkick = new JLabel(getUIText("Rotate_RotateMaxUpwardWallkick"));
@@ -855,7 +855,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldRotateMaxUpwardWallkick = new JTextField("", 5);
 		pRotateMaxUpwardWallkick.add(txtfldRotateMaxUpwardWallkick);
 
-		// Wallkickアルゴリズム
+		// WallkickAlgorithm
 		JPanel pWallkickSystem = new JPanel();
 		panelRotate.add(pWallkickSystem);
 
@@ -873,12 +873,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		btnResetWallkickSystem.addActionListener(this);
 		pWallkickSystem.add(btnResetWallkickSystem);
 
-		// 固定 timeタブ --------------------------------------------------
+		// Fixation timeTab --------------------------------------------------
 		JPanel panelLockDelay = new JPanel();
 		panelLockDelay.setLayout(new BoxLayout(panelLockDelay, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_LockDelay"), panelLockDelay);
 
-		// 最低固定 timeと最高固定 time
+		// Minimum fixed timeAnd the highest fixed time
 		JLabel lLockDelayMin = new JLabel(getUIText("LockDelay_LockDelayMinMax"));
 		panelLockDelay.add(lLockDelayMin);
 
@@ -890,15 +890,15 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayMax = new JTextField("", 5);
 		pLockDelayMinMax.add(txtfldLockDelayMax);
 
-		// 落下で固定 timeリセット
+		// In the fall fixing timeReset
 		chkboxLockDelayLockResetFall = new JCheckBox(getUIText("LockDelay_LockResetFall"));
 		panelLockDelay.add(chkboxLockDelayLockResetFall);
 
-		// 移動で固定 timeリセット
+		// Move fixed timeReset
 		chkboxLockDelayLockResetMove = new JCheckBox(getUIText("LockDelay_LockResetMove"));
 		panelLockDelay.add(chkboxLockDelayLockResetMove);
 
-		// rotationで固定 timeリセット
+		// rotationFixed at timeReset
 		chkboxLockDelayLockResetRotate = new JCheckBox(getUIText("LockDelay_LockResetRotate"));
 		panelLockDelay.add(chkboxLockDelayLockResetRotate);
 
@@ -906,11 +906,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLockDelayLockResetWallkick = new JCheckBox(getUIText("LockDelay_LockResetWallkick"));
 		panelLockDelay.add(chkboxLockDelayLockResetWallkick);
 
-		// 横移動 counterとrotation counterを共有 (横移動 counterだけ使う）
+		// Lateral motion counterAndrotation counterShare (Lateral motion counterI use only)
 		chkboxLockDelayLockResetLimitShareCount = new JCheckBox(getUIText("LockDelay_LockDelayLockResetLimitShareCount"));
 		panelLockDelay.add(chkboxLockDelayLockResetLimitShareCount);
 
-		// 横移動 count制限
+		// Lateral motion countLimit
 		JPanel pLockDelayLockResetLimitMove = new JPanel();
 		panelLockDelay.add(pLockDelayLockResetLimitMove);
 		JLabel lLockDelayLockResetLimitMove = new JLabel(getUIText("LockDelay_LockDelayLockResetLimitMove"));
@@ -919,7 +919,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayLockResetLimitMove = new JTextField("", 5);
 		pLockDelayLockResetLimitMove.add(txtfldLockDelayLockResetLimitMove);
 
-		// rotation count制限
+		// rotation countLimit
 		JPanel pLockDelayLockResetLimitRotate = new JPanel();
 		panelLockDelay.add(pLockDelayLockResetLimitRotate);
 		JLabel lLockDelayLockResetLimitRotate = new JLabel(getUIText("LockDelay_LockDelayLockResetLimitRotate"));
@@ -928,7 +928,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLockDelayLockResetLimitRotate = new JTextField("", 5);
 		pLockDelayLockResetLimitRotate.add(txtfldLockDelayLockResetLimitRotate);
 
-		// 移動またはrotation count制限が超過した時の設定
+		// Move orrotation countset when limit is exceeded
 		JPanel pLockDelayLockResetLimitOver = new JPanel();
 		pLockDelayLockResetLimitOver.setLayout(new BoxLayout(pLockDelayLockResetLimitOver, BoxLayout.Y_AXIS));
 		panelLockDelay.add(pLockDelayLockResetLimitOver);
@@ -950,12 +950,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		pLockDelayLockResetLimitOver.add(radioLockDelayLockResetLimitOverNoWallkick);
 		gLockDelayLockResetLimitOver.add(radioLockDelayLockResetLimitOverNoWallkick);
 
-		// AREタブ --------------------------------------------------
+		// ARETab --------------------------------------------------
 		JPanel panelARE = new JPanel();
 		panelARE.setLayout(new BoxLayout(panelARE, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_ARE"), panelARE);
 
-		// 最低AREと最高ARE
+		// LowestAREAnd bestARE
 		JLabel lAREMin = new JLabel(getUIText("ARE_MinMax"));
 		panelARE.add(lAREMin);
 
@@ -967,7 +967,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldAREMax = new JTextField("", 5);
 		pAREMinMax.add(txtfldAREMax);
 
-		// 最低ARE after line clearと最高ARE after line clear
+		// LowestARE after line clearAnd bestARE after line clear
 		JLabel lARELineMin = new JLabel(getUIText("ARE_LineMinMax"));
 		panelARE.add(lARELineMin);
 
@@ -979,7 +979,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELineMax = new JTextField("", 5);
 		pARELineMinMax.add(txtfldARELineMax);
 
-		// 固定した瞬間に光る frame count
+		// Shining moment fixed frame count
 		JLabel lARELockFlash = new JLabel(getUIText("ARE_LockFlash"));
 		panelARE.add(lARELockFlash);
 
@@ -989,11 +989,11 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldARELockFlash = new JTextField("", 5);
 		pARELockFlash.add(txtfldARELockFlash);
 
-		// Blockが光る専用 frame を入れる
+		// BlockDedicated shines frame Put
 		chkboxARELockFlashOnlyFrame = new JCheckBox(getUIText("ARE_LockFlashOnlyFrame"));
 		panelARE.add(chkboxARELockFlashOnlyFrame);
 
-		// Line clear前にBlockが光る frame を入れる
+		// Line clearBeforeBlockShine frame Put
 		chkboxARELockFlashBeforeLineClear = new JCheckBox(getUIText("ARE_LockFlashBeforeLineClear"));
 		panelARE.add(chkboxARELockFlashBeforeLineClear);
 
@@ -1009,12 +1009,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxARECancelHold = new JCheckBox(getUIText("ARE_CancelHold"));
 		panelARE.add(chkboxARECancelHold);
 
-		// Line clearタブ --------------------------------------------------
+		// Line clearTab --------------------------------------------------
 		JPanel panelLine = new JPanel();
 		panelLine.setLayout(new BoxLayout(panelLine, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Line"), panelLine);
 
-		// 最低Line clear timeと最高Line clear time
+		// LowestLine clear timeAnd bestLine clear time
 		JLabel lLineMin = new JLabel(getUIText("Line_MinMax"));
 		panelLine.add(lLineMin);
 
@@ -1026,7 +1026,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldLineDelayMax = new JTextField("", 5);
 		pLineMinMax.add(txtfldLineDelayMax);
 
-		// 落下アニメ
+		// Animated falling
 		chkboxLineFallAnim = new JCheckBox(getUIText("Line_FallAnim"));
 		panelLine.add(chkboxLineFallAnim);
 
@@ -1042,12 +1042,12 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxLineCancelHold = new JCheckBox(getUIText("Line_CancelHold"));
 		panelLine.add(chkboxLineCancelHold);
 
-		// 移動タブ --------------------------------------------------
+		// Move tab --------------------------------------------------
 		JPanel panelMove = new JPanel();
 		panelMove.setLayout(new BoxLayout(panelMove, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_Move"), panelMove);
 
-		// 最低横溜め timeと最高横溜め time
+		// Minimum horizontal reservoir timeAnd maximum horizontal reservoir time
 		JLabel lMoveDASMin = new JLabel(getUIText("Move_DASMinMax"));
 		panelMove.add(lMoveDASMin);
 
@@ -1059,7 +1059,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		txtfldMoveDASMax = new JTextField("", 5);
 		pMoveDASMinMax.add(txtfldMoveDASMax);
 
-		// 横移動間隔
+		// Lateral movement interval
 		JPanel pMoveDASDelay = new JPanel();
 		panelMove.add(pMoveDASDelay);
 
@@ -1072,7 +1072,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		JLabel lMoveDASDelay2 = new JLabel(getUIText("Move_DASDelay2"));
 		pMoveDASDelay.add(lMoveDASDelay2);
 
-		// ○○のとき横溜め可能
+		// ○ ○ I collect next possible time
 		chkboxMoveDASInReady = new JCheckBox(getUIText("Move_DASInReady"));
 		panelMove.add(chkboxMoveDASInReady);
 		chkboxMoveDASInMoveFirstFrame = new JCheckBox(getUIText("Move_DASInMoveFirstFrame"));
@@ -1094,23 +1094,23 @@ public class RuleEditor extends JFrame implements ActionListener {
       chkboxMoveDASRedirectInDelay = new JCheckBox(getUIText("Move_DASRedirectInDelay"));
       panelMove.add(chkboxMoveDASRedirectInDelay);
 
-		// 最初の frame に移動可能
+		// First frame Can move in the
 		chkboxMoveFirstFrame = new JCheckBox(getUIText("Move_FirstFrame"));
 		panelMove.add(chkboxMoveFirstFrame);
 
-		// 斜め移動
+		// Diagonal movement
 		chkboxMoveDiagonal = new JCheckBox(getUIText("Move_Diagonal"));
 		panelMove.add(chkboxMoveDiagonal);
 
-		// Up下同時押し
+		// UpUnder simultaneous press
 		chkboxMoveUpAndDown = new JCheckBox(getUIText("Move_UpAndDown"));
 		panelMove.add(chkboxMoveUpAndDown);
 
-		// 左右同時押し
+		// Simultaneously press the left and right
 		chkboxMoveLeftAndRightAllow = new JCheckBox(getUIText("Move_LeftAndRightAllow"));
 		panelMove.add(chkboxMoveLeftAndRightAllow);
 
-		// 左右同時押ししたときに前 frame の input を優先
+		// Before when I press the left and right simultaneously frame Of input Priority
 		chkboxMoveLeftAndRightUsePreviousInput = new JCheckBox(getUIText("Move_LeftAndRightUsePreviousInput"));
 		panelMove.add(chkboxMoveLeftAndRightUsePreviousInput);
 
@@ -1118,7 +1118,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		chkboxMoveShiftLockEnable = new JCheckBox(getUIText("Move_ShiftLock"));
 		panelMove.add(chkboxMoveShiftLockEnable);
 
-		// rotationパターン補正タブ ------------------------------------------------
+		// rotationPattern correction tab ------------------------------------------------
 		JPanel panelPieceOffset = new JPanel();
 		panelPieceOffset.setLayout(new BoxLayout(panelPieceOffset, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_PieceOffset"), panelPieceOffset);
@@ -1126,7 +1126,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		tabPieceOffset = new JTabbedPane();
 		panelPieceOffset.add(tabPieceOffset);
 
-		// rotationパターン補正(X)タブ --------------------------------------------------
+		// rotationPattern correction(X)Tab --------------------------------------------------
 		JPanel panelPieceOffsetX = new JPanel();
 		panelPieceOffsetX.setLayout(new BoxLayout(panelPieceOffsetX, BoxLayout.Y_AXIS));
 		tabPieceOffset.addTab(getUIText("TabName_PieceOffsetX"), panelPieceOffsetX);
@@ -1147,7 +1147,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// rotationパターン補正(Y)タブ --------------------------------------------------
+		// rotationPattern correction(Y)Tab --------------------------------------------------
 		JPanel panelPieceOffsetY = new JPanel();
 		panelPieceOffsetY.setLayout(new BoxLayout(panelPieceOffsetY, BoxLayout.Y_AXIS));
 		tabPieceOffset.addTab(getUIText("TabName_PieceOffsetY"), panelPieceOffsetY);
@@ -1168,7 +1168,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// 出現位置補正タブ ------------------------------------------------
+		// Correction tab appearance position ------------------------------------------------
 		JPanel panelPieceSpawn = new JPanel();
 		panelPieceSpawn.setLayout(new BoxLayout(panelPieceSpawn, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_PieceSpawn"), panelPieceSpawn);
@@ -1176,7 +1176,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 		tabPieceSpawn = new JTabbedPane();
 		panelPieceSpawn.add(tabPieceSpawn);
 
-		// 出現位置補正(X)タブ --------------------------------------------------
+		// Appearance position correction(X)Tab --------------------------------------------------
 		JPanel panelPieceSpawnX = new JPanel();
 		panelPieceSpawnX.setLayout(new BoxLayout(panelPieceSpawnX, BoxLayout.Y_AXIS));
 		tabPieceSpawn.addTab(getUIText("TabName_PieceSpawnX"), panelPieceSpawnX);
@@ -1197,7 +1197,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// 出現位置補正(Y)タブ --------------------------------------------------
+		// Appearance position correction(Y)Tab --------------------------------------------------
 		JPanel panelPieceSpawnY = new JPanel();
 		panelPieceSpawnY.setLayout(new BoxLayout(panelPieceSpawnY, BoxLayout.Y_AXIS));
 		tabPieceSpawn.addTab(getUIText("TabName_PieceSpawnY"), panelPieceSpawnY);
@@ -1218,7 +1218,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// Big時出現位置補正(X)タブ --------------------------------------------------
+		// BigAppearance position correction during(X)Tab --------------------------------------------------
 		JPanel panelPieceSpawnBigX = new JPanel();
 		panelPieceSpawnBigX.setLayout(new BoxLayout(panelPieceSpawnBigX, BoxLayout.Y_AXIS));
 		tabPieceSpawn.addTab(getUIText("TabName_PieceSpawnBigX"), panelPieceSpawnBigX);
@@ -1239,7 +1239,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// Big時出現位置補正(Y)タブ --------------------------------------------------
+		// BigAppearance position correction during(Y)Tab --------------------------------------------------
 		JPanel panelPieceSpawnBigY = new JPanel();
 		panelPieceSpawnBigY.setLayout(new BoxLayout(panelPieceSpawnBigY, BoxLayout.Y_AXIS));
 		tabPieceSpawn.addTab(getUIText("TabName_PieceSpawnBigY"), panelPieceSpawnBigY);
@@ -1260,7 +1260,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			}
 		}
 
-		// 色設定タブ --------------------------------------------------
+		// Color Settings tab --------------------------------------------------
 		JPanel panelPieceColor = new JPanel();
 		panelPieceColor.setLayout(new BoxLayout(panelPieceColor, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_PieceColor"), panelPieceColor);
@@ -1284,7 +1284,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			pPieceColor[i].add(comboboxPieceColor[i]);
 		}
 
-		// 初期Direction設定タブ --------------------------------------------------
+		// InitialDirectionSettings tab --------------------------------------------------
 		JPanel panelPieceDirection = new JPanel();
 		panelPieceDirection.setLayout(new BoxLayout(panelPieceDirection, BoxLayout.Y_AXIS));
 		tabPane.addTab(getUIText("TabName_PieceDirection"), panelPieceDirection);
@@ -1310,7 +1310,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Block画像を読み込み
+	 * BlockLoad an image
 	 */
 	private void loadBlockSkins() {
 		String skindir = propConfig.getProperty("custom.skin.directory", "res");
@@ -1346,9 +1346,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 画像を読み込み
-	 * @param url 画像ファイルのURL
-	 * @return 画像ファイル (失敗するとnull）
+	 * Load an image
+	 * @param url Image filesURL
+	 * @return Image file (Failurenull)
 	 */
 	public BufferedImage loadImage(URL url) {
 		BufferedImage img = null;
@@ -1362,9 +1362,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * リソースファイルのURLを返す
+	 * Resource FilesURLReturns
 	 * @param str Filename
-	 * @return リソースファイルのURL
+	 * @return Resource FilesURL
 	 */
 	public URL getURL(String str) {
 		URL url = null;
@@ -1373,7 +1373,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 			char sep = File.separator.charAt(0);
 			String file = str.replace(sep, '/');
 
-			// 参考：http://www.asahi-net.or.jp/~DP8T-ASM/java/tips/HowToMakeURL.html
+			// Note:http://www.asahi-net.or.jp/~DP8T-ASM/java/tips/HowToMakeURL.html
 			if(file.charAt(0) != '/') {
 				String dir = System.getProperty("user.dir");
 				dir = dir.replace(sep, '/') + '/';
@@ -1392,9 +1392,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストファイルを読み込んでVector&lt;String&gt;に入れる
+	 * Read the text fileVector&lt;String&gt;Add to
 	 * @param filename Filename
-	 * @return テキストファイルを読み込んだVector&lt;String&gt;
+	 * @return I read a text fileVector&lt;String&gt;
 	 */
 	public Vector<String> getTextFileVector(String filename) {
 		Vector<String> vec = new Vector<String>();
@@ -1413,9 +1413,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 特定のVector&lt;String&gt;の最後のドット記号から先だけを取り出したVector&lt;String&gt;を作成
-	 * @param vecSrc 元のVector&lt;String&gt;
-	 * @return 加工したVector&lt;String&gt;
+	 * SpecificVector&lt;String&gt;Only the target was removed from the last dot symbolVector&lt;String&gt;Create
+	 * @param vecSrc OriginalVector&lt;String&gt;
+	 * @return Was processedVector&lt;String&gt;
 	 */
 	public Vector<String> createShortStringVector(Vector<String> vecSrc) {
 		Vector<String> vec = new Vector<String>();
@@ -1438,8 +1438,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ルール設定をUIに反映させる
-	 * @param r ルール設定
+	 * A rule setUIBe reflected in the
+	 * @param r Rule Set
 	 */
 	public void readRuleToUI(RuleOptions r) {
 		txtfldRuleName.setText(String.valueOf(r.strRuleName));
@@ -1556,8 +1556,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ルール設定をUIから書き込む
-	 * @param r ルール設定
+	 * A rule setUIWritten from the
+	 * @param r Rule Set
 	 */
 	public void writeRuleFromUI(RuleOptions r) {
 		r.strRuleName = txtfldRuleName.getText();
@@ -1673,9 +1673,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ルールをファイルに保存
+	 * Rules stored in a file
 	 * @param filename Filename
-	 * @throws IOException 保存に失敗したとき
+	 * @throws IOException When I failed to save
 	 */
 	public void save(String filename) throws IOException {
 		RuleOptions ruleopt = new RuleOptions();
@@ -1692,10 +1692,10 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ルールをファイルから読み込み
+	 * Reading rules from a file
 	 * @param filename Filename
-	 * @return ルール data
-	 * @throws IOException Failed to loadしたとき
+	 * @return Rule data
+	 * @throws IOException Failed to loadWhen it was
 	 */
 	public RuleOptions load(String filename) throws IOException {
 		CustomProperties prop = new CustomProperties();
@@ -1713,9 +1713,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 翻訳後のUIの文字列を取得
-	 * @param str 文字列
-	 * @return 翻訳後のUIの文字列 (無いならそのままstrを返す）
+	 * PosttranslationalUIGets a string of
+	 * @param str String
+	 * @return PosttranslationalUIString (If you do not acceptstrReturns)
 	 */
 	public String getUIText(String str) {
 		String result = propLang.getProperty(str);
@@ -1726,9 +1726,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストfieldからint型の値を取得
-	 * @param txtfld テキストfield
-	 * @return テキストfieldから値を取得できた場合はその値, 失敗したら0
+	 * TextfieldFromintGets the value of the type
+	 * @param txtfld Textfield
+	 * @return TextfieldIf you can get the value from its value, Failed0
 	 */
 	public int getIntTextField(JTextField txtfld) {
 		int v = 0;
@@ -1741,9 +1741,9 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * テキストfieldからfloat型の値を取得
-	 * @param txtfld テキストfield
-	 * @return テキストfieldから値を取得できた場合はその値, 失敗したら0f
+	 * TextfieldFromfloatGets the value of the type
+	 * @param txtfld Textfield
+	 * @return TextfieldIf you can get the value from its value, Failed0f
 	 */
 	public float getFloatTextField(JTextField txtfld) {
 		float v = 0f;
@@ -1756,16 +1756,16 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * アクション発生時の処理
+	 * Processing at the time of occurrence of action
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "New") {
-			// 新規作成
+			// New
 			strNowFile = null;
 			setTitle(getUIText("Title_RuleEditor"));
 			readRuleToUI(new RuleOptions());
 		} else if(e.getActionCommand() == "Open") {
-			// 開く
+			// Open
 			JFileChooser c = new JFileChooser(System.getProperty("user.dir") + "/config/rule");
 			c.setFileFilter(new FileFilterRUL());
 
@@ -1788,7 +1788,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 				readRuleToUI(ruleopt);
 			}
 		} else if((e.getActionCommand() == "Save") && (strNowFile != null)) {
-			// Up書き保存
+			// UpDisclaimer save
 			try {
 				save(strNowFile);
 			} catch (IOException e2) {
@@ -1797,7 +1797,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 											  JOptionPane.ERROR_MESSAGE);
 			}
 		} else if((e.getActionCommand() == "Save") || (e.getActionCommand() == "SaveAs")) {
-			// Nameを付けて保存
+			// NameSave
 			JFileChooser c = new JFileChooser(System.getProperty("user.dir") + "/config/rule");
 			c.setFileFilter(new FileFilterRUL());
 
@@ -1819,17 +1819,17 @@ public class RuleEditor extends JFrame implements ActionListener {
 				setTitle(getUIText("Title_RuleEditor") + ":" + strNowFile);
 			}
 		} else if(e.getActionCommand() == "ResetRandomizer") {
-			// NEXT順生成アルゴリズムの選択リセット
+			// NEXTReset selection of order generation algorithm
 			comboboxRandomizer.setSelectedItem(null);
 		} else if(e.getActionCommand() == "Exit") {
-			// 終了
+			// End
 			dispose();
 		}
 	}
 
 	/**
-	 * メイン関count
-	 * @param args コマンドLines引count
+	 * Main functioncount
+	 * @param args CommandLinesArgumentcount
 	 */
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("config/etc/log.cfg");
@@ -1843,7 +1843,7 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * ファイル選択画面のフィルタ
+	 * Filter file selection screen
 	 */
 	protected class FileFilterRUL extends FileFilter {
 		@Override
@@ -1860,8 +1860,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 画像表示Comboボックスの項目<br>
-	 * <a href="http://www.javadrive.jp/tutorial/jcombobox/index20.html">出典</a>
+	 * Image displayComboItems in box<br>
+	 * <a href="http://www.javadrive.jp/tutorial/jcombobox/index20.html">Source</a>
 	 */
 	protected class ComboLabel {
 		private String text = "";
@@ -1901,8 +1901,8 @@ public class RuleEditor extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 画像表示ComboボックスのListCellRenderer<br>
-	 * <a href="http://www.javadrive.jp/tutorial/jcombobox/index20.html">出典</a>
+	 * Image displayComboOf the boxListCellRenderer<br>
+	 * <a href="http://www.javadrive.jp/tutorial/jcombobox/index20.html">Source</a>
 	 */
 	protected class ComboLabelCellRenderer extends JLabel implements ListCellRenderer {
 		private static final long serialVersionUID = 1L;

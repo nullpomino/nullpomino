@@ -45,43 +45,43 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 /**
- * ゲームの event 処理と描画処理 (Slick版）
+ * Game event Processing and rendering process (SlickVersion)
  */
 public class RendererSlick extends EventReceiver {
 	/** Log */
 	//static Logger log = Logger.getLogger(RendererSlick.class);
 
-	/** 描画先サーフェイス */
+	/** Surface to draw */
 	protected Graphics graphics;
 
-	/** 演出オブジェクト */
+	/** Production Object */
 	protected ArrayList<EffectObject> effectlist;
 
-	/** Line clearエフェクト表示 */
+	/** Line clearDisplay Effects */
 	protected boolean showlineeffect;
 
-	/** 重い演出を使う */
+	/** Heavy production use */
 	protected boolean heavyeffect;
 
-	/** fieldBackgroundの明るさ */
+	/** fieldBackgroundThe brightness of the */
 	protected float fieldbgbright;
 
 	/** Show field BG grid */
 	protected boolean showfieldbggrid;
 
-	/** NEXT欄を暗くする */
+	/** NEXTDarken the field */
 	protected boolean darknextarea;
 
-	/** ghost ピースの上にNEXT表示 */
+	/** ghost On top of the pieceNEXTDisplay */
 	protected boolean nextshadow;
 
 	/** Line clear effect speed */
 	protected int lineeffectspeed;
 
 	/**
-	 * Block colorIDに応じてSlick用Colorオブジェクトを作成・取得
+	 * Block colorIDDepending onSlickUseColorObjects created or received
 	 * @param colorID Block colorID
-	 * @return Slick用Colorオブジェクト
+	 * @return SlickUseColorObject
 	 */
 	public static Color getColorByID(int colorID) {
 		switch(colorID) {
@@ -141,7 +141,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Menu 用の文字列を描画
+	 * Menu Drawing a string for
 	 */
 	@Override
 	public void drawMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -159,7 +159,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Menu 用の文字列をTTF font で描画
+	 * Menu A string forTTF font Drawing on
 	 */
 	@Override
 	public void drawTTFMenuFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -177,7 +177,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Render score用の font を描画
+	 * Render scoreFor font Draw a
 	 */
 	@Override
 	public void drawScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -189,7 +189,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Render score用の font をTTF font で描画
+	 * Render scoreFor font ATTF font Drawing on
 	 */
 	@Override
 	public void drawTTFScoreFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -200,7 +200,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 直接指定した座標へ文字列を描画
+	 * Draws the string to the specified coordinates I direct
 	 */
 	@Override
 	public void drawDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color, float scale) {
@@ -208,7 +208,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 直接指定した座標へ描画できるTTF font を描画
+	 * I can draw directly to the specified coordinatesTTF font Draw a
 	 */
 	@Override
 	public void drawTTFDirectFont(GameEngine engine, int playerID, int x, int y, String str, int color) {
@@ -216,7 +216,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * スピードMeterを描画
+	 * SpeedMeterDraw a
 	 */
 	@Override
 	public void drawSpeedMeter(GameEngine engine, int playerID, int x, int y, int s) {
@@ -243,7 +243,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * TTF使用可能
+	 * TTFAvailable
 	 */
 	@Override
 	public boolean isTTFSupport() {
@@ -279,7 +279,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Sound effects再生
+	 * Sound effectsPlayback
 	 */
 	@Override
 	public void playSE(String name) {
@@ -287,7 +287,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 描画先のサーフェイスを設定
+	 * Set the target surface drawing
 	 */
 	@Override
 	public void setGraphics(Object g) {
@@ -297,7 +297,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * リプレイを保存
+	 * Save the replay
 	 */
 	@Override
 	public void saveReplay(GameManager owner, CustomProperties prop) {
@@ -307,7 +307,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 1マスBlockを描画
+	 * 1MassBlockDraw a
 	 */
 	@Override
 	public void drawSingleBlock(GameEngine engine, int playerID, int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
@@ -401,48 +401,48 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Blockを描画
+	 * BlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param color 色
-	 * @param skin 模様
-	 * @param bone 骨Block
-	 * @param darkness 暗さもしくは明るさ
-	 * @param alpha 透明度
-	 * @param scale 拡大率
+	 * @param color Color
+	 * @param skin Pattern
+	 * @param bone BoneBlock
+	 * @param darkness Lightness or darkness
+	 * @param alpha Transparency
+	 * @param scale Enlargement factor
 	 */
 	protected void drawBlock(int x, int y, int color, int skin, boolean bone, float darkness, float alpha, float scale) {
 		drawBlock(x, y, color, skin, bone, darkness, alpha, scale, 0);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画
+	 * BlockUsing an instance of the classBlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
+	 * @param blk BlockInstance of a class
 	 */
 	protected void drawBlock(int x, int y, Block blk) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, 1.0f, blk.attribute);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率指定可能）
+	 * BlockUsing an instance of the classBlockDraw a (You can specify the magnification)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @param scale 拡大率
+	 * @param blk BlockInstance of a class
+	 * @param scale Enlargement factor
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), blk.darkness, blk.alpha, scale, blk.attribute);
 	}
 
 	/**
-	 * Blockクラスのインスタンスを使用してBlockを描画 (拡大率と暗さ指定可能）
+	 * BlockUsing an instance of the classBlockDraw a (You can specify the magnification and dark)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param blk Blockクラスのインスタンス
-	 * @param scale 拡大率
-	 * @param darkness 暗さもしくは明るさ
+	 * @param blk BlockInstance of a class
+	 * @param scale Enlargement factor
+	 * @param darkness Lightness or darkness
 	 */
 	protected void drawBlock(int x, int y, Block blk, float scale, float darkness) {
 		drawBlock(x, y, blk.getDrawColor(), blk.skin, blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE), darkness, blk.alpha, scale, blk.attribute);
@@ -454,33 +454,33 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Blockピースを描画
+	 * BlockDraw a piece
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
+	 * @param piece Peace to draw
 	 */
 	protected void drawPiece(int x, int y, Piece piece) {
 		drawPiece(x, y, piece, 1.0f);
 	}
 
 	/**
-	 * Blockピースを描画 (拡大率指定可能）
+	 * BlockDraw a piece (You can specify the magnification)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @param scale 拡大率
+	 * @param piece Peace to draw
+	 * @param scale Enlargement factor
 	 */
 	protected void drawPiece(int x, int y, Piece piece, float scale) {
 		drawPiece(x, y, piece, scale, 0f);
 	}
 
 	/**
-	 * Blockピースを描画 (暗さもしくは明るさの指定可能）
+	 * BlockDraw a piece (You can specify the brightness or darkness)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param piece 描画するピース
-	 * @param scale 拡大率
-	 * @param darkness 暗さもしくは明るさ
+	 * @param piece Peace to draw
+	 * @param scale Enlargement factor
+	 * @param darkness Lightness or darkness
 	 */
 	protected void drawPiece(int x, int y, Piece piece, float scale, float darkness) {
 		for(int i = 0; i < piece.getMaxBlock(); i++) {
@@ -495,11 +495,11 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースを描画 (Y-coordinateが0以上のBlockだけ表示）
+	 * Currently working onBlockDraw a piece (Y-coordinateThe0MoreBlockDisplay only)
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param scale 表示倍率
+	 * @param engine GameEngineInstance of
+	 * @param scale Display magnification
 	 */
 	protected void drawCurrentPiece(int x, int y, GameEngine engine, float scale) {
 		Piece piece = engine.nowPieceObject;
@@ -535,11 +535,11 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 現在操作中のBlockピースのghost を描画
+	 * Currently working onBlockOf Peaceghost Draw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param scale 表示倍率
+	 * @param engine GameEngineInstance of
+	 * @param scale Display magnification
 	 */
 	protected void drawGhostPiece(int x, int y, GameEngine engine, float scale) {
 		Piece piece = engine.nowPieceObject;
@@ -768,11 +768,11 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * fieldのBlockを描画
+	 * fieldOfBlockDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param small 半分サイズ
+	 * @param engine GameEngineInstance of
+	 * @param small Half size
 	 */
 	protected void drawField(int x, int y, GameEngine engine, int size) {
 		if(graphics == null) return;
@@ -849,7 +849,7 @@ public class RendererSlick extends EventReceiver {
 			}
 		}
 
-		// ヘボHIDDEN
+		// BunglerHIDDEN
 		if((engine.heboHiddenEnable) && (engine.gameActive) && (field != null)) {
 			int maxY = engine.heboHiddenYNow;
 			if(maxY > height) maxY = height;
@@ -862,11 +862,11 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * Field frameを描画
+	 * Field frameDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
-	 * @param small 半分サイズ
+	 * @param engine GameEngineInstance of
+	 * @param small Half size
 	 */
 	protected void drawFrame(int x, int y, GameEngine engine, int displaysize) {
 		if(graphics == null) return;
@@ -908,7 +908,7 @@ public class RendererSlick extends EventReceiver {
 			}
 		}
 
-		// Upと下
+		// UpAnd the lower
 		int maxWidth = (width * size * 4);
 		if(showmeter) maxWidth = (width * size * 4) + (2 * 4);
 
@@ -921,7 +921,7 @@ public class RendererSlick extends EventReceiver {
 		tmpY = y + (height * size * 4) + 4;
 		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + maxWidth, tmpY + 4, offsetX + 4, 8, (offsetX + 4) + 4, 8 + 4);
 
-		// 左と右
+		// Left and Right
 		tmpX = x;
 		tmpY = y + 4;
 		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size*4), offsetX, 4, offsetX + 4, 4 + 4);
@@ -933,28 +933,28 @@ public class RendererSlick extends EventReceiver {
 		}
 		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size*4), offsetX + 8, 4, offsetX + 8 + 4, 4 + 4);
 
-		// 左上
+		// Upper left
 		tmpX = x;
 		tmpY = y;
 		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX, 0, offsetX + 4, 4);
 
-		// 左下
+		// Lower left
 		tmpX = x;
 		tmpY = y + (height * size * 4) + 4;
 		graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX, 8, offsetX + 4, 8 + 4);
 
 		if(showmeter) {
-			// MeterONのときの右上
+			// MeterONWhen the upper right corner of the
 			tmpX = x + (width * size * 4) + 12;
 			tmpY = y;
 			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 0, (offsetX + 8) + 4, 4);
 
-			// MeterONのときの右下
+			// MeterONWhen the lower-right corner of
 			tmpX = x + (width * size * 4) + 12;
 			tmpY = y + (height * size * 4) + 4;
 			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 8, (offsetX + 8) + 4, 8 + 4);
 
-			// 右Meterの枠
+			// RightMeterFrame
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y + 4;
 			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + (height * size * 4), offsetX + 12, 4, (offsetX + 12) + 4, 4 + 4);
@@ -967,7 +967,7 @@ public class RendererSlick extends EventReceiver {
 			tmpY = y + (height * size * 4) + 4;
 			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 12, 8, (offsetX + 12) + 4, 8 + 4);
 
-			// 右Meter
+			// RightMeter
 			int maxHeight = height * size * 4;
 			if((engine != null) && (engine.meterValueSub > 0 || engine.meterValue > 0))
 				maxHeight -= Math.max(engine.meterValue, engine.meterValueSub);
@@ -1010,12 +1010,12 @@ public class RendererSlick extends EventReceiver {
 				}
 			}
 		} else {
-			// MeterOFFのときの右上
+			// MeterOFFWhen the upper right corner of the
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y;
 			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 0, (offsetX + 8) + 4, 4);
 
-			// MeterOFFのときの右下
+			// MeterOFFWhen the lower-right corner of
 			tmpX = x + (width * size * 4) + 4;
 			tmpY = y + (height * size * 4) + 4;
 			graphics.drawImage(ResourceHolderSlick.imgFrame, tmpX, tmpY, tmpX + 4, tmpY + 4, offsetX + 8, 8, (offsetX + 8) + 4, 8 + 4);
@@ -1023,10 +1023,10 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * NEXTを描画
+	 * NEXTDraw a
 	 * @param x X-coordinate
 	 * @param y Y-coordinate
-	 * @param engine GameEngineのインスタンス
+	 * @param engine GameEngineInstance of
 	 */
 	protected void drawNext(int x, int y, GameEngine engine) {
 		if(graphics == null) return;
@@ -1185,7 +1185,7 @@ public class RendererSlick extends EventReceiver {
 					}
 				}
 
-				// NEXT2・3
+				// NEXT2·3
 				for(int i = 0; i < engine.ruleopt.nextDisplay - 1; i++) {
 					if(i >= 2) break;
 
@@ -1196,7 +1196,7 @@ public class RendererSlick extends EventReceiver {
 					}
 				}
 
-				// NEXT4～
+				// NEXT4~
 				for(int i = 0; i < engine.ruleopt.nextDisplay - 3; i++) {
 					Piece piece = engine.getNextObject(engine.nextPieceCount + i + 3);
 
@@ -1293,7 +1293,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/**
-	 * 各 frame 最初の描画処理
+	 * Each frame Drawing process of the first
 	 * @param engine GameEngine
 	 * @param playerID Player ID
 	 */
@@ -1350,7 +1350,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Ready画面の描画処理
+	 * ReadyProcess of drawing the screen
 	 */
 	@Override
 	public void renderReady(GameEngine engine, int playerID) {
@@ -1379,7 +1379,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Blockピース移動時の処理
+	 * BlockHandling when moving piece
 	 */
 	@Override
 	public void renderMove(GameEngine engine, int playerID) {
@@ -1408,13 +1408,13 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Blockを消す演出を出すときの処理
+	 * BlockWhen you issue the production process to turn off the
 	 */
 	@Override
 	public void blockBreak(GameEngine engine, int playerID, int x, int y, Block blk) {
 		if(showlineeffect && (blk != null) && engine.displaysize != -1) {
 			int color = blk.getDrawColor();
-			// 通常Block
+			// UsuallyBlock
 			if((color >= Block.BLOCK_COLOR_GRAY) && (color <= Block.BLOCK_COLOR_PURPLE) && !blk.getAttribute(Block.BLOCK_ATTRIBUTE_BONE)) {
 				EffectObject obj = new EffectObject(1,
 													getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
@@ -1422,7 +1422,7 @@ public class RendererSlick extends EventReceiver {
 													color);
 				effectlist.add(obj);
 			}
-			// 宝石Block
+			// JewelBlock
 			else if(blk.isGemBlock()) {
 				EffectObject obj = new EffectObject(2,
 													getFieldDisplayPositionX(engine, playerID) + 4 + (x * 16),
@@ -1434,7 +1434,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * EXCELLENT画面の描画処理
+	 * EXCELLENTProcess of drawing the screen
 	 */
 	@Override
 	public void renderExcellent(GameEngine engine, int playerID) {
@@ -1463,7 +1463,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * game over画面の描画処理
+	 * game overProcess of drawing the screen
 	 */
 	@Override
 	public void renderGameOver(GameEngine engine, int playerID) {
@@ -1494,7 +1494,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * Render results screen処理
+	 * Render results screenProcessing
 	 */
 	@Override
 	public void renderResult(GameEngine engine, int playerID) {
@@ -1518,7 +1518,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * fieldエディット画面の描画処理
+	 * fieldDrawing process of edit screen
 	 */
 	@Override
 	public void renderFieldEdit(GameEngine engine, int playerID) {
@@ -1530,7 +1530,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 各 frame の最後に行われる処理
+	 * Each frame Processing that takes place at the end of the
 	 */
 	@Override
 	public void onLast(GameEngine engine, int playerID) {
@@ -1538,7 +1538,7 @@ public class RendererSlick extends EventReceiver {
 	}
 
 	/*
-	 * 各 frame の最後に行われる描画処理
+	 * Each frame Drawing process that takes place at the end of the
 	 */
 	@Override
 	public void renderLast(GameEngine engine, int playerID) {

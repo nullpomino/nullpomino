@@ -34,28 +34,28 @@ import java.util.LinkedList;
 import mu.nu.nullpo.game.component.RuleOptions;
 
 /**
- * ルーム情報
+ * Room Information
  */
 public class NetRoomInfo implements Serializable {
 	/** Serial version */
 	private static final long serialVersionUID = 1L;
 
-	/** 識別 number */
+	/** Identification number */
 	public int roomID = -1;
 
-	/** ルーム名 */
+	/** Room name */
 	public String strName = "";
 
-	/** 参加可能なMaximum人count */
+	/** Can participateMaximumPeoplecount */
 	public int maxPlayers = 6;
 
 	/** 自動開始までの待機 time */
 	public int autoStartSeconds = 0;
 
-	/** 落下速度(分子) */
+	/** Fall velocity(Molecule) */
 	public int gravity = 1;
 
-	/** 落下速度(分母) */
+	/** Fall velocity(Denominator) */
 	public int denominator = 60;
 
 	/** ARE */
@@ -67,7 +67,7 @@ public class NetRoomInfo implements Serializable {
 	/** Line clear time */
 	public int lineDelay = 40;
 
-	/** 固定 time */
+	/** Fixation time */
 	public int lockDelay = 30;
 
 	/** DAS */
@@ -102,40 +102,40 @@ public class NetRoomInfo implements Serializable {
 	/** Enable bravo bonus */
 	public boolean bravo = true;
 
-	/** ルール固定 flag */
+	/** Fixed rules flag */
 	public boolean ruleLock = false;
 
 	/** Rule name */
 	public String ruleName = "";
 
-	/** ルール */
+	/** Rule */
 	public RuleOptions ruleOpt = null;
 
-	/** 参加しているNumber of players */
+	/** Have joinedNumber of players */
 	public int playerSeatedCount = 0;
 
-	/** 観戦中の人のcount */
+	/** Of people in the spectatorcount */
 	public int spectatorCount = 0;
 
-	/** ルームにいる人全員のカウント(参戦中+観戦中) */
+	/** Count of all the people in the room(During the war+While watching) */
 	public int playerListCount = 0;
 
-	/** ゲーム中 flag */
+	/** Game flag */
 	public boolean playing = false;
 
-	/** Start game直後のNumber of players */
+	/** Start gameRight afterNumber of players */
 	public int startPlayers = 0;
 
-	/** 死亡カウント */
+	/** Death count */
 	public int deadCount = 0;
 
-	/** Automatically start timerが動いているときはtrue */
+	/** Automatically start timerWhen you are running thetrue */
 	public boolean autoStartActive = false;
 
-	/** 誰かOK表示を出したあとCancelしたらtrue */
+	/** SomeoneOKAfter I gave a displayCancelWastrue */
 	public boolean isSomeoneCancelled = false;
 
-	/** 3人以上生きている場合に Attack 力を減らす */
+	/** 3If I live more than Attack Reduce the force */
 	public boolean reduceLineSend = false;
 
 	/** Rate of change of garbage holes */
@@ -155,25 +155,25 @@ public class NetRoomInfo implements Serializable {
 
 	//public boolean useTankMode = false;
 
-	/** Hurryup開始までの秒count(-1でHurryupなし) */
+	/** HurryupSeconds before the startcount(-1InHurryupNo) */
 	public int hurryupSeconds = -1;
 
-	/** Hurryup後に何回Blockを置くたびに床をせり上げるか */
+	/** HurryupTimes afterBlockDo you run up the floor every time you put the */
 	public int hurryupInterval = 5;
 
 	/** Automatically start timer type(false=NullpoMino true=TNET2) */
 	public boolean autoStartTNET2 = false;
 
-	/** 誰かOK表示を出したあとCancelしたらTimer無効化 */
+	/** SomeoneOKAfter I gave a displayCancelWasTimerInvalidation */
 	public boolean disableTimerAfterSomeoneCancelled = false;
 
 	/** Map is enabled */
 	public boolean useMap = false;
 
-	/** 前回のMap */
+	/** LastMap */
 	public int mapPrevious = -1;
 
-	/** 新しい断片的garbage blockシステムを使う */
+	/** New fragmentsgarbage blockUsing the system */
 	public boolean useFractionalGarbage = false;
 
 	/** Mode name */
@@ -191,19 +191,19 @@ public class NetRoomInfo implements Serializable {
 	/** Game style */
 	public int style = 0;
 
-	/** マップリスト */
+	/** Map list */
 	public LinkedList<String> mapList = new LinkedList<String>();
 
-	/** ルームにいる人のリスト */
+	/** List of people in the room */
 	public LinkedList<NetPlayerInfo> playerList = new LinkedList<NetPlayerInfo>();
 
-	/** ゲーム席 */
+	/** Game seat */
 	public LinkedList<NetPlayerInfo> playerSeat = new LinkedList<NetPlayerInfo>();
 
-	/** ゲーム席(Start game時にのみ更新・新しい人が入ってきたり誰かが出ていったりしても変わりません) */
+	/** Game seat(Start gameI updated and new people will not change, even if someone or go out or come in only when) */
 	public LinkedList<NetPlayerInfo> playerSeatNowPlaying = new LinkedList<NetPlayerInfo>();
 
-	/** 待ち行列 */
+	/** Queue */
 	public LinkedList<NetPlayerInfo> playerQueue = new LinkedList<NetPlayerInfo>();
 
 	/** Dead player list (Pushed from front, winner will be the first entry) */
@@ -229,17 +229,17 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列から data代入するConstructor
+	 * StringFrom an array of dataSubstituteConstructor
 	 *
 	 * @param rdata
-	 *            Stringの配列(String[7])
+	 *            StringAn array of(String[7])
 	 */
 	public NetRoomInfo(String[] rdata) {
 		importStringArray(rdata);
 	}
 
 	/**
-	 * Stringから data代入するConstructor
+	 * StringFrom dataSubstituteConstructor
 	 *
 	 * @param str
 	 *            String
@@ -249,7 +249,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 他のNetRoomInfoからコピー
+	 * OtherNetRoomInfoCopied from the
 	 *
 	 * @param n
 	 *            Copy source
@@ -329,10 +329,10 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列から data代入(Playerリスト除く)
+	 * StringFrom an array of dataAssignment(PlayerExcept list)
 	 *
 	 * @param rdata
-	 *            Stringの配列(String[43])
+	 *            StringAn array of(String[43])
 	 */
 	public void importStringArray(String[] rdata) {
 		roomID = Integer.parseInt(rdata[0]);
@@ -382,7 +382,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * String(;で区切り)から data代入(Playerリスト除く)
+	 * String(;Separated in)From dataAssignment(PlayerExcept list)
 	 *
 	 * @param str
 	 *            String
@@ -392,9 +392,9 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringの配列に変換(Playerリスト除く)
+	 * StringConverts an array of(PlayerExcept list)
 	 *
-	 * @return Stringの配列(String[43])
+	 * @return StringAn array of(String[43])
 	 */
 	public String[] exportStringArray() {
 		String[] rdata = new String[43];
@@ -447,7 +447,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Stringに変換(;で区切り)(Playerリスト除く)
+	 * StringConverted to(;Separated in)(PlayerExcept list)
 	 *
 	 * @return String
 	 */
@@ -465,7 +465,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Number of playersカウントを更新
+	 * Number of playersUpdate the count
 	 */
 	public void updatePlayerCount() {
 		playerSeatedCount = getNumberOfPlayerSeated();
@@ -474,9 +474,9 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 今ゲーム席にいる人のcountをcountえる(null席はカウントしない)
+	 * Those who are in the game now seatcountAcountObtained(nullSeat does not count)
 	 *
-	 * @return 今ゲーム席にいる人のcount
+	 * @return Those who are in the game now seatcount
 	 */
 	public int getNumberOfPlayerSeated() {
 		int count = 0;
@@ -488,22 +488,22 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 指定したPlayerがゲーム席にいるかどうか調べる
+	 * SpecifiedPlayerI will find out if you are in the game seat
 	 *
 	 * @param pInfo
 	 *            Player
-	 * @return 指定したPlayerがゲーム席にいるならtrue
+	 * @return SpecifiedPlayerIf you&#39;re in the game seattrue
 	 */
 	public boolean isPlayerInSeat(NetPlayerInfo pInfo) {
 		return playerSeat.contains(pInfo);
 	}
 
 	/**
-	 * 指定したPlayerがどの numberのゲーム席にいるか調べる
+	 * SpecifiedPlayerWhat is numberI look at the game you are in the seat of
 	 *
 	 * @param pInfo
 	 *            Player
-	 * @return ゲーム席 number(いないなら-1)
+	 * @return Game seat number(If you do not have-1)
 	 */
 	public int getPlayerSeatNumber(NetPlayerInfo pInfo) {
 		for (int i = 0; i < playerSeat.size(); i++) {
@@ -515,18 +515,18 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * @return 順番待ちなしですぐにゲーム席に入れるならtrue
+	 * @return If you put the seat immediately without waiting gametrue
 	 */
 	public boolean canJoinSeat() {
 		return (getNumberOfPlayerSeated() < maxPlayers);
 	}
 
 	/**
-	 * ゲーム席に入る
+	 * Entered the game seat
 	 *
 	 * @param pInfo
 	 *            Player
-	 * @return ゲーム席の number(満員だったら-1)
+	 * @return Game seat number(I were packed-1)
 	 */
 	public int joinSeat(NetPlayerInfo pInfo) {
 		if (canJoinSeat()) {
@@ -546,7 +546,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 指定したPlayerをゲーム席から外す
+	 * SpecifiedPlayerRemove the seat from the game
 	 *
 	 * @param pInfo
 	 *            Player
@@ -560,11 +560,11 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 順番待ちに入る
+	 * Waiting to enter the
 	 *
 	 * @param pInfo
 	 *            Player
-	 * @return 順番待ち number
+	 * @return Waiting number
 	 */
 	public int joinQueue(NetPlayerInfo pInfo) {
 		if (playerQueue.contains(pInfo)) {
@@ -575,7 +575,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 指定したPlayerを順番待ちから外す
+	 * SpecifiedPlayerRemoved from the waiting list
 	 *
 	 * @param pInfo
 	 *            Player
@@ -585,9 +585,9 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 何人のPlayerが準備完了したかcountえる
+	 * How manyPlayerDid you complete the preparationcountObtained
 	 *
-	 * @return 準備完了したNumber of players
+	 * @return Was readyNumber of players
 	 */
 	public int getHowManyPlayersReady() {
 		int count = 0;
@@ -601,9 +601,9 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 何人のPlayerがプレイ中かcountえる(死んだ人とまだ部屋に来た直後の人は含みません)
+	 * How manyPlayerOr is playingcountObtained(People have just come to the room and still does not include dead man)
 	 *
-	 * @return プレイ中のNumber of players
+	 * @return In playNumber of players
 	 */
 	public int getHowManyPlayersPlaying() {
 		int count = 0;
@@ -617,9 +617,9 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 最後に生き残ったPlayerの情報を取得
+	 * I survived the lastPlayerGet information
 	 *
-	 * @return 最後に生き残ったPlayerの情報(まだ2人以上生きている場合や, そもそもゲームが始まっていない場合はnull)
+	 * @return I survived the lastPlayerInformation(Yet2Or if you live more than, If I do not start the game in the first place isnull)
 	 */
 	public NetPlayerInfo getWinner() {
 		if ((startPlayers >= 2) && (getHowManyPlayersPlaying() < 2)
@@ -636,9 +636,9 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * 最後に生き残ったTeam nameを取得
+	 * I survived the lastTeam nameGet the
 	 *
-	 * @return 最後に生き残ったTeam name
+	 * @return I survived the lastTeam name
 	 */
 	public String getWinnerTeam() {
 		if ((startPlayers >= 2) && (getHowManyPlayersPlaying() >= 2)
@@ -659,7 +659,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * @return 1つのチームだけが生き残っている場合にtrue
+	 * @return 1If only one team has survivedtrue
 	 */
 	public boolean isTeamWin() {
 		String teamname = null;
@@ -726,7 +726,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * Start game時に呼び出す処理
+	 * Start gameCall processing at
 	 */
 	public void gameStart() {
 		updatePlayerCount();
@@ -741,7 +741,7 @@ public class NetRoomInfo implements Serializable {
 	}
 
 	/**
-	 * ルーム消去時の処理
+	 * What Happens When erasing Room
 	 */
 	public void delete() {
 		ruleOpt = null;

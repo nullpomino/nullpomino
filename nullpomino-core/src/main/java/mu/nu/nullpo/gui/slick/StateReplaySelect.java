@@ -45,13 +45,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
- * リプレイ選択画面のステート
+ * State selection screen replay
  */
 public class StateReplaySelect extends DummyMenuScrollState {
 	/** This state's ID */
 	public static final int ID = 4;
 
-	/** 1画面に表示するMaximumファイルcount */
+	/** 1Displayed on the screenMaximumFilecount */
 	public static final int PAGE_HEIGHT = 20;
 
 	/** Log */
@@ -63,7 +63,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	/** Rule name */
 	protected String[] rulenameList;
 
-	/** Scoreなどの情報 */
+	/** ScoreInformation such as the */
 	protected Statistics[] statsList;
 
 	public StateReplaySelect () {
@@ -100,8 +100,8 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	}
 
 	/**
-	 * リプレイファイル一覧を取得
-	 * @return リプレイファイルのFilenameの配列。ディレクトリがないならnull
+	 * Gets the list of files replay
+	 * @return Replay fileFilenameArray of. If there is no directorynull
 	 */
 	protected String[] getReplayFileList() {
 		// Get file list
@@ -124,7 +124,7 @@ public class StateReplaySelect extends DummyMenuScrollState {
 	}
 
 	/**
-	 * リプレイの詳細を設定
+	 * Set the details of replay
 	 */
 	protected void setReplayRuleAndModeList() {
 		if(list == null) return;

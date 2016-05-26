@@ -31,7 +31,7 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- *  button input状態を管理するクラス
+ *  button inputClass to manage the state
  */
 public class Controller implements Serializable {
 	/** Serial version ID */
@@ -70,7 +70,7 @@ public class Controller implements Serializable {
 	/** Number of buttons */
 	public static final int BUTTON_COUNT = 10;
 
-	/** ビット演算用定count */
+	/** Constant-bit operationcount */
 	public static final int BUTTON_BIT_UP = 1,
 							BUTTON_BIT_DOWN = 2,
 							BUTTON_BIT_LEFT = 4,
@@ -82,10 +82,10 @@ public class Controller implements Serializable {
 							BUTTON_BIT_E = 256,
 							BUTTON_BIT_F = 512;
 
-	/** Buttonを押した状態ならtrue */
+	/** ButtonIf you hold down thetrue */
 	public boolean[] buttonPress;
 
-	/** Buttonを押しっぱなしにしている time */
+	/** ButtonI have to leave the press time */
 	public int[] buttonTime;
 
 	/**
@@ -104,7 +104,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 * 初期状態に戻す
+	 * Back to the initial state
 	 */
 	public void reset() {
 		buttonPress = new boolean[BUTTON_COUNT];
@@ -112,7 +112,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 * 他のController stateをコピー
+	 * OtherController stateCopy
 	 * @param c Copy source
 	 */
 	public void copy(Controller c) {
@@ -126,44 +126,44 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  buttonをすべて押していない状態にする
+	 *  buttonThe state is not pressed all the
 	 */
 	public void clearButtonState() {
 		for(int i = 0; i < BUTTON_COUNT; i++) buttonPress[i] = false;
 	}
 
 	/**
-	 *  buttonを1 frame だけ押した状態かどうか判定
+	 *  buttonA1 frame Determine whether the state I was only pressed
 	 * @param btn Button number
-	 * @return  buttonを1 frame だけ押した状態ならtrue
+	 * @return  buttonA1 frame If you hold down onlytrue
 	 */
 	public boolean isPush(int btn) {
 		return (buttonTime[btn] == 1);
 	}
 
 	/**
-	 *  buttonを押している状態かどうか判定
+	 *  buttonDetermine whether the state is pressed
 	 * @param btn Button number
-	 * @return  buttonを押している状態ならtrue
+	 * @return  buttonState if you press thetrue
 	 */
 	public boolean isPress(int btn) {
 		return (buttonTime[btn] >= 1);
 	}
 
 	/**
-	 * Menu でカーソルが動くかどうか判定
+	 * Menu Determines whether the cursor is moved in
 	 * @param key Button number
-	 * @return カーソルが動くならtrue
+	 * @return If the cursor movestrue
 	 */
 	public boolean isMenuRepeatKey(int key) {
 		return isMenuRepeatKey(key, true);
 	}
 
 	/**
-	 * Menu でカーソルが動くかどうか判定
+	 * Menu Determines whether the cursor is moved in
 	 * @param key Button number
-	 * @param enableCButton C buttonでの高速移動許可
-	 * @return カーソルが動くならtrue
+	 * @param enableCButton C buttonAllow for high-speed movement
+	 * @return If the cursor movestrue
 	 */
 	public boolean isMenuRepeatKey(int key, boolean enableCButton) {
 		if( (buttonTime[key] == 1) || ((buttonTime[key] >= 25) && (buttonTime[key] % 3 == 0)) ||
@@ -176,7 +176,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  buttonを押した状態にする
+	 *  buttonThe Press and hold the
 	 * @param key Button number
 	 */
 	public void setButtonPressed(int key) {
@@ -184,7 +184,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  buttonを押してない状態にする
+	 *  buttonThe state did not press
 	 * @param key Button number
 	 */
 	public void setButtonUnpressed(int key) {
@@ -192,17 +192,17 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  buttonを押した状態を設定
+	 *  buttonSets the status by pressing the
 	 * @param key Button number
-	 * @param pressed When true,押した, falseなら押してない
+	 * @param pressed When true,Press, falseIf I do not press
 	 */
 	public void setButtonState(int key, boolean pressed) {
 		if((key >= 0) && (key < buttonPress.length)) buttonPress[key] = pressed;
 	}
 
 	/**
-	 *  button input状態をビット flagで返す
-	 * @return  button input状態のビット flag
+	 *  button inputBit state flagReturns
+	 * @return  button inputBit of state flag
 	 */
 	public int getButtonBit() {
 		int input = 0;
@@ -222,8 +222,8 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  button input状態をビット flagを元に設定
-	 * @param input  button input状態のビット flag
+	 *  button inputBit state flagSet based on
+	 * @param input  button inputBit of state flag
 	 */
 	public void setButtonBit(int input) {
 		clearButtonState();
@@ -241,7 +241,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  button input timeを更新
+	 *  button input timeUpdate
 	 */
 	public void updateButtonTime() {
 		for(int i = 0; i < BUTTON_COUNT; i++) {
@@ -251,7 +251,7 @@ public class Controller implements Serializable {
 	}
 
 	/**
-	 *  button input状態をリセット
+	 *  button inputResets the state
 	 */
 	public void clearButtonTime() {
 		for(int i = 0; i < BUTTON_COUNT; i++) {

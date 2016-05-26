@@ -86,46 +86,46 @@ public class PhysicianVSMode extends AbstractMode {
 	/** Each player's frame color */
 	private final int[] PLAYER_COLOR_FRAME = {GameEngine.FRAME_COLOR_RED, GameEngine.FRAME_COLOR_BLUE};
 
-	/** 溜まっているojama blockのcount */
+	/** Has accumulatedojama blockOfcount */
 	//private int[] garbage;
 
-	/** 送ったojama blockのcount */
+	/** Had sentojama blockOfcount */
 	//private int[] garbageSent;
 
 	/** Time to display the most recent increase in score */
 	private int[] scgettime;
 
-	/** 使用するBGM */
+	/** UseBGM */
 	private int bgmno;
 
 	/** Sound effectsON/OFF */
 	private boolean[] enableSE;
 
-	/** Map使用 flag */
+	/** MapUse flag */
 	private boolean[] useMap;
 
-	/** 使用するMapセット number */
+	/** UseMapSet number */
 	private int[] mapSet;
 
-	/** Map number(-1でランダム) */
+	/** Map number(-1Random in) */
 	private int[] mapNumber;
 
 	/** Last preset number used */
 	private int[] presetNumber;
 
-	/** 勝者 */
+	/** Winner */
 	private int winnerID;
 
-	/** MapセットのProperty file */
+	/** MapSets ofProperty file */
 	private CustomProperties[] propMap;
 
 	/** MaximumMap number */
 	private int[] mapMaxNo;
 
-	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
+	/** For backupfield (MapUsed to save the replay) */
 	private Field[] fldBackup;
 
-	/** Map選択用乱count */
+	/** MapRan for selectioncount */
 	private Random randMap;
 
 	/** Version */
@@ -295,10 +295,10 @@ public class PhysicianVSMode extends AbstractMode {
 	}
 
 	/**
-	 * Map読み込み
+	 * MapRead
 	 * @param field field
 	 * @param prop Property file to read from
-	 * @param preset 任意のID
+	 * @param preset AnyID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
 		field.reset();
@@ -310,10 +310,10 @@ public class PhysicianVSMode extends AbstractMode {
 	}
 
 	/**
-	 * Map保存
+	 * MapSave
 	 * @param field field
 	 * @param prop Property file to save to
-	 * @param id 任意のID
+	 * @param id AnyID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
 		//field.writeProperty(prop, id);
@@ -321,11 +321,11 @@ public class PhysicianVSMode extends AbstractMode {
 	}
 
 	/**
-	 * プレビュー用にMapを読み込み
+	 * For previewMapRead
 	 * @param engine GameEngine
 	 * @param playerID Player number
 	 * @param id MapID
-	 * @param forceReload trueにするとMapファイルを強制再読み込み
+	 * @param forceReload trueWhen youMapForce Reload the file
 	 */
 	private void loadMapPreview(GameEngine engine, int playerID, int id, boolean forceReload) {
 		if((propMap[playerID] == null) || (forceReload)) {
@@ -541,7 +541,7 @@ public class PhysicianVSMode extends AbstractMode {
 			else if(menuTime >= 60)
 				menuCursor = 9;
 		} else {
-			// 開始
+			// Start
 			if((owner.engine[0].statc[4] == 1) && (owner.engine[1].statc[4] == 1) && (playerID == 1)) {
 				owner.engine[0].stat = GameEngine.Status.READY;
 				owner.engine[1].stat = GameEngine.Status.READY;
@@ -558,7 +558,7 @@ public class PhysicianVSMode extends AbstractMode {
 	}
 
 	/*
-	 * 設定画面の描画
+	 * Setting screen drawing
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
@@ -604,7 +604,7 @@ public class PhysicianVSMode extends AbstractMode {
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			// Map読み込み・リプレイ保存用にバックアップ
+			// MapFor storing backup Replay read
 			if(useMap[playerID]) {
 				if(owner.replayMode) {
 					engine.createFieldIfNeeded();
@@ -867,7 +867,7 @@ public class PhysicianVSMode extends AbstractMode {
 			}
 		}
 
-		// 決着
+		// Settlement
 		if((playerID == 1) && (owner.engine[0].gameActive)) {
 			boolean p1Lose = (owner.engine[0].stat == GameEngine.Status.GAMEOVER);
 			if (!p1Lose && owner.engine[1].field != null)

@@ -32,7 +32,7 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * 設定画面のステート
+ * State of the configuration screen
  */
 public class StateConfigMainMenuSDL extends DummyMenuChooseStateSDL {
 	/** UI Text identifier Strings */

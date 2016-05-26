@@ -50,7 +50,7 @@ public class PracticeMode extends AbstractMode {
 	/** Current version */
 	private static final int CURRENT_VERSION = 5;
 
-	/** Most recent scoring event typeの定count */
+	/** Most recent scoring event typeConstantcount */
 	private static final int EVENT_NONE = 0,
 							 EVENT_SINGLE = 1,
 							 EVENT_DOUBLE = 2,
@@ -65,10 +65,10 @@ public class PracticeMode extends AbstractMode {
 							 EVENT_TSPIN_TRIPLE = 11,
 							 EVENT_TSPIN_EZ = 12;
 
-	/** Comboで手に入る point */
+	/** ComboGet in point */
 	private static final int COMBO_GOAL_TABLE[] = {0,0,1,1,2,2,3,3,4,4,4,5};
 
-	/** Levelタイプの定count */
+	/** LevelConstant of typecount */
 	private static final int LEVELTYPE_NONE = 0,
 							 LEVELTYPE_10LINES = 1,
 							 LEVELTYPE_POINTS = 2,
@@ -76,27 +76,27 @@ public class PracticeMode extends AbstractMode {
 							 LEVELTYPE_MANIAPLUS = 4,
 							 LEVELTYPE_MAX = 5;
 
-	/** 裏段位のName */
+	/** Dan&#39;s backName */
 	private static final String[] tableSecretGradeName =
 	{
-		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0～ 8
-		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9～17
+		 "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2",  "1",	//  0~ 8
+		"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9",	//  9~17
 		"GM"													// 18
 	};
 
-	/** Levelタイプの表示名 */
+	/** LevelThe display name of the type */
 	private static final String[] LEVELTYPE_STRING = {"NONE", "10LINES", "POINTS", "MANIA", "MANIA+"};
 
-	/** Comboタイプの表示名 */
+	/** ComboThe display name of the type */
 	private static final String[] COMBOTYPE_STRING = {"DISABLE", "NORMAL", "DOUBLE"};
 
 	/** Outline type names */
 	private static final String[] BLOCK_OUTLINE_TYPE_STRING = {"NONE", "NORMAL", "CONNECT", "SAMECOLOR"};
 
-	/** Level upまでの残り point */
+	/** Level upRemaining until point */
 	private int goal;
 
-	/** 直前に手に入れた point */
+	/** I got just before point */
 	private int lastgoal;
 
 	/** Most recent increase in score */
@@ -108,22 +108,22 @@ public class PracticeMode extends AbstractMode {
 	/** Most recent scoring event type */
 	private int lastevent;
 
-	/** Most recent scoring eventでB2Bだったらtrue */
+	/** Most recent scoring eventInB2BIf it&#39;s the casetrue */
 	private boolean lastb2b;
 
-	/** Most recent scoring eventでのCombocount */
+	/** Most recent scoring eventInCombocount */
 	private int lastcombo;
 
-	/** Most recent scoring eventでのピースID */
+	/** Most recent scoring eventPeace inID */
 	private int lastpiece;
 
-	/** Endingの残り time */
+	/** EndingThe rest of the time */
 	private int rolltime;
 
-	/** Ending開始 flag */
+	/** EndingStart flag */
 	private boolean rollstarted;
 
-	/** 裏段位 */
+	/** Dan back */
 	private int secretGrade;
 
 	/** BGM number */
@@ -147,19 +147,19 @@ public class PracticeMode extends AbstractMode {
 	/** Flag for enabling B2B */
 	private boolean enableB2B;
 
-	/** Comboタイプ */
+	/** ComboType */
 	private int comboType;
 
 	/** Big */
 	private boolean big;
 
-	/** Big時の横移動単位 */
+	/** BigLateral movement of the unit when */
 	private boolean bigmove;
 
-	/** Big時Linescount半分 */
+	/** BigWhenLinescountHalf */
 	private boolean bighalf;
 
-	/** Levelタイプ */
+	/** LevelType */
 	private int leveltype;
 
 	/** Preset number */
@@ -171,10 +171,10 @@ public class PracticeMode extends AbstractMode {
 	/** Current version */
 	private int version;
 
-	/** Next Section の level (これ-1のときに levelストップする) */
+	/** Next Section Of level (This-1At levelStop) */
 	private int nextseclv;
 
-	/** Levelが増えた flag */
+	/** LevelHas increased flag */
 	private boolean lvupflag;
 
 	/** Combo bonus */
@@ -186,31 +186,31 @@ public class PracticeMode extends AbstractMode {
 	/** levelstop sound */
 	private boolean lvstopse;
 
-	/** クリアになる level */
+	/** Become clear level */
 	private int goallv;
 
-	/** 制限 time (0:なし) */
+	/** Limit time (0:No) */
 	private int timelimit;
 
-	/** Ending time (0:なし) */
+	/** Ending time (0:No) */
 	private int rolltimelimit;
 
-	/** 出現可能ピースの配列 */
+	/** Arrangement of the pieces can appear */
 	private boolean[] pieceEnable;
 
-	/** Map使用 flag */
+	/** MapUse flag */
 	private boolean useMap;
 
-	/** バックアップ用field (Mapをリプレイに保存するときに使用) */
+	/** For backupfield (MapUsed to save the replay) */
 	private Field fldBackup;
 
-	/** 残り time */
+	/** Rest time */
 	private int timelimitTimer;
 
-	/** Level upごとに制限 timeをリセットする */
+	/** Level upLimit for each timeReset */
 	private boolean timelimitResetEveryLevel;
 
-	/** 骨Blockを使う */
+	/** BoneBlockI use */
 	private boolean bone;
 
 	/** Number of frames before placed blocks disappear (-1:Disable) */
@@ -279,7 +279,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 * Presetを読み込み
+	 * PresetRead
 	 * @param engine GameEngine
 	 * @param prop Property file to read from
 	 * @param preset Preset number
@@ -322,7 +322,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 * Presetを保存
+	 * PresetSave the
 	 * @param engine GameEngine
 	 * @param prop Property file to save to
 	 * @param preset Preset number
@@ -365,10 +365,10 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 * Map読み込み
+	 * MapRead
 	 * @param field field
 	 * @param prop Property file to read from
-	 * @param preset 任意のID
+	 * @param preset AnyID
 	 */
 	private void loadMap(Field field, CustomProperties prop, int id) {
 		field.reset();
@@ -379,10 +379,10 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 * Map保存
+	 * MapSave
 	 * @param field field
 	 * @param prop Property file to save to
-	 * @param id 任意のID
+	 * @param id AnyID
 	 */
 	private void saveMap(Field field, CustomProperties prop, int id) {
 		field.writeProperty(prop, id);
@@ -664,7 +664,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/*
-	 * 設定画面の描画
+	 * Setting screen drawing
 	 */
 	@Override
 	public void renderSetting(GameEngine engine, int playerID) {
@@ -768,20 +768,20 @@ public class PracticeMode extends AbstractMode {
 	@Override
 	public boolean onReady(GameEngine engine, int playerID) {
 		if(engine.statc[0] == 0) {
-			//  time制限設定
+			//  timeLimit setting
 			if(timelimit > 0) timelimitTimer = timelimit;
 
-			// 骨Block
+			// BoneBlock
 			engine.bone = bone;
 
-			// 出現可能なピースを設定
+			// Set the piece that can appear
 			if(version >= 1) {
 				for(int i = 0; i < Piece.PIECE_COUNT; i++) {
 					engine.nextPieceEnable[i] = pieceEnable[i];
 				}
 			}
 
-			// Map読み込み・リプレイ保存用にバックアップ
+			// MapFor storing backup Replay read
 			if(version >= 2) {
 				if(useMap) {
 					if(owner.replayMode) {
@@ -806,7 +806,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/*
-	 * Readyの時のCalled at initialization (Start game直前）
+	 * ReadyAt the time ofCalled at initialization (Start gameJust before)
 	 */
 	@Override
 	public void startGame(GameEngine engine, int playerID) {
@@ -934,7 +934,7 @@ public class PracticeMode extends AbstractMode {
 			}
 			*/
 		} else if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
-			//  levelタイプがMANIAのとき
+			//  levelTypesMANIAWhen
 
 			// Score
 			receiver.drawScoreFont(engine, playerID, 0, 5, "SCORE", EventReceiver.COLOR_BLUE);
@@ -966,7 +966,7 @@ public class PracticeMode extends AbstractMode {
 			if((time < 10 * 60) && (time > 0) && (timelimit > 0)) fontcolor = EventReceiver.COLOR_RED;
 			receiver.drawScoreFont(engine, playerID, 0, 15, GeneralUtil.getTime(time), fontcolor);
 
-			// Roll 残り time
+			// Roll Rest time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int remainTime = rolltimelimit - rolltime;
 				if(remainTime < 0) remainTime = 0;
@@ -974,7 +974,7 @@ public class PracticeMode extends AbstractMode {
 				receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(remainTime), ((remainTime > 0) && (remainTime < 10 * 60)));
 			}
 		} else {
-			//  levelタイプがMANIA以外のとき
+			//  levelTypesMANIAAt other times
 
 			// Score
 			receiver.drawScoreFont(engine, playerID, 0, 2, "SCORE", EventReceiver.COLOR_BLUE);
@@ -1024,7 +1024,7 @@ public class PracticeMode extends AbstractMode {
 			if((time < 10 * 60) && (time > 0) && (timelimit > 0)) fontcolor = EventReceiver.COLOR_RED;
 			receiver.drawScoreFont(engine, playerID, 0, 18, GeneralUtil.getTime(time), fontcolor);
 
-			// Roll 残り time
+			// Roll Rest time
 			if((engine.gameActive) && (engine.ending == 2)) {
 				int remainTime = rolltimelimit - rolltime;
 				if(remainTime < 0) remainTime = 0;
@@ -1101,10 +1101,10 @@ public class PracticeMode extends AbstractMode {
 		}
 
 		if((engine.gameActive) && (engine.ending == 2)) {
-			// Ending中
+			// EndingMedium
 			rolltime++;
 
-			// Roll 終了
+			// Roll End
 			if(rolltime >= rolltimelimit) {
 				engine.gameEnded();
 				engine.resetStatc();
@@ -1122,12 +1122,12 @@ public class PracticeMode extends AbstractMode {
 				else engine.stat = GameEngine.Status.GAMEOVER;
 			}
 
-			// 10秒前からのカウントダウン
+			// 10Seconds before the countdown
 			if((timelimit > 0) && (timelimitTimer <= 10 * 60) && (timelimitTimer % 60 == 0) && (engine.timerActive == true)) {
 				engine.playSE("countdown");
 			}
 
-			// 5秒前からのBGM fadeout
+			// 5Of seconds beforeBGM fadeout
 			if((timelimit > 0) && (timelimitTimer <= 5 * 60) && (timelimitResetEveryLevel == false) && (engine.timerActive == true)) {
 				owner.bgmStatus.fadesw = true;
 			}
@@ -1149,11 +1149,11 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/*
-	 * 移動中の処理
+	 * Processing on the move
 	 */
 	@Override
 	public boolean onMove(GameEngine engine, int playerID) {
-		// 新規ピース出現時
+		// Occurrence new piece
 		if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
 			if((engine.ending == 0) && (engine.statc[0] == 0) && (engine.holdDisable == false) && (!lvupflag)) {
 				// Level up
@@ -1171,7 +1171,7 @@ public class PracticeMode extends AbstractMode {
 			}
 		}
 
-		// Endingスタート
+		// EndingStart
 		if((engine.ending == 2) && (rollstarted == false)) {
 			rollstarted = true;
 
@@ -1190,11 +1190,11 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/*
-	 * ARE中の処理
+	 * AREProcessing during
 	 */
 	@Override
 	public boolean onARE(GameEngine engine, int playerID) {
-		// 最後の frame
+		// Last frame
 		if((leveltype == LEVELTYPE_MANIA) || (leveltype == LEVELTYPE_MANIAPLUS)) {
 			if((engine.ending == 0) && (engine.statc[0] >= engine.statc[1] - 1) && (!lvupflag)) {
 				if(engine.statistics.level < nextseclv - 1) {
@@ -1229,7 +1229,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 *  levelタイプがMANIAのときのCalculate score
+	 *  levelTypesMANIAAt the time ofCalculate score
 	 */
 	private void calcScoreMania(GameEngine engine, int playerID, int lines) {
 		// Combo
@@ -1270,7 +1270,7 @@ public class PracticeMode extends AbstractMode {
 				// Next Section
 				engine.playSE("levelup");
 
-				// Background切り替え
+				// BackgroundSwitching
 				if(owner.backgroundStatus.bg < 19) {
 					owner.backgroundStatus.fadesw = true;
 					owner.backgroundStatus.fadecount = 0;
@@ -1280,7 +1280,7 @@ public class PracticeMode extends AbstractMode {
 				// Update level for next section
 				nextseclv += 100;
 
-				// 制限 timeリセット
+				// Limit timeReset
 				if((timelimitResetEveryLevel == true) && (timelimit > 0)) timelimitTimer = timelimit;
 			} else if((engine.statistics.level == nextseclv - 1) && (lvstopse == true)) {
 				engine.playSE("levelstop");
@@ -1332,7 +1332,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 *  levelタイプがMANIA系以外のときのCalculate score
+	 *  levelTypesMANIAWhen a non-systemCalculate score
 	 */
 	private void calcScoreNormal(GameEngine engine, int playerID, int lines) {
 		// Line clear bonus
@@ -1406,13 +1406,13 @@ public class PracticeMode extends AbstractMode {
 			}
 		} else {
 			if(lines == 1) {
-				pts += 100 * (engine.statistics.level + 1); // 1列
+				pts += 100 * (engine.statistics.level + 1); // 1Column
 				lastevent = EVENT_SINGLE;
 			} else if(lines == 2) {
-				pts += 300 * (engine.statistics.level + 1); // 2列
+				pts += 300 * (engine.statistics.level + 1); // 2Column
 				lastevent = EVENT_DOUBLE;
 			} else if(lines == 3) {
-				pts += 500 * (engine.statistics.level + 1); // 3列
+				pts += 500 * (engine.statistics.level + 1); // 3Column
 				lastevent = EVENT_TRIPLE;
 			} else if(lines >= 4) {
 				// 4 lines
@@ -1456,7 +1456,7 @@ public class PracticeMode extends AbstractMode {
 			if(goal <= 0) goal = 0;
 		}
 
-		boolean endingFlag = false; // Ending突入ならtrue
+		boolean endingFlag = false; // EndingIf the inrushtrue
 
 		if( ((leveltype == LEVELTYPE_10LINES) && (engine.statistics.lines >= (engine.statistics.level + 1) * 10)) ||
 		    ((leveltype == LEVELTYPE_POINTS) && (goal <= 0)) )
@@ -1476,19 +1476,19 @@ public class PracticeMode extends AbstractMode {
 
 				goal = 5 * (engine.statistics.level + 1);
 
-				// 制限 timeリセット
+				// Limit timeReset
 				if((timelimitResetEveryLevel == true) && (timelimit > 0)) timelimitTimer = timelimit;
 
 				engine.playSE("levelup");
 			}
 		}
 
-		// Ending ( levelタイプNONE）
+		// Ending ( levelTypeNONE)
 		if( (version >= 2) && (leveltype == LEVELTYPE_NONE) && (engine.statistics.lines >= goallv + 1) && ((goallv != -1) || (version <= 2)) ) {
 			endingFlag = true;
 		}
 
-		// Ending突入処理
+		// EndingRush processing
 		if(endingFlag) {
 			engine.timerActive = false;
 
@@ -1508,7 +1508,7 @@ public class PracticeMode extends AbstractMode {
 	}
 
 	/**
-	 * Meterの量を更新
+	 * MeterUpdate the amount of
 	 * @param engine GameEngine
 	 * @param playerID Player number
 	 */

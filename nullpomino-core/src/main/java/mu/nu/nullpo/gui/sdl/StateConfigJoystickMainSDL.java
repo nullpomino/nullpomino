@@ -35,7 +35,7 @@ import sdljava.SDLException;
 import sdljava.video.SDLSurface;
 
 /**
- * Joystick 設定メインMenu のステート
+ * Joystick Settings MainMenu State
  */
 public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	/** Player number */
@@ -44,16 +44,16 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 	/** Cursor position */
 	protected int cursor;
 
-	/** 使用するJoystick の number */
+	/** UseJoystick Of number */
 	protected int joyUseNumber;
 
-	/** Joystick direction key が反応する閾値 */
+	/** Joystick direction key Threshold for the reaction */
 	protected int joyBorder;
 
-	/** アナログスティック無視 */
+	/** Ignore analog stick */
 	protected boolean joyIgnoreAxis;
 
-	/** ハットスイッチ無視 */
+	/** Ignore hat switch */
 	protected boolean joyIgnorePOV;
 
 	/**
@@ -165,7 +165,7 @@ public class StateConfigJoystickMainSDL extends BaseStateSDL {
 			}
 		}
 
-		// 決定 button
+		// Decision button
 		if(GameKeySDL.gamekey[0].isPushKey(GameKeySDL.BUTTON_A)) {
 			ResourceHolderSDL.soundManager.play("decide");
 

@@ -31,7 +31,7 @@ package mu.nu.nullpo.game.component;
 import java.io.Serializable;
 
 /**
- * Background画像 state
+ * BackgroundImage state
  */
 public class BackgroundStatus implements Serializable {
 	/** Serial version ID */
