@@ -32,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +47,12 @@ public class UpdateChecker implements Runnable {
 	static Logger log = Logger.getLogger(UpdateChecker.class);
 
 	/**  default のXMLのURL */
-	public static final String DEFAULT_XML_URL = "http://nullpomino.googlecode.com/svn/trunk/NullpoUpdate.xml";
+	/*
+	 * TODO: Find an actual place to put the NullpoUpdate.xml file, possible
+	 * on github pages.  For now, just use the v7.5.0 file as a classpath
+	 * resource.
+	 */
+	public static final String DEFAULT_XML_URL = UpdateChecker.class.getResource("NullpoUpdate.xml").toString();
 
 	/** Constant statecount */
 	public static final int STATUS_INACTIVE = 0,
@@ -85,7 +91,7 @@ public class UpdateChecker implements Runnable {
 	private static boolean checkUpdate() {
 		try {
 			URL url = new URL(strURLofXML);
-			HttpURLConnection httpCon = (HttpURLConnection)url.openConnection();
+			URLConnection httpCon = url.openConnection();
 			BufferedReader httpIn = new BufferedReader(new InputStreamReader(httpCon.getInputStream()));
 
 			String str;
@@ -132,7 +138,6 @@ public class UpdateChecker implements Runnable {
 			}
 
 			httpIn.close();
-			httpCon.disconnect();
 		} catch (Exception e) {
 			log.error("Failed to get latest version data", e);
 			return false;
