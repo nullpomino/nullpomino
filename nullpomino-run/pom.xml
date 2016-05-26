@@ -29,7 +29,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/nullpomino/config</outputDirectory>
+							<outputDirectory>${project.build.directory}/install/config</outputDirectory>
 							<resources>
 								<resource>
 									<directory>config</directory>
@@ -44,7 +44,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/nullpomino/doc</outputDirectory>
+							<outputDirectory>${project.build.directory}/install/doc</outputDirectory>
 							<resources>
 								<resource>
 									<directory>doc</directory>
@@ -59,7 +59,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/nullpomino/lib</outputDirectory>
+							<outputDirectory>${project.build.directory}/install/lib</outputDirectory>
 							<resources>
 								<resource>
 									<directory>lib</directory>
@@ -74,7 +74,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/nullpomino/res</outputDirectory>
+							<outputDirectory>${project.build.directory}/install/res</outputDirectory>
 							<resources>
 								<resource>
 									<directory>res</directory>
@@ -89,7 +89,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/nullpomino</outputDirectory>
+							<outputDirectory>${project.build.directory}/install</outputDirectory>
 							<resources>
 								<resource>
 									<directory>scripts</directory>
@@ -118,7 +118,7 @@
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/nullpomino</outputDirectory>
+									<outputDirectory>${project.build.directory}/install</outputDirectory>
 									<destFileName>NullpoMino.jar</destFileName>
 								</artifactItem>
 							</artifactItems>
@@ -132,7 +132,7 @@
 						</goals>
 						<configuration>
 							<excludeArtifactIds>nullpomino-core</excludeArtifactIds>
-							<outputDirectory>${project.build.directory}/nullpomino/lib</outputDirectory>
+							<outputDirectory>${project.build.directory}/install/lib</outputDirectory>
 							<overWriteIfNewer>true</overWriteIfNewer>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
