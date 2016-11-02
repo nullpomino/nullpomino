@@ -1680,6 +1680,7 @@ public class GameEngine {
 		if(endTime == 0) {
 			endTime = System.nanoTime();
 			statistics.gamerate = (float)(replayTimer / (0.00000006*(endTime - startTime)));
+                        statistics.update();
 		}
 		gameActive = false;
 		timerActive = false;
