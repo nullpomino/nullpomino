@@ -38,9 +38,9 @@
 			<version>LOCAL</version>
 		</dependency>
 		<dependency>
-			<groupId>mu.nu.nullpo.local</groupId>
+			<groupId>org.lwjgl.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>
-			<version>LOCAL</version>
+			<version>2.9.3</version>
 		</dependency>
 		<dependency>
 			<groupId>mu.nu.nullpo.local</groupId>
