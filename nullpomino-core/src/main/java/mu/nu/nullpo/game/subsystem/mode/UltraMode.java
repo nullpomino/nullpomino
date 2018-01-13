@@ -695,7 +695,7 @@ public class UltraMode extends NetDummyMode {
 		// All clear
 		if((lines >= 1) && (engine.field.isEmpty())) {
 			engine.playSE("bravo");
-			pts += 1800;
+			pts += 3000;
 		}
 
 		// Add to score
