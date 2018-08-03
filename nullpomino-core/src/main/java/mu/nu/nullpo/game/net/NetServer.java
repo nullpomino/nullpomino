@@ -2859,20 +2859,13 @@ public class NetServer {
 			adminCommandsProcessor.processAdminCommandRoomDelete(message, client);
 		}
 		else if(message[0].equals("shutdown")) {
-			processAdminCommandShutDown(message, client);
+			adminCommandsProcessor.processAdminCommandShutDown(message, client, selector);
 		}
 		else if(message[0].equals("announce")) {
 			processAdminCommandAnnounce(message, client);
 		}
 	}
 	
-	
-	
-	void processAdminCommandShutDown(String[] message, SocketChannel client) {
-		log.warn("Shutdown requested by the admin (" + getHostFull(client) + ")");
-		shutdownRequested = true;
-		this.selector.wakeup();
-	}
 
 	void processAdminCommandAnnounce(String[] message, SocketChannel client) {
 		// announce\t[Message]
@@ -3735,6 +3728,12 @@ public class NetServer {
 			if(spRankingDataChange) writeSPRankingToFile();
 		}
 		
+		public void processAdminCommandShutDown(String[] message, SocketChannel client, Selector selector) {
+			log.warn("Shutdown requested by the admin (" + getHostFull(client) + ")");
+			shutdownRequested = true;
+			selector.wakeup();
+		}
+
 		/**
 		 * Write ban list to a file
 		 */
