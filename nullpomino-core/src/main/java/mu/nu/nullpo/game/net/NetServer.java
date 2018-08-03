@@ -2864,7 +2864,7 @@ public class NetServer {
 			adminSendClientList(client);
 		}
 		else if(message[0].equals("ban")) { 	
-			processAdminCommandBan(message, client);		
+			adminCommandsProcessor.processAdminCommandBan(message, client);		
 		}
 		else if(message[0].equals("unban")) {
 			processAdminCommandUnBan(message, client);
@@ -2886,19 +2886,7 @@ public class NetServer {
 		}
 	}
 
-	private void processAdminCommandBan(String[] message, SocketChannel client) {
-		// ban\t[IP]\t(Length)
-		int kickCount = 0;
 
-		int banLength = -1;
-		if(message.length > 2) banLength = Integer.parseInt(message[2]);
-
-		kickCount = ban(message[1], banLength);
-		saveBanList();
-
-		sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
-	}
-	
 	private void processAdminCommandUnBan(String[] message, SocketChannel client) {
 		// unban\t[IP]
 		int count = 0;
@@ -3740,6 +3728,20 @@ public class NetServer {
 	}
 	
 	class AdminCommandsProcessor {
+		
+		public void processAdminCommandBan(String[] message, SocketChannel client) {
+			// ban\t[IP]\t(Length)
+			int kickCount = 0;
+
+			int banLength = -1;
+			if(message.length > 2) banLength = Integer.parseInt(message[2]);
+
+			kickCount = ban(message[1], banLength);
+			saveBanList();
+
+			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
+		}
+		
 		public void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
 			// roomdelete\t[ID]
 			int roomID = Integer.parseInt(message[1]);
