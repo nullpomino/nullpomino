@@ -261,6 +261,8 @@ public class NetServer {
 	/** Maps a SocketChannel to a list of ByteBuffer instances */
 	private HashMap<SocketChannel, List<ByteBuffer>> pendingData = new HashMap<SocketChannel, List<ByteBuffer>>();
 
+	private AdminCommandsProcessor adminCommandsProcessor = new AdminCommandsProcessor();
+	
 	/**
 	 * Load rated-game room presets from the server config
 	 */
@@ -2874,7 +2876,7 @@ public class NetServer {
 			processAdminCommandPlayerDelete(message, client);
 		}
 		else if(message[0].equals("roomdelete")) {
-			processAdminCommandRoomDelete(message, client);
+			adminCommandsProcessor.processAdminCommandRoomDelete(message, client);
 		}
 		else if(message[0].equals("shutdown")) {
 			processAdminCommandShutDown(message, client);
@@ -2999,19 +3001,7 @@ public class NetServer {
 		if(spRankingDataChange) writeSPRankingToFile();
 	}
 	
-	void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
-		// roomdelete\t[ID]
-		int roomID = Integer.parseInt(message[1]);
-		NetRoomInfo roomInfo = getRoomInfo(roomID);
-
-		if(roomInfo != null) {
-			String strRoomName = roomInfo.strName;
-			forceDeleteRoom(roomInfo);
-			sendAdminResult(client, "roomdeletesuccess\t" + roomID + "\t" + strRoomName);
-		} else {
-			sendAdminResult(client, "roomdeletefail\t" + roomID);
-		}
-	}
+	
 	
 	void processAdminCommandShutDown(String[] message, SocketChannel client) {
 		log.warn("Shutdown requested by the admin (" + getHostFull(client) + ")");
@@ -3746,6 +3736,22 @@ public class NetServer {
 			this.socket = socket;
 			this.type = type;
 			this.ops = ops;
+		}
+	}
+	
+	class AdminCommandsProcessor {
+		public void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
+			// roomdelete\t[ID]
+			int roomID = Integer.parseInt(message[1]);
+			NetRoomInfo roomInfo = getRoomInfo(roomID);
+
+			if(roomInfo != null) {
+				String strRoomName = roomInfo.strName;
+				forceDeleteRoom(roomInfo);
+				sendAdminResult(client, "roomdeletesuccess\t" + roomID + "\t" + strRoomName);
+			} else {
+				sendAdminResult(client, "roomdeletefail\t" + roomID);
+			}
 		}
 	}
 }
