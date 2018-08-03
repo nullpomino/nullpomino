@@ -2853,7 +2853,7 @@ public class NetServer {
 			adminCommandsProcessor.processAdminCommandBanList(message, client);
 		}
 		else if(message[0].equals("playerdelete")) {
-			processAdminCommandPlayerDelete(message, client);
+			adminCommandsProcessor.processAdminCommandPlayerDelete(message, client);
 		}
 		else if(message[0].equals("roomdelete")) {
 			adminCommandsProcessor.processAdminCommandRoomDelete(message, client);
@@ -2864,65 +2864,6 @@ public class NetServer {
 		else if(message[0].equals("announce")) {
 			processAdminCommandAnnounce(message, client);
 		}
-	}
-	
-	void processAdminCommandPlayerDelete(String[] message, SocketChannel client) {
-		// playerdelete\t<Name>
-
-		String strName = message[1];
-		NetPlayerInfo pInfo = searchPlayerByName(strName);
-
-		boolean playerDataChange = false;
-		boolean mpRankingDataChange = false;
-		boolean spRankingDataChange = false;
-
-		for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-			if(propPlayerData.getProperty("p.rating." + i + "." + strName) != null) {
-				propPlayerData.setProperty("p.rating." + i + "." + strName, ratingDefault);
-				propPlayerData.setProperty("p.playCount." + i + "." + strName, 0);
-				propPlayerData.setProperty("p.winCount." + i + "." + strName, 0);
-				playerDataChange = true;
-			}
-			if(propPlayerData.getProperty("sppersonal." + strName + ".numRecords") != null) {
-				propPlayerData.setProperty("sppersonal." + strName + ".numRecords", 0);
-				playerDataChange = true;
-			}
-
-			if(pInfo != null) {
-				pInfo.rating[i] = ratingDefault;
-				pInfo.playCount[i] = 0;
-				pInfo.winCount[i] = 0;
-				pInfo.spPersonalBest.listRecord.clear();
-			}
-
-			int mpIndex = mpRankingIndexOf(i, strName);
-			if(mpIndex != -1) {
-				mpRankingList[i].remove(mpIndex);
-				mpRankingDataChange = true;
-			}
-
-			for(NetSPRanking ranking: spRankingListAlltime) {
-				NetSPRecord record = ranking.getRecord(strName);
-				if(record != null) {
-					ranking.listRecord.remove(record);
-					spRankingDataChange = true;
-				}
-			}
-			
-			for(NetSPRanking ranking: spRankingListDaily) {
-				NetSPRecord record = ranking.getRecord(strName);
-				if(record != null) {
-					ranking.listRecord.remove(record);
-					spRankingDataChange = true;
-				}
-			}
-		}
-
-		sendAdminResult(client, "playerdelete\t" + strName);
-
-		if(playerDataChange) writePlayerDataToFile();
-		if(mpRankingDataChange) writeMPRankingToFile();
-		if(spRankingDataChange) writeSPRankingToFile();
 	}
 	
 	
@@ -3733,6 +3674,65 @@ public class NetServer {
 			}
 
 			sendAdminResult(client, "banlist" + strResult);
+		}
+		
+		public void processAdminCommandPlayerDelete(String[] message, SocketChannel client) {
+			// playerdelete\t<Name>
+
+			String strName = message[1];
+			NetPlayerInfo pInfo = searchPlayerByName(strName);
+
+			boolean playerDataChange = false;
+			boolean mpRankingDataChange = false;
+			boolean spRankingDataChange = false;
+
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+				if(propPlayerData.getProperty("p.rating." + i + "." + strName) != null) {
+					propPlayerData.setProperty("p.rating." + i + "." + strName, ratingDefault);
+					propPlayerData.setProperty("p.playCount." + i + "." + strName, 0);
+					propPlayerData.setProperty("p.winCount." + i + "." + strName, 0);
+					playerDataChange = true;
+				}
+				if(propPlayerData.getProperty("sppersonal." + strName + ".numRecords") != null) {
+					propPlayerData.setProperty("sppersonal." + strName + ".numRecords", 0);
+					playerDataChange = true;
+				}
+
+				if(pInfo != null) {
+					pInfo.rating[i] = ratingDefault;
+					pInfo.playCount[i] = 0;
+					pInfo.winCount[i] = 0;
+					pInfo.spPersonalBest.listRecord.clear();
+				}
+
+				int mpIndex = mpRankingIndexOf(i, strName);
+				if(mpIndex != -1) {
+					mpRankingList[i].remove(mpIndex);
+					mpRankingDataChange = true;
+				}
+
+				for(NetSPRanking ranking: spRankingListAlltime) {
+					NetSPRecord record = ranking.getRecord(strName);
+					if(record != null) {
+						ranking.listRecord.remove(record);
+						spRankingDataChange = true;
+					}
+				}
+				
+				for(NetSPRanking ranking: spRankingListDaily) {
+					NetSPRecord record = ranking.getRecord(strName);
+					if(record != null) {
+						ranking.listRecord.remove(record);
+						spRankingDataChange = true;
+					}
+				}
+			}
+
+			sendAdminResult(client, "playerdelete\t" + strName);
+
+			if(playerDataChange) writePlayerDataToFile();
+			if(mpRankingDataChange) writeMPRankingToFile();
+			if(spRankingDataChange) writeSPRankingToFile();
 		}
 		
 		/**
