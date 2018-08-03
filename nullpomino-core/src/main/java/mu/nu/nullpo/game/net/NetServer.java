@@ -2866,14 +2866,8 @@ public class NetServer {
 		}
 	}
 	
-	/**
-	 * Send admin command result
-	 * @param client The admin
-	 * @param msg Message to send
-	 */
-	private void sendAdminResult(SocketChannel client, String msg) {
-		send(client, "adminresult\t" + NetUtil.compressString(msg) + "\n");
-	}
+	
+
 
 	/**
 	 * Broadcast admin command result to all admins
@@ -2889,8 +2883,6 @@ public class NetServer {
 	private void adminSendClientList() {
 		adminCommandsProcessor.adminSendClientList(null);
 	}
-
-	
 
 	/**
 	 * Get NetRoomInfo by using roomID
@@ -3732,6 +3724,15 @@ public class NetServer {
 		public void processAdminCommandAnnounce(String[] message, SocketChannel client) {
 			// announce\t[Message]
 			broadcast("announce\t" + message[1] + "\n");
+		}
+		
+		/**
+		 * Send admin command result
+		 * @param client The admin
+		 * @param msg Message to send
+		 */
+		private void sendAdminResult(SocketChannel client, String msg) {
+			send(client, "adminresult\t" + NetUtil.compressString(msg) + "\n");
 		}
 		
 		/**
