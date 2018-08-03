@@ -2824,7 +2824,7 @@ public class NetServer {
 			if(adminList.contains(client)) {
 				String strAdminCommandTemp = NetUtil.decompressString(message[1]);
 				String[] strAdminCommandArray = strAdminCommandTemp.split("\t");
-				processAdminCommand(client, strAdminCommandArray);
+				adminCommandsProcessor.processAdminCommand(client, strAdminCommandArray, banList);
 			} else {
 				log.warn(getHostFull(client) + " has tried to access admin command without login");
 				logout(client);
@@ -2833,38 +2833,6 @@ public class NetServer {
 		}
 	}
 
-	/**
-	 * Process admin command
-	 * @param client The SocketChannel who sent this packet
-	 * @param message The String array of the command
-	 * @throws IOException When something bad happens
-	 */
-	private void processAdminCommand(SocketChannel client, String[] message) throws IOException {
-		if(message[0].equals("clientlist")) {
-			adminCommandsProcessor.adminSendClientList(client);
-		}
-		else if(message[0].equals("ban")) { 	
-			adminCommandsProcessor.processAdminCommandBan(message, client, banList);		
-		}
-		else if(message[0].equals("unban")) {
-			adminCommandsProcessor.processAdminCommandUnBan(message, client, banList);
-		}
-		else if(message[0].equals("banlist")) {
-			adminCommandsProcessor.processAdminCommandBanList(message, client);
-		}
-		else if(message[0].equals("playerdelete")) {
-			adminCommandsProcessor.processAdminCommandPlayerDelete(message, client);
-		}
-		else if(message[0].equals("roomdelete")) {
-			adminCommandsProcessor.processAdminCommandRoomDelete(message, client);
-		}
-		else if(message[0].equals("shutdown")) {
-			adminCommandsProcessor.processAdminCommandShutDown(message, client, selector);
-		}
-		else if(message[0].equals("announce")) {
-			adminCommandsProcessor.processAdminCommandAnnounce(message, client);
-		}
-	}
 	
 	
 
@@ -3554,6 +3522,40 @@ public class NetServer {
 	
 	
 	class AdminCommandsProcessor {
+		
+		/**
+		 * Process admin command
+		 * @param client The SocketChannel who sent this packet
+		 * @param message The String array of the command
+		 * @throws IOException When something bad happens
+		 */
+		public void processAdminCommand(SocketChannel client, String[] message, LinkedList<NetServerBan> banList) throws IOException {
+			if(message[0].equals("clientlist")) {
+				adminSendClientList(client);
+			}
+			else if(message[0].equals("ban")) { 	
+				processAdminCommandBan(message, client, banList);		
+			}
+			else if(message[0].equals("unban")) {
+				processAdminCommandUnBan(message, client, banList);
+			}
+			else if(message[0].equals("banlist")) {
+				processAdminCommandBanList(message, client);
+			}
+			else if(message[0].equals("playerdelete")) {
+				processAdminCommandPlayerDelete(message, client);
+			}
+			else if(message[0].equals("roomdelete")) {
+				processAdminCommandRoomDelete(message, client);
+			}
+			else if(message[0].equals("shutdown")) {
+				processAdminCommandShutDown(message, client, selector);
+			}
+			else if(message[0].equals("announce")) {
+				processAdminCommandAnnounce(message, client);
+			}
+		}
+		
 		/**
 		 * Send client list to admin
 		 * @param client The admin. If null, it will broadcast to all admins.
@@ -3586,7 +3588,7 @@ public class NetServer {
 			}
 		}
 		
-		public void processAdminCommandBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
+		private void processAdminCommandBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
 			// ban\t[IP]\t(Length)
 			int kickCount = 0;
 
@@ -3599,7 +3601,7 @@ public class NetServer {
 			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
 		}
 		
-		public void processAdminCommandUnBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
+		private void processAdminCommandUnBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
 			// unban\t[IP]
 			int count = 0;
 
@@ -3622,7 +3624,7 @@ public class NetServer {
 			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
 		}
 		
-		public void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
+		private void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
 			// roomdelete\t[ID]
 			int roomID = Integer.parseInt(message[1]);
 			NetRoomInfo roomInfo = getRoomInfo(roomID);
@@ -3636,7 +3638,7 @@ public class NetServer {
 			}
 		}
 		
-		public void processAdminCommandBanList(String[] message, SocketChannel client) {
+		private void processAdminCommandBanList(String[] message, SocketChannel client) {
 			// Cleanup expired bans
 			LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
 			tempList.addAll(banList);
@@ -3656,7 +3658,7 @@ public class NetServer {
 			sendAdminResult(client, "banlist" + strResult);
 		}
 		
-		public void processAdminCommandPlayerDelete(String[] message, SocketChannel client) {
+		private void processAdminCommandPlayerDelete(String[] message, SocketChannel client) {
 			// playerdelete\t<Name>
 
 			String strName = message[1];
@@ -3715,13 +3717,13 @@ public class NetServer {
 			if(spRankingDataChange) writeSPRankingToFile();
 		}
 		
-		public void processAdminCommandShutDown(String[] message, SocketChannel client, Selector selector) {
+		private void processAdminCommandShutDown(String[] message, SocketChannel client, Selector selector) {
 			log.warn("Shutdown requested by the admin (" + getHostFull(client) + ")");
 			shutdownRequested = true;
 			selector.wakeup();
 		}
 
-		public void processAdminCommandAnnounce(String[] message, SocketChannel client) {
+		private void processAdminCommandAnnounce(String[] message, SocketChannel client) {
 			// announce\t[Message]
 			broadcast("announce\t" + message[1] + "\n");
 		}
