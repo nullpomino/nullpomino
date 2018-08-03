@@ -2844,10 +2844,10 @@ public class NetServer {
 			adminSendClientList(client);
 		}
 		else if(message[0].equals("ban")) { 	
-			adminCommandsProcessor.processAdminCommandBan(message, client);		
+			adminCommandsProcessor.processAdminCommandBan(message, client, banList);		
 		}
 		else if(message[0].equals("unban")) {
-			adminCommandsProcessor.processAdminCommandUnBan(message, client);
+			adminCommandsProcessor.processAdminCommandUnBan(message, client, banList);
 		}
 		else if(message[0].equals("banlist")) {
 			adminCommandsProcessor.processAdminCommandBanList(message, client);
@@ -3592,7 +3592,7 @@ public class NetServer {
 	
 	class AdminCommandsProcessor {
 		
-		public void processAdminCommandBan(String[] message, SocketChannel client) {
+		public void processAdminCommandBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
 			// ban\t[IP]\t(Length)
 			int kickCount = 0;
 
@@ -3600,12 +3600,12 @@ public class NetServer {
 			if(message.length > 2) banLength = Integer.parseInt(message[2]);
 
 			kickCount = ban(message[1], banLength);
-			saveBanList();
+			saveBanList(banList);
 
 			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
 		}
 		
-		public void processAdminCommandUnBan(String[] message, SocketChannel client) {
+		public void processAdminCommandUnBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
 			// unban\t[IP]
 			int count = 0;
 
@@ -3623,7 +3623,7 @@ public class NetServer {
 					}
 				}
 			}
-			saveBanList();
+			saveBanList(banList);
 
 			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
 		}
@@ -3735,7 +3735,7 @@ public class NetServer {
 		/**
 		 * Write ban list to a file
 		 */
-		private void saveBanList() {
+		private void saveBanList(LinkedList<NetServerBan> banList) {
 			try {
 				FileWriter outFile = new FileWriter("config/setting/netserver_banlist.cfg");
 				PrintWriter out = new PrintWriter(outFile);
