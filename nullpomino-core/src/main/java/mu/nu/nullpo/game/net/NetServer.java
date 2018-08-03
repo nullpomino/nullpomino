@@ -2862,16 +2862,9 @@ public class NetServer {
 			adminCommandsProcessor.processAdminCommandShutDown(message, client, selector);
 		}
 		else if(message[0].equals("announce")) {
-			processAdminCommandAnnounce(message, client);
+			adminCommandsProcessor.processAdminCommandAnnounce(message, client);
 		}
 	}
-	
-
-	void processAdminCommandAnnounce(String[] message, SocketChannel client) {
-		// announce\t[Message]
-		broadcast("announce\t" + message[1] + "\n");
-	}
-				
 	
 	/**
 	 * Send admin command result
@@ -3734,6 +3727,11 @@ public class NetServer {
 			selector.wakeup();
 		}
 
+		public void processAdminCommandAnnounce(String[] message, SocketChannel client) {
+			// announce\t[Message]
+			broadcast("announce\t" + message[1] + "\n");
+		}
+		
 		/**
 		 * Write ban list to a file
 		 */
