@@ -266,14 +266,22 @@ public class NetServer {
 	 */
 	private static void loadPresetList() {
 		propPresets = new CustomProperties();
+		FileInputStream in = null;
 		try {
-			FileInputStream in = new FileInputStream("config/etc/netserver_presets.cfg");
+			in = new FileInputStream("config/etc/netserver_presets.cfg");
 			propPresets.load(in);
-			in.close();
 		} catch (IOException e) {
 			log.warn("Failed to load config file", e);
 		}
-
+		finally {
+			if(in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					log.warn("Failed to load config file", e);
+				}
+			}
+		}
 		ratedInfoList = new LinkedList<String>();
 
 		String strInfo = ""; int i = 0;
