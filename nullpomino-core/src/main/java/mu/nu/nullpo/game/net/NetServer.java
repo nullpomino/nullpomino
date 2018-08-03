@@ -2850,7 +2850,7 @@ public class NetServer {
 			adminCommandsProcessor.processAdminCommandUnBan(message, client);
 		}
 		else if(message[0].equals("banlist")) {
-			processAdminCommandBanList(message, client);
+			adminCommandsProcessor.processAdminCommandBanList(message, client);
 		}
 		else if(message[0].equals("playerdelete")) {
 			processAdminCommandPlayerDelete(message, client);
@@ -2864,26 +2864,6 @@ public class NetServer {
 		else if(message[0].equals("announce")) {
 			processAdminCommandAnnounce(message, client);
 		}
-	}
-	
-	void processAdminCommandBanList(String[] message, SocketChannel client) {
-		// Cleanup expired bans
-		LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
-		tempList.addAll(banList);
-
-		for(NetServerBan ban: tempList) {
-			if(ban.isExpired()) {
-				banList.remove(ban);
-			}
-		}
-
-		// Create list
-		String strResult = "";
-		for(NetServerBan ban: banList) {
-			strResult += "\t" + ban.exportString();
-		}
-
-		sendAdminResult(client, "banlist" + strResult);
 	}
 	
 	void processAdminCommandPlayerDelete(String[] message, SocketChannel client) {
@@ -3734,6 +3714,27 @@ public class NetServer {
 				sendAdminResult(client, "roomdeletefail\t" + roomID);
 			}
 		}
+		
+		public void processAdminCommandBanList(String[] message, SocketChannel client) {
+			// Cleanup expired bans
+			LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
+			tempList.addAll(banList);
+
+			for(NetServerBan ban: tempList) {
+				if(ban.isExpired()) {
+					banList.remove(ban);
+				}
+			}
+
+			// Create list
+			String strResult = "";
+			for(NetServerBan ban: banList) {
+				strResult += "\t" + ban.exportString();
+			}
+
+			sendAdminResult(client, "banlist" + strResult);
+		}
+		
 		/**
 		 * Write ban list to a file
 		 */
