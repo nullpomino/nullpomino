@@ -2867,7 +2867,7 @@ public class NetServer {
 			adminCommandsProcessor.processAdminCommandBan(message, client);		
 		}
 		else if(message[0].equals("unban")) {
-			processAdminCommandUnBan(message, client);
+			adminCommandsProcessor.processAdminCommandUnBan(message, client);
 		}
 		else if(message[0].equals("banlist")) {
 			processAdminCommandBanList(message, client);
@@ -2884,30 +2884,6 @@ public class NetServer {
 		else if(message[0].equals("announce")) {
 			processAdminCommandAnnounce(message, client);
 		}
-	}
-
-
-	private void processAdminCommandUnBan(String[] message, SocketChannel client) {
-		// unban\t[IP]
-		int count = 0;
-
-		if(message[1].equalsIgnoreCase("ALL")) {
-			count = banList.size();
-			banList.clear();
-		} else {
-			LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
-			tempList.addAll(banList);
-
-			for(NetServerBan ban: tempList) {
-				if(ban.addr.equals(message[1])) {
-					banList.remove(ban);
-					count++;
-				}
-			}
-		}
-		saveBanList();
-
-		sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
 	}
 	
 	void processAdminCommandBanList(String[] message, SocketChannel client) {
@@ -3740,6 +3716,29 @@ public class NetServer {
 			saveBanList();
 
 			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
+		}
+		
+		public void processAdminCommandUnBan(String[] message, SocketChannel client) {
+			// unban\t[IP]
+			int count = 0;
+
+			if(message[1].equalsIgnoreCase("ALL")) {
+				count = banList.size();
+				banList.clear();
+			} else {
+				LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
+				tempList.addAll(banList);
+
+				for(NetServerBan ban: tempList) {
+					if(ban.addr.equals(message[1])) {
+						banList.remove(ban);
+						count++;
+					}
+				}
+			}
+			saveBanList();
+
+			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
 		}
 		
 		public void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
