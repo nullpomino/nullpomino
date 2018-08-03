@@ -3255,7 +3255,12 @@ public class NetServer {
 		int nowPlaying = roomInfo.getHowManyPlayersPlaying();
 		boolean isTeamWin = roomInfo.isTeamWin();
 
-		if( (roomInfo != null) && (roomInfo.playing) && ( (nowPlaying < 1) || ((startPlayers >= 2) && (nowPlaying < 2)) || (isTeamWin) ) ) {
+		if(roomInfo == null)
+			return false;
+		if(!roomInfo.playing)
+			return false;
+		
+		if( nowPlaying < 1 || ((startPlayers >= 2) && (nowPlaying < 2)) || isTeamWin ) {
 			// Game finished
 			NetPlayerInfo winner = roomInfo.getWinner();
 			String msg = "finish\t";
