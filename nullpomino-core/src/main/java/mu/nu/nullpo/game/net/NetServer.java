@@ -820,27 +820,7 @@ public class NetServer {
 		}
 	}
 
-	/**
-	 * Write ban list to a file
-	 */
-	private static void saveBanList() {
-		try {
-			FileWriter outFile = new FileWriter("config/setting/netserver_banlist.cfg");
-			PrintWriter out = new PrintWriter(outFile);
-
-			for(NetServerBan ban: banList) {
-				out.println(ban.exportString());
-			}
-
-			out.flush();
-			out.close();
-
-			log.info("Ban list saved");
-		} catch (Exception e) {
-			log.error("Failed to save ban list", e);
-		}
-	}
-
+	
 	/**
 	 * Load lobby chat history file
 	 */
@@ -3752,6 +3732,26 @@ public class NetServer {
 				sendAdminResult(client, "roomdeletesuccess\t" + roomID + "\t" + strRoomName);
 			} else {
 				sendAdminResult(client, "roomdeletefail\t" + roomID);
+			}
+		}
+		/**
+		 * Write ban list to a file
+		 */
+		private void saveBanList() {
+			try {
+				FileWriter outFile = new FileWriter("config/setting/netserver_banlist.cfg");
+				PrintWriter out = new PrintWriter(outFile);
+
+				for(NetServerBan ban: banList) {
+					out.println(ban.exportString());
+				}
+
+				out.flush();
+				out.close();
+
+				log.info("Ban list saved");
+			} catch (Exception e) {
+				log.error("Failed to save ban list", e);
 			}
 		}
 	}
