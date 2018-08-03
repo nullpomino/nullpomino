@@ -2841,7 +2841,7 @@ public class NetServer {
 	 */
 	private void processAdminCommand(SocketChannel client, String[] message) throws IOException {
 		if(message[0].equals("clientlist")) {
-			adminSendClientList(client);
+			adminCommandsProcessor.adminSendClientList(client);
 		}
 		else if(message[0].equals("ban")) { 	
 			adminCommandsProcessor.processAdminCommandBan(message, client, banList);		
@@ -2887,40 +2887,10 @@ public class NetServer {
 	 * Send client list to all admins
 	 */
 	private void adminSendClientList() {
-		adminSendClientList(null);
+		adminCommandsProcessor.adminSendClientList(null);
 	}
 
-	/**
-	 * Send client list to admin
-	 * @param client The admin. If null, it will broadcast to all admins.
-	 */
-	private void adminSendClientList(SocketChannel client) {
-		String strMsg = "clientlist";
-
-		for(SocketChannel ch: channelList) {
-			String strIP = getHostAddress(ch);
-			String strHost = getHostName(ch);
-			NetPlayerInfo pInfo = playerInfoMap.get(ch);
-
-			int type = 0;	// Type of client. 0:Not logged in
-			if(pInfo != null) type = 1;	// 1:Player
-			else if(observerList.contains(ch)) type = 2;	// 2:Observer
-			else if(adminList.contains(ch)) type = 3;	// 3:Admin
-
-			String strClientData = strIP + "|" + strHost + "|" + type;
-			if(pInfo != null) {
-				strClientData += "|" + pInfo.exportString();
-			}
-
-			strMsg += "\t" + strClientData;
-		}
-
-		if(client == null) {
-			broadcastAdminResult(strMsg);
-		} else {
-			sendAdminResult(client, strMsg);
-		}
-	}
+	
 
 	/**
 	 * Get NetRoomInfo by using roomID
@@ -3590,7 +3560,39 @@ public class NetServer {
 		}
 	}
 	
+	
 	class AdminCommandsProcessor {
+		/**
+		 * Send client list to admin
+		 * @param client The admin. If null, it will broadcast to all admins.
+		 */
+		public void adminSendClientList(SocketChannel client) {
+			String strMsg = "clientlist";
+
+			for(SocketChannel ch: channelList) {
+				String strIP = getHostAddress(ch);
+				String strHost = getHostName(ch);
+				NetPlayerInfo pInfo = playerInfoMap.get(ch);
+
+				int type = 0;	// Type of client. 0:Not logged in
+				if(pInfo != null) type = 1;	// 1:Player
+				else if(observerList.contains(ch)) type = 2;	// 2:Observer
+				else if(adminList.contains(ch)) type = 3;	// 3:Admin
+
+				String strClientData = strIP + "|" + strHost + "|" + type;
+				if(pInfo != null) {
+					strClientData += "|" + pInfo.exportString();
+				}
+
+				strMsg += "\t" + strClientData;
+			}
+
+			if(client == null) {
+				broadcastAdminResult(strMsg);
+			} else {
+				sendAdminResult(client, strMsg);
+			}
+		}
 		
 		public void processAdminCommandBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
 			// ban\t[IP]\t(Length)
