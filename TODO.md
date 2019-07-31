@@ -1,0 +1,21 @@
+# Todo List
+
+- [ ] More features and fixes for Netplay
+  - [ ] Fix CPU 100% bug of NetServer
+  - [ ] Reduce RAM usage
+  - [ ] More room customize features (Garbage pattern options, and more...)
+  - [ ] Detect disconnected players from server-side
+  - [ ] Replay support
+  - [ ] Manage the lag
+  - [ ] Password protected rooms
+  - [ ] D/Password or something like that
+- [ ] Various Bugfixes
+- [ ] Helpful items in SCORE ATTACK mode
+- [ ] MISSION MANIA mode where players must accomplish certain task within the given time limit
+- [ ] HANABI MANIA mode with fireworks
+- [ ] More garbage pattern options for VS-BATTLE (and Netplay)
+- [ ] More AI players
+- [ ] Replace Swing version with something better (jME maybe?)
+- [ ] Better replay selector system
+- [ ] TAS detection (I didn't include it in this version because the current method had problems with music)
+- [ ] Fix the possible high score list inaccurates for MANIA modes (Grade always overcome green-line?)
