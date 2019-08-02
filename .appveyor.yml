@@ -1,6 +1,6 @@
 version: '{build}'
 os: 
-  - Windows Server 2012
+  - Visual Studio 2015
   - ubuntu
 install:
   - cmd: java -version
