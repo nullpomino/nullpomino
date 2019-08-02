@@ -1,0 +1,18 @@
+version: '{build}'
+os: 
+  - Windows Server 2012
+  - ubuntu
+install:
+  - cmd: java -version
+  - sh: sudo apt-get update
+  - sh: sudo apt-get install icedtea-netx -y
+  - sh: sudo cp /usr/share/icedtea-web/netx.jar /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/
+  - sh: sudo mv /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/netx.jar /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/javaws.jar
+  - sh: export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+before_build:
+  - cd nullpomino-parent
+build_script:
+  - mvn install
+artifacts:
+  - path: nullpomino-run/target/install/
+    type: zip
