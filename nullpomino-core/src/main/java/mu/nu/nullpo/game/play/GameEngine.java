@@ -42,6 +42,7 @@ import mu.nu.nullpo.game.component.RuleOptions;
 import mu.nu.nullpo.game.component.SpeedParam;
 import mu.nu.nullpo.game.component.Statistics;
 import mu.nu.nullpo.game.component.WallkickResult;
+import mu.nu.nullpo.game.subsystem.mode.AbstractMode;
 import mu.nu.nullpo.game.subsystem.ai.DummyAI;
 import mu.nu.nullpo.game.subsystem.wallkick.Wallkick;
 import mu.nu.nullpo.util.GeneralUtil;
@@ -959,6 +960,8 @@ public class GameEngine {
 	 */
 	public void resetStatc() {
 		for(int i = 0; i < statc.length; i++) statc[i] = 0;
+		if (owner.mode instanceof AbstractMode)
+			((AbstractMode) owner.mode).resetCounters();
 	}
 
 	/**
