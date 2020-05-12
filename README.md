@@ -17,3 +17,17 @@ The current stable version is 7.5.0, which has the following new features:
 * Mac OS X: [NullpoMino7.5.0.dmg](https://github.com/nullpomino/nullpomino/releases/download/v7.5.0/NullpoMino7.5.0.dmg)
 * Linux: [NullpoMino7.5.0_linux.tar.gz](https://github.com/nullpomino/nullpomino/releases/download/v7.5.0/NullpoMino7.5.0_linux.tar.gz)
 * Any OS (zip): [NullpoMino7.5.0.zip](https://github.com/nullpomino/nullpomino/releases/download/v7.5.0/NullpoMino7.5.0.zip)
+
+### Building
+
+#### Linux
+
+Use maven to compile the project:
+
+```bash
+cd nullpomino-parent/
+mvn package
+cd ../nullpomino-run/target/install/
+chmod +x ./play_swing
+./play_swing
+```
