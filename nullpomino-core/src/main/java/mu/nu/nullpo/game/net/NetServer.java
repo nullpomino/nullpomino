@@ -261,19 +261,29 @@ public class NetServer {
 	/** Maps a SocketChannel to a list of ByteBuffer instances */
 	private HashMap<SocketChannel, List<ByteBuffer>> pendingData = new HashMap<SocketChannel, List<ByteBuffer>>();
 
+	private AdminCommandsProcessor adminCommandsProcessor = new AdminCommandsProcessor();
+	
 	/**
 	 * Load rated-game room presets from the server config
 	 */
 	private static void loadPresetList() {
 		propPresets = new CustomProperties();
+		FileInputStream in = null;
 		try {
-			FileInputStream in = new FileInputStream("config/etc/netserver_presets.cfg");
+			in = new FileInputStream("config/etc/netserver_presets.cfg");
 			propPresets.load(in);
-			in.close();
 		} catch (IOException e) {
 			log.warn("Failed to load config file", e);
 		}
-
+		finally {
+			if(in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					log.warn("Failed to load config file", e);
+				}
+			}
+		}
 		ratedInfoList = new LinkedList<String>();
 
 		String strInfo = ""; int i = 0;
@@ -810,27 +820,7 @@ public class NetServer {
 		}
 	}
 
-	/**
-	 * Write ban list to a file
-	 */
-	private static void saveBanList() {
-		try {
-			FileWriter outFile = new FileWriter("config/setting/netserver_banlist.cfg");
-			PrintWriter out = new PrintWriter(outFile);
-
-			for(NetServerBan ban: banList) {
-				out.println(ban.exportString());
-			}
-
-			out.flush();
-			out.close();
-
-			log.info("Ban list saved");
-		} catch (Exception e) {
-			log.error("Failed to save ban list", e);
-		}
-	}
-
+	
 	/**
 	 * Load lobby chat history file
 	 */
@@ -2834,7 +2824,7 @@ public class NetServer {
 			if(adminList.contains(client)) {
 				String strAdminCommandTemp = NetUtil.decompressString(message[1]);
 				String[] strAdminCommandArray = strAdminCommandTemp.split("\t");
-				processAdminCommand(client, strAdminCommandArray);
+				adminCommandsProcessor.processAdminCommand(client, strAdminCommandArray, banList);
 			} else {
 				log.warn(getHostFull(client) + " has tried to access admin command without login");
 				logout(client);
@@ -2843,166 +2833,9 @@ public class NetServer {
 		}
 	}
 
-	/**
-	 * Process admin command
-	 * @param client The SocketChannel who sent this packet
-	 * @param message The String array of the command
-	 * @throws IOException When something bad happens
-	 */
-	private void processAdminCommand(SocketChannel client, String[] message) throws IOException {
-		// Client list (force update)
-		if(message[0].equals("clientlist")) {
-			adminSendClientList(client);
-		}
-		// Ban
-		if(message[0].equals("ban")) {
-			// ban\t[IP]\t(Length)
-			int kickCount = 0;
+	
+	
 
-			int banLength = -1;
-			if(message.length > 2) banLength = Integer.parseInt(message[2]);
-
-			kickCount = ban(message[1], banLength);
-			saveBanList();
-
-			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
-		}
-		// Un-Ban
-		if(message[0].equals("unban")) {
-			// unban\t[IP]
-			int count = 0;
-
-			if(message[1].equalsIgnoreCase("ALL")) {
-				count = banList.size();
-				banList.clear();
-			} else {
-				LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
-				tempList.addAll(banList);
-
-				for(NetServerBan ban: tempList) {
-					if(ban.addr.equals(message[1])) {
-						banList.remove(ban);
-						count++;
-					}
-				}
-			}
-			saveBanList();
-
-			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
-		}
-		// Ban List
-		if(message[0].equals("banlist")) {
-			// Cleanup expired bans
-			LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
-			tempList.addAll(banList);
-
-			for(NetServerBan ban: tempList) {
-				if(ban.isExpired()) {
-					banList.remove(ban);
-				}
-			}
-
-			// Create list
-			String strResult = "";
-			for(NetServerBan ban: banList) {
-				strResult += "\t" + ban.exportString();
-			}
-
-			sendAdminResult(client, "banlist" + strResult);
-		}
-		// Player delete
-		if(message[0].equals("playerdelete")) {
-			// playerdelete\t<Name>
-
-			String strName = message[1];
-			NetPlayerInfo pInfo = searchPlayerByName(strName);
-
-			boolean playerDataChange = false;
-			boolean mpRankingDataChange = false;
-			boolean spRankingDataChange = false;
-
-			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
-				if(propPlayerData.getProperty("p.rating." + i + "." + strName) != null) {
-					propPlayerData.setProperty("p.rating." + i + "." + strName, ratingDefault);
-					propPlayerData.setProperty("p.playCount." + i + "." + strName, 0);
-					propPlayerData.setProperty("p.winCount." + i + "." + strName, 0);
-					playerDataChange = true;
-				}
-				if(propPlayerData.getProperty("sppersonal." + strName + ".numRecords") != null) {
-					propPlayerData.setProperty("sppersonal." + strName + ".numRecords", 0);
-					playerDataChange = true;
-				}
-
-				if(pInfo != null) {
-					pInfo.rating[i] = ratingDefault;
-					pInfo.playCount[i] = 0;
-					pInfo.winCount[i] = 0;
-					pInfo.spPersonalBest.listRecord.clear();
-				}
-
-				int mpIndex = mpRankingIndexOf(i, strName);
-				if(mpIndex != -1) {
-					mpRankingList[i].remove(mpIndex);
-					mpRankingDataChange = true;
-				}
-
-				for(NetSPRanking ranking: spRankingListAlltime) {
-					NetSPRecord record = ranking.getRecord(strName);
-					if(record != null) {
-						ranking.listRecord.remove(record);
-						spRankingDataChange = true;
-					}
-				}
-				for(NetSPRanking ranking: spRankingListDaily) {
-					NetSPRecord record = ranking.getRecord(strName);
-					if(record != null) {
-						ranking.listRecord.remove(record);
-						spRankingDataChange = true;
-					}
-				}
-			}
-
-			sendAdminResult(client, "playerdelete\t" + strName);
-
-			if(playerDataChange) writePlayerDataToFile();
-			if(mpRankingDataChange) writeMPRankingToFile();
-			if(spRankingDataChange) writeSPRankingToFile();
-		}
-		// Room delete
-		if(message[0].equals("roomdelete")) {
-			// roomdelete\t[ID]
-			int roomID = Integer.parseInt(message[1]);
-			NetRoomInfo roomInfo = getRoomInfo(roomID);
-
-			if(roomInfo != null) {
-				String strRoomName = roomInfo.strName;
-				forceDeleteRoom(roomInfo);
-				sendAdminResult(client, "roomdeletesuccess\t" + roomID + "\t" + strRoomName);
-			} else {
-				sendAdminResult(client, "roomdeletefail\t" + roomID);
-			}
-		}
-		// Shutdown
-		if(message[0].equals("shutdown")) {
-			log.warn("Shutdown requested by the admin (" + getHostFull(client) + ")");
-			shutdownRequested = true;
-			this.selector.wakeup();
-		}
-		// Announce
-		if(message[0].equals("announce")) {
-			// announce\t[Message]
-			broadcast("announce\t" + message[1] + "\n");
-		}
-	}
-
-	/**
-	 * Send admin command result
-	 * @param client The admin
-	 * @param msg Message to send
-	 */
-	private void sendAdminResult(SocketChannel client, String msg) {
-		send(client, "adminresult\t" + NetUtil.compressString(msg) + "\n");
-	}
 
 	/**
 	 * Broadcast admin command result to all admins
@@ -3016,39 +2849,7 @@ public class NetServer {
 	 * Send client list to all admins
 	 */
 	private void adminSendClientList() {
-		adminSendClientList(null);
-	}
-
-	/**
-	 * Send client list to admin
-	 * @param client The admin. If null, it will broadcast to all admins.
-	 */
-	private void adminSendClientList(SocketChannel client) {
-		String strMsg = "clientlist";
-
-		for(SocketChannel ch: channelList) {
-			String strIP = getHostAddress(ch);
-			String strHost = getHostName(ch);
-			NetPlayerInfo pInfo = playerInfoMap.get(ch);
-
-			int type = 0;	// Type of client. 0:Not logged in
-			if(pInfo != null) type = 1;	// 1:Player
-			else if(observerList.contains(ch)) type = 2;	// 2:Observer
-			else if(adminList.contains(ch)) type = 3;	// 3:Admin
-
-			String strClientData = strIP + "|" + strHost + "|" + type;
-			if(pInfo != null) {
-				strClientData += "|" + pInfo.exportString();
-			}
-
-			strMsg += "\t" + strClientData;
-		}
-
-		if(client == null) {
-			broadcastAdminResult(strMsg);
-		} else {
-			sendAdminResult(client, strMsg);
-		}
+		adminCommandsProcessor.adminSendClientList(null);
 	}
 
 	/**
@@ -3233,7 +3034,12 @@ public class NetServer {
 		int nowPlaying = roomInfo.getHowManyPlayersPlaying();
 		boolean isTeamWin = roomInfo.isTeamWin();
 
-		if( (roomInfo != null) && (roomInfo.playing) && ( (nowPlaying < 1) || ((startPlayers >= 2) && (nowPlaying < 2)) || (isTeamWin) ) ) {
+		if(roomInfo == null)
+			return false;
+		if(!roomInfo.playing)
+			return false;
+		
+		if( nowPlaying < 1 || ((startPlayers >= 2) && (nowPlaying < 2)) || isTeamWin ) {
 			// Game finished
 			NetPlayerInfo winner = roomInfo.getWinner();
 			String msg = "finish\t";
@@ -3711,6 +3517,245 @@ public class NetServer {
 			this.socket = socket;
 			this.type = type;
 			this.ops = ops;
+		}
+	}
+	
+	
+	class AdminCommandsProcessor {
+		
+		/**
+		 * Process admin command
+		 * @param client The SocketChannel who sent this packet
+		 * @param message The String array of the command
+		 * @throws IOException When something bad happens
+		 */
+		public void processAdminCommand(SocketChannel client, String[] message, LinkedList<NetServerBan> banList) throws IOException {
+			if(message[0].equals("clientlist")) {
+				adminSendClientList(client);
+			}
+			else if(message[0].equals("ban")) { 	
+				processAdminCommandBan(message, client, banList);		
+			}
+			else if(message[0].equals("unban")) {
+				processAdminCommandUnBan(message, client, banList);
+			}
+			else if(message[0].equals("banlist")) {
+				processAdminCommandBanList(message, client);
+			}
+			else if(message[0].equals("playerdelete")) {
+				processAdminCommandPlayerDelete(message, client);
+			}
+			else if(message[0].equals("roomdelete")) {
+				processAdminCommandRoomDelete(message, client);
+			}
+			else if(message[0].equals("shutdown")) {
+				processAdminCommandShutDown(message, client, selector);
+			}
+			else if(message[0].equals("announce")) {
+				processAdminCommandAnnounce(message, client);
+			}
+		}
+		
+		/**
+		 * Send client list to admin
+		 * @param client The admin. If null, it will broadcast to all admins.
+		 */
+		public void adminSendClientList(SocketChannel client) {
+			String strMsg = "clientlist";
+
+			for(SocketChannel ch: channelList) {
+				String strIP = getHostAddress(ch);
+				String strHost = getHostName(ch);
+				NetPlayerInfo pInfo = playerInfoMap.get(ch);
+
+				int type = 0;	// Type of client. 0:Not logged in
+				if(pInfo != null) type = 1;	// 1:Player
+				else if(observerList.contains(ch)) type = 2;	// 2:Observer
+				else if(adminList.contains(ch)) type = 3;	// 3:Admin
+
+				String strClientData = strIP + "|" + strHost + "|" + type;
+				if(pInfo != null) {
+					strClientData += "|" + pInfo.exportString();
+				}
+
+				strMsg += "\t" + strClientData;
+			}
+
+			if(client == null) {
+				broadcastAdminResult(strMsg);
+			} else {
+				sendAdminResult(client, strMsg);
+			}
+		}
+		
+		private void processAdminCommandBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
+			// ban\t[IP]\t(Length)
+			int kickCount = 0;
+
+			int banLength = -1;
+			if(message.length > 2) banLength = Integer.parseInt(message[2]);
+
+			kickCount = ban(message[1], banLength);
+			saveBanList(banList);
+
+			sendAdminResult(client, "ban\t" + message[1] + "\t" + banLength + "\t" + kickCount);
+		}
+		
+		private void processAdminCommandUnBan(String[] message, SocketChannel client, LinkedList<NetServerBan> banList) {
+			// unban\t[IP]
+			int count = 0;
+
+			if(message[1].equalsIgnoreCase("ALL")) {
+				count = banList.size();
+				banList.clear();
+			} else {
+				LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
+				tempList.addAll(banList);
+
+				for(NetServerBan ban: tempList) {
+					if(ban.addr.equals(message[1])) {
+						banList.remove(ban);
+						count++;
+					}
+				}
+			}
+			saveBanList(banList);
+
+			sendAdminResult(client, "unban\t" + message[1] + "\t" + count);
+		}
+		
+		private void processAdminCommandRoomDelete(String[] message, SocketChannel client)  throws IOException {
+			// roomdelete\t[ID]
+			int roomID = Integer.parseInt(message[1]);
+			NetRoomInfo roomInfo = getRoomInfo(roomID);
+
+			if(roomInfo != null) {
+				String strRoomName = roomInfo.strName;
+				forceDeleteRoom(roomInfo);
+				sendAdminResult(client, "roomdeletesuccess\t" + roomID + "\t" + strRoomName);
+			} else {
+				sendAdminResult(client, "roomdeletefail\t" + roomID);
+			}
+		}
+		
+		private void processAdminCommandBanList(String[] message, SocketChannel client) {
+			// Cleanup expired bans
+			LinkedList<NetServerBan> tempList = new LinkedList<NetServerBan>();
+			tempList.addAll(banList);
+
+			for(NetServerBan ban: tempList) {
+				if(ban.isExpired()) {
+					banList.remove(ban);
+				}
+			}
+
+			// Create list
+			String strResult = "";
+			for(NetServerBan ban: banList) {
+				strResult += "\t" + ban.exportString();
+			}
+
+			sendAdminResult(client, "banlist" + strResult);
+		}
+		
+		private void processAdminCommandPlayerDelete(String[] message, SocketChannel client) {
+			// playerdelete\t<Name>
+
+			String strName = message[1];
+			NetPlayerInfo pInfo = searchPlayerByName(strName);
+
+			boolean playerDataChange = false;
+			boolean mpRankingDataChange = false;
+			boolean spRankingDataChange = false;
+
+			for(int i = 0; i < GameEngine.MAX_GAMESTYLE; i++) {
+				if(propPlayerData.getProperty("p.rating." + i + "." + strName) != null) {
+					propPlayerData.setProperty("p.rating." + i + "." + strName, ratingDefault);
+					propPlayerData.setProperty("p.playCount." + i + "." + strName, 0);
+					propPlayerData.setProperty("p.winCount." + i + "." + strName, 0);
+					playerDataChange = true;
+				}
+				if(propPlayerData.getProperty("sppersonal." + strName + ".numRecords") != null) {
+					propPlayerData.setProperty("sppersonal." + strName + ".numRecords", 0);
+					playerDataChange = true;
+				}
+
+				if(pInfo != null) {
+					pInfo.rating[i] = ratingDefault;
+					pInfo.playCount[i] = 0;
+					pInfo.winCount[i] = 0;
+					pInfo.spPersonalBest.listRecord.clear();
+				}
+
+				int mpIndex = mpRankingIndexOf(i, strName);
+				if(mpIndex != -1) {
+					mpRankingList[i].remove(mpIndex);
+					mpRankingDataChange = true;
+				}
+
+				for(NetSPRanking ranking: spRankingListAlltime) {
+					NetSPRecord record = ranking.getRecord(strName);
+					if(record != null) {
+						ranking.listRecord.remove(record);
+						spRankingDataChange = true;
+					}
+				}
+				
+				for(NetSPRanking ranking: spRankingListDaily) {
+					NetSPRecord record = ranking.getRecord(strName);
+					if(record != null) {
+						ranking.listRecord.remove(record);
+						spRankingDataChange = true;
+					}
+				}
+			}
+
+			sendAdminResult(client, "playerdelete\t" + strName);
+
+			if(playerDataChange) writePlayerDataToFile();
+			if(mpRankingDataChange) writeMPRankingToFile();
+			if(spRankingDataChange) writeSPRankingToFile();
+		}
+		
+		private void processAdminCommandShutDown(String[] message, SocketChannel client, Selector selector) {
+			log.warn("Shutdown requested by the admin (" + getHostFull(client) + ")");
+			shutdownRequested = true;
+			selector.wakeup();
+		}
+
+		private void processAdminCommandAnnounce(String[] message, SocketChannel client) {
+			// announce\t[Message]
+			broadcast("announce\t" + message[1] + "\n");
+		}
+		
+		/**
+		 * Send admin command result
+		 * @param client The admin
+		 * @param msg Message to send
+		 */
+		private void sendAdminResult(SocketChannel client, String msg) {
+			send(client, "adminresult\t" + NetUtil.compressString(msg) + "\n");
+		}
+		
+		/**
+		 * Write ban list to a file
+		 */
+		private void saveBanList(LinkedList<NetServerBan> banList) {
+			try {
+				FileWriter outFile = new FileWriter("config/setting/netserver_banlist.cfg");
+				PrintWriter out = new PrintWriter(outFile);
+
+				for(NetServerBan ban: banList) {
+					out.println(ban.exportString());
+				}
+
+				out.flush();
+				out.close();
+
+				log.info("Ban list saved");
+			} catch (Exception e) {
+				log.error("Failed to save ban list", e);
+			}
 		}
 	}
 }
