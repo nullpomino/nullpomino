@@ -217,8 +217,8 @@ public class GradeManiaMode extends AbstractMode {
 		alwaysghost = new OnOffMenuItem("alwaysghost", "FULL GHOST", EventReceiver.COLOR_BLUE, false);
 		always20g = new OnOffMenuItem("always20g", "20G MODE", EventReceiver.COLOR_BLUE, false);
 		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
-		showsectiontime = new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false);
 		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
+		showsectiontime = new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false);
 		menu.add(startlevel);
 		menu.add(alwaysghost);
 		menu.add(always20g);

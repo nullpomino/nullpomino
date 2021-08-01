@@ -232,7 +232,7 @@ public class PhantomManiaMode extends AbstractMode {
 		};
 		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
 		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
-		showsectiontime = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, true);
+		showsectiontime = new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false);
 		menu.add(startlevel);
 		menu.add(lvstopse);
 		menu.add(showsectiontime);
