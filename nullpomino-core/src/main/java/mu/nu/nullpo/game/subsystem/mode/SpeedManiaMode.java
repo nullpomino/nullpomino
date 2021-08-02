@@ -207,7 +207,7 @@ public class SpeedManiaMode extends AbstractMode {
 		};
 		lvstopse = new OnOffMenuItem("lvstopse", "LVSTOPSE", EventReceiver.COLOR_BLUE, false);
 		big = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, false);
-		showsectiontime = new OnOffMenuItem("big", "BIG", EventReceiver.COLOR_BLUE, true);
+		showsectiontime = new OnOffMenuItem("showsectiontime", "SHOW STIME", EventReceiver.COLOR_BLUE, false);
 		lv500torikan = new TimeMenuItem("lv500torikan", "LV500LIMIT", EventReceiver.COLOR_BLUE, 12300, 0, 72000) {
 			public String getValueString() {
 				return (value == 0) ? "NONE" : GeneralUtil.getTime(value);
