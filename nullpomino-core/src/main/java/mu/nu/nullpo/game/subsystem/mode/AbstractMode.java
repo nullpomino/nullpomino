@@ -189,6 +189,10 @@ public abstract class AbstractMode implements GameMode {
 		receiver = engine.owner.receiver;
 	}
 
+	public void resetCounters() {
+		menuTime = 0;
+	}
+	
 	public void renderARE(GameEngine engine, int playerID) {
 	}
 
