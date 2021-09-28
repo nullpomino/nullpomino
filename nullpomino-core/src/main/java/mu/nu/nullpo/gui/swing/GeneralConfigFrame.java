@@ -132,6 +132,9 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 	/** Show field BG grid */
 	protected JCheckBox chkboxShowInput;
 
+	/** Enable stretching **/
+        protected JCheckBox chkboxEnableResize;
+
 	/**
 	 * Constructor
 	 * @param owner Parent window
@@ -296,6 +299,10 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxShowLineClearEffect.setAlignmentX(LEFT_ALIGNMENT);
 		pAdvancedTab.add(chkboxShowLineClearEffect);
 
+		chkboxEnableResize = new JCheckBox(NullpoMinoSwing.getUIText("GeneralConfig_Resize"));
+		chkboxEnableResize.setAlignmentX(LEFT_ALIGNMENT);
+		pAdvancedTab.add(chkboxEnableResize);
+
 		// ---------- The bottom of the screen button ----------
 		JPanel pButtons = new JPanel();
 		pButtons.setAlignmentX(LEFT_ALIGNMENT);
@@ -349,6 +356,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 		chkboxPerfectFPSMode.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectFPSMode", false));
 		chkboxPerfectYield.setSelected(NullpoMinoSwing.propConfig.getProperty("option.perfectYield", true));
 		chkboxSyncDisplay.setSelected(NullpoMinoSwing.propConfig.getProperty("option.syncDisplay", true));
+		chkboxEnableResize.setSelected(NullpoMinoSwing.propConfig.getProperty("option.resize", false));
 		chkboxShowLineClearEffect.setSelected(NullpoMinoSwing.propConfig.getProperty("option.showlineeffect", false));
 	}
 
@@ -392,6 +400,7 @@ public class GeneralConfigFrame extends JFrame implements ActionListener {
 			NullpoMinoSwing.propConfig.setProperty("option.perfectFPSMode", chkboxPerfectFPSMode.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.perfectYield", chkboxPerfectYield.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.syncDisplay", chkboxSyncDisplay.isSelected());
+			NullpoMinoSwing.propConfig.setProperty("option.resize", chkboxEnableResize.isSelected());
 			NullpoMinoSwing.propConfig.setProperty("option.showlineeffect", chkboxShowLineClearEffect.isSelected());
 
 			NullpoMinoSwing.saveConfig();

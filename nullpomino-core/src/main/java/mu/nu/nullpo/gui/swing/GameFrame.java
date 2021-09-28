@@ -39,6 +39,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -174,11 +176,21 @@ public class GameFrame extends JFrame implements Runnable {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setTitle(NullpoMinoSwing.getUIText("Title_Game"));
 		setBackground(Color.black);
-		setResizable(false);
 		setIgnoreRepaint(true);
 
 		addWindowListener(new GameFrameWindowEvent());
 		addKeyListener(new GameFrameKeyEvent());
+
+		boolean enableResize = NullpoMinoSwing.propConfig.getProperty("option.resize", false);
+		setResizable(enableResize);
+		if (enableResize) {
+		    addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent componentEvent) {
+			    screenWidth = getWidth() - insets.left - insets.right;
+			    screenHeight = getHeight() - insets.top - insets.bottom;
+			}
+		    });
+		}
 
 		maxfps = NullpoMinoSwing.propConfig.getProperty("option.maxfps", 60);
 
