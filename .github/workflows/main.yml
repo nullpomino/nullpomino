@@ -1,0 +1,25 @@
+name: Build and Upload
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          cd nullpomino-parent/
+          mvn package
+          cd ../
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          path: ./nullpomino-run/*
