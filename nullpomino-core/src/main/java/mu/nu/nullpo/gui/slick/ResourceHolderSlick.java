@@ -325,6 +325,7 @@ public class ResourceHolderSlick {
 		Image img = null;
 		try {
 			img = new Image(filename);
+			img.setFilter(Image.FILTER_NEAREST);
 		} catch (Throwable e) {
 			log.error("Failed to load image from " + filename, e);
 			try {
@@ -345,7 +346,7 @@ public class ResourceHolderSlick {
 
 		BigImage bigImg = null;
 		try {
-			bigImg = new BigImage(filename);
+			bigImg = new BigImage(filename, Image.FILTER_NEAREST);
 		} catch (Throwable e) {
 			log.error("Failed to load big image from " + filename, e);
 		}
